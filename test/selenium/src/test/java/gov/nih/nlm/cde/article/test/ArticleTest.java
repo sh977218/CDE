@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class ArticleTest extends NlmCdeBaseTest {
 
     private void newArticle(String name) {
-        driver.get(baseUrl + "#/help/bogus");
+        driver.get(baseUrl + "/help/bogus");
         clickElement(By.id("addNewArticle"));
         findElement(By.name("key")).sendKeys(name);
         clickElement(By.id("confirmNewArticle"));
@@ -21,28 +21,28 @@ public class ArticleTest extends NlmCdeBaseTest {
     public void createNew() {
         mustBeLoggedInAs(docEditor, password);
         newArticle("createNewTest");
-        driver.get(baseUrl + "#/help/createNewTest");
+        driver.get(baseUrl + "/help/createNewTest");
         textPresent("has no content");
     }
 
     @Test
     public void adminCanEdit() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        driver.get(baseUrl + "#/help/testAdminCanEdit");
+        driver.get(baseUrl + "/help/testAdminCanEdit");
         textPresent("Admin can edit this.");
         clickElement(By.id("editArticle"));
         findElement(By.xpath("//div[@contenteditable = 'true']")).sendKeys("I edited this.  ");
         clickElement(By.id("saveArticle"));
         textPresent("Saved.");
         textPresent("I edited this.");
-        driver.get(baseUrl + "#/help/testAdminCanEdit");
+        driver.get(baseUrl + "/help/testAdminCanEdit");
         textPresent("I edited this.");
     }
 
     @Test
     public void regularUserCantEdit() {
         mustBeLoggedInAs(test_username, password);
-        driver.get(baseUrl + "#/help/testAdminCanEdit");
+        driver.get(baseUrl + "/help/testAdminCanEdit");
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editArticle")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addNewArticle")));
     }
@@ -50,14 +50,14 @@ public class ArticleTest extends NlmCdeBaseTest {
     @Test
     public void edits() {
         mustBeLoggedInAs(docEditor, password);
-        driver.get(baseUrl + "#/help/testEdits");
+        driver.get(baseUrl + "/help/testEdits");
         textPresent("Testing edits");
         clickElement(By.id("editArticle"));
         findElement(By.xpath("//div[@contenteditable = 'true']")).sendKeys("adding some edits  ");
         clickElement(By.id("saveArticle"));
         textPresent("Saved.");
         textPresent("adding some edits");
-        driver.get(baseUrl + "#/help/testEdits");
+        driver.get(baseUrl + "/help/testEdits");
         textPresent("adding some edits");
         clickElement(By.linkText("History"));
         Assert.assertEquals(driver.findElements(By.xpath("//table[@id = 'historyTable']//tr")).size(), 2);

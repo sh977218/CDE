@@ -12,7 +12,7 @@ public class OrgWithSpecialNames extends BaseClassificationTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassificationMgt();
 
-        new Select(findElement(By.cssSelector("select"))).selectByValue("org / or Org");
+        new Select(findElement(By.cssSelector("select"))).selectByVisibleText("org / or Org");
 
         createClassificationName("org / or Org", new String[]{"Sub / Classif"});
 

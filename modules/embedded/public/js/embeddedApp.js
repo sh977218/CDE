@@ -23,9 +23,9 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             , regStatuses: []
         };
 
-        $http.get('/embed/' + $scope.args.id).success(function (embed) {
-            $scope.embed = embed;
-            $scope.searchSettings.selectedOrg = embed.org;
+        $http.get('/embed/' + $scope.args.id).then(function onSuccess(response) {
+            $scope.embed = response.data;
+            $scope.searchSettings.selectedOrg = response.data.org;
             $scope.search();
         });
 

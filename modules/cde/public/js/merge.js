@@ -67,15 +67,23 @@ angular.module('CdeMerge', [])
 .factory('Mail', ["$http", function($http) {
     return {
         sendMessage: function(dat, success, error) {              
-            $http.post('/mail/messages/new', dat).success(success).error(error);
+            $http.post('/mail/messages/new', dat).then(function onSuccess(response) {
+                success(response.data)
+            }, function onError(response) {
+                error(response.data)
+            });
         },
-        getMail: function(type, query, cb) {              
+        getMail: function(type, query, cb) {
             $http.post("/mail/messages/" + type, query).then(function(response) {
                 cb(response.data);
             });
         },
         updateMessage: function(msg, success, error) {
-            $http.post('/mail/messages/update', msg).success(success).error(error);
+            $http.post('/mail/messages/update', msg).then(function onSuccess(response) {
+                success(response.data)
+            }, function onError(response) {
+                error(response.data)
+            });
         }
     };        
 }]);

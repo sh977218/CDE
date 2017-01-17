@@ -11,8 +11,9 @@ angular.module('systemModule').controller('NewPvModalCtrl', ['$scope', '$timeout
             }
             _timeout = $timeout(function() {
                 _timeout = null;
-                $http.get('/searchUmls?searchTerm=' + $scope.newPv.valueMeaningName).success(function(data) {
-                    if (data && data.result && data.result.results) $scope.umlsTerms = data.result.results;
+                $http.get('/searchUmls?searchTerm=' + $scope.newPv.valueMeaningName).then(function onSuccess(response) {
+                    if (response.data.result && response.data.result.results)
+                        $scope.umlsTerms = response.data.result.results;
                 });
             }, 500);
         };
