@@ -11,7 +11,7 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
             });
             modalInstance.result.then(function (includeAll) {
                 $scope.restoreStatus = "progress";
-                $http.post('/api/reloadProd', {url: $scope.sourceUrl, includeAll: includeAll}).success(function(){
+                $http.post('/api/reloadProd', {url: $scope.sourceUrl, includeAll: includeAll}).then(function onSuccess(){
                     $scope.addAlert("success", "Data has been reloaded.");
                     $scope.restoreStatus = "success";
                 });

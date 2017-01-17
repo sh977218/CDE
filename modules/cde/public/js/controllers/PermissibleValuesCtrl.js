@@ -49,9 +49,9 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
 
     var umlsFromOther = function(code, system, cb) {
         var cuis = [];
-        $http.get("/umlsCuiFromSrc/" + code + "/" + system).success(function (response) {
-            if (response.result && response.result.results) {
-                response.result.results.forEach(function (result) {
+        $http.get("/umlsCuiFromSrc/" + code + "/" + system).then(function onSuccess(response) {
+            if (response.data.result && response.data.result.results) {
+                response.data.result.results.forEach(function (result) {
                     cuis.push({
                         valueMeaningName: result.name,
                         valueMeaningCode: result.ui
@@ -138,8 +138,8 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
                                     };
                                 } else {
                                     funcArray[i] = $q.defer();
-                                    $http.get("/umlsAtomsBridge/" + newCode + "/" + src).success(function (response) {
-                                        funcArray[i].resolve(response);
+                                    $http.get("/umlsAtomsBridge/" + newCode + "/" + src).then(function onSuccess(response) {
+                                        funcArray[i].resolve(response.data);
                                     });
                                     $q.all(funcArray.map(function(d) {return d.promise;})).then(function(arrOfResponses) {
                                         arrOfResponses.forEach(function(response, i) {

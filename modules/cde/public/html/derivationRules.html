@@ -18,7 +18,7 @@
                     <dt tabindex="0">Input CDEs:</dt>
                     <dd tabindex="0" id="dd_derRule_input_{{$index}}">
                         <a ng-repeat="input in derRule.fullCdes | limitTo:8"
-                           ng-href="/#/deview/?tinyId={{input.tinyId}}">
+                           ng-href="/deview/?tinyId={{input.tinyId}}">
                             {{input.naming[0].designation}} {{!$last?'- ':''}}</a>
                         <span ng-if="derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
                     </dd>
@@ -44,7 +44,7 @@
                 <tr ng-repeat="derOut in elt.derivationOutputs">
                     <td class="col-xs-3">{{derOut.ruleName}}</td>
                     <td class="col-xs-9">
-                        <a ng-href="/#/deview/?tinyId={{derOut.cde.tinyId}}">{{derOut.cde.naming[0].designation}}</a>
+                        <a ng-href="/deview/?tinyId={{derOut.cde.tinyId}}">{{derOut.cde.naming[0].designation}}</a>
                     </td>
                 </tr>
             </tbody>

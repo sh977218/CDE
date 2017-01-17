@@ -15,8 +15,8 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl',
         $controller('CreateFormAbstractCtrl', {$scope: $scope});
 
         $scope.save = function () {
-            $http.get('/board/' + board._id + "/0/500").success(function(data) {
-                data.elts.forEach(function (p) {
+            $http.get('/board/' + board._id + "/0/500").then(function onSuccess(response) {
+                response.data.elts.forEach(function (p) {
                     $scope.elt.formElements[0].formElements.push({
                         elementType: 'question',
                         label: p.naming[0].designation,

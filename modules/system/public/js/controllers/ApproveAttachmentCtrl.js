@@ -2,24 +2,20 @@ angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$
     function($scope, $http, Alert) {
 
     $scope.approveAttachment = function(msg) {
-        $http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid).
-            success(function(data) {
-                Alert.addAlert("success", data);
-                $scope.archiveMessage(msg);
-            }).
-            error(function(data) {
-                Alert.addAlert("danger", data);
-            });
+        $http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid).then(function onSuccess(response) {
+            Alert.addAlert("success", response.data);
+            $scope.archiveMessage(msg);
+        }).catch(function onError(response) {
+            Alert.addAlert("danger", response.data);
+        });
     };
     $scope.declineAttachment = function(msg) {
-        $http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid).
-            success(function(data) {
-                Alert.addAlert("success", data);
-                $scope.archiveMessage(msg);
-            }).
-            error(function(data) {
-                Alert.addAlert("danger", data);
-            });
+        $http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid).then(function onSuccess(response) {
+            Alert.addAlert("success", response.data);
+            $scope.archiveMessage(msg);
+        }).catch(function onError(response) {
+            Alert.addAlert("danger", response.data);
+        });
     };    
         
 }]);

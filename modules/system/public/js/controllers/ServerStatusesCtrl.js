@@ -19,13 +19,13 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                     var isDone = false;
                     $scope.i = i;
                     $scope.okReIndex = function() {
-                        $http.post('/reindex/' + i).success(function () {
+                        $http.post('/reindex/' + i).then(function onSuccess() {
                             isDone = true;
                         });
                         var indexFn = setInterval(function () {
-                            $http.get("indexCurrentNumDoc/" + i).success(function (result) {
-                                $scope.esIndices[i].count = result.count;
-                                $scope.esIndices[i].totalCount = result.totalCount;
+                            $http.get("indexCurrentNumDoc/" + i).then(function onSuccess(response) {
+                                $scope.esIndices[i].count = response.data.count;
+                                $scope.esIndices[i].totalCount = response.data.totalCount;
                                 if ($scope.esIndices[i].count >= $scope.esIndices[i].totalCount && isDone) {
                                     clearInterval(indexFn);
                                     Alert.addAlert("success", "Finished reindex " + $scope.esIndices[i].name);
@@ -52,10 +52,10 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
         $scope.syncMesh = function() {
             $http.post("/syncWithMesh");
             var indexFn = setInterval(function () {
-                $http.get('/syncWithMesh').success(function (result) {
-                    $scope.meshSyncs = result;
-                    if (result.cde.done === result.cde.total
-                        && result.form.done === result.form.total) {
+                $http.get('/syncWithMesh').then(function onSuccess(response) {
+                    $scope.meshSyncs = response.data;
+                    if (response.data.cde.done === response.data.cde.total
+                        && response.data.form.done === response.data.form.total) {
                         clearInterval(indexFn);
                         delete $scope.meshSyncs;
                     }
@@ -104,7 +104,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                     fileFormDataName: "deployFile"
                 }).progress(function (evt) {
                     $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total) + " %";
-                }).success(function () {
+                }).then(function () {
                     delete $scope.progressPercentage;
                     $scope.addAlert("success", "Deployment complete");
                 });

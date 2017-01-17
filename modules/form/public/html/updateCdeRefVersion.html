@@ -108,12 +108,12 @@
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
             <div class="col-sm-8" id="mdd_d_cde">
-                <a ng-class="{mark: bCde}" href="/#/deview?tinyId={{newQuestion.question.cde.tinyId}}&version={{newQuestion.question.cde.version}}"
+                <a ng-class="{mark: bCde}" href="/deview?tinyId={{newQuestion.question.cde.tinyId}}&version={{newQuestion.question.cde.version}}"
                    target="_blank"><i class="fa fa-eye"></i>
                     <span id="mdd_question_cde_name">{{newQuestion.question.cde.name}}</span>
                 </a>
                 <span ng-if="bCde" class="red">( was
-                    <a style="color: red" href="/#/deview?tinyId={{currentQuestion.question.cde.tinyId}}&version={{currentQuestion.question.cde.version}}"
+                    <a style="color: red" href="/deview?tinyId={{currentQuestion.question.cde.tinyId}}&version={{currentQuestion.question.cde.version}}"
                        target="_blank"><i class="fa fa-eye"></i>
                         <span id="mdd_old_question_cde_name">{{currentQuestion.question.cde.name}}</span>
                     </a> )

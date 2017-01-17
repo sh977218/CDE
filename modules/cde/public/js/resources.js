@@ -23,17 +23,17 @@ angular.module('resourcesCde', ['ngResource'])
     .factory('ElasticBoard', ["$http", function ($http) {
         return {
             loadMyBoards: function (filter, cb) {
-                $http.post('/myBoards', filter).success(function (response) {
-                    if (cb) cb(response);
-                }).error(function () {
+                $http.post('/myBoards', filter).then(function onSuccess(response) {
+                    if (cb) cb(response.data);
+                }).catch(function onError() {
                     if (cb) cb("Unable to retrieve my boards");
                 });
             },
             basicSearch: function (filter, cb) {
-                $http.post("/boardSearch", filter).success(function (response) {
-                    if (cb) cb(null, response);
-                }).error(function (err) {
-                    if (cb) cb("Unable to retrieve public boards - " + err);
+                $http.post("/boardSearch", filter).then(function onSuccess(response) {
+                    if (cb) cb(null, response.data);
+                }).catch(function onError(response) {
+                    if (cb) cb("Unable to retrieve public boards - " + response.data);
                 });
             }
         };

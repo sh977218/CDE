@@ -36,18 +36,18 @@ angular.module('OrgFactories', ['ngResource'])
         }
         , getOrgsDetailedInfoAPI: function (cb) {
             var OrgHelpers = this;
-            $http.get('/listOrgsDetailedInfo').success(function(response) {
+            $http.get('/listOrgsDetailedInfo').then(function onSuccess(response) {
                 // Transforms response to object literal notation
-                response.forEach(function(org) {
-                    if(org) {
+                response.data.forEach(function (org) {
+                    if (org) {
                         if (!org.propertyKeys) org.propertyKeys = [];
                         if (!org.nameTags) org.nameTags = [];
                         OrgHelpers.orgsDetailedInfo[org.name] = org;
                     }
                 });
                 OrgHelpers.deferred.resolve();
-                if (cb)cb();
-            }).error(function() {
+                if (cb) cb();
+            }).catch(function onError() {
                 console.log("Cannot get org detailed info.");
             });
         }
