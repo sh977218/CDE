@@ -4,7 +4,9 @@ var DataElementModel = mongo_cde.DataElement;
 var mongo_form = require('../modules/form/node-js/mongo-form');
 var FormModel = mongo_form.Form;
 
-var collections = [{name: 'cde', model: DataElementModel}, {name: 'form', model: FormModel}];
+//var collections = [{name: 'cde', model: DataElementModel}, {name: 'form', model: FormModel}];
+var collections = [{name: 'cde', model: DataElementModel}];
+//var collections = [{name: 'form', model: FormModel}];
 
 var query = {
     archived: null,
@@ -79,5 +81,5 @@ async.forEach(collections, function (collectionObj, doneOneCollection) {
     });
 }, function doneAllCollections() {
     console.log('finished all collections');
-    // process.exit(1);
+    //process.exit(1);
 });
