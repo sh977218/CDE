@@ -59,7 +59,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                         clearInterval(indexFn);
                         delete $scope.meshSyncs;
                     }
-                });
+                }).catch(function onError() {});
             }, 1000);
         };
 
