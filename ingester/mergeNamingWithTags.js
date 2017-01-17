@@ -4,14 +4,15 @@ var DataElementModel = mongo_cde.DataElement;
 var mongo_form = require('../modules/form/node-js/mongo-form');
 var FormModel = mongo_form.Form;
 
-var collections = [DataElementModel, FormModel];
+var collections = [{name: 'cde', model: DataElementModel}, {name: 'form', model: FormModel}];
 
 var query = {
     archived: null,
     "registrationState.registrationStatus": {$not: /Retired/}
 };
 
-async.forEach(collections, function (collection, doneOneCollection) {
+async.forEach(collections, function (collectionObj, doneOneCollection) {
+    var collection = collectionObj.model;
     var recordsCount = 0;
     collection.find(query).exec(function (findError, records) {
         if (findError) throw findError;
@@ -19,6 +20,7 @@ async.forEach(collections, function (collection, doneOneCollection) {
             async.forEach(records, function (record, doneOneRecord) {
                 var newNamingArray = [];
                 record.get('naming').forEach(function (naming) {
+                    // merge names
                     if (newNamingArray.filter(function (newName) {
                             return newName.designation === naming.designation &&
                                 newName.definition === naming.definition &&
@@ -33,34 +35,49 @@ async.forEach(collections, function (collection, doneOneCollection) {
                                 newName.languageCode === naming.languageCode &&
                                 newName.source === naming.source) {
                                 var existingTag = false;
+                                // merge tags
                                 newName.tags.forEach(function (t) {
-                                    
-                                })
+                                    if (t === naming.context.contextName) {
+                                        existingTag = true;
+                                    }
+                                });
+                                if (!existingTag) {
+                                    newName.tags.push({tag: naming.context.contextName})
+                                }
                             }
                         })
                     } else {
                         newNamingArray.push({
-                            designation: naming.designation,
-                            definition: naming.definition,
-                            definitionFormat: naming.definitionFormat,
-                            languageCode: naming.languageCode,
-                            tags: [{
+                            designation: naming.designation ? naming.designation : '',
+                            definition: naming.definition ? naming.definition : '',
+                            definitionFormat: naming.definitionFormat ? naming.definitionFormat : '',
+                            languageCode: naming.languageCode ? naming.languageCode : '',
+                            tags: naming.context.contextName ? [{
                                 tag: naming.context.contextName
-                            }],
-                            source: naming.source
+                            }] : [],
+                            source: naming.source ? naming.source : ''
                         })
                     }
                 });
-                recordsCount++;
-                console.log('recordsCount: ' + recordsCount);
-                doneOneRecord();
+                record.naming = newNamingArray;
+                record.markModified('naming');
+                record.context = {};
+                record.markModified('context');
+                record.save(function (saveError) {
+                    if (saveError) throw saveError;
+                    else {
+                        recordsCount++;
+                        console.log('recordsCount: ' + recordsCount);
+                        doneOneRecord();
+                    }
+                })
             }, function doneAllRecords() {
-                console.log('done collection ' + collection.toString() + ' recordsCount: ' + recordsCount);
+                console.log('done collection ' + collectionObj.name + ' recordsCount: ' + recordsCount);
                 doneOneCollection();
             })
         }
     });
 }, function doneAllCollections() {
     console.log('finished all collections');
-    process.exit(1);
+    // process.exit(1);
 });

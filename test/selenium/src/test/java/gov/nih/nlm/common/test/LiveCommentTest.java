@@ -1,7 +1,6 @@
 package gov.nih.nlm.common.test;
 
 import gov.nih.nlm.cde.test.comments.CdeCommentTest;
-import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
