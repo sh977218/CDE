@@ -1,7 +1,6 @@
 package gov.nih.nlm.common.test;
 
 import gov.nih.nlm.cde.test.comments.CdeCommentTest;
-import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -9,6 +8,7 @@ public class LiveCommentTest extends CdeCommentTest {
 
     private void replyComment(String reply, int i) {
         findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
+        hangon(1);
         scrollToViewById("replyBtn_" + i);
         clickElement(By.id("replyBtn_" + i));
     }
