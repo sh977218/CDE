@@ -36,10 +36,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
 
             $scope.reload = function () {
                 $scope.accordionListStyle = "semi-transparent";
-                $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage - 1) * 20)).success(function (response) {
+                $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage - 1) * 20)).then(function onSuccess(response) {
                     $scope.accordionListStyle = "";
-                    if (response.board) {
-                        $scope.board = response.board;
+                    if (response.data.board) {
+                        $scope.board = response.data.board;
                         var elts = $scope[$scope.board.type + 's'] = [];
                         $scope.module = $scope.board.type;
                         $scope.setViewTypes($scope.module);
@@ -48,10 +48,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                 "/system/public/html/accordion/boardAccordionActions.html",
                                 "/system/public/html/accordion/addToQuickBoardActions.html"
                             ];
-                        $scope.totalItems = response.totalItems;
+                        $scope.totalItems = response.data.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
                         var pins = $scope.board.pins;
-                        var respElts = response.elts;
+                        var respElts = response.data.elts;
                         pins.forEach(function (pin) {
                             var pinId = $scope.board.type === 'cde' ? pin.deTinyId : pin.formTinyId;
                             respElts.forEach(function (elt) {
@@ -72,7 +72,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         });
                         $scope.deferredEltLoaded.resolve();
                     }
-                }).error(function () {
+                }).catch(function onError() {
                     $scope.addAlert("danger", "Board not found");
                 });
             };
@@ -92,10 +92,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
 
             $scope.exportBoard = function () {
                 $http.get('/board/' + $scope.board._id + '/0/500/?type=csv')
-                    .success(function (response) {
+                    .then(function onSuccess(response) {
                         SearchSettings.getPromise().then(function (settings) {
                             var csv = exports.getCdeCsvHeader(settings.tableViewFields);
-                            response.elts.forEach(function (ele) {
+                            response.data.elts.forEach(function (ele) {
                                 csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
                             });
                             if (csv) {
@@ -113,11 +113,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
 
             function movePin(endPoint, pinId) {
-                $http.post(endPoint, {boardId: $scope.board._id, tinyId: pinId}).success(function () {
+                $http.post(endPoint, {boardId: $scope.board._id, tinyId: pinId}).then(function onSuccess() {
                     Alert.addAlert("success", "Saved");
                     $scope.reload();
-                }).error(function (response) {
-                    Alert.addAlert("danger", response);
+                }).catch(function onError(response) {
+                    Alert.addAlert("danger", response.data);
                     $scope.reload();
                 });
             }
@@ -133,11 +133,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
 
             $scope.save = function () {
-                $http.post("/board", $scope.board).success(function () {
+                $http.post("/board", $scope.board).then(function onSuccess() {
                     Alert.addAlert("success", "Saved");
                     $scope.reload();
-                }).error(function (response) {
-                    Alert.addAlert("danger", response);
+                }).catch(function onError(response) {
+                    Alert.addAlert("danger", response.data);
                     $scope.reload();
                 });
             };
@@ -174,11 +174,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                             boardId: $scope.board._id,
                                             newClassification: newClassification
                                         }
-                                    }).success(function (data, status) {
+                                    }).then(function onSuccess(response) {
                                         $timeout.cancel(_timeout);
-                                        if (status === 200) $scope.addAlert("success", "All Elements classified.");
-                                        else $scope.addAlert("danger", data.error.message);
-                                    }).error(function () {
+                                        if (response.status === 200) $scope.addAlert("success", "All Elements classified.");
+                                        else $scope.addAlert("danger", response.data.error.message);
+                                    }).catch(function onError() {
                                         $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
                                         $timeout.cancel(_timeout);
                                     });
@@ -277,22 +277,22 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.startReview = function () {
                 $http.post("/board/startReview", {
                     boardId: $scope.board._id
-                }).success(function () {
+                }).then(function onSuccess() {
                     $scope.reload();
-                }).error(function (response) {
-                    Alert.addAlert("danger", response);
+                }).catch(function onError(response) {
+                    Alert.addAlert("danger", response.data);
                     $scope.reload();
                 });
             };
             $scope.endReview = function () {
                 $http.post("/board/endReview", {
                     boardId: $scope.board._id
-                }).success(function () {
+                }).then(function () {
                     $scope.reload(function () {
                         Alert.addAlert('success', 'board review started.')
                     });
-                }).error(function (response) {
-                    Alert.addAlert("danger", response);
+                }).catch(function (response) {
+                    Alert.addAlert("danger", response.data);
                     $scope.reload();
                 });
             };

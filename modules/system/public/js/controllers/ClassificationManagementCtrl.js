@@ -184,12 +184,11 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
         var timeout = $timeout(function() {
             $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
         }, 3000);
-        $http({method: 'post', url: '/classifyEntireSearch', data: data})
-        .success(function(data, status) {
+        $http({method: 'post', url: '/classifyEntireSearch', data: data}).then(function onSuccess(response) {
             $timeout.cancel(timeout);
-            if (status===200) $scope.addAlert("success", "Elements classified.");
-            else $scope.addAlert("danger", data.error.message);
-        }).error(function() {
+            if (response.status === 200) $scope.addAlert("success", "Elements classified.");
+            else $scope.addAlert("danger", response.data.error.message);
+        }).catch(function onError() {
             $scope.addAlert("danger", "Task not performed completely!");
             $timeout.cancel(timeout);
         });

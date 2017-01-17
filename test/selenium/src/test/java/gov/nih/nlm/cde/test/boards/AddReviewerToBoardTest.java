@@ -31,7 +31,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         textPresent("End Review");
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("incomingMessage"));
-        clickElement(By.xpath("//span/span[contains(., '| board approval | boarduser')]"));
+        clickElement(By.xpath("//span[contains(., '| board approval | boarduser')]"));
         textPresent(boardName);
         clickElement(By.id("board_Bipolar Disorder"));
         switchTab(1);
@@ -42,7 +42,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         closeAlert();
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("incomingMessage"));
-        clickElement(By.xpath("//span/span[contains(., '| board approval | boarduser')]"));
+        clickElement(By.xpath("//span[contains(., '| board approval | boarduser')]"));
         textPresent(boardName);
         clickElement(By.id("board_Bipolar Disorder"));
         switchTab(1);

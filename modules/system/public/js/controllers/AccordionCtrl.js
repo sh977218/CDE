@@ -25,9 +25,9 @@ angular.module('systemModule').controller('AccordionCtrl',
         $scope.interruptEvent(event);
 
         if ($scope.module === 'cde') {
-            $window.open("/#/deview?tinyId=" + elt.tinyId);
+            $window.open("/deview?tinyId=" + elt.tinyId);
         } else if ($scope.module === 'form') {
-            $window.open("/#/formView?tinyId=" + elt.tinyId);
+            $window.open("/formView?tinyId=" + elt.tinyId);
         }
     };
 

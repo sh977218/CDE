@@ -29,22 +29,23 @@ angular.module('ElasticSearchResource', ['ngResource'])
             var elastic = this;
             function search(good, bad){
                 $http.post("/elasticSearch/" + type, settings)
-                    .success(good)
-                    .error(bad);
+                    .then(good, bad);
             }
-            search(function (response) {
-                    elastic.highlightResults(response[type + 's']);
-                    cb(null, response, false);
-                },function() {
-                    if (settings.searchTerm) settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
-                    search(function(response){
-                        elastic.highlightResults(response[type + 's']);
-                        cb(null, response, true);
-                    }, function(){
-                        cb("Error");
-                    });
+            function success(response) {
+                elastic.highlightResults(response.data[type + 's']);
+                cb(null, response.data, false);
+            }
+            function successAfterRetry(response) {
+                elastic.highlightResults(response.data[type + 's']);
+                cb(null, response.data, true);
+            }
 
+            search(success, function failOne() {
+                if (settings.searchTerm) settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
+                search(successAfterRetry, function failTwo() {
+                    cb("Error");
                 });
+            });
 
         } 
         , highlightResults: function(elts) {
@@ -114,11 +115,10 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , method: "POST"
                 , data: query
                 , transformResponse: function(a){return a;}
-            }).success(function (response) {
-                cb(null, response);
-            })
-            .error(function(data, status) {
-                if (status === 503) cb("The server is busy processing similar request, please try again in a minute.");
+            }).then(function onSuccess(response) {
+                cb(null, response.data);
+            }).catch(function onError(response) {
+                if (response.status === 503) cb("The server is busy processing similar request, please try again in a minute.");
                 else cb("An error occured. This issue has been reported.");
             });
         }

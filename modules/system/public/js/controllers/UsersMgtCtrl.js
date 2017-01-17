@@ -33,7 +33,7 @@
              templateUrl: '/system/public/html/newUserModal.html',
              controller: function() {}
          }).result.then(function (username) {
-             $http.put("/user", {username: username}).success(function() {
+             $http.put("/user", {username: username}).then(function onSuccess() {
                  Alert.addAlert("success", "User created");
              });
          });

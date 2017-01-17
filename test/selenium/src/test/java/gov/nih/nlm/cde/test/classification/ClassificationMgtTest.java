@@ -33,10 +33,10 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Classifications")).click();
         hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByValue("PS&CC");
+        new Select(findElement(By.cssSelector("select"))).selectByVisibleText("PS&CC");
         textPresent("edu.fccc.brcf.domain");
         textNotPresent("Magnetic Resonance Imaging (MRI)");
-        new Select(findElement(By.cssSelector("select"))).selectByValue("ACRIN");
+        new Select(findElement(By.cssSelector("select"))).selectByVisibleText("ACRIN");
         textPresent("Magnetic Resonance Imaging (MRI)");
         textNotPresent("edu.fccc.brcf.domain");
     }
