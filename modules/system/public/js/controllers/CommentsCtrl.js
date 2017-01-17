@@ -7,8 +7,8 @@ angular.module('systemModule').controller('CommentsCtrl',
             $scope.tempReplies = {};
 
             function loadComments(cb) {
-                $http.get('/comments/eltId/' + $scope.getEltId()).then(function (result) {
-                    $scope.eltComments = result.data;
+                $http.get('/comments/eltId/' + $scope.getEltId()).then(function (response) {
+                    $scope.eltComments = response.data;
                     $scope.eltComments.forEach(function (comment) {
                         if (comment.linkedTab) {
                             $scope.tabs[comment.linkedTab].highlight = true;
@@ -21,7 +21,7 @@ angular.module('systemModule').controller('CommentsCtrl',
                         }
                     });
                     if (cb)cb();
-                });
+                }).catch(function onError() {});
             }
 
             loadComments();

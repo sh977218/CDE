@@ -84,10 +84,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 } else if (pin.formTinyId) {
                     url = "/pin/form/" + pin.formTinyId + "/" + $scope.board._id;
                 }
-                $http['delete'](url).then(function () {
+                $http['delete'](url).then(function onSuccess() {
                     $scope.reload();
                     Alert.addAlert("success", "Unpinned.");
-                });
+                }).catch(function onError() {});
             };
 
             $scope.exportBoard = function () {
