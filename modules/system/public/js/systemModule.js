@@ -58,6 +58,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             templateUrl: '/system/public/html/searchSettings.html'
         });
     }])
+    .config(['$qProvider', function ($qProvider) {
+        $qProvider.errorOnUnhandledRejections(false);
+    }])
     .directive('inlineEdit', ["$timeout", function ($timeout) {
         return {
             restrict: 'AE',
