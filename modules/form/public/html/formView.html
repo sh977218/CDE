@@ -100,7 +100,7 @@
         <div ng-include="'/system/public/html/comments.html'" style="padding:30px;"></div>
     </div>
     <div class="row" ng-controller="VersionCtrl">
-        <div class="col-md-12" ng-show="elt.unsaved">
+        <div class="col-xs-12" ng-show="elt.unsaved">
             <hr/>
             <button class="btn cancel" ng-click="revert()" id="discardChanges">Discard Changes</button>
             <button ng-disabled="!isFormValid" class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')"
