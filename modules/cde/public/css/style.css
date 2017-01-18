@@ -495,6 +495,8 @@ button#selectDefault {
     margin-left: 20px;
 }
 
+/*
+
 @media (min-width: 0) {
     #quickSearchForm {
         margin: 40px 0;
@@ -512,6 +514,7 @@ button#selectDefault {
         margin: 40px 150px 30px 150px;
     }
 }
+*/
 
 .gridStyle {
     height: 600px;
@@ -806,10 +809,6 @@ button#selectDefault {
     float: left;
 }
 
-#embedSearchArea {
-    padding: 20px;
-}
-
 input:required:invalid, input:focus:invalid {
     border-color: #a94442;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
@@ -885,7 +884,7 @@ div + .questionPlaceholder {
     margin-top: 30px;
 }
 
-#exportEverything {
+.mt17 {
     margin-top: 17px;
 }
 
@@ -1013,12 +1012,6 @@ div + .questionPlaceholder {
     display: none;
 }
 
-#searchInfo {
-    border-radius: 0;
-    margin-left: -2px;
-    margin-right: -2px;
-}
-
 #resultList {
     max-width: 1200px;
     font-size: small;
@@ -1029,7 +1022,7 @@ div + .questionPlaceholder {
     margin-bottom: 0 !important;
 }
 
-#searchDiv {
+.searchDiv {
     margin: 30px 0 30px 0;
 }
 
@@ -1163,6 +1156,10 @@ div + .questionPlaceholder {
     border: 1px solid rgb(212, 212, 212);
     width: auto;
     height: 600px
+}
+
+.pd20 {
+    padding: 20px;
 }
 
 .pdtp9 {
@@ -1643,4 +1640,11 @@ div.slider .ui-slider-handle {
     margin-top: -.8em;
     text-align: center;
     line-height: 1.6em;
+}
+
+.addModeSearchArea {
+    position: fixed !important;
+    top: 155px;
+    right: 0px;
+    overflow:auto;
 }
