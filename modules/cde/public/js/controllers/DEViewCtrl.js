@@ -154,7 +154,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                             return $scope.elt;
                         }
                     }
-                });
+                }).result.then(function () {}, function() {});
             }
         }, {
             btnId: 'cdeLinkedFormsBtn',
@@ -176,7 +176,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                             return $scope.module;
                         }
                     }
-                });
+                }).result.then(function () {}, function() {});
             }
         }, {
             btnId: 'cdeLinkedBoardsBtn',
@@ -201,7 +201,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                             return $scope.elt.tinyId;
                         }
                     }
-                });
+                }).result.then(function () {}, function() {});
             }
         }, {
             btnId: 'cdeMoreLikeThisBtn',
@@ -222,7 +222,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                             return $scope.elt;
                         }
                     }
-                })
+                }).result.then(function () {}, function() {});
             }
         }
     ];
@@ -601,7 +601,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             resolve: {
                 elt: function() {return $scope.elt;}
             }
-        });
+        }).result.then(function () {}, function() {});
     };
 
 }]);

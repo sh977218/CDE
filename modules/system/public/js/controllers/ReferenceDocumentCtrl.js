@@ -2,7 +2,7 @@ angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$
     function ($scope, $modal, $location, $timeout)
 {
     $scope.openNewReferenceDocument = function () {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: 'newReferenceDocumentModalContent.html',
             controller: 'NewReferenceDocumentModalCtrl',
@@ -14,9 +14,7 @@ angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$
                     return $scope.module;
                 }
             }
-        });
-
-        modalInstance.result.then(function (newReferenceDocument) {
+        }).result.then(function (newReferenceDocument) {
             if (newReferenceDocument.referenceDocumentId) {
                 for (var i = 0; i < $scope.elt.referenceDocuments.length; i++) {
                     if ($scope.elt.referenceDocuments[i].referenceDocumentId === newReferenceDocument.referenceDocumentId) {
@@ -34,7 +32,7 @@ angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$
                     $scope.addAlert("success", "Reference document Added");
                 });
             }
-        });
+        }, function () {});
     };
 
     $scope.removeReferenceDocument = function (index) {

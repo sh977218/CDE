@@ -217,18 +217,16 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
     };
 
     $scope.addPv = function() {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/cde/public/html/AddPvModal.html',
             controller: 'NewPvModalCtrl'
-        });
-
-        modalInstance.result.then(function (newPv) {
+        }).result.then(function (newPv) {
             $scope.elt.valueDomain.permissibleValues.push(newPv);
             $scope.stageElt($scope.elt);
             initSrcOptions();
             $scope.runManualValidation();
-        });
+        }, function () {});
     };
 
     $scope.canAddPv = function() {

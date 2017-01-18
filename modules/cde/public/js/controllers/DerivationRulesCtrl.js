@@ -42,16 +42,14 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
     $scope.$on('loadDerivationRules', findDerivationOutputs);
 
     $scope.openNewScore = function () {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: 'newScoreModalContent.html',
             controller: 'NewScoreModalCtrl',
             resolve: {
                 elt: function() {return $scope.elt;}
             }
-        });
-
-        modalInstance.result.then(function (newDerivationRule) {
+        }).result.then(function (newDerivationRule) {
             if (!$scope.elt.derivationRules) $scope.elt.derivationRules = [];
             quickBoard.elts.forEach(function(qbElt) {
                 newDerivationRule.inputs.push(qbElt.tinyId);
@@ -59,7 +57,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
             $scope.elt.derivationRules.push(newDerivationRule);
             $scope.stageElt($scope.elt);
             updateRules();
-        });
+        }, function () {});
     };
 
     $scope.removeDerivationRule = function (index) {

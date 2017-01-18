@@ -43,9 +43,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                 },
                 scope: $scope
             }).result.then(function () {
-                console.log("done");
             }, function () {
-
             });
         };
 

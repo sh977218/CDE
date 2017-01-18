@@ -1,7 +1,7 @@
 angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$uibModal', 'Mail', 'MergeCdes', 'userResource',
     function($scope, $modal, Mail, MergeCdes, userResource) {
     $scope.showMergeApproveDialog = function(message) {
-        var modalInstance = $modal.open({
+         $modal.open({
             animation: false,
             templateUrl: '/system/public/html/saveModal.html'
             , controller: 'MergeApproveModalCtrl'
@@ -12,10 +12,9 @@ angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$uibModal
                     return userResource.user;
                 }
             }
-        });
-        modalInstance.result.then(function () {
+        }).result.then(function () {
             $scope.approveMergeMessage(message);
-        });
+        }, function () {});
     };
 
     $scope.approveMergeMessage = function(message) {

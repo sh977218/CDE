@@ -58,9 +58,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             templateUrl: '/system/public/html/searchSettings.html'
         });
     }])
-    .config(['$qProvider', function ($qProvider) {
-        $qProvider.errorOnUnhandledRejections(false);
-    }])
+    //.config(['$qProvider', function ($qProvider) {
+    //    $qProvider.errorOnUnhandledRejections(false);
+    //}])
     .directive('inlineEdit', ["$timeout", function ($timeout) {
         return {
             restrict: 'AE',
@@ -389,12 +389,12 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
                             }, function (response) {
                                 Alert.addAlert("danger", response.data);
                             });
-                        });
+                        }, function () {});
                     } else {
                         $modal.open({
                             animation: false,
                             templateUrl: '/system/public/html/ifYouLogInModal.html'
-                        });
+                        }).result.then(function () {}, function() {});
                     }
                 }
             };

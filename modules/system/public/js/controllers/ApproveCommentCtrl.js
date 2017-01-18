@@ -32,7 +32,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
             templateUrl: '/system/public/html/messages/approveUser.html'
         }).result.then(function () {
             $scope.authorizeUser(message);
-        });
+        }, function () {});
     };
 
     $scope.declineComment = function(msg) {

@@ -40,7 +40,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                     gotoNewElement(dat.mergeRequest);
                 }
             }
-        });
+        }, function () {});
     };
     
     $scope.isMergeRequestPossible = function(cde, otherCde) {
@@ -52,7 +52,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
     };
     
     $scope.showVersioning = function(mergeRequest, callback) {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/system/public/html/saveModal.html',
             controller: 'MergeApproveModalCtrl',
@@ -61,8 +61,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                     return mergeRequest.destination.object;
                 }
             }
-        });              
-        modalInstance.result.then(callback);       
+        }).result.then(callback, function () {});
     };      
 }
 ]);

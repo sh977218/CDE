@@ -52,14 +52,13 @@ angular.module('articleModule', ['ngRoute', 'articleTemplates']).config(["$route
 
 
     $scope.openNewArticleModal = function() {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/article/public/html/newArticleModal.html',
             controller: 'NewArticleModalCtrl',
             resolve: {
             }
-        });
-        modalInstance.result.then(function (newelt) {
+        }).result.then(function (newelt) {
             $location.url("help/" + newelt.key);
             $scope.addAlert("success", "Saved.");
         }, function(reason) {
