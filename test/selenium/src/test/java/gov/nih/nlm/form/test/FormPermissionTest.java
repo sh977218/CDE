@@ -7,8 +7,6 @@ import org.testng.annotations.Test;
 
 public class FormPermissionTest extends BaseFormTest {
 
-    private CreateEditSectionTest sectionTest = new CreateEditSectionTest();
-
     @Test
     public void formPermissionTest() {
         mustBeLoggedInAs(ninds_username, password);
@@ -18,7 +16,7 @@ public class FormPermissionTest extends BaseFormTest {
         findElement(By.linkText("Form Description")).click();
 
         String sec1 = "test permission section";
-        sectionTest.addSection(sec1, "0 or more","bottom");
+        addSectionBottom(sec1, "0 or more");
         textPresent(sec1);
         saveForm();
 

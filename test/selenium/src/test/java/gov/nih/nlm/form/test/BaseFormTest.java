@@ -55,17 +55,25 @@ public class BaseFormTest extends NlmCdeBaseTest {
         showSearchFilters();
     }
 
-    public void addSection(String title, String card, String position) {
-        clickElement(By.id("description_tab"));
-        scrollToTop();
-        int nbOfSections = 0;
-        if (position.equalsIgnoreCase("bottom")) {
-            nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
-            clickElement(By.id("addSectionBottom"));
-        } else {
-            clickElement(By.id("addSectionTop"));
-        }
+    public void addSectionTop(String title, String card) {
+        clickElement(By.id("addSectionTop"));
+        String sectionId = "section_0";
+        scrollToViewById(sectionId);
+        startEditQuestionSectionById(sectionId);
+        clickElement(By.xpath("//div[@id='" + sectionId + "']//div[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
+        String sectionInput = "//div[@id='" + sectionId + "']//div[contains(@class,'section_title')]//input";
+        findElement(By.xpath(sectionInput)).clear();
+        findElement(By.xpath(sectionInput)).sendKeys(title);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//div[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
 
+        if (card != null) {
+            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(card);
+        }
+    }
+
+    public void addSectionBottom(String title, String card) {
+        clickElement(By.id("addSectionBottom"));
+        int nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
         String sectionId = "section_" + nbOfSections;
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
