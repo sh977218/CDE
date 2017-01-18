@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <h3>Export to a Published Form</h3>
+</div>
+<div class="modal-body">
+    <p class="text-info">This export will generate a published version of this form that will submit data to
+        the endpoint of your choice. Note that the NIH CDE Repository will not have access to any of the submitted.
+        You will need to ensure that your endpoint meets your own security standards. A sample endpoint could be a
+        Google Spreadsheet (via a Google Script published as a web app).
+    </p>
+    <form name="createPublishedForm" class="form-horizontal">
+        To get started, please follow these steps:
+        <ul>
+            <li>
+                <label>Copy paste that URL here:
+                <input class="form-control" type="url" name="endpointUrl" ng-model="formInput.endpointUrl" required></label><br>
+                <span ng-show="createPublishedForm.endpointUrl.$invalid">Not a valid URL.</span>
+            </li>
+            <li>
+                Your published forms will appear in your profile.
+                <label>
+                    Give your published form a name so you can find it more easily.
+                    <input name="publishedFormName" class="form-control" type="text" required ng-model="formInput.publishedFormName">
+                </label>
+            </li>
+            <li>Click "Publish my form" below and write down the final URL. This is the url you will open to start recording your data.</li>
+        </ul>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="$dismiss()" id="cancelExport">Cancel</button>
+    <button class="btn btn-success" ng-click="$close(formInput)" id="goExport"
+            ng-disabled="createPublishedForm.$invalid">Publish my form.</button>
+</div>

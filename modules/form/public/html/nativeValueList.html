@@ -1,28 +1,28 @@
-<fieldset ng-if="!formElement.question.multiselect">
-    <div class="row">
-        <div ng-repeat="pv in answerlist" ng-if="!pv.nonValuelist" ng-class="[classColumns(pv.index !== -1), {'clear': isFirstInRow(pv.index != undefined ? pv.index : $index)}]" class="col-xs-12">
-            <label ng-class="{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
-                   class="radio-inline">
-                <input ng-model="formElement.question.answer"
-                       ng-required="formElement.question.required"
-                       type="radio"
-                       ng-disabled="!formElement.question.editable"
-                       ng-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
-            <div ng-if="pv.subQuestions" ng-init="subQNonValuelist=false" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
-        </div>
-    </div>
-</fieldset>
-<div ng-if="formElement.question.multiselect">
-    <div class="row">
-        <div ng-repeat="pv in answerlist" ng-class="[classColumns(pv.index !== -1), {'clear': isFirstInRow(pv.index != undefined ? pv.index : $index)}]" class="col-xs-12">
-            <label ng-class="{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
-                   class="checkbox-inline">
-                <input checklist-model="formElement.question.answer"
-                       ng-required="formElement.question.required"
-                       type="checkbox"
-                       ng-disabled="!formElement.question.editable"
-                       checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
-            <div ng-if="pv.subQuestions" ng-init="subQNonValuelist=false" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
-        </div>
+<div class="row">
+    <div ng-repeat="pv in answerlist" ng-if="!pv.nonValuelist"
+         ng-class="[classColumns(pv.index !== -1), {'clear': isFirstInRow(pv.index != undefined ? pv.index : $index)}]"
+         class="col-xs-12">
+        <label ng-class="[{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)},
+                          {'radio-inline': !formElement.question.multiselect},
+                          {'checkbox-inline':formElement.question.multiselect}]"
+        >
+            <input ng-if="!formElement.question.multiselect"
+                   type="radio"
+                   name="{{formElement.questionId}}"
+                   ng-model="formElement.question.answer"
+                   ng-value="pv.permissibleValue"
+                   ng-required="formElement.question.required"
+                   ng-disabled="!formElement.question.editable"/>
+            <span ng-if="formElement.question.multiselect">
+                <input
+                   type="checkbox"
+                   name="{{formElement.questionId}}"
+                   checklist-model="formElement.question.answer"
+                   checklist-value="pv.permissibleValue"
+                   ng-required="formElement.question.required"
+                   ng-disabled="!formElement.question.editable"/>
+            </span>{{getLabel(pv)}}</label>
+        <div ng-if="pv.subQuestions" ng-init="subQNonValuelist=false"
+             ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
     </div>
 </div>

@@ -45,8 +45,8 @@ gulp.task('lhc-wiredep', ['bower'], function () {
         .pipe(gulp.dest("./modules/form/public/html"));
 });
 
-gulp.task('nativefollow-wiredep', ['bower'], function () {
-    return gulp.src("./modules/form/public/html/nativeRenderWithFollowUp.html")
+gulp.task('nativefollow-wiredep', ['bower'], function() {
+    return gulp.src("./modules/form/public/html/nativeRenderStandalone.html")
         .pipe(wiredep({
             directory: "modules/components",
             exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
@@ -119,7 +119,7 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
     gulp.src(
         [
             './modules/form/public/html/lformsRender.html',
-            './modules/form/public/html/nativeRenderWithFollowUp.html'
+            './modules/form/public/html/nativeRenderStandalone.html'
         ])
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/"));
 
@@ -159,7 +159,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function () {
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
-        {folder: "./modules/form/public/html/", filename: "nativeRenderWithFollowUp.html"}
+        {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(function (item) {
         return gulp.src(item.folder + item.filename)
             .pipe(usemin({

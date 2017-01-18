@@ -132,7 +132,7 @@ exports.addAttachment = function (req, res, dao) {
                     var writeStream = fs.createWriteStream(file.path);
                     streamFS.pipe(writeStream);
                     writeStream.on('finish', function () {
-                        md5.async(file.path, function (hash) {
+                        md5(file.path, function (err, hash) {
                             file.md5 = hash;
                             mongo_data_system.addAttachment(file, req.user, "some comment", elt, function (attachment, requiresApproval) {
                                 if (requiresApproval) exports.createApprovalMessage(

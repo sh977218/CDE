@@ -13,7 +13,7 @@
             </td>
             <td ng-repeat="qa in q.question.answers">
                 <span ng-if="selection.selectedProfile.displayValues" ng-bind="qa.permissibleValue"></span>
-                <input type="radio" ng-value="qa.permissibleValue" ng-model="q.question.answer">
+                <input type="radio" ng-value="qa.permissibleValue" ng-model="q.question.answer" name="{{q.questionId}}">
             </td>
         </tr>
     </tbody>

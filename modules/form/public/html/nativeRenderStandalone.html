@@ -45,23 +45,31 @@
 
 	<link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css'/>
 	<!-- endbuild -->
+
+	<!-- IFH -->
+
 </head>
 
 <body role="application" id="top" ng-app="printModule">
-<div ng-controller="PrintCtrl" style="max-width: 1000px;margin: 0 auto" itemscope>
-    <div ng-if="elt" ng-controller="FormRenderCtrl" ng-init="setNativeRenderType($scope.nativeRenderTypes.FOLLOW_UP);">
+
+<div ng-controller="PrintCtrl" style="max-width: 1000px;margin: 0 auto">
+    <div ng-if="elt" ng-controller="FormRenderCtrl">
         <h2 class="ng-cloak">{{elt.naming[0].designation}}</h2>
-
-        <form name="sectionLabel" role="form" class="form-horizontal">
-            <div ng-if="followForm"
-                 ng-include="'/form/public/html/formRenderSection.html'">
-                <div ng-view>
-                    <h2 class="text-center mt20">Loading...</h2>
-                </div>
-            </div>
+        <form name="sectionLabel" role="form" class="form-horizontal"
+			  action="{{getEndpointUrl()}}"
+			  method="post">
+			<div ng-view ng-if="!elt">
+				<h2 class="text-center mt20">Loading...</h2>
+			</div>
+            <div ng-if="nativeRenderType === SHOW_IF && elt"
+                 ng-include="'/form/public/html/formRenderSection.html'"></div>
+			<div ng-if="nativeRenderType === FOLLOW_UP && followForm"
+				 ng-include="'/form/public/html/formRenderSection.html'"></div>
+			<input type="hidden" value="{{formUrl}}" name="formUrl">
+			<input type="hidden" name="mapping" ng-value="mapping">
+			<input type="submit" class="ng-cloak btn btn-default" id="button_submit" ng-if="submitForm"
+					style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" ng-disabled="sectionLabel.$invalid">
         </form>
-		<!-- Main content area -->
-
 	</div>
 </div>
 
@@ -172,7 +180,6 @@
 <script src="/system/public/js/controllers/ExportCtrl.js"></script>
 <script src="/system/public/js/controllers/HasCommentsCtrl.js"></script>
 <script src="/system/public/js/controllers/ValidationRules/SaveValidRuleCtrl.js"></script>
-<script src="/system/public/js/controllers/ValidationRules/AddNewRuleCtrl.js"></script>
 <script src="/system/public/js/controllers/ValidationRules/ShowValidRuleReportCtrl.js"></script>
 <script src="/system/public/js/controllers/ValidationRules/SaveValidRuleCtrl.js"></script>
 <script src="/system/public/js/controllers/TableViewCtrl.js"></script>
@@ -280,6 +287,9 @@
           "url" : "https://cde.nlm.nih.gov"
         }
 </script>
+
+<!-- ICSSH -->
+<!-- IJSH -->
 
 </body>
 </html>
