@@ -179,11 +179,17 @@ angular.module('resourcesSystem', ['ngResource'])
     }])
     .factory('ViewingHistory', ["$http", "$q", function ($http, $q) {
         var viewHistoryResource = this;
-        this.deferred = $q.defer();
+        viewHistoryResource.deferred = $q.defer();
 
-        $http.get('/viewingHistory').then(function (response) {
-            viewHistoryResource.deferred.resolve(response.data);
-        });
+        this.getViewingHistory = function () {
+            viewHistoryResource.deferred = $q.defer();
+            $http.get('/viewingHistory').then(function (response) {
+                viewHistoryResource.deferred.resolve(response.data);
+            });
+        };
+
+        this.getViewingHistory();
+
         this.getPromise = function () {
             return viewHistoryResource.deferred.promise;
         };
@@ -207,19 +213,22 @@ angular.module('resourcesSystem', ['ngResource'])
     .factory('userResource', ["$http", "$q", function ($http, $q) {
         var userResource = this;
         this.user = null;
-        this.deferred = $q.defer();
 
-        $http.get('/user/me').then(function (response) {
-            var u = response.data;
-            if (u === "Not logged in.") {
-                userResource.user = {userLoaded: true};
-            } else {
-                userResource.user = u;
-                userResource.setOrganizations();
-                userResource.user.userLoaded = true;
-            }
-            userResource.deferred.resolve(response.data);
-        });
+        this.getRemoteUser = function() {
+            userResource.deferred = $q.defer();
+            $http.get('/user/me').then(function (response) {
+                var u = response.data;
+                if (u === "Not logged in.") {
+                    userResource.user = {userLoaded: true};
+                } else {
+                    userResource.user = u;
+                    userResource.setOrganizations();
+                    userResource.user.userLoaded = true;
+                }
+                userResource.deferred.resolve(response.data);
+            });
+        };
+        this.getRemoteUser();
         this.getPromise = function () {
             return userResource.deferred.promise;
         };

@@ -45,7 +45,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 if (min && !max) {
                     return "nimNoMax"
                 } else if (max && !min) {
-                    return "Number lesser than " + max;
+                    return "Number less than " + max;
                 } else if (min && max) {
                     return "Number between " + min + " and " + max + "";
                 }

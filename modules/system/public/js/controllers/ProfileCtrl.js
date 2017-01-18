@@ -2,6 +2,9 @@ angular.module('systemModule').controller('ProfileCtrl',
     ['$scope', 'ViewingHistory', '$timeout', '$http', 'userResource', 'Alert',
         function ($scope, ViewingHistory, $timeout, $http, userResource, Alert)
 {
+
+    ViewingHistory.getViewingHistory();
+
     ViewingHistory.getPromise().then(function (response) {
         $scope.cdes = [];
         if (Array.isArray(response))
@@ -20,14 +23,24 @@ angular.module('systemModule').controller('ProfileCtrl',
         }, 0);
     };
 
+    userResource.getRemoteUser();
+
     userResource.getPromise().then(function () {
         if (userResource.user.username) {
             $scope.hasQuota = userResource.user.quota;
             $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g, ', ');
             $scope.orgAdmin = userResource.user.orgAdmin.toString().replace(/,/g, ', ');
             $scope.getComments(1);
+            $scope.user = userResource.user;
         }
     });
+
+    $scope.removePublishedForm = function(pf) {
+        $scope.user.publishedForms = $scope.user.publishedForms.filter(function (p) {
+            return p.id !== pf.id;
+        });
+        $scope.saveProfile();
+    };
 
     $scope.getComments = function (page) {
         $http.get("/commentsFor/" + userResource.user.username + "/" + (page-1) * 30 + "/30").then(function(result) {
