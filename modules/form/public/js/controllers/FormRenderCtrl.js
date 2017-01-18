@@ -85,9 +85,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     };
 
     $scope.createSubmitMapping = function () {
-        if (window.endpointUrl) {
-            $scope.mapping = JSON.stringify({sections: flattenForm($scope.elt.formElements)});
-        }
+        $scope.mapping = JSON.stringify({sections: flattenForm($scope.elt.formElements)});
     };
 
     $scope.$on('eltReloaded', function () {
@@ -289,26 +287,16 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     $scope.hasLabel = function (question) {
         return question.label && !question.hideLabel;
     };
-    $scope.classAnswerLabel = function (question, numSubQuestions) {
-        if(numSubQuestions &&
-            /*numSubQuestions === 1 &&*/
+    $scope.isOneLiner = function (question, numSubQuestions) {
+        return numSubQuestions &&
             !$scope.hasLabel(question) &&
-            question.question.datatype !== 'Value List')
-            return 'native-question-oneline-l';
-        else
-            return '';
+            question.question.datatype !== 'Value List';
     };
     $scope.isFirstInRow = function (index) {
         if ($scope.selection.selectedProfile && $scope.selection.selectedProfile.numberOfColumns > 0)
             return index % $scope.selection.selectedProfile.numberOfColumns == 0;
         else
             return index % 4 == 0;
-    };
-    $scope.classTextBox = function (flag) {
-        if (flag)
-            return 'input-group';
-        else
-            return '';
     };
 
     function getQuestions(fe, qLabel) {

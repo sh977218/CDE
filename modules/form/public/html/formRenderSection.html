@@ -25,13 +25,12 @@
     <div ng-if="!(selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement))">
         <div ng-repeat="formElement in ::formElement.formElements track by $index"
              ng-class="::{'keep-with-previous keep-together':$index===0}">
-            <div ng-if="::formElement.elementType === 'question'" class="native-question"
-                 ng-include="'/form/public/html/formRenderQuestion.html'"
-                 ng-init="formElements = $parent.$parent.formElement.formElements;">
+            <div native-question ng-if="::formElement.elementType === 'question'"
+                 ng-init="formElements = $parent.$parent.$parent.formElement.formElements;">
             </div>
             <div ng-if="::formElement.elementType === 'section' || formElement.elementType === 'form'"
                  ng-include="'/form/public/html/formRenderSection.html'"
-                 ng-init="formElements = $parent.$parent.formElement.formElements;">
+                 ng-init="formElements = $parent.$parent.$parent.formElement.formElements;">
             </div>
         </div>
     </div>
