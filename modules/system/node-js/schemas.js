@@ -171,6 +171,11 @@ schemas.userSchema = new mongoose.Schema({
     , accessToken: String
     , refreshToken: String
     , avatarUrl: String
+    , publishedForms: [{
+        name: String,
+        id: mongoose.Schema.Types.ObjectId,
+        _id: false
+    }]
 });
 
 schemas.orgSchema.set('collection', 'orgs');

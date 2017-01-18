@@ -1,7 +1,8 @@
-angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal',
-    'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil',
+angular.module('formModule').controller
+('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
+        '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil', 'Alert',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil, Alert) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -591,6 +592,24 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                 elt: function() {return $scope.elt;}
             }
         });
+    };
+
+    $scope.preparePublishExport = function () {
+        $modal.open({
+            animation: false,
+            templateUrl: '/form/public/html/publishedFormExportModal.html',
+            controller: ['$scope', function($scope) {
+                $scope.formInput = {};
+            }]
+        }).result.then(function (formInput) {
+            $http.post("/publishForm", {
+                formId: $scope.elt._id,
+                publishedFormName: formInput.publishedFormName,
+                endpointUrl: formInput.endpointUrl
+            }).then(function () {
+                Alert.addAlert("info", "Done. Go to your profile to see all your published forms");
+            });
+        })
     };
 
 }]);

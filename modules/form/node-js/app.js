@@ -28,6 +28,8 @@ exports.init = function (app, daoManager) {
 
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
 
+    app.post('/publishForm', formCtrl.publishForm);
+
     app.get('/elasticSearch/form/count', function (req, res) {
         return elastic_system.nbOfForms(function (err, result) {
             res.send("" + result);
@@ -187,4 +189,23 @@ exports.init = function (app, daoManager) {
             }
         });
     });
+
+    // This is for tests only
+    app.post('/sendMockFormData', function (req, res) {
+        console.log(JSON.stringify(req.body));
+        if (
+            req.body.q1 === "1" &&
+            req.body.q2 === "2" &&
+            req.body.q3 === "Lab Name" &&
+            req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14936\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsLargerAlleleNum\"}],\"tinyId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14937\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsSmallerAlleleNum\"}],\"tinyId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C17744\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"MolecularStdyLabName\"}],\"tinyId\":\"EdUB2kWmV61\"}]}]}"
+        &&  req.body.formUrl.indexOf(config.publicUrl + "/data") === 0
+        ) {
+            res.send("<html><body>Form Submitted</body></html>");
+        } else {
+            res.status(401).send("<html><body>Not the right input</body></html>");
+        }
+    });
+
+
+
 };

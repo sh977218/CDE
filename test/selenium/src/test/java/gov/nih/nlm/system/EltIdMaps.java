@@ -85,7 +85,8 @@ public class EltIdMaps {
         eltMap.put("PROMIS Bank v1.2 - Physical Function", "Xko4nuKLg");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
-        eltMap.put("Study Discontinuation/Completion ", "myWQUJrHFg");
+        eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
+        eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");

@@ -1,8 +1,10 @@
-angular.module('formModule').controller('FormRenderCtrl', ['$scope',
-    function ($scope)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location', '$sce',
+    function ($scope, $location, $sce)
 {
 
     $scope.displayInstruction = false;
+
+    $scope.formUrl = $location.absUrl();
 
     $scope.classColumns = function (flag) {
         if (!flag) return '';
@@ -41,6 +43,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         if ($scope.nativeRenderType === $scope.SHOW_IF)
             $scope.formElement = $scope.elt;
     };
+
     $scope.getElt = function () {
         switch ($scope.nativeRenderType) {
             case $scope.SHOW_IF:
@@ -48,6 +51,10 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             case $scope.FOLLOW_UP:
                 return $scope.followForm;
         }
+    };
+
+    $scope.getEndpointUrl = function () {
+        return $sce.trustAsResourceUrl(window.endpointUrl);
     };
 
     $scope.selection = {};
@@ -67,14 +74,23 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         $scope.setNativeRenderType($scope.selection.selectedProfile.displayType);
     };
 
+    $scope.createSubmitMapping = function () {
+        if (window.endpointUrl) {
+            $scope.mapping = JSON.stringify({sections: flattenForm($scope.elt.formElements)});
+        }
+    };
+
     $scope.$on('eltReloaded', function () {
+        $scope.createSubmitMapping();
         delete $scope.followForm;
         setSelectedProfile();
     });
-    setSelectedProfile();
     $scope.$on('tabGeneral', function () {
+        $scope.createSubmitMapping();
         setSelectedProfile();
     });
+    $scope.createSubmitMapping();
+    setSelectedProfile();
 
     var removeAnswers = function (formElt) {
         if (formElt.question) delete formElt.question.answer;
@@ -421,7 +437,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     }
 
     function preprocessValueLists(formElements) {
-        formElements.forEach(function (fe,i,a) {
+        formElements.forEach(function (fe) {
             if (fe.elementType === 'section' || fe.elementType === 'form') {
                 preprocessValueLists(fe.formElements);
                 return;
@@ -441,8 +457,55 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     }
 
     function hasOwnRow(e) {
-        if (e.subQuestions) return true;
-        return false;
+        return !!e.subQuestions;
+    }
+
+    function flattenForm(formElements) {
+        var last_id = 0;
+        var result = [];
+        var questions = [];
+        flattenFormSection(formElements, []);
+        return result;
+
+        function createId() {
+            return "q" + ++last_id;
+        }
+
+        function flattenFormSection(formElements, section) {
+            formElements.forEach(function (fe) {
+                flattenFormFe(fe, section.concat(fe.label));
+            });
+            flattenFormPushQuestions(section);
+        }
+
+        function flattenFormQuestion(fe, section) {
+            fe.questionId = createId();
+            q = {'question': fe.label, 'name': fe.questionId, 'ids': fe.question.cde.ids, 'tinyId': fe.question.cde.tinyId};
+            if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
+            questions.push(q);
+            fe.question.answers && fe.question.answers.forEach(function (a) {
+                a.subQuestions && a.subQuestions.forEach(function (sq) {
+                    flattenFormFe(sq, section);
+                });
+            });
+        }
+
+        function flattenFormFe(fe, section) {
+            if (fe.elementType === 'question') {
+                flattenFormQuestion(fe, section);
+            }
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                flattenFormPushQuestions(section);
+                flattenFormSection(fe.formElements, section);
+            }
+        }
+
+        function flattenFormPushQuestions(section) {
+            if (questions.length) {
+                result.push({'section': section[section.length - 1], 'questions': questions});
+                questions = [];
+            }
+        }
     }
 
 }]);
