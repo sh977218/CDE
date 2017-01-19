@@ -499,27 +499,6 @@ button#selectDefault {
     margin-left: 20px;
 }
 
-/*
-
-@media (min-width: 0) {
-    #quickSearchForm {
-        margin: 40px 0;
-    }
-}
-
-@media (min-width: 800px) {
-    #quickSearchForm {
-        margin: 20px 50px;
-    }
-}
-
-@media (min-width: 1000px) {
-    #quickSearchForm {
-        margin: 40px 150px 30px 150px;
-    }
-}
-*/
-
 .gridStyle {
     height: 600px;
 }
