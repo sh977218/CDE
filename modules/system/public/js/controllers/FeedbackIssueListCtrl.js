@@ -12,7 +12,7 @@ angular.module('systemModule').controller('FeedbackIssueListCtrl',
             animation: false,
             template: '<a target="_blank" href='+content+'><img src="'+content+'"  style="max-width: 898px;"></a>'
             , size: "lg"
-        });
+        }).result.then(function () {}, function() {});
     };
 
     $scope.showRawHtml = function(content){
@@ -22,7 +22,7 @@ angular.module('systemModule').controller('FeedbackIssueListCtrl',
             template: '<span ng-bind="html"></span>'
             , size: "lg"
             , scope: $rootScope
-        });
+        }).result.then(function () {}, function() {});
     };
 
     $scope.gotoPage(1);

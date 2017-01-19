@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('IdsCtrl', ['$scope', '$uibModal', '$window', function($scope, $modal) {
     $scope.openNewId = function () {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
           templateUrl: 'newIdModalContent.html',
           controller: 'NewIdModalCtrl',
@@ -9,9 +9,7 @@ angular.module('systemModule').controller('IdsCtrl', ['$scope', '$uibModal', '$w
                   return $scope.elt;
               }
           }
-        });
-        
-        modalInstance.result.then(function (newId) {
+        }).result.then(function (newId) {
             $scope.elt.ids.push(newId);
             if ($scope.elt.unsaved) {
                 $scope.addAlert("info", "Identifier added. Save to confirm.")
@@ -21,7 +19,7 @@ angular.module('systemModule').controller('IdsCtrl', ['$scope', '$uibModal', '$w
                     $scope.addAlert("success", "Identifier Added");
                 });
             }
-        });
+        }, function () {});
     };
     
     $scope.removeId = function (index) {

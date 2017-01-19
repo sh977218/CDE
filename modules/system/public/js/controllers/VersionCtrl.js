@@ -16,7 +16,7 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$uibModal',
                 }
             }).result.then(function () {
                 $scope.save();
-            });
+            }, function () {});
         };
     }
 ]);
