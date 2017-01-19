@@ -8,10 +8,9 @@
                 link: function (scope, element, attrs) {
                     var fes = scope.formElements;
                     var fe = scope.formElement;
-                    scope.sectionLabelHtml = sectionLabel;
                     var question = fe.question;
                     var type = question.datatype || 'text';
-                    var required = question.required ? "required='required'" : "";
+                    var required = question.required ? "ng-required='true'" : "";
                     var disabled = !question.editable ? "disabled" : "";
                     var htmlText = '';
                     function getLabel(pv) {
@@ -21,9 +20,9 @@
                         var html = '';
                         uoms.forEach(function (uom) {
                             html +=
-                                '<label class="input-group-addon">' +
+                                '<label class="input-group-addon' + (required ? ' nativeRequiredBox' : '') + '">' +
                                 '<input type="radio" ng-model="formElement.question.answerUom"' +
-                                ' value="' + uom + '" ' + disabled + '/> ' + uom + '</label>';
+                                ' value="' + uom + '" name="' + fe.questionId + '_uom" ' + required + ' ' + disabled + '/> ' + uom + '</label>';
                         });
                         return html;
                     }
@@ -41,7 +40,8 @@
                             if ((formElement.elementType === 'question') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
                                 html +=
                                     '<div native-question' +
-                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;formElement = formElements[' + j + '];"></div>';
+                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;formElement = formElements[' + j + '];' +
+                                    'numSubQuestions=' + numSubQuestions + ';permissibleValue=\'' + pv.permissibleValue + '\';"></div>';
                             if ((formElement.elementType === 'section' || formElement.elementType === 'form') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
                                 html +=
                                     '<div ng-include="\'/form/public/html/formRenderSection.html\'"' +
@@ -53,20 +53,17 @@
                         return html;
                     }
 
-                    if (scope.nativeRenderType === 'follow')
-                        if (!scope.evaluateSkipLogicAndClear(fe.skipLogic.condition, fes, fe))
-                            return;
-                        else
-                            htmlText +=
-                                '<div class="native-question">';
-                    else if (scope.nativeRenderType === 'dynamic')
+                    if (scope.nativeRenderType === scope.FOLLOW_UP)
+                        htmlText +=
+                            '<div class="native-question">';
+                    else if (scope.nativeRenderType === scope.SHOW_IF)
                         htmlText +=
                             '<div ng-if="evaluateSkipLogicAndClear(formElement.skipLogic.condition, formElements, formElement)" class="native-question">';
 
                     if (scope.hasLabel(fe))
                         htmlText +=
                             '<label ng-class="{\'native-question-label\': !numSubQuestions && selection.selectedProfile.displayNumbering}">' +
-                               '<span ng-if="::pv.nonValuelist">If {{::pv.permissibleValue}}:</span>' + fe.label + '</label>';
+                               '<span ng-if="::permissibleValue">If {{::permissibleValue}}: </span>' + fe.label + '</label>';
                     if (fe.instructions && fe.instructions.value) {
                         htmlText +=
                             '<div ng-if="selection.selectedProfile.displayInstructions" class="native-instructions">';
@@ -98,8 +95,8 @@
                                             ' class="col-xs-12">' +
                                                 '<label class="' +
                                                     (pv.subQuestions && scope.isOneLiner(pv.subQuestions[0],pv.subQuestions.length)
-                                                        ? 'native-question-oneline-l' : '') +
-                                                    ' ' + (question.multiselect ? 'checkbox-inline' : 'radio-inline') + '">';
+                                                        ? 'native-question-oneline-l ' : '') +
+                                                    (question.multiselect ? 'checkbox-inline' : 'radio-inline') + '">';
 
                                         if (!question.multiselect)
                                             htmlText +=
@@ -109,7 +106,7 @@
                                         else
                                             htmlText +=
                                                 '<input type="checkbox"' +
-                                                ' checklist-model="formElement.question.answer" checklist-value="pv.permissibleValue"' +
+                                                ' checklist-model="formElement.question.answer" checklist-value="\'' + pv.permissibleValue + '\'"' +
                                                 ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
 
                                         htmlText +=
@@ -124,7 +121,8 @@
                                     }
                                 });
                                 htmlText +=
-                                    '</div>';
+                                    '</div>' +
+                                    '<div ng-bind="sectionLabel.$$element[0][\'' + fe.questionId + '\'][0].validationMessage"></div>';
                                 break;
                             case 'Date':
                                 htmlText +=
@@ -139,7 +137,8 @@
                                             '<button type="button" class="btn btn-default"' +
                                                 ' ng-click="formElement.question.opened = true">' +
                                                 '<i class="glyphicon glyphicon-calendar"></i>' +
-                                            '</button></div></div>';
+                                            '</button></div></div>' +
+                                    '<div ng-bind="sectionLabel.$$element[0][\'' + fe.questionId + '\'].validationMessage"></div>';
                                 break;
                             case 'Number':
                                 htmlText +=
@@ -156,7 +155,7 @@
 
                                 htmlText +=
                                     '</div>' +
-                                    '<div ng-if="sectionLabelHtml[\'' + fe.questionId + '\'].validationMessage">{{sectionLabelHtml["' + fe.questionId + '"].validationMessage}}</div>';
+                                    '<div ng-bind="sectionLabel.$$element[0][\'' + fe.questionId + '\'].validationMessage"></div>';
                                 break;
                             default: // Text
                                 htmlText +=
@@ -168,7 +167,8 @@
                                     htmlText += htmlTextUoms(question.uoms);
 
                                 htmlText +=
-                                    '</div>';
+                                    '</div>' +
+                                    '<div ng-bind="sectionLabel.$$element[0][\'' + fe.questionId + '\'].validationMessage"></div>';
                         }
                     }
                     question.answers.forEach(function (pv, i){

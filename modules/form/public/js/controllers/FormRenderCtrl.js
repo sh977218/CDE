@@ -201,7 +201,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
         var expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
         var realAnswerArr = getQuestions(formElements, questionLabel);
         var realAnswerObj = realAnswerArr[0];
-        var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
+        var realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ? $scope.score(realAnswerObj) : realAnswerObj.question.answer) : undefined;
         if (expectedAnswer === "") {
             if (realAnswerObj.question.datatype === 'Number') {
                 if (realAnswer === null || Number.isNaN(realAnswer)) return true;
