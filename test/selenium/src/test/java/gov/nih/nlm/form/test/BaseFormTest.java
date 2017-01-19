@@ -72,8 +72,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     public void addSectionBottom(String title, String card) {
-        clickElement(By.id("addSectionBottom"));
         int nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
+        clickElement(By.id("addSectionBottom"));
+        textPresent("New Section");
         String sectionId = "section_" + nbOfSections;
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);

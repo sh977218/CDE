@@ -13,6 +13,7 @@ public class QuestionLayoutTest extends BaseFormTest {
         String sec1 = "first section";
         String sec2 = "second section";
 
+        clickElement(By.id("description_tab"));
         addSectionTop(sec1, "0 or more");
         addSectionBottom(sec2, "0 or more");
 
