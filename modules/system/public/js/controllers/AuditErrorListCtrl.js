@@ -44,8 +44,7 @@ angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$htt
                     }
                 },
                 controller: 'ErrorDetailCtrl'
-            }).result.then(function () {
-            });
+            }).result.then(function () {}, function() {});
         }
 }]);
 

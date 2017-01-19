@@ -188,6 +188,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         }
                     }
                 });
+                $modalInstance.result.then(function () {}, function() {});
             };
 
             $scope.createFormFromBoard = function () {
@@ -200,7 +201,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             return $scope.board;
                         }
                     }
-                });
+                }).result.then(function () {}, function() {});
             };
             $scope.getReviewers = function () {
                 return $scope.board.users.filter(function (u) {
@@ -263,7 +264,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 }).result.then(function (users) {
                     $scope.board.users = users;
-                });
+                }, function () {});
             };
             $scope.boardApproval = function (approval) {
                 $http.post('/board/approval', {
