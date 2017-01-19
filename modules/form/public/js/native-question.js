@@ -145,11 +145,10 @@
                                     '<div' + (question.uoms.length > 0 ? ' class="input-group"' : '') + '>' +
                                         '<input type="number" class="form-control" ' +
                                             ' ng-model="formElement.question.answer"' +
-                                            (question.datatypeNumber ? ' ng-min="' + question.datatypeNumber.minValue +
-                                                '" min="' + question.datatypeNumber.minValue +
-                                                '" ng-max="' + question.datatypeNumber.maxValue +
+                                            (question.datatypeNumber ?
+                                                ' min="' + question.datatypeNumber.minValue +
                                                 '" max="' + question.datatypeNumber.maxValue + '"' : '' ) +
-                                            '" name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
+                                            ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
                                 if (question.uoms.length > 0)
                                     htmlText += htmlTextUoms(question.uoms);
 
