@@ -3,7 +3,7 @@
     <div ng-class="addMode ? 'col-md-5 noRightPadding' : 'col-md-12'" class="formSectionArea">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
-    <div ng-class="addMode ? 'col-md-7 hidden-sm noLeftPadding addModeSearchArea' : 'col-md-0'"
+    <div ng-class="addMode ? 'col-md-7 hidden-sm noLeftPadding' : 'col-md-0'"
          ng-if="addMode && elt.formElements.length > 0">
         <div id="embedSearchArea" class="question-search-area overflowHidden pd20"
              ng-controller="ListCtrl">
