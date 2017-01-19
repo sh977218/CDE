@@ -442,7 +442,7 @@ var correctBoardPinsForCde = function (doc, cb) {
 
 schemas.dataElementSchema.post('save', function (doc) {
     if (doc.archived) return;
-//    correctBoardPinsForCde(doc);
+    correctBoardPinsForCde(doc);
 });
 
 new CronJob({
