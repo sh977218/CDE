@@ -109,7 +109,7 @@ exports.init = function (app) {
     });
 
     app.get('/serverStatuses', function (req, res) {
-        if (app.isLocalIp(getRealIp(req))) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
             app_status.getStatus(function() {
                 mongo_data_system.getClusterHostStatuses(function (err, statuses) {
                     res.send({esIndices: esInit.indices, statuses: statuses});
@@ -339,12 +339,14 @@ exports.init = function (app) {
 
 
     app.get('/siteadmins', function (req, res) {
-        if (app.isLocalIp(getRealIp(req))) {
-            mongo_data_system.siteadmins(function (err, users) {
-                res.send(users);
-            });
-        } else {
-            res.status(401).send();
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            if (app.isLocalIp(getRealIp(req))) {
+                mongo_data_system.siteadmins(function (err, users) {
+                    res.send(users);
+                });
+            } else {
+                res.status(401).send();
+            }
         }
     });
 
