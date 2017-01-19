@@ -380,18 +380,6 @@ dl.dl-horizontal dd {
     overflow-x: hidden;
 }
 
-.question-search-area.ui-scrollfix {
-    max-height: 700px;
-    position: fixed;
-    top: 125px;
-}
-
-.question-search-area.ui-scrollfix.ui-scrollfix-bottom {
-    max-height: 600px;
-    top: auto;
-    bottom: 250px;
-}
-
 #section-questions {
     width: 300px;
     height: 80px;
@@ -1641,11 +1629,9 @@ div.slider .ui-slider-handle {
     text-align: center;
     line-height: 1.6em;
 }
-/*
 
-.addModeSearchArea {
+.embedSearchArea.ui-scrollpoint {
     position: fixed !important;
-    top: 155px;
+    top:50px;
     right: 0px;
-    overflow:auto;
-}*/
+}

@@ -3,7 +3,7 @@ angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule', 'arti
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
-    'ui.scrollpoint', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
+    'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
     'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive',
     'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
     .config(['$logProvider', function ($logProvider) {
