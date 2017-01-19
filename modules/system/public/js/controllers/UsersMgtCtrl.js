@@ -36,7 +36,7 @@
              $http.put("/user", {username: username}).then(function onSuccess() {
                  Alert.addAlert("success", "User created");
              });
-         });
+         }, function () {});
      };
 
      $scope.getComments = function (page) {
