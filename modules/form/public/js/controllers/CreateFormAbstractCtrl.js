@@ -51,7 +51,7 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
             };
 
             $scope.openSelectDefaultClassificationModal = function () {
-                var modalInstance = $modal.open({
+                $modal.open({
                     animation: false,
                     templateUrl: '/system/public/html/classifyElt.html',
                     controller: 'AddClassificationModalCtrl',
@@ -79,14 +79,11 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                             };
                         }
                     }
-                });
-
-                modalInstance.result.then(function () {
-                });
+                }).result.then(function () {}, function() {});
             };
 
             $scope.showRemoveClassificationModal = function (orgName, pathArray) {
-                var modalInstance = $modal.open({
+                $modal.open({
                     animation: false,
                     templateUrl: '/system/public/html/removeClassificationModal.html',
                     controller: 'RemoveClassificationModalCtrl',
@@ -101,11 +98,9 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                             return $scope.module;
                         }
                     }
-                });
-
-                modalInstance.result.then(function () {
+                }).result.then(function () {
                     $scope.removeClassification(orgName, 'form', pathArray);
-                });
+                }, function () {});
             };
 
             $scope.save = function() {
@@ -114,7 +109,5 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                     $location.url("formView?tinyId=" + form.tinyId);
                 });
             };
-
-
         }
     ]);

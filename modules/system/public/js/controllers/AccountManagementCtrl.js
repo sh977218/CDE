@@ -248,7 +248,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         }).result.then(function (newValue) {
             org.propertyKeys.push(newValue);
             $scope.updateOrg(org);
-        });
+        }, function () {});
     };
     $scope.addOrgContext = function(org) {
         $modal.open({
@@ -258,7 +258,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         }).result.then(function (newValue) {
             org.nameContexts.push(newValue);
             $scope.updateOrg(org);
-        });
+        }, function () {});
     };
 
     $scope.updateOrg = function (org) {

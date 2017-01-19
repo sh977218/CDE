@@ -41,7 +41,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
     };
 
     $scope.openAddClassificationModal = function(orgName, pathArray) {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/system/public/html/addClassification.html',
             controller: 'AddClassificationToOrgModalCtrl',
@@ -53,9 +53,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                     return pathArray;
                 }
             }
-        });
-
-        modalInstance.result.then(function (newClassification) {
+        }).result.then(function (newClassification) {
             if (newClassification) {
                 newClassification.orgName = $scope.orgToManage;
                 OrgClassification.resource.save(newClassification, function(response) {
@@ -68,7 +66,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                     }
                 });
             }
-        });
+        }, function () {});
     };
 
     $scope.openMeshMapping = function(orgName, pathArray) {
@@ -84,12 +82,12 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                     return pathArray;
                 }
             }
-        });
+        }).result.then(function () {}, function() {});
     };
 
 
     $scope.showRenameDialog = function(orgName, pathArray) {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: 'renameClassificationModal.html',
             controller: 'RenameClassificationModalCtrl',
@@ -98,19 +96,17 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                     return pathArray[pathArray.length-1];
                 }
             }
-        });
-
-        modalInstance.result.then(function (newname) {
+        }).result.then(function (newname) {
             if (newname) {
                 OrgClassification.rename(orgName, pathArray, newname, function(response) {
                     $scope.org = response;
                 });
             }
-        });
+        }, function () {});
     };
 
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/system/public/html/removeClassificationMgtModal.html',
             controller: 'RemoveClassificationModalCtrl',
@@ -125,11 +121,9 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                     return $scope.module;
                 }
             }
-        });
-
-        modalInstance.result.then(function () {
+        }).result.then(function () {
             $scope.removeClassification(orgName, pathArray);
-        });
+        }, function () {});
     };
 
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
@@ -163,7 +157,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                     };
                 }
             }
-        });
+        }).result.then(function () {}, function() {});
     };
 
     $scope.classifyEntireSearch = function(oldClassification, newClassification) {
