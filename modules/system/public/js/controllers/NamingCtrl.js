@@ -5,7 +5,9 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
 
         function refreshContexts(){
             OrgHelpers.deferred.promise.then(function () {
-                $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
+                $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags.map(function (a) {
+                    return {tag: a};
+                });
                 contextsLoaded.resolve();
             });
         }
@@ -27,7 +29,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
                         cde: function () {
                             return $scope.elt;
                         },
-                        context: function () {
+                        allTags: function () {
                             return $scope.allTags;
                         }
                     }

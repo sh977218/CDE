@@ -16,11 +16,16 @@
 
         <div class="form-group">
             <label tabindex="0" for="newContext">Context</label>
-             <select  ng-model="newNamePair.context.contextName" id="newContext" name="context" class="form-control">
-                <option ng-repeat="context in orgContexts" value="{{context}}">{{context}}</option>
-            </select>
-            <info>Contexts are managed in Org Management > List Management</info>
+            <ui-select multiple ng-model="newNamePair.tags" theme="select2" search-enabled=false append-to-body="true">
+                <ui-select-match placeholder="Select tags...">{{$item.tag}}
+                </ui-select-match>
+                <ui-select-choices
+                        repeat="t in allTags | filter:$select.search track by t.tag">
+                    {{t.tag}}
+                </ui-select-choices>
+            </ui-select>
         </div>
+        <info>Contexts are managed in Org Management > List Management</info>
     </div>
     <div class="modal-footer">
         <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>

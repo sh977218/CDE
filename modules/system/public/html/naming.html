@@ -8,7 +8,6 @@
                     <span ng-if="elt.naming.length > 1" tabindex="0" title="Remove Naming" role="link"
                           ng-click="removeNamePair($index)" class="btn-default fa fa-trash-o"
                           id="removeNaming-{{$index}}"></span>
-
                     <div sortable-array="elt.naming" index="$index" cb="stageElt(elt)"></div>
                 </div>
             </div>
@@ -29,9 +28,17 @@
                 <div class="row">
                     <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Context:</strong></div>
                     <div tabindex="0" class="col-lg-10 col-xs-10" id="dd_context_{{$index}}">
-                        <span inline-select-edit id="contextEdit_{{$index}}"
-                              model="namePair.context.contextName" all-options="allContexts"
-                              is-allowed="canCurate" on-ok="stageNewName(namePair)"></span></div>
+                        <ui-select multiple ng-model="namePair.tags" theme="select2" search-enabled=false
+                                   ng-disabled="!canCurate" on-remove="stageNewName(namePair)"
+                                   on-select="stageNewName(namePair)" append-to-body="true">
+                            <ui-select-match placeholder="Select tags...">{{$item.tag}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="t in allTags | filter:$select.search track by t.tag">
+                                {{t.tag}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
                 </div>
             </div>
         </div>
