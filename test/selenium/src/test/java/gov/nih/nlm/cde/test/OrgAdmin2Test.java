@@ -13,7 +13,7 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
         Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
-        Assert.assertEquals("1,024.00 MB", findElement(By.id("quota")).getText());
+        textPresent("1,024.00", By.id("quota"));
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
         Assert.assertEquals("caBIG", findElement(By.id("adminFor")).getText());
     }
