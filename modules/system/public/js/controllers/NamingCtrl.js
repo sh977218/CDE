@@ -5,7 +5,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
 
         function refreshContexts(){
             OrgHelpers.deferred.promise.then(function () {
-                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
+                $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
                 contextsLoaded.resolve();
             });
         }
@@ -13,7 +13,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
         $scope.deferredEltLoaded.promise.then(refreshContexts);
 
         $scope.openNewNamePair = function () {
-            if (!$scope.allContexts || $scope.allContexts.length === 0) {
+            if (!$scope.allTags || $scope.allTags.length === 0) {
                 Alert.addAlert("warning", "No valid context present, have an Org Admin go to Org Management > List Management to add one");
                 return;
             }
@@ -28,7 +28,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
                             return $scope.elt;
                         },
                         context: function () {
-                            return $scope.allContexts;
+                            return $scope.allTags;
                         }
                     }
                 });

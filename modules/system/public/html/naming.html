@@ -1,18 +1,25 @@
 <div ng-controller="NamingCtrl" id="namingDiv">
     <br/>
-
     <div ng-repeat="namePair in elt.naming">
         <div class="row">
             <div ng-if="canCurate" class="col-xs-1 text-right">
-                <div>
-                    <span ng-if="elt.naming.length > 1" tabindex="0" title="Remove Naming" role="link"
-                          ng-click="removeNamePair($index)" class="btn-default fa fa-trash-o"
-                          id="removeNaming-{{$index}}"></span>
-
-                    <div sortable-array="elt.naming" index="$index" cb="stageElt(elt)"></div>
-                </div>
+                <!--
+                <span ng-if="namePair.editMode" tabindex="0" title="Save Edit Naming" role="link"
+                                      ng-click="stageElt(elt);" class="btn-default fa fa-check"
+                                      id="saveEditNaming-{{$index}}"></span>
+                                <span ng-if="namePair.editMode" tabindex="0" title="Cancel Edit Naming" role="link"
+                                      ng-click="namePair.editMode = false" class="btn-default fa fa-times"
+                                      id="cancelEditNaming-{{$index}}"></span>
+                                      -->
+                <span ng-if="!namePair.editMode" tabindex="0" title="Edit Naming" role="link"
+                      ng-click="namePair.editMode = true" class="btn-default fa fa-pencil"
+                      id="editNaming-{{$index}}"></span>
+                <span ng-if="elt.naming.length > 1" tabindex="0" title="Remove Naming" role="link"
+                      ng-click="removeNamePair($index)" class="btn-default fa fa-trash-o"
+                      id="removeNaming-{{$index}}"></span>
+                <div sortable-array="elt.naming" index="$index" cb="stageElt(elt)"></div>
             </div>
-            <div class="col-xs-11">
+            <div class="col-xs-11" ng-if="namePair.editMode">
                 <div class="row">
                     <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Name:</strong></div>
                     <div tabindex="0" class="col-lg-10 col-xs-10" id="dd_name_{{$index}}">
@@ -27,11 +34,36 @@
                               def-format="namePair.definitionFormat" on-ok="stageNewName(namePair)"></span></div>
                 </div>
                 <div class="row">
-                    <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Context:</strong></div>
+                    <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Tags:</strong></div>
                     <div tabindex="0" class="col-lg-10 col-xs-10" id="dd_context_{{$index}}">
-                        <span inline-select-edit id="contextEdit_{{$index}}"
-                              model="namePair.context.contextName" all-options="allContexts"
-                              is-allowed="canCurate" on-ok="stageNewName(namePair)"></span></div>
+                        <ui-select multiple ng-model="namePair.tags" theme="select2" search-enabled=false
+                                   on-remove="stageElt()" on-select="stageElt()" append-to-body="true">
+                            <ui-select-match placeholder="Select tags...">{{$item.tag}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="t in allTags | filter:$select.search track by t.tag">
+                                {{t.tag}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-11" ng-if="!namePair.editMode">
+                <div class="row">
+                    <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Name:</strong></div>
+                    <div tabindex="0" class="col-lg-10 col-xs-10">{{namePair.designation}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Definition:</strong></div>
+                    <div tabindex="0" class="col-lg-10 col-xs-10">{{namePair.definition}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Tags:</strong></div>
+                    <div tabindex="0" class="col-lg-10 col-xs-10">
+                        <span ng-repeat="tag in namePair.tags">
+                            <span class="label label-default" style="margin-right: 2px; background-color: #666">{{::tag.tag}}</span>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
