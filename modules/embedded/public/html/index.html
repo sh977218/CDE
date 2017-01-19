@@ -108,8 +108,8 @@
 
     <div ng-if="searchStarted" >
         <div ng-if="totalItems > 0" id="searchResult" ng-include="'/embedded/public/html/' + searchType + 'GridList.html'"></div>
-        <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
-                        ng-model="searchSettings.page" next-text="Next" ng-change="search()"></uib-pagination>
+        <ul uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
+                        ng-model="searchSettings.page" next-text="Next" ng-change="search()"></ul>
     </div>
 
     <small id="poweredByNihCde">Search provided by the <a target="_blank" href="https://cde.nlm.nih.gov/">NIH CDE repository</a></small>

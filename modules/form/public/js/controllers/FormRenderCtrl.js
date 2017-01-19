@@ -24,7 +24,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
                 return '';
         }
     };
-
+    
     $scope.SHOW_IF = 'Dynamic';
     $scope.FOLLOW_UP = 'Follow-up';
     $scope.setNativeRenderType = function (type) {
