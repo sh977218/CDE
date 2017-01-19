@@ -117,6 +117,7 @@ exports.formJson = {
     , comments: [sharedSchemas.commentSchema]
     , history: [mongoose.Schema.Types.ObjectId]
     , changeNote: String
+    , lastMigrationScript: String
     , created: Date
     , updated: Date
     , imported: Date
