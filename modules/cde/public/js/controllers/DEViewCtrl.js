@@ -281,7 +281,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                         if ($scope.elt.flatMeshSimpleTrees.indexOf(t.split(";").pop()) === -1) $scope.elt.flatMeshSimpleTrees.push(t.split(";").pop());
                     });
                 }
-            });
+            }, function () {});
         }, function (err) {
             $log.error("Unable to retrieve element.");
             $log.error(err);
