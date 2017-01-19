@@ -22,7 +22,7 @@ angular.module('classification', ['ngResource'])
             var data = {classification: newClassif, elements: list};
             $http.post('/classification/bulk/tinyid', data).then(function onSuccess(response) {
                 cb(response.data)
-            });
+            }, function () {});
         }
     };
 }])

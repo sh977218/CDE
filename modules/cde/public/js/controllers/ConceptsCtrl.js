@@ -10,7 +10,7 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
                   return $scope.elt;
               }
           }
-        });
+        }).result.then(function () {}, function() {});;
     };
 
     $scope.dataElementConceptRemoveConcept = function (index) {

@@ -35,7 +35,7 @@ angular.module('systemModule').controller('ClassificationCtrl',
                     };
                 }
             }
-        });
+        }).result.then(function () {}, function() {});
     };
 
     $scope.removeClassification = function (orgName, module, elts) {
@@ -57,7 +57,7 @@ angular.module('systemModule').controller('ClassificationCtrl',
     };
 
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
-        var modalInstance = $modal.open({
+        $modal.open({
             templateUrl: '/system/public/html/removeClassificationModal.html',
             controller: 'RemoveClassificationModalCtrl',
             resolve: {
@@ -71,11 +71,9 @@ angular.module('systemModule').controller('ClassificationCtrl',
                     return $scope.module;
                 }
             }
-        });
-
-        modalInstance.result.then(function () {
+        }).result.then(function () {
             $scope.removeClassification(orgName, $scope.module, pathArray);
-        });
+        }, function () {});
     };
  }]);
 

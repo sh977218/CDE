@@ -68,7 +68,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
 
 
             $scope.openSelectDefaultClassificationModal = function () {
-                var modalInstance = $modal.open({
+                $modal.open({
                     animation: false,
                     templateUrl: '/system/public/html/classifyElt.html',
                     controller: 'AddClassificationModalCtrl',
@@ -96,14 +96,11 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                             };
                         }
                     }
-                });
-
-                modalInstance.result.then(function () {
-                });
+                }).result.then(function () {}, function() {});
             };
 
             $scope.showRemoveClassificationModal = function(orgName, pathArray) {
-                var modalInstance = $modal.open({
+                $modal.open({
                     animation: false,
                     templateUrl: '/system/public/html/removeClassificationModal.html',
                     controller: 'RemoveClassificationModalCtrl',
@@ -118,11 +115,9 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                             return $scope.module;
                         }
                     }
-                });
-
-                modalInstance.result.then(function () {
+                }).result.then(function () {
                     $scope.removeClassification(orgName, 'cde', pathArray);
-                });
+                }, function () {});
             };
 
             $scope.save = function() {

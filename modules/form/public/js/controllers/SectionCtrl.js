@@ -250,7 +250,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
         };
 
         $scope.openNameSelect = function (question, section) {
-            var modalInstance = $modal.open({
+            $modal.open({
                 animation: false,
                 templateUrl: '/form/public/html/selectQuestionName.html',
                 controller: 'SelectQuestionNameModalCtrl',
@@ -262,10 +262,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         return section;
                     }
                 }
-            });
-            modalInstance.result.then(function () {
+            }).result.then(function () {
                 $scope.stageElt();
-            });
+            }, function () {});
         };
 
         $scope.checkUom = function (question, index) {

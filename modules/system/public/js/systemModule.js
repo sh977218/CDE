@@ -58,6 +58,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             templateUrl: '/system/public/html/searchSettings.html'
         });
     }])
+    //.config(['$qProvider', function ($qProvider) {
+    //    $qProvider.errorOnUnhandledRejections(false);
+    //}])
     .directive('inlineEdit', ["$timeout", function ($timeout) {
         return {
             restrict: 'AE',
@@ -386,12 +389,12 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
                             }, function (response) {
                                 Alert.addAlert("danger", response.data);
                             });
-                        });
+                        }, function () {});
                     } else {
                         $modal.open({
                             animation: false,
                             templateUrl: '/system/public/html/ifYouLogInModal.html'
-                        });
+                        }).result.then(function () {}, function() {});
                     }
                 }
             };
@@ -452,22 +455,6 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
     };
 
     return isAllowedModel;
-}]);
-
-
-angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("template/accordion/accordion-group.html",
-        "<div class=\"panel\" ng-class=\"panelClass || 'panel-default'\">\n" +
-        "  <div class=\"panel-heading\" ng-keypress=\"toggleOpen($event)\">\n" +
-        "    <h4 class=\"panel-title\">\n" +
-        "      <div href tabindex=\"0\" class=\"accordion-toggle\" ng-click=\"toggleOpen()\" uib-accordion-transclude=\"heading\"><span ng-class=\"{'text-muted': isDisabled}\">{{heading}}</span></div>\n" +
-        "    </h4>\n" +
-        "  </div>\n" +
-        "  <div class=\"panel-collapse collapse\" uib-collapse=\"!isOpen\">\n" +
-        "	  <div class=\"panel-body\" ng-transclude></div>\n" +
-        "  </div>\n" +
-        "</div>\n" +
-        "");
 }]);
 
 angular.module('systemModule').config(['$compileProvider', function ($compileProvider) {

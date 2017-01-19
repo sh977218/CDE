@@ -2,7 +2,8 @@
     <div style="margin: 8px 0 20px;">
         <span class="form-inline">
             <span class="form-group">
-                <label for="select_display_profile"><a ng-click="tabs.displayProfiles.active=true;">Display Profile: </a></label>
+                <label for="select_display_profile">
+                    <a ng-click="setCurrentTab('displayProfiles');">Display Profile: </a></label>
                 <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
                         ng-change="setNativeRenderType(selection.selectedProfile.displayType)"
                         id="select_display_profile" class="form-control mb3"></select>

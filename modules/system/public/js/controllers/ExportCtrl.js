@@ -128,6 +128,6 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                 delete report.searchSettings.resultPerPage;
                 var uri = $httpParamSerializer(report);
                 $window.location.href = '/cdeStatusReport?' + uri;
-            });
+            }, function () {});
         };
     }]);

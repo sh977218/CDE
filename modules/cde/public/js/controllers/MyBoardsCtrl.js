@@ -89,20 +89,19 @@ angular.module('cdeModule').controller('MyBoardsCtrl',
         };
 
         $scope.openNewBoard = function () {
-            var modalInstance = $modal.open({
+           $modal.open({
                 animation: false,
                 templateUrl: 'newBoardModalContent.html',
                 controller: 'NewBoardModalCtrl',
                 resolve: {}
-            });
-            modalInstance.result.then(function (newBoard) {
+            }).result.then(function (newBoard) {
                 newBoard.shareStatus = "Private";
                 $http.post("/board", newBoard).then(function onSuccess() {
                     waitAndReload("Board created.");
                 }).catch(function onError(response) {
                     Alert.addAlert("danger", response.data);
                 });
-            });
+            }, function () {});
         };
     }
 ]);

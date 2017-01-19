@@ -76,7 +76,7 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
              controller: ['$scope', 'htmlContent', function ($scope, htmlContent) {
                  $scope.htmlContent = htmlContent;
              }]
-        });
+        }).result.then(function () {}, function() {});
     }
 
 }]);

@@ -52,7 +52,7 @@ angular.module('systemModule').controller('PropertiesCtrl',
                         Alert.addAlert("success", "Property Added");
                     });
                 }
-            });
+            }, function () {});
         });
     };
     
