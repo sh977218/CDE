@@ -188,8 +188,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         }
                     }
                 });
+                $modalInstance.result.then(function () {}, function() {});
             };
-            $modalInstance.result.then(function () {}, function() {});
 
             $scope.createFormFromBoard = function () {
                 $modal.open({
