@@ -39,44 +39,44 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6);
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1);
         createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5);
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='profile_0']//table//input[@type='radio']")).size(), 10);
-        textPresent("1", By.xpath("//*[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
+        textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
         Assert.assertTrue(
-                findElement(By.xpath("//*[@id='profile_2']//*[@id='Education level USA type_1']//*[text()='1st Grade']")).getLocation().y + 8 <
-                        findElement(By.xpath("//*[@id='profile_2']//*[@id='Education level USA type_1']//*[text()='2nd Grade']")).getLocation().y
+                findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label[text()='1st Grade']")).getLocation().y + 8 <
+                        findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label[text()='2nd Grade']")).getLocation().y
         );
         Assert.assertEquals(
-                findElement(By.xpath("//*[@id='profile_3']//div[div/div/label/span[text()='Education level USA type']]//*[text()='1st Grade']")).getLocation().y,
-                findElement(By.xpath("//*[@id='profile_3']//div[div/div/label/span[text()='Education level USA type']]//*[text()='5th Grade']")).getLocation().y
+                findElement(By.xpath("//div[@id='profile_3']//div[label[text()='Education level USA type']]//label[text()='1st Grade']")).getLocation().y,
+                findElement(By.xpath("//div[@id='profile_3']//div[label[text()='Education level USA type']]//label[text()='5th Grade']")).getLocation().y
         );
         saveForm();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
         textPresent("I felt annoyed");
-        textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
-        textPresent("5", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
+        textPresent("1", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
+        textPresent("5", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("Matrix No Values");
         hangon(1);
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("1", By.xpath("//table"));
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values");
         hangon(1);
-        assertNoElt(By.xpath("//*[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']"));
+        assertNoElt(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']"));
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='I was irritated more than people knew_0']//*[text()[contains(., 'Never')]]")).getLocation().y + 8 <
-                findElement(By.xpath("//*[@id='I was irritated more than people knew_0']//*[text()[contains(., 'Rarely')]]")).getLocation().y
+        Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//label[text()[contains(., 'Never')]]")).getLocation().y + 8 <
+                findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//label[text()[contains(., 'Rarely')]]")).getLocation().y
         );
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values Wider");
         hangon(1);
-        Assert.assertEquals(findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
-                findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
+        Assert.assertEquals(findElement(By.xpath("//div[label[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
+                findElement(By.xpath("//div[label[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
         );
         clickElement(By.id("displayProfiles_tab"));
 

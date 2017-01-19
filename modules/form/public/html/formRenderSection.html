@@ -1,4 +1,4 @@
-<div ng-if="::evaluateSkipLogic(formElement.skipLogic.condition, formElements,formElement)"
+<div ng-if="evaluateSkipLogic(formElement.skipLogic.condition, formElements,formElement)"
      class="native-section" id="formRenderSection_{{::formElement.label}}">
 
     <div ng-if="::formElement.label" ng-class="::{'native-section-header':isSectionDisplayed(formElement)}" class="keep-together">
