@@ -380,6 +380,22 @@ dl.dl-horizontal dd {
     overflow-x: hidden;
 }
 
+.question-search-area.ui-scrollpoint {
+    max-height: 700px;
+    top: 0px;
+    position: fixed !important;
+    right: 0px;
+    z-index: 10;
+}
+
+.question-search-area.ui-scrollpoint.ui-scrollpoint-bottom {
+    max-height: 600px;
+    top: auto;
+    bottom: 250px;
+    right: 0px;
+    z-index: 10;
+}
+
 #section-questions {
     width: 300px;
     height: 80px;
@@ -1628,10 +1644,4 @@ div.slider .ui-slider-handle {
     margin-top: -.8em;
     text-align: center;
     line-height: 1.6em;
-}
-
-.embedSearchArea.ui-scrollpoint {
-    position: fixed !important;
-    top:50px;
-    right: 0px;
 }

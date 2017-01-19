@@ -1,18 +1,15 @@
 <br/>
 <div class="row" ng-if="currentTab === 'description'">
-    <div ng-class="addMode ? 'col-md-5 noRightPadding' : 'col-md-12'" class="formSectionArea">
+    <div ng-class="{'col-xs-5 noRightPadding':addMode,'col-xs-12':!addMode}" class="formSectionArea">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
-    <div ui-scrollpoint="+20" class="embedSearchArea" offset-bottom="70"
-         ng-class="addMode ? 'col-md-7 hidden-sm noLeftPadding' : 'col-md-0'"
-         ng-if="addMode && elt.formElements.length > 0">
-        <div class="question-search-area pd20" ng-controller="ListCtrl">
-            <div ng-if="addMode ==='cde'" class="panel-group" id="accordion_cde" ng-controller="DEListCtrl">
-                <div ng-include="selectedMainAreaMode.url" ng-controller="FormDEListCtrl"></div>
-            </div>
-            <div ng-if="addMode ==='form'" class="panel-group" id="accordion_form" ng-controller="FormListCtrl">
-                <div ng-include="selectedMainAreaMode.url" ng-controller="FormFormListCtrl"></div>
-            </div>
+    <div ui-scrollpoint="+20" class="question-search-area pd20" ng-class="{'col-xs-7 hidden-sm noLeftPadding':addMode}"
+         ng-if=" addMode && elt.formElements.length > 0" ng-controller="ListCtrl">
+        <div ng-if="addMode ==='cde'" class="panel-group" id="accordion_cde" ng-controller="DEListCtrl">
+            <div ng-include="selectedMainAreaMode.url" ng-controller="FormDEListCtrl"></div>
+        </div>
+        <div ng-if="addMode ==='form'" class="panel-group" id="accordion_form" ng-controller="FormListCtrl">
+            <div ng-include="selectedMainAreaMode.url" ng-controller="FormFormListCtrl"></div>
         </div>
     </div>
 </div>
