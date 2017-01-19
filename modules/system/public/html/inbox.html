@@ -2,43 +2,43 @@
     <script type='text/ng-template' id="mailTemplate">
     <uib-accordion ng-repeat="message in mail[type] | orderBy: 'date' : true | limitTo: 20" close-others="oneAtATime">
 
-        <uib-accordion-group ng-if="message.type === 'CommentReply'">
+        <div uib-accordion-group class='panel-default' ng-if="message.type === 'CommentReply'">
             <uib-accordion-heading>
                 {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}} |
                 {{message.typeCommentReply.comment.text | limitTo : 30}}
             </uib-accordion-heading>
             <div ng-include="'/system/public/html/messages/commentReplyMessage.html'"></div>
-        </uib-accordion-group>
+        </div>
 
-        <uib-accordion-group ng-if="message.type === 'MergeRequest'">
+        <div uib-accordion-group class='panel-default' ng-if="message.type === 'MergeRequest'">
             <uib-accordion-heading>
                 {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} |
                 {{message.typeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
             </uib-accordion-heading>
             <div ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
-        </uib-accordion-group>
+        </div>
 
-        <uib-accordion-group ng-if="message.type === 'CommentApproval'">
+        <div uib-accordion-group class='panel-default' ng-if="message.type === 'CommentApproval'">
             <uib-accordion-heading>
                 {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}} |
                 {{message.typeCommentApproval.comment.text | limitTo : 30}}
             </uib-accordion-heading>
             <div ng-include="'/system/public/html/messages/commentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
-        </uib-accordion-group>
+        </div>
 
-        <uib-accordion-group ng-if="message.type === 'AttachmentApproval'">
+        <div uib-accordion-group class='panel-default' ng-if="message.type === 'AttachmentApproval'">
             <uib-accordion-heading>
                 {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} ( {{message.typeAttachmentApproval.filename}} ) | {{message.author.name}}
             </uib-accordion-heading>
             <div ng-include="'/system/public/html/attachmentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
-        </uib-accordion-group>
+        </div>
 
-        <uib-accordion-group ng-if="message.type === 'BoardApproval'">
+        <div uib-accordion-group class='panel-default' ng-if="message.type === 'BoardApproval'">
             <uib-accordion-heading>
                 {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}}
             </uib-accordion-heading>
             <div ng-include="'/system/public/html/boardApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
-        </uib-accordion-group>
+        </div>
 
     </uib-accordion>
     </script>

@@ -469,7 +469,7 @@ angular.module('systemModule').controller('ListCtrl',
             $modal.open({
                 animation: false,
                 templateUrl: '/system/public/html/ifYouLogInModal.html'
-            });
+            }).result.then(function () {}, function() {});
         }
     };
 

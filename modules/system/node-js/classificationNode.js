@@ -87,26 +87,28 @@ exports.modifyOrgClassification = function(request, action, callback) {
                 daoManager.getDaoList().forEach(function(dao) {
                     if (dao.query) {
                         dao.query(query, function (err, result) {
-                            result.forEach(function (elt) {
-                                var steward = classificationShared.findSteward(elt, request.orgName);
-                                classificationShared.modifyCategory(steward.object, request.categories,
-                                    {type: action, newname: request.newname}, function () {
-                                        classification.saveCdeClassif("", elt);
-                                    });
-                            });
-                            if (result.length > 0) {
-                                mongo_data_system.addToClassifAudit({
-                                    date: new Date()
-                                    , user: {
-                                        username: "unknown"
-                                    }
-                                    , elements: result.map(function (e) {
-                                        return {tinyId: e.tinyId, eltType: dao.type};
-                                    })
-                                    , action: action
-                                    , path: [request.orgName].concat(request.categories)
-                                    , newname: request.newname
+                            if (result) {
+                                result.forEach(function (elt) {
+                                    var steward = classificationShared.findSteward(elt, request.orgName);
+                                    classificationShared.modifyCategory(steward.object, request.categories,
+                                        {type: action, newname: request.newname}, function () {
+                                            classification.saveCdeClassif("", elt);
+                                        });
                                 });
+                                if (result.length > 0) {
+                                    mongo_data_system.addToClassifAudit({
+                                        date: new Date()
+                                        , user: {
+                                            username: "unknown"
+                                        }
+                                        , elements: result.map(function (e) {
+                                            return {tinyId: e.tinyId, eltType: dao.type};
+                                        })
+                                        , action: action
+                                        , path: [request.orgName].concat(request.categories)
+                                        , newname: request.newname
+                                    });
+                                }
                             }
                         });
                     }

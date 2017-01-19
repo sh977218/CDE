@@ -31,7 +31,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
                             return $scope.allTags;
                         }
                     }
-                });
+                }).result.then(function () {}, function() {});
             });
         };
 

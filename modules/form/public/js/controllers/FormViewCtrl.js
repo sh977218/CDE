@@ -38,16 +38,16 @@ angular.module('formModule').controller
         showCodingInstruction: true
     };
 
-    function setCurrentTab(thisTab) {
+        $scope.setCurrentTab = function (thisTab) {
         $scope.currentTab = thisTab;
-    }
-
+        };
+        
     $scope.tabs = {
         general: {
             heading: "General Details",
             includes: ['/form/public/html/formGeneralDetail.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
                 $timeout($scope.$broadcast('tabGeneral'), 0);
             }
         },
@@ -55,7 +55,7 @@ angular.module('formModule').controller
             heading: "Form Description",
             includes: ['/form/public/html/formDescription.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
                 $scope.nbOfEltsLimit = 1;
             }
         },
@@ -71,28 +71,28 @@ angular.module('formModule').controller
             heading: "Classification",
             includes: ['/form/public/html/formClassification.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
             }
         },
         displayProfiles: {
             heading: "Display Profiles",
             includes: ['/form/public/html/displayProfiles.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
             }
         },
         referenceDocument: {
             heading: "Reference Documents",
             includes: ['/system/public/html/referenceDocument.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
             }
         },
         properties: {
             heading: "Properties",
             includes: ['/system/public/html/properties.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
                 $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
             }
         },
@@ -100,21 +100,21 @@ angular.module('formModule').controller
             heading: "Identifiers",
             includes: ['/system/public/html/identifiers.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
             }
         },
         attachments: {
             heading: "Attachments",
             includes: ['/system/public/html/attachments.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
             }
         },
         history: {
             heading: "History",
             includes: ['/form/public/html/formHistory.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
                 $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
             }
         }
@@ -140,6 +140,8 @@ angular.module('formModule').controller
                             return $scope.module;
                         }
                     }
+                }).result.then(function () {
+                }, function () {
                 });
             }
         }, {
@@ -165,6 +167,8 @@ angular.module('formModule').controller
                             return $scope.elt.tinyId;
                         }
                     }
+                }).result.then(function () {
+                }, function () {
                 });
             }
         }];
@@ -355,6 +359,8 @@ angular.module('formModule').controller
                     };
                 }
             }
+        }).result.then(function () {
+        }, function () {
         });
 
     };
@@ -551,6 +557,7 @@ angular.module('formModule').controller
             }).catch(function onError() {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });
+        }, function () {
         });
     };
 
@@ -591,6 +598,8 @@ angular.module('formModule').controller
             resolve: {
                 elt: function() {return $scope.elt;}
             }
+        }).result.then(function () {
+        }, function () {
         });
     };
 
@@ -609,7 +618,8 @@ angular.module('formModule').controller
             }).then(function () {
                 Alert.addAlert("info", "Done. Go to your profile to see all your published forms");
             });
-        })
+        }, function () {
+        });
     };
 
 }]);

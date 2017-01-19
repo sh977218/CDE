@@ -27,7 +27,7 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
                 $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
                     $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
                 });
-            });
+            }, function () {});
 
         };
         $scope.enableRule = function(orgName, rule){
@@ -46,6 +46,6 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
                 }
             }).result.then(function (rule) {
                 $scope.enableRule(rule.org, rule);
-            });
+            }, function () {});
         };
     }]);

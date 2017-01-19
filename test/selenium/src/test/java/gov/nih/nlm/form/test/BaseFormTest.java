@@ -55,16 +55,26 @@ public class BaseFormTest extends NlmCdeBaseTest {
         showSearchFilters();
     }
 
-    public void addSection(String title, String card, String position) {
-        clickElement(By.id("description_tab"));
-        int nbOfSections = 0;
-        if (position.equalsIgnoreCase("bottom")) {
-            nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
-            clickElement(By.id("addSectionBottom"));
-        } else {
-            clickElement(By.id("addSectionTop"));
-        }
+    public void addSectionTop(String title, String card) {
+        clickElement(By.id("addSectionTop"));
+        String sectionId = "section_0";
+        scrollToViewById(sectionId);
+        startEditQuestionSectionById(sectionId);
+        clickElement(By.xpath("//div[@id='" + sectionId + "']//div[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
+        String sectionInput = "//div[@id='" + sectionId + "']//div[contains(@class,'section_title')]//input";
+        findElement(By.xpath(sectionInput)).clear();
+        findElement(By.xpath(sectionInput)).sendKeys(title);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//div[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
 
+        if (card != null) {
+            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(card);
+        }
+    }
+
+    public void addSectionBottom(String title, String card) {
+        int nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
+        clickElement(By.id("addSectionBottom"));
+        textPresent("New Section");
         String sectionId = "section_" + nbOfSections;
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
@@ -85,6 +95,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         } catch (Exception e) {
+            scrollDownBy(50);
             clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         }
@@ -124,7 +135,8 @@ public class BaseFormTest extends NlmCdeBaseTest {
                 driver.findElement(By.id(id));
                 driver.manage().timeouts().implicitlyWait(Integer.parseInt(System.getProperty("timeout")), TimeUnit.SECONDS);
                 break;
-            } catch (org.openqa.selenium.NoSuchElementException e) {}
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+            }
             try {
                 driver.findElement(By.id("scrollMore"));
                 je.executeScript("document.getElementById('scrollMore').scrollIntoView(true);");

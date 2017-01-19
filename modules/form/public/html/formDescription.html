@@ -1,5 +1,5 @@
 <br/>
-<div class="row" ng-if="tabs.description.active">
+<div class="row" ng-if="currentTab === 'description'">
     <div ng-class="addMode ? 'col-md-5 noRightPadding' : 'col-md-12'" class="formSectionArea">
         <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
     </div>
