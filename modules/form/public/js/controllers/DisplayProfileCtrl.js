@@ -80,7 +80,10 @@ angular.module('formModule').controller('DisplayProfileDataCtrl', ['$scope', fun
                                     ],
                                     "editable": true,
                                     "required": false,
-                                    "uoms": []
+                                    "uoms": [],
+                                    "cde" : {
+                                        "ids": []
+                                    }
                                 },
                                 "cardinality": {
                                     "min": 1,
@@ -121,7 +124,10 @@ angular.module('formModule').controller('DisplayProfileDataCtrl', ['$scope', fun
                                     ],
                                     "editable": true,
                                     "required": false,
-                                    "uoms": []
+                                    "uoms": [],
+                                    "cde" : {
+                                        "ids": []
+                                    }
                                 },
                                 "cardinality": {
                                     "min": 1,
@@ -205,7 +211,10 @@ angular.module('formModule').controller('DisplayProfileDataCtrl', ['$scope', fun
                             ],
                             "editable" : true,
                             "required" : false,
-                            "uoms" : []
+                            "uoms" : [],
+                            "cde" : {
+                                "ids": []
+                            }
                         },
                         "cardinality" : {
                             "min" : 1,
@@ -225,7 +234,10 @@ angular.module('formModule').controller('DisplayProfileDataCtrl', ['$scope', fun
                             "answers": [],
                             "editable": true,
                             "required": false,
-                            "uoms": []
+                            "uoms": [],
+                            "cde" : {
+                                "ids": []
+                            }
                         },
                         "cardinality": {
                             "min": 1,
