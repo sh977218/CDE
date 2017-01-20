@@ -42,16 +42,26 @@ function updateBatch(collection) {
                                 }
                             })
                         } else {
-                            newNamingArray.push({
-                                designation: naming.designation ? naming.designation : '',
-                                definition: naming.definition ? naming.definition : '',
-                                definitionFormat: naming.definitionFormat ? naming.definitionFormat : '',
-                                languageCode: naming.languageCode ? naming.languageCode : '',
-                                tags: naming.context.contextName ? [{
-                                    tag: naming.context.contextName
-                                }] : [],
-                                source: naming.source ? naming.source : ''
-                            })
+                            var newN = {tags: []};
+                            if (naming.designation) {
+                                newN.designation = naming.designation
+                            }
+                            if (naming.definition) {
+                                newN.definition = naming.definition
+                            }
+                            if (naming.definitionFormat) {
+                                newN.definitionFormat = naming.definitionFormat
+                            }
+                            if (naming.languageCode) {
+                                newN.languageCode = naming.languageCode
+                            }
+                            if (naming.source) {
+                                newN.source = naming.source
+                            }
+                            if (naming.context.contextName) {
+                                newN.tags.push({tag: naming.context.contextName});
+                            }
+                            newNamingArray.push(newN);
                         }
                     });
                     record.lastMigrationScript = "mergeNamingWithTags";
