@@ -78,6 +78,7 @@ app_status.isElasticUp = function(cb) {
     });
 };
 
+var startupDate = new Date();
 app_status.getStatus = function(done) {
     app_status.isElasticUp(function() {
         if (app_status.statusReport.elastic.up) {
@@ -139,7 +140,7 @@ app_status.getStatus = function(done) {
             ], function() {
                 mongo_data_system.updateClusterHostStatus({
                     hostname: config.hostname, port: config.port, nodeStatus: "Running",
-                    elastic: app_status.statusReport.elastic, pmPort: config.pm.port
+                    elastic: app_status.statusReport.elastic, pmPort: config.pm.port, startupDate: startupDate
                 });
                 if (done) done();
             });

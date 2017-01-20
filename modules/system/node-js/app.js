@@ -124,9 +124,7 @@ exports.init = function (app) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
             req.body.nodeStatus = "Stopped";
             mongo_data_system.updateClusterHostStatus(req.body, function (err) {
-                if (err) {
-                    res.status(500).send("Unable to update cluster status");
-                }
+                if (err) return res.status(500).send("Unable to update cluster status");
                 request.post('http://' + req.body.hostname + ':' + req.body.pmPort + '/' + req.body.action,
                     {
                         json: true,
@@ -140,13 +138,10 @@ exports.init = function (app) {
                     },
                     function (err, response) {
                         if (err) {
-                            console.log("err: " + err);
                             logging.errorLogger.error(JSON.stringify({msg: 'Unable to ' + req.body.action + ' server'}));
                             return res.status(500).send('Unable.');
                         }
-                        if (response.statusCode !== 200) {
-                            return res.status(500).send('Unable ' + response.statusCode);
-                        }
+                        if (response.statusCode !== 200) return res.status(500).send('Unable ' + response.statusCode);
                         return res.send('OK');
                     });
             });
