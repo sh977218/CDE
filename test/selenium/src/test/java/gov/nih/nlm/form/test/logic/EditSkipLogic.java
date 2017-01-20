@@ -33,13 +33,15 @@ public class EditSkipLogic extends BaseFormTest {
         textPresent("Always", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
 
         startEditQuestionSectionById("question_3_2");
-        editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true, "Unexpected number of tokens in expression 1");
+        editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true,
+                "Unexpected number of tokens in expression 1");
         editSkipLogic(inputXpath, "=", 5, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
 
         editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 4");
 
-        editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2, true, "Unexpected number of tokens in expression 5");
+        editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2,
+                true, "Unexpected number of tokens in expression 5");
         editSkipLogic(inputXpath, "=", 5, 1, true, "Unexpected number of tokens in expression 6");
         editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 2");
 
@@ -47,14 +49,18 @@ public class EditSkipLogic extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        textPresent("How often did you have to push yourself to get things done because of your fatigue?", By.xpath("//div[div/div/label/span[text()='To what degree did your fatigue interfere with your physical functioning?']]//label/span[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
+        textPresent("How often did you have to push yourself to get things done because of your fatigue?",
+                By.xpath("//div[label[text()='To what degree did your fatigue interfere with your physical functioning?']]" +
+                        "//label[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
 
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*[text()[contains(., 'Not at all')]]"));
-        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'A little bit')]]"));
+        clickElement(By.xpath("//div[@id='How much were you bothered by your fatigue on average?_0']//label[text()='Not at all']"));
+        clickElement(By.xpath("//div[@id='To what degree did your fatigue interfere with your physical functioning?_1']" +
+                "//label[text()='A little bit']"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'Not at all')]]"));
+        clickElement(By.xpath("//div[@id='To what degree did your fatigue interfere with your physical functioning?_1']" +
+                "//label[text()='Not at all']"));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 

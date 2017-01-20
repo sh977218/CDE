@@ -29,6 +29,7 @@ logs
 /test/selenium/chromedriver
 /test/selenium/chromedriver.exe
 /test/selenium/out/
+/test/selenium/*.log
 /dump/
 *.iml
 
