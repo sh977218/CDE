@@ -14,6 +14,9 @@ import static com.jayway.restassured.RestAssured.get;
 
 public class ClassificationMgt2Test extends BaseClassificationTest {
 
+    String oldClassification = "OldClassification";
+    String newClassification = "NewClassification";
+
     private void addOldClassifTo(String cdeName) {
         goToCdeByName(cdeName);
         findElement(By.linkText("Classification")).click();
@@ -33,8 +36,6 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
 
     @Test
     public void reclassify() {
-        String oldClassification = "OldClassification";
-        String newClassification = "NewClassification";
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassificationMgt();
         textPresent("Clinical Trial Mgmt Systems");
