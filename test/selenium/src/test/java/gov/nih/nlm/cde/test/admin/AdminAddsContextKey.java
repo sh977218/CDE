@@ -45,7 +45,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
-        clickElement(By.id("newContext"));
+        clickElement(By.xpath("//*[@id='newTags']//input"));
         textNotPresent("canYouSeeThis");
     }
 

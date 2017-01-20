@@ -15,12 +15,12 @@ public class FormXMLExport extends NlmCdeBaseTest {
         String form = "Parenchymal Imaging";
         goToFormByName(form);
 
-        findElement(By.id("export")).click();
+        clickElement(By.id("export"));
         String url = findElement(By.id("nihXml")).getAttribute("href");
         String response = get(url).asString();
 
 
-        Assert.assertTrue(response.replaceAll("\\s+","").contains(("<naming>\n" +
+        Assert.assertTrue(response.replaceAll("\\s+", "").contains(("<naming>\n" +
                 "<designation>Parenchymal Imaging</designation>\n" +
                 "<definition>\n" +
                 "Contains data elements collected when an imaging study is performed to measure parenchyma; data recorded attempt to divide the strokes into ischemic or hemorrhagic subtypes, as distinction of hemorrhage versus infarction is the initial critical branch point in acute stroke triage. (Examples of CDEs included: Acute infarcts present; Planimetic acute ischemic lesion volume; and Acute hematoma present)\n" +
