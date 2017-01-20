@@ -75,8 +75,9 @@ exports.projectCdeForExport = function (ele, settings) {
     };
     if (settings.questionTexts) {
         cde.otherNames = ele.naming.filter(function (n) {
-            return n.context && n.context.contextName &&
-                n.context.contextName.indexOf("Question Text", n.context.contextName.length - "Question Text".length) !== -1;
+            return n.tags.filter(function (t) {
+                    return t.tag.indexOf("Question Text") > -1;
+                }).length > 0;
         }).map(function (n) {
             return n.designation;
         }).filter(function (n) {
@@ -84,9 +85,10 @@ exports.projectCdeForExport = function (ele, settings) {
         });
     }
     if (settings.naming) {
-        cde.otherNames = ele.naming.slice(1).filter(function (n) {
-            return n.context && n.context.contextName &&
-                n.context.contextName.indexOf("Question Text", n.context.contextName.length - "Question Text".length) === -1;
+        cde.otherNames = ele.naming.filter(function (n) {
+            return n.tags.filter(function (t) {
+                    return t.tag.indexOf("Question Text") > -1;
+                }).length === 0;
         }).map(function (n) {
             return n.designation;
         }).filter(function (n) {
