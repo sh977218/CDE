@@ -25,7 +25,7 @@ public class FormNamingTest extends BaseFormTest {
         findElement(By.name("designation")).sendKeys("This new form Name");
         findElement(By.name("definition")).sendKeys("A lazy definition");
         clickElement(By.xpath("//*[@id='newTags']//input"));
-        findElement(By.xpath("//ul[contains(@id,'ui-select-choices')]/li/div[normalize-space(text())='Great CTX']"));
+        clickElement(By.xpath("//ul[contains(@id,'ui-select-choices')]/li/div[normalize-space(text())='Great CTX']"));
         clickElement(By.id("createNamePair"));
         modalGone();
         saveForm();
