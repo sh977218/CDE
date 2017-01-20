@@ -14,6 +14,23 @@ import static com.jayway.restassured.RestAssured.get;
 
 public class ClassificationMgt2Test extends BaseClassificationTest {
 
+    private void addOldClassifTo(String cdeName) {
+        goToCdeByName(cdeName);
+        findElement(By.linkText("Classification")).click();
+        textNotPresent(newClassification);
+        findElement(By.id("addClassification")).click();
+        textPresent("by recently added");
+        findElement(By.id("selectClassificationOrg")).click();
+        textPresent("org / or Org");
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
+        textPresent(oldClassification);
+        textPresent(newClassification);
+        findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
+        closeAlert();
+        findElement(By.id("closeModal")).click();
+        textNotPresent("by recently added");
+    }
+
     @Test
     public void reclassify() {
         String oldClassification = "OldClassification";
@@ -37,35 +54,8 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent(oldClassification);
         textPresent(newClassification);
 
-        goToCdeByName("Gastrointestinal therapy water flush status");
-        findElement(By.linkText("Classification")).click();
-        textNotPresent(newClassification);
-        findElement(By.id("addClassification")).click();
-        textPresent("by recently added");
-        findElement(By.id("selectClassificationOrg")).click();
-        textPresent("org / or Org");
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        textPresent(oldClassification);
-        textPresent(newClassification);
-        findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
-        closeAlert();
-        findElement(By.id("closeModal")).click();
-        textNotPresent("by recently added");
-
-        goToCdeByName("Gastrointestinal therapy feed tube other text");
-        findElement(By.linkText("Classification")).click();
-        textNotPresent(newClassification);
-        findElement(By.id("addClassification")).click();
-        textPresent("by recently added");
-        findElement(By.id("selectClassificationOrg")).click();
-        textPresent("org / or Org");
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        textPresent(oldClassification);
-        textPresent(newClassification);
-        findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
-        closeAlert();
-        clickElement(By.id("closeModal"));
-        textNotPresent("by recently added");
+        addOldClassifTo("Gastrointestinal therapy water flush status");
+        addOldClassifTo("Gastrointestinal therapy feed tube other text");
 
         gotoClassificationMgt();
         textPresent("COPPA");
@@ -80,7 +70,17 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.xpath("//*[@id='addClassification-NewClassification']/button")).click();
         clickElement(By.id("closeModal"));
 
-        mustBeLoggedInAs(nlm_username, nlm_password);
+
+        goToCdeByName("Gastrointestinal therapy water flush status");
+        findElement(By.linkText("Classification")).click();
+        textPresent(newClassification);
+        textPresent(oldClassification);
+
+        goToCdeByName("Gastrointestinal therapy feed tube other text");
+        findElement(By.linkText("Classification")).click();
+        textPresent(newClassification);
+        textPresent(oldClassification);
+
         findElement(By.id("username_link")).click();
         textPresent("Site Management");
         findElement(By.linkText("Audit")).click();
