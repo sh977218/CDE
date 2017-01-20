@@ -77,7 +77,9 @@ var getFormPlainXml = function (form, req, res) {
                 delete q._id;
             });
         });
-        res.send(JXON.jsToString({element: exportForm}));
+        JXON.config({trueIsEmpty: true});
+        var jxon = JXON.jsToString({element: exportForm});
+        res.send(jxon);
     });
 };
 
