@@ -380,16 +380,20 @@ dl.dl-horizontal dd {
     overflow-x: hidden;
 }
 
-.question-search-area.ui-scrollfix {
+.question-search-area.ui-scrollpoint {
     max-height: 700px;
-    position: fixed;
-    top: 125px;
+    top: 0px;
+    position: fixed !important;
+    right: 0px;
+    z-index: 10;
 }
 
-.question-search-area.ui-scrollfix.ui-scrollfix-bottom {
+.question-search-area.ui-scrollpoint.ui-scrollpoint-bottom {
     max-height: 600px;
     top: auto;
     bottom: 250px;
+    right: 0px;
+    z-index: 10;
 }
 
 #section-questions {
@@ -493,24 +497,6 @@ button#selectDefault {
 
 .indent {
     margin-left: 20px;
-}
-
-@media (min-width: 0) {
-    #quickSearchForm {
-        margin: 40px 0;
-    }
-}
-
-@media (min-width: 800px) {
-    #quickSearchForm {
-        margin: 20px 50px;
-    }
-}
-
-@media (min-width: 1000px) {
-    #quickSearchForm {
-        margin: 40px 150px 30px 150px;
-    }
 }
 
 .gridStyle {
@@ -806,10 +792,6 @@ button#selectDefault {
     float: left;
 }
 
-#embedSearchArea {
-    padding: 20px;
-}
-
 input:required:invalid, input:focus:invalid {
     border-color: red;
     -webkit-box-shadow: inset 0 1px 1px red;
@@ -885,7 +867,7 @@ div + .questionPlaceholder {
     margin-top: 30px;
 }
 
-#exportEverything {
+.mt17 {
     margin-top: 17px;
 }
 
@@ -1013,12 +995,6 @@ div + .questionPlaceholder {
     display: none;
 }
 
-#searchInfo {
-    border-radius: 0;
-    margin-left: -2px;
-    margin-right: -2px;
-}
-
 #resultList {
     max-width: 1200px;
     font-size: small;
@@ -1029,7 +1005,7 @@ div + .questionPlaceholder {
     margin-bottom: 0 !important;
 }
 
-#searchDiv {
+.searchDiv {
     margin: 30px 0 30px 0;
 }
 
@@ -1163,6 +1139,10 @@ div + .questionPlaceholder {
     border: 1px solid rgb(212, 212, 212);
     width: auto;
     height: 600px
+}
+
+.pd20 {
+    padding: 20px;
 }
 
 .pdtp9 {
