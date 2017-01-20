@@ -91,7 +91,7 @@
                 <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
                     {{tab.heading}}
                 </uib-tab-heading>
-                <div ng-repeat="incl in tab.includes" ng-include="incl"/>
+                <div ng-repeat="incl in tab.includes" ng-if="currentTab == tabName" ng-include="incl"/>
             </uib-tab>
         </uib-tabset>
     </div>

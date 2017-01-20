@@ -1,37 +1,36 @@
-<div ng-show="evaluateSkipLogic(formElement.skipLogic.condition, formElements,formElement)"
-     class="native-section" id="formRenderSection_{{formElement.label}}">
+<div ng-if="evaluateSkipLogic(formElement.skipLogic.condition, formElements,formElement)"
+     class="native-section" id="formRenderSection_{{::formElement.label}}">
 
-    <div ng-if="formElement.label" ng-class="{'native-section-header':isSectionDisplayed(formElement)}" class="keep-together">
+    <div ng-if="::formElement.label" ng-class="::{'native-section-header':isSectionDisplayed(formElement)}" class="keep-together">
         <div class="row">
-            <div ng-class="{'col-sm-9':canRepeat(formElement)}" class="col-xs-12">
-                <h4>{{formElement.label}}</h4>
+            <div ng-class="::{'col-sm-9':canRepeat(formElement)}" class="col-xs-12">
+                <h4>{{::formElement.label}}</h4>
             </div>
-            <div class="col-sm-3" ng-if="canRepeat(formElement)">
+            <div class="col-sm-3" ng-if="::canRepeat(formElement)">
                 <button class="btn btn-default fa fa-plus"
                         ng-click="addSection(formElement, formElements, $index)">Add One</button>
-                <button ng-if="formElement.isCopy" class="btn btn-default fa fa-trash-o"
+                <button ng-if="::formElement.isCopy" class="btn btn-default fa fa-trash-o"
                         ng-click="removeSection($index)">Remove</button>
             </div>
         </div>
     </div>
     <div ng-if="selection.selectedProfile.displayInstructions && formElement.instructions.value"
          class="native-instructions" ng-switch="formElement.instructions.valueFormat">
-        <span ng-switch-default class="text-muted"><span ng-bind="formElement.instructions.value"></span></span>
-        <span ng-switch-when="html"><span ng-bind-html="formElement.instructions.value"></span></span>
+        <span ng-switch-default class="text-muted"><span ng-bind="::formElement.instructions.value"></span></span>
+        <span ng-switch-when="html"><span ng-bind-html="::formElement.instructions.value"></span></span>
     </div>
 
     <div ng-if="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement)"
          ng-include="'/form/public/html/formRenderSectionMatrix.html'"></div>
     <div ng-if="!(selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement))">
-        <div ng-repeat="formElement in formElement.formElements track by $index"
-             ng-class="{'keep-with-previous keep-together':$index===0}">
-            <div ng-if="formElement.elementType === 'question'" class="native-question"
-                 ng-include="'/form/public/html/formRenderQuestion.html'"
-                 ng-init="formElements = $parent.$parent.formElement.formElements;">
+        <div ng-repeat="formElement in ::formElement.formElements track by $index"
+             ng-class="::{'keep-with-previous keep-together':$index===0}">
+            <div native-question ng-if="::formElement.elementType === 'question'"
+                 ng-init="formElements = $parent.$parent.$parent.formElement.formElements;">
             </div>
-            <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'"
+            <div ng-if="::formElement.elementType === 'section' || formElement.elementType === 'form'"
                  ng-include="'/form/public/html/formRenderSection.html'"
-                 ng-init="formElements = $parent.$parent.formElement.formElements;">
+                 ng-init="formElements = $parent.$parent.$parent.formElement.formElements;">
             </div>
         </div>
     </div>

@@ -2,18 +2,18 @@
     <thead>
     <tr>
         <th></th>
-        <th ng-repeat="a in formElement.formElements[0].question.answers" ng-bind="a.valueMeaningName"></th>
+        <th ng-repeat="a in ::formElement.formElements[0].question.answers" ng-bind="::a.valueMeaningName"></th>
     </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="q in formElement.formElements">
+        <tr ng-repeat="q in ::formElement.formElements">
             <td>
-                <label ng-bind-html="q.label"
+                <label ng-bind="::q.label"
                        ng-class="{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering }"></label>
             </td>
-            <td ng-repeat="qa in q.question.answers">
-                <span ng-if="selection.selectedProfile.displayValues" ng-bind="qa.permissibleValue"></span>
-                <input type="radio" ng-value="qa.permissibleValue" ng-model="q.question.answer" name="{{q.questionId}}">
+            <td ng-repeat="qa in ::q.question.answers">
+                <span ng-if="selection.selectedProfile.displayValues" ng-bind="::qa.permissibleValue"></span>
+                <input type="radio" ng-value="::qa.permissibleValue" ng-model="q.question.answer" name="{{q.questionId}}">
             </td>
         </tr>
     </tbody>
