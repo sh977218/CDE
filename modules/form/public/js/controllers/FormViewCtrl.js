@@ -38,9 +38,9 @@ angular.module('formModule').controller
         showCodingInstruction: true
     };
 
-        $scope.setCurrentTab = function (thisTab) {
+    $scope.setCurrentTab = function (thisTab) {
         $scope.currentTab = thisTab;
-        };
+    };
         
     $scope.tabs = {
         general: {
@@ -63,7 +63,7 @@ angular.module('formModule').controller
             heading: "Naming",
             includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                $scope.setCurrentTab(thisTab);
                 $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
             }
         },

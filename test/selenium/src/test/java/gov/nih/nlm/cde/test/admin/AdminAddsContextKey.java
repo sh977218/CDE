@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test.admin;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
@@ -9,7 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AdminAddsContextKey extends NlmCdeBaseTest {
-    
+
     @Test
     public void addRemoveContext() {
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -26,9 +25,9 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
         textPresent("Contexts are managed in Org Management > List Management");
-        clickElement(By.id("newContext"));
+        clickElement(By.xpath("//*[@id='newTags']//input"));
         try {
-            findElement(By.xpath("//option[@value='canYouSeeThis']"));
+            findElement(By.xpath("//ul[contains(@id,'ui-select-choices')]/li/div[normalize-space(text())='canYouSeeThis']"));
         } catch (TimeoutException e) {
             Assert.fail("Failed to find canYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
         }

@@ -15,8 +15,8 @@
         </div>
 
         <div class="form-group">
-            <label tabindex="0" for="newContext">Context</label>
-            <ui-select multiple ng-model="newNamePair.tags" theme="select2" search-enabled=false append-to-body="true">
+            <label tabindex="0" for="newTags">Context</label>
+            <ui-select id="newTags" multiple ng-model="newNamePair.tags" theme="select2" search-enabled=false append-to-body="true">
                 <ui-select-match placeholder="Select tags...">{{$item.tag}}
                 </ui-select-match>
                 <ui-select-choices
