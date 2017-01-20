@@ -635,6 +635,7 @@ exports.syncWithMesh = function(allMappings) {
 
 exports.elasticsearch = function (query, type, cb) {
     var search = searchTemplate[type];
+    if (!search) return cb("Invalid query");
     search.body = query;
     esClient.search(search, function(error, response) {
         if (error) {

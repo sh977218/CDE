@@ -577,10 +577,9 @@ exports.init = function (app) {
     });
 
     app.post('/classifyEntireSearch', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
-            res.status(401).send();
-            return;
-        }
+        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName))
+            return res.status(401).send();
+
         classificationNode.classifyEntireSearch(req, function (err) {
             if (!err) res.end();
             else res.status(202).send({error: {message: err}});
