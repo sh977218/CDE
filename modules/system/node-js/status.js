@@ -164,15 +164,11 @@ setInterval(function() {
         lastReport = newReport;
 
         var timeDiff = config.status.timeouts.statusCheck / 1000 + 30;
-        console.log("timediff " + timeDiff)
         mongo_data_system.getClusterHostStatuses(function (err, statuses) {
-            console.log("updating ");
             var now = moment();
             var activeNodes = statuses.filter( function (s) {
-                console.log(s.port + " "  + moment(s.lastUpdate).diff(now, 'seconds'));
                 return now.diff(moment(s.lastUpdate), 'seconds') < timeDiff;
             }).map( s => s.hostname + ":" + s.port).sort();
-            console.log("updating " + activeNodes);
             if (!currentActiveNodes) currentActiveNodes = activeNodes;
             else {
                 if (!(currentActiveNodes.length === activeNodes.length && currentActiveNodes.every ((v,i)=> v === activeNodes[i]))) {
@@ -180,7 +176,6 @@ setInterval(function() {
                         subject: "Server Configuration Change"
                         , body: "Server Configuration Change from " + currentActiveNodes + " to " + activeNodes
                     };
-                    console.log(emailContent);
                     mongo_data_system.siteadmins(function(err, users) {
                         email.emailUsers(emailContent, users, function() {});
                     });
