@@ -98,7 +98,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
         setSelectedProfile();
     });
     $scope.createSubmitMapping();
-    setSelectedProfile();
+    $scope.deferredEltLoaded.promise.then(setSelectedProfile);
 
     var removeAnswers = function (formElt) {
         if (formElt.question) delete formElt.question.answer;
