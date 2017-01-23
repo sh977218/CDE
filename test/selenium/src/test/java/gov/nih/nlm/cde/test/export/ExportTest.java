@@ -48,13 +48,6 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport.csv"),
                             Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
-
-                    FileTime searchExportCreatedDate = Files.readAttributes(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), BasicFileAttributes.class).creationTime();
-                    FileTime createdDate = Files.readAttributes(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), BasicFileAttributes.class).creationTime();
-                    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-                    df.setTimeZone(TimeZone.getTimeZone("EST"));
-                    System.out.print("SearchExport crated on : " + df.format(searchExportCreatedDate.toMillis()));
-                    System.out.print("ExportTest-searchExport.csv on : " + df.format(createdDate.toMillis()));
                     Assert.fail("missing line in export : " + s);
                 }
             }
@@ -96,6 +89,12 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport (1).csv"),
                             Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
+                    FileTime searchExportCreatedDate = Files.readAttributes(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), BasicFileAttributes.class).creationTime();
+                    FileTime createdDate = Files.readAttributes(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), BasicFileAttributes.class).creationTime();
+                    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                    df.setTimeZone(TimeZone.getTimeZone("EST"));
+                    System.out.print("SearchExport crated on : " + df.format(searchExportCreatedDate.toMillis()));
+                    System.out.print("ExportTest-searchExport.csv on : " + df.format(createdDate.toMillis()));
                     Assert.fail("missing line in export : " + s + "\n---Actual: " + actual);
                 }
             }
