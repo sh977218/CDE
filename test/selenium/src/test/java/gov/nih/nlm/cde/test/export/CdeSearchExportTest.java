@@ -8,27 +8,15 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-public class ExportTest extends NlmCdeBaseTest {
+public class CdeSearchExportTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeSearchExport() {
         mustBeLoggedOut();
-        clickElement(By.id("searchSettings"));
-        clickElement(By.id("uom"));
-        clickElement(By.id("naming"));
-        clickElement(By.id("administrativeStatus"));
-        clickElement(By.id("source"));
-        clickElement(By.id("updated"));
-        clickElement(By.id("saveSettings"));
-        textPresent("Settings saved!");
-        closeAlert();
+        loadDefaultSettings();
 
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
@@ -40,6 +28,35 @@ public class ExportTest extends NlmCdeBaseTest {
         textPresent("export is being generated");
         textPresent("Export downloaded.");
         closeAlert();
+        closeAlert();
+
+        String[] expected = {
+                "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"LIGHT HEADEDNESS ON STANDING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09971 v3; NINDS Variable Name: MDSUPDRSLiteHeadStndngScore\"",
+                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\""
+        };
+
+        try {
+            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/SearchExport.csv")));
+            for (String s : expected) {
+                if (!actual.contains(s)) {
+                    Files.copy(
+                            Paths.get(downloadFolder + "/SearchExport.csv"),
+                            Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
+                    Assert.fail("missing line in export : " + s);
+                }
+            }
+        } catch (IOException e) {
+            Assert.fail("Exception reading SearchExport.csv");
+        }
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id("uom"));
+        clickElement(By.id("naming"));
+        clickElement(By.id("administrativeStatus"));
+        clickElement(By.id("source"));
+        clickElement(By.id("updated"));
+        clickElement(By.id("saveSettings"));
+        textPresent("Settings saved!");
         closeAlert();
 
         clickElement(By.id("export"));
@@ -64,12 +81,6 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport (1).csv"),
                             Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
-                    FileTime searchExportCreatedDate = Files.readAttributes(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), BasicFileAttributes.class).creationTime();
-                    FileTime createdDate = Files.readAttributes(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), BasicFileAttributes.class).creationTime();
-                    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-                    df.setTimeZone(TimeZone.getTimeZone("EST"));
-                    System.out.println("SearchExport crated on : " + df.format(searchExportCreatedDate.toMillis()));
-                    System.out.println("ExportTest-searchExport.csv on : " + df.format(createdDate.toMillis()));
                     Assert.fail("missing line in export : " + s + "\n---Actual: " + actual);
                 }
             }
