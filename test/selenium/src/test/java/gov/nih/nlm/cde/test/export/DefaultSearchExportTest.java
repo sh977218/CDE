@@ -17,7 +17,6 @@ public class DefaultSearchExportTest extends NlmCdeBaseTest {
     public void defaultSearchExport() {
         mustBeLoggedOut();
         loadDefaultSettings();
-
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         textPresent("All Statuses");
