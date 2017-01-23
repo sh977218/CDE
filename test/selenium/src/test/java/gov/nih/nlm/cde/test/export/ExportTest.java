@@ -9,6 +9,10 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -44,6 +48,13 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport.csv"),
                             Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
+
+                    FileTime searchExportCreatedDate = Files.readAttributes(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), BasicFileAttributes.class).creationTime();
+                    FileTime createdDate = Files.readAttributes(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), BasicFileAttributes.class).creationTime();
+                    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                    df.setTimeZone(TimeZone.getTimeZone("EST"));
+                    System.out.print("SearchExport crated on : " + df.format(searchExportCreatedDate.toMillis()));
+                    System.out.print("ExportTest-searchExport.csv on : " + df.format(createdDate.toMillis()));
                     Assert.fail("missing line in export : " + s);
                 }
             }
