@@ -26,11 +26,12 @@ angular.module('formModule').controller('CreateFormCtrl', ['$scope', '$window', 
             }
         });
 
-        $scope.save = function () {
-            $scope.saving = true;
-            Form.save($scope.elt, function (form) {
-                $location.url("formView?tinyId=" + form.tinyId);
-            });
-        };
+        //$scope.save = function () {
+        //    $scope.saving = true;
+        //    Form.save($scope.elt, function (form) {
+        //        delete $scope.saving;
+        //        $location.url("formView?tinyId=" + form.tinyId);
+        //    });
+        //};
         
     }]);

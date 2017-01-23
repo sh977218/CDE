@@ -32,12 +32,8 @@ angular.module('cdeModule').controller('CdeCopyModalCtrl',
     $controller('CreateCdeAbstractCtrl', {$scope: $scope});
 
     $scope.saveCopy = function(){
+        $modalInstance.close();
         $scope.save();
-        $modalInstance.close();
-    };
-
-    $scope.cancelCopy = function(){
-        $modalInstance.close();
     };
 
     $scope.isNameNew = function(){
