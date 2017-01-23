@@ -18,9 +18,8 @@ stream.on('data', function (cde) {
 var i = 0;
 stream.on('close', function () {
     console.log(idList.length + " todo");
-    async.each(idList, function (id, oneDone) {
+    async.eachSeries(idList, function (id, oneDone) {
         mongo_cde.byId(id, function (err, cde) {
-            console.log("+");
             var pvSet = new Set(cde.valueDomain.permissibleValues.map(
                 pv => pv.permissibleValue + "--" + pv.valueMeaningName));
             if (pvSet.size !== cde.valueDomain.permissibleValues.length) {
@@ -33,15 +32,19 @@ stream.on('close', function () {
                         return true;
                     }
                 });
+                cde.markModified('valueDomain.permissibleValues');
                 cde.changeNote = "Removed duplicate PV";
                 mongo_cde.update(cde, {username: "batchloader"}, function (err) {
                     if (err) {
                         console.log(err);
                         process.exit(1);
                     }
+                    console.log("updated: " + cde.tinyId);
                     oneDone();
                     i++;
                 });
+            } else {
+                oneDone();
             }
         });
     }, function (err) {
