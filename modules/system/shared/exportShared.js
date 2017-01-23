@@ -74,7 +74,7 @@ exports.projectCdeForExport = function (ele, settings) {
         name: ele.naming[0].designation
     };
     if (settings.questionTexts) {
-        cde.otherNames = ele.naming.filter(function (n) {
+        cde.questionTexts = ele.naming.filter(function (n) {
             return n.tags.filter(function (t) {
                     return t.tag.indexOf("Question Text") > -1;
                 }).length > 0;
