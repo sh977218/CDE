@@ -250,7 +250,7 @@ exports.riverFunction = function (_elt, cb) {
         }
         if (primDef) {
             if (primDef.definitionFormat === 'html') {
-                elt.primaryDefinitionCopy = primDef.definition ? primDef.definition.replace(/<(?:.|\\n)*?>/gm, '') : primDef.definition;
+                elt.primaryDefinitionCopy = primDef.definition.replace(/<(?:.|\\n)*?>/gm, '');
             } else {
                 elt.primaryDefinitionCopy = elt.naming ? escapeHTML(primDef.definition) : '';
             }
