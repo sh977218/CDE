@@ -6,13 +6,13 @@ var recordsCount = 0;
 
 function updateBatch(collection) {
     var query = {lastMigrationScript: null};
-    collection.find(query).limit(500).exec(function (findError, records) {
+    collection.find(query).limit(2000).exec(function (findError, records) {
         console.log("found--");
         if (findError) throw findError;
         else {
             console.log("size: " + records.length);
             if (records.length > 0) {
-                async.forEach(records, function (record, doneOneRecord) {
+                async.forEachSeries(records, function (record, doneOneRecord) {
                     var newNamingArray = [];
                     record.get('naming').forEach(function (naming) {
                         // merge names
