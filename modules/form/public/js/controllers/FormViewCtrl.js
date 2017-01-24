@@ -250,7 +250,7 @@ angular.module('formModule').controller
             if (fe.elementType === 'section' || fe.elementType === 'form') {
                 setDefaultAnswer(fe);
             } else if (fe.elementType === 'question'){
-                if (fe.question.datatype === 'Number' && !isNaN(fe.question.defaultAnswer)) {
+                if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer)) {
                     fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
                 } else {
                     fe.question.answer = fe.question.defaultAnswer
