@@ -6,13 +6,13 @@ var recordsCount = 0;
 
 function updateBatch(collection) {
     var query = {lastMigrationScript: null};
-    collection.find(query).limit(50).exec(function (findError, records) {
+    collection.find(query).limit(1000).exec(function (findError, records) {
         console.log("found--");
         if (findError) throw findError;
         else {
             console.log("size: " + records.length);
             if (records.length > 0) {
-                async.forEachSeries(records, function (record, doneOneRecord) {
+                async.forEach(records, function (record, doneOneRecord) {
                     var newNamingArray = [];
                     record.get('naming').forEach(function (naming) {
                         // merge names
@@ -42,10 +42,10 @@ function updateBatch(collection) {
                                 }
                             })
                         } else {
-                            var newN = {tags: []};
-                            if (naming.designation) {
-                                newN.designation = naming.designation
-                            }
+                            var newN = {
+                                designation: naming.designation,
+                                tags: []
+                            };
                             if (naming.definition) {
                                 newN.definition = naming.definition
                             }
