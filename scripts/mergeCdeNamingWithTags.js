@@ -6,7 +6,7 @@ var recordsCount = 0;
 
 function updateBatch(collection) {
     var query = {lastMigrationScript: null};
-    collection.find(query).limit(2000).exec(function (findError, records) {
+    collection.find(query).limit(50).exec(function (findError, records) {
         console.log("found--");
         if (findError) throw findError;
         else {
@@ -78,6 +78,7 @@ function updateBatch(collection) {
                         }
                     })
                 }, function doneAllRecords() {
+                    console.log('1 batch done');
                     updateBatch(collection);
                 });
             } else {
