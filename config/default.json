@@ -16,7 +16,6 @@
   "mesh": {
     "baseUrl": "https://meshb.nlm.nih.gov"
   },
-  "internalIP": "130.14.",
   "banEndsWith": [
     ".php",
     ".cfm",
