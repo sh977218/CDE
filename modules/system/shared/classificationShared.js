@@ -1,5 +1,3 @@
-if (typeof(exports) === "undefined") exports = {};
-
 exports.actions = {
     create: "create"
     , delete: "delete"

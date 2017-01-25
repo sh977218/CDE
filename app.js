@@ -136,6 +136,7 @@ app.use("/board/public", express.static(path.join(__dirname, '/modules/board/pub
 
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 app.use("/article/public", express.static(path.join(__dirname, '/modules/article/public')));
+app.use("/static", express.static(path.join(__dirname, '/modules/static'))); // TODO: temporary until gulp stops packaging vendor.js, then use /dist
 
 app.use("/embedded/public",
     function (req, res, next) {

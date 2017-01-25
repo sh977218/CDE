@@ -1,3 +1,5 @@
+var classificationShared = require('../../../../system/shared/classificationShared');
+
 angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
     ['$scope', '$location', '$timeout', '$uibModal', 'DataElement', 'Elastic', 'userResource',
         function($scope, $location, $timeout, $modal, DataElement, Elastic, userResource) {
@@ -57,8 +59,8 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
             };
 
             $scope.removeClassification = function(orgName, elts) {
-                var steward = exports.findSteward($scope.elt, orgName);
-                exports.modifyCategory(steward.object, elts, {type: exports.actions.delete});
+                var steward = classificationShared.findSteward($scope.elt, orgName);
+                classificationShared.modifyCategory(steward.object, elts, {type: classificationShared.actions.delete});
                 if (steward.object.elements.length === 0) {
                     for (var i=0; i<$scope.elt.classification.length; i++) {
                         if ($scope.elt.classification[i].stewardOrg.name === orgName) $scope.elt.classification.splice(i,1);
@@ -91,7 +93,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                         , addClassification: function() {
                             return {
                                 addClassification: function(newClassification) {
-                                    exports.classifyItem($scope.elt, newClassification.orgName, newClassification.categories);
+                                    classificationShared.classifyItem($scope.elt, newClassification.orgName, newClassification.categories);
                                 }
                             };
                         }

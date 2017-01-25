@@ -1,3 +1,6 @@
+var authShared = require('../../../../system/shared/authorizationShared');
+var formShared = require('../../../../form/shared/formShared');
+
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
         '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil', 'Alert',
@@ -266,10 +269,10 @@ angular.module('formModule').controller
             fetchWholeForm(formCopy, function (wholeForm) {
                 $scope.elt = wholeForm;
                 $scope.formLoading = false;
-                if (exports.hasRole(userResource.user, "FormEditor")) {
+                if (authShared.hasRole(userResource.user, "FormEditor")) {
                     isAllowedModel.setCanCurate($scope);
                 }
-                $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
+                $scope.formCdeIds = formShared.getFormCdes($scope.elt).map(function (c) {
                     return c.tinyId;
                 });
                 isAllowedModel.setDisplayStatusWarning($scope);

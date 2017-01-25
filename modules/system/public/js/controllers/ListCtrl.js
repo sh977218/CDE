@@ -1,3 +1,5 @@
+var regStatusShared = require('../../../../system/shared/regStatusShared');
+
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
         'AutoCompleteResource', '$location', '$route', '$controller', 'ElasticBoard',

@@ -1,3 +1,5 @@
+var regStatusShared = require('../../../system/shared/regStatusShared');
+
 angular.module('ElasticSearchResource')
     .factory('SearchSettings', ["localStorageService", "$q", "userResource", function (localStorageService, $q, userResource) {
         var version = 20160329;
@@ -46,7 +48,7 @@ angular.module('ElasticSearchResource')
         };
         this.getUserDefaultStatuses = function () {
             var overThreshold = false;
-            var result = exports.statusList.filter(function (status) {
+            var result = regStatusShared.orderedList.filter(function (status) {
                 if (overThreshold) return false;
                 overThreshold = searchSettings.lowestRegistrationStatus === status;
                 return true;

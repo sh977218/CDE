@@ -1,12 +1,12 @@
 <span>
     <span ng-hide="editMode">
-        <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit"
+        <i tabindex="0" title="Edit" role="link" ng-show="isAllowed" class="fa fa-edit"
            ng-click="edit();" ng-keyup="$event.keyCode == 32 ? edit() : null"></i>
         <a ng-if="linkSource" ng-href="{{linkSource}}" target="_blank">{{model | placeHoldEmpty}}</a>
         <span ng-if="!linkSource">{{model | placeHoldEmpty}}</span>
     </span>
     <form name="inlineForm" ng-if="editMode">
-        <input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value"
+        <input name="inlineInput" type="{{type}}" autocomplete="off" ng-model="value"
                uib-typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8"
                class="form-control typeahead"/>
         <button class="btn btn-default btn-sm fa fa-check" ng-click="save();"

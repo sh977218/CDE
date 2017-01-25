@@ -1,5 +1,3 @@
-if (typeof(exports) === "undefined") {exports = {};}
-
 var _crypto;
 if (typeof(window) === "undefined") {
     // This will be executed in NodeJS

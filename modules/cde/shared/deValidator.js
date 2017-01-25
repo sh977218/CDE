@@ -1,6 +1,4 @@
-deValidator = {};
-
-deValidator.checkPvUnicity = function(valueDomain) {
+exports.checkPvUnicity = function(valueDomain) {
     var result = {allValid: true};
     var allPvs = {}, allCodes = {}, allVms = {};
     valueDomain.permissibleValues.forEach(function (pv) {
@@ -28,5 +26,3 @@ deValidator.checkPvUnicity = function(valueDomain) {
     });
     return result;
 };
-
-exports.deValidator = deValidator;

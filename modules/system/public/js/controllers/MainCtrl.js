@@ -1,3 +1,5 @@
+var authShared = require('../../../../system/shared/authorizationShared');
+
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
         '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', 'Alert',
@@ -22,7 +24,7 @@ angular.module('systemModule').controller('MainCtrl',
             });
 
             $scope.canCreateForms = function () {
-                return exports.hasRole(userResource.user, "FormEditor");
+                return authShared.hasRole(userResource.user, "FormEditor");
             };
 
             $scope.checkSystemAlert = function () {
@@ -49,16 +51,16 @@ angular.module('systemModule').controller('MainCtrl',
             $scope.Alert = Alert;
 
             $scope.isOrgCurator = function () {
-                return exports.isOrgCurator(userResource.user);
+                return authShared.isOrgCurator(userResource.user);
             };
 
             $scope.isOrgAdmin = function () {
-                return exports.isOrgAdmin(userResource.user);
+                return authShared.isOrgAdmin(userResource.user);
             };
 
 
             $scope.isOrgAuthority = function() {
-                return exports.hasRole(userResource.user, "OrgAuthority");
+                return authShared.hasRole(userResource.user, "OrgAuthority");
             };
 
             $scope.isSiteAdmin = function () {
@@ -66,7 +68,7 @@ angular.module('systemModule').controller('MainCtrl',
             };
 
             $scope.isDocumentationEditor = function () {
-                return exports.hasRole(userResource.user, "DocumentationEditor");
+                return authShared.hasRole(userResource.user, "DocumentationEditor");
             };
 
             $scope.isPageActive = function (viewLocation) {

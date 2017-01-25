@@ -1,3 +1,5 @@
+var authShared = require('../../../../system/shared/authorizationShared');
+
 // @TODO this many dependencies is a warning of poor design. Refac.
 angular.module('systemModule').controller('AddClassificationModalCtrl',
     ['$scope', '$timeout', '$uibModalInstance', 'ClassificationTree', 'Organization', 'ClassificationPathBuilder',
@@ -71,7 +73,7 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
     if (histStore !== null) {
         try {
             for (var i = 0; i < histStore.length; i++) {
-                if (exports.isCuratorOf(userResource.user, histStore[i].orgName)) {
+                if (authShared.isCuratorOf(userResource.user, histStore[i].orgName)) {
                     $scope.defaultClassificationsHistory.push(histStore[i]);
                 }
             }

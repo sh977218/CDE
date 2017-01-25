@@ -1,3 +1,5 @@
+var classificationShared = require('../../../system/shared/classificationShared');
+
 angular.module('CdeMerge', [])
 .factory('MergeCdes', ['$http', 'DataElement', 'CDE', 'CdeClassificationTransfer', function($http, DataElement, CDE, CdeClassificationTransfer) {
     var service = this;
@@ -19,7 +21,7 @@ angular.module('CdeMerge', [])
             });
 
             if (fields.ids || fields.properties || fields.naming) {
-                exports.transferClassifications(service.source, service.destination);
+                classificationShared.transferClassifications(service.source, service.destination);
                 DataElement.save(service.destination, function (cde) {
                     service.retireSource(service.source, service.destination, function() {
                         if (callback) callback(cde);

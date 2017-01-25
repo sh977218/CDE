@@ -46,7 +46,7 @@ var commonEmbedSchema = {
         show: Boolean,
         label: String
     },
-    lowestRegistrationStatus: {type: String, enum:regStatusShared.statusList},
+    lowestRegistrationStatus: {type: String, enum:regStatusShared.orderedList},
     properties: [
         {
             label: String,
@@ -208,7 +208,7 @@ var attachmentSchema = {
 schemas.attachmentSchema = new mongoose.Schema(attachmentSchema, {_id: false});
 
 schemas.registrationStateSchema = {
-    registrationStatus: {type: String, enum: regStatusShared.statusList}
+    registrationStatus: {type: String, enum: regStatusShared.orderedList}
     , effectiveDate: Date
     , untilDate: Date
     , administrativeNote: String
@@ -371,7 +371,7 @@ schemas.classificationAudit = new mongoose.Schema({
         , version: String
         , _id: mongoose.Schema.Types.ObjectId
         , name: String
-        , status: {type: String, enum: regStatusShared.statusList}
+        , status: {type: String, enum: regStatusShared.orderedList}
         , eltType: {type: String, enum: ["cde", "form"]}
     }]
     , newname: String

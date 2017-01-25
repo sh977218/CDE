@@ -1,3 +1,6 @@
+var authShared = require('../../../system/shared/authorizationShared');
+var formShared = require('../../../form/shared/formShared');
+
 angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
 
 .controller('PrintCtrl',
@@ -60,10 +63,10 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
         var formCopy = angular.copy(form);
         fetchWholeForm(formCopy, function (wholeForm) {
             $scope.elt = wholeForm;
-            if (exports.hasRole(userResource.user, "FormEditor")) {
+            if (authShared.hasRole(userResource.user, "FormEditor")) {
                 isAllowedModel.setCanCurate($scope);
             }
-            $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
+            $scope.formCdeIds = formShared.getFormCdes($scope.elt).map(function (c) {
                 return c.tinyId;
             });
             isAllowedModel.setDisplayStatusWarning($scope);

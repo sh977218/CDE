@@ -1,3 +1,6 @@
+var formShared = require('../../../form/shared/formShared');
+var regStatusShared = require('../../../system/shared/regStatusShared');
+
 angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFactories', 'embeddedTemplates'])
     .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http, SearchSettings) {
 
@@ -49,7 +52,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
         };
 
         $scope.concatenateQuestions = function(form) {
-            var cdes = exports.getFormCdes(form);
+            var cdes = formShared.getFormCdes(form);
             return cdes.map(function(c) {return c.name;}).join(",");
         };
 
@@ -101,10 +104,10 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             $scope.lastQueryTimeStamp = timestamp;
             $scope.accordionListStyle = "semi-transparent";
 
-            for (var i = 0; i < exports.statusList.length; i++) {
-                $scope.searchSettings.regStatuses.push(exports.statusList[i]);
-                if (exports.statusList[i] === embed4Type.minStatus) {
-                    i = exports.statusList.length;
+            for (var i = 0; i < regStatusShared.orderedList.length; i++) {
+                $scope.searchSettings.regStatuses.push(regStatusShared.orderedList[i]);
+                if (regStatusShared.orderedList[i] === embed4Type.minStatus) {
+                    i = regStatusShared.orderedList.length;
                 }
             }
 
