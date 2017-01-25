@@ -47,7 +47,7 @@ angular.module('OrgFactories', ['ngResource'])
                 });
                 OrgHelpers.deferred.resolve();
                 if (cb) cb();
-            }).catch(function onError() {
+            }, function onError() {
                 console.log("Cannot get org detailed info.");
             });
         }
