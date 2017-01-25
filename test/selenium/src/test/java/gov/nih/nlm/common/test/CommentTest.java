@@ -51,17 +51,17 @@ public abstract class CommentTest extends CommonTest {
         Assert.assertEquals(false, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));
         Assert.assertEquals(true, findElement(By.id("comment_1")).getAttribute("class").contains("currentTabComment"));
 
-        clickElement(By.id("replyTextarea_1"));
-        hangon(1);
-        findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
-        scrollToViewById("replyBtn_1");
-        clickElement(By.id("replyBtn_1"));
-
         clickElement(By.id("replyTextarea_0"));
-        findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment about Status");
         hangon(1);
+        findElement(By.id("replyTextarea_0")).sendKeys("Reply to another comment about Naming");
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
+
+        clickElement(By.id("replyTextarea_1"));
+        findElement(By.id("replyTextarea_1")).sendKeys("Second reply to First comment about Status");
+        hangon(1);
+        scrollToViewById("replyBtn_1");
+        clickElement(By.id("replyBtn_1"));
 
         hangon(1);
         clickElement(By.id("resolveReply-0-0"));
