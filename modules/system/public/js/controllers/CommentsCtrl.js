@@ -117,7 +117,7 @@ angular.module('systemModule').controller('CommentsCtrl',
                 }).then(function () {
                     $scope.tempReplies[commentId] = '';
                     loadComments();
-                });
+                }, function (err) {console.log(err)});
             };
 
             $scope.cancelReply = function (comment) {
