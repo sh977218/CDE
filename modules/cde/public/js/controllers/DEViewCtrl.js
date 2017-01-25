@@ -194,7 +194,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                             } else {
                                 $scope.boards = response.data;
                             }
-                        });
+                        }, function (err) {console.log(err)});
                     }],
                     resolve: {
                         tinyId: function () {
@@ -452,7 +452,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.loadBoards = function() {
         $http.get("/deBoards/" + $scope.elt.tinyId).then(function(response) {
             $scope.boards = response.data;
-        });
+        }, function (err) {console.log(err)});
     };
 
     $scope.getPVTypeheadVsacNameList = function() {
@@ -464,6 +464,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.getPVTypeaheadCodeSystemNameList = function() {
         $http.get("/permissibleValueCodeSystemList").then(function(response) {
             $scope.pVTypeaheadCodeSystemNameList = response.data;
+        }, function (err) {
+            console.log(err);
         });
     };
 
