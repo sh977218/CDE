@@ -71,6 +71,7 @@ public abstract class CommentTest extends CommonTest {
         scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));
 
+        hangon(1);
         clickElement(By.id("resolveReply-0-0"));
         textPresent("Saved");
         closeAlert();
