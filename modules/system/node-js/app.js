@@ -85,7 +85,7 @@ exports.init = function (app) {
     });
 
     app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
-        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
             var index = esInit.indices[req.params.indexPosition];
             res.status(200).send({count: index.count, totalCount: index.totalCount});
         } else {
@@ -94,7 +94,7 @@ exports.init = function (app) {
     });
 
     app.post('/reindex/:indexPosition', function (req, res) {
-        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
             var index = esInit.indices[req.params.indexPosition];
             elastic.reIndex(index, function () {
                 setTimeout(function () {
@@ -109,7 +109,7 @@ exports.init = function (app) {
     });
 
     app.get('/serverStatuses', function (req, res) {
-        if (app.isLocalIp(getRealIp(req))) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
             app_status.getStatus(function() {
                 mongo_data_system.getClusterHostStatuses(function (err, statuses) {
                     res.send({esIndices: esInit.indices, statuses: statuses});
@@ -121,7 +121,7 @@ exports.init = function (app) {
     });
 
     app.post('/serverState', function (req, res) {
-        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
             req.body.nodeStatus = "Stopped";
             mongo_data_system.updateClusterHostStatus(req.body, function (err) {
                 if (err) return res.status(500).send("Unable to update cluster status");
@@ -334,7 +334,7 @@ exports.init = function (app) {
 
 
     app.get('/siteadmins', function (req, res) {
-        if (app.isLocalIp(getRealIp(req))) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
             mongo_data_system.siteadmins(function (err, users) {
                 res.send(users);
             });
@@ -478,10 +478,6 @@ exports.init = function (app) {
         }
     });
 
-    app.isLocalIp = function (ip) {
-        return ip.indexOf("127.0") !== -1 || ip === "::1" || ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
-    };
-
     app.get('/searchUsers/:username?', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
@@ -521,7 +517,7 @@ exports.init = function (app) {
     });
 
     app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
-        if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
+        if (req.user && req.user.siteAdmin) {
             res.render('siteaccountmanagement', "system");
         } else {
             res.status(401).send();
