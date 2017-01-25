@@ -59,8 +59,6 @@ function updateBatch(collection) {
                     record.lastMigrationScript = "mergeNamingWithTags";
                     record.naming = newNamingArray;
                     record.markModified('naming');
-                    record.context = {};
-                    record.markModified('context');
                     record.save(function (saveError) {
                         if (saveError) throw saveError;
                         else {
