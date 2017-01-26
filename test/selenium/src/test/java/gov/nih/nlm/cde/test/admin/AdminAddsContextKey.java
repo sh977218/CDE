@@ -15,7 +15,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        clickElement(By.cssSelector("#add_org_context_TEST"));
+        clickElement(By.id("#add_org_context_TEST"));
         findElement(By.id("newValue")).sendKeys("canYouSeeThis");
         clickElement(By.id("okValue"));
         textPresent("Org has been updated");
@@ -27,7 +27,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         textPresent("Contexts are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
         try {
-            findElement(By.xpath("//ul[contains(@id,'ui-select-choices')]/li/div[normalize-space(text())='canYouSeeThis']"));
+            findElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/a[normalize-space(text())='canYouSeeThis']"));
         } catch (TimeoutException e) {
             Assert.fail("Failed to find canYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
         }
