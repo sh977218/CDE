@@ -29,22 +29,24 @@
                     <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Tags:</strong></div>
                     <div tabindex="0" class="col-lg-10 col-xs-10" id="dd_tags_{{$index}}">
                         <span ng-if="canCurate && !namePair.tags.editMode">
-                            <i class="fa fa-pencil" ng-click="namePair.tags.editMode = true" id="edit_board_{{$index}}"></i>
+                            <i class="fa fa-edit" ng-click="namePair.tags.editMode = true"
+                               id="edit_name_{{$index}}"></i>
                         </span>
-                        <span ng-if="!namePair.tags.editMode">
-                            <span ng-repeat="tag in namePair.tags" class="label label-default">{{tag.tag}}</span>
+                        <span ng-if="canCurate && namePair.tags.editMode">
+                            <i class="fa fa-check" ng-click="namePair.tags.editMode = false"
+                               id="save_name_{{$index}}"></i>
                         </span>
-                        <ui-select ng-if="namePair.tags.editMode" multiple ng-model="namePair.tags"
-                                   theme="select2" search-enabled=false
-                                   on-remove="stageNewName(namePair)"
-                                   on-select="stageNewName(namePair)" append-to-body="true">
-                            <ui-select-match placeholder="Select tags...">{{$item.tag}}
-                            </ui-select-match>
-                            <ui-select-choices
-                                    repeat="t in allTags | filter:$select.search track by t.tag">
-                                {{t.tag}}
-                            </ui-select-choices>
-                        </ui-select>
+                        <div style="width: 800px; display:inline-block">
+                            <ui-select multiple tagging ng-model="namePair.tags"
+                                       append-to-body="true" theme="bootstrap"
+                                       ng-disabled="!namePair.tags.editMode || !canCurate"
+                                       on-remove="stageNewName(namePair)" on-select="stageNewName(namePair)">
+                                <ui-select-match placeholder="Select tags...">{{$item.tag}}</ui-select-match>
+                                <ui-select-choices repeat="t in allTags">
+                                    {{t.tag}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
                     </div>
                 </div>
             </div>

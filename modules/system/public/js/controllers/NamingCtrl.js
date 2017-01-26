@@ -39,7 +39,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
 
         $scope.stageNewName = function (namePair) {
             $scope.stageElt($scope.elt);
-            namePair.editMode = false;
+            namePair.tags.editMode = true;
         };
 
         $scope.cancelSave = function (namePair) {
