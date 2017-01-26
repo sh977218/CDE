@@ -1,14 +1,11 @@
-angular.module('systemModule').controller('NewNamePairModalCtrl', ['$scope', '$uibModalInstance', 'cde', 'context',
-    function ($scope, $modalInstance, cde, context) {
+angular.module('systemModule').controller('NewNamePairModalCtrl', ['$scope', '$uibModalInstance', 'cde', 'allTags',
+    function ($scope, $modalInstance, cde, allTags) {
 
-    $scope.orgContexts = context;
+    $scope.allTags = allTags;
 
     $scope.newNamePair = {
         "languageCode": "EN-US",
-        "context": {
-            "contextName": "",
-            "acceptability": "preferred"
-        }
+        "tags": []
     };
     $scope.elt = cde;
     

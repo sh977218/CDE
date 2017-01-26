@@ -26,7 +26,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected = {
-                "</definition><languageCode>EN-US</languageCode><context><contextName>Health",
+                "</definition><languageCode>EN-US</languageCode><tags><tag>Health",
                 "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name>",
                 "<datatype>Value List</datatype>",
                 "<registrationStatus>Qualified</registrationStatus></registrationState>"

@@ -64,7 +64,7 @@ angular.module('formModule').controller
             includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
                 $scope.setCurrentTab(thisTab);
-                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
             }
         },
         classification: {
@@ -140,7 +140,9 @@ angular.module('formModule').controller
                             return $scope.module;
                         }
                     }
-                }).result.then(function () {}, function() {});
+                }).result.then(function () {
+                }, function () {
+                });
             }
         }, {
             btnId: 'cdeLinkedBoardsBtn',
@@ -165,7 +167,9 @@ angular.module('formModule').controller
                             return $scope.elt.tinyId;
                         }
                     }
-                }).result.then(function () {}, function() {});
+                }).result.then(function () {
+                }, function () {
+                });
             }
         }];
 
@@ -355,7 +359,9 @@ angular.module('formModule').controller
                     };
                 }
             }
-        }).result.then(function () {}, function() {});
+        }).result.then(function () {
+        }, function () {
+        });
 
     };
 
@@ -551,7 +557,8 @@ angular.module('formModule').controller
             }).catch(function onError() {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });
-        }, function () {});
+        }, function () {
+        });
     };
 
     $scope.reload();
@@ -591,7 +598,9 @@ angular.module('formModule').controller
             resolve: {
                 elt: function() {return $scope.elt;}
             }
-        }).result.then(function () {}, function() {});
+        }).result.then(function () {
+        }, function () {
+        });
     };
 
     $scope.preparePublishExport = function () {
@@ -609,7 +618,8 @@ angular.module('formModule').controller
             }).then(function () {
                 Alert.addAlert("info", "Done. Go to your profile to see all your published forms");
             });
-        }, function () {});
+        }, function () {
+        });
     };
 
 }]);

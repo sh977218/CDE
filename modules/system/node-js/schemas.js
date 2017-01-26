@@ -121,6 +121,10 @@ var orgJson = {
         type: Array,
         default: []
     }
+    , nameTags: {
+        type: Array,
+        default: []
+    }
     , extraInfo: String
     , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
     , htmlOverview: String
@@ -178,15 +182,18 @@ schemas.orgSchema.set('collection', 'orgs');
 schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
-    designation: {type: String}
-    , definition: {type: String}
-    , definitionFormat: String
-    , languageCode: String
-    , context: {
-        contextName: String
-        , acceptability: String
-    }
-    , source: {type: String}
+    designation: {type: String},
+    definition: {type: String},
+    definitionFormat: String,
+    languageCode: String,
+    context: {
+        contextName: String,
+        acceptability: String
+    },
+    tags: [new mongoose.Schema({
+        tag: String
+    }, {_id: false})],
+    source: {type: String}
 }, {_id: false});
 
 var attachmentSchema = {

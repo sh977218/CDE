@@ -90,7 +90,7 @@ var deJson = {
     }
     , history: [mongoose.Schema.Types.ObjectId]
     , changeNote: String
-    , cadsrRegStatus: String
+    , lastMigrationScript: String
     , registrationState: sharedSchemas.registrationStateSchema
     , classification: [sharedSchemas.classificationSchema]
     , properties: [sharedSchemas.propertySchema]

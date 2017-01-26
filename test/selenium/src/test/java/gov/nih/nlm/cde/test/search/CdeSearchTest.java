@@ -58,7 +58,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 
-    @Test(priority = 5)
+    @Test
     public void vdInstruction() {
         setLowStatusesVisible();
         goToCdeByName("Participant Identifier Source");

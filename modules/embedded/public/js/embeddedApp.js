@@ -191,7 +191,9 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                     if (embed4Type.otherNames) {
                         embed4Type.otherNames.forEach(function (eName) {
                             var name = c.naming.filter(function(n) {
-                                return n.context.contextName === eName.contextName;
+                                return n.tags.filter(function (t) {
+                                        return t.tag.indexOf('Question Text') > -1
+                                    }).length > 0;
                             })[0];
                             if (name) {
                                 c.embed[eName.label] = name.designation;
