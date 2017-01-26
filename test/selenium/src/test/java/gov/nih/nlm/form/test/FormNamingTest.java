@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -25,13 +24,14 @@ public class FormNamingTest extends BaseFormTest {
         textPresent("Contexts are managed in Org Management > List Management");
         findElement(By.name("designation")).sendKeys("This new form Name");
         findElement(By.name("definition")).sendKeys("A lazy definition");
-        new Select(findElement(By.name("context"))).selectByVisibleText("Great CTX");
+        clickElement(By.xpath("//*[@id='newTags']//input"));
+        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/a[normalize-space(text())='Great CTX']"));
         clickElement(By.id("createNamePair"));
         modalGone();
         saveForm();
 
         goToFormByName("Study Drug Compliance");
-        clickElement(By.linkText("Naming"));
+        clickElement(By.id("naming_tab"));
         textPresent("This new form Name");
         textPresent("A lazy definition");
         textPresent("Great CTX");
@@ -40,12 +40,12 @@ public class FormNamingTest extends BaseFormTest {
         saveForm();
 
         goToFormByName("Study Drug Compliance");
-        clickElement(By.linkText("Naming"));
+        clickElement(By.id("naming_tab"));
         textNotPresent("\"A lazy definition\"");
 
         mustBeLoggedOut();
         goToFormByName("Study Drug Compliance");
-        clickElement(By.linkText("Naming"));
+        clickElement(By.id("naming_tab"));
         for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
             Assert.assertFalse(elt.isDisplayed());
         }

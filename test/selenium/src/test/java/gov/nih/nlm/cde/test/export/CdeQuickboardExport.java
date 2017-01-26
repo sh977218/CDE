@@ -29,7 +29,7 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
         clickElement(By.id("qb_cde_export"));
         textPresent("Export downloaded.");
         closeAlert();
-        findElement(By.id("qb_cde_empty")).click();
+        clickElement(By.id("qb_cde_empty"));
 
         String[] expected = {
                 "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
