@@ -108,7 +108,6 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
             $scope.save = function() {
                 $scope.saving = true;
                 Form.save($scope.elt, function(form) {
-                    delete $scope.saving;
                     $location.url("formView?tinyId=" + form.tinyId);
                 });
             };

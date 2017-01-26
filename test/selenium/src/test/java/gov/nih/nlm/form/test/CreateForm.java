@@ -28,7 +28,6 @@ public class CreateForm extends BaseClassificationTest {
         addClassificationToNewCdeMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         modalGone();
         clickElement(By.id("submit"));
-        closeAlert();
 
         textPresent(formName);
         textPresent(formDef);
