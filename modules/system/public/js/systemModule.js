@@ -257,8 +257,6 @@ angular.module('systemModule').factory('ClassificationUtil', [function () {
         var sortSubClassif = function (classif) {
             if (classif.elements) {
                 classif.elements = classif.elements.sort(function (c1, c2) {
-                    if (!c1.name)
-                        console.log('h');
                     return c1.name.localeCompare(c2.name);
                 });
             }
