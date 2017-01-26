@@ -128,6 +128,7 @@ exports.orgCurators = function(req, res) {
 
 
 exports.orgAdmins = function(req, res) {
+    if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
     mongo_data.managedOrgs(function(managedOrgs) {
         var result = {"orgs": []};
         mongo_data.orgAdmins(function(err, users) {
