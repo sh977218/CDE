@@ -2,7 +2,6 @@ package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public abstract class NamingTest extends CommonTest {
@@ -22,7 +21,7 @@ public abstract class NamingTest extends CommonTest {
 
         newCdeVersion();
 
-        clickElement(By.linkText("Naming"));
+        clickElement(By.id("naming_tab"));
         textPresent("New Name");
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeNaming-1")));
@@ -32,7 +31,7 @@ public abstract class NamingTest extends CommonTest {
 
         newCdeVersion();
 
-        clickElement(By.linkText("Naming"));
+        clickElement(By.id("naming_tab"));
         textPresent("New Name Changed");
 
         clickElement(By.cssSelector("#dd_def_1 .fa-edit"));
@@ -41,17 +40,17 @@ public abstract class NamingTest extends CommonTest {
 
         newCdeVersion();
 
-        clickElement(By.linkText("Naming"));
+        clickElement(By.id("naming_tab"));
         textPresent("New Definition Changed");
 
-        clickElement(By.cssSelector("#dd_context_1 .fa-edit"));
-        new Select(findElement(By.cssSelector("#dd_context_1 select"))).selectByVisibleText("Health Changed");
-        clickElement(By.cssSelector("#dd_context_1 .fa-check"));
+        clickElement(By.id("edit_name_1"));
+        clickElement(By.xpath("//*[@id='dd_tags_1']//input"));
+        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/a[1]"));
         textPresent("Health Changed");
 
         newCdeVersion();
 
-        clickElement(By.linkText("Naming"));
+        clickElement(By.id("naming_tab"));
         textPresent("Health Changed");
 
         clickElement(By.id("removeNaming-1"));

@@ -120,7 +120,7 @@
                 <tr>
                     <th>Organization Name:</th>
                     <th>Properties:</th>
-                    <th>Context:</th>
+                    <th>Tags:</th>
                 </tr>
                 <tr  ng-repeat="o in orgs | orderBy:'name'">
                     <td id="orgListName-{{o.name}}">
@@ -136,7 +136,7 @@
                         </span>
                     </td>
                     <td>
-                        <span ng-if="!nameContexts.editMode" ng-repeat="p in o.nameContexts">
+                        <span ng-if="!nameTags.editMode" ng-repeat="p in o.nameTags">
                             <span class="label label-default"><i class="fa fa-times" title="Remove"
                                      ng-click="removeContextFromOrg(p, o)"></i> {{p}}</span>
                         </span>

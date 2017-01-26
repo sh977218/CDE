@@ -5,8 +5,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
-import java.util.concurrent.TimeUnit;
-
 public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
     protected void adminCantEditStandardCde(String cdeName) {
@@ -36,7 +34,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         clickElement(By.id("naming_tab"));
         Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_name_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_def_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_context_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_tags_0']//input")).get(0).isDisplayed());
 
         // Can edit classifications
         clickElement(By.id("classification_tab"));

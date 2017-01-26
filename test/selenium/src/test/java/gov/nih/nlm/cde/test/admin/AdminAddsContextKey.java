@@ -1,22 +1,19 @@
 package gov.nih.nlm.cde.test.admin;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AdminAddsContextKey extends NlmCdeBaseTest {
-    
+
     @Test
     public void addRemoveContext() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        clickElement(By.cssSelector("#add_org_context_TEST"));
+        clickElement(By.id("add_org_context_TEST"));
         findElement(By.id("newValue")).sendKeys("canYouSeeThis");
         clickElement(By.id("okValue"));
         textPresent("Org has been updated");
@@ -26,12 +23,8 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
         textPresent("Contexts are managed in Org Management > List Management");
-        clickElement(By.id("newContext"));
-        try {
-            findElement(By.xpath("//option[@value='canYouSeeThis']"));
-        } catch (TimeoutException e) {
-            Assert.fail("Failed to find canYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
-        }
+        clickElement(By.xpath("//*[@id='newTags']//input"));
+        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/a[normalize-space(text())='canYouSeeThis']"));
 
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
@@ -46,7 +39,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
-        clickElement(By.id("newContext"));
+        clickElement(By.xpath("//*[@id='newTags']//input"));
         textNotPresent("canYouSeeThis");
     }
 

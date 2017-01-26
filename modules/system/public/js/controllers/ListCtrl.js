@@ -12,8 +12,8 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.customClasses = "navbar-btn";
 
     $scope.exporters = {
-        json: {id: "jsonExport", display: "JSON Export"}
-        , xml: {id: "xmlExport", display: "XML Export"}
+        json: {id: "jsonExport", display: "JSON Export"},
+        xml: {id: "xmlExport", display: "XML Export"}
     };
 
     if ($route.current.subCtrl) {
