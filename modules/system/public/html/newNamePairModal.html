@@ -16,14 +16,14 @@
 
         <div class="form-group">
             <label tabindex="0" for="newTags">Context</label>
-            <ui-select id="newTags" multiple ng-model="newNamePair.tags" theme="select2" search-enabled=false append-to-body="true">
-                <ui-select-match placeholder="Select tags...">{{$item.tag}}
-                </ui-select-match>
-                <ui-select-choices
-                        repeat="t in allTags | filter:$select.search track by t.tag">
-                    {{t.tag}}
-                </ui-select-choices>
-            </ui-select>
+            <div id="newTags">
+                <ui-select multiple tagging ng-model="newNamePair.tags" theme="bootstrap">
+                    <ui-select-match placeholder="Select tags...">{{$item.tag}}</ui-select-match>
+                    <ui-select-choices repeat="t in allTags">
+                        {{t.tag}}
+                    </ui-select-choices>
+                </ui-select>
+            </div>
         </div>
         <info>Contexts are managed in Org Management > List Management</info>
     </div>

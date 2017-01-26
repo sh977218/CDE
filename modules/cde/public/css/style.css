@@ -1624,3 +1624,8 @@ div.slider .ui-slider-handle {
     text-align: center;
     line-height: 1.6em;
 }
+
+.name_tags_select {
+    width: 80%;
+    display: inline-block
+}

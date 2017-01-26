@@ -36,7 +36,7 @@
                             <i class="fa fa-check" ng-click="namePair.tags.editMode = false"
                                id="save_name_{{$index}}"></i>
                         </span>
-                        <div style="width: 800px; display:inline-block">
+                        <div class="name_tags_select">
                             <ui-select multiple tagging ng-model="namePair.tags"
                                        append-to-body="true" theme="bootstrap"
                                        ng-disabled="!namePair.tags.editMode || !canCurate"

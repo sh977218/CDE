@@ -43,8 +43,9 @@ public abstract class NamingTest extends CommonTest {
         clickElement(By.id("naming_tab"));
         textPresent("New Definition Changed");
 
+        clickElement(By.id("edit_name_1"));
         clickElement(By.xpath("//*[@id='dd_tags_1']//input"));
-        clickElement(By.xpath("//ul[contains(@id,'ui-select-choices')]/li[1]"));
+        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/a[1]"));
         textPresent("Health Changed");
 
         newCdeVersion();
