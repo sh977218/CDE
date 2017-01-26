@@ -28,8 +28,15 @@
                 <div class="row">
                     <div tabindex="0" class="col-lg-2 col-xs-2"><strong>Tags:</strong></div>
                     <div tabindex="0" class="col-lg-10 col-xs-10" id="dd_tags_{{$index}}">
-                        <ui-select multiple ng-model="namePair.tags" theme="select2" search-enabled=false
-                                   ng-disabled="!canCurate" on-remove="stageNewName(namePair)"
+                        <span ng-if="canCurate && !namePair.tags.editMode">
+                            <i class="fa fa-pencil" ng-click="namePair.tags.editMode = true" id="edit_board_{{$index}}"></i>
+                        </span>
+                        <span ng-if="!namePair.tags.editMode">
+                            <span ng-repeat="tag in namePair.tags" class="label label-default">{{tag.tag}}</span>
+                        </span>
+                        <ui-select ng-if="namePair.tags.editMode" multiple ng-model="namePair.tags"
+                                   theme="select2" search-enabled=false
+                                   on-remove="stageNewName(namePair)"
                                    on-select="stageNewName(namePair)" append-to-body="true">
                             <ui-select-match placeholder="Select tags...">{{$item.tag}}
                             </ui-select-match>
