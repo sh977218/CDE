@@ -36,7 +36,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }],
             templateUrl: '/system/public/html/latestComments.html'
         }).when('/siteaccountmanagement', {
-            controller: 'AccountManagementCtrl',
+            controller: 'SiteManagementCtrl',
             templateUrl: '/system/public/html/siteAccountManagement.html'
         }).when('/orgaccountmanagement', {
             controller: 'AccountManagementCtrl',
