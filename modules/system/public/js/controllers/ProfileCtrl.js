@@ -7,13 +7,13 @@ angular.module('systemModule').controller('ProfileCtrl',
 
     ViewingHistory.getPromise().then(function (response) {
         $scope.cdes = [];
-        if (Array.isArray(response))
-            $scope.cdes = response;
+        if (Array.isArray(response)) $scope.cdes = response;
     });
 
     $scope.saveProfile = function () {
         $timeout(function () {
             $http.post('/user/me', userResource.user).then(function (res) {
+                reloadUser();
                 if (res.status === 200) {
                     Alert.addAlert("success", "Saved");
                 } else {
@@ -23,21 +23,25 @@ angular.module('systemModule').controller('ProfileCtrl',
         }, 0);
     };
 
-    userResource.getRemoteUser();
+    function reloadUser() {
+        userResource.getRemoteUser();
 
-    userResource.getPromise().then(function () {
-        if (userResource.user.username) {
-            $scope.hasQuota = userResource.user.quota;
-            $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g, ', ');
-            $scope.orgAdmin = userResource.user.orgAdmin.toString().replace(/,/g, ', ');
-            $scope.getComments(1);
-            $scope.user = userResource.user;
-        }
-    });
+        userResource.getPromise().then(function () {
+            if (userResource.user.username) {
+                $scope.hasQuota = userResource.user.quota;
+                $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g, ', ');
+                $scope.orgAdmin = userResource.user.orgAdmin.toString().replace(/,/g, ', ');
+                $scope.getComments(1);
+                $scope.user = userResource.user;
+            }
+        });
+    }
+
+    reloadUser();
 
     $scope.removePublishedForm = function(pf) {
         $scope.user.publishedForms = $scope.user.publishedForms.filter(function (p) {
-            return p.id !== pf.id;
+            return p._id !== pf._id;
         });
         $scope.saveProfile();
     };

@@ -169,8 +169,7 @@ schemas.userSchema = new mongoose.Schema({
     , avatarUrl: String
     , publishedForms: [{
         name: String,
-        id: mongoose.Schema.Types.ObjectId,
-        _id: false
+        id: mongoose.Schema.Types.ObjectId
     }]
 });
 
