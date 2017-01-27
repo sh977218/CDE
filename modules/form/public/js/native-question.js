@@ -107,7 +107,7 @@
                                             htmlText +=
                                                 '<input type="checkbox" ' +
                                                 'checklist-model="formElement.question.answer" ' +
-                                                'checklist-value="formElement.question.asnwers[' + i + '].permissibleValue" ' +
+                                                'checklist-value="formElement.question.answers[' + i + '].permissibleValue" ' +
                                                 'name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
 
                                         htmlText +=
