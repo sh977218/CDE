@@ -7,7 +7,7 @@ var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationN
 var xmlFolder = 'S:/MLB/CDE/NCI/CDE XML/';
 var xmlFileMapping = {
     'bpv.xml': 'NCI-BPV',
-    'standard.xml': 'NCI',
+    'standard.xml': 'NCI Preferred Standards',
     'gtex.xml': 'NCI-GTEx'
 };
 

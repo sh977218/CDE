@@ -1,8 +1,10 @@
 exports.map = {
-    'NCI': {
+    'NCI Preferred Standards': {
+        'orgName': 'NCI Preferred Standards',
         'stewardOrgName': 'NCI',
-        'orgName': 'NCI',
         'classificationOrgName': 'NCI',
+        'mapAllClassification': 'NCI Preferred Standards',
+        'classificationMap': {'NCI': 'NCI Preferred Standards'},
         filter: function () {
             return true;
         },
