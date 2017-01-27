@@ -15,7 +15,7 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
         textPresent("1,024.00", By.id("quota"));
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
-        Assert.assertEquals(findElement(By.id("adminFor")).getText(), "caBIG");
+        textPresent("caBIG", By.id("adminFor"));
     }
 
     @Test

@@ -38,9 +38,9 @@
         </thead>
         <tbody id="vsacTableBody">
         <tr id="vsacValue-{{$index}}" ng-repeat="con in vsacValueSet">
-            <td tabindex="0" >{{con.displayName}}</td>
-            <td tabindex="0" >{{con.code}}</td>
-            <td tabindex="0" >{{con.codeSystemName}}</td>
+            <td tabindex="0" >{{::con.displayName}}</td>
+            <td tabindex="0" >{{::con.code}}</td>
+            <td tabindex="0" >{{::con.codeSystemName}}</td>
             <td tabindex="0"  headers="validation">
                  <span ng-switch="con.isValid">
                      <i ng-switch-when="true" class="fa fa-check text-success" id="vset-{{$index}}-valid"></i>
