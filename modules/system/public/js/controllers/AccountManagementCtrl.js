@@ -32,13 +32,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $http.get("/systemAlert").then(function onSuccess(response) {
        $scope.broadcast = {message: response.data}; 
     }).catch(function onError() {});
-        
-    $scope.getSiteAdmins = function() {
-        return $http.get("/siteAdmins").then(function(response) {
-            $scope.siteAdmins = response.data;
-        });
-    };
-    $scope.getSiteAdmins();
 
     var allPropertyKeys = [];
     var allContexts = [];
