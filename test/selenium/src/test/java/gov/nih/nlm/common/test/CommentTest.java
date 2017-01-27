@@ -39,7 +39,6 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
 
-
         addComment("My First Comment about Status!");
         textPresent("My First Comment about Status!");
         Assert.assertEquals(true, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));
@@ -71,7 +70,6 @@ public abstract class CommentTest extends CommonTest {
         scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));
 
-        hangon(1);
         clickElement(By.id("resolveReply-0-0"));
         textPresent("Saved");
         closeAlert();
