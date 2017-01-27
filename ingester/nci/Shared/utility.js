@@ -33,10 +33,7 @@ function parseNaming(de) {
         designation: entities.decodeXML(de.LONGNAME[0]),
         definition: entities.decodeXML(de.PREFERREDDEFINITION[0]),
         languageCode: "EN-US",
-        context: {
-            contextName: "Health",
-            acceptability: "preferred"
-        }
+        tags: [{tag: "Health"}]
     }];
     if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
         de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function (refDoc) {
@@ -45,10 +42,7 @@ function parseNaming(de) {
                     designation: entities.decodeXML(refDoc.DocumentText[0]),
                     definition: entities.decodeXML(refDoc.Name[0]),
                     languageCode: "EN-US",
-                    context: {
-                        contextName: refDoc.DocumentType[0],
-                        acceptability: "preferred"
-                    }
+                    tags: [{tag: refDoc.DocumentType[0]}]
                 });
             }
         });
