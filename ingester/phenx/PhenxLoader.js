@@ -28,11 +28,11 @@ var remoteGrabFromPhenX = function (doneStep1) {
     var protocolCounter = 0;
     var measureCounter = 0;
     var measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
-    var driver = new webdriver.Builder().forBrowser('firefox').build();
-    var driver1 = new webdriver.Builder().forBrowser('firefox').build();
-    var driver2 = new webdriver.Builder().forBrowser('firefox').build();
-    var driver3 = new webdriver.Builder().forBrowser('firefox').build();
-    var driver4 = new webdriver.Builder().forBrowser('firefox').build();
+    var driver = new webdriver.Builder().forBrowser('chrome').build();
+    var driver1 = new webdriver.Builder().forBrowser('chrome').build();
+    var driver2 = new webdriver.Builder().forBrowser('chrome').build();
+    var driver3 = new webdriver.Builder().forBrowser('chrome').build();
+    var driver4 = new webdriver.Builder().forBrowser('chrome').build();
     driver.get(baseUrl);
     driver.findElements(webdriver.By.xpath(measureXpath)).then(function (measureLinks) {
             async.eachSeries(measureLinks, function (measureLink, doneOneMeasureLink) {
