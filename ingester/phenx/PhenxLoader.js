@@ -4,6 +4,7 @@ var webdriver = require('selenium-webdriver'),
     cde_schemas = require('../../modules/cde/node-js/schemas'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data'),
+    OrgModel = mongo_data_system.Org,
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     mongo_form = require('../../modules/form/node-js/mongo-form'),
     async = require('async')
@@ -12,7 +13,7 @@ var webdriver = require('selenium-webdriver'),
 // global variables
 var baseUrl = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
 var mongoUrl = config.mongoUri;
-var conn = mongoose.createConnection(mongoUrl, {auth: {authdb: "admin"}});
+var conn = mongoose.createConnection(mongoUrl);
 var cacheSchema = mongoose.Schema({}, {strict: false});
 var measureSchema = mongoose.Schema({}, {strict: false});
 var Measure = conn.model('measure', measureSchema);
@@ -954,21 +955,37 @@ async.series([
             console.log("connected to " + mongoUrl);
             async.parallel({
                     getNCIOrg: function (cb) {
-                        mongo_data_system.orgByName("NCI", function (stewardOrg) {
-                            nciOrg = stewardOrg;
-                            if (!nciOrg) {
-                                throw "nci Org does not exists!";
+                        OrgModel.find({name: "NCI"}).exec(function (findNciOrgError, thisNciOrgs) {
+                            if (findNciOrgError) throw findNciOrgError;
+                            else if (thisNciOrgs.length === 0) {
+                                new OrgModel({name: 'NCI'}).save(function (createNciOrgError, thisNciOrg) {
+                                    if (createNciOrgError)throw createNciOrgError;
+                                    else {
+                                        nciOrg = thisNciOrg;
+                                        cb();
+                                    }
+                                })
+                            } else {
+                                nciOrg = thisNciOrgs[0];
+                                cb();
                             }
-                            cb();
                         });
                     },
                     getPhenXOrg: function (cb) {
-                        mongo_data_system.orgByName("PhenX", function (stewardOrg) {
-                            phenxOrg = stewardOrg;
-                            if (!phenxOrg) {
-                                throw "phenX Org does not exists!";
+                        OrgModel.find({name: "PhenX"}).exec(function (findPhenxOrgError, thisNciOrgs) {
+                            if (findPhenxOrgError) throw findPhenxOrgError;
+                            else if (thisNciOrgs.length === 0) {
+                                new OrgModel({name: 'PhenX'}).save(function (createPhenxOrgError, thisPhenxOrg) {
+                                    if (createPhenxOrgError)throw createPhenxOrgError;
+                                    else {
+                                        phenxOrg = thisPhenxOrg;
+                                        cb();
+                                    }
+                                })
+                            } else {
+                                phenxOrg = thisNciOrgs[0];
+                                cb();
                             }
-                            cb();
                         });
                     }
                 },
