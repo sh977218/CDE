@@ -105,9 +105,10 @@
                                                 ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
                                         else
                                             htmlText +=
-                                                '<input type="checkbox"' +
-                                                ' checklist-model="formElement.question.answer" checklist-value="\'' + pv.permissibleValue + '\'"' +
-                                                ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
+                                                '<input type="checkbox" ' +
+                                                'checklist-model="formElement.question.answer" ' +
+                                                'checklist-value="formElement.question.asnwers[' + i + '].permissibleValue" ' +
+                                                'name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
 
                                         htmlText +=
                                             getLabel(pv) + '</label>';
