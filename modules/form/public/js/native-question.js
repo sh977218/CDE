@@ -38,16 +38,25 @@
                                 (!subQNonValuelist && numSubQuestions && !scope.isOneLiner(formElement,numSubQuestions)
                                     ? 'native-box' : '') + '">';
 
-                            if ((formElement.elementType === 'question') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
+                            if ((formElement.elementType === 'question') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist)) {
                                 html +=
                                     '<div native-question' +
-                                    ' ng-init="permissibleValue=formElement.question.answers[' + i + '].permissibleValue;' +
-                                    ' formElements = formElement.question.answers[' + i + '].subQuestions;formElement = formElements[' + j + '];' +
-                                    ' numSubQuestions=' + numSubQuestions + ';"></div>';
+                                    ' ng-init="';
+
+                                if (subQNonValuelist)
+                                    html +=
+                                        'permissibleValue=formElement.question.answers[' + i + '].permissibleValue;';
+
+                                html +=
+                                    'formElements = formElement.question.answers[' + i + '].subQuestions;' +
+                                    'formElement = formElements[' + j + '];' +
+                                    'numSubQuestions=' + numSubQuestions + ';"></div>';
+                            }
                             if ((formElement.elementType === 'section' || formElement.elementType === 'form') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
                                 html +=
                                     '<div ng-include="\'/form/public/html/formRenderSection.html\'"' +
-                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;formElement = formElements[' + j + '];"></div>';
+                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;' +
+                                    ' formElement = formElements[' + j + '];"></div>';
 
                             html +=
                                 '</div>';
