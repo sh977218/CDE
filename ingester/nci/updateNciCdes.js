@@ -97,8 +97,8 @@ function compareCdes(existingCde, migrationCde) {
     }
 
     classificationShared.sortClassification(migrationCdeCopy);
-
-    return cdesvc.diff(existingCdeCopy, migrationCdeCopy);
+    var dif = cdesvc.diff(existingCdeCopy, migrationCdeCopy);
+    return dif;
 }
 
 function processCde(existingCde, migrationCde, xml, cb) {
@@ -127,10 +127,6 @@ function processCde(existingCde, migrationCde, xml, cb) {
         newDe.ids = migrationCde.ids;
         updateShare.mergeSources(newDe.sources, migrationCde.sources);
         newDe.properties = migrationCde.properties;
-        /*
-         newDe.properties = updateShare.removeArrayOfSource(newDe.properties, migrationCde.source);
-         newDe.properties = newDe.properties.concat(migrationCde.properties);
-         */
         newDe.registrationState = migrationCde.registrationState;
 
         updateShare.removeClassificationTree(newDe, migrationCde.classification[0].stewardOrg.name);
