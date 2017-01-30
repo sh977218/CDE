@@ -21,8 +21,9 @@
                         uoms.forEach(function (uom) {
                             html +=
                                 '<label class="input-group-addon' + (required ? ' nativeRequiredBox' : '') + '">' +
-                                '<input type="radio" ng-model="formElement.question.answerUom"' +
-                                ' value="' + uom + '" name="' + fe.questionId + '_uom" ' + required + ' ' + disabled + '/> ' + uom + '</label>';
+                                '<input type="radio" ng-model="formElement.question.answerUom" ' +
+                                'value="' + uom + '" ' +
+                                'name="' + fe.questionId + '_uom" ' + required + ' ' + disabled + '/> ' + uom + '</label>';
                         });
                         return html;
                     }
@@ -40,8 +41,9 @@
                             if ((formElement.elementType === 'question') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
                                 html +=
                                     '<div native-question' +
-                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;formElement = formElements[' + j + '];' +
-                                    'numSubQuestions=' + numSubQuestions + ';permissibleValue=\'' + pv.permissibleValue + '\';"></div>';
+                                    ' ng-init="permissibleValue=formElement.question.answers[' + i + '].permissibleValue;' +
+                                    ' formElements = formElement.question.answers[' + i + '].subQuestions;formElement = formElements[' + j + '];' +
+                                    ' numSubQuestions=' + numSubQuestions + ';"></div>';
                             if ((formElement.elementType === 'section' || formElement.elementType === 'form') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
                                 html +=
                                     '<div ng-include="\'/form/public/html/formRenderSection.html\'"' +
@@ -101,7 +103,8 @@
                                         if (!question.multiselect)
                                             htmlText +=
                                                 '<input type="radio"' +
-                                                ' ng-model="formElement.question.answer" value="' + pv.permissibleValue + '"' +
+                                                ' ng-model="formElement.question.answer" ' +
+                                                ' ng-value="formElement.question.answers[' + i + '].permissibleValue"' +
                                                 ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
                                         else
                                             htmlText +=
