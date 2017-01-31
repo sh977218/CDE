@@ -32,7 +32,7 @@ export class ClassificationService {
         }
         currentString = currentString + classif.name;
         if (classif.elements && classif.elements.length > 0) {
-            classif.elements.forEach(function (cl) {
+            classif.elements.forEach((cl) => {
                 this.doClassif(currentString, cl, result);
             });
         } else {
@@ -42,11 +42,12 @@ export class ClassificationService {
 
     flattenClassification = function(elt) {
         var result = [];
+        var here = this;
         if (elt.classification) {
             elt.classification.forEach(function (cl) {
                 if (cl.elements) {
                     cl.elements.forEach(function (subCl) {
-                        this.doClassif(cl.stewardOrg.name, subCl, result);
+                        here.doClassif(cl.stewardOrg.name, subCl, result);
                     });
                 }
             });
