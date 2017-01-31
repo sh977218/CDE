@@ -30,17 +30,7 @@ export class ProfileComponent implements OnChanges {
             if (Array.isArray(response))
                 this.cdes = response;
         });
-
-        userService.getRemoteUser();
-        userService.getPromise().then(() => {
-            if (userService.user.username) {
-                this.hasQuota = userService.user.quota;
-                this.orgCurator = userService.user.orgCurator.toString().replace(/,/g, ', ');
-                this.orgAdmin = userService.user.orgAdmin.toString().replace(/,/g, ', ');
-                this.getComments(1);
-                this.user = userService.user;
-            }
-        });
+        this.reloadUser();
     }
 
     ngOnChanges(changes) {
@@ -51,14 +41,27 @@ export class ProfileComponent implements OnChanges {
     saveProfile() {
         this.http.post('/user/me', this.user)
             .subscribe(
-                (data) => this.alert.addAlert("success", "Saved"),
+                (data) => {this.reloadUser(); this.alert.addAlert("success", "Saved")},
                 (err) => this.alert.addAlert("danger", "Error, unable to save")
             );
     }
 
+    reloadUser() {
+        this.userService.getRemoteUser();
+        this.userService.getPromise().then(() => {
+            if (this.userService.user.username) {
+                this.hasQuota = this.userService.user.quota;
+                this.orgCurator = this.userService.user.orgCurator.toString().replace(/,/g, ', ');
+                this.orgAdmin = this.userService.user.orgAdmin.toString().replace(/,/g, ', ');
+                this.getComments(1);
+                this.user = this.userService.user;
+            }
+        });
+    }
+
     removePublishedForm(pf) {
         this.user.publishedForms = this.user.publishedForms.filter(function (p) {
-            return p.id !== pf.id;
+            return p._id !== pf._id;
         });
         this.saveProfile();
     }

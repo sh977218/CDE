@@ -15,12 +15,17 @@
         </div>
 
         <div class="form-group">
-            <label tabindex="0" for="newContext">Context</label>
-             <select  ng-model="newNamePair.context.contextName" id="newContext" name="context" class="form-control">
-                <option ng-repeat="context in orgContexts" value="{{context}}">{{context}}</option>
-            </select>
-            <info>Contexts are managed in Org Management > List Management</info>
+            <label tabindex="0" for="newTags">Context</label>
+            <div id="newTags">
+                <ui-select multiple tagging ng-model="newNamePair.tags" theme="bootstrap">
+                    <ui-select-match placeholder="Select tags...">{{$item.tag}}</ui-select-match>
+                    <ui-select-choices repeat="t in allTags">
+                        {{t.tag}}
+                    </ui-select-choices>
+                </ui-select>
+            </div>
         </div>
+        <info>Contexts are managed in Org Management > List Management</info>
     </div>
     <div class="modal-footer">
         <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>

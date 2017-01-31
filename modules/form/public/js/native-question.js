@@ -21,8 +21,9 @@
                         uoms.forEach(function (uom) {
                             html +=
                                 '<label class="input-group-addon' + (required ? ' nativeRequiredBox' : '') + '">' +
-                                '<input type="radio" ng-model="formElement.question.answerUom"' +
-                                ' value="' + uom + '" name="' + fe.questionId + '_uom" ' + required + ' ' + disabled + '/> ' + uom + '</label>';
+                                '<input type="radio" ng-model="formElement.question.answerUom" ' +
+                                'value="' + uom + '" ' +
+                                'name="' + fe.questionId + '_uom" ' + required + ' ' + disabled + '/> ' + uom + '</label>';
                         });
                         return html;
                     }
@@ -37,15 +38,25 @@
                                 (!subQNonValuelist && numSubQuestions && !scope.isOneLiner(formElement,numSubQuestions)
                                     ? 'native-box' : '') + '">';
 
-                            if ((formElement.elementType === 'question') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
+                            if ((formElement.elementType === 'question') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist)) {
                                 html +=
                                     '<div native-question' +
-                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;formElement = formElements[' + j + '];' +
-                                    'numSubQuestions=' + numSubQuestions + ';permissibleValue=\'' + pv.permissibleValue + '\';"></div>';
+                                    ' ng-init="';
+
+                                if (subQNonValuelist)
+                                    html +=
+                                        'permissibleValue=formElement.question.answers[' + i + '].permissibleValue;';
+
+                                html +=
+                                    'formElements = formElement.question.answers[' + i + '].subQuestions;' +
+                                    'formElement = formElements[' + j + '];' +
+                                    'numSubQuestions=' + numSubQuestions + ';"></div>';
+                            }
                             if ((formElement.elementType === 'section' || formElement.elementType === 'form') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
                                 html +=
                                     '<div ng-include="\'/form/public/html/formRenderSection.html\'"' +
-                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;formElement = formElements[' + j + '];"></div>';
+                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;' +
+                                    ' formElement = formElements[' + j + '];"></div>';
 
                             html +=
                                 '</div>';
@@ -101,13 +112,16 @@
                                         if (!question.multiselect)
                                             htmlText +=
                                                 '<input type="radio"' +
-                                                ' ng-model="formElement.question.answer" value="' + pv.permissibleValue + '"' +
+                                                ' ng-model="formElement.question.answer" ' +
+                                                ' ng-value="formElement.question.answers[' + i + '].permissibleValue"' +
                                                 ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
                                         else
                                             htmlText +=
-                                                '<input type="checkbox"' +
-                                                ' checklist-model="formElement.question.answer" checklist-value="\'' + pv.permissibleValue + '\'"' +
-                                                ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
+                                                '<input type="checkbox" ' +
+                                                'checklist-model="formElement.question.answer" ' +
+                                                'checklist-value="formElement.question.answers[' + i + '].permissibleValue" ' +
+                                                'ng-value="formElement.question.answers[' + i + '].permissibleValue" ' +
+                                                'name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
 
                                         htmlText +=
                                             getLabel(pv) + '</label>';

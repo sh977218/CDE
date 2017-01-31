@@ -42,7 +42,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }],
             templateUrl: '/system/public/html/latestComments.html'
         }).when('/siteaccountmanagement', {
-            controller: 'AccountManagementCtrl',
+            controller: 'SiteManagementCtrl',
             templateUrl: '/system/public/html/siteAccountManagement.html'
         }).when('/orgaccountmanagement', {
             controller: 'AccountManagementCtrl',
@@ -79,7 +79,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: ["$scope", function ($scope) {
-                $scope.type = $scope.type || 'text';
+                $scope.type = $scope.inputType || 'text';
                 $scope.value = $scope.model;
                 $scope.discard = function () {
                     $scope.editMode = false;
@@ -256,7 +256,6 @@ angular.module('systemModule').filter('bytes', [function () {
 }]);
 angular.module('systemModule').factory('ClassificationUtil', upd.upgradeAdapter.downgradeNg2Provider(classificationService));
 angular.module('systemModule').factory('SkipLogicUtil', upd.upgradeAdapter.downgradeNg2Provider(skipLogicService));
-
 angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {
     return {
         new: function (type) {
@@ -349,27 +348,29 @@ angular.module('systemModule').config(['$compileProvider', function ($compilePro
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
 
-
 angular.module('systemModule').config(["$provide", function ($provide) {
     var previousException;
-    var http;
+    var lock = false;
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector',
         function ($delegate, $injector) {
             return function (exception, cause) {
                 $delegate(exception, cause);
                 if (previousException && exception.toString() === previousException.toString()) return;
                 previousException = exception;
-                if (!http) {
-                    http = $injector.get('$http');
-                }
                 try {
                     if (exception.message.indexOf("[$compile:tpload]") > -1) return;
-                    http.post('/logClientException', {
-                        stack: exception.stack,
-                        message: exception.message,
-                        name: exception.name,
-                        url: window.location.href
-                    });
+                    if (!lock) {
+                        lock = true;
+                        $injector.get('$http').post('/logClientException', {
+                            stack: exception.stack,
+                            message: exception.message,
+                            name: exception.name,
+                            url: window.location.href
+                        });
+                        $injector.get('$timeout')(function () {
+                            lock = false;
+                        }, 5000)
+                    }
                 } catch (e) {
 
                 }

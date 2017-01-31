@@ -34,7 +34,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
-    };
+    }
 
     $scope.switchCommentMode = function(){
         $scope.deferredEltLoaded.promise.then(function() {
@@ -69,7 +69,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 OrgHelpers.deferred.promise.then(function () {
-                    $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                    $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
                 });
             }
         },
@@ -196,7 +196,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                             } else {
                                 $scope.boards = response.data;
                             }
-                        });
+                        }, function (err) {console.log(err)});
                     }],
                     resolve: {
                         tinyId: function () {
@@ -454,7 +454,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.loadBoards = function() {
         $http.get("/deBoards/" + $scope.elt.tinyId).then(function(response) {
             $scope.boards = response.data;
-        });
+        }, function (err) {console.log(err)});
     };
 
     $scope.getPVTypeheadVsacNameList = function() {
@@ -466,6 +466,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.getPVTypeaheadCodeSystemNameList = function() {
         $http.get("/permissibleValueCodeSystemList").then(function(response) {
             $scope.pVTypeaheadCodeSystemNameList = response.data;
+        }, function (err) {
+            console.log(err);
         });
     };
 

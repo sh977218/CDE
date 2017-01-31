@@ -43,13 +43,13 @@ angular.module('OrgFactories', ['ngResource'])
                 response.data.forEach(function (org) {
                     if (org) {
                         if (!org.propertyKeys) org.propertyKeys = [];
-                        if (!org.nameContexts) org.nameContexts = [];
+                        if (!org.nameTags) org.nameTags = [];
                         OrgHelpers.orgsDetailedInfo[org.name] = org;
                     }
                 });
                 OrgHelpers.deferred.resolve();
                 if (cb) cb();
-            }).catch(function onError() {
+            }, function onError() {
                 console.log("Cannot get org detailed info.");
             });
         }

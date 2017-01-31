@@ -5,7 +5,9 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
 
         function refreshContexts(){
             OrgHelpers.deferred.promise.then(function () {
-                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags.map(function (a) {
+                    return {tag: a};
+                });
                 contextsLoaded.resolve();
             });
         }
@@ -13,7 +15,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
         $scope.deferredEltLoaded.promise.then(refreshContexts);
 
         $scope.openNewNamePair = function () {
-            if (!$scope.allContexts || $scope.allContexts.length === 0) {
+            if (!$scope.allTags || $scope.allTags.length === 0) {
                 Alert.addAlert("warning", "No valid context present, have an Org Admin go to Org Management > List Management to add one");
                 return;
             }
@@ -27,8 +29,8 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
                         cde: function () {
                             return $scope.elt;
                         },
-                        context: function () {
-                            return $scope.allContexts;
+                        allTags: function () {
+                            return $scope.allTags;
                         }
                     }
                 }).result.then(function () {}, function() {});
@@ -37,7 +39,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
 
         $scope.stageNewName = function (namePair) {
             $scope.stageElt($scope.elt);
-            namePair.editMode = false;
+            namePair.tags.editMode = true;
         };
 
         $scope.cancelSave = function (namePair) {

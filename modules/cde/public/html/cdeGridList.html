@@ -28,7 +28,8 @@
                 <td ng-if="searchViewSettings.tableViewFields.questionTexts" class="naming">
                     <ul>
                         <li ng-repeat="name in getQuestionTexts(c) | limitTo: maxLines" ng-show="name.designation">
-                            {{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
+                            {{name.designation | limitTo: lineLength}}
+                            <span ng-show="name.designation.length>lineLength">...</span></li>
                         <li class="lastItem" ng-show="getQuestionTexts(c).length > maxLines">...</li>
                     </ul>
                 </td>

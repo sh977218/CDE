@@ -8,9 +8,11 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
             $scope.searchForm = {};
             $scope.classifSubEltPage = '/form/public/html/classif-elt-createForm.html';
 
-            if (userResource.userOrgs.length === 1) {
-                $scope.elt.stewardOrg.name = userResource.userOrgs[0];
-            }
+            userResource.getPromise().then(function() {
+                if (userResource.userOrgs && userResource.userOrgs.length === 1) {
+                    $scope.elt.stewardOrg.name = userResource.userOrgs[0];
+                }
+            });
 
             $scope.validationErrors = function () {
                 if (!$scope.elt.naming[0].designation) {

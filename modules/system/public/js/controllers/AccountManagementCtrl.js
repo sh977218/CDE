@@ -32,13 +32,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $http.get("/systemAlert").then(function onSuccess(response) {
        $scope.broadcast = {message: response.data}; 
     }).catch(function onError() {});
-        
-    $scope.getSiteAdmins = function() {
-        return $http.get("/siteAdmins").then(function(response) {
-            $scope.siteAdmins = response.data;
-        });
-    };
-    $scope.getSiteAdmins();
 
     var allPropertyKeys = [];
     var allContexts = [];
@@ -50,8 +43,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                 if (o.propertyKeys) {
                     allPropertyKeys = allPropertyKeys.concat(o.propertyKeys);
                 }
-                if (o.nameContexts) {
-                    allContexts = allContexts.concat(o.nameContexts);
+                if (o.nameTags) {
+                    allContexts = allContexts.concat(o.nameTags);
                 }
             });
             allPropertyKeys = allPropertyKeys.filter(function(item, pos, self) {
@@ -77,8 +70,9 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.getMyOrgAdmins = function() {
         $http.get("/myOrgsAdmins").then(function(response) {
             $scope.myOrgAdmins = response.data.orgs;
-            $scope.admin.orgName = $scope.myOrgAdmins[0].name;
-        });
+            if ($scope.myOrgAdmins && $scope.myOrgAdmins.length > 0)
+                $scope.admin.orgName = $scope.myOrgAdmins[0].name;
+        }, function () {});
     };
     $scope.getMyOrgAdmins();
     
@@ -234,7 +228,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $scope.updateOrg(org);
     };
     $scope.removeContextFromOrg = function(c, org) {
-        org.nameContexts = org.nameContexts.filter(function (k) {
+        org.nameTags = org.nameTags.filter(function (k) {
             return k !== c;
         });
         $scope.updateOrg(org);
@@ -256,7 +250,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             templateUrl: '/system/public/html/addValueModal.html',
             controller: function () {}
         }).result.then(function (newValue) {
-            org.nameContexts.push(newValue);
+            org.nameTags.push(newValue);
             $scope.updateOrg(org);
         }, function () {});
     };

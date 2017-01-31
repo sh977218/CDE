@@ -97,8 +97,10 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
         $scope.createSubmitMapping();
         setSelectedProfile();
     });
-    $scope.createSubmitMapping();
-    setSelectedProfile();
+    $scope.deferredEltLoaded.promise.then(function () {
+        $scope.createSubmitMapping();
+        setSelectedProfile();
+    });
 
     var removeAnswers = function (formElt) {
         if (formElt.question) delete formElt.question.answer;
@@ -204,7 +206,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
         var realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ? $scope.score(realAnswerObj) : realAnswerObj.question.answer) : undefined;
         if (expectedAnswer === "") {
             if (realAnswerObj.question.datatype === 'Number') {
-                if (realAnswer === null || Number.isNaN(realAnswer)) return true;
+                if (realAnswer === null || isNaN(realAnswer)) return true;
             } else {
                 if (!realAnswer || ("" + realAnswer).trim().length === 0) return true;
             }
@@ -248,6 +250,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     };
 
     $scope.canBeDisplayedAsMatrix = function (section) {
+        if (!section) return true;
         var result = true;
         var answerHash;
         if (section && section.formElements && section.formElements.length === 0)

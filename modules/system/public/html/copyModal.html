@@ -10,6 +10,6 @@
     </span>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancelCopy()" id="cancelCopy">Cancel</button>
+    <button class="btn btn-warning" ng-click="$dismiss()" id="cancelCopy">Cancel</button>
     <button class="btn btn-success" ng-click="saveCopy()" id="saveCopy" ng-disabled="validationErrors() !== null || !isNameNew()">Save</button>
 </div>

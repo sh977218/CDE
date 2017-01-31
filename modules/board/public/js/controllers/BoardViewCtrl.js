@@ -212,13 +212,15 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
             $scope.modifiedSinceReview = function () {
                 var isModifiedSinceReview = false;
-                $scope.board.users.forEach(function (u) {
-                    if (u.username === userResource.user.username &&
-                        u.role === 'reviewer' && u.status.approval === 'approved'
-                        && new Date($scope.board.updatedDate) >= new Date(u.status.reviewedDate)) {
-                        isModifiedSinceReview = true;
-                    }
-                });
+                if (userResource.user) {
+                    $scope.board.users.forEach(function (u) {
+                        if (u.username === userResource.user.username &&
+                            u.role === 'reviewer' && u.status.approval === 'approved'
+                            && new Date($scope.board.updatedDate) >= new Date(u.status.reviewedDate)) {
+                            isModifiedSinceReview = true;
+                        }
+                    });
+                }
                 return isModifiedSinceReview;
             };
 
