@@ -1,3 +1,4 @@
+var socketIo = require('../../../../cde/public/assets/js/socket.io');
 angular.module('systemModule').controller('CommentsCtrl',
     ['$scope', '$http', '$timeout', 'userResource', 'Alert',
         function ($scope, $http, $timeout, userResource, Alert) {
@@ -28,7 +29,7 @@ angular.module('systemModule').controller('CommentsCtrl',
 
             $scope.newComment = {};
 
-            var socket = io.connect(window.publicUrl + "/comment");
+            var socket = socketIo.connect(window.publicUrl + "/comment");
             socket.emit("room", $scope.getEltId());
             socket.on("commentUpdated", loadComments);
             socket.on("userTyping", function (data) {

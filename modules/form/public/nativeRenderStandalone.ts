@@ -48,7 +48,7 @@ import * as authShared from '../../system/shared/authorizationShared';
 import '../../system/shared/exportShared';
 import '../../system/shared/compareShared';
 import '../../system/public/js/controllers/MainCtrl';
-import '../../cde/public/assets/js/socket.io';
+//import '../../cde/public/assets/js/socket.io';
 import '../../cde/public/assets/js/diff_match_patch';
 import '../../cde/public/assets/js/match-media';
 import '../../cde/public/assets/js/FileSaver';
