@@ -33,10 +33,7 @@ function parseNaming(de) {
         designation: entities.decodeXML(de.LONGNAME[0]),
         definition: entities.decodeXML(de.PREFERREDDEFINITION[0]),
         languageCode: "EN-US",
-        context: {
-            contextName: "Health",
-            acceptability: "preferred"
-        }
+        tags: [{tag: "Health"}]
     }];
     if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
         de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function (refDoc) {
@@ -45,10 +42,7 @@ function parseNaming(de) {
                     designation: entities.decodeXML(refDoc.DocumentText[0]),
                     definition: entities.decodeXML(refDoc.Name[0]),
                     languageCode: "EN-US",
-                    context: {
-                        contextName: refDoc.DocumentType[0],
-                        acceptability: "preferred"
-                    }
+                    tags: [{tag: refDoc.DocumentType[0]}]
                 });
             }
         });
@@ -92,7 +86,6 @@ function parseProperties(de) {
 
 function parseRegistrationState(de, orgInfo) {
     var registrationState = {
-//        registrationStatus: orgInfo.statusMapping[de.REGISTRATIONSTATUS[0]],
         registrationStatus: 'Qualified',
         administrativeStatus: de.WORKFLOWSTATUS[0]
     };
@@ -133,7 +126,7 @@ function parseReferenceDocuments(de) {
 
 function parseOrigin(de) {
     var origin = '';
-    if (de.ORIGIN && de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
+    if (de.ORIGIN && de.ORIGIN[0] && de.ORIGIN[0].length > 0 && (typeof de.ORIGIN[0]) === 'string') {
         origin = de.ORIGIN[0];
     }
     return origin;
@@ -203,12 +196,15 @@ function parseClassification(cde, org, orgInfo, de) {
             var ctxName = csi.ClassificationScheme[0].ContextName[0];
             var _ctxName = ctxName;
             if (orgInfo.classificationMap) {
+                if (orgInfo.mapAllClassification)
+                    _ctxName = orgInfo.mapAllClassification;
+                else
                 _ctxName = orgInfo.classificationMap[orgInfo.orgName];
             }
             var classificationAllowed = csi.ClassificationSchemeItemName[0];
             if (orgInfo.filter(ctxName, classificationAllowed)) {
                 classificationShared.classifyItem(cde, classificationOrgName, [_ctxName, classificationName]);
-                classificationShared.addCategory({elements: org.classifications}, [ctxName, classificationName]);
+                classificationShared.addCategory({elements: org.classifications}, [_ctxName, classificationName]);
             }
         });
     }
@@ -260,20 +256,6 @@ function parseValueDomain(cde, de) {
             };
             if (!pv.MEANINGCONCEPTS[0][$attribute]) {
                 var valueMeaningCodeString = pv.MEANINGCONCEPTS[0].replace(/,/g, ':');
-/*
-                var valueMeaningCodeArray = valueMeaningCodeString.split(':');
-                for (var i = 0; i < valueMeaningCodeArray.length; i++) {
-                    var valueMeaningCode = valueMeaningCodeArray[i];
-                    var codeSystem = getCodeSystem(valueMeaningCode);
-                    if (newPv.codeSystemName === '') {
-                        newPv.codeSystemName = codeSystem;
-                    } else if (newPv.codeSystemName !== codeSystem) {
-                        newPv.codeSystemName = '';
-                    } else {
-                        newPv.codeSystemName = codeSystem;
-                    }
-                }
-*/
                 newPv.valueMeaningCode = valueMeaningCodeString;
 
             }

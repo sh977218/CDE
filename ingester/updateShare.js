@@ -54,6 +54,8 @@ exports.wipeUseless = function (toWipe) {
     delete toWipe.tinyId;
     delete toWipe.changeNote;
     delete toWipe.attachments;
+    delete toWipe.lastMigrationScript;
+    if (toWipe.origin === '') delete toWipe.origin;
     if (toWipe.valueDomain)
         delete toWipe.valueDomain.datatypeValueList;
 
