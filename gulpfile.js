@@ -15,7 +15,8 @@ var gulp = require('gulp'),
     spawn = require('child_process').spawn,
     elastic = require('./modules/system/node-js/createIndexes'),
     git = require('gulp-git'),
-    templateCache = require('gulp-angular-templatecache')
+    templateCache = require('gulp-angular-templatecache'),
+    run = require('gulp-run')
     ;
 
 require('es6-promise').polyfill();
@@ -178,6 +179,11 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function () {
     });
 });
 
+gulp.task('webpack', function () {
+    return run('npm run build').exec(undefined,
+        () => gulp.src('./modules/static/*.js').pipe(gulp.dest(config.node.buildDir + "/modules/static/")));
+});
+
 gulp.task('emptyTemplates', ['usemin'], function () {
     ['cde', 'form', 'system', 'article', 'embedded', 'board'].forEach(function (module) {
         return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
@@ -217,6 +223,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin', 'emptyTemplates']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin', 'webpack', 'emptyTemplates']);
 
 

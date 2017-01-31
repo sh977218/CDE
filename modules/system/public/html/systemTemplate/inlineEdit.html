@@ -6,7 +6,7 @@
         <span ng-if="!linkSource">{{model | placeHoldEmpty}}</span>
     </span>
     <form name="inlineForm" ng-if="editMode">
-        <input name="inlineInput" type="{{type}}" autocomplete="off" ng-model="value"
+        <input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value"
                uib-typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8"
                class="form-control typeahead"/>
         <button class="btn btn-default btn-sm fa fa-check" ng-click="save();"
