@@ -250,6 +250,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     };
 
     $scope.canBeDisplayedAsMatrix = function (section) {
+        if (!section) return true;
         var result = true;
         var answerHash;
         if (section && section.formElements && section.formElements.length === 0)

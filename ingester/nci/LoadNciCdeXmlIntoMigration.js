@@ -4,10 +4,10 @@ var xml2js = require('xml2js');
 var parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString;
 var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationNCICdeXmlModel;
 
-var xmlFolder = 'S:/CDE/NCI/CDE XML/';
+var xmlFolder = 'S:/MLB/CDE/NCI/CDE XML/';
 var xmlFileMapping = {
     'bpv.xml': 'NCI-BPV',
-    'standard.xml': 'NCI',
+    'standard.xml': 'NCI Preferred Standards',
     'gtex.xml': 'NCI-GTEx'
 };
 
