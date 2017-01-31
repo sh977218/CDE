@@ -10,7 +10,7 @@ function doLoadPhenxMeasure(done) {
     var measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
     driver.findElements(webdriver.By.xpath(measureXpath)).then(function (measureLinks) {
         async.eachSeries(measureLinks, function (measureLink, doneOneMeasureLink) {
-            var measure = {};
+            var measure = {protocols: []};
             async.series([
                 function parsingMeasureBrowseId(doneParsingMeasureBrowserId) {
                     measureLink.findElement(webdriver.By.css('span')).getText().then(function (browserIdText) {
