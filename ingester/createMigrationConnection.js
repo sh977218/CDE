@@ -74,10 +74,21 @@ exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', 
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson, {
     collection: 'forms'
 }));
-
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson, {
     collection: 'orgs'
 }));
+
+// PHENX
+exports.MigrationMeasureModel = migrationConn.model('MigrationMeasure', new Schema({}, {
+    strict: false,
+    collection: 'Measure'
+}));
+exports.MigrationCacheModel = migrationConn.model('MigrationCache', new Schema({}, {
+    strict: false,
+    collection: 'Cache'
+}));
+exports.PhenxURL = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
+
 
 // MIGRATION REFERENCE COLLECTION
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {

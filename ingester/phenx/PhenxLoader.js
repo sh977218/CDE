@@ -1,25 +1,16 @@
-var webdriver = require('selenium-webdriver'),
-    mongoose = require('mongoose'),
-    config = require('../../modules/system/node-js/parseConfig'),
-    cde_schemas = require('../../modules/cde/node-js/schemas'),
-    classificationShared = require('../../modules/system/shared/classificationShared'),
-    mongo_data_system = require('../../modules/system/node-js/mongo-data'),
-    OrgModel = mongo_data_system.Org,
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    mongo_form = require('../../modules/form/node-js/mongo-form'),
-    async = require('async')
-    ;
+var webdriver = require('selenium-webdriver');
+var mongoose = require('mongoose');
+var async = require('async');
+var classificationShared = require('../../modules/system/shared/classificationShared');
+var mongo_data_system = require('../../modules/system/node-js/mongo-data');
+var OrgModel = mongo_data_system.Org;
+var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
+var mongo_form = require('../../modules/form/node-js/mongo-form');
+var baseUrl = require('../createMigrationConnection').PhenxURL;
+var Measure = require('../createMigrationConnection').MigrationMeasureModel;
+var DataElement = require('../createMigrationConnection').MigrationDataElementModel;
+var Cache = require('../createMigrationConnection').MigrationCacheModel;
 
-// global variables
-var baseUrl = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
-var mongoUrl = config.mongoUri;
-var conn = mongoose.createConnection(mongoUrl);
-var cacheSchema = mongoose.Schema({}, {strict: false});
-var measureSchema = mongoose.Schema({}, {strict: false});
-var Measure = conn.model('measure', measureSchema);
-var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
-var Cache = conn.model('cache', cacheSchema);
-var user = {username: "batchloader"};
 var phenxOrg = null;
 var nciOrg = null;
 
@@ -605,7 +596,7 @@ var parsingPanel = function (driver, element, numElements, doneOneElement) {
 };
 
 var f = function (elements, doneOneProtocol) {
-    var driver4 = new webdriver.Builder().forBrowser('firefox').build();
+    var driver4 = new webdriver.Builder().forBrowser('chrome').build();
     async.eachSeries(elements, function (element, doneOneElement) {
         if (element['type'] === 'Question') {
             parsingQuestion(driver4, element, doneOneElement);
