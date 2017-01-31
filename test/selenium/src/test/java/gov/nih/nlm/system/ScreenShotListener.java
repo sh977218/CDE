@@ -59,7 +59,9 @@ public class ScreenShotListener extends TestListenerAdapter {
             sb.append("URL when failed: " + driver.getCurrentUrl());
         }
         for (LogEntry entry : logEntries) {
-            if (!entry.getMessage().contains("Range.detach"))
+            if (!entry.getMessage().contains("Range.detach")
+                    && !entry.getMessage().contains("https://goo.gl/zmWq3m")
+                    )
                 sb.append(new Date(entry.getTimestamp()));
             sb.append(" ");
             sb.append(entry.getLevel());
