@@ -203,7 +203,11 @@ function parseClassification(cde, org, orgInfo, de) {
             }
             var classificationAllowed = csi.ClassificationSchemeItemName[0];
             if (orgInfo.filter(ctxName, classificationAllowed)) {
-                classificationShared.classifyItem(cde, classificationOrgName, [_ctxName, classificationName]);
+                if (orgInfo.mapAllClassification) {
+                    classificationShared.classifyItem(cde, classificationOrgName, [_ctxName]);
+                } else {
+                    classificationShared.classifyItem(cde, classificationOrgName, [_ctxName, classificationName]);
+                }
                 classificationShared.addCategory({elements: org.classifications}, [_ctxName, classificationName]);
             }
         });
