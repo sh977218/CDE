@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-    selector: 'nih-cde',
+    selector: "nih-cde",
     template: ``
 })
-export class CdeAppComponent { name = 'Angular 2'; }
+export class CdeAppComponent { name = "Angular 2"; }

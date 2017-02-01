@@ -1,6 +1,6 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
-@Pipe({name: 'placeholder'})
+@Pipe({name: "placeholder"})
 export class PlaceHoldEmptyPipe implements PipeTransform {
     transform(input: string) {
         if (input === undefined || input === null || input === "NaN")

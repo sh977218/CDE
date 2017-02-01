@@ -13,10 +13,8 @@ module.exports = {
     },
     devtool: 'source-map',
     module: {
-        preloaders: [
-            {test: /.ts$/, exclude: /node_modules/, loader: 'tshint-loader'}
-        ],
-        loaders: [
+        rules: [
+            {test: /.ts$/, enforce: "pre", exclude: /node_modules/, loader: 'tslint-loader'},
             {test: /\.ts$/, exclude: /node_modules/, loaders: ['awesome-typescript-loader', 'angular2-template-loader']},
             {test: /\.css$/, loader: 'style!css'},
             {test: /\.ejs$/, loader: 'ejs-loader'},
@@ -25,8 +23,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ["", ".ts", ".tsx", ".js", ".html", ".css"],
-        modulesDirectories: ["modules/components", "node_modules"]
+        extensions: [".ts", ".tsx", ".js", ".html", ".css"]
     },
     externals: {
         angular: true

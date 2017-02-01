@@ -1,20 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable()
 export class SkipLogicService {
     tokenSplitter(str) {
-        var tokens:any = [];
+        let tokens: any = [];
         if (!str) {
             tokens.unmatched = "";
             return tokens;
         }
         str = str.trim();
-        var res = str.match(/^"[^"]+"/);
+        let res = str.match(/^"[^"]+"/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
         }
-        var t = res[0];
+        let t = res[0];
         str = str.substring(t.length).trim();
         t = t.substring(1, t.length - 1);
         tokens.push(t);
@@ -34,7 +34,7 @@ export class SkipLogicService {
             return tokens;
         }
         t = res[0];
-        var newT = res[0].substring(1, t.length - 1);
+        let newT = res[0].substring(1, t.length - 1);
         tokens.push(newT);
         str = str.substr(t.length).trim();
 
@@ -50,8 +50,8 @@ export class SkipLogicService {
         tokens.unmatched = str;
 
         if (str.length > 0) {
-            var innerTokens = this.tokenSplitter(str);
-            var outerTokens = tokens.concat(innerTokens);
+            let innerTokens = this.tokenSplitter(str);
+            let outerTokens = tokens.concat(innerTokens);
             outerTokens.unmatched = innerTokens.unmatched;
             return outerTokens;
         } else {

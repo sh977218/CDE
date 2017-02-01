@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable()
 export class ClassificationService {
@@ -6,14 +6,14 @@ export class ClassificationService {
         elt.classification = elt.classification.sort(function (c1, c2) {
             return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
         });
-        var sortSubClassif = function (classif) {
+        let sortSubClassif = function (classif) {
             if (classif.elements) {
                 classif.elements = classif.elements.sort(function (c1, c2) {
                     return c1.name.localeCompare(c2.name);
                 });
             }
         };
-        var doRecurse = function (classif) {
+        let doRecurse = function (classif) {
             sortSubClassif(classif);
             if (classif.elements) {
                 classif.elements.forEach(function (subElt) {
@@ -28,7 +28,7 @@ export class ClassificationService {
 
     doClassif(currentString, classif, result) {
         if (currentString.length > 0) {
-            currentString = currentString + ' | ';
+            currentString = currentString + " | ";
         }
         currentString = currentString + classif.name;
         if (classif.elements && classif.elements.length > 0) {
@@ -40,14 +40,13 @@ export class ClassificationService {
         }
     }
 
-    flattenClassification = function(elt) {
-        var result = [];
-        var here = this;
+    flattenClassification(elt) {
+        let result = [];
         if (elt.classification) {
-            elt.classification.forEach(function (cl) {
+            elt.classification.forEach((cl) => {
                 if (cl.elements) {
-                    cl.elements.forEach(function (subCl) {
-                        here.doClassif(cl.stewardOrg.name, subCl, result);
+                    cl.elements.forEach((subCl) => {
+                        this.doClassif(cl.stewardOrg.name, subCl, result);
                     });
                 }
             });

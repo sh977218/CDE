@@ -1,19 +1,19 @@
-import {Component, OnChanges, Inject} from '@angular/core';
-import {Http, Response} from '@angular/http';
-import 'rxjs/add/operator/map';
+import {Component, OnChanges, Inject} from "@angular/core";
+import {Http, Response} from "@angular/http";
+import "rxjs/add/operator/map";
 
 export class UserComments {
-    constructor(public currentCommentsPage:number,
-                public totalItems:number,
-                public latestComments:Array<any>) {}
+    constructor(public currentCommentsPage: number,
+                public totalItems: number,
+                public latestComments: Array<any>) {}
 }
 
 @Component({
-    selector: 'cde-profile',
-    templateUrl: './profile.component.html'
+    selector: "cde-profile",
+    templateUrl: "./profile.component.html"
 })
 export class ProfileComponent implements OnChanges {
-    comments:UserComments = new UserComments(1, 10000, []);
+    comments: UserComments = new UserComments(1, 10000, []);
     cdes: any;
     hasQuota: any;
     orgCurator: string;
@@ -21,9 +21,9 @@ export class ProfileComponent implements OnChanges {
     user: any;
 
     constructor(private http: Http,
-                @Inject('Alert') private alert,
-                @Inject('userResource') private userService,
-                @Inject('ViewingHistory') private viewingHistoryService) {
+                @Inject("Alert") private alert,
+                @Inject("userResource") private userService,
+                @Inject("ViewingHistory") private viewingHistoryService) {
         viewingHistoryService.getViewingHistory();
         viewingHistoryService.getPromise().then((response) => {
             this.cdes = [];
@@ -34,14 +34,17 @@ export class ProfileComponent implements OnChanges {
     }
 
     ngOnChanges(changes) {
-        if (changes.comments && changes.comments.currentValue.currentCommentsPage != changes.comments.oldValue.currentCommentsPage)
+        if (changes.comments && changes.comments.currentValue.currentCommentsPage !== changes.comments.oldValue.currentCommentsPage)
             this.getComments(this.comments.currentCommentsPage);
     }
 
     saveProfile() {
-        this.http.post('/user/me', this.user)
+        this.http.post("/user/me", this.user)
             .subscribe(
-                (data) => {this.reloadUser(); this.alert.addAlert("success", "Saved")},
+                (data) => {
+                    this.reloadUser();
+                    this.alert.addAlert("success", "Saved");
+                },
                 (err) => this.alert.addAlert("danger", "Error, unable to save")
             );
     }
@@ -51,8 +54,8 @@ export class ProfileComponent implements OnChanges {
         this.userService.getPromise().then(() => {
             if (this.userService.user.username) {
                 this.hasQuota = this.userService.user.quota;
-                this.orgCurator = this.userService.user.orgCurator.toString().replace(/,/g, ', ');
-                this.orgAdmin = this.userService.user.orgAdmin.toString().replace(/,/g, ', ');
+                this.orgCurator = this.userService.user.orgCurator.toString().replace(/,/g, ", ");
+                this.orgAdmin = this.userService.user.orgAdmin.toString().replace(/,/g, ", ");
                 this.getComments(1);
                 this.user = this.userService.user;
             }
