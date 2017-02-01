@@ -1,5 +1,6 @@
 var authShared = require('../../../../system/shared/authorizationShared');
 var exportShared = require('../../../../system/shared/exportShared');
+var fileSaver = require('../../../../cde/public/assets/js/FileSaver');
 var formShared = require('../../../../form/shared/formShared');
 
 angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http',
@@ -34,12 +35,12 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                                 csv += exportShared.convertToCsv(exportShared.projectCdeForExport(ele, settings.tableViewFields));
                             });
                             var blob = new Blob([csv], {type: "text/csv"});
-                            saveAs(blob, 'SearchExport.csv');  // jshint ignore:line
+                            fileSaver.saveAs(blob, 'SearchExport.csv');  // jshint ignore:line
                         });
                     },
                     'json': function (result) {
                         var blob = new Blob([result], {type: "application/json"});
-                        saveAs(blob, "SearchExport.json");  // jshint ignore:line
+                        fileSaver.saveAs(blob, "SearchExport.json");  // jshint ignore:line
                     },
                     'xml': function (result) {
                         var zip = new JSZip();  // jshint ignore:line
@@ -47,7 +48,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                             zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt}));  // jshint ignore:line
                         });
                         var content = zip.generate({type: "blob"});
-                        saveAs(content, "SearchExport_XML.zip");  // jshint ignore:line
+                        fileSaver.saveAs(content, "SearchExport_XML.zip");  // jshint ignore:line
                     },
                     'odm': function (result) {
                         var zip = new JSZip();  // jshint ignore:line
@@ -57,7 +58,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                             });
                         });
                         var content = zip.generate({type: "blob"});
-                        saveAs(content, "SearchExport_ODM.zip");  // jshint ignore:line
+                        fileSaver.saveAs(content, "SearchExport_ODM.zip");  // jshint ignore:line
                     },
                     'validationRules': function(result){
                         var orgName = exportSettings.searchSettings.selectedOrg;
@@ -105,7 +106,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                     var blob = new Blob([result], {
                         type: "text/csv"
                     });
-                    saveAs(blob, 'QuickBoardExport' + '.csv'); // jshint ignore:line
+                    fileSaver.saveAs(blob, 'QuickBoardExport' + '.csv'); // jshint ignore:line
                     $scope.addAlert("success", "Export downloaded.");
                     $scope.feedbackClass = ["fa-download"];
                 } else {

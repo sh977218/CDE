@@ -1,4 +1,5 @@
 var exportShared = require('../../../../system/shared/exportShared');
+var fileSaver = require('../../../../cde/public/assets/js/FileSaver');
 
 angular.module('cdeModule').controller('BoardViewCtrl',
     ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert', '$q',
@@ -104,7 +105,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                 var blob = new Blob([csv], {
                                     type: "text/csv"
                                 });
-                                saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
+                                fileSaver.saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
                                 Alert.addAlert("success", "Export downloaded.");
                                 $scope.feedbackClass = ["fa-download"];
                             } else {

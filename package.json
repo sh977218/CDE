@@ -2,7 +2,7 @@
   "name": "ludetc-cdes",
   "version": "0.0.1",
   "scripts": {
-    "build": "webpack --optimize-dedupe --optimize-minimize --optimize-occurrence-order",
+    "build": "webpack --config webpack-aot.config.js",
     "start": "node app.js",
     "dev": "webpack -d --watch --progress",
     "devbuild": "webpack -d"
