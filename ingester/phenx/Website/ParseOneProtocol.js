@@ -2,7 +2,7 @@ var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 var async = require('async');
 var driver = new webdriver.Builder().forBrowser('chrome').build();
-var ParseSource = require('./ParseSource');
+var LoadFromLoincSite = require('../../loinc/Website/LOINCLoader');
 
 var tasks = [{
     sectionName: 'Protocol Release Date',
@@ -27,7 +27,7 @@ var tasks = [{
 }, {
     sectionName: 'Variables',
     function: parseTableContent,
-    xpath: "//*[@id='element_VARIABLES']"
+    xpath: "//*[@id='element_VARIABLES']//table"
 }, {
     sectionName: 'Selection Rationale',
     function: parseTextContent,
@@ -58,8 +58,8 @@ var tasks = [{
     xpath: "//*[@id='element_EQUIPMENT_NEEDS']"
 }, {
     sectionName: 'Standards',
-    function: parseTextContent,
-    xpath: "//*[@id='element_STANDARDS']"
+    function: parseTableContent,
+    xpath: "//*[@id='element_STANDARDS']//table"
 }, {
     sectionName: 'General References',
     function: parseTextContent,
@@ -75,7 +75,7 @@ var tasks = [{
 }, {
     sectionName: 'Requirements',
     function: parseTableContent,
-    xpath: "//*[@id='element_REQUIREMENTS']"
+    xpath: "//*[@id='element_REQUIREMENTS']//table"
 }, {
     sectionName: 'Process and Review',
     function: parseTextContent,
@@ -84,62 +84,53 @@ var tasks = [{
 
 function parseTextContent(obj, task, element, cb) {
     element.getText().then(function (text) {
-        object[task.sectionName] = text.trim();
+        obj[task.sectionName] = text.trim();
         cb();
     });
 }
 
 function parseTableContent(obj, task, element, cb) {
-
-}
-
-function parseStandards(obj, task, element, cb) {
-    var standards = [];
-    element.findElements(By.xpath("//table/tbody/tr[td]")).then(function (trs) {
-        async.eachSeries(trs, function (tr, doneOneStandardsTr) {
-            var standard = {};
-            tr.findElements(webdriver.By.css('td')).then(function (tds) {
-                async.parallel({
-                    parsingStandard: function (doneParsingStandard) {
-                        tds[0].getText().then(function (text) {
-                            standard['Standard'] = text;
-                            doneParsingStandard();
-                        });
-                    },
-                    parsingName: function (doneParsingName) {
-                        tds[1].getText().then(function (text) {
-                            standard['Name'] = text;
-                            doneParsingName();
-                        });
-                    },
-                    parsingId: function (doneParsingId) {
-                        tds[2].getText().then(function (text) {
-                            standard['ID'] = text;
-                            doneParsingId();
-                        });
-                    },
-                    parsingSource: function (doneParsingSource) {
-                        var source = {};
-                        tds[3].getText().then(function (text) {
-                            source.text = text.trim();
-                            if (text.trim() === 'LOINC') {
-                                // loinc loader
-                            } else {
-                                standard['Source'] = source;
-                                doneParsingSource();
-                            }
-                        });
-                    }
-                }, function doneAllStandardsTds() {
-                    standards.push(standard);
-                    doneOneStandardsTr();
-                });
+    var records = [];
+    element.findElements(By.xpath('tbody/tr')).then(function (trs) {
+        var keys = [];
+        async.series([function getTableHeader(doneGetTableHeader) {
+            trs[0].findElements(By.xpath('th')).then(function (ths) {
+                async.forEachSeries(ths, function (th, doneOneTh) {
+                    th.getText().then(function (keyText) {
+                        keys.push(keyText.trim());
+                        doneOneTh();
+                    })
+                }, function doneAllThs() {
+                    trs.shift();
+                    doneGetTableHeader();
+                })
+            })
+        }, function getTableContent(doneGetTableContent) {
+            async.forEachSeries(trs, function (tr, doneOneTr) {
+                var record = {};
+                tr.findElements(By.xpath('td')).then(function (tds) {
+                    var i = 0;
+                    async.forEachSeries(tds, function (td, doneOneTd) {
+                        td.getText().then(function (tdText) {
+                            record[keys[i]] = tdText.trim();
+                            i++;
+                            doneOneTd();
+                        })
+                    }, function doneAllTds() {
+                        i = 0;
+                        records.push(record);
+                        record = {};
+                        doneOneTr();
+                    })
+                })
+            }, function doneAllTrs() {
+                doneGetTableContent();
             });
-        }, function doneAllStandardsTrs() {
-            object['Standards'] = standards;
+        }], function () {
+            obj[task.sectionName] = records;
             cb();
         });
-    });
+    })
 }
 
 function parseOneSection(protocol, key, id, done) {
@@ -192,6 +183,19 @@ exports.parseProtocol = function (measure, link, cb) {
         async.forEach(tasks, function (task, doneOneTask) {
             doTask(driver, task, measure, doneOneTask);
         }, function doneAllTask() {
+            async.forEachSeries(measure['Standards'], function (standard, doneOneStandard) {
+                if (standard.Source === 'LOINC') {
+                    LoadFromLoincSite.runArray([standard.ID], 'PhenX', function (a) {
+                        console.log('a');
+                    }, function (loinc) {
+                        doneOneStandard();
+                    })
+                } else {
+                    doneOneStandard();
+                }
+            }, function doneAllStandards() {
+                cb();
+            });
             cb();
         })
     });

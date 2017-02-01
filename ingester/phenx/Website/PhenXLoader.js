@@ -1,15 +1,17 @@
 var webdriver = require('selenium-webdriver');
 var async = require('async');
-var baseUrl = require('../createMigrationConnection').PhenxURL;
-var MigrationMeasureModel = require('../createMigrationConnection').MigrationMeasureModel;
+var baseUrl = require('../../createMigrationConnection').PhenxURL;
+var MigrationMeasureModel = require('../../createMigrationConnection').MigrationMeasureModel;
 var ParseOneMeasure = require('./ParseOneMeasure');
+
+var measureCount = 0;
 
 function doLoadPhenxMeasure(done) {
     var driver = new webdriver.Builder().forBrowser('chrome').build();
     driver.get(baseUrl);
     var measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
     driver.findElements(webdriver.By.xpath(measureXpath)).then(function (measureLinks) {
-        async.eachSeries(measureLinks, function (measureLink, doneOneMeasureLink) {
+        async.forEachSeries(measureLinks, function (measureLink, doneOneMeasureLink) {
             var measure = {protocols: []};
             async.series([
                 function parsingMeasureBrowseId(doneParsingMeasureBrowserId) {
@@ -27,7 +29,16 @@ function doLoadPhenxMeasure(done) {
                 function parseOneMeasure(doneParseOneMeasure) {
                     ParseOneMeasure.parseOneMeasure(measure, doneParseOneMeasure);
                 }
-            ]);
+            ], function () {
+                new MigrationMeasureModel(measure).save(function (e) {
+                    if (e) throw e;
+                    else {
+                        measureCount++;
+                        console.log('measureCount: ' + measureCount);
+                        doneOneMeasureLink();
+                    }
+                })
+            });
         })
     })
 }
@@ -52,3 +63,5 @@ exports.run = function (cb) {
             }
         }])
 };
+
+exports.run();
