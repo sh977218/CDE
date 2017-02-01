@@ -2,151 +2,148 @@ var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 var async = require('async');
 var driver = new webdriver.Builder().forBrowser('chrome').build();
+var ParseSource = require('./ParseSource');
+
+var tasks = [{
+    sectionName: 'Protocol Release Date',
+    function: parseTextContent,
+    xpath: "//*[@id='element_RELEASE_DATE']"
+}, {
+    sectionName: 'Protocol Name From Source',
+    function: parseTextContent,
+    xpath: "//*[@id='element_PROTOCOL_NAME_FROM_SOURCE']"
+}, {
+    sectionName: 'Description of Protocol',
+    function: parseTextContent,
+    xpath: "//*[@id='element_DESCRIPTION']"
+}, {
+    sectionName: 'Specific Instructions',
+    function: parseTextContent,
+    xpath: "//*[@id='element_SPECIFIC_INSTRUCTIONS']"
+}, {
+    sectionName: 'Protocol',
+    function: parseTextContent,
+    xpath: "//*[@id='element_PROTOCOL_TEXT']"
+}, {
+    sectionName: 'Variables',
+    function: parseTableContent,
+    xpath: "//*[@id='element_VARIABLES']"
+}, {
+    sectionName: 'Selection Rationale',
+    function: parseTextContent,
+    xpath: "//*[@id='element_SELECTION_RATIONALE']"
+}, {
+    sectionName: 'Source',
+    function: parseTextContent,
+    xpath: "//*[@id='element_SOURCE']"
+}, {
+    sectionName: 'Life Stage',
+    function: parseTextContent,
+    xpath: "//*[@id='element_LIFESTAGE']"
+}, {
+    sectionName: 'Language',
+    function: parseTextContent,
+    xpath: "//*[@id='element_LANGUAGE']"
+}, {
+    sectionName: 'Participant',
+    function: parseTextContent,
+    xpath: "//*[@id='element_PARTICIPANT']"
+}, {
+    sectionName: 'Personnel and Training Required',
+    function: parseTextContent,
+    xpath: "//*[@id='element_PERSONNEL_AND_TRAINING_REQD']"
+}, {
+    sectionName: 'Equipment Needs',
+    function: parseTextContent,
+    xpath: "//*[@id='element_EQUIPMENT_NEEDS']"
+}, {
+    sectionName: 'Standards',
+    function: parseTextContent,
+    xpath: "//*[@id='element_STANDARDS']"
+}, {
+    sectionName: 'General References',
+    function: parseTextContent,
+    xpath: "//*[@id='element_REFERENCES']"
+}, {
+    sectionName: 'Mode of Administration',
+    function: parseTextContent,
+    xpath: "//*[@id='element_PROTOCOL_TYPE']"
+}, {
+    sectionName: 'Derived Variables',
+    function: parseTextContent,
+    xpath: "//*[@id='element_DERIVED_VARIABLES']"
+}, {
+    sectionName: 'Requirements',
+    function: parseTableContent,
+    xpath: "//*[@id='element_REQUIREMENTS']"
+}, {
+    sectionName: 'Process and Review',
+    function: parseTextContent,
+    xpath: "//*[@id='element_PROCESS_REVIEW']"
+}];
+
+function parseTextContent(obj, task, element, cb) {
+    element.getText().then(function (text) {
+        object[task.sectionName] = text.trim();
+        cb();
+    });
+}
+
+function parseTableContent(obj, task, element, cb) {
+
+}
+
+function parseStandards(obj, task, element, cb) {
+    var standards = [];
+    element.findElements(By.xpath("//table/tbody/tr[td]")).then(function (trs) {
+        async.eachSeries(trs, function (tr, doneOneStandardsTr) {
+            var standard = {};
+            tr.findElements(webdriver.By.css('td')).then(function (tds) {
+                async.parallel({
+                    parsingStandard: function (doneParsingStandard) {
+                        tds[0].getText().then(function (text) {
+                            standard['Standard'] = text;
+                            doneParsingStandard();
+                        });
+                    },
+                    parsingName: function (doneParsingName) {
+                        tds[1].getText().then(function (text) {
+                            standard['Name'] = text;
+                            doneParsingName();
+                        });
+                    },
+                    parsingId: function (doneParsingId) {
+                        tds[2].getText().then(function (text) {
+                            standard['ID'] = text;
+                            doneParsingId();
+                        });
+                    },
+                    parsingSource: function (doneParsingSource) {
+                        var source = {};
+                        tds[3].getText().then(function (text) {
+                            source.text = text.trim();
+                            if (text.trim() === 'LOINC') {
+                                // loinc loader
+                            } else {
+                                standard['Source'] = source;
+                                doneParsingSource();
+                            }
+                        });
+                    }
+                }, function doneAllStandardsTds() {
+                    standards.push(standard);
+                    doneOneStandardsTr();
+                });
+            });
+        }, function doneAllStandardsTrs() {
+            object['Standards'] = standards;
+            cb();
+        });
+    });
+}
 
 function parseOneSection(protocol, key, id, done) {
     if (id.indexOf('STANDARDS') > -1) {
-        var standards = [];
-        driver.findElements(webdriver.By.xpath("//*[@id='" + id + "']//table/tbody/tr[td]")).then(function (trs) {
-            async.eachSeries(trs, function (tr, doneOneStandardsTr) {
-                var standard = {};
-                tr.findElements(webdriver.By.css('td')).then(function (tds) {
-                    async.parallel({
-                        parsingStandard: function (doneParsingStandard) {
-                            tds[0].getText().then(function (text) {
-                                standard['Standard'] = text;
-                                doneParsingStandard();
-                            });
-                        },
-                        parsingName: function (doneParsingName) {
-                            tds[1].getText().then(function (text) {
-                                standard['Name'] = text;
-                                doneParsingName();
-                            });
-                        },
-                        parsingId: function (doneParsingId) {
-                            tds[2].getText().then(function (text) {
-                                standard['ID'] = text;
-                                doneParsingId();
-                            });
-                        },
-                        parsingSource: function (doneParsingSource) {
-                            var source = {};
-                            tds[3].getText().then(function (text) {
-                                source.text = text.trim();
-                                if (text.trim() === 'LOINC') {
-                                    tds[3].findElement(webdriver.By.css('a')).then(function (a) {
-                                        a.getAttribute('href').then(function (href) {
-                                            source.href = href.trim();
-                                            var form = {
-                                                classification: protocol.classification
-                                            };
-                                            driver3.get(source['href']);
-                                            driver3.findElements(webdriver.By.xpath("/html/body/div[2]/table[2]/tbody/tr[.//a]")).then(function (temp) {
-                                                if (temp.length > 0) {
-                                                    var elements = [];
-                                                    var i = 0;
-                                                    async.eachSeries(temp, function (tr, doneOneTr) {
-                                                        var element = {};
-                                                        i++;
-                                                        async.parallel({
-                                                            parsingFormAndElementName: function (doneParsingFormAndElementName) {
-                                                                tr.findElements(webdriver.By.css('td')).then(function (tds) {
-                                                                    if (tds.length > 0) {
-                                                                        if (i === 1) {
-                                                                            tds[2].getText().then(function (elementNameText) {
-                                                                                form['name'] = elementNameText.trim();
-                                                                                doneParsingFormAndElementName();
-                                                                            });
-                                                                        }
-                                                                        else {
-                                                                            tds[2].getText().then(function (elementNameText) {
-                                                                                element['name'] = elementNameText.trim();
-                                                                                doneParsingFormAndElementName();
-                                                                            });
-                                                                        }
-                                                                    }
-                                                                    else {
-                                                                        doneParsingFormAndElementName();
-                                                                    }
-                                                                });
-                                                            },
-                                                            parsingLinks: function (doneParsingLink) {
-                                                                tr.findElement(webdriver.By.css('a')).getAttribute('href').then(function (elementHrefText) {
-                                                                    if (i === 1) {
-                                                                        form['href'] = elementHrefText.trim();
-                                                                    }
-                                                                    else {
-                                                                        element['href'] = elementHrefText.trim();
-                                                                    }
-                                                                    doneParsingLink();
-                                                                });
-                                                            },
-                                                            parsingLoincId: function (doneParsingLoinc) {
-                                                                tr.findElement(webdriver.By.css('a')).getText().then(function (elementHrefText) {
-                                                                    if (i === 1) {
-                                                                        form['loincId'] = elementHrefText.trim();
-                                                                    }
-                                                                    else {
-                                                                        element['loincId'] = elementHrefText.trim();
-                                                                    }
-                                                                    doneParsingLoinc();
-                                                                });
-                                                            }
-                                                        }, function doneAllHref() {
-                                                            if (i !== 1)
-                                                                elements.push(element);
-                                                            doneOneTr();
-                                                        });
-                                                    }, function doneAllTrs() {
-                                                        async.eachSeries(elements, function (ele, doneOneEle) {
-                                                            ele['classification'] = form['classification'];
-                                                            var eleHref = ele['href'];
-                                                            driver4.get(eleHref);
-                                                            driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th/a")).then(function (isPanel) {
-                                                                if (isPanel.length > 0) {
-                                                                    ele['type'] = 'Panel';
-                                                                    doneOneEle();
-                                                                }
-                                                                else {
-                                                                    ele['type'] = 'Question';
-                                                                    doneOneEle();
-                                                                }
-                                                            });
-                                                        }, function doneAllEles() {
-                                                            form['elements'] = elements;
-                                                            protocol['form'] = form;
-                                                            standard['Source'] = source;
-                                                            doneParsingSource();
-                                                        });
-                                                    });
-
-                                                }
-                                                else {
-                                                    protocol['form'] = form;
-                                                    standard['Source'] = source;
-                                                    doneParsingSource();
-                                                }
-
-                                            });
-
-                                        });
-                                    });
-                                } else {
-                                    standard['Source'] = source;
-                                    doneParsingSource();
-                                }
-                            });
-                        }
-                    }, function doneAllStandardsTds() {
-                        standards.push(standard);
-                        doneOneStandardsTr();
-                    });
-                });
-            }, function doneAllStandardsTrs() {
-                protocol['Standards'] = standards;
-                done();
-            });
-        });
     }
     else if (id.indexOf('PROTOCOL_TEXT') > -1 || newId.indexOf('Requirements') > -1 || newId.indexOf('SPECIFIC_INSTRUCTIONS') > -1) {
         driver.findElements(webdriver.By.xpath("//*[@id='" + newId + "']")).then(function (temp) {
@@ -168,24 +165,34 @@ function parseOneSection(protocol, key, id, done) {
     }
 }
 
+function doTask(driver, task, obj, cb) {
+    driver.findElements(By.xpath(task.xpath)).then(function (elements) {
+        if (elements && elements.length === 0) {
+            var message = 'Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId;
+            cb();
+        } else if (elements && elements.length > 1) {
+            var message = 'find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId;
+            cb();
+        } else if (elements && elements.length === 1) {
+            elements[0].getAttribute('outerHTML').then(function (html) {
+                obj[task.sectionName] = {
+                    HTML: html
+                };
+                task.function(obj, task, elements[0], cb);
+            });
+        } else {
+            cb();
+        }
+    });
+}
+
 exports.parseProtocol = function (measure, link, cb) {
     driver.get(link);
     driver.findElement(By.id('button_showfull')).click().then(function () {
-        var labelXpath = "//*[contains(@id,'label')]";
-        driver.findElements(By.xpath(labelXpath)).then(function (labels) {
-            async.eachSeries(labels, function (label, doneOneLabel) {
-                label.getText().then(function (key) {
-                    label.getAttribute('id').then(function (id) {
-                        var newId = id.trim().replace('label', 'element');
-                        var protocol = {};
-                        parseOneSection(protocol, key, newId, function () {
-                            measure.protocols.push(protocol);
-                            doneOneLabel();
-                        });
-                    });
-                });
-            }, function donAllLabels() {
-            })
-        });
+        async.forEach(tasks, function (task, doneOneTask) {
+            doTask(driver, task, measure, doneOneTask);
+        }, function doneAllTask() {
+            cb();
+        })
     });
 };
