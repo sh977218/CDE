@@ -56,18 +56,18 @@ public class ScreenShotListener extends TestListenerAdapter {
         LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
         StringBuilder sb = new StringBuilder();
         if (extraText != null) {
-            sb.append("URL when failed: " + driver.getCurrentUrl());
+            sb.append("URL when failed: " + driver.getCurrentUrl() + "\n");
         }
         for (LogEntry entry : logEntries) {
-            if (!entry.getMessage().contains("Range.detach")
-                    && !entry.getMessage().contains("https://goo.gl/zmWq3m")
-                    )
+            if (!entry.getMessage().contains("https://goo.gl/zmWq3m")) {
                 sb.append(new Date(entry.getTimestamp()));
-            sb.append(" ");
-            sb.append(entry.getLevel());
-            sb.append(" ");
-            sb.append(entry.getMessage());
-            sb.append("\n");
+                sb.append(" ");
+                sb.append(entry.getLevel());
+                sb.append(" ");
+                sb.append(entry.getMessage());
+                sb.append("\n");
+            }
+
         }
         if (sb.length() > 0) {
             try {
