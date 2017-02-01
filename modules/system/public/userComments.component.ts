@@ -7,4 +7,12 @@ import {UserComments} from "./profile.component";
 })
 export class UserCommentsComponent {
     @Input() comments:UserComments;
+
+    getEltLink(c) {
+        return {
+                'cde': "/deview?tinyId=",
+                'form': "/formView?tinyId=",
+                'board': "/board/"
+            }[c.element.eltType] + c.element.eltId;
+    }
 }

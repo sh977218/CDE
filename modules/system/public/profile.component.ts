@@ -76,12 +76,4 @@ export class ProfileComponent implements OnChanges {
             }
         });
     }
-
-    static getEltLink(c) {
-        return {
-                'cde': "/deview?tinyId=",
-                'form': "/formView?tinyId=",
-                'board': "/board/"
-            }[c.element.eltType] + c.element.eltId;
-    }
 }
