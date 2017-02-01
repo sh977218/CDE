@@ -156,7 +156,7 @@ gulp.task('prepareVersion', ['copyCode'], function () {
     }, 15000);
 });
 
-gulp.task('usemin', ['copyCode', 'angularTemplates'], function () {
+gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
@@ -169,7 +169,8 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function () {
                 },
                 assetsDir: "./modules/",
                 css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
-                js: [uglify({mangle: false}), 'concat', rev()]
+                js: [uglify({mangle: false}), 'concat', rev()],
+                webp: ['concat', rev()]
             }))
             .pipe(gulp.dest(config.node.buildDir + '/modules/'))
             .on('end', function () {
@@ -223,6 +224,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin', 'webpack', 'emptyTemplates']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin', 'emptyTemplates']);
 
 
