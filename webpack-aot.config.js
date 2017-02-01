@@ -14,23 +14,23 @@ module.exports = {
     devtool: 'source-map',
     module: {
         rules: [
-            {test: /.ts$/, enforce: "pre", exclude: /node_modules/, loader: 'tslint-loader'},
-            {test: /\.ts$/, exclude: /node_modules/, loaders: ['awesome-typescript-loader', 'angular2-template-loader']},
-            {test: /\.css$/, loader: 'style!css'},
-            {test: /\.ejs$/, loader: 'ejs-loader'},
+            {test: /.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
+            {test: /\.ts$/, exclude: /node_modules/, use: ['awesome-typescript-loader', 'angular2-template-loader']},
+            {test: /\.css$/, use: ['style-loader', 'css-loader']},
+            {test: /\.ejs$/, use: ['ejs-loader']},
             //{test: /\.html$/, loader: 'html-loader'}
-            {test: /\.(html|css)$/, loader: 'raw-loader'}
+            {test: /\.(html|css)$/, use: ['raw-loader']}
         ]
     },
     plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.UglifyJsPlugin({
             mangle: false,
             sourcemap: true
         })
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".html", ".css"]
+        extensions: [".ts", ".tsx", ".js", ".html", ".css"],
+        modules: ["modules/components", "node_modules"]
     },
     externals: {
         angular: true

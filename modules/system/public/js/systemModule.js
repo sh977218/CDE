@@ -79,7 +79,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: ["$scope", function ($scope) {
-                $scope.type = $scope.inputType || 'text';
+                $scope.inputType = $scope.inputType || 'text';
                 $scope.value = $scope.model;
                 $scope.discard = function () {
                     $scope.editMode = false;

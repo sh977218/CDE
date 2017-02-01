@@ -15,9 +15,9 @@ public class UserEmail extends NlmCdeBaseTest {
         clickElement(By.xpath("//inline-edit[@id='emailEdit']//i"));
         findElement(By.xpath("//inline-edit[@id='emailEdit']//input")).clear();
         findElement(By.xpath("//inline-edit[@id='emailEdit']//input")).sendKeys("me@");
-        Assert.assertFalse(findElement(By.xpath("//div[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
+        Assert.assertFalse(findElement(By.xpath("//inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
         findElement(By.xpath("//inline-edit[@id='emailEdit']//input")).sendKeys("me.com");
-        Assert.assertTrue(findElement(By.xpath("//div[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
+        Assert.assertTrue(findElement(By.xpath("//inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
         clickElement(By.xpath("//inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]"));
         textPresent("Saved");
     }
