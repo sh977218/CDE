@@ -5,7 +5,8 @@ module.exports = {
     context: __dirname,
     entry:  {
         main:'./modules/main-aot.ts',
-        print:'./modules/form/public/nativeRenderStandalone-aot.ts'
+        print:'./modules/form/public/nativeRenderStandalone-aot.ts',
+        embed: './modules/embedded/public/js/embeddedApp.js'
     },
     output: {
         path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist

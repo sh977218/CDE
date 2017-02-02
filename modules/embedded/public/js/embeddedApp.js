@@ -1,6 +1,12 @@
 var formShared = require('../../../form/shared/formShared');
 var regStatusShared = require('../../../system/shared/regStatusShared');
 
+import "../../../system/public/js/elastic.js";
+import "../../../system/public/js/orgFactories.js";
+import "../../../embedded/public/js/SearchSettings.js";
+import "../../../components/angular-bootstrap/ui-bootstrap-tpls.js";
+import "../../../embedded/public/js/angularTemplates.js";
+
 angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFactories', 'embeddedTemplates'])
     .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http, SearchSettings) {
 

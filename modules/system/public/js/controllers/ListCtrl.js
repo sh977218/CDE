@@ -417,18 +417,18 @@ angular.module('systemModule').controller('ListCtrl',
         doSearch();
     };
 
-    var filterOutWorkingGroups = function(aggregations) {
-        this.setAggregations = function() {
+    function filterOutWorkingGroups(aggregations) {
+        function setAggregations() {
             aggregations.orgs.buckets = aggregations.orgs.orgs.buckets.filter(function(bucket) {
                 return OrgHelpers.showWorkingGroup(bucket.key, userResource.user) || userResource.user.siteAdmin;
             });
             $scope.aggregations = aggregations;
-        };
-        var filterOutWorkingGroups = this;
+        }
+
         OrgHelpers.deferred.promise.then(function() {
-            filterOutWorkingGroups.setAggregations();
+            setAggregations();
         });
-    };
+    }
 
     // TODO support only CDEs. Forms TODO later.
     $scope.showPinAllModal = function() {
