@@ -185,9 +185,10 @@ exports.parseProtocol = function (measure, link, cb) {
         }, function doneAllTask() {
             async.forEachSeries(measure['Standards'], function (standard, doneOneStandard) {
                 if (standard.Source === 'LOINC') {
-                    LoadFromLoincSite.runArray([standard.ID], 'PhenX', function (a) {
-                        console.log('a');
-                    }, function (loinc) {
+                    LoadFromLoincSite.runArray([standard.ID], 'PhenX', function (loinc, doneOneLoinc) {
+                        standard['LOINC'] = loinc;
+                        doneOneLoinc();
+                    }, function () {
                         doneOneStandard();
                     })
                 } else {
@@ -196,7 +197,6 @@ exports.parseProtocol = function (measure, link, cb) {
             }, function doneAllStandards() {
                 cb();
             });
-            cb();
         })
     });
 };
