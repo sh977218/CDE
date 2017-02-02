@@ -1,4 +1,4 @@
-var authShared = require('../../../system/shared/authorizationShared');
+import * as authShared from "../../../system/shared/authorizationShared";
 
 angular.module('OrgFactories', ['ngResource'])
 .factory('OrgHelpers', ["$http", "$q", function ($http, $q) {

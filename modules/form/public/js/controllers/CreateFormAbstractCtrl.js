@@ -1,4 +1,4 @@
-var classificationShared = require('../../../../system/shared/classificationShared');
+import * as classificationShared from "../../../../system/shared/classificationShared";
 
 angular.module('formModule').controller('CreateFormAbstractCtrl',
     ['$scope', '$location', '$uibModal', 'userResource', 'Form',

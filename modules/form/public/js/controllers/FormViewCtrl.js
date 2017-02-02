@@ -1,5 +1,5 @@
-var authShared = require('../../../../system/shared/authorizationShared');
-var formShared = require('../../../../form/shared/formShared');
+import * as authShared from "../../../../system/shared/authorizationShared";
+import * as formShared from "../../../../form/shared/formShared";
 
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',

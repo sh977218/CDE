@@ -1,4 +1,4 @@
-var regStatusShared = require('../../../../system/shared/regStatusShared');
+import * as regStatusShared from "../../../../system/shared/regStatusShared";
 
 angular.module('systemModule').controller('RegistrationModalCtrl',
     ['$scope', '$uibModalInstance', '$http', 'elt', 'siteAdmin',

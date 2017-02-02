@@ -1,6 +1,7 @@
+import * as compareShared from "../../../system/shared/compareShared";
+
 (function () {
     'use strict';
-    var compareShared = require('../../../system/shared/compareShared');
 
     angular.module('ngCompareSideBySide', [])
         .directive("ngCompareSideBySide", ["$compile", "Comparison",

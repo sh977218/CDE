@@ -1,8 +1,10 @@
-var authShared = require('../../../system/shared/authorizationShared');
-var upd = require("../../../upgrade.ts");
-var classificationService = require("../../../core/public/classification.service").ClassificationService;
-var skipLogicService = require("../../../core/public/skipLogic.service").SkipLogicService;
-var userComments = require("../userComments.component");
+import {upgradeAdapter} from "../../../upgrade";
+import {ClassificationService} from "../../../core/public/classification.service";
+import {SkipLogicService} from "../../../core/public/skipLogic.service";
+import {UserCommentsComponent} from "../userComments.component";
+
+import * as authShared from "../../../system/shared/authorizationShared";
+
 
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule']);
 
@@ -210,7 +212,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }])
-    .directive('user-comments', upd.upgradeAdapter.downgradeNg2Component(userComments.UserCommentsComponent))
+    .directive('user-comments', upgradeAdapter.downgradeNg2Component(UserCommentsComponent))
 ;
 
 angular.module('systemModule').filter('placeHoldEmpty', [function () {
@@ -254,8 +256,8 @@ angular.module('systemModule').filter('bytes', [function () {
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     };
 }]);
-angular.module('systemModule').factory('ClassificationUtil', upd.upgradeAdapter.downgradeNg2Provider(classificationService));
-angular.module('systemModule').factory('SkipLogicUtil', upd.upgradeAdapter.downgradeNg2Provider(skipLogicService));
+angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
+angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
 angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {
     return {
         new: function (type) {

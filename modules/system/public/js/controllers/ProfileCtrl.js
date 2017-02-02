@@ -1,4 +1,4 @@
-var upd = require("../../../../upgrade.ts");
-var prof = require("../../profile.component");
+import {upgradeAdapter} from "../../../../upgrade.ts";
+import {ProfileComponent} from "../../profile.component";
 
-angular.module('systemModule').directive('cdeProfile', upd.upgradeAdapter.downgradeNg2Component(prof.ProfileComponent));
+angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeNg2Component(ProfileComponent));

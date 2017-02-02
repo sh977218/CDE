@@ -1,5 +1,5 @@
-var exportShared = require('../../../../system/shared/exportShared');
-var fileSaver = require('../../../../cde/public/assets/js/FileSaver');
+import * as exportShared from "../../../../system/shared/exportShared";
+import {saveAs} from "../../../../cde/public/assets/js/FileSaver";
 
 angular.module('cdeModule').controller('QuickBoardCtrl',
     ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
@@ -37,7 +37,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                     var blob = new Blob([result], {
                         type: "text/csv"
                     });
-                    fileSaver.saveAs(blob, 'QuickBoardExport' + '.csv');
+                    saveAs(blob, 'QuickBoardExport' + '.csv');
                     $scope.addAlert("success", "Export downloaded.");
                     $scope.feedbackClass = ["fa-download"];
                 } else {

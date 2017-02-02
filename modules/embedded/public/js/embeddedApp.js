@@ -1,5 +1,5 @@
-var formShared = require('../../../form/shared/formShared');
-var regStatusShared = require('../../../system/shared/regStatusShared');
+import * as formShared from "../../../form/shared/formShared";
+import * as regStatusShared from "../../../system/shared/regStatusShared";
 
 import "../../../system/public/js/elastic.js";
 import "../../../system/public/js/orgFactories.js";

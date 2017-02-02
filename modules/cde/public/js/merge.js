@@ -1,4 +1,4 @@
-var classificationShared = require('../../../system/shared/classificationShared');
+import * as classificationShared from "../../../system/shared/classificationShared";
 
 angular.module('CdeMerge', [])
 .factory('MergeCdes', ['$http', 'DataElement', 'CDE', 'CdeClassificationTransfer', function($http, DataElement, CDE, CdeClassificationTransfer) {

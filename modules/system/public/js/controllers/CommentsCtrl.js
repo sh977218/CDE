@@ -1,4 +1,5 @@
-var socketIo = require('../../../../cde/public/assets/js/socket.io');
+import * as socketIo from "../../../../cde/public/assets/js/socket.io";
+
 angular.module('systemModule').controller('CommentsCtrl',
     ['$scope', '$http', '$timeout', 'userResource', 'Alert',
         function ($scope, $http, $timeout, userResource, Alert) {

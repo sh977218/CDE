@@ -1,4 +1,4 @@
-var authShared = require('../../../../system/shared/authorizationShared');
+import * as authShared from "../../../../system/shared/authorizationShared";
 
 // @TODO this many dependencies is a warning of poor design. Refac.
 angular.module('systemModule').controller('AddClassificationModalCtrl',

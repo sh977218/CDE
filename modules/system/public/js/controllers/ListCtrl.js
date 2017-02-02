@@ -1,4 +1,4 @@
-var regStatusShared = require('../../../../system/shared/regStatusShared');
+import * as regStatusShared from "../../../../system/shared/regStatusShared";
 
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',

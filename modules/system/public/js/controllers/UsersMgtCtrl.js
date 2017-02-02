@@ -1,4 +1,4 @@
-var authShared = require('../../../../system/shared/authorizationShared');
+import * as authShared from "../../../../system/shared/authorizationShared";
 
  angular.module('systemModule').controller('UsersMgtCtrl',
      ['$scope', '$http', '$timeout', '$uibModal', 'Alert', function($scope, $http, $timeout, $modal, Alert) {

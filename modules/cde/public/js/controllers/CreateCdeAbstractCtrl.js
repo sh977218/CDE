@@ -1,4 +1,4 @@
-var classificationShared = require('../../../../system/shared/classificationShared');
+import * as classificationShared from "../../../../system/shared/classificationShared";
 
 angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
     ['$scope', '$location', '$timeout', '$uibModal', 'DataElement', 'Elastic', 'userResource',
