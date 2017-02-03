@@ -16,8 +16,8 @@
         <th tabindex="0" class="text-right">Steward: </th>
         <td tabindex="0" ng-bind-html="elt.stewardOrg.name"></td>
     </tr>
-    <tr>
+    <tr ng-if="elt.source">
         <th tabindex="0" class="text-right">Source: </th>
-        <td tabindex="0">{{elt.source|placeHoldEmpty}}</td>
+        <td tabindex="0">{{elt.source}}</td>
     </tr>
 </table>
