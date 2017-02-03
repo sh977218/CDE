@@ -34,7 +34,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     }).catch(function onError() {});
 
     var allPropertyKeys = [];
-    var allContexts = [];
+    var allTags = [];
     $scope.getOrgs = function(cb) {
         $http.get("/managedOrgs").then(function(response) {
             $scope.orgs = response.data.orgs;
@@ -44,13 +44,13 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                     allPropertyKeys = allPropertyKeys.concat(o.propertyKeys);
                 }
                 if (o.nameTags) {
-                    allContexts = allContexts.concat(o.nameTags);
+                    allTags = allTags.concat(o.nameTags);
                 }
             });
             allPropertyKeys = allPropertyKeys.filter(function(item, pos, self) {
                 return self.indexOf(item) === pos;
             });
-            allContexts = allContexts.filter(function(item, pos, self) {
+            allTags = allTags.filter(function(item, pos, self) {
                 return self.indexOf(item) === pos;
             });
             if (cb) cb();
@@ -214,7 +214,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     };
 
     $scope.getExistingContexts = function (search) {
-        var result = allContexts.slice();
+        var result = allTags.slice();
         if (search && result.indexOf(search) === -1) {
             result.unshift(search);
         }
