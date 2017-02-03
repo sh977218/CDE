@@ -45,6 +45,7 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
     var overrideDisplayType = args.displayType;
     $scope.submitForm = args.submit;
 
+    var _getElt;
     if (window.formElt) {
         _getElt = function (id, cb) {
             cb(window.formElt);

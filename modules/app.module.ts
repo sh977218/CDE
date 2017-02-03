@@ -18,7 +18,8 @@ import {SystemModule} from "./system/public/system.module";
         BrowserModule,
         CommonModule,
         HttpModule,
-        SystemModule],
+        SystemModule
+    ],
     bootstrap: [CdeAppComponent]
 })
 export class CdeAppModule {
