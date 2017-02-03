@@ -20,8 +20,12 @@
             <div class="col-sm-9">{{n.definition}}</div>
         </div>  
         <div class="row">
-            <div class="col-sm-3"><b>Context</b></div>
-            <div class="col-sm-9">{{n.context.contextName}}</div>
+            <div class="col-sm-3"><b>Tags</b></div>
+            <div class="col-sm-9">
+                <ul>
+                    <li ng-repeat="t in n.tags">{{t.tag}}</li>
+                </ul>
+            </div>
         </div>                  
     </div>
 
