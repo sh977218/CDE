@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.classification;
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -47,12 +48,16 @@ public class ClassificationMgtTest3 extends BaseClassificationTest {
         textPresent("Classification Name cannot contain ;");
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//button[text()='Save']")).click();
+        textPresent("Renaming in progress.");
         modalGone();
-        waitForESUpdate();
+        try {
+            textPresent("Renaming complete.");
+        } catch (WebDriverException e) {
+            textPresent("Renaming complete.");
+        }
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification"));
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification,Supplemental"));
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a")).click();
-//        hangon(1);
         textPresent("Spinal Cord Injuries");
 
         openClassificationAudit("NINDS > Disease > Spinal Cord Injury");
