@@ -1,7 +1,6 @@
-const prod = process.argv.indexOf('-p') !== -1;
+const prod = process.env.NODE_ENV === 'production';
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     context: __dirname,
@@ -25,31 +24,42 @@ module.exports = {
             {test: /.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {test: /\.ts$/, exclude: /node_modules/, use: ['ts-loader', 'angular2-template-loader']},
             {test: /\.css$/, use: ['style-loader', 'css-loader']},
-            {test: /\.ejs$/, use: ['ejs-loader']},
-            {test: /\.js$/, enforce: "pre", use: ["source-map-loader"]},
-            //{test: /\.html$/, loader: 'html-loader'}
+            // {test: /\.ejs$/, use: ['ejs-loader']},
+            // {test: /\.html$/, loader: 'html-loader'}
             {test: /\.html$/, use: ['raw-loader']}
         ]
     },
     plugins: prod ?
         [
-            new webpack.DefinePlugin({'process.env': {'NODE_ENV': `"production"`}}),
-            new webpack.optimize.UglifyJsPlugin({
+            new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
+                /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
+                __dirname
+            ),
+            new webpack.LoaderOptionsPlugin({debug: false, minimize: true}),
+            new webpack.optimize.UglifyJsPlugin({ // minify
                 mangle: false,
-                sourcemap: true
-            }),
-            new HtmlWebpackPlugin({title: 'Tree-shaking'})
+                sourceMap: true,
+                output: {
+                    comments: false
+                },
+                compressor: {
+                    warnings: false
+                }
+            })
         ] : [
-            new webpack.DefinePlugin({'process.env': {'NODE_ENV': `""`}}),
-            new webpack.EnvironmentPlugin(['NODE_ENV']),
-            new webpack.LoaderOptionsPlugin({debug: true}),
-            new webpack.ProgressPlugin()
+            new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
+                /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
+                __dirname
+            ),
+            new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
+            new webpack.ProgressPlugin() // show progress in ConEmu window
         ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".html", ".css"],
-        modules: ["modules/components", "node_modules"]
+        unsafeCache: false,
+        extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
+        modules: ["modules", "modules/components", "node_modules"]
     },
-    // devtool: prod ? 'source-map' : 'source-map',
+    devtool: prod ? 'source-map' : 'source-map',
     watch: !prod,
     watchOptions: {
         aggregateTimeout: 300,

@@ -8,7 +8,7 @@ enableProdMode();
 import {CdeAppModule} from "./app.module";
 import {upgradeAdapter} from "./upgrade";
 
-require("./upgrade-imports");
+import "./upgrade-imports";
 
 platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/);
 upgradeAdapter.bootstrap(document.body, ["cdeAppModule"], {strictDi: true});

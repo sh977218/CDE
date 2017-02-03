@@ -12,7 +12,6 @@
       "suppressImplicitAnyIndexErrors": true,
       "target": "es5",
       "types": [
-         "angular",
          "node"
       ],
       "typeRoots": [
@@ -26,6 +25,6 @@
       "bower_components",
       "modules/components",
       "node_modules",
-      "test/*"
+      "test"
    ]
 }
