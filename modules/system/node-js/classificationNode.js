@@ -78,7 +78,7 @@ exports.modifyOrgClassification = function(request, action, callback) {
         classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname}, function() {
             stewardOrg.markModified("classifications");
             stewardOrg.save(function (err) {
-                var query = {"classification.stewardOrg.name": request.orgName};
+                var query = {"classification.stewardOrg.name": request.orgName, archived: null};
                 for (var i = 0; i<request.categories.length; i++) {
                     var key = "classification";
                     for (var j = 0; j<=i; j++) key += ".elements";
