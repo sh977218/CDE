@@ -16,8 +16,7 @@ angular.module('systemModule').controller('RemoveClassificationModalCtrl',
     
     $scope.checkUserTypedName = function() {
         $timeout(function(){
-            if ($scope.userTyped.name === classifName) $scope.userTypedCorrectName = true;
-            else $scope.userTypedCorrectName = false;
+            $scope.userTypedCorrectName = $scope.userTyped.name === classifName;
         }, 0);
     };
     

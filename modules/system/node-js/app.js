@@ -541,12 +541,12 @@ exports.init = function (app) {
     
     app.delete('/classification/org', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.status(403).end();
-            return;
+            return res.status(403).end();
+        } else {
+            classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function (err, org) {
+                res.send(org);
+            });
         }
-        classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function (err, org) {
-            res.send(org);
-        });
     });
 
     app.post('/classification/org', function (req, res) {

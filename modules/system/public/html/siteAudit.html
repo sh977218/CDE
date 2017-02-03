@@ -1,5 +1,6 @@
 <div ng-controller="SiteAuditCtrl">
     <div uib-tabset class="container-fluid" >
+
         <div uib-tab heading="{{tabs[0].title}}" active="tabs[0].active">
             <div ng-include="'/system/public/html/logAudit.html'"></div>
         </div>
@@ -20,7 +21,7 @@
             </div>
         </div>
 
-        <div uib-tab heading="{{tabs[6].title}}">
+        <div uib-tab heading="{{tabs[6].title}}" select="tabSelect(tabs[6].title)">
             <div class="table" ng-controller="FeedbackIssueListCtrl" id="FeedbackIssueList">
                 <div ng-include="'/system/public/html/errorList.html'"></div>
             </div>
