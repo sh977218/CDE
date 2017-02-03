@@ -77,7 +77,7 @@ exports.createIndexJson = {
                         "languageCode": {"type": "string", "index": "no"},
                         "tags": {
                             properties: {
-                                "tag": {"type": "string", "index": "no"}
+                                "tag": {"type": "string", "index": "not_analyzed"}
                             }
                         }
                     }
