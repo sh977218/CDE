@@ -322,10 +322,6 @@ angular.module('systemModule').controller('ListCtrl',
             filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
-            //if ($scope.aggregations.topics.length === 1) {
-            //    $scope.selectTopic($scope.aggregations.topics[0].name);
-            //}
-
         });
 
     };
@@ -424,7 +420,7 @@ angular.module('systemModule').controller('ListCtrl',
         };
         var filterOutWorkingGroups = this;
         OrgHelpers.deferred.promise.then(function() {
-            filterOutWorkingGroups.setAggregations();
+            userResource.getPromise().then(filterOutWorkingGroups.setAggregations);
         });
     };
 
