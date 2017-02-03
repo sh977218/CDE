@@ -1,5 +1,9 @@
 angular.module('systemModule').controller('SiteAuditCtrl', ['$scope', function($scope) {
 
+    $scope.tabSelect = function(tabTitle) {
+        $scope.$broadcast(tabTitle);
+    };
+
     $scope.tabs = [
         {title: "Logs"},
         {title: "Usage"},
