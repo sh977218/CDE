@@ -18,11 +18,6 @@
                         <div inline-edit id="profileNameEdit_{{$index}}" model="profile.name" is-allowed="canCurate"
                              on-ok="stageElt()"></div>
                     </dd>
-                    <dt>Context:</dt>
-                    <dd id="dd_profile_ctx">
-                        <div inline-edit id="profileCtxEdit" model="profile.context.contextName" is-allowed="canCurate"
-                             on-ok="stageElt()"></div>
-                    </dd>
                     <dt>Sections as matrices:</dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.sectionsAsMatrix" ng-disabled="!canCurate"
