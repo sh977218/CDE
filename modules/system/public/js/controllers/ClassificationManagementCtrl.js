@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ClassificationManagementCtrl',
-    ['$scope', '$http', '$uibModal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log',
-        function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings, $log)
+    ['$scope', '$http', '$uibModal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log', 'Alert',
+        function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings, $log, Alert)
 {
 
     $scope.module = "cde";
@@ -90,7 +90,9 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
         $modal.open({
             animation: false,
             templateUrl: 'renameClassificationModal.html',
-            controller: 'RenameClassificationModalCtrl',
+            controller: ['$scope', 'classifName', function($scope, classifName) {
+                $scope.classifName = classifName;
+            }],
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
@@ -98,8 +100,10 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
             }
         }).result.then(function (newname) {
             if (newname) {
+                Alert.addAlert("info", "Renaming in progress.");
                 OrgClassification.rename(orgName, pathArray, newname, function(response) {
                     $scope.org = response;
+                    Alert.addAlert("success", "Renaming complete.");
                 });
             }
         }, function () {});
@@ -187,14 +191,4 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
             $timeout.cancel(timeout);
         });
     };
-}]);
-
-angular.module('systemModule').controller('RenameClassificationModalCtrl',
-    ['$scope', '$uibModalInstance', 'classifName', function($scope, $modalInstance, classifName) {
-
-    $scope.classifName = classifName;
-    $scope.close = function(newname) {
-        $modalInstance.close(newname);
-    };
-
 }]);

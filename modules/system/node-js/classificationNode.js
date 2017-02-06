@@ -78,25 +78,24 @@ exports.modifyOrgClassification = function(request, action, callback) {
         classificationShared.modifyCategory(fakeTree, request.categories, {type: action, newname: request.newname}, function() {
             stewardOrg.markModified("classifications");
             stewardOrg.save(function (err) {
-                var query = {"classification.stewardOrg.name": request.orgName};
+                var query = {"classification.stewardOrg.name": request.orgName, archived: null};
                 for (var i = 0; i<request.categories.length; i++) {
                     var key = "classification";
                     for (var j = 0; j<=i; j++) key += ".elements";
                     key += ".name";
                     query[key] = request.categories[i];
                 }
-                daoManager.getDaoList().forEach(function(dao) {
+                async.forEachSeries(daoManager.getDaoList(), function(dao, oneDaoDone) {
                     if (dao.query) {
                         dao.query(query, function (err, result) {
-                            if (result) {
-                                result.forEach(function (elt) {
+                            if (result && result.length > 0) {
+                                async.forEachSeries(result, function (elt, doneOne) {
                                     var steward = classificationShared.findSteward(elt, request.orgName);
                                     classificationShared.modifyCategory(steward.object, request.categories,
                                         {type: action, newname: request.newname}, function () {
-                                            classification.saveCdeClassif("", elt);
+                                            classification.saveCdeClassif("", elt, doneOne);
                                         });
-                                });
-                                if (result.length > 0) {
+                                }, function doneAll() {
                                     mongo_data_system.addToClassifAudit({
                                         date: new Date()
                                         , user: {
@@ -109,12 +108,18 @@ exports.modifyOrgClassification = function(request, action, callback) {
                                         , path: [request.orgName].concat(request.categories)
                                         , newname: request.newname
                                     });
-                                }
+                                    oneDaoDone();
+                                });
+                            } else {
+                                oneDaoDone();
                             }
                         });
+                    } else {
+                        oneDaoDone();
                     }
+                }, function allDaosDone() {
+                    if(callback) callback(err, stewardOrg);
                 });
-                if(callback) callback(err, stewardOrg);
             });
         });
     });
