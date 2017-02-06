@@ -10,15 +10,15 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
     public void removeExistingSkipLogicTest() {
         String formName = "Remove SkipLogic Form";
         String questionSL = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
-        String sectionSL = "\"Quality of Life - Write task list difficulty scale\" =";
-        String inFormSL = "\"Patient Gender Code\" =\"Males\"";
+        String sectionSL = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
+        String inFormSL = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
 
-        textPresent(questionSL, By.xpath("//*[@id='question_0_1']//div[contains(@ng-if,'skipLogic')]"));
-        textPresent(sectionSL, By.xpath("//*[@id='dd_s_skipLogic_2']//input[2]"));
-        textPresent(inFormSL, By.xpath("//*[@id='dd_s_skipLogic_3']//input[2]"));
+        textPresent(questionSL);
+        textPresent(sectionSL);
+        textPresent(inFormSL);
 
         startEditQuestionSectionById("question_0_1");
         findElement(By.xpath("//*[@id='question_0_1']//textarea[2]")).clear();
