@@ -14,7 +14,7 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
         String inFormSL = "\"Patient Gender Code\" =\"Males\"";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.xpath("description_tab"));
+        clickElement(By.id("description_tab"));
 
         textPresent(questionSL, By.xpath("//*[@id='question_0_1']//div[contains(@ng-if,'skipLogic')]"));
         textPresent(sectionSL, By.xpath("//*[@id='dd_s_skipLogic_2']//input[2]"));
