@@ -9,16 +9,12 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
     @Test
     public void removeExistingSkipLogicTest() {
         String formName = "Remove SkipLogic Form";
-        String questionSL = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
-        String sectionSL = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
-        String inFormSL = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
+        String skipLogic = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
 
-        textPresent(questionSL);
-        textPresent(sectionSL);
-        textPresent(inFormSL);
+        textPresent(skipLogic);
 
         startEditQuestionSectionById("question_0_1");
         findElement(By.xpath("//*[@id='question_0_1']//textarea[2]")).clear();
@@ -34,8 +30,6 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        textNotPresent(questionSL);
-        textNotPresent(sectionSL);
-        textNotPresent(inFormSL);
+        textNotPresent(skipLogic);
     }
 }
