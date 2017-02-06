@@ -144,7 +144,7 @@
                                         '<input class="form-control" uib-datepicker-popup="MM/dd/yyyy"' +
                                             ' datepicker-options="formElement.question.dateOptions"' +
                                             ' is-open="formElement.question.opened"' +
-                                            ' type="text" alt-input-formats="[\'yyyy\']"' +
+                                            ' type="date" alt-input-formats="[\'yyyy\']"' +
                                             ' ng-model="formElement.question.answer"' +
                                             ' name="' + fe.questionId + '" '+ required + ' ' + disabled + '/>' +
                                         '<div class="input-group-btn">' +

@@ -51,7 +51,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 }
                 return "";
             } else if (datatype === 'Date') {
-                return question.question.datatypeDate && question.question.datatypeDate.format.length > 0 ? "Date format: " + question.question.datatypeDate.format : "";
+                return question.question.datatypeDate &&
+                    (question.question.datatypeDate.format && question.question.datatypeDate.format.length > 0)
+                    ? "Date format: " + question.question.datatypeDate.format : "";
             }
         };
 
