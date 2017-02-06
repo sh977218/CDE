@@ -141,11 +141,9 @@
                             case 'Date':
                                 htmlText +=
                                     '<div class="input-group">' +
-                                        '<input class="form-control" uib-datepicker-popup="MM/dd/yyyy"' +
-                                            ' datepicker-options="formElement.question.dateOptions"' +
+                                        '<input class="form-control" datepicker-options="formElement.question.dateOptions"' +
                                             ' is-open="formElement.question.opened"' +
-                                            ' type="date" alt-input-formats="[\'yyyy\']"' +
-                                            ' ng-model="formElement.question.answer"' +
+                                            ' type="date" ng-model="formElement.question.answer"' +
                                             ' name="' + fe.questionId + '" '+ required + ' ' + disabled + '/>' +
                                         '<div class="input-group-btn">' +
                                             '<button type="button" class="btn btn-default"' +
