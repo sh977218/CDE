@@ -29,6 +29,7 @@ angular.module('systemModule').controller('MergeApproveModalCtrl', ['$scope', '$
         $scope.elt = elt;
         $scope.user = userResource.user;
         $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];
+
         $scope.ok = function () {
             $modalInstance.close();
         };

@@ -248,6 +248,15 @@ angular.module('systemModule').filter('bytes', [function () {
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     };
 }]);
+
+angular.module('systemModule').filter('tagsToArray', [function () {
+    return function (input) {
+        return input.map(function (m) {
+            return m.tag;
+        }).join(', ');
+    };
+}]);
+
 angular.module('systemModule').factory('ClassificationUtil', [function () {
     var factoryObj = {};
     factoryObj.sortClassification = function (elt) {

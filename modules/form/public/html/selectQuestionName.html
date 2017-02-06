@@ -20,11 +20,7 @@
                 <dt tabindex="0">Definition:</dt>
                 <dd tabindex="0">{{naming.definition | placeHoldEmpty}}</dd>
                 <dt tabindex="0">Tags:</dt>
-                <dd tabindex="0">
-                    <ul>
-                        <li ng-repeat="t in naming.tags">{{t.tag}}</li>
-                    </ul>
-                </dd>
+                <dd tabindex="0">{{naming.tags | tagsToArray}}</dd>
             </dl>
         </div>
         <hr/>

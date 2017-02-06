@@ -144,6 +144,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     }
                 };
                 cde.naming.forEach(function (n) {
+                    if (!n.tags)n.tags = [];
                     if (n.tags.filter(function (t) {
                             return t.tag.toLowerCase().indexOf('Question Text') > 0;
                         }).length > 0) {
