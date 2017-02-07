@@ -59,7 +59,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/11/2016");
         textPresent("Macula volume (OD)");
 
-        ((JavascriptExecutor)driver).executeScript ("document.getElementByName('q2').removeAttribute('readonly',0);");
+        ((JavascriptExecutor)driver).executeScript ("document.getElementsByName('q2')[0].removeAttribute('readonly',0);");
 
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/12/2016");
