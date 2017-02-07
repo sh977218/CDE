@@ -1,0 +1,58 @@
+{
+  "name": "sample",
+  "version": "0.0.0",
+  "directory": "modules/components",
+  "dependencies": {
+    "angular": "1.6.1",
+    "angular-route": "1.6.1",
+    "angular-resource": "1.6.1",
+    "angular-sanitize": "1.6.1",
+    "angular-animate": "1.6.1",
+    "angular-bootstrap": "1.3.3",
+    "angular-local-storage": "0.5.2",
+    "angular-timeago": "0.4.4",
+    "bootstrap": "3.3.6",
+    "font-awesome": "4.7.0",
+    "jquery": "~1.10.2",
+    "select2": "~3.4.5",
+    "selectize": "~0.8.5",
+    "angular-ui-select": "0.18.1",
+    "textAngular": "1.3.x",
+    "bootstrap-tour": "0.10.1",
+    "ng-grid": "2.0.14",
+    "angularjs-camelCase-human": "1.0.0",
+    "angular-send-feedback": "https://github.com/sh977218/angular-feedback.git#7c057dd44088080e42acbc46368466aef95f5a86",
+    "html2canvas": "*",
+    "ng-file-upload": "3.3.3",
+    "jszip": "2.5.0",
+    "jxon": "2.0.0-beta.2",
+    "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5",
+    "ngInfiniteScroll": "1.2.2",
+    "checklist-model": "0.9.0",
+    "angular-ui-sortable": "0.14.0",
+    "angular-ui-scrollpoint": "2.1.1",
+    "async": "2.0.0-rc.5",
+    "angular-elastic": "2.5.1",
+    "lforms": "7.6.0",
+    "autocomplete-lhc": "9.1.2",
+    "lforms-converter": "https://github.com/sh977218/lforms-converter.git#05d8a5c5eb031d159d747f4534836086aa4fd3ea"
+  },
+  "resolutions": {
+    "angular": "1.6.1",
+    "angular-bootstrap": "1.3.3"
+  },
+  "overrides": {
+    "jquery-ui": {
+      "main": [
+        "jquery-ui.js",
+        "themes/start/jquery-ui.min.css"
+      ]
+    },
+    "font-awesome": {
+      "main": [
+        "./css/font-awesome.css",
+        "./fonts/*"
+      ]
+    }
+  }
+}
