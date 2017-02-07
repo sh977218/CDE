@@ -1,26 +1,26 @@
 angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 'OrgHelpers', 'Alert', '$q',
     function ($scope, $modal, OrgHelpers, Alert, $q) {
 
-        var contextsLoaded = $q.defer();
+        var tagsLoaded = $q.defer();
 
-        function refreshContexts(){
+        function refreshTags(){
             OrgHelpers.deferred.promise.then(function () {
                 $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags.map(function (a) {
                     return {tag: a};
                 });
-                contextsLoaded.resolve();
+                tagsLoaded.resolve();
             });
         }
 
-        $scope.deferredEltLoaded.promise.then(refreshContexts);
+        $scope.deferredEltLoaded.promise.then(refreshTags);
 
         $scope.openNewNamePair = function () {
             if (!$scope.allTags || $scope.allTags.length === 0) {
-                Alert.addAlert("warning", "No valid context present, have an Org Admin go to Org Management > List Management to add one");
+                Alert.addAlert("warning", "No valid tag present, have an Org Admin go to Org Management > List Management to add one");
                 return;
             }
 
-            contextsLoaded.promise.then(function () {
+            tagsLoaded.promise.then(function () {
                 $modal.open({
                     animation: false,
                     templateUrl: 'newNamePairModalContent.html',

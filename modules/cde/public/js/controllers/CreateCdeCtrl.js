@@ -5,10 +5,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
 
     $scope.elt = {
         classification: [], stewardOrg: {}, naming: [{
-            designation: "", definition: "", context: {
-                contextName: ""
-                , acceptability: "preferred"
-            }
+            designation: "", definition: "", tags: []
         }]
     };
     $controller('CreateCdeAbstractCtrl', {$scope: $scope});
