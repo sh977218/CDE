@@ -144,7 +144,10 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     }
                 };
                 cde.naming.forEach(function (n) {
-                    if (n.context === 'Question Text') {
+                    if (!n.tags)n.tags = [];
+                    if (n.tags.filter(function (t) {
+                            return t.tag.toLowerCase().indexOf('Question Text') > 0;
+                        }).length > 0) {
                         if (!n.designation || (n.designation && n.designation.trim().length === 0)) {
                             question.label = cde.naming[0].designation ? cde.naming[0].designation : '';
                             question.hideLabel = true;

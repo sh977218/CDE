@@ -5,10 +5,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
-public class AdminAddsContextKey extends NlmCdeBaseTest {
+public class AdminAddsTags extends NlmCdeBaseTest {
 
     @Test
-    public void addRemoveContext() {
+    public void addRemoveTags() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
@@ -22,7 +22,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
-        textPresent("Contexts are managed in Org Management > List Management");
+        textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
         clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/a[normalize-space(text())='canYouSeeThis']"));
 
