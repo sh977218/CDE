@@ -250,6 +250,8 @@ function streamOnData(migrationCde) {
 }
 
 function streamOnClose() {
+    process.exit(1);
+    /*
     // Retire Missing CDEs
 
     DataElement.find({
@@ -280,7 +282,6 @@ function streamOnClose() {
                         Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
                             if (findOrgError) throw findOrgError;
                             else {
-//                                theOrg.classifications = org.classifications;
                                 theOrg.save(function (saveOrgError) {
                                     if (saveOrgError) throw saveOrgError;
                                     else doneOneOrg();
@@ -295,7 +296,7 @@ function streamOnClose() {
                 });
             });
         }
-    });
+     });*/
 }
 
 function doStream() {
