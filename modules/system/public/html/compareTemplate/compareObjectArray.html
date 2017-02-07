@@ -28,7 +28,7 @@
                 <div ng-if="entry.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered</div>
                 <div ng-repeat="p in options.properties">
                     <div ng-display-object ng-display-object-obj="right[entry.rightIndex]"
-                         ng-display-object-properties="p"
+                         ng-display-object-properties="p" displayOption="option.displayOption"
                          ng-display-object-show-attribute="entry.displayedAttributes.indexOf('all') !== -1 || entry.displayedAttributes.indexOf(p.property) !== -1"
                          ng-display-object-show-warning-icon="entry.partialMatchItems.indexOf(p.property) !== -1">
                     </div>

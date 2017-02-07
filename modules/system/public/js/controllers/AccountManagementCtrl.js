@@ -34,7 +34,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     }).catch(function onError() {});
 
     var allPropertyKeys = [];
-    var allContexts = [];
+    var allTags = [];
     $scope.getOrgs = function(cb) {
         $http.get("/managedOrgs").then(function(response) {
             $scope.orgs = response.data.orgs;
@@ -44,13 +44,13 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                     allPropertyKeys = allPropertyKeys.concat(o.propertyKeys);
                 }
                 if (o.nameTags) {
-                    allContexts = allContexts.concat(o.nameTags);
+                    allTags = allTags.concat(o.nameTags);
                 }
             });
             allPropertyKeys = allPropertyKeys.filter(function(item, pos, self) {
                 return self.indexOf(item) === pos;
             });
-            allContexts = allContexts.filter(function(item, pos, self) {
+            allTags = allTags.filter(function(item, pos, self) {
                 return self.indexOf(item) === pos;
             });
             if (cb) cb();
@@ -62,6 +62,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.getOrgAdmins = function() {
         $http.get("/orgAdmins").then(function(response) {
             $scope.orgAdmins = response.data.orgs;
+        }).catch(function onError() {
         });
     };
     $scope.getOrgAdmins(); 
@@ -205,29 +206,13 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         );
     };
 
-    $scope.getExistingKeys = function (search) {
-        var result = allPropertyKeys.slice();
-        if (search && result.indexOf(search) === -1) {
-            result.unshift(search);
-        }
-        return result;
-    };
-
-    $scope.getExistingContexts = function (search) {
-        var result = allContexts.slice();
-        if (search && result.indexOf(search) === -1) {
-            result.unshift(search);
-        }
-        return result;
-    };
-
     $scope.removePropertyFromOrg = function(p, org) {
         org.propertyKeys = org.propertyKeys.filter(function (k) {
             return k !== p;
         });
         $scope.updateOrg(org);
     };
-    $scope.removeContextFromOrg = function(c, org) {
+    $scope.removeTagsFromOrg = function(c, org) {
         org.nameTags = org.nameTags.filter(function (k) {
             return k !== c;
         });
@@ -244,7 +229,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             $scope.updateOrg(org);
         }, function () {});
     };
-    $scope.addOrgContext = function(org) {
+    $scope.addOrgTags = function(org) {
         $modal.open({
             animation: false,
             templateUrl: '/system/public/html/addValueModal.html',

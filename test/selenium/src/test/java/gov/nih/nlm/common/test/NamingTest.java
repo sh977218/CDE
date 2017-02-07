@@ -12,7 +12,7 @@ public abstract class NamingTest extends CommonTest {
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         clickElement(By.id("addNamePair"));
-        textPresent("Contexts are managed in Org Management > List Management");
+        textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("designation")).sendKeys("New Name");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("createNamePair")));
         findElement(By.name("definition")).sendKeys("New Definition");

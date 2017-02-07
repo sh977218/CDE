@@ -59,7 +59,7 @@
                         });
                     }
                     if (b == null) {
-                        var b = noMatchArray.find(function (elem) {
+                        b = noMatchArray.find(function (elem) {
                             return elem.calculated.tinyId === a.calculated.tinyId;
                         });
                     }
@@ -148,7 +148,7 @@
                             previous = 'nomatch';
                         }
                         // match
-                        partials = matchAttributes(leftItem, rightArray[foundInRight])
+                        partials = matchAttributes(leftItem, rightArray[foundInRight]);
                         if (previous !== 'match' && partials.length > 0) { result = []; options.results.push(result); }
                         result.push({
                             leftIndex: leftIndex,
@@ -164,7 +164,7 @@
                     if (leftIndex === leftArray.length - 1) {
                         for (var j = beginRightIndex; j < rightArray.length; j++) {
                             options.showTitle = true;
-                            partials = partialMatchAttributes(rightArray[j], leftArray)
+                            partials = partialMatchAttributes(rightArray[j], leftArray);
                             result.push({
                                 rightIndex: j,
                                 match: false,

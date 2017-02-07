@@ -25,7 +25,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         findElement(By.id("cde.primaryDefinition.style")).sendKeys("width: 200px");
 
         clickElement(By.id("addName"));
-        findElement(By.id("name.0.contextName")).sendKeys("Question Text");
+        findElement(By.id("name.0.tags")).sendKeys("Question Text");
         findElement(By.id("name.0.label")).sendKeys("Question");
         clickElement(By.id("addName"));
         clickElement(By.id("name.1.remove"));
