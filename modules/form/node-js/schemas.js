@@ -136,7 +136,6 @@ exports.formJson = {
         name: String
         , sectionsAsMatrix: {type: Boolean}
         , displayValues: {type: Boolean}
-        , context: {contextName: String}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
         , displayType: {type: String, enum: ['Dynamic', 'Follow-up']}
