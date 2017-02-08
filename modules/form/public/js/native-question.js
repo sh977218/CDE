@@ -145,11 +145,6 @@
                                             ' is-open="formElement.question.opened"' +
                                             ' type="date" ng-model="formElement.question.answer"' +
                                             ' name="' + fe.questionId + '" '+ required + ' ' + disabled + '/>' +
-                                        '<div class="input-group-btn">' +
-                                            '<button type="button" class="btn btn-default"' +
-                                                ' ng-click="formElement.question.opened = true">' +
-                                                '<i class="glyphicon glyphicon-calendar"></i>' +
-                                            '</button></div></div>' +
                                     '<div ng-bind="sectionLabel.$$element[0][\'' + fe.questionId + '\'].validationMessage"></div>';
                                 break;
                             case 'Number':
