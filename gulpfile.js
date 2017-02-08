@@ -22,7 +22,7 @@ var gulp = require('gulp'),
 require('es6-promise').polyfill();
 
 gulp.task('npm', function () {
-    gulp.src(['./package.json'])
+    return gulp.src(['./package.json'])
         .pipe(install());
 });
 
@@ -180,7 +180,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
     });
 });
 
-gulp.task('webpack', function () {
+gulp.task('webpack', ['npm', 'bower'], function () {
     return run('npm run build').exec(undefined,
         () => gulp.src('./modules/static/*.js').pipe(gulp.dest(config.node.buildDir + "/modules/static/")));
 });
