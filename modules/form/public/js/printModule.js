@@ -80,6 +80,7 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
                     displayInstructions: true,
                     displayNumbering: true,
                     sectionsAsMatrix: true,
+                    displayValues: false,
                     displayType: 'Follow-up',
                     numberOfColumns: 4
                 }];
