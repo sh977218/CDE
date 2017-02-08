@@ -16,6 +16,10 @@
                     function getLabel(pv) {
                         return pv ? (pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue) : '';
                     }
+
+                    function getValue(pv) {
+                        return pv ? (pv.permissibleValue ? pv.permissibleValue : pv.permissibleValue) : '';
+                    }
                     function htmlTextUoms(uoms) {
                         var html = '';
                         uoms.forEach(function (uom) {
@@ -124,7 +128,7 @@
                                                 'name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
 
                                         htmlText +=
-                                            getLabel(pv) + '</label>';
+                                            getLabel(pv) + '<span ng-if="selection.selectedProfile.displayValues">  ' + getValue(pv) + '  </span>' + '</label>';
 
                                         if (pv.subQuestions)
                                             htmlText +=
