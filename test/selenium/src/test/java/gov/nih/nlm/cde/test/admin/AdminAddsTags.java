@@ -24,7 +24,7 @@ public class AdminAddsTags extends NlmCdeBaseTest {
         clickElement(By.id("addNamePair"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
-        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/a[normalize-space(text())='canYouSeeThis']"));
+        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/span[normalize-space(text())='canYouSeeThis']"));
 
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
