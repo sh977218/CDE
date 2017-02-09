@@ -30,7 +30,7 @@ import "./article/public/js/angularTemplates";
 
 import "./system/shared/classificationShared";
 import "./system/shared/regStatusShared";
-import * as authShared from "./system/shared/authorizationShared";
+import "./system/shared/authorizationShared";
 import "./system/shared/exportShared";
 import "./system/shared/compareShared";
 import "./system/public/js/controllers/MainCtrl";

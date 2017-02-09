@@ -1,6 +1,8 @@
-const prod = process.env.NODE_ENV === 'production';
+const prod = process.env.BUILD_ENV === 'production';
 const path = require('path');
 const webpack = require('webpack');
+
+console.log("Are we prod? " + prod);
 
 module.exports = {
     context: __dirname,
