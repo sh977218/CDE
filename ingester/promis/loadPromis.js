@@ -1,4 +1,4 @@
-// 3) Loads PROMIS to DB
+// 4) Loads PROMIS to DB
 // node ingester/promis/loadPromis.js ../promis 2014-01
 
 //var des = db.dataelements.find({"naming.designation":/^In the past 7 days/, "stewardOrg.name": "PROMIS / Neuro-QOL"});
@@ -222,7 +222,7 @@ var loadForm = function(file, cb) {
 
 
         var form = {
-            stewardOrg: {name: "Assessment Center"},
+            stewardOrg: {name: "PROMIS / Neuro-QOL"},
             source: "Assessment Center",
             naming: [
                 {designation: pForm.name, definition: "N/A"}
@@ -372,7 +372,7 @@ fs.readdir(promisDir + "/forms"+date, function(err, files) {
         process.exit(1);
     }
     
-mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
+mongo_data_system.orgByName("PROMIS / Neuro-QOL", function(stewardOrg) {
     fakeTree = {elements: stewardOrg.classifications};
     async.each(files, function(file, cb){
         //doFile(file, function(){
