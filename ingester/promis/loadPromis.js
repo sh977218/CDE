@@ -132,7 +132,7 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel){
 
 var doFile = function(file, cb) {
     fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
-        if (err) console.log("err " + err);
+        if (err) console.log("err in file: " + file + "\n" + err);
         var form = JSON.parse(formData);
         form.content.Items.forEach(function(item) {
             var cde = {
@@ -220,7 +220,6 @@ var loadForm = function(file, cb) {
 
         if (formClassifMap[pForm.name]) classificationShared.addCategory(fakeTree, formClassifMap[pForm.name]);
 
-
         var form = {
             stewardOrg: {name: "PROMIS / Neuro-QOL"},
             source: "Assessment Center",
@@ -241,7 +240,7 @@ var loadForm = function(file, cb) {
         } else if (pForm.name.indexOf("PROMIS") > -1) {
             form.classification.push({
                 stewardOrg: {
-                    name: "Assessment Center"
+                    name: "PROMIS / Neuro-QOL"
                 },
                 elements: [
                     {
@@ -318,8 +317,8 @@ var loadForm = function(file, cb) {
             var cde = cdeArray.findDuplicate(nameParts.join(" "));
 
             if (!cde) {
-                console.log("Unable to find CDE: " + cde.naming[0].designation);
-                process.exit(1);
+                console.log("Unable to find CDE: " + nameParts);
+                //process.exit(1);
             } else {
                 var question = {
                     answers: [],
@@ -366,52 +365,49 @@ setTimeout(function() {
 
     console.log("reading directory:" + promisDir + "/forms"+date);
 
-fs.readdir(promisDir + "/forms"+date, function(err, files) {
-    if (err) {
-        console.log("Cant read form dir." + err);
-        process.exit(1);
-    }
-    
-mongo_data_system.orgByName("PROMIS / Neuro-QOL", function(stewardOrg) {
-    fakeTree = {elements: stewardOrg.classifications};
-    async.each(files, function(file, cb){
-        //doFile(file, function(){
-            cb();
-        //});
-    }, function(){
-        stewardOrg.classifications = fakeTree.elements;
-        stewardOrg.markModified("classifications");
-        stewardOrg.save(function (err) {
-        });
-        var newCdeArray = [];
-        async.each(cdeArray.cdearray, function(cde, cb) {
-            mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
-               if (err) {
-                   console.log("unable to create CDE. " + err);
-               }
-               newCdeArray.push(newCde);
-               cb();
-            });                        
-        }, function() {
-            mongo_cde.query({source: "Assessment Center"}, function(err, cdes){
-                cdeArray.cdearray = cdes;
-                async.each(files, function(file, cb){
-                    loadForm(file, function(){
-                        cb();
+    fs.readdir(promisDir + "/forms"+date, function(err, files) {
+        if (err) {
+            console.log("Cant read form dir." + err);
+            process.exit(1);
+        }
+
+        mongo_data_system.orgByName("PROMIS / Neuro-QOL", function(stewardOrg) {
+            fakeTree = {elements: stewardOrg.classifications};
+            async.each(files, function(file, cb){
+                doFile(file, cb);
+            }, function() {
+                stewardOrg.classifications = fakeTree.elements;
+                stewardOrg.markModified("classifications");
+                stewardOrg.save();
+                var newCdeArray = [];
+                async.each(cdeArray.cdearray, function(cde, cb) {
+                    console.log("mongo cde create");
+                    mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
+                        console.log("mongo cde create done");
+                       if (err) {
+                           console.log("unable to create CDE. " + err);
+                       }
+                       newCdeArray.push(newCde);
+                       cb();
                     });
                 }, function() {
-                    loadLoincPv.loadPvs(cdeArray, function() {
-                        console.log("lost forms\n\n\n");
-                        lostForms.forEach(function(f){console.log(f)});
-                        process.exit(0);
+                    mongo_cde.query({source: "Assessment Center"}, function(err, cdes){
+                        cdeArray.cdearray = cdes;
+                        async.each(files, function(file, cb){
+                            loadForm(file, cb);
+                        }, function() {
+                            loadLoincPv.loadPvs(cdeArray, function() {
+                                console.log("lost forms\n\n\n");
+                                lostForms.forEach(function(f){console.log(f)});
+                                process.exit(0);
+                            });
+                        });
                     });
+
                 });
             });
-
         });
-    });    
-});
-});
+    });
 }, 2000);
 
 
