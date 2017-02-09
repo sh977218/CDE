@@ -1,80 +1,116 @@
+function isNameExisted(naming, name) {
+    var temp = naming.filter(function (n) {
+        return (n.designation === name.designation
+        && n.definition === name.definition
+        && n.languageCode === name.languageCode
+        && n.source === name.source)
+    });
+    if (temp.length > 0)return temp[0];
+    else if (name === {}) return false;
+    else return false;
+}
+
+function isQuestionTextExist(naming) {
+    var temp = naming.filter(function (n) {
+        return n.tags.filter(function (t) {
+                return t.tag.toLowerCase().indexOf('Question Text') > 0;
+            }).length > 0;
+    });
+    return temp.length > 0;
+}
+
 exports.parseNaming = function (loinc) {
     var naming = [];
+    var longCommonNameObj = {};
+    var shortNameObj = {};
     var NAME = loinc['NAME']['NAME'];
     if (NAME) {
         if (NAME['Long Common Name']) {
-            naming.push({
+            longCommonNameObj = {
                 designation: NAME['Long Common Name'],
                 definition: '',
                 languageCode: "EN-US",
-                context: {
-                    contextName: "Long Common Name",
-                    acceptability: 'preferred'
-                },
+                tags: [{tag: "Long Common Name"}],
                 source: 'LOINC'
-            });
+            };
+            var existingName = isNameExisted(naming, longCommonNameObj);
+            if (existingName) {
+                existingName.tags.push({tag: 'Long Common Name'});
+            } else {
+                naming.push(longCommonNameObj);
+            }
         }
         if (NAME['Shortname']) {
-            naming.push({
+            shortNameObj = {
                 designation: NAME['Shortname'],
                 definition: '',
                 languageCode: "EN-US",
-                context: {
-                    contextName: "Shortname",
-                    acceptability: 'preferred'
-                },
+                tags: [{tag: "Shortname"}],
                 source: 'LOINC'
-            });
-        }
-    }
-    var LOINCNAME = loinc['LOINC NAME']['LOINC NAME']['LOINC NAME'];
-    if (LOINCNAME) {
-        var nameExist = false;
-        naming.forEach(function (n) {
-            if (n.designation === LOINCNAME) {
-                nameExist = true;
+            };
+            var existingName = isNameExisted(naming, shortNameObj);
+            if (existingName) {
+                existingName.tags.push({tag: 'Shortname'});
+            } else {
+                naming.push(shortNameObj);
             }
-        });
-        if (!nameExist) {
-            naming.push({
-                designation: LOINCNAME,
-                definition: '',
-                languageCode: 'EN-US',
-                context: {
-                    contextName: '',
-                    acceptability: 'preferred'
-                },
-                source: 'LOINC'
-            })
+
         }
     }
+    var questionTextNameObj = {};
     if (loinc['SURVEY QUESTION']) {
         if (loinc['SURVEY QUESTION']['SURVEY QUESTION'].Text && loinc['SURVEY QUESTION']['SURVEY QUESTION'].Text.length > 0) {
-            naming.push({
+            questionTextNameObj = {
                 designation: loinc['SURVEY QUESTION']['SURVEY QUESTION'].Text,
                 definition: '',
                 languageCode: 'EN-US',
-                context: {
-                    contextName: 'Question Text',
-                    acceptability: 'preferred'
-                },
+                tags: [{tag: 'Question Text'}],
                 source: 'LOINC'
-            })
+            };
+            var existingName = isNameExisted(naming, questionTextNameObj);
+            if (existingName) {
+                existingName.tags.push({tag: 'Question Text'});
+            } else {
+                naming.push(questionTextNameObj);
+            }
         }
     }
+    var LOINCNAME = loinc['LOINC NAME']['LOINC NAME']['LOINC NAME'];
+    var loincNameObj = {};
+    if (LOINCNAME) {
+        loincNameObj = {
+            designation: LOINCNAME,
+            definition: '',
+            languageCode: 'EN-US',
+            tags: [{tag: 'Question Text'}],
+            source: 'LOINC'
+        };
+        var existingName = isNameExisted(naming, loincNameObj);
+        if (existingName) {
+            if (isQuestionTextExist(naming))
+                existingName.tags.push({tag: 'Question Text'});
+        } else {
+            naming.push(loincNameObj);
+        }
+    }
+    var termDefinitionNameObj = {};
     if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
         loinc['TERM DEFINITION/DESCRIPTION(S)']['TERM DEFINITION/DESCRIPTION(S)'].forEach(function (t) {
-            naming.push({
+            termDefinitionNameObj = {
                 designation: '',
                 definition: t.Description,
                 languageCode: "EN-US",
-                context: {
-                    contextName: 'TERM DEFINITION/DESCRIPTION(S)',
-                    acceptability: 'preferred'
-                },
+                tags: [{tag: 'TERM DEFINITION/DESCRIPTION(S)'}],
                 source: 'LOINC'
-            })
+            };
+            var existingName = isNameExisted(naming, termDefinitionNameObj);
+            if (existingName) {
+                existingName.tags.push({tag: 'TERM DEFINITION/DESCRIPTION(S)'});
+            } else {
+                naming.push(termDefinitionNameObj);
+            }
         })
     }
+
     return naming;
 };
