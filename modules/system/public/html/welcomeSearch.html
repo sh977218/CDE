@@ -41,11 +41,12 @@
                         <i class="fa fa-spinner fa-pulse"></i> Searching...
                     </h1>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"
-                     ng-repeat="org in orgs | orderBy:'name' track by $index"
-                     id="search_by_classification_{{org.name}}">
-                    <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor" ng-click="browseOrg(org.name)">
-                        <legend>
+                <div class="row">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"
+                         ng-repeat="org in orgs | orderBy:'name' track by $index"
+                         id="search_by_classification_{{org.name}}">
+                        <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor" ng-click="browseOrg(org.name)">
+                            <legend>
                             <span ng-if="!embedded">
                                 <a ng-href="search?selectedOrg={{org.name}}" ng-bind="org.name"
                                    id="browseOrg-{{org.name}}">
@@ -53,16 +54,17 @@
                             <span ng-if="embedded">
                                 <a href ng-bind="org.name" id="browseOrg-{{org.name}}"></a>
                             </span>
-                        </legend>
-                        <div ng-if="org.longName" ng-bind="org.longName"></div>
-                        <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span> elements</div>
-                        <div ng-if="org.extraInfo" ng-bind="org.extraInfo"></div>
-                        <div ng-if="org.source"><a href="{{org.source}}" target="_blank">Source</a></div>
-                    </fieldset>
-                    <i class="fa fa-info welcomeDetailIcon hand-cursor"
-                       ng-click="openOrgDetails(org)"
-                       ng-if="org.htmlOverview">
-                    </i>
+                            </legend>
+                            <div ng-if="org.longName" ng-bind="org.longName"></div>
+                            <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span> elements</div>
+                            <div ng-if="org.extraInfo" ng-bind="org.extraInfo"></div>
+                            <div ng-if="org.source"><a href="{{org.source}}" target="_blank">Source</a></div>
+                        </fieldset>
+                        <i class="fa fa-info welcomeDetailIcon hand-cursor"
+                           ng-click="openOrgDetails(org)"
+                           ng-if="org.htmlOverview">
+                        </i>
+                    </div>
                 </div>
             </uib-tab>
             <uib-tab ng-if="topics.Diseases" heading="Browse by Topic" active="byTopic"
@@ -85,7 +87,7 @@
     </div>
     <div>
         <small>
-            <span id="totalItems">{{totalItems}}</span>elements across all classifications
+            <span id="totalItems">{{totalItems}}</span> elements across all classifications
         </small>
     </div>
 </div>
