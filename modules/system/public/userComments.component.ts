@@ -1,8 +1,8 @@
-import {Component, Input} from "@angular/core";
-import {UserComments} from "./profile.component";
+import { Component, Input } from "@angular/core";
+import { UserComments } from "./profile.component";
 
 @Component({
-    selector: "user-comments",
+    selector: "cde-user-comments",
     templateUrl: "./userComments.component.html"
 })
 export class UserCommentsComponent {

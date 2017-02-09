@@ -1,4 +1,4 @@
-const prod = process.env.BUILD_ENV === 'production';
+const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run build"
 const path = require('path');
 const webpack = require('webpack');
 
@@ -26,8 +26,6 @@ module.exports = {
             {test: /.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {test: /\.ts$/, exclude: /node_modules/, use: ['ts-loader', 'angular2-template-loader']},
             {test: /\.css$/, use: ['style-loader', 'css-loader']},
-            // {test: /\.ejs$/, use: ['ejs-loader']},
-            // {test: /\.html$/, loader: 'html-loader'}
             {test: /\.html$/, use: ['raw-loader']}
         ]
     },
@@ -37,8 +35,8 @@ module.exports = {
                 /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
                 __dirname
             ),
-            new webpack.LoaderOptionsPlugin({debug: false, minimize: true}),
-            new webpack.optimize.UglifyJsPlugin({ // minify
+            new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
+            new webpack.optimize.UglifyJsPlugin({ // sourcemap
                 mangle: false,
                 sourceMap: true,
                 output: {
@@ -61,7 +59,7 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
         modules: ["modules", "modules/components", "node_modules"]
     },
-    devtool: prod ? 'source-map' : 'source-map',
+    devtool: prod ? 'source-map' : 'cheap-module-eval-source-map',
     watch: !prod,
     watchOptions: {
         aggregateTimeout: 300,

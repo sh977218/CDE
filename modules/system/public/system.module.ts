@@ -1,10 +1,11 @@
-import {CommonModule} from "@angular/common";
-import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { PaginationModule } from "ng2-bootstrap";
 
-import {PlaceHoldEmptyPipe} from "./placeHoldEmpty.pipe";
-import {ProfileComponent} from "./profile.component";
-import {upgradeAdapter} from "../../upgrade";
-import {UserCommentsComponent} from "./userComments.component";
+import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
+import { ProfileComponent } from "./profile.component";
+import { upgradeAdapter } from "../../upgrade";
+import { UserCommentsComponent } from "./userComments.component";
 
 @NgModule({
     declarations: [
