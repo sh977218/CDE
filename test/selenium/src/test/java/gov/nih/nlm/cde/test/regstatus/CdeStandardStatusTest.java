@@ -34,7 +34,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         clickElement(By.id("naming_tab"));
         Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_name_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_def_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_tags_0']//input")).get(0).isDisplayed());
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='dd_tags_0']//input")).size(), 0);
 
         // Can edit classifications
         clickElement(By.id("classification_tab"));
