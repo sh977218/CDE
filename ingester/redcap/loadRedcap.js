@@ -1,23 +1,47 @@
-var unzip = require('unzip');
+var parser = require('csv-parser');
 var fs = require('fs');
 var async = require('async');
 
-var ZIP_PATH = 'q:/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip';
+var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/a';
 var zipCount = 0;
-function doZip(filePath, cb) {
-    var fileCount = 0;
-    fs.createReadStream(filePath).pipe(unzip.Parse()).on('entry', function (entry) {
-        fileCount++;
-        console.log('fileCount: ' + fileCount);
-        var fileName = entry.path;
-        var type = entry.type; // 'Directory' or 'File'
-        var size = entry.size;
-        if (fileName === "instrument.csv") {
-            entry.pipe(fs.createWriteStream('output/path'));
-        } else {
-            entry.autodrain();
-        }
+
+var query = {archived: null, 'properties.key': 'PhenX Variables', 'properties.value': {$regex: /PX010101/}};
+
+
+function doCSV(filePath, cb) {
+    var stream = fs.createReadStream(filePath).pipe(parser());
+    stream.on('headers', function (data) {
+        if (data !== "")
+            console.log('header is not same');
     });
+    stream.on('data', function (data) {
+        console.log('');
+    });
+    stream.on('err', function (err) {
+        if (err) throw err;
+    });
+    stream.on('close', function () {
+        cb();
+    });
+}
+function doZip(filePath, cb) {
+    fs.readdir(filePath, (err, items)=> {
+        if (err) throw err;
+        else {
+            var fileCount = 0;
+            async.forEach(items, (item, doneOneItem)=> {
+                if (item === 'instrument.csv') {
+                    doCSV(filePath + '/instrument.csv', function () {
+                        console.log('done instrument');
+                        doneOneItem();
+                    });
+                }
+            }, ()=> {
+                console.log('finished ' + filePath + ' fileCount: ' + fileCount);
+                cb();
+            })
+        }
+    })
 }
 
 fs.readdir(ZIP_PATH, (err, items) => {
