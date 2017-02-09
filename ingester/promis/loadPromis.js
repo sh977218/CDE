@@ -291,7 +291,7 @@ var loadForm = function(file, cb) {
             return parseInt(a.Order) - parseInt(b.Order);
         });
 
-        pForm.content.Items.forEach(function(item, index) {
+        pForm.content.Items.forEach(function(item) {
             var nameParts = [];
 
             item.Elements = item.Elements.sort(function(a,b){
@@ -327,7 +327,7 @@ var loadForm = function(file, cb) {
                         version: cde.version,
                         tinyId: cde.tinyId
                     },
-                    uoms: [],
+                    uoms: []
                 };
 
                 if (cde.valueDomain.permissibleValues.length > 0) {
@@ -349,7 +349,7 @@ var loadForm = function(file, cb) {
 
             }
         });
-        mongo_form.create(form, {username: 'loader'}, function(err, newForm) {
+        mongo_form.create(form, {username: 'loader'}, function(err) {
             if (err) {
                 console.log("unable to create FORM. " + err);
                 process.exit(1);
@@ -378,7 +378,7 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
         //doFile(file, function(){
             cb();
         //});
-    }, function(err){
+    }, function(){
         stewardOrg.classifications = fakeTree.elements;
         stewardOrg.markModified("classifications");
         stewardOrg.save(function (err) {
@@ -392,15 +392,14 @@ mongo_data_system.orgByName("Assessment Center", function(stewardOrg) {
                newCdeArray.push(newCde);
                cb();
             });                        
-        }, function(err) {
-
+        }, function() {
             mongo_cde.query({source: "Assessment Center"}, function(err, cdes){
                 cdeArray.cdearray = cdes;
                 async.each(files, function(file, cb){
                     loadForm(file, function(){
                         cb();
                     });
-                }, function(err) {
+                }, function() {
                     loadLoincPv.loadPvs(cdeArray, function() {
                         console.log("lost forms\n\n\n");
                         lostForms.forEach(function(f){console.log(f)});

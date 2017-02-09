@@ -1,5 +1,5 @@
 var loincMapping = require('./loinc-mapping'),
-    async = require('async')
+    async = require('async');
 
 var notFound = {};
 
