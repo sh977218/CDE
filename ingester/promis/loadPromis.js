@@ -53,7 +53,7 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel){
         if (formClassifMap[form.name].length === 2) {
             cde.classification.push({
                 stewardOrg: {
-                    name: "Assessment Center"
+                    name: "PROMIS / Neuro-QOL"
                 },
                 elements: [
                     {
@@ -75,7 +75,7 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel){
         else if (formClassifMap[form.name].length>2) {
             cde.classification.push({
                 stewardOrg: {
-                    name: "Assessment Center"
+                    name: "PROMIS / Neuro-QOL"
                 },
                 elements: [
                     {
@@ -112,7 +112,7 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel){
         classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
         cde.classification.push({
             stewardOrg: {
-                name: "Assessment Center"
+                name: "PROMIS / Neuro-QOL"
             },
             elements: [
                 {
@@ -136,7 +136,7 @@ var doFile = function(file, cb) {
         var form = JSON.parse(formData);
         form.content.Items.forEach(function(item) {
             var cde = {
-                stewardOrg: {name: "Assessment Center"},
+                stewardOrg: {name: "PROMIS / Neuro-QOL"},
                 source: "Assessment Center",
                 naming: [
                     {designation: "", definition: "N/A"}
@@ -212,7 +212,6 @@ var doFile = function(file, cb) {
     });    
  };
 
-
 var loadForm = function(file, cb) {
     fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
         if (err) console.log("err " + err);
@@ -261,7 +260,7 @@ var loadForm = function(file, cb) {
             else l2 = "Other";
             form.classification.push({
                 stewardOrg: {
-                    name: "Assessment Center"
+                    name: "PROMIS / Neuro-QOL"
                 },
                 elements: [
                     {
@@ -361,53 +360,50 @@ var loadForm = function(file, cb) {
 
 var fakeTree = {};
 
-setTimeout(function() {
+console.log("reading directory:" + promisDir + "/forms"+date);
 
-    console.log("reading directory:" + promisDir + "/forms"+date);
+fs.readdir(promisDir + "/forms"+date, function(err, files) {
+    if (err) {
+        console.log("Cant read form dir." + err);
+        process.exit(1);
+    }
 
-    fs.readdir(promisDir + "/forms"+date, function(err, files) {
-        if (err) {
-            console.log("Cant read form dir." + err);
-            process.exit(1);
-        }
-
-        mongo_data_system.orgByName("PROMIS / Neuro-QOL", function(stewardOrg) {
-            fakeTree = {elements: stewardOrg.classifications};
-            async.each(files, function(file, cb){
-                doFile(file, cb);
-            }, function() {
+    mongo_data_system.orgByName("PROMIS / Neuro-QOL", function(stewardOrg) {
+        fakeTree = {elements: stewardOrg.classifications};
+        async.eachSeries(files, function (file, cb) {
+            console.log("next file.");
+            doFile(file, function () {
                 stewardOrg.classifications = fakeTree.elements;
                 stewardOrg.markModified("classifications");
                 stewardOrg.save();
                 var newCdeArray = [];
-                async.each(cdeArray.cdearray, function(cde, cb) {
-                    console.log("mongo cde create");
-                    mongo_cde.create(cde, {username: 'loader'}, function(err, newCde) {
+                async.each(cdeArray.cdearray, function (cde, cb1) {
+                    mongo_cde.create(cde, {username: 'loader'}, function (err, newCde) {
                         console.log("mongo cde create done");
-                       if (err) {
-                           console.log("unable to create CDE. " + err);
-                       }
-                       newCdeArray.push(newCde);
-                       cb();
+                        if (err) {
+                            console.log("unable to create CDE. " + err);
+                        }
+                        newCdeArray.push(newCde);
+                        cb1();
                     });
-                }, function() {
-                    mongo_cde.query({source: "Assessment Center"}, function(err, cdes){
+                }, function allCdesDone() {
+                    console.log("Created " + cdeArray.cdearray.length + " cdes");
+                    cdeArray.cdearray = [];
+                    mongo_cde.query({source: "Assessment Center"}, function (err, cdes) {
                         cdeArray.cdearray = cdes;
-                        async.each(files, function(file, cb){
-                            loadForm(file, cb);
-                        }, function() {
-                            loadLoincPv.loadPvs(cdeArray, function() {
-                                console.log("lost forms\n\n\n");
-                                lostForms.forEach(function(f){console.log(f)});
-                                process.exit(0);
-                            });
-                        });
+                        loadForm(file, cb);
                     });
-
                 });
+            });
+        }, function allFilesDone() {
+            loadLoincPv.loadPvs(cdeArray, function () {
+                console.log("lost forms\n\n\n");
+                lostForms.forEach(function (f) {
+                    console.log(f)
+                });
+                process.exit(0);
             });
         });
     });
-}, 2000);
-
+});
 
