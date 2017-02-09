@@ -5,9 +5,9 @@
             return {
                 restrict: "EA",
                 scope: true,
-                link: function (scope, element, attrs) {
-                    var fes = scope.formElements;
+                link: function (scope, element) {
                     var fe = scope.formElement;
+                    if (!fe) return "";
                     var question = fe.question;
                     var type = question.datatype || 'text';
                     var required = question.required ? "ng-required='true'" : "";
