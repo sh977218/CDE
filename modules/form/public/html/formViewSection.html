@@ -65,7 +65,7 @@
                     <div ng-if="formElement.elementType === 'section'" id="section_{{preId}}"
                          ng-include="'/form/public/html/formViewSection.html'"
                          ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
-                    <div ng-if="formElement.elementType === 'form'" id="{{preId}}_{{formElementIndex}}"
+                    <div ng-if="formElement.elementType === 'form'" id="inform_{{preId}}"
                          ng-include="'/form/public/html/formViewForm.html'"
                          ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
                 </div>
