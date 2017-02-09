@@ -1,4 +1,4 @@
-<div *ngIf="comments && comments.latestComments && comments.latestComments.length > 0">
+<div *ngIf="comments?.latestComments?.length > 0">
     <h3>Comments</h3>
     <table class="table table-border table-striped table-responsive">
         <thead>
@@ -16,5 +16,6 @@
         </tr>
         </tbody>
     </table>
-    <ul uib-pager total-items="comments.totalItems" ng-model="comments.currentCommentsPage"></ul>
+    <pagination [totalItems]="comments.totalItems" [(ngModel)]="comments.currentCommentsPage"
+                (pageChanged)="getComments($event.page)" itemsPerPage="30"></pagination>
 </div>

@@ -1,19 +1,12 @@
-import { Component, OnChanges, Inject } from "@angular/core";
-import { Http, Response } from "@angular/http";
+import { Component, Inject } from "@angular/core";
+import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
-
-export class UserComments {
-    constructor(public currentCommentsPage: number,
-                public totalItems: number,
-                public latestComments: Array<any>) {}
-}
 
 @Component({
     selector: "cde-profile",
     templateUrl: "./profile.component.html"
 })
-export class ProfileComponent implements OnChanges {
-    comments: UserComments = new UserComments(1, 10000, []);
+export class ProfileComponent {
     cdes: any;
     hasQuota: any;
     orgCurator: string;
@@ -31,11 +24,6 @@ export class ProfileComponent implements OnChanges {
                 this.cdes = response;
         });
         this.reloadUser();
-    }
-
-    ngOnChanges(changes) {
-        if (changes.comments && changes.comments.currentValue.currentCommentsPage !== changes.comments.oldValue.currentCommentsPage)
-            this.getComments(this.comments.currentCommentsPage);
     }
 
     saveProfile() {
@@ -56,7 +44,6 @@ export class ProfileComponent implements OnChanges {
                 this.hasQuota = this.userService.user.quota;
                 this.orgCurator = this.userService.user.orgCurator.toString().replace(/,/g, ", ");
                 this.orgAdmin = this.userService.user.orgAdmin.toString().replace(/,/g, ", ");
-                this.getComments(1);
                 this.user = this.userService.user;
             }
         });
@@ -67,16 +54,5 @@ export class ProfileComponent implements OnChanges {
             return p._id !== pf._id;
         });
         this.saveProfile();
-    }
-
-    getComments(page) {
-        this.http.get("/commentsFor/" + this.userService.user.username + "/" + (page - 1) * 30 + "/30").map((res: Response) => res.json()).subscribe( (data) => {
-            this.comments.latestComments = data;
-            if (this.comments.latestComments.length === 0) {
-                this.comments.totalItems = (page - 2) * 30;
-            } else if (this.comments.latestComments.length < 30) {
-                this.comments.totalItems = (page - 1) * 30 + this.comments.latestComments.length;
-            }
-        });
     }
 }
