@@ -148,7 +148,7 @@
   },
   "prodDump": {
     "enabled": true
-    , "url": "https://local-cde-1.nlm.nih.gov/cde/public/html/dailyDump.tz"
+  , "url": "https://local-cde-1.nlm.nih.gov/cde/public/assets/dailyDump.tz"
   }
   , "pmNodeProcess": "node"
   , "captchaCode" : "Override actual here."
