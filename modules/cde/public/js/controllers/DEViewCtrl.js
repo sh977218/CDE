@@ -69,7 +69,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 OrgHelpers.deferred.promise.then(function () {
-                    $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
+                    $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
                 });
             }
         },

@@ -67,7 +67,7 @@ angular.module('formModule').controller
             includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
                 $scope.setCurrentTab(thisTab);
-                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
+                $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
             }
         },
         classification: {

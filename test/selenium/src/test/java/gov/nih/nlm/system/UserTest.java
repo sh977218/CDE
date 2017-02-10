@@ -28,10 +28,10 @@ public class UserTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
-        Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
+        textPresent("cabigAdmin", By.id("username"));
         textPresent("1,024.00", By.id("quota"));
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
-        Assert.assertEquals("caBIG", findElement(By.id("adminFor")).getText());
+        textPresent("caBIG", By.id("adminFor"));
     }
 
     @Test

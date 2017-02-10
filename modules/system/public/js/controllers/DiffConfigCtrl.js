@@ -27,7 +27,7 @@ angular.module('systemModule').controller('DiffConfigCtrl', ['$scope', function 
         properties: [
             {label: 'Name', property: 'designation'},
             {label: 'Definition', property: 'definition'},
-            {label: 'Context', property: 'context.contextName'}
+            {label: 'Tags', property: 'tags', displayOption: 'tag'}
         ]
     };
     $scope.dataElementConceptOptions = {

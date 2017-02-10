@@ -2,8 +2,9 @@ var async = require('async');
 var MigrationEyeGENELoincModel = require('./../createMigrationConnection').MigrationEyeGENELoincModel;
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
+var orgMapping = require('../loinc/Mapping/ORG_INFO_MAP').map;
 
-var LoadLoincCdeIntoMigration = require('./LoadLoincCdeIntoMigration');
+var LoadLoincCdeIntoMigration = require('../loinc/CDE/LoadLoincCdeIntoMigration');
 
 var classificationOrgName = 'eyeGENE';
 var org;
@@ -12,6 +13,7 @@ var cdeCount = 0;
 var loincIdArray = [];
 
 function run() {
+    var orgInfo = orgMapping[classificationOrgName];
     async.series([
         function (cb) {
             MigrationDataElementModel.remove({}, function (removeMigrationDataelementError) {
@@ -49,7 +51,7 @@ function run() {
             })
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.runArray(loincIdArray, org,classificationOrgName, function (one, next) {
+            LoadLoincCdeIntoMigration.runArray(loincIdArray, org, orgInfo, function (one, next) {
                 MigrationDataElementModel.find({'ids.id': one.ids[0].id}).exec(function (findMigrationDataElementError, existingCdes) {
                     if (findMigrationDataElementError) throw findMigrationDataElementError;
                     if (existingCdes.length === 0) {

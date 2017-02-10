@@ -56,6 +56,11 @@
                     }
                     if (typeof o === 'boolean') return (o ? 'Yes' : 'No');
                     if (typeof o === 'number') return o.toString();
+                    if (o.constructor === Array) {
+                        return o.map(function (m) {
+                            return m.tag;
+                        }).join(', ');
+                    }
                     return o;
                 },
                 applyHtml: function ($scope, $element) {

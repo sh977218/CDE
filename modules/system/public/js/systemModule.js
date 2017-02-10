@@ -256,6 +256,15 @@ angular.module('systemModule').filter('bytes', [function () {
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     };
 }]);
+
+angular.module('systemModule').filter('tagsToArray', [function () {
+    return function (input) {
+        return input.map(function (m) {
+            return m.tag;
+        }).join(', ');
+    };
+}]);
+
 angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
 angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
 angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {

@@ -21,11 +21,11 @@ public class FormNamingTest extends BaseFormTest {
         goToFormByName("Study Drug Compliance");
         clickElement(By.id("naming_tab"));
         clickElement(By.id("addNamePair"));
-        textPresent("Contexts are managed in Org Management > List Management");
+        textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("designation")).sendKeys("This new form Name");
         findElement(By.name("definition")).sendKeys("A lazy definition");
         clickElement(By.xpath("//*[@id='newTags']//input"));
-        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/a[normalize-space(text())='Great CTX']"));
+        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/span[normalize-space(text())='Great CTX']"));
         clickElement(By.id("createNamePair"));
         modalGone();
         saveForm();

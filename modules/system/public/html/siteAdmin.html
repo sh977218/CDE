@@ -17,9 +17,9 @@
     <tr>
         <td>
             <div ng-repeat="user in siteAdmins">
-                            <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}
-                            </span> <i class="fa fa-trash-o hand-cursor" ng-click="removeSiteAdmin(user._id)"
-                                       id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+                <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}
+                </span> <i class="fa fa-trash-o hand-cursor" ng-click="removeSiteAdmin(user._id)"
+                           id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
             </div>
         </td>
     </tr>

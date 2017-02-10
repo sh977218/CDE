@@ -75,14 +75,15 @@ exports.createIndexJson = {
                 , "naming": {
                     properties: {
                         "languageCode": {"type": "string", "index": "no"},
-                        "context": {
+                        "tags": {
                             properties: {
-                                "contextName": {"type": "string", "index": "no"}
+                                "tag": {"type": "string", "index": "not_analyzed"}
                             }
                         }
                     }
                 }
                 , "version": {"type": "string", "index": "no"}
+                , "views": {type: "integer"}
             }
         }
     }, settings: {
