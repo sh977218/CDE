@@ -109,6 +109,14 @@ function getFormForPublishing (form, req, res) {
                     jsHash = jsFileName.substring(jsFileName.indexOf("printable-") + 10, jsFileName.indexOf(".js") + 3);
                 }
             });
+            var jsPrintFileName;
+            var jsPrintHash = null;
+            lines.forEach(l => {
+                if (l.includes("<script") && l.includes('src="/system/public/assets/js/print')) {
+                    jsPrintFileName = l.substring(l.indexOf('/js/') + 4, l.indexOf('.js"') + 3);
+                    jsPrintHash = jsPrintFileName.substring(jsPrintFileName.indexOf("printable-") + 10, jsPrintFileName.indexOf(".js") + 3);
+                }
+            });
 
             function storeHtmlInDb(req, res, form, fileStr) {
                 var readable = new Readable();
@@ -150,16 +158,30 @@ function getFormForPublishing (form, req, res) {
                     if (err) console.log(err);
                     fileStr = fileStr.replace("<!-- ICSSH -->", "<style>" + cssStr + "</style>");
                     var filePath = "modules/form/public/assets/js/" + jsFileName;
+                    var filePrintPath = "modules/system/public/assets/js/" + jsPrintFileName;
                     md5_file(filePath, function (err, hash) {
-                        var f = {
-                            filename: jsFileName,
-                            type: "text/javascript",
-                            stream: fs.createReadStream(filePath),
-                            md5: hash
-                        };
-                        mongo_data_system.addFile(f, function (err, newJsFile) {
-                            fileStr = fileStr.replace("<!-- IJSH -->", '<script src="/data/' + newJsFile._id + '">' + "</script>");
-                            storeHtmlInDb(req, res, form, fileStr);
+                        md5_file(filePrintPath, function (err, hashPrint) {
+                            var f = {
+                                filename: jsFileName,
+                                type: "text/javascript",
+                                stream: fs.createReadStream(filePath),
+                                md5: hash
+                            };
+                            mongo_data_system.addFile(f, function (err, newJsFile) {
+                                var fp = {
+                                    filename: jsPrintFileName,
+                                    type: "text/javascript",
+                                    stream: fs.createReadStream(filePrintPath),
+                                    md5: hashPrint
+                                };
+                                mongo_data_system.addFile(fp, function (err, newJsPrintFile) {
+                                    fileStr = fileStr.replace("<!-- IJSH -->",
+                                        '<script src="/data/' + newJsFile._id + '"></script>' +
+                                        '<script src="/data/' + newJsPrintFile._id + '"></script>'
+                                    );
+                                    storeHtmlInDb(req, res, form, fileStr);
+                                });
+                            });
                         });
                     });
                 })
