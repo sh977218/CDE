@@ -15,9 +15,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "target": "es5",
     "types": [
-      "node",
-      "webpack",
-      "webpack-env"
+      "node"
     ],
     "typeRoots": [
       "node_modules/@types"
