@@ -274,15 +274,6 @@ exports.fetchWholeForm = function(Form, callback) {
                         doneOne();
                     });
                 } else {
-                    if (fe.question.cde.derivationRules)
-                        fe.question.cde.derivationRules.forEach(function (derRule) {
-                            delete fe.incompleteRule;
-                            if (derRule.ruleType === 'score') {
-                                fe.question.isScore = true;
-                                fe.question.scoreFormula = derRule.formula;
-                                $scope.inScoreCdes = derRule.inputs;
-                            }
-                        });
                     doneOne();
                 }
             }, function doneAll() {
