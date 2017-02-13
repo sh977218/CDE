@@ -1,3 +1,5 @@
+import * as deValidator from "../../../../cde/shared/deValidator";
+
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',

@@ -156,7 +156,7 @@ var specialTasks = [
         function: CheckLformViewer.checkLformViewer
     }
 ];
-var currentVersion = '2.56';
+var currentVersion = '2.58';
 
 exports.setCurrentVersion = function (v) {
     currentVersion = v;

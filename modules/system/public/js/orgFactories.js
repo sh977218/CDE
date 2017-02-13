@@ -1,3 +1,5 @@
+import * as authShared from "../../../system/shared/authorizationShared";
+
 angular.module('OrgFactories', ['ngResource'])
 .factory('OrgHelpers', ["$http", "$q", function ($http, $q) {
     var orgHelpers = {
@@ -57,8 +59,8 @@ angular.module('OrgFactories', ['ngResource'])
             var parentOrgOfThisClass = OrgHelpers.orgsDetailedInfo[orgToHide] &&
                 OrgHelpers.orgsDetailedInfo[orgToHide].workingGroupOf;
             var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
-            var userIsWorkingGroupCurator = exports.isCuratorOf(user, orgToHide);
-            if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = exports.isCuratorOf(user, parentOrgOfThisClass);
+            var userIsWorkingGroupCurator = authShared.isCuratorOf(user, orgToHide);
+            if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = authShared.isCuratorOf(user, parentOrgOfThisClass);
             if (!isNotWorkingGroup) {
                 var isSisterOfWg = false;
                 if (!user.orgAdmin) user.orgAdmin = [];

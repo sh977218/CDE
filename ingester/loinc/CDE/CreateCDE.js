@@ -27,7 +27,7 @@ exports.createCde = function (loinc, orgInfo) {
     var sources = ParseSources.parseSources(loinc);
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
-        createdBy: {username: 'BatchLoader'},
+        createdBy: {username: 'batchLoader'},
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},

@@ -1,3 +1,5 @@
+import * as authShared from "../../../../system/shared/authorizationShared";
+
  angular.module('systemModule').controller('UsersMgtCtrl',
      ['$scope', '$http', '$timeout', '$uibModal', 'Alert', function($scope, $http, $timeout, $modal, Alert) {
 
@@ -11,7 +13,7 @@
          });
     };
 
-    $scope.rolesEnum = exports.rolesEnum;
+    $scope.rolesEnum = authShared.rolesEnum;
 
      $scope.updateAvatar = function(user) {
          $http.post("/updateUserAvatar", user).then(function () {

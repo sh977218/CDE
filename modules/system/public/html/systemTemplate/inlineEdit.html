@@ -1,6 +1,6 @@
 <span>
     <span ng-hide="editMode">
-        <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit"
+        <i tabindex="0" title="Edit" role="link" ng-show="isAllowed" class="fa fa-edit"
            ng-click="edit();" ng-keyup="$event.keyCode == 32 ? edit() : null"></i>
         <a ng-if="linkSource" ng-href="{{linkSource}}" target="_blank">{{model | placeHoldEmpty}}</a>
         <span ng-if="!linkSource">{{model | placeHoldEmpty}}</span>
