@@ -358,7 +358,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     if (!settings.visibleStatuses || settings.visibleStatuses.length === 0) {
-        settings.visibleStatuses = regStatusShared.statusList.map(function(s) { return s.name; });
+        settings.visibleStatuses = regStatusShared.orderedList;
     }
 
     // show statuses that either you selected, or it's your org and it's not retired.

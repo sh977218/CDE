@@ -53,8 +53,6 @@
                     <dd>{{status.startupDate | timeAgo}}</dd>
                     <dt>PM Port:</dt>
                     <dd>{{status.pmPort}}</dd>
-                    <dt>Version Number:</dt>
-                    <dd><span ng-include="'/system/public/html/version.html'"></span></dd>
                 </dl>
                 <a type="button" class="btn btn-danger fa fa-power-off"
                    ng-click="sendStop(status)" ng-if="status.nodeStatus === 'Running'"> Stop</a>

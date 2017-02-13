@@ -26,3 +26,10 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/cdeStatusReport', {controller: 'ExportCtrl', templateUrl: '/system/public/html/cdeStatusReport.html'})
         ;
     }]);
+
+// Angular 2 upgraded
+angular.module('cdeModule').directive('cdeAccordionList', function () {
+    return {
+        scope: {cdes: '=', ejsPage: '=', module: '='},
+        templateUrl: '/cde/public/html/cdeAccordionList.html'};
+});

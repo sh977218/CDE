@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="user">
     <h1 class="page-header">
         <label>User Profile</label>
     </h1>
@@ -14,13 +14,14 @@
                     </tr>
                     <tr>
                       <td>Quota:</td>
-                      <td id="quota">{{user.quota / 1024 / 1024 | number:2 | placeHoldEmpty}}<span ng-show="hasQuota"> MB</span></td>
+                      <td id="quota">{{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span></td>
                     </tr>
                     <tr>
                       <td>E-mail:</td>
                       <td id="user_email">
-                          <div inline-edit id="emailEdit" model="user.email"
-                               input-type="'email'" is-allowed="true" on-ok="saveProfile()" /></td>
+                          <inline-edit id="emailEdit" [(model)]="user.email"
+                                       [inputType]="'email'" [isAllowed]="true" (onOk)="saveProfile()"></inline-edit>
+                      </td>
                     </tr>
                     <tr>
                       <td>Curator for:</td>
@@ -39,24 +40,25 @@
         </div>
     </div>
 
-    <div ng-if="user.publishedForms.length > 0">
+    <div *ngIf="user.publishedForms.length > 0">
         <h3>Your Published Forms</h3>
         <table class="table table-striped">
             <thead>
-                <th>Link</th>
+                <tr><th>Link</th></tr>
             </thead>
             <tbody>
-                <tr ng-repeat="pf in user.publishedForms">
-                    <td><a ng-href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a> <i
-                            class="fa fa-trash" alt="Remove" ng-click="removePublishedForm(pf)"></i></td>
+                <tr *ngFor="let pf of user.publishedForms">
+                    <td>
+                        <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>
+                        <i class="fa fa-trash" alt="Remove" (click)="removePublishedForm(pf)"></i>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <h3>CDE Viewing History</h3>
-    <div id="accordionList" ng-include="'/cde/public/html/cdeAccordionList.html'" ng-init="ejsPage = 'list'; module='cde'"></div>
+    <cde-accordion-list id="accordionList" [cdes]="cdes" ejsPage="list" module="cde"></cde-accordion-list>
 
-    <div ng-include="'/system/public/html/userComments.html'"></div>
-
+    <cde-user-comments [user]="user"></cde-user-comments>
 </div>

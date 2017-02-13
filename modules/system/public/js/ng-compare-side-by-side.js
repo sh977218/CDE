@@ -1,5 +1,8 @@
+import * as compareShared from "../../../system/shared/compareShared";
+
 (function () {
     'use strict';
+
     angular.module('ngCompareSideBySide', [])
         .directive("ngCompareSideBySide", ["$compile", "Comparison",
             function ($compile, Comparison) {
@@ -79,10 +82,10 @@
                         var leftIndexCopy;
                         var rightIndexCopy;
                         if (r.leftIndex != undefined) {
-                            leftIndexCopy = exports.deepCopy(r.leftIndex);
+                            leftIndexCopy = compareShared.deepCopy(r.leftIndex);
                         }
                         if (r.rightIndex != undefined) {
-                            rightIndexCopy = exports.deepCopy(r.rightIndex);
+                            rightIndexCopy = compareShared.deepCopy(r.rightIndex);
                         }
                         delete r.leftIndex;
                         delete r.rightIndex;
@@ -97,13 +100,13 @@
                 },
                 compareImpl: function (l, r, options) {
                     if (options.type === 'array') {
-                        return exports.compareSideBySide.arrayCompare(l, r, options);
+                        return compareShared.compareSideBySide.arrayCompare(l, r, options);
                     } else if (options.type === 'object') {
-                        return exports.compareSideBySide.objectCompare(l, r, options);
+                        return compareShared.compareSideBySide.objectCompare(l, r, options);
                     } else if (options.type === 'string') {
-                        return exports.compareSideBySide.stringCompare(l, r, options);
+                        return compareShared.compareSideBySide.stringCompare(l, r, options);
                     } else if (options.type === 'number') {
-                        return exports.compareSideBySide.numberCompare(l, r, options);
+                        return compareShared.compareSideBySide.numberCompare(l, r, options);
                     }
                 }
             };
