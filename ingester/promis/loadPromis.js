@@ -282,9 +282,6 @@ var loadForm = function(file, cb) {
             label: "___",
             formElements: []
         };
-        //pForm.content.Items.forEach(function (item) {
-        //    console.log(item.Order);
-        //});
         pForm.content.Items = pForm.content.Items.sort(function (a, b) {
             return parseInt(a.Order) - parseInt(b.Order);
         });
@@ -343,14 +340,27 @@ var loadForm = function(file, cb) {
                 oneDone();
             });
         }, function allDone() {
-            mongo_form.create(form, {username: 'loader'}, function (err) {
-                console.log("Form Created " + form.naming[0].designation);
+            mongo_form.byOtherId(form.ids[0].source, form.ids[0].id, function (err, dupForm) {
                 if (err) {
-                    console.log("unable to create FORM. " + err);
+                    console.log("Unexpected duplicate form");
                     process.exit(1);
                 }
-                cb();
+                if (dupForm) {
+                    // do something here and cb()
+
+                } else {
+                    mongo_form.create(form, {username: 'loader'}, function (err) {
+                        console.log("Form Created " + form.naming[0].designation);
+                        if (err) {
+                            console.log("unable to create FORM. " + err);
+                            process.exit(1);
+                        }
+                        cb();
+                    });
+                }
+
             });
+
         });
     });
 };
