@@ -1,5 +1,3 @@
-if (typeof(exports)==="undefined") exports = {};
-
 exports.rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];
 

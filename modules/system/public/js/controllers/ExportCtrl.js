@@ -1,3 +1,8 @@
+import * as authShared from "../../../../system/shared/authorizationShared";
+import * as exportShared from "../../../../system/shared/exportShared";
+import {saveAs} from "../../../../cde/public/assets/js/FileSaver";
+import * as formShared from "../../../../form/shared/formShared";
+
 angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http',
     'RegStatusValidator', 'userResource', '$uibModal', '$httpParamSerializer', '$window',
     function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $httpParamSerializer, $window) {
@@ -25,9 +30,9 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                 {
                     'csv': function (result) {
                         SearchSettings.getPromise().then(function (settings) {
-                            var csv = exports.getCdeCsvHeader(settings.tableViewFields);
+                            var csv = exportShared.getCdeCsvHeader(settings.tableViewFields);
                             JSON.parse(result).forEach(function (ele) {
-                                csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
+                                csv += exportShared.convertToCsv(exportShared.projectCdeForExport(ele, settings.tableViewFields));
                             });
                             var blob = new Blob([csv], {type: "text/csv"});
                             saveAs(blob, 'SearchExport.csv');  // jshint ignore:line
@@ -48,7 +53,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                     'odm': function (result) {
                         var zip = new JSZip();  // jshint ignore:line
                         JSON.parse(result).forEach(function (oneElt) {
-                            exports.getFormOdm(oneElt, function (err, odmElt) {
+                            formShared.getFormOdm(oneElt, function (err, odmElt) {
                                 if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));  // jshint ignore:line
                             });
                         });
@@ -92,9 +97,9 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
 
         $scope.quickBoardExport = function (quickBoard) {
             SearchSettings.getPromise().then(function (settings) {
-                var result = exports.getCdeCsvHeader(settings.tableViewFields);
+                var result = exportShared.getCdeCsvHeader(settings.tableViewFields);
                 quickBoard.elts.forEach(function (ele) {
-                    result += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
+                    result += exportShared.convertToCsv(exportShared.projectCdeForExport(ele, settings.tableViewFields));
                 });
 
                 if (result) {
@@ -113,7 +118,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
         $scope.displayValidation = function(){
             var org = $scope.searchSettings.selectedOrg;
             var curatorOf = [].concat(userResource.user.orgAdmin).concat(userResource.user.orgCurator);
-            return curatorOf.indexOf(org)>-1 || exports.hasRole(userResource.user, "OrgAuthority");
+            return curatorOf.indexOf(org)>-1 || authShared.hasRole(userResource.user, "OrgAuthority");
         };
 
         $scope.openValidRulesModal = function(){
