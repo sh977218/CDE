@@ -7,6 +7,38 @@ angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'artic
         ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'Alert',
 function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
     function fetchWholeForm(form, callback) {
+        var areDerivationRulesSatisfied = function () {
+            $scope.missingCdes = [];
+            $scope.inScoreCdes = [];
+            var allCdes = {};
+            var allQuestions = [];
+            var doFormElement = function (formElt) {
+                if (formElt.elementType === 'question') {
+                    allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
+                    allQuestions.push(formElt);
+                } else if (formElt.elementType === 'section') {
+                    formElt.formElements.forEach(doFormElement);
+                }
+            };
+            $scope.elt.formElements.forEach(doFormElement);
+            allQuestions.forEach(function (quest) {
+                if (quest.question.cde.derivationRules)
+                    quest.question.cde.derivationRules.forEach(function (derRule) {
+                        delete quest.incompleteRule;
+                        if (derRule.ruleType === 'score') {
+                            quest.question.isScore = true;
+                            quest.question.scoreFormula = derRule.formula;
+                            $scope.inScoreCdes = derRule.inputs;
+                        }
+                        derRule.inputs.forEach(function (input) {
+                            if (!allCdes[input]) {
+                                $scope.missingCdes.push({tinyId: input});
+                                quest.incompleteRule = true;
+                            }
+                        });
+                    });
+            });
+        };
         var maxDepth = 8;
         var depth = 0;
         var loopFormElements = function (form, cb) {
@@ -92,6 +124,7 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
                 $scope.elt.displayProfiles[0].displayType = overrideDisplayType;
 
         });
+        areDerivationRulesSatisfied();
     }, function () {
         Alert.addAlert("danger", "Sorry, we are unable to retrieve this element.");
     });
