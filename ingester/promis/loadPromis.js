@@ -1,17 +1,6 @@
 // 4) Loads PROMIS to DB
 // node ingester/promis/loadPromis.js ../promis 2014-01
 
-//var des = db.dataelements.find({"naming.designation":/^In the past 7 days/, "stewardOrg.name": "PROMIS / Neuro-QOL"});
-//
-//des.toArray().forEach(function(de){
-//    var newName = de.naming[0].designation.replace("In the past 7 days ", "");
-//    de.naming.push({
-//        designation: newName
-//        , context: {contextName: "In the past 7 days"}
-//    });
-//    db.dataelements.update({tinyId: de.tinyId}, de);
-//});
-
 var promisDir = process.argv[2];
 
 var fs = require('fs'),
@@ -29,24 +18,15 @@ var fs = require('fs'),
 
 var lostForms = [];
 
+var user = {username: 'batchloader'};
+
 var date = process.argv[3];
 if (!promisDir) {
     console.log("missing promisDir arg");
     process.exit(1);
 }
 
-var cdeArray = new function() {
-    this.cdearray = [];
-    this.findDuplicate = function(name) {
-        var duplicates = this.cdearray.filter(function(cde){
-            return cde.naming[0].designation === name;
-        });
-        if (duplicates.length > 0) return duplicates[0];
-        else return false;
-    };
-};
-
-var classifyEltNoDuplicate = function(form, cde, storeLastLevel){
+var classifyEltNoDuplicate = function(form, cde, storeLastLevel) {
     cde.classification = [];
     if (formClassifMap[form.name]) {
         classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat([form.name]));
@@ -84,9 +64,9 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel){
                             {
                                 name: formClassifMap[form.name][1]
                                 , elements: [{
-                                name: formClassifMap[form.name][2]
-                                , elements: []
-                            }]
+                                    name: formClassifMap[form.name][2]
+                                    , elements: []
+                                }]
                             }
                         ]
                     }
@@ -130,22 +110,34 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel){
     }
 };
 
+var spanishTerms = ["Neuro-QoL", "Banco", "Capacidad", "Comportamiento", "Ansiedad",
+    "Depresión", "Intensidad", "Agotamiento", "Alteraciones", "Sentimentios", "Satisfacción"];
+
 var doFile = function(file, cb) {
     fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
         if (err) console.log("err in file: " + file + "\n" + err);
         var form = JSON.parse(formData);
-        form.content.Items.forEach(function(item) {
+        var isSpanish = false;
+        spanishTerms.forEach(t => {
+            if (form.name.indexOf(t) > 0) {
+                isSpanish = true;
+            }
+        });
+        if (isSpanish) {
+            console.log("skip spanish form: " + form.name);
+            return cb();
+        }
+        async.eachSeries(form.content.Items, function(item, oneDone) {
             var cde = {
                 stewardOrg: {name: "PROMIS / Neuro-QOL"},
-                source: "Assessment Center",
+                source: "AAssessment Center",
                 naming: [
-                    {designation: "", definition: "N/A"}
+                    {designation: "", definition: "N/A", tags: []}
                 ],
                 ids: [{source: 'Assessment Center', id: item.ID}],
                 valueDomain: {datatype: "Text"},
                 registrationState: {registrationStatus: "Qualified"}
             };
-
             item.Elements.forEach(function(element) {
                 if (!element.Map) {
                     cde.naming[0].designation = cde.naming[0].designation + " " + element.Description;
@@ -160,37 +152,11 @@ var doFile = function(file, cb) {
                     });
                 }
             });
-
-
-
-            var duplicate = cdeArray.findDuplicate(cde.naming[0].designation);
-
-            if (form.name === "PROMIS SF v2.0 - Instrumental Support 4a") {
-                console.log("bad cde");
-            }
-
-            if (duplicate) {
-                if (formClassifMap[form.name] && duplicate.classification[0]) {
-                    classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name].concat(form.name));
-                    classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat(form.name));
-                }
-                else {
-
-                    var c1;
-                    if (form.name.indexOf("Neuro-QOL")>-1) {
-                        c1 = "Neuro-QOL Measures";
-                    } else if (form.name.indexOf("PROMIS")>-1) {
-                        c1 = "PROMIS Instruments";
-                    } else {
-                        c1 = "Other";
-                    }
-                    classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
-                    classificationShared.addCategory(duplicate.classification[0], [c1, "Other", form.name]);
-
-                }
-            } else {
-                classifyEltNoDuplicate(form, cde, true);
-                cdeArray.cdearray.push(cde);
+            if (cde.naming[0].designation.indexOf("In the past 7 days") === 0) {
+                cde.naming.push({
+                    designation: cde.naming[0].designation.substr(18),
+                    tags: [{tag: "In the past 7 days"}]
+                });
             }
             var found = false;
             loinc.forEach(function(l){
@@ -205,11 +171,38 @@ var doFile = function(file, cb) {
                     cde.ids.push({source:"LOINC", id: l.loincCode});
                     found = true;
                 }
-
             });
-        });
-        cb();
-    });    
+            mongo_cde.byOtherId("Assessment Center", item.ID, function (err, duplicate) {
+                if (err) {
+                    console.log("Unexpected Duplicate CDE: " + item.ID);
+                    process.exit(1);
+                }
+                if (duplicate) {
+                    if (formClassifMap[form.name] && duplicate.classification[0]) {
+                        classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name].concat(form.name));
+                        classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat(form.name));
+                    }
+                    else {
+                        var c1;
+                        if (form.name.indexOf("Neuro-QOL") > -1) {
+                            c1 = "Neuro-QOL Measures";
+                        } else if (form.name.indexOf("PROMIS") > -1) {
+                            c1 = "PROMIS Instruments";
+                        } else {
+                            c1 = "Other";
+                        }
+                        classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
+                        classificationShared.addCategory(duplicate.classification[0], [c1, "Other", form.name]);
+                    }
+                    // should use update and figure out how to.
+                    mongo_cde.save(duplicate, oneDone);
+                } else {
+                    classifyEltNoDuplicate(form, cde, true);
+                    mongo_cde.create(cde, user, oneDone);
+                }
+            });
+        }, cb);
+    });
  };
 
 var loadForm = function(file, cb) {
@@ -217,15 +210,25 @@ var loadForm = function(file, cb) {
         if (err) console.log("err " + err);
         var pForm = JSON.parse(formData);
 
+        var isSpanish = false;
+        spanishTerms.forEach(t => {
+            if (pForm.name.indexOf(t) > 0) {
+                isSpanish = true;
+            }
+        });
+        if (isSpanish) {
+            return cb();
+        }
+
         if (formClassifMap[pForm.name]) classificationShared.addCategory(fakeTree, formClassifMap[pForm.name]);
 
         var form = {
             stewardOrg: {name: "PROMIS / Neuro-QOL"},
-            source: "Assessment Center",
+            source: "AAssessment Center",
             naming: [
                 {designation: pForm.name, definition: "N/A"}
             ],
-            ids: [{source: 'Assessment Center', id: file.substr(0,36)}],
+            ids: [{source: 'Assessment Center', id: file.substr(0, 36)}],
             registrationState: {registrationStatus: "Qualified"},
             formElements: [],
             classification: []
@@ -253,10 +256,10 @@ var loadForm = function(file, cb) {
             });
         } else {
             var l2;
-            if (pForm.name.indexOf("Ped Bank")>-1) l2 = "Pediatric Banks";
-            else if (pForm.name.indexOf("Ped SF")>-1) l2 = "Pediatric Short Forms";
-            else if (pForm.name.indexOf("Bank")>-1) l2 = "Adult Banks";
-            else if (pForm.name.indexOf("SF")>-1) l2 = "Adult Short Forms";
+            if (pForm.name.indexOf("Ped Bank") > -1) l2 = "Pediatric Banks";
+            else if (pForm.name.indexOf("Ped SF") > -1) l2 = "Pediatric Short Forms";
+            else if (pForm.name.indexOf("Bank") > -1) l2 = "Adult Banks";
+            else if (pForm.name.indexOf("SF") > -1) l2 = "Adult Short Forms";
             else l2 = "Other";
             form.classification.push({
                 stewardOrg: {
@@ -273,37 +276,29 @@ var loadForm = function(file, cb) {
                 ]
             });
         }
-
         var currentSection = {
             elementType: "section",
             cardinality: "0.1",
             label: "___",
             formElements: []
         };
-
-        pForm.content.Items.forEach(function(item){
-            console.log(item.Order);
-        });
-
-        pForm.content.Items = pForm.content.Items.sort(function(a,b){
+        //pForm.content.Items.forEach(function (item) {
+        //    console.log(item.Order);
+        //});
+        pForm.content.Items = pForm.content.Items.sort(function (a, b) {
             return parseInt(a.Order) - parseInt(b.Order);
         });
-
-        pForm.content.Items.forEach(function(item) {
+        async.eachSeries(pForm.content.Items, function (item, oneDone) {
             var nameParts = [];
-
-            item.Elements = item.Elements.sort(function(a,b){
+            item.Elements = item.Elements.sort(function (a, b) {
                 return parseInt(a.ElementOrder) > parseInt(b.ElementOrder);
             });
-
-            item.Elements.forEach(function(element) {
+            item.Elements.forEach(function (element) {
                 if (!element.Map) {
                     nameParts.push(element.Description.trim());
                 }
             });
-
-            var newSectionName = nameParts.length > 1? nameParts[0] : "Section";
-
+            var newSectionName = nameParts.length > 1 ? nameParts[0] : "Section";
             if (newSectionName !== currentSection.label) {
                 currentSection = {
                     elementType: "section",
@@ -313,50 +308,52 @@ var loadForm = function(file, cb) {
                 };
                 form.formElements.push(currentSection);
             }
-            var cde = cdeArray.findDuplicate(nameParts.join(" "));
+            mongo_cde.byOtherId("Assessment Center", item.ID, function (err, cde) {
+                if (!cde) {
+                    console.log("Unable to find CDE: " + nameParts);
+                } else {
+                    var question = {
+                        answers: [],
+                        cde: {
+                            version: cde.version,
+                            tinyId: cde.tinyId
+                        },
+                        uoms: []
+                    };
 
-            if (!cde) {
-                console.log("Unable to find CDE: " + nameParts);
-                //process.exit(1);
-            } else {
-                var question = {
-                    answers: [],
-                    cde: {
-                        version: cde.version,
-                        tinyId: cde.tinyId
-                    },
-                    uoms: []
-                };
-
-                if (cde.valueDomain.permissibleValues.length > 0) {
-                    question.datatype = 'Value List';
-                    question.answers = cde.valueDomain.permissibleValues.map(function(a){return a.toObject();});
-                    question.cde.permissibleValues = question.answers;
-                }
-
-                var qLabel = nameParts.length > 1 ? nameParts[1] : nameParts [0];
-                currentSection.formElements.push(
-                    {
-                        elementType: "question",
-                        formElements: [],
-                        cardinality: "0.1",
-                        label: qLabel,
-                        question: question
+                    if (cde.valueDomain.permissibleValues.length > 0) {
+                        question.datatype = 'Value List';
+                        question.answers = cde.valueDomain.permissibleValues.map(function (a) {
+                            return a.toObject();
+                        });
+                        question.cde.permissibleValues = question.answers;
                     }
-                )
 
-            }
-        });
-        mongo_form.create(form, {username: 'loader'}, function(err) {
-            if (err) {
-                console.log("unable to create FORM. " + err);
-                process.exit(1);
-            }
-            cb();
+                    var qLabel = nameParts.length > 1 ? nameParts[1] : nameParts [0];
+                    currentSection.formElements.push(
+                        {
+                            elementType: "question",
+                            formElements: [],
+                            cardinality: "0.1",
+                            label: qLabel,
+                            question: question
+                        }
+                    )
+                }
+                oneDone();
+            });
+        }, function allDone() {
+            mongo_form.create(form, {username: 'loader'}, function (err) {
+                console.log("Form Created " + form.naming[0].designation);
+                if (err) {
+                    console.log("unable to create FORM. " + err);
+                    process.exit(1);
+                }
+                cb();
+            });
         });
     });
 };
-
 
 var fakeTree = {};
 
@@ -370,38 +367,24 @@ fs.readdir(promisDir + "/forms"+date, function(err, files) {
 
     mongo_data_system.orgByName("PROMIS / Neuro-QOL", function(stewardOrg) {
         fakeTree = {elements: stewardOrg.classifications};
+        var count = 1;
         async.eachSeries(files, function (file, cb) {
-            console.log("next file.");
+            console.log("next file. " + count++ + " / " + files.length);
             doFile(file, function () {
                 stewardOrg.classifications = fakeTree.elements;
                 stewardOrg.markModified("classifications");
                 stewardOrg.save();
-                var newCdeArray = [];
-                async.each(cdeArray.cdearray, function (cde, cb1) {
-                    mongo_cde.create(cde, {username: 'loader'}, function (err, newCde) {
-                        console.log("mongo cde create done");
-                        if (err) {
-                            console.log("unable to create CDE. " + err);
-                        }
-                        newCdeArray.push(newCde);
-                        cb1();
-                    });
-                }, function allCdesDone() {
-                    console.log("Created " + cdeArray.cdearray.length + " cdes");
-                    cdeArray.cdearray = [];
-                    mongo_cde.query({source: "Assessment Center"}, function (err, cdes) {
-                        cdeArray.cdearray = cdes;
-                        loadForm(file, cb);
-                    });
-                });
+                loadForm(file, cb);
             });
         }, function allFilesDone() {
-            loadLoincPv.loadPvs(cdeArray, function () {
-                console.log("lost forms\n\n\n");
-                lostForms.forEach(function (f) {
-                    console.log(f)
+            mongo_cde.query({source: "AAssessment Center"}, function (err, cdeArray) {
+                loadLoincPv.loadPvs(cdeArray, function () {
+                    console.log("lost forms\n\n\n");
+                    lostForms.forEach(function (f) {
+                        console.log(f)
+                    });
+                    process.exit(0);
                 });
-                process.exit(0);
             });
         });
     });

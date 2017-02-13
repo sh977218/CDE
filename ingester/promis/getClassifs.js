@@ -10,6 +10,10 @@ var readDir = function(path){
     dirContent.forEach(function(element){
         if (element.substr(element.length - 4) === ".pdf") {
             var formName = element.substr(0, element.length - 4);
+
+            // remove date expected to be at end of file name
+            formName = element.substr(0, formName.lastIndexOf(" "));
+
             if (formName.indexOf("_")>-1) formName = formName.substr(0, formName.length - 11);
             formNameMap[formName] = path;
         }
