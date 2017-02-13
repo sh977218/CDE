@@ -1,3 +1,11 @@
+import {upgradeAdapter} from "../../../upgrade";
+import {ClassificationService} from "../../../core/public/classification.service";
+import {SkipLogicService} from "../../../core/public/skipLogic.service";
+import {UserCommentsComponent} from "../userComments.component";
+
+import * as authShared from "../../../system/shared/authorizationShared";
+
+
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
@@ -48,8 +56,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'AccountManagementCtrl',
             templateUrl: '/system/public/html/orgAuthority.html'
         }).when('/profile', {
-            controller: 'ProfileCtrl',
-            templateUrl: '/system/public/html/profile.html'
+            template: '<cde-profile></cde-profile>'
         }).when('/triggerClientException', {
             controller: 'TriggerClientExceptionCtrl',
             templateUrl: '/system/public/html/triggerClientException.html'
@@ -67,7 +74,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             scope: {
                 model: '=',
                 inputType: '=?',
-                isAllowed: '&',
+                isAllowed: '<',
                 onOk: '&',
                 typeaheadSource: '=',
                 linkSource: '@'
@@ -205,6 +212,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }])
+    .directive('user-comments', upgradeAdapter.downgradeNg2Component(UserCommentsComponent))
 ;
 
 angular.module('systemModule').filter('placeHoldEmpty', [function () {
@@ -257,125 +265,8 @@ angular.module('systemModule').filter('tagsToArray', [function () {
     };
 }]);
 
-angular.module('systemModule').factory('ClassificationUtil', [function () {
-    var factoryObj = {};
-    factoryObj.sortClassification = function (elt) {
-        elt.classification = elt.classification.sort(function (c1, c2) {
-            return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
-        });
-        var sortSubClassif = function (classif) {
-            if (classif.elements) {
-                classif.elements = classif.elements.sort(function (c1, c2) {
-                    return c1.name.localeCompare(c2.name);
-                });
-            }
-        };
-        var doRecurse = function (classif) {
-            sortSubClassif(classif);
-            if (classif.elements) {
-                classif.elements.forEach(function (subElt) {
-                    doRecurse(subElt);
-                });
-            }
-        };
-        elt.classification.forEach(function (classif) {
-            doRecurse(classif);
-        });
-    };
-
-    factoryObj.doClassif = function(currentString, classif, result) {
-        if (currentString.length > 0) {
-            currentString = currentString + ' | ';
-        }
-        currentString = currentString + classif.name;
-        if (classif.elements && classif.elements.length > 0) {
-            classif.elements.forEach(function(cl) {
-                factoryObj.doClassif(currentString, cl, result);
-            });
-        } else {
-            result.push(currentString);
-        }
-    };
-
-    factoryObj.flattenClassification = function(elt) {
-        var result = [];
-        if (elt.classification) {
-            elt.classification.forEach(function (cl) {
-                if (cl.elements) {
-                    cl.elements.forEach(function (subCl) {
-                        factoryObj.doClassif(cl.stewardOrg.name, subCl, result);
-                    });
-                }
-            });
-        }
-        return result;
-    };
-
-    return factoryObj;
-}]);
-angular.module('systemModule').factory('SkipLogicUtil', [function () {
-    var factoryObj = {};
-
-    factoryObj.tokenSplitter = function (str) {
-        var tokens = [];
-        if (!str) {
-            tokens.unmatched = "";
-            return tokens;
-        }
-        str = str.trim();
-        var res = str.match(/^"[^"]+"/);
-        if (!res) {
-            tokens.unmatched = str;
-            return tokens;
-        }
-        var t = res[0];
-        str = str.substring(t.length).trim();
-        t = t.substring(1, t.length - 1);
-        tokens.push(t);
-
-        res = str.match(/^(>=|<=|=|>|<)/);
-        if (!res) {
-            tokens.unmatched = str;
-            return tokens;
-        }
-        t = res[0];
-        tokens.push(t);
-        str = str.substring(t.length).trim();
-
-        res = str.match(/^"([^"]*)"/);
-        if (!res) {
-            tokens.unmatched = str;
-            return tokens;
-        }
-        t = res[0];
-        var newT = res[0].substring(1, t.length - 1);
-        tokens.push(newT);
-        str = str.substr(t.length).trim();
-
-        res = str.match(/^((\bAND\b)|(\bOR\b))/);
-        if (!res) {
-            tokens.unmatched = str;
-            return tokens;
-        }
-        t = res[0];
-        tokens.push(t);
-        str = str.substring(t.length).trim();
-
-        tokens.unmatched = str;
-
-        if (str.length > 0) {
-            var innerTokens = factoryObj.tokenSplitter(str);
-            var outerTokens = tokens.concat(innerTokens);
-            outerTokens.unmatched = innerTokens.unmatched;
-            return outerTokens;
-        } else {
-            return tokens;
-        }
-    };
-
-    return factoryObj;
-}]);
-
+angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
+angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
 angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {
     return {
         new: function (type) {
@@ -425,7 +316,7 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
                 return false;
             }
             if (userResource.userOrgs) {
-                return exports.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name);
+                return authShared.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name);
             } else {
                 return false;
             }
@@ -454,7 +345,7 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
             return false;
         } else {
             if (userResource.userOrgs) {
-                return exports.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard");
+                return authShared.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "fPreferred Standard");
             } else {
                 return false;
             }

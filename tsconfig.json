@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowUnreachableCode": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5",
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useWebpackText": true
+    // Allows other loaders to be chained to awesome-typescript-loader.
+  },
+  "exclude": [
+    "bower_components",
+    "modules/components",
+    "node_modules",
+    "test"
+  ]
+}
