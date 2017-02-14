@@ -104,7 +104,7 @@
 
                                 if (subQNonValuelist)
                                     html +=
-                                        ' parentValue="formElement.question.answers[' + i + '].permissibleValue"';
+                                        ' parent-value="formElement.question.answers[' + i + '].permissibleValue"';
 
                                 html +=
                                     '></div>';

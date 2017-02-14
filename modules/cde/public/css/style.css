@@ -1506,18 +1506,22 @@ label.input-group-addon {
 
 div.row .native-question-oneline-l {
     float: left;
-    margin-top: 5px;
+    margin-top: 6px;
     margin-right: 5px;
 }
 
 div.row .native-question-oneline-r {
     overflow: hidden;
     min-width: 50%;
-    margin-left: 7%;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    margin-left: 6%;
 }
 
 .native-box {
-    padding-left: 7%;
+    padding-left: 6%;
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 
 .radio-inline,
