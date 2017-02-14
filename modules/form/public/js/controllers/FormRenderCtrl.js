@@ -49,6 +49,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
                 displayInstructions: true,
                 displayNumbering: true,
                 sectionsAsMatrix: true,
+                displayValues: false,
                 displayType: 'Follow-up',
                 numberOfColumns: 4
             };
