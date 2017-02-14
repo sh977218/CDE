@@ -62,9 +62,9 @@
 				<h2 class="text-center mt20">Loading...</h2>
 			</div>
             <div ng-if="nativeRenderType === SHOW_IF && elt && nativeFormService.evaluateSkipLogic(skipLogicError, formElement.skipLogic.condition, null, formElement)"
-				 native-section form-element="formElement" profile="selection.selectedProfile"></div>
+				 native-section form-element="formElement" profile="selection.selectedProfile" elt="getElt()" error="skipLogicError"></div>
 			<div ng-if="nativeRenderType === FOLLOW_UP && followForm"
-				 native-section form-element="formElement" profile="selection.selectedProfile"></div>
+				 native-section form-element="formElement" profile="selection.selectedProfile" elt="getElt()" error="skipLogicError"></div>
 			<input type="hidden" value="{{formUrl}}" name="formUrl">
 			<input type="hidden" name="mapping" ng-value="mapping">
 			<input type="submit" class="ng-cloak btn btn-default" id="button_submit" ng-if="submitForm"
