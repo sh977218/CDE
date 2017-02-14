@@ -8,7 +8,7 @@ import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./profile.component";
 import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
-import {IdentifiersComponent} from "./components/adminItem/identifiers.component";
+import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
 
 @NgModule({
     declarations: [

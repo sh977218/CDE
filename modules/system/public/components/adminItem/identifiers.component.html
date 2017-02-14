@@ -1,4 +1,3 @@
-
 <div>
     <div class="row">
         <div class="col-md-11">
@@ -12,43 +11,43 @@
                 <dd tabindex="0" id="dd_version_nlm">{{elt.version}}</dd>
             </dl>
         </div>
-    <!--</div>-->
-    <!--<hr/>-->
-    <!--<div ng-repeat="id in elt.ids">-->
-        <!--<div class="row">-->
-            <!--<div class="col-md-1 text-right" ng-show="canCurate">-->
-                <!--<div class="row">-->
-                <!--<span ng-show="showDelete">Confirm Delete-->
-                    <!--<a class="fa fa-check" ng-click="showDelete = false; removeId($index)"-->
-                       <!--id="confirmRemoveId-{{$index}}" title="OK" href=""></a>-->
-                    <!--<a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>-->
-                <!--</span>-->
-                    <!--<a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o nonLinkAnchor displayBlock"-->
-                       <!--id="removeId-{{$index}}" title="Remove" href=""></a>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="col-md-11">-->
-                <!--<dl class="dl-horizontal">-->
-                    <!--<dt tabindex="0">Source:</dt>-->
-                    <!--<dd tabindex="0" id="dd_id_origin_{{$index}}">{{id.source}}</dd>-->
-                    <!--<dt tabindex="0">Id:</dt>-->
-                    <!--<dd tabindex="0" id="dd_id_id_{{$index}}" ng-switch="id.source">-->
-                        <!--<a ng-switch-when="LOINC" ng-href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"-->
-                           <!--target="_blank">{{id.id}}</a>-->
-                        <!--<a ng-switch-when="PhenX" ng-href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"-->
-                           <!--target="_blank">{{id.id}}</a>-->
-                        <!--<span ng-switch-default>{{id.id}}</span>-->
-                    <!--</dd>-->
+    </div>
+    <hr/>
+    <div *ngFor="let id of elt.ids">
+        <div class="row">
+            <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
+                <div class="row">
+                <span *ngIf="showDelete">Confirm Delete
+                    <a class="fa fa-check" (click)="showDelete = false; removeId(index)"
+                       id="confirmRemoveId-{{index}}" title="OK" href=""></a>
+                    <a class="fa fa-times" (click)="showDelete = false" title="Cancel" href=""></a>
+                </span>
+                    <a (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o nonLinkAnchor displayBlock"
+                       id="removeId-{{index}}" title="Remove" href=""></a>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <dl class="dl-horizontal">
+                    <dt tabindex="0">Source:</dt>
+                    <dd tabindex="0" id="dd_id_origin_{{index}}">{{id.source}}</dd>
+                    <dt tabindex="0">Id:</dt>
+                    <dd tabindex="0" id="dd_id_id_{{index}}" [ngSwitch]="id.source">
+                        <a *ngSwitchCase="LOINC" href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
+                           target="_blank">{{id.id}}</a>
+                        <a *ngSwitchCase="PhenX" href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"
+                           target="_blank">{{id.id}}</a>
+                        <span *ngSwitchDefault>{{id.id}}</span>
+                    </dd>
 
-                    <!--<dt tabindex="0">Version:</dt>-->
-                    <!--<dd tabindex="0" id="dd_id_version_{{$index}}">{{id.version}}</dd>-->
-                <!--</dl>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<hr/>-->
-    <!--</div>-->
+                    <dt tabindex="0">Version:</dt>
+                    <dd tabindex="0" id="dd_id_version_{{index}}">{{id.version}}</dd>
+                </dl>
+            </div>
+        </div>
+        <hr/>
+    </div>
 
-    <button ng-show="canCurate" class="btn btn-small btn-default" value="add" (click)="openNewId()" id="addId">
+    <button *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-small btn-default" value="add" (click)="openNewId()" id="addId">
         <i class="fa fa-plus"> </i> Add Identifier
     </button>
 
