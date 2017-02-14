@@ -16,7 +16,11 @@ exports.Form = Form;
 
 schemas.formSchema.pre('save', function (next) {
     var self = this;
-    elastic.updateOrInsert(self);
+    try {
+        elastic.updateOrInsert(self);
+    } catch (exception) {
+        logging.errorLogger.error(exception);
+    }
     next();
 });
 
