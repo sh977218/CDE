@@ -1,0 +1,91 @@
+
+<div>
+    <div class="row">
+        <div class="col-md-11">
+            <dl class="dl-horizontal">
+                <dt tabindex="0">Source:</dt>
+                <dd tabindex="0" id="dd_origin_nlm">NLM</dd>
+                <meta itemprop="codingSytem" content="NIH CDE Repository"/>
+                <dt tabindex="0">Id:</dt>
+                <dd tabindex="0" id="dd_id_nlm" itemprop="codeValue">{{elt.tinyId}}</dd>
+                <dt tabindex="0">Version:</dt>
+                <dd tabindex="0" id="dd_version_nlm">{{elt.version}}</dd>
+            </dl>
+        </div>
+    <!--</div>-->
+    <!--<hr/>-->
+    <!--<div ng-repeat="id in elt.ids">-->
+        <!--<div class="row">-->
+            <!--<div class="col-md-1 text-right" ng-show="canCurate">-->
+                <!--<div class="row">-->
+                <!--<span ng-show="showDelete">Confirm Delete-->
+                    <!--<a class="fa fa-check" ng-click="showDelete = false; removeId($index)"-->
+                       <!--id="confirmRemoveId-{{$index}}" title="OK" href=""></a>-->
+                    <!--<a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>-->
+                <!--</span>-->
+                    <!--<a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o nonLinkAnchor displayBlock"-->
+                       <!--id="removeId-{{$index}}" title="Remove" href=""></a>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-md-11">-->
+                <!--<dl class="dl-horizontal">-->
+                    <!--<dt tabindex="0">Source:</dt>-->
+                    <!--<dd tabindex="0" id="dd_id_origin_{{$index}}">{{id.source}}</dd>-->
+                    <!--<dt tabindex="0">Id:</dt>-->
+                    <!--<dd tabindex="0" id="dd_id_id_{{$index}}" ng-switch="id.source">-->
+                        <!--<a ng-switch-when="LOINC" ng-href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"-->
+                           <!--target="_blank">{{id.id}}</a>-->
+                        <!--<a ng-switch-when="PhenX" ng-href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"-->
+                           <!--target="_blank">{{id.id}}</a>-->
+                        <!--<span ng-switch-default>{{id.id}}</span>-->
+                    <!--</dd>-->
+
+                    <!--<dt tabindex="0">Version:</dt>-->
+                    <!--<dd tabindex="0" id="dd_id_version_{{$index}}">{{id.version}}</dd>-->
+                <!--</dl>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<hr/>-->
+    <!--</div>-->
+
+    <button ng-show="canCurate" class="btn btn-small btn-default" value="add" (click)="openNewId()" id="addId">
+        <i class="fa fa-plus"> </i> Add Identifier
+    </button>
+
+    <div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 tabindex="0">Add Identifier</h4>
+                </div>
+                <div class="modal-body">
+                    I am a child modal, opened from parent component!
+
+                    <form name="form" role="form">
+                        <div class="form-group">
+                            <label tabindex="0" for="newSource">Source</label>
+                            <input tabindex="0" class="form-control" ng-model="newId.source" name="source"
+                                Placeholder="Id Source" required id="newSource"/>
+                        </div>
+                        <div class="form-group">
+                            <label tabindex="0" for="newId">Identifier</label>
+                            <textarea tabindex="0" class="form-control" ng-model="newId.id" name="id" id="newId" Placeholder="Identifier"
+                            required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label tabindex="0" for="newVersion">Version</label>
+                            <textarea tabindex="0" class="form-control" ng-model="newId.version" name="version"
+                                Placeholder="Version" id="newVersion"></textarea>
+                        </div>
+                        <div class="modal-footer" id="newIdModalFooter">
+                            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
+                            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid"
+                            id="createId" type="submit">Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
