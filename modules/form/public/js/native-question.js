@@ -61,9 +61,9 @@
                         return question.label && !question.hideLabel;
                     }
                     function isOneLiner(question, numSubQuestions) {
-                        return numSubQuestions &&
-                            !hasLabel(question) &&
+                        return numSubQuestions && !hasLabel(question) &&
                             question.question.datatype !== 'Value List';
+                    }
                     function htmlTextUoms(uoms) {
                         var html = '';
                         uoms.forEach(function (uom) {
