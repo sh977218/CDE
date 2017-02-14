@@ -1,6 +1,4 @@
-<div ng-if="evaluateSkipLogic(formElement.skipLogic.condition, formElements,formElement)"
-     class="native-section" id="formRenderSection_{{::formElement.label}}">
-
+<div class="native-section" id="formRenderSection_{{::formElement.label}}">
     <div ng-if="::formElement.label" ng-class="::{'native-section-header':isSectionDisplayed(formElement)}" class="keep-together">
         <div class="row">
             <div ng-class="::{'col-sm-9':canRepeat(formElement)}" class="col-xs-12">
@@ -14,24 +12,24 @@
             </div>
         </div>
     </div>
-    <div ng-if="selection.selectedProfile.displayInstructions && formElement.instructions.value"
+    <div ng-if="profile.displayInstructions && formElement.instructions.value"
          class="native-instructions" ng-switch="formElement.instructions.valueFormat">
         <span ng-switch-default class="text-muted"><span ng-bind="::formElement.instructions.value"></span></span>
         <span ng-switch-when="html"><span ng-bind-html="::formElement.instructions.value"></span></span>
     </div>
 
-    <div ng-if="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement)"
+    <div ng-if="profile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement)"
          ng-include="'/form/public/html/formRenderSectionMatrix.html'"></div>
-    <div ng-if="!(selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement))">
-        <div ng-repeat="formElement in ::formElement.formElements track by $index">
-            <div native-question ng-if="::formElement.elementType === 'question'"
-                 ng-init="formElements = $parent.$parent.$parent.formElement.formElements;"
-                 ng-class="::{'keep-with-previous keep-together':$index===0}">
+    <div ng-if="!(profile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement))">
+        <div ng-repeat="element in ::formElement.formElements track by $index"
+             ng-if="nativeFormService.evaluateSkipLogicAndClear(error, element.skipLogic.condition, formElement.formElements, element, elt)">
+            <div ng-if="::element.elementType === 'question'" ng-class="::{'keep-with-previous':$index===0}"
+                 class="native-question-header native-question-answers">
+                 <div native-question form-element="element" profile="profile" elt="elt" error="error" index="{{$index}}" num-sub-questions="numSubQuestions"></div>
             </div>
-            <div ng-if="::formElement.elementType === 'section' || formElement.elementType === 'form'"
-                 ng-include="'/form/public/html/formRenderSection.html'"
-                 ng-init="formElements = $parent.$parent.$parent.formElement.formElements;">
-            </div>
+            <div ng-if="::element.elementType === 'section' || element.elementType === 'form'"
+                 native-section form-elements="formElement.formElements" form-element="element"
+                 profile="profile" elt="elt" error="error" num-sub-questions="numSubQuestions"></div>
         </div>
     </div>
 </div>
