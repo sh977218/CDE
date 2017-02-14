@@ -7,6 +7,8 @@ var MigrationPhenxRedcapModel = require('../createMigrationConnection').Migratio
 
 var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/a';
 var zipCount = 0;
+var createdCdes = [];
+var foundCdes = [];
 
 function createCde(data, cb) {
     var cde = {
@@ -28,6 +30,7 @@ function createCde(data, cb) {
     new DataElementModel(cde).save((e, o)=> {
         if (e) throw e;
         else {
+            createdCdes.push(o.tinyId);
             cb(o);
         }
     })
@@ -42,6 +45,8 @@ function findInPhenxRedcap(data, formId, cb) {
     MigrationPhenxRedcapModel.find(findByVarnameQuery).exec((findByVarnameError, findByVarnameResult)=> {
         if (findByVarnameError) throw findByVarnameError;
         else if (findByVarnameResult.length === 1) {
+            var foundCde = findByVarnameResult[0];
+            foundCdes.push(foundCde.tinyId);
         } else {
             var variableDesc = data['Field Label'];
             var findByVardescQuery = {
@@ -51,6 +56,8 @@ function findInPhenxRedcap(data, formId, cb) {
             MigrationPhenxRedcapModel.find(findByVardescQuery).exec((findByVardescError, findByVardescResult)=> {
                 if (findByVardescError) throw findByVardescError;
                 else if (findByVardescResult.length === 1) {
+                    var foundCde = findByVardescResult[0];
+                    foundCdes.push(foundCde.tinyId);
                 } else {
                     cb();
                 }
@@ -184,6 +191,7 @@ function doAuthorID(filePath, cb) {
         }
     })
 }
+
 function doInstrumentID(filePath, cb) {
     fs.readFile(filePath, 'utf8', function (err, data) {
         if (err) throw err;
