@@ -3,62 +3,93 @@ var fs = require('fs');
 var async = require('async');
 var DataElementModel = require('../../modules/cde/node-js/mongo-cde').DataElement;
 var FormModel = require('../../modules/form/node-js/mongo-form').Form;
-var MigrationVariableCrossReferenceModel = require('../createMigrationConnection').MigrationVariableCrossReferenceModel;
+var MigrationPhenxRedcapModel = require('../createMigrationConnection').MigrationPhenxRedcapModel;
 
 var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/a';
 var zipCount = 0;
 
-function findVariableCrossReference(data, cb) {
-    var variableName = data['Variable / Field Name'];
-    var query = {'VARIABLE_NAME': variableName};
-    MigrationVariableCrossReferenceModel.find(query).exec((e, variables)=> {
-        if (e)throw e;
+function createCde(data, cb) {
+    var cde = {
+        naming: [{designation: data['Variable / Field Name']}]
+    };
+    if (data['Choices, Calculations, OR Slider Labels']) {
+        var permissibleValues = [];
+        var pvArray = data['Choices, Calculations, OR Slider Labels'].split('|');
+        pvArray.forEach((o)=> {
+            var temp = o.split(',');
+            permissibleValues.push({
+                permissibleValue: temp[0],
+                valueMeaningName: temp[0],
+                valueMeaningCode: temp[1]
+            })
+        });
+        cde.valueDomain = {permissibleValues: permissibleValues};
+    }
+    new DataElementModel(cde).save((e, o)=> {
+        if (e) throw e;
         else {
+            cb(o);
+        }
+    })
+}
 
+function findInPhenxRedcap(data, formId, cb) {
+    var variableName = data['Variable / Field Name'];
+    var findByVarnameQuery = {
+        'PhenX Variable': new RegExp('^' + formId + '$', 'i'),
+        'VARNAME': formId.toUpperCase() + '_' + variableName
+    };
+    MigrationPhenxRedcapModel.find(findByVarnameQuery).exec((findByVarnameError, findByVarnameResult)=> {
+        if (findByVarnameError) throw findByVarnameError;
+        else if (findByVarnameResult.length === 1) {
+        } else {
+            var variableDesc = data['Field Label'];
+            var findByVardescQuery = {
+                'PhenX Variable': new RegExp('^' + formId + '$', 'i'),
+                'VARDESC': variableDesc
+            };
+            MigrationPhenxRedcapModel.find(findByVardescQuery).exec((findByVardescError, findByVardescResult)=> {
+                if (findByVardescError) throw findByVardescError;
+                else if (findByVardescResult.length === 1) {
+                } else {
+                    cb();
+                }
+            });
         }
     });
 }
 
-function findCde(data, cb) {
+function findCde(data, formId, cb) {
     var variableName = data['Field Note'];
     var query = {
         archived: null,
         'properties.key': 'PhenX Variables',
         'properties.value': new RegExp('^' + variableName + '$', 'i')
     };
-    findVariableCrossReference(data, function () {
-
-    });
-    DataElementModel.find(query).exec((err, cdes) => {
-        console.log(data);
-        if (err) throw err;
-        else if (cdes.length === 0) {
-            var cde = {
-                naming: [{designation: data['Variable / Field Name']}]
-            };
-            if (data['Choices, Calculations, OR Slider Labels']) {
-                var permissibleValues = [];
-                var pvArray = data['Choices, Calculations, OR Slider Labels'].split('|');
-                pvArray.forEach((o)=> {
-                    var temp = o.split(',');
-                    permissibleValues.push({
-                        permissibleValue: temp[0],
-                        valueMeaningName: temp[0],
-                        valueMeaningCode: temp[1]
+    findInPhenxRedcap(data, formId, function (foundLoincId) {
+        if (foundLoincId) {
+            console.log(foundLoincId);
+            query['ids.id'] = foundLoincId;
+            DataElementModel.find(query).exec((err, cdes) => {
+                console.log(data);
+                if (err) throw err;
+                else if (cdes.length === 0) {
+                    createCde(data, function () {
+                        cb(o);
                     })
-                });
-                cde.valueDomain = {permissibleValues: permissibleValues};
-            }
-            new DataElementModel(cde).save((e, o)=> {
-                if (e) throw e;
-                else {
-                    cb(o);
+                } else if (cdes.length === 1) {
+                    cb(cdes[0]);
+                } else {
+                    cb('find ' + cdes.length + ' cdes.');
                 }
             })
-        } else if (cdes.length === 1) {
-            cb(cdes[0]);
         }
-    })
+        else {
+            createCde(data, function (o) {
+                cb(o);
+            })
+        }
+    });
 }
 
 function validateCsvHeader(data, cb) {
@@ -103,7 +134,7 @@ function validateCsvHeader(data, cb) {
     }
 }
 
-function doCSV(filePath, form, cb) {
+function doCSV(filePath, form, formId, cb) {
     var name = {};
     var stream = fs.createReadStream(filePath).pipe(parser());
     stream.on('headers', function (data) {
@@ -117,6 +148,7 @@ function doCSV(filePath, form, cb) {
 
     });
     stream.on('data', function (data) {
+        stream.pause();
         if (name.designation && name.designation !== data['Form Name']) {
             console.log('Form Name not match.');
             console.log('Form Name: ' + data['Form Name']);
@@ -125,9 +157,10 @@ function doCSV(filePath, form, cb) {
         } else {
             name.designation = data['Form Name'];
         }
-        findCde(data, function (fe) {
-            form.formElement.push(fe);
+        findCde(data, formId, function (fe) {
+            form.formElements.push(fe);
             console.log('');
+            stream.resume();
         });
     });
     stream.on('err', function (err) {
@@ -164,7 +197,7 @@ function doInstrumentID(filePath, cb) {
     })
 }
 
-function doZip(filePath, cb) {
+function doZip(filePath, formId, cb) {
     fs.readdir(filePath, (err, items)=> {
         if (err) throw err;
         else {
@@ -173,19 +206,25 @@ function doZip(filePath, cb) {
             var id = {};
             async.forEach(items, (item, doneOneItem)=> {
                 if (item === 'instrument.csv') {
-                    doCSV(filePath + '/instrument.csv', form, function () {
+                    doCSV(filePath + '/instrument.csv', form, formId, function () {
                         console.log('done instrument');
                         doneOneItem();
                     });
                 } else if (item === 'AuthorID.txt') {
                     doAuthorID(filePath + '/AuthorID.txt', function (authorID) {
-                        id = {source: authorID};
-                        doneOneItem();
+                        if (authorID !== 'PhenX') throw 'authorId: ' + authorID;
+                        else {
+                            id = {source: authorID};
+                            doneOneItem();
+                        }
                     })
                 } else if (item === 'InstrumentID.txt') {
                     doInstrumentID(filePath + '/InstrumentID.txt', function (instrumentID) {
-                        id = {id: instrumentID};
-                        doneOneItem();
+                        if (instrumentID !== formId) throw 'instrument Id: ' + instrumentID + ' formId: ' + formId;
+                        else {
+                            id = {id: instrumentID};
+                            doneOneItem();
+                        }
                     })
                 }
             }, ()=> {
@@ -206,8 +245,9 @@ fs.readdir(ZIP_PATH, (err, items) => {
     if (err) throw err;
     else {
         async.forEachSeries(items, (item, doneOneItem)=> {
+            var formId = item.replace('.zip', '');
             if (item.indexOf('.zip') !== -1) {
-                doZip(ZIP_PATH + '/' + item, function () {
+                doZip(ZIP_PATH + '/' + item, formId, function () {
                     zipCount++;
                     console.log('zipCount: ' + zipCount);
                     doneOneItem();
