@@ -9,10 +9,10 @@
         <tr ng-repeat="q in ::formElement.formElements">
             <td>
                 <label ng-bind="::q.label"
-                       ng-class="{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering }"></label>
+                       ng-class="{'native-question-label': !numSubQuestions && profile.displayNumbering }"></label>
             </td>
             <td ng-repeat="qa in ::q.question.answers">
-                <span ng-if="selection.selectedProfile.displayValues" ng-bind="::qa.permissibleValue"></span>
+                <span ng-if="profile.displayValues" ng-bind="::qa.permissibleValue"></span>
                 <input type="radio" ng-value="::qa.permissibleValue" ng-model="q.question.answer" name="{{q.questionId}}">
             </td>
         </tr>
