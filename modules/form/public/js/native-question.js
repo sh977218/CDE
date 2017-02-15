@@ -100,7 +100,7 @@
                                     ' num-sub-questions="' + numSubQuestions + '"' +
                                     ' elt="elt"' +
                                     ' error="error"' +
-                                    ' index="' + j + '"';
+                                    ' index="' + i + '"';
 
                                 if (subQNonValuelist)
                                     html +=
@@ -174,16 +174,16 @@
                                         if (!question.multiselect)
                                             htmlText +=
                                                 '<input type="radio"' +
-                                                ' ng-model="formElement.question.answer" ' +
+                                                ' ng-model="formElement.question.answer"' +
                                                 ' ng-value="formElement.question.answers[' + i + '].permissibleValue"' +
                                                 ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
                                         else
                                             htmlText +=
-                                                '<input type="checkbox" ' +
-                                                'checklist-model="formElement.question.answer" ' +
-                                                'checklist-value="formElement.question.answers[' + i + '].permissibleValue" ' +
-                                                'ng-value="formElement.question.answers[' + i + '].permissibleValue" ' +
-                                                'name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
+                                                '<input type="checkbox"' +
+                                                ' checklist-model="formElement.question.answer"' +
+                                                ' checklist-value="formElement.question.answers[' + i + '].permissibleValue"' +
+                                                ' ng-value="formElement.question.answers[' + i + '].permissibleValue"' +
+                                                ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
 
                                         htmlText +=
                                             getLabel(pv) + '<span ng-if="selection.selectedProfile.displayValues">  ' + getValue(pv) + '  </span>' + '</label>';
