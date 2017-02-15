@@ -23,6 +23,7 @@ import "./board/public/js/angularTemplates";
 import "./form/public/js/formModule";
 import "./form/public/js/resources";
 import "./form/public/js/angularTemplates";
+import "./form/public/js/native-section";
 import "./form/public/js/native-question";
 
 import "./article/public/js/articleConfig";

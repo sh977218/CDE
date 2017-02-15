@@ -57,12 +57,10 @@
             <div class="col-md-7 col-xs-12" ng-controller="DisplayProfileDataCtrl" style="border: dashed 1px;zoom:60%;" >
                 <form name="sectionLabel" role="form" class="form-horizontal">
                     <div ng-controller="FormRenderCtrl" >
-                        <div ng-if="nativeRenderType === SHOW_IF"
-                             ng-include="'/form/public/html/formRenderSection.html'"
-                             ng-init="selection.selectedProfile = profile"></div>
-                        <div ng-if="nativeRenderType === FOLLOW_UP"
-                             ng-include="'/form/public/html/formRenderSection.html'"
-                             ng-init="selection.selectedProfile = profile"></div>
+                        <div ng-if="nativeRenderType === SHOW_IF && elt && nativeFormService.evaluateSkipLogic(skipLogicError, formElement.skipLogic.condition, null, formElement)"
+                             native-section form-element="formElement" profile="profile" elt="getElt()" error="skipLogicError"></div>
+                        <div ng-if="nativeRenderType === FOLLOW_UP && followForm"
+                             native-section form-element="formElement" profile="profile" elt="getElt()" error="skipLogicError"></div>
                     </div>
                 </form>
             </div>
