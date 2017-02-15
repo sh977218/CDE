@@ -1,5 +1,5 @@
-import { Component, Inject, Input, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
+import { Component, Inject, Input, ViewChild } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
 import "rxjs/add/operator/map";
 
@@ -11,46 +11,48 @@ import "rxjs/add/operator/map";
 
 export class IdentifiersComponent {
 
-    @ViewChild( "childModal" ) public childModal:ModalDirective;
-    @Input( ) public elt:any;
+    @ViewChild( "childModal" ) public childModal: ModalDirective;
+    @Input( ) public elt: any;
+
+    newId: any;
 
     constructor(private http: Http,
                 @Inject("Alert") private alert,
                 @Inject("isAllowedModel") private isAllowedModel) {
-
     }
 
     openNewId () {
         this.childModal.show();
+        this.newId = {};
     }
-        //    $modal.open({
-    //        animation: false,
-    //        templateUrl: 'newIdModalContent.html',
-    //        controller: 'NewIdModalCtrl',
-    //        resolve: {
-    //            elt: function() {
-    //                return $scope.elt;
-    //            }
-    //        }
-    //    }).result.then(function (newId) {
-    //        $scope.elt.ids.push(newId);
-    //        if ($scope.elt.unsaved) {
-    //            $scope.addAlert("info", "Identifier added. Save to confirm.")
-    //        } else {
-    //            $scope.elt.$save(function(newElt) {
-    //                $scope.elt = newElt;
-    //                this.alert.addAlert("success", "Identifier Added");
-    //            });
-    //        }
-    //    }, function () {});
-    //}
-    //
+
+    showDelete (id) {
+        id.showDelete = true;
+    }
+
+    hideDelete (id) {
+        delete id.showDelete;
+    }
+
+    addId () {
+        this.elt.ids.push(this.newId);
+        if (this.elt.unsaved) {
+            this.alert.addAlert("info", "Identifier added. Save to confirm.");
+        } else {
+            this.elt.$save(newElt => {
+                this.elt = newElt;
+                this.alert.addAlert("success", "Identifier Added");
+            });
+        }
+        this.childModal.hide();
+    }
+
     removeId (index) {
         this.elt.ids.splice(index, 1);
         if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Identifier removed. Save to confirm.")
+            this.alert.addAlert("info", "Identifier removed. Save to confirm.");
         } else {
-            this.elt.$save(function(newElt) {
+            this.elt.$save(newElt => {
                 this.elt = newElt;
                 this.alert.addAlert("success", "Identifier Removed");
             });
