@@ -91,6 +91,10 @@ exports.MigrationPhenxRedcapModel = migrationConn.model('MigrationPhenxRedcapMod
     strict: false,
     collection: 'PhenxRedcap'
 }));
+exports.MigrationRedcapModel = migrationConn.model('MigrationRedcapModel', new Schema({}, {
+    strict: false,
+    collection: 'Redcap'
+}));
 exports.PhenxURL = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
 
 

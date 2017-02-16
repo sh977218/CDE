@@ -2,15 +2,21 @@ var parser = require('csv-parser');
 var fs = require('fs');
 var async = require('async');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
-var DataElementModel = require('../../modules/cde/node-js/mongo-cde').DataElement;
-var FormModel = require('../../modules/form/node-js/mongo-form').Form;
+var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
 var MigrationPhenxRedcapModel = require('../createMigrationConnection').MigrationPhenxRedcapModel;
+var MigrationRedcapModel = require('../createMigrationConnection').MigrationRedcapModel;
 
-var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/a';
+//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/a';
+var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/b';
 var zipCount = 0;
 var createdCdes = [];
 var foundLoincs = [];
 var foundCdes = [];
+
+var SPECIAL_FOLDER = {
+    'PX661503': true,
+    'PX661504': true
+};
 
 var REDCAP_DATATYPE_MAP = {
     'radio': 'Value List',
@@ -21,17 +27,77 @@ var REDCAP_DATATYPE_MAP = {
     'file': '',
     'notes': ''
 };
+var SYMBOL_MAP = {
+    '<>': '',
+    '<=': '',
+    '>=': '',
+    '=': '=',
+    '>': '>',
+    '<': '<'
+};
+
+var CONJUNCTION_MAP = {
+    'and': ' AND ',
+    'or': ' OR ',
+    'AND': ' AND ',
+    'OR': ' OR '
+};
+
+function formatSkipLogic(m, equationText) {
+    var result = '';
+    var foundLabelArray = equationText.match(/\[[^\[\]]*\]\s*/);
+    if (foundLabelArray && foundLabelArray.length === 1) {
+        var foundLabel = foundLabelArray[0];
+        result += '"' + m[foundLabel.replace('[', '').replace(']', '').trim()] + '"';
+        equationText = equationText.replace(foundLabel, '').trim();
+        var foundSymbolArray = equationText.match(/[^']*\s/);
+        if (foundSymbolArray && foundSymbolArray.length === 1) {
+            var foundSymbol = foundSymbolArray[0];
+            result += SYMBOL_MAP[foundSymbol.trim()];
+            equationText = equationText.replace(foundSymbol.trim(), '').trim();
+        }
+        var foundValueWithSingQuoteArray = equationText.match(/'.*'/);
+        if (foundValueWithSingQuoteArray && foundValueWithSingQuoteArray.length === 1) {
+            var foundValueWithSingQuote = foundValueWithSingQuoteArray[0];
+            return result += foundValueWithSingQuote.replace(/'/g, '"').trim();
+        }
+        var foundValueWithDoubleQuoteArray = equationText.match(/".*"/);
+        if (foundValueWithDoubleQuoteArray && foundValueWithDoubleQuoteArray.length === 1) {
+            var foundValueWithDoubleQuote = foundValueWithDoubleQuoteArray[0];
+            return result += foundValueWithDoubleQuote.trim();
+        }
+        if (equationText.match(/'.*"/) && equationText.match(/".*'/)) {
+            return null;
+        }
+        return result += '"' + equationText.trim() + '"';
+    }
+}
 
 function convertSkipLogic(skipLogicMap, skipLogicText) {
-    if (skipLogicText.length === 0)return skipLogicText;
+    if (skipLogicText.trim().length === 0)return skipLogicText;
     else {
-        var result = '';
-        while (skipLogicText.indexOf('[') !== -1) {
-            var leftIndex = skipLogicText.indexOf('[');
-            var rightIndex = skipLogicText.indexOf(']');
-            var label = skipLogicText.substr(leftIndex, rightIndex).trim();
-            result += skipLogicMap[label];
+        var result = [];
+        while (skipLogicText.trim().length > 0) {
+            var foundEquationArray = skipLogicText.match(/\[[^\[\]]*\]\s*[<>|<=|>=|=|>|<]\s*'?"?\w*'?"?/);
+            if (foundEquationArray && foundEquationArray.length === 1) {
+                var foundEquation = foundEquationArray[0];
+                var cdeSkipLogicEquation = formatSkipLogic(skipLogicMap, foundEquation);
+                if (cdeSkipLogicEquation === null) {
+                    console.log(skipLogicText);
+                    return null;
+                }
+                result.push(cdeSkipLogicEquation);
+                skipLogicText = skipLogicText.replace(foundEquation, '').trim();
+                var foundConjunctionArray = skipLogicText.match(/[^\[\]]*\s/);
+                if (foundConjunctionArray && foundConjunctionArray.length === 1) {
+                    var foundConjunction = foundConjunctionArray[0];
+                    var cdeSkipLogicConjunction = CONJUNCTION_MAP[foundConjunction.trim()];
+                    result.push(cdeSkipLogicConjunction);
+                    skipLogicText = skipLogicText.replace(foundConjunction, '').trim();
+                }
+            }
         }
+        return result.join('');
     }
 }
 
@@ -41,7 +107,7 @@ function convertCdeToQuestion(data, skipLogicMap, cde) {
         label: data['Field Label'],
         cardinality: {min: 1, max: 1},
         skipLogic: {
-            condition: convertSkipLogic(skipLogicMap, data['Branching Logic (Show field only if...)'])
+            condition: ''
         },
         question: {
             cde: {
@@ -58,6 +124,17 @@ function convertCdeToQuestion(data, skipLogicMap, cde) {
             answers: []
         }
     };
+    var branchLogic = data['Branching Logic (Show field only if...)'];
+    var skipLogic = '';
+    if (branchLogic.trim().length > 0) {
+        skipLogic = convertSkipLogic(skipLogicMap, branchLogic);
+        if (skipLogic === null || skipLogic === '') {
+            console.log(data);
+            return null;
+        } else {
+            question.skipLogic.condition = skipLogic;
+        }
+    }
     cde.naming.forEach(function (n) {
         if (!n.tags)n.tags = [];
         if (n.tags.filter(function (t) {
@@ -71,23 +148,24 @@ function convertCdeToQuestion(data, skipLogicMap, cde) {
             }
         }
     });
-
-    if (question.question.datatype === 'Number') {
-        question.question.datatypeNumber = cde.valueDomain.datatypeNumber ? cde.valueDomain.datatypeNumber : {};
-    } else if (question.question.datatype === 'Text') {
-        question.question.datatypeText = cde.valueDomain.datatypeText ? cde.valueDomain.datatypeText : {};
-    } else if (question.question.datatype === 'Date') {
-        question.question.datatypeDate = cde.valueDomain.datatypeDate ? cde.valueDomain.datatypeDate : {};
-    } else if (question.question.datatype === 'Value List') {
-        if (cde.valueDomain.permissibleValues.length === 0) throw ('Unknown CDE datatype: ' + cde.valueDomain.datatype);
-        cde.valueDomain.permissibleValues.forEach(function (pv) {
-            if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
-                pv.valueMeaningName = pv.permissibleValue;
-            }
-            question.question.answers.push(pv);
-            question.question.cde.permissibleValues.push(pv);
-        });
-    }
+    /*
+     if (question.question.datatype === 'Number') {
+     question.question.datatypeNumber = cde.valueDomain.datatypeNumber ? cde.valueDomain.datatypeNumber : {};
+     } else if (question.question.datatype === 'Text') {
+     question.question.datatypeText = cde.valueDomain.datatypeText ? cde.valueDomain.datatypeText : {};
+     } else if (question.question.datatype === 'Date') {
+     question.question.datatypeDate = cde.valueDomain.datatypeDate ? cde.valueDomain.datatypeDate : {};
+     } else if (question.question.datatype === 'Value List') {
+     if (cde.valueDomain.permissibleValues.length === 0) throw ('Unknown CDE datatype: ' + cde.valueDomain.datatype);
+     cde.valueDomain.permissibleValues.forEach(function (pv) {
+     if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
+     pv.valueMeaningName = pv.permissibleValue;
+     }
+     question.question.answers.push(pv);
+     question.question.cde.permissibleValues.push(pv);
+     });
+     }
+     */
     return question;
 }
 
@@ -117,7 +195,7 @@ function createCde(data, cb) {
         });
         cde.valueDomain = {permissibleValues: permissibleValues};
     }
-    new DataElementModel(cde).save((e, o)=> {
+    new MigrationDataElementModel(cde).save((e, o)=> {
         if (e) throw e;
         else {
             createdCdes.push(o.tinyId);
@@ -128,7 +206,7 @@ function createCde(data, cb) {
 
 function findInDataElement(loincId, cb) {
     var query = {'archived': null, 'ids.id': loincId};
-    DataElementModel.find(query).exec((error, results)=> {
+    MigrationDataElementModel.find(query).exec((error, results)=> {
         if (error) throw error;
         else if (results.length === 0) {
             createCde(data, function (o) {
@@ -164,7 +242,10 @@ function findQuestion(data, formId, cb) {
                     cb(o);
                 })
             } else throw 'unknown loincId: ' + loincId;
-        } else cb();
+        } else {
+            console.log('found more than one loincId ' + loincId);
+            process.exit(1);
+        }
     });
 }
 
@@ -210,7 +291,7 @@ function validateCsvHeader(data, cb) {
     }
 }
 
-function doCSV(filePath, form, formId, cb) {
+function doCSV(filePath, redcap, formId, doneCsv) {
     var skipLogicMap = {};
     var name = {};
     var stream = fs.createReadStream(filePath).pipe(parser());
@@ -229,8 +310,10 @@ function doCSV(filePath, form, formId, cb) {
     stream.on('data', function (data) {
         stream.pause();
         index++;
+        if (index === 86)
+            console.log('ha');
         if (index === 1) {
-            form.formElements.push({
+            redcap.formElements.push({
                 elementType: "section",
                 label: data['Variable / Field Name'],
                 instructions: {value: data['Field Label']},
@@ -240,7 +323,8 @@ function doCSV(filePath, form, formId, cb) {
             stream.resume();
         }
         else {
-            skipLogicMap[data['Variable / Field Name'].trim()] = data['Field Label'].trim();
+            var formattedFieldLabel = data['Field Label'].replace(/"/g, "'").trim();
+            skipLogicMap[data['Variable / Field Name'].trim()] = formattedFieldLabel;
             if (name.designation && name.designation !== data['Form Name']) {
                 console.log('Form Name not match.');
                 console.log('Form Name: ' + data['Form Name']);
@@ -251,18 +335,22 @@ function doCSV(filePath, form, formId, cb) {
             }
             findQuestion(data, formId, function (q) {
                 var question = convertCdeToQuestion(data, skipLogicMap, q);
-                form.formElements[0].formElements.push(question);
+                if (question === null) {
+                    console.log('filePath ' + filePath);
+                    console.log('line ' + index);
+                    process.exit(1);
+                }
+                redcap.formElements[0].formElements.push(question);
                 stream.resume();
             });
         }
-
     });
     stream.on('err', function (err) {
         if (err) throw err;
     });
     stream.on('end', function () {
-        form.naming.push(name);
-        cb();
+        redcap.name = name;
+        doneCsv();
     });
 }
 
@@ -279,7 +367,7 @@ function doAuthorID(filePath, cb) {
     })
 }
 
-function doInstrumentID(filePath, formId, cb) {
+function doInstrumentID(filePath, cb) {
     fs.readFile(filePath, 'utf8', function (err, data) {
         if (err) throw err;
         else if (data.indexOf('PX') !== -1) {
@@ -292,58 +380,75 @@ function doInstrumentID(filePath, formId, cb) {
     })
 }
 
-function doZip(filePath, formId, cb) {
-    fs.readdir(filePath, (err, items)=> {
-        if (err) throw err;
-        else {
-            var fileCount = 0;
-            var form = {
-                tinyId: mongo_data.generateTinyId(),
-                naming: [],
-                ids: [],
-                formElements: [],
-                stewardOrg: {name: 'NLM'},
-                sources: [{source: 'PhenX'}],
-                registrationState: {registrationStatus: 'Qualified'}
-            };
-            var id = {};
-            async.forEach(items, (item, doneOneItem)=> {
-                if (item === 'instrument.csv') {
-                    doCSV(filePath + '/instrument.csv', form, formId, function () {
-                        console.log('done instrument.csv');
-                        doneOneItem();
-                    });
-                } else if (item === 'AuthorID.txt') {
-                    doAuthorID(filePath + '/AuthorID.txt', function (authorID) {
-                        console.log('done authorID.txt');
-                        id.source = authorID;
-                        doneOneItem();
-                    })
-                } else if (item === 'InstrumentID.txt') {
-                    doInstrumentID(filePath + '/InstrumentID.txt', formId, function (instrumentID) {
-                        console.log('done instrumentID.txt');
-                        id.id = instrumentID;
-                        doneOneItem();
-                    })
-                }
-            }, ()=> {
-                form.ids.push(id);
-                new FormModel(form).save((e, o)=> {
-                    if (e) throw e;
-                    else {
-                        console.log('finished ' + filePath + ' fileCount: ' + fileCount);
-                        cb();
-                    }
-                })
+function doZip(filePath, formId, doneZip) {
+    var allFiles = fs.readdirSync(filePath);
+    var redcap = {
+        formElements: []
+    };
+    async.forEach(allFiles, (item, doneOneItem)=> {
+        if (item === 'instrument.csv') {
+            doCSV(filePath + '/instrument.csv', redcap, formId, function () {
+                console.log('done instrument.csv');
+                doneOneItem();
+            });
+        } else if (item === 'AuthorID.txt') {
+            doAuthorID(filePath + '/AuthorID.txt', function (authorID) {
+                console.log('done authorID.txt');
+                redcap.authorId = authorID;
+                doneOneItem();
             })
+        } else if (item === 'InstrumentID.txt') {
+            doInstrumentID(filePath + '/InstrumentID.txt', function (instrumentID) {
+                console.log('done instrumentID.txt');
+                redcap.instrumentId = instrumentID;
+                doneOneItem();
+            })
+        } else if (item === 'attachments') {
+            doneOneItem();
+        } else if (item.indexOf('PX') !== -1) {
+            if (SPECIAL_FOLDER[item]) {
+                doCSV(filePath + '/instrument.csv', redcap, formId, function () {
+                    console.log('done instrument.csv');
+                    doneOneItem();
+                });
+            } else {
+                doCSV(filePath + '/' + item + '/instrument.csv', redcap, formId, function () {
+                    console.log('done instrument.csv');
+                    doneOneItem();
+                });
+            }
+        } else {
+            console.log('unknown folder ' + item + ' in zip. filePath: ' + filePath);
+            doneOneItem();
         }
+    }, ()=> {
+        new MigrationRedcapModel(redcap).save((e)=> {
+            if (e) throw e;
+            else doneZip();
+        })
     })
 }
 
-fs.readdir(ZIP_PATH, (err, items) => {
-    if (err) throw err;
-    else {
-        async.forEachSeries(items, (item, doneOneItem)=> {
+async.series([function (cb) {
+    MigrationDataElementModel.remove({}).exec(function (err) {
+        if (err) throw err;
+        else {
+            console.log('finished remove MigrationDataElementModel');
+            cb();
+        }
+    })
+}, function (cb) {
+    MigrationRedcapModel.remove({}).exec(function (err) {
+        if (err) throw err;
+        else {
+            console.log('finished remove MigrationRedcapModel');
+            cb();
+        }
+    })
+}, function (cb) {
+    var allZips = fs.readdirSync(ZIP_PATH);
+    async.forEach(allZips, (item, doneOneItem)=> {
+        try {
             var formId = item.replace('.zip', '');
             if (item.indexOf('.zip') !== -1) {
                 doZip(ZIP_PATH + '/' + item, formId, function () {
@@ -355,8 +460,15 @@ fs.readdir(ZIP_PATH, (err, items) => {
                 console.log('do not know what to do with ' + item);
                 doneOneItem();
             }
-        }, ()=> {
-            console.log('finished all.');
-        });
-    }
+        } catch (exception) {
+            console.log(exception);
+        }
+    }, (a)=> {
+        cb();
+    });
+}], function (e) {
+    if (e) throw e;
+    console.log('finished all.');
+    process.exit(1);
 });
+
