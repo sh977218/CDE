@@ -1,13 +1,13 @@
 <div class="panel panel-default form_view">
     <div class="panel-heading">
         <div class="questionSectionTitle" ng-click="section.updatedSkipLogic = false">
-            <span ng-if="canCurate" style="display: inline-block;vertical-align: top">
+            <span ng-if="canCurate" class="ib" style="vertical-align: top">
                 <i class="fa fa-arrows question-move-handle"></i>
                 <i ng-if="section.skipLogic.condition.length > 0" class="fa fa-cog"
                    ng-class="{'fa-spin': section.updatedSkipLogic}"
                    title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
             </span>
-            <span class="section_title" style="display: inline-block; margin-left: 5px; width: 62%">
+            <span class="section_title ib" style="margin-left: 5px; width: 62%">
                 Embedded Form:
                 <span id="innerForm_label_edit_icon_{{formElement.label}}"
                       inline-edit model="formElement.label" is-allowed="canCurate && section.edit" on-ok="stageElt()">{{formElement.label}}</span>

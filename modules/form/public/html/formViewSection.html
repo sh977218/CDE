@@ -1,14 +1,14 @@
 <div class="panel panel-default section_view" ng-controller="FormViewSectionCtrl">
     <div class="panel-heading">
         <div class="questionSectionTitle" ng-click="section.updatedSkipLogic = false">
-            <span ng-if="canCurate" style="display: inline-block;vertical-align: top">
+            <span ng-if="canCurate" class="ib" style="vertical-align: top">
                 <i class="fa fa-arrows fa-lg question-move-handle"></i>
                 <i ng-if="section.skipLogic.condition.length > 0" class="fa fa-cog"
                    ng-class="{'fa-spin': section.updatedSkipLogic}"
                    title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
             </span>
 
-            <span class="section_title" style="display: inline-block; margin-left: 5px; width: 62%"
+            <span class="section_title ib" style="margin-left: 5px; width: 62%"
                   inline-edit model="section.label" is-allowed="canCurate && section.edit" on-ok="stageElt()"></span>
 
             <span ng-if="canCurate" class="pull-right editIconDiv">
