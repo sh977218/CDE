@@ -60,11 +60,11 @@ public class BaseFormTest extends NlmCdeBaseTest {
         String sectionId = "section_0";
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
-        clickElement(By.xpath("//div[@id='" + sectionId + "']//div[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
-        String sectionInput = "//div[@id='" + sectionId + "']//div[contains(@class,'section_title')]//input";
+        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
+        String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input";
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//div[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
 
         if (card != null) {
             new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(card);

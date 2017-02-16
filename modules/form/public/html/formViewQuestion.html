@@ -10,7 +10,7 @@
         <div ng-if="question.question.isScore" class="ib left">
             <strong>Score: </strong>
         </div>
-        <div class="ib left questionLabel" title="{{question.label}}">
+        <div class="ib left questionLabel" title="{{question.label}}" style="margin-left: 5px">
             <span ng-if="question.hideLabel">
                 <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
                 <s ng-bind="question.question.cde.name"></s>
