@@ -25,11 +25,14 @@ public class RenameClassification extends BaseClassificationTest {
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//button[text()='Save']")).click();
         textPresent("Renaming in progress.");
+        closeAlert();
         hangon(20);
         try {
             textPresent("Renaming complete.");
+            closeAlert();
         } catch (WebDriverException e) {
             textPresent("Renaming complete.");
+            closeAlert();
         }
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification"));
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification,Supplemental"));

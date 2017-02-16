@@ -80,6 +80,7 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
             , id: $scope.elt._id
         }).then(function (res) {
             $scope.elt = res.data;
+            Alert.addAlert("success", "Attachment Removed.")
         });
     };
 

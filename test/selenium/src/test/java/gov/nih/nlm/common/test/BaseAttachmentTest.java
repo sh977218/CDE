@@ -10,6 +10,8 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         clickElement(By.id("attachments_tab"));
         clickElement(By.id("removeAttachment-0"));
         clickElement(By.id("confirmRemove-0"));
+        textPresent("Attachment Removed.");
+        closeAlert();
         textNotPresent(name);
     }
 
