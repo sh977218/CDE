@@ -32,9 +32,9 @@
                     <dd tabindex="0" id="dd_id_origin_{{i}}">{{id.source}}</dd>
                     <dt tabindex="0">Id:</dt>
                     <dd tabindex="0" id="dd_id_id_{{i}}" [ngSwitch]="id.source">
-                        <a *ngSwitchCase="LOINC" href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
+                        <a *ngSwitchCase="'LOINC'" href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
                            target="_blank">{{id.id}}</a>
-                        <a *ngSwitchCase="PhenX" href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"
+                        <a *ngSwitchCase="'PhenX'" href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"
                            target="_blank">{{id.id}}</a>
                         <span *ngSwitchDefault>{{id.id}}</span>
                     </dd>
