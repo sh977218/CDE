@@ -48,7 +48,7 @@ angular.module('systemModule').controller('PropertiesCtrl',
                     Alert.addAlert("info", "Property added. Save to confirm.");
                 } else {
                     $scope.elt.$save(function (newElt) {
-                        $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
+                        $scope.elt = newElt;
                         Alert.addAlert("success", "Property Added");
                     });
                 }
@@ -62,7 +62,6 @@ angular.module('systemModule').controller('PropertiesCtrl',
             $scope.addAlert("info", "Property removed. Save to confirm.");
         } else {
             $scope.elt.$save(function (newElt) {
-                $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
                 $scope.elt = newElt;
                 Alert.addAlert("success", "Property Removed");
             });
