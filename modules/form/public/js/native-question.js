@@ -4,21 +4,65 @@
         .directive("nativeQuestion", ["$compile", function ($compile) {
             return {
                 restrict: "EA",
-                scope: true,
+                scope: {
+                    formElement: '<formElement',
+                    numSubQuestions: '<?',
+                    profile: '<',
+                    parentValue: '<?',
+                    elt: '<',
+                    error: '=',
+                    index: '@'
+                },
+                controller: ["$scope", "nativeFormService", function ($scope, nativeFormService) {
+                    $scope.nativeFormService = nativeFormService;
+                    $scope.classColumns = function (pvIndex, index) {
+                        var result = '';
+
+                        if ( pvIndex !== -1 && $scope.profile && $scope.profile.numberOfColumns) {
+                            switch ($scope.profile.numberOfColumns) {
+                                case 2:
+                                    result = 'col-sm-6';
+                                    break;
+                                case 3:
+                                    result = 'col-sm-4';
+                                    break;
+                                case 4:
+                                    result = 'col-sm-3';
+                                    break;
+                                case 5:
+                                    result = 'col-sm-2-4';
+                                    break;
+                                case 6:
+                                    result = 'col-sm-2';
+                                    break;
+                                default:
+                            }
+                        }
+
+                        if ($scope.isFirstInRow(pvIndex != undefined ? pvIndex : index))
+                            result += ' clear';
+                        return result;
+                    };
+                    $scope.isFirstInRow = function (index) {
+                        if ($scope.profile && $scope.profile.numberOfColumns > 0)
+                            return index % $scope.profile.numberOfColumns == 0;
+                        else
+                            return index % 4 == 0;
+                    };
+                }],
                 link: function (scope, element) {
-                    var fe = scope.formElement;
-                    if (!fe) return "";
-                    var question = fe.question;
-                    var type = question.datatype || 'text';
-                    var required = question.required ? "ng-required='true'" : "";
-                    var disabled = !question.editable ? "disabled" : "";
-                    var htmlText = '';
                     function getLabel(pv) {
                         return pv ? (pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue) : '';
                     }
-
                     function getValue(pv) {
                         return pv ? (pv.permissibleValue ? pv.permissibleValue : pv.permissibleValue) : '';
+                    }
+                    function hasLabel(question) {
+                        return question.label && !question.hideLabel;
+                    }
+                    function isOneLiner(question, numSubQuestions) {
+                        return numSubQuestions && !hasLabel(question) &&
+                            question.question.datatype !== 'Value List';
                     }
                     function htmlTextUoms(uoms) {
                         var html = '';
@@ -34,33 +78,46 @@
                     function htmlSubQuestion(pv, subQNonValuelist, i) {
                         var numSubQuestions = (pv && pv.subQuestions ? pv.subQuestions.length : 0);
                         var html = '';
-                        pv && pv.subQuestions && pv.subQuestions.forEach(function (formElement, j) {
+                        pv && pv.subQuestions && pv.subQuestions.forEach(function (formElement, j, formElements) {
+                            // wrap sub-question
                             html +=
-                                '<div class="' +
-                                (pv.subQuestions && scope.isOneLiner(pv.subQuestions[0],pv.subQuestions.length)
-                                    ? 'native-question-oneline-r' : '') + ' ' +
-                                (!subQNonValuelist && numSubQuestions && !scope.isOneLiner(formElement,numSubQuestions)
-                                    ? 'native-box' : '') + '">';
+                                '<div';
+                            if (scope.nativeRenderType === scope.FOLLOW_UP) {}
+                            else if (scope.nativeRenderType === scope.SHOW_IF)
+                                html +=
+                                    ' ng-if="nativeFormService.evaluateSkipLogicAndClear(error, formElement.skipLogic.condition, formElement.question.answers[' + i + '].subQuestions, formElement, elt)"';
+                            html +=
+                                ' class="native-question-header' +
+                                (pv.subQuestions && isOneLiner(pv.subQuestions[0],pv.subQuestions.length) ? ' native-question-oneline-r' : '') +
+                                (!subQNonValuelist && numSubQuestions && !isOneLiner(formElement,numSubQuestions) ? ' native-box' : '') + '">';
 
+                            // sub-question
                             if ((formElement.elementType === 'question') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist)) {
                                 html +=
                                     '<div native-question' +
-                                    ' ng-init="';
+                                    ' form-element="formElement.question.answers[' + i + '].subQuestions[' + j + ']"' +
+                                    ' profile="profile"' +
+                                    ' num-sub-questions="' + numSubQuestions + '"' +
+                                    ' elt="elt"' +
+                                    ' error="error"' +
+                                    ' index="' + i + '"';
 
                                 if (subQNonValuelist)
                                     html +=
-                                        'permissibleValue=formElement.question.answers[' + i + '].permissibleValue;';
+                                        ' parent-value="formElement.question.answers[' + i + '].permissibleValue"';
 
                                 html +=
-                                    'formElements = formElement.question.answers[' + i + '].subQuestions;' +
-                                    'formElement = formElements[' + j + '];' +
-                                    'numSubQuestions=' + numSubQuestions + ';"></div>';
+                                    '></div>';
                             }
                             if ((formElement.elementType === 'section' || formElement.elementType === 'form') && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
                                 html +=
-                                    '<div ng-include="\'/form/public/html/formRenderSection.html\'"' +
-                                    ' ng-init="formElements = formElement.question.answers[' + i + '].subQuestions;' +
-                                    ' formElement = formElements[' + j + '];"></div>';
+                                    '<div native-section' +
+                                    ' form-elements="formElement.question.answers[' + i + '].subQuestions"' +
+                                    ' form-element="formElement.question.answers[' + i + '].subQuestions[' + j + ']"' +
+                                    ' profile="profile"' +
+                                    ' num-sub-questions="' + numSubQuestions + '"' +
+                                    ' elt="elt"' +
+                                    ' error="error"></div>';
 
                             html +=
                                 '</div>';
@@ -68,20 +125,21 @@
                         return html;
                     }
 
-                    if (scope.nativeRenderType === scope.FOLLOW_UP)
-                        htmlText +=
-                            '<div class="native-question">';
-                    else if (scope.nativeRenderType === scope.SHOW_IF)
-                        htmlText +=
-                            '<div ng-if="evaluateSkipLogicAndClear(formElement.skipLogic.condition, formElements, formElement)" class="native-question">';
+                    var fe = scope.formElement;
+                    if (!fe) return "";
+                    var question = fe.question;
+                    var type = question.datatype || 'text';
+                    var required = question.required ? "ng-required='true'" : "";
+                    var disabled = !question.editable ? "disabled" : "";
+                    var htmlText = '';
 
-                    if (scope.hasLabel(fe))
+                    if (hasLabel(fe))
                         htmlText +=
-                            '<label ng-class="{\'native-question-label\': !numSubQuestions && selection.selectedProfile.displayNumbering}">' +
-                               '<span ng-if="::permissibleValue">If {{::permissibleValue}}: </span>' + fe.label + '</label>';
+                            '<label ng-class="{\'native-question-label\': !numSubQuestions && profile.displayNumbering}">' +
+                               '<span ng-if="::parentValue">If {{::parentValue}}: </span>' + fe.label + '</label>';
                     if (fe.instructions && fe.instructions.value) {
                         htmlText +=
-                            '<div ng-if="selection.selectedProfile.displayInstructions" class="native-instructions">';
+                            '<div ng-if="profile.displayInstructions" class="native-instructions">';
                         if (fe.instructions.valueFormat === 'html')
                             htmlText +=
                                 '<span ng-bind-html="::formElement.instructions.value"></span>';
@@ -93,11 +151,11 @@
                     }
 
                     htmlText +=
-                        '<div id="' + fe.label + '_{{::$index}}"' +
-                        ' class="native-question-answers' + (scope.hasLabel(fe) ? ' native-box' : '') + '">';
+                        '<div id="' + fe.label + '_' + scope.index + '"' +
+                        (hasLabel(fe) ? ' class="native-box"' : '') + '>';
                     if (question.isScore) // Label
                         htmlText +=
-                            'Score: <span ng-bind="score(formElement)"></span>';
+                            'Score: <span ng-bind="nativeFormService.score(formElement, elt)"></span>';
                     else {
                         switch (question.datatype) {
                             case 'Value List':
@@ -109,30 +167,30 @@
                                             '<div ng-class="classColumns(' + pv.index +',' + i + ')"' +
                                             ' class="col-xs-12">' +
                                                 '<label class="' +
-                                                    (pv.subQuestions && scope.isOneLiner(pv.subQuestions[0],pv.subQuestions.length)
+                                                    (pv.subQuestions && isOneLiner(pv.subQuestions[0],pv.subQuestions.length)
                                                         ? 'native-question-oneline-l ' : '') +
                                                     (question.multiselect ? 'checkbox-inline' : 'radio-inline') + '">';
 
                                         if (!question.multiselect)
                                             htmlText +=
                                                 '<input type="radio"' +
-                                                ' ng-model="formElement.question.answer" ' +
+                                                ' ng-model="formElement.question.answer"' +
                                                 ' ng-value="formElement.question.answers[' + i + '].permissibleValue"' +
                                                 ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
                                         else
                                             htmlText +=
-                                                '<input type="checkbox" ' +
-                                                'checklist-model="formElement.question.answer" ' +
-                                                'checklist-value="formElement.question.answers[' + i + '].permissibleValue" ' +
-                                                'ng-value="formElement.question.answers[' + i + '].permissibleValue" ' +
-                                                'name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
+                                                '<input type="checkbox"' +
+                                                ' checklist-model="formElement.question.answer"' +
+                                                ' checklist-value="formElement.question.answers[' + i + '].permissibleValue"' +
+                                                ' ng-value="formElement.question.answers[' + i + '].permissibleValue"' +
+                                                ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
 
                                         htmlText +=
                                             getLabel(pv) + '<span ng-if="selection.selectedProfile.displayValues">  ' + getValue(pv) + '  </span>' + '</label>';
 
                                         if (pv.subQuestions)
                                             htmlText +=
-                                                htmlSubQuestion(pv,false, i);
+                                                htmlSubQuestion(pv, false, i); // sub-question of value-list option
 
                                         htmlText +=
                                             '</div>';
@@ -189,9 +247,9 @@
                         }
                     }
                     question.answers.forEach(function (pv, i){
-                        if (pv.subQuestions)
+                        if (pv.nonValuelist && pv.subQuestions)
                             htmlText +=
-                                htmlSubQuestion(pv, true, i);
+                                htmlSubQuestion(pv, true, i); // sub-question not of value-list option
                     });
 
                     htmlText +=
