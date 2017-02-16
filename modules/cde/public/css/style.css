@@ -449,10 +449,6 @@ dl.dl-horizontal dd {
     overflow: visible;
 }
 
-.section-question-icon-div {
-    width: auto !important;
-}
-
 .form-inline .form-group.long-field input {
     width: 800px !important;
 }
@@ -985,6 +981,14 @@ div + .questionPlaceholder {
 .questionSectionLabel {
     font-weight: bold;
     min-width: 150px;
+}
+
+.formViewQuestionLabel {
+    font-weight: bold;
+}
+
+.formViewSummaryLabel {
+    margin-right: 5px;
 }
 
 .text_label {

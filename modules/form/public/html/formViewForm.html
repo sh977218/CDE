@@ -1,65 +1,71 @@
 <div class="panel panel-default form_view">
     <div class="panel-heading">
-        <div class="row" ng-click="section.updatedSkipLogic = false">
-            <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
+        <div class="questionSectionTitle" ng-click="section.updatedSkipLogic = false">
+            <span ng-if="canCurate" style="display: inline-block;vertical-align: top">
                 <i class="fa fa-arrows question-move-handle"></i>
                 <i ng-if="section.skipLogic.condition.length > 0" class="fa fa-cog"
                    ng-class="{'fa-spin': section.updatedSkipLogic}"
                    title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
-            </div>
-            <div class="col-sm-9 questionSectionTitle">Embedded Form:
-                    <span id="innerForm_label_edit_icon_{{formElement.label}}" inline-edit model="formElement.label"
-                          is-allowed="canCurate" on-ok="stageElt()">{{formElement.label}}</span>
-            </div>
-            <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div editIconDiv">
+            </span>
+            <span class="section_title" style="display: inline-block; margin-left: 5px; width: 62%">
+                Embedded Form:
+                <span id="innerForm_label_edit_icon_{{formElement.label}}"
+                      inline-edit model="formElement.label" is-allowed="canCurate && section.edit" on-ok="stageElt()">{{formElement.label}}</span>
+            </span>
+            <span ng-if="canCurate" class="pull-right editIconDiv">
                 <i ng-if="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
                    ng-click="section.edit = true"></i>
                 <i ng-if="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
-                   ng-click="section.edit = false;"></i>
+                   ng-click="section.edit = false"></i>
                 <i class="fa fa-trash-o hand-cursor" title="Remove Section" ng-click="removeElt(parent, $index)"></i>
+            </span>
+        </div>
+
+
+        <div ng-if="!(canCurate && section.edit)">
+            <span ng-if="section.cardinality && (section.cardinality.min !== 1 || section.cardinality.max !== 1)"
+                  class="label label-primary formViewSummaryLabel">
+                Repeats: {{getCardinalityLabel(section)}} times
+            </span>
+            <span ng-if="section.skipLogic.condition" class="label label-warning formViewSummaryLabel">
+                Show if: {{section.skipLogic.condition}}
+            </span>
+            <div ng-if="section.instructions.value" class="questionInstruction">
+                <span class="questionSectionLabel">Instructions:</span>
+                <span ng-bind="formElement.instructions.value"></span>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
-            <div class="col-sm-7" id="dd_form_instructions_{{$index}}">
+
+        <div ng-if="canCurate && section.edit">
+            <div class="section_instruction">
+                <span class="questionSectionLabel">Instructions:</span>
                 <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
                      model="formElement.instructions.value" def-format="formElement.instructions.valueFormat"
                      is-allowed="canCurate && section.edit" on-ok="stageElt()"></div>
             </div>
-        </div>
-        <div class="row" ng-if="parent">
-            <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
-            <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
-                 ng-class="{'has-error':section.skipLogic.skipLogicError}">
-                <input ng-disabled="!(parent.formElements.length > 1 && canCurate && section.edit)"
-                       type="text" ng-model="section.skipLogic.condition"
-                       class="form-control skipLogicCondition" ng-trim="false"
-                       ng-change="validateSkipLogic(section.skipLogic,parent.formElements)"
-                       uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section, $parent.$index) | filter:tokens.unmatched"
-                       typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
-                       typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
-                       typeahead-append-to-body="true"/>
-                <span ng-bind="section.skipLogic.skipLogicError"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
-            <div class="col-sm-2 section_cardinality">
-                <span ng-if="!(canCurate && section.edit) && getCardinalityLabel(section)">{{getCardinalityLabel(section)}}</span>
-                <select class="form-control" ng-if="canCurate && section.edit"
-                        ng-model="section.cardinality" ng-change="stageElt()"
+            <div class="questionSectionLabel section_cardinality">Repeats:
+                <select class="form-control" ng-model="section.cardinality" ng-change="stageElt()"
                         ng-options="item.value as item.label for item in cardinalityOptions">
                 </select>
+            </div>
+            <div class="questionSectionLabel">Show if:
+                <span id="dd_s_skipLogic_{{$index}}" ng-class="{'has-error':section.skipLogic.skipLogicError}">
+                    <input ng-disabled="!(parent.formElements.length > 1 && canCurate && section.edit)"
+                           type="text" ng-model="section.skipLogic.condition"
+                           class="form-control skipLogicCondition" ng-trim="false"
+                           ng-change="validateSkipLogic(section.skipLogic,parent.formElements)"
+                           uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section, $parent.$index) | filter:tokens.unmatched"
+                           typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
+                           typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
+                           typeahead-append-to-body="true"/>
+                    <span ng-bind="section.skipLogic.skipLogicError"></span>
+                </span>
             </div>
         </div>
     </div>
     <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-2 questionSectionLabel text-right">Form:</div>
-            <div ng-class="{'col-sm-6':addMode,'col-sm-10':!addMode}">
-                <a href="formView?tinyId={{formElement.inForm.form.tinyId}}"
-                   target="_blank"><i class="fa fa-eye"></i> {{formElement.inForm.form.name}}</a>
-            </div>
-        </div>
+        <span class="questionSectionLabel">Form:</span>
+        <a href="formView?tinyId={{formElement.inForm.form.tinyId}}"
+           target="_blank"><i class="fa fa-eye"></i> {{formElement.inForm.form.name}}</a>
     </div>
 </div>
