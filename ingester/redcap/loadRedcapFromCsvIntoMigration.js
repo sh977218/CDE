@@ -6,12 +6,14 @@ var MigrationDataElementModel = require('../createMigrationConnection').Migratio
 var MigrationPhenxRedcapModel = require('../createMigrationConnection').MigrationPhenxRedcapModel;
 var MigrationRedcapModel = require('../createMigrationConnection').MigrationRedcapModel;
 
-//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/a';
-var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/b';
+var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
+//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/test';
 var zipCount = 0;
 var createdCdes = [];
 var foundLoincs = [];
 var foundCdes = [];
+
+var special_skipLogic = [];
 
 var SPECIAL_FOLDER = {
     'PX661503': true,
@@ -75,10 +77,16 @@ function formatSkipLogic(m, equationText) {
 
 function convertSkipLogic(skipLogicMap, skipLogicText) {
     if (skipLogicText.trim().length === 0)return skipLogicText;
+    else if (skipLogicText.trim().indexOf('(') > -1) {
+        special_skipLogic.push(skipLogicText);
+        return skipLogicText;
+    }
     else {
+        var loop_num = 0;
         var result = [];
         while (skipLogicText.trim().length > 0) {
-            var foundEquationArray = skipLogicText.match(/\[[^\[\]]*\]\s*[<>|<=|>=|=|>|<]\s*'?"?\w*'?"?/);
+            loop_num++;
+            var foundEquationArray = skipLogicText.match(/\[[^[\]]*]\s*(?:<>|[<>]=|[=><])\s*['"]?[\w-]*['"]?/);
             if (foundEquationArray && foundEquationArray.length === 1) {
                 var foundEquation = foundEquationArray[0];
                 var cdeSkipLogicEquation = formatSkipLogic(skipLogicMap, foundEquation);
@@ -95,6 +103,11 @@ function convertSkipLogic(skipLogicMap, skipLogicText) {
                     result.push(cdeSkipLogicConjunction);
                     skipLogicText = skipLogicText.replace(foundConjunction, '').trim();
                 }
+            }
+            if (loop_num > 100) {
+                console.log('loop over 100 time in while loop');
+                console.log('skipLogicText: ' + skipLogicText);
+                return null;
             }
         }
         return result.join('');
@@ -126,7 +139,7 @@ function convertCdeToQuestion(data, skipLogicMap, cde) {
     };
     var branchLogic = data['Branching Logic (Show field only if...)'];
     var skipLogic = '';
-    if (branchLogic.trim().length > 0) {
+    if (branchLogic && branchLogic.trim().length > 0) {
         skipLogic = convertSkipLogic(skipLogicMap, branchLogic);
         if (skipLogic === null || skipLogic === '') {
             console.log(data);
@@ -180,17 +193,17 @@ function createCde(data, cb) {
         sources: [{source: 'PhenX'}],
         registrationState: {registrationStatus: 'Qualified'},
         properties: [{source: '', key: 'Field Note', value: data['Field Note']}],
-        ids: [{id: ''}]
+        ids: [{id: data['Variable / Field Name'].trim()}]
     };
     if (data['Choices, Calculations, OR Slider Labels']) {
         var permissibleValues = [];
         var pvArray = data['Choices, Calculations, OR Slider Labels'].split('|');
-        pvArray.forEach((o)=> {
-            var temp = o.split(',');
+        pvArray.forEach((pvText)=> {
+            var tempArray = pvText.toString().split(',');
             permissibleValues.push({
-                permissibleValue: temp[0],
-                valueMeaningName: temp[0],
-                valueMeaningCode: temp[1]
+                permissibleValue: tempArray[0],
+                valueMeaningName: tempArray[0],
+                valueMeaningCode: tempArray[1]
             })
         });
         cde.valueDomain = {permissibleValues: permissibleValues};
@@ -310,9 +323,9 @@ function doCSV(filePath, redcap, formId, doneCsv) {
     stream.on('data', function (data) {
         stream.pause();
         index++;
-        if (index === 86)
-            console.log('ha');
-        if (index === 1) {
+        var formElements;
+        var fieldType = data['Field Type'].trim();
+        if (fieldType === 'descriptive') {
             redcap.formElements.push({
                 elementType: "section",
                 label: data['Variable / Field Name'],
@@ -320,9 +333,11 @@ function doCSV(filePath, redcap, formId, doneCsv) {
                 skipLogic: {condition: ''},
                 formElements: []
             });
+            formElements = redcap.formElements[0].formElements;
             stream.resume();
         }
         else {
+            formElements = redcap.formElements;
             var formattedFieldLabel = data['Field Label'].replace(/"/g, "'").trim();
             skipLogicMap[data['Variable / Field Name'].trim()] = formattedFieldLabel;
             if (name.designation && name.designation !== data['Form Name']) {
@@ -340,7 +355,7 @@ function doCSV(filePath, redcap, formId, doneCsv) {
                     console.log('line ' + index);
                     process.exit(1);
                 }
-                redcap.formElements[0].formElements.push(question);
+                formElements.push(question);
                 stream.resume();
             });
         }
@@ -469,6 +484,9 @@ async.series([function (cb) {
 }], function (e) {
     if (e) throw e;
     console.log('finished all.');
+    console.log(createdCdes.length + ' createdCdes: ' + createdCdes);
+    console.log(foundLoincs.length + ' foundLoincs: ' + foundLoincs);
+    console.log(foundCdes.length + ' foundCdes: ' + foundCdes);
     process.exit(1);
 });
 

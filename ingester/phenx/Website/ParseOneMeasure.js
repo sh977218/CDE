@@ -30,11 +30,30 @@ function parsingClassification(driver, measure, done) {
 function parsingProtocolLinks(driver, measure, done) {
     var protocolLinksXpath = "//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]";
     driver.findElements(By.xpath(protocolLinksXpath)).then(function (protocolLinks) {
+        var protocols = [];
         async.eachSeries(protocolLinks, function (protocolLink, doneOneProtocolLink) {
-            protocolLink.getAttribute('href').then(function (linkText) {
-                ParseOneProtocol.parseProtocol(measure, linkText.trim(), doneOneProtocolLink);
-            });
+            var protocol = {};
+            async.series([
+                function (cb) {
+                    protocolLink.findElement(webdriver.By.css('span')).getText().then(function (browserIdText) {
+                        var protocolId = browserIdText.replace('#', '').trim();
+                        protocol.protocolId = protocolId;
+                        protocols.push({protocolId: protocolId});
+                        cb();
+                    });
+                },
+                function (cb) {
+                    protocolLink.getAttribute('href').then(function (linkText) {
+                        ParseOneProtocol.parseProtocol(protocol, linkText.trim(), function () {
+                            cb();
+                        });
+                    });
+                }
+            ], function () {
+                doneOneProtocolLink();
+            })
         }, function doneAllProtocolLinks() {
+            measure.protocols = protocols;
             done();
         });
     })

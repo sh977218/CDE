@@ -83,6 +83,10 @@ exports.MigrationMeasureModel = migrationConn.model('MigrationMeasure', new Sche
     strict: false,
     collection: 'Measure'
 }));
+exports.MigrationProtocolModel = migrationConn.model('MigrationProtocol', new Schema({}, {
+    strict: false,
+    collection: 'Protocol'
+}));
 exports.MigrationCacheModel = migrationConn.model('MigrationCache', new Schema({}, {
     strict: false,
     collection: 'Cache'

@@ -3,6 +3,7 @@ var By = webdriver.By;
 var async = require('async');
 var driver = new webdriver.Builder().forBrowser('chrome').build();
 var LoadFromLoincSite = require('../../loinc/Website/LOINCLoader');
+var MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
 
 var tasks = [{
     sectionName: 'Protocol Release Date',
@@ -177,13 +178,13 @@ function doTask(driver, task, obj, cb) {
     });
 }
 
-exports.parseProtocol = function (measure, link, cb) {
+exports.parseProtocol = function (protocol, link, cb) {
     driver.get(link);
     driver.findElement(By.id('button_showfull')).click().then(function () {
         async.forEach(tasks, function (task, doneOneTask) {
-            doTask(driver, task, measure, doneOneTask);
+            doTask(driver, task, protocol, doneOneTask);
         }, function doneAllTask() {
-            async.forEachSeries(measure['Standards'], function (standard, doneOneStandard) {
+            async.forEachSeries(protocol['Standards'], function (standard, doneOneStandard) {
                 if (standard.Source === 'LOINC') {
                     LoadFromLoincSite.runArray([standard.ID], 'PhenX', function (loinc, doneOneLoinc) {
                         standard['LOINC'] = loinc;
@@ -195,7 +196,10 @@ exports.parseProtocol = function (measure, link, cb) {
                     doneOneStandard();
                 }
             }, function doneAllStandards() {
-                cb();
+                new MigrationProtocolModel(protocol).save((e)=> {
+                    if (e) throw e;
+                    else cb();
+                })
             });
         })
     });
