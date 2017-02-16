@@ -201,29 +201,6 @@ gulp.task('es', function () {
     }, 3000);
 });
 
-gulp.task('tarCode', function () {
-    //var done = this.async();
-    var writeS = fs.createWriteStream('./code.tar.gz');
-    writeS.on('close', function () {
-        // tar done, now sign with gpg
-        var gpg = spawn('gpg', ["-s", "./code.tar.gz"]);
-        gpg.on('close', function () {
-            fs.unlinkSync("./code.tar.gz");
-        });
-    });
-    var fixupDirs = function (entry) {
-        // Make sure readable directories have execute permission
-        if (entry.props.type === "Directory")
-            entry.props.mode |= (entry.props.mode >>> 2) & 0111;
-        return true;
-    };
-
-    return fstream.Reader({path: config.node.buildDir, type: 'Directory', filter: fixupDirs})
-        .pipe(tar.Pack())
-        .pipe(zlib.createGzip())
-        .pipe(writeS);
-});
-
 gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin', 'emptyTemplates']);
 
 

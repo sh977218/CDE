@@ -1483,12 +1483,16 @@ label.input-group-addon {
 
 .native-section-header {
     border-bottom: 1px solid #eee;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 5px;
 }
 
-.native-question {
+.native-question-header {
     page-break-inside: avoid;
+}
+
+.native-question-label {
+    margin-bottom: 0px;
 }
 
 .native-question-label:before {
@@ -1502,18 +1506,22 @@ label.input-group-addon {
 
 div.row .native-question-oneline-l {
     float: left;
-    margin-top: 5px;
+    margin-top: 6px;
     margin-right: 5px;
 }
 
 div.row .native-question-oneline-r {
     overflow: hidden;
     min-width: 50%;
-    margin-left: 7%;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    margin-left: 6%;
 }
 
 .native-box {
-    padding-left: 7%;
+    padding-left: 6%;
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 
 .radio-inline,

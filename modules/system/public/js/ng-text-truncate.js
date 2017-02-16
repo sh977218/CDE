@@ -45,27 +45,21 @@
                     var el;
                     if ($scope.text && $scope.text.length >= threshold) {
                         if ($scope.textType === 'html') {
-                            elStr = '<span ng-class="class" ng-bind-html="text">' +
-                            '</span>' +
+                            elStr = '<span ng-class="class" ng-bind-html="text"></span>' +
                             '<span ng-show="!open" class="btn-link ngTruncateToggleText more" ng-click="toggleShow();">' +
-                            ($scope.customMoreLabel ? $scope.customMoreLabel : "More") +
-                            '</span>' +
+                            ($scope.customMoreLabel ? $scope.customMoreLabel : "More") + '</span>' +
                             '<span ng-show="open"  class="btn-link ngTruncateToggleText less" ng-click="toggleShow();">' +
-                            ($scope.customLessLabel ? $scope.customLessLabel : "Less") +
-                            '</span>';
+                            ($scope.customLessLabel ? $scope.customLessLabel : "Less") + '</span>';
                             el = angular.element(elStr);
                             $compile(el)($scope);
                             $element.append(el);
                         }
                         if ($scope.textType === 'plainText') {
-                            var html = '<span ng-class="class">' +
-                                '</span>' +
+                            var html = '<span ng-class="class"></span>' +
                                 '<span ng-show="!open" class="btn-link ngTruncateToggleText more" ng-click="toggleShow();">' +
-                                ($scope.customMoreLabel ? $scope.customMoreLabel : "More") +
-                                '</span>' +
+                                ($scope.customMoreLabel ? $scope.customMoreLabel : "More") + '</span>' +
                                 '<span ng-show="open"  class="btn-link ngTruncateToggleText less" ng-click="toggleShow();">' +
-                                ($scope.customLessLabel ? $scope.customLessLabel : "Less") +
-                                '</span>';
+                                ($scope.customLessLabel ? $scope.customLessLabel : "Less") + '</span>';
                             el = angular.element(html);
                             $compile(el)($scope);
                             $element.append(el);

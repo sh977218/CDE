@@ -46,13 +46,13 @@
     <h2>{{::elt.naming[0].designation}}</h2>
 
     <form name="sectionLabel" role="form" class="form-horizontal">
-        <div ng-if="nativeRenderType === SHOW_IF"
-             ng-include="'/form/public/html/formRenderSection.html'"></div>
+        <div ng-if="nativeRenderType === SHOW_IF && nativeFormService.evaluateSkipLogic(skipLogicError, formElement.skipLogic.condition, null, formElement, getElt())"
+             native-section form-element="formElement" profile="selection.selectedProfile" elt="getElt()" error="skipLogicError"></div>
         <div ng-if="nativeRenderType === FOLLOW_UP"
-             ng-include="'/form/public/html/formRenderSection.html'"></div>
+             native-section form-element="formElement" profile="selection.selectedProfile" elt="getElt()" error="skipLogicError"></div>
     </form>
 
-    <uib-alert type="danger" ng-if="skipLogicError.length > 0">
-        <span ng-bind="skipLogicError"></span>
+    <uib-alert type="danger" ng-if="skipLogicError.msg.length > 0">
+        <span ng-bind="skipLogicError.msg"></span>
     </uib-alert>
 </div>
