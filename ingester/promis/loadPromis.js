@@ -15,18 +15,24 @@ var fs = require('fs'),
     async = require ('async'),
     loinc = JSON.parse(fs.readFileSync(promisDir + '/loinc.json')),
     loadLoincPv = require('./loadLoincPVs'),
-    formClassifMap = JSON.parse(fs.readFileSync(promisDir + '/formMap.json'))
+    formClassifMap = JSON.parse(fs.readFileSync(promisDir + '/formMap.json')),
+    updateShare = require('../updateShare')
     ;
 
 var lostForms = [];
 
 var user = {username: 'batchloader'};
 
+var orgName = "PROMIS / Neuro-QOL";
+var sourceName = "Assessment Center";
+
 var date = process.argv[3];
 if (!promisDir) {
     console.log("missing promisDir arg");
     process.exit(1);
 }
+
+var twoDaysAgo = Date.now() -2*24*3600*1000;
 
 var classifyEltNoDuplicate = function(form, cde, storeLastLevel) {
     cde.classification = [];
@@ -35,7 +41,7 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel) {
         if (formClassifMap[form.name].length === 2) {
             cde.classification.push({
                 stewardOrg: {
-                    name: "PROMIS / Neuro-QOL"
+                    name: orgName
                 },
                 elements: [
                     {
@@ -57,7 +63,7 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel) {
         else if (formClassifMap[form.name].length>2) {
             cde.classification.push({
                 stewardOrg: {
-                    name: "PROMIS / Neuro-QOL"
+                    name: orgName
                 },
                 elements: [
                     {
@@ -94,7 +100,7 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel) {
         classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
         cde.classification.push({
             stewardOrg: {
-                name: "PROMIS / Neuro-QOL"
+                name: orgName
             },
             elements: [
                 {
@@ -120,24 +126,24 @@ var doFile = function(file, cb) {
     fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
         if (err) console.log("err in file: " + file + "\n" + err);
         var form = JSON.parse(formData);
-        var isSpanish = false;
+        var ignoreThis = false;
         ignoreTerms.forEach(t => {
             if (form.name.indexOf(t) > 0) {
-                isSpanish = true;
+                ignoreThis = true;
             }
         });
-        if (isSpanish) {
-            console.log("skip spanish form: " + form.name);
+        if (ignoreThis) {
+            //console.log("skip spanish form: " + form.name);
             return cb();
         }
         async.eachSeries(form.content.Items, function(item, oneDone) {
             var cde = {
-                stewardOrg: {name: "PROMIS / Neuro-QOL"},
-                source: "AAssessment Center",
+                stewardOrg: {name: orgName},
+                source: sourceName,
                 naming: [
                     {designation: "", definition: "N/A", tags: []}
                 ],
-                ids: [{source: 'Assessment Center', id: item.ID}],
+                ids: [{source: sourceName, id: item.ID}],
                 valueDomain: {datatype: "Text"},
                 registrationState: {registrationStatus: "Qualified"}
             };
@@ -181,6 +187,9 @@ var doFile = function(file, cb) {
                     process.exit(1);
                 }
                 if (duplicate) {
+                    if (duplicate.updated > twoDaysAgo) {
+                        updateShare.removeClassificationTree(duplicate, orgName);
+                    }
                     if (formClassifMap[form.name] && duplicate.classification[0]) {
                         classificationShared.addCategory(duplicate.classification[0], formClassifMap[form.name].concat(form.name));
                         classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat(form.name));
@@ -197,8 +206,9 @@ var doFile = function(file, cb) {
                         classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
                         classificationShared.addCategory(duplicate.classification[0], [c1, "Other", form.name]);
                     }
-                    //  @TODO should use update and figure out how to.
-                    mongo_cde.save(duplicate, oneDone);
+                    duplicate.ids = cde.ids;
+                    duplicate.naming = cde.naming;
+                    mongo_cde.update(duplicate, user, oneDone);
                 } else {
                     classifyEltNoDuplicate(form, cde, true);
                     mongo_cde.create(cde, user, oneDone);
@@ -213,25 +223,25 @@ var loadForm = function(file, cb) {
         if (err) console.log("err " + err);
         var pForm = JSON.parse(formData);
 
-        var isSpanish = false;
-        spanishTerms.forEach(t => {
+        var ignoreThis = false;
+        ignoreTerms.forEach(t => {
             if (pForm.name.indexOf(t) > 0) {
-                isSpanish = true;
+                ignoreThis = true;
             }
         });
-        if (isSpanish) {
+        if (ignoreThis) {
             return cb();
         }
 
         if (formClassifMap[pForm.name]) classificationShared.addCategory(fakeTree, formClassifMap[pForm.name]);
 
         var form = {
-            stewardOrg: {name: "PROMIS / Neuro-QOL"},
-            source: "AAssessment Center",
+            stewardOrg: {name: orgName},
+            source: sourceName,
             naming: [
                 {designation: pForm.name, definition: "N/A"}
             ],
-            ids: [{source: 'Assessment Center', id: file.substr(0, 36)}],
+            ids: [{source: sourceName, id: file.substr(0, 36)}],
             registrationState: {registrationStatus: "Qualified"},
             formElements: [],
             classification: []
@@ -245,7 +255,7 @@ var loadForm = function(file, cb) {
         } else if (pForm.name.indexOf("PROMIS") > -1) {
             form.classification.push({
                 stewardOrg: {
-                    name: "PROMIS / Neuro-QOL"
+                    name: orgName
                 },
                 elements: [
                     {
@@ -266,7 +276,7 @@ var loadForm = function(file, cb) {
             else l2 = "Other";
             form.classification.push({
                 stewardOrg: {
-                    name: "PROMIS / Neuro-QOL"
+                    name: orgName
                 },
                 elements: [
                     {
@@ -308,7 +318,7 @@ var loadForm = function(file, cb) {
                 };
                 form.formElements.push(currentSection);
             }
-            mongo_cde.byOtherId("Assessment Center", item.ID, function (err, cde) {
+            mongo_cde.byOtherId(sourceName, item.ID, function (err, cde) {
                 if (!cde) {
                     console.log("Unable to find CDE: " + nameParts);
                 } else {
@@ -349,10 +359,21 @@ var loadForm = function(file, cb) {
                     process.exit(1);
                 }
                 if (dupForm) {
-                    // @TODO do something here and cb()
-
+                    dupForm.formElements = form.formElements;
+                    dupForm.ids = form.ids;
+                    dupForm.naming = form.naming;
+                    updateShare.removeClassificationTree(dupForm, orgName);
+                    dupForm.classification.push(form.classification[0]);
+                    mongo_form.update(dupForm, user, function (err) {
+                        console.log("Form Updated " + form.naming[0].designation);
+                        if (err) {
+                            console.log("unable to create FORM. " + err);
+                            process.exit(1);
+                        }
+                        cb();
+                    });
                 } else {
-                    mongo_form.create(form, {username: 'loader'}, function (err) {
+                    mongo_form.create(form, user, function (err) {
                         console.log("Form Created " + form.naming[0].designation);
                         if (err) {
                             console.log("unable to create FORM. " + err);
@@ -378,7 +399,7 @@ fs.readdir(promisDir + "/forms"+date, function(err, files) {
         process.exit(1);
     }
 
-    mongo_data_system.orgByName("PROMIS / Neuro-QOL", function(stewardOrg) {
+    mongo_data_system.orgByName(orgName, function(stewardOrg) {
         fakeTree = {elements: stewardOrg.classifications};
         var count = 1;
         async.eachSeries(files, function (file, cb) {
@@ -390,7 +411,7 @@ fs.readdir(promisDir + "/forms"+date, function(err, files) {
                 loadForm(file, cb);
             });
         }, function allFilesDone() {
-            mongo_cde.query({source: "AAssessment Center"}, function (err, cdeArray) {
+            mongo_cde.query({source: sourceName}, function (err, cdeArray) {
                 loadLoincPv.loadPvs(cdeArray, function () {
                     console.log("lost forms\n\n\n");
                     lostForms.forEach(function (f) {
