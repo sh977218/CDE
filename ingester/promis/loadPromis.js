@@ -1,6 +1,8 @@
 // 4) Loads PROMIS to DB
 // node ingester/promis/loadPromis.js ../promis 2014-01
 
+// @TODO replace AAssessment center
+
 var promisDir = process.argv[2];
 
 var fs = require('fs'),
@@ -110,15 +112,16 @@ var classifyEltNoDuplicate = function(form, cde, storeLastLevel) {
     }
 };
 
-var spanishTerms = ["Neuro-QoL", "Banco", "Capacidad", "Comportamiento", "Ansiedad",
-    "Depresión", "Intensidad", "Agotamiento", "Alteraciones", "Sentimentios", "Satisfacción"];
+var ignoreTerms = ["Neuro-QoL", "Banco", "Capacidad", "Comportamiento", "Ansiedad",
+    "Depresión", "Intensidad", "Agotamiento", "Alteraciones", "Sentimentios", "Satisfacción",
+    "Bank"];
 
 var doFile = function(file, cb) {
     fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
         if (err) console.log("err in file: " + file + "\n" + err);
         var form = JSON.parse(formData);
         var isSpanish = false;
-        spanishTerms.forEach(t => {
+        ignoreTerms.forEach(t => {
             if (form.name.indexOf(t) > 0) {
                 isSpanish = true;
             }
@@ -194,7 +197,7 @@ var doFile = function(file, cb) {
                         classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
                         classificationShared.addCategory(duplicate.classification[0], [c1, "Other", form.name]);
                     }
-                    // should use update and figure out how to.
+                    //  @TODO should use update and figure out how to.
                     mongo_cde.save(duplicate, oneDone);
                 } else {
                     classifyEltNoDuplicate(form, cde, true);
@@ -346,7 +349,7 @@ var loadForm = function(file, cb) {
                     process.exit(1);
                 }
                 if (dupForm) {
-                    // do something here and cb()
+                    // @TODO do something here and cb()
 
                 } else {
                     mongo_form.create(form, {username: 'loader'}, function (err) {
