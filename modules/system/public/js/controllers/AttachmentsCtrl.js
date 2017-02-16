@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', '$location',
-    function ($scope, $rootScope, $http, $timeout, $location) {
+angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', 'Alert',
+    function ($scope, $rootScope, $http, $timeout, Alert) {
 
     $scope.setFiles = function (element) {
         $timeout(function () {
