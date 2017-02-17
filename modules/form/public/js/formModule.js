@@ -73,17 +73,22 @@ angular.module('formModule').factory('nativeFormService', [ function() {
             var result = 0;
             var service = this;
             question.question.cde.derivationRules.forEach(function (derRule) {
-                if (derRule.ruleType === 'score' && derRule.formula === "sumAll") {
-                    derRule.inputs.forEach(function (cdeTinyId) {
-                        var q = service.findQuestionByTinyId(cdeTinyId, elt);
-                        if (isNaN(result)) return;
-                        if (q) {
-                            var answer = q.question.answer;
-                            if (answer === undefined) return result = "Incomplete answers";
-                            if (isNaN(answer)) return result = "Unable to score";
-                            else result = result + parseFloat(answer);
-                        }
-                    });
+                if (derRule.ruleType === 'score') {
+                    if (derRule.formula === "sumAll" || derRule.formula === 'mean' ) {
+                        derRule.inputs.forEach(function (cdeTinyId) {
+                            var q = service.findQuestionByTinyId(cdeTinyId, elt);
+                            if (isNaN(result)) return;
+                            if (q) {
+                                var answer = q.question.answer;
+                                if (answer === undefined) return result = "Incomplete answers";
+                                if (isNaN(answer)) return result = "Unable to score";
+                                else result = result + parseFloat(answer);
+                            }
+                        });
+                    }
+                    if (derRule.formula === 'mean') {
+                        if (!isNaN(result)) result = result / derRule.inputs.length;
+                    }
                 }
             });
             return result;

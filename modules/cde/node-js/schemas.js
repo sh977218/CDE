@@ -16,7 +16,7 @@ var derivationRuleSchema = new mongoose.Schema(
         inputs: [String],
         outputs: [String],
         ruleType: {type: String, enum: ['score', 'panel']},
-        formula: {type: String, enum: ['sumAll']}
+        formula: {type: String, enum: ['sumAll', 'mean']}
     }, {_id: true}
 );
 
