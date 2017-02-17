@@ -32,94 +32,10 @@ if (!promisDir) {
 
 var twoDaysAgo = Date.now() -2*24*3600*1000;
 
-var classifyEltNoDuplicate = function(form, cde, storeLastLevel) {
-    var c1;
-    if (form.name.indexOf("Neuro-QOL")>-1) {
-        c1 = "Neuro-QOL Measures";
-    } else if (form.name.indexOf("PROMIS")>-1) {
-        c1 = "PROMIS Instruments";
-    } else {
-        c1 = "Other";
-    }
-    cde.classification = [];
-    if (formClassifMap[form.name]) {
-        classificationShared.addCategory(fakeTree, formClassifMap[form.name].concat([form.name]));
-        if (formClassifMap[form.name].length === 2) {
-            cde.classification.push({
-                stewardOrg: {
-                    name: orgName
-                },
-                elements: [
-                    {
-                        name: formClassifMap[form.name][0],
-                        elements: [
-                            {
-                                name: formClassifMap[form.name][1]
-                                , elements: []
-                            }
-                        ]
-                    }
-                ]
-            });
-            if (storeLastLevel) cde.classification[0].elements[0].elements[0].elements.push({
-                name: form.name
-                , elements: []
-            });
-        }
-        else if (formClassifMap[form.name].length>2) {
-            cde.classification.push({
-                stewardOrg: {
-                    name: orgName
-                },
-                elements: [
-                    {
-                        name: formClassifMap[form.name][0],
-                        elements: [
-                            {
-                                name: formClassifMap[form.name][1]
-                                , elements: [{
-                                    name: formClassifMap[form.name][2]
-                                    , elements: []
-                                }]
-                            }
-                        ]
-                    }
-                ]
-            });
-            if (storeLastLevel) {
-                cde.classification[0].elements[0].elements[0].elements[0].elements.push({
-                    name: form.name
-                    , elements: []
-                });
-            }
-        }
-    }
-    else {
-        classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
-        cde.classification.push({
-            stewardOrg: {
-                name: orgName
-            },
-            elements: [
-                {
-                    name: c1,
-                    elements: [{
-                        name: "Other"
-                        , elements: [{
-                            name: form.name
-                            , elements: []
-                        }]
-                    }]
-                }
-            ]
-        });
-    }
-};
-
 var ignoreTerms = ["Neuro-QoL", "Banco", "Capacidad", "Comportamiento", "Ansiedad",
     "Depresión", "Intensidad", "Agotamiento", "Alteraciones", "Sentimentios", "Satisfacción",
     "Bank", "sociales", "Enojo", "emocional", "extremidades", "sueño", "Estigma", "positivos",
-    "Función"];
+    "Función", "Pool"];
 
 var doFile = function(file, cb) {
     fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
@@ -127,7 +43,7 @@ var doFile = function(file, cb) {
         var form = JSON.parse(formData);
         var ignoreThis = false;
         ignoreTerms.forEach(t => {
-            if (form.name.indexOf(t) > 0) {
+            if (form.name.indexOf(t) > -1) {
                 ignoreThis = true;
             }
         });
@@ -143,6 +59,7 @@ var doFile = function(file, cb) {
                 ],
                 ids: [{source: sourceName, id: item.ID}],
                 valueDomain: {datatype: "Text"},
+                classification: [{stewardOrg: {name: orgName}, elements: []}],
                 registrationState: {registrationStatus: "Qualified"}
             };
             item.Elements.forEach(function(element) {
@@ -179,39 +96,52 @@ var doFile = function(file, cb) {
                     found = true;
                 }
             });
+            var c1;
+            if (form.name.indexOf("Neuro-QOL") > -1) {
+                c1 = "Neuro-QOL Measures";
+            } else if (form.name.indexOf("PROMIS") > -1) {
+                c1 = "PROMIS Instruments";
+            } else {
+                c1 = "Other";
+            }
+            var l2;
+            if (form.name.indexOf("Ped Bank") > -1) l2 = "Pediatric Banks";
+            else if (form.name.indexOf("Ped SF") > -1) l2 = "Pediatric Short Forms";
+            else if (form.name.indexOf("Bank") > -1) l2 = "Adult Banks";
+            else if (form.name.indexOf("SF") > -1) l2 = "Adult Short Forms";
+            else l2 = "Other";
             mongo_cde.byOtherId("Assessment Center", item.ID, function (err, duplicate) {
                 if (err) {
                     console.log("Unexpected Duplicate CDE: " + item.ID);
                     process.exit(1);
                 }
                 if (duplicate) {
-                    var c1;
-                    if (form.name.indexOf("Neuro-QOL") > -1) {
-                        c1 = "Neuro-QOL Measures";
-                    } else if (form.name.indexOf("PROMIS") > -1) {
-                        c1 = "PROMIS Instruments";
-                    } else {
-                        c1 = "Other";
-                    }
                     var classif = duplicate.classification.find(e=>e.stewardOrg.name === orgName);
                     if (duplicate.updated > twoDaysAgo) {
                         updateShare.removeClassificationTree(duplicate, orgName);
                         //classifyEltNoDuplicate(form, duplicate, true);
-                        classif = {stewardOrg: orgName, elements: []};
+                        classif = {stewardOrg: {name: orgName}, elements: []};
                         duplicate.classification.push(classif);
                     }
                     if (formClassifMap[form.name]) {
                         classificationShared.addCategory(classif, [c1].concat(formClassifMap[form.name]).concat(form.name));
                         classificationShared.addCategory(fakeTree, [c1].concat(formClassifMap[form.name]).concat(form.name));
                     } else {
-                        classificationShared.addCategory(fakeTree, [c1, "Other", form.name]);
-                        classificationShared.addCategory(duplicate.classification[0], [c1, "Other", form.name]);
+                        classificationShared.addCategory(fakeTree, [c1, l2, form.name]);
+                        classificationShared.addCategory(duplicate.classification[0], [c1, l2, form.name]);
                     }
                     duplicate.ids = cde.ids;
                     duplicate.naming = cde.naming;
+                    duplicate.valueDomain = cde.valueDomain;
                     mongo_cde.update(duplicate, user, oneDone);
                 } else {
-                    classifyEltNoDuplicate(form, cde, true);
+                    if (formClassifMap[form.name]) {
+                        classificationShared.addCategory(cde.classification[0], [c1].concat(formClassifMap[form.name]).concat(form.name));
+                        classificationShared.addCategory(fakeTree, [c1].concat(formClassifMap[form.name]).concat(form.name));
+                    } else {
+                        classificationShared.addCategory(fakeTree, [c1, l2, form.name]);
+                        classificationShared.addCategory(cde.classification[0], [c1, l2, form.name]);
+                    }
                     mongo_cde.create(cde, user, oneDone);
                 }
             });
@@ -251,6 +181,12 @@ var loadForm = function(file, cb) {
                 authority: "PROMIS Health Organization"
             }
         };
+        var l2;
+        if (pForm.name.indexOf("Ped Bank") > -1) l2 = "Pediatric Banks";
+        else if (pForm.name.indexOf("Ped SF") > -1) l2 = "Pediatric Short Forms";
+        else if (pForm.name.indexOf("Bank") > -1) l2 = "Adult Banks";
+        else if (pForm.name.indexOf("SF") > -1) l2 = "Adult Short Forms";
+        else l2 = "Other";
         if (formClassifMap[pForm.name]) {
             classificationShared.addCategory(form.classification[0], (formClassifMap[pForm.name]).concat(pForm.name));
         } else if (pForm.name.indexOf("PROMIS") > -1) {
@@ -258,18 +194,12 @@ var loadForm = function(file, cb) {
                     {
                         name: "PROMIS Instruments",
                         elements: [{
-                            name: "Other"
+                            name: l2
                             , elements: []
                         }]
                     }
             );
         } else {
-            var l2;
-            if (pForm.name.indexOf("Ped Bank") > -1) l2 = "Pediatric Banks";
-            else if (pForm.name.indexOf("Ped SF") > -1) l2 = "Pediatric Short Forms";
-            else if (pForm.name.indexOf("Bank") > -1) l2 = "Adult Banks";
-            else if (pForm.name.indexOf("SF") > -1) l2 = "Adult Short Forms";
-            else l2 = "Other";
             form.classification[0].elements.push(
                     {
                         name: "Neuro-QOL Measures",
@@ -299,7 +229,7 @@ var loadForm = function(file, cb) {
                     nameParts.push(element.Description.trim());
                 }
             });
-            var newSectionName = nameParts.length > 1 ? nameParts[0] : "Section";
+            var newSectionName = nameParts.length > 1 ? nameParts[0] : "";
             if (newSectionName !== currentSection.label) {
                 currentSection = {
                     elementType: "section",
