@@ -1273,15 +1273,6 @@ div + .questionPlaceholder {
     -webkit-box-shadow: 10px 0 5px -2px #888;
 }
 
-.is-table-row {
-    display: table;
-}
-
-.is-table-row [class*="col-"] {
-    display: table-cell;
-    vertical-align: top;
-}
-
 .user-online {
     width: 32px;
     height: 6px;
