@@ -42,7 +42,7 @@ public class FormEditTest extends BaseFormTest {
         String newCardinality = "Exactly 1";
         new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newCardinality);
         saveEditQuestionSectionById("section_0");
-        textNotPresent(newCardinality, By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"));
+        textNotPresent(newCardinality, By.xpath("//*[@id='section_0']"));
     }
 
     private void editQuestion() {
