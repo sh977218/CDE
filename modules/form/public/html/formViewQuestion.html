@@ -10,7 +10,7 @@
         <div ng-if="question.question.isScore" class="ib left">
             <strong>Score: </strong>
         </div>
-        <div class="ib left questionLabel" title="{{question.label}}">
+        <div class="ib left questionLabel" title="{{question.label}}" style="margin-left: 5px">
             <span ng-if="question.hideLabel">
                 <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
                 <s ng-bind="question.question.cde.name"></s>
@@ -45,48 +45,66 @@
         </div>
     </div>
     <div class="panel-body">
-        <div class="col-xs-12" ng-if="canCurate && question.edit"
+        <div ng-if="canCurate && question.edit"
              ng-include="'/form/public/html/formQuestionEdit.html'"></div>
-        <div class="col-xs-12" ng-if="!(canCurate && question.edit)">
-            <div ng-if="question.instructions.value" class="row questionInstruction">
+        <div ng-if="!(canCurate && question.edit)">
+            <div>
+                <span ng-if="question.question.multiselect" class="label label-success formViewSummaryLabel">
+                    Select Multiple
+                </span>
+                <span ng-if="question.question.datatypeText.minLength" class="label label-success formViewSummaryLabel">
+                    At least: {{question.question.datatypeText.minLength}} characters
+                </span>
+                <span ng-if="question.question.datatypeText.maxLength" class="label label-success formViewSummaryLabel">
+                    At most: {{question.question.datatypeText.maxLength}} characters
+                </span>
+                <span ng-if="question.question.datatypeNumber.minValue" class="label label-success formViewSummaryLabel">
+                    At least: {{question.question.datatypeNumber.minValue}}
+                </span>
+                <span ng-if="question.question.datatypeNumber.maxValue" class="label label-success formViewSummaryLabel">
+                    At most: {{question.question.datatypeNumber.maxValue}}
+                </span>
+                <span ng-if="question.question.datatypeDate.format" class="label label-success formViewSummaryLabel">
+                    Format: {{question.question.datatypeDate.format}}
+                </span>
+                <span ng-if="getCardinalityLabel(question)" class="label label-primary formViewSummaryLabel">
+                    Repeats: {{getCardinalityLabel(question)}} times
+                </span>
+                <span ng-if="isScore(question)" class="label label-primary formViewSummaryLabel">
+                    Score: <span ng-bind="question.question.scoreFormula"></span>
+                </span>
+                <span ng-if="question.question.required" class="label label-danger formViewSummaryLabel">
+                    Required
+                </span>
+                <span ng-if="question.question.editable === false" class="label label-default formViewSummaryLabel" style="background-color: #666">
+                    Disabled
+                </span>
+                <span ng-if="question.skipLogic && question.skipLogic.condition && question.skipLogic.condition.length > 0 && parent"
+                      class="label label-warning formViewSummaryLabel">
+                    Show if: {{question.skipLogic.condition}}
+                </span>
+            </div>
+            <div ng-if="question.instructions.value" class="questionInstruction">
+                <span class="formViewQuestionLabel">Instructions:</span>
                 <span ng-if="question.instructions.valueFormat === 'html'"
                       ng-bind-html="question.instructions.value"></span>
                 <span ng-if="question.instructions.valueFormat !== 'html'" ng-bind="question.instructions.value"></span>
             </div>
-            <div ng-if="getCardinalityLabel(question)" class="row">
-                Repeats: {{getCardinalityLabel(question)}} times
-            </div>
-            <div ng-if="isScore(question)" class="row">
-                Score: <span ng-bind="question.question.scoreFormula"></span>
-            </div>
-            <div ng-if="question.question.required" class="row">
-                This question is required.
-            </div>
-            <div ng-if="question.question.editable === false" class="row">
-                This question is not editable.
-            </div>
-            <div class="row"
-                 ng-if="question.skipLogic && question.skipLogic.condition && question.skipLogic.condition.length > 0 && parent">
-                Show if: {{question.skipLogic.condition}}
-            </div>
-            <div class="row datatype">
-                {{getDatatypeDetails(question)}}
-            </div>
-            <div ng-if="question.question.uoms.length > 0" class="row questionUom">
-                Units of Measure:
-                <span ng-repeat="uom in question.question.uoms">
-                    <span class="label label-default" style="margin-right: 2px; background-color: #666">{{::uom}}</span>
+            <div class="answerList" ng-if="question.question.answers && question.question.answers.length > 0">
+                <span class="formViewQuestionLabel">Answer Choices:</span>
+                <span ng-repeat="pv in question.question.answers" class="label label-default formViewSummaryLabel" style="background-color: #666">
+                    {{::pv.valueMeaningName}}
                 </span>
             </div>
-            <div class="row answerList" ng-if="question.question.answers && question.question.answers.length > 0">
-                Answer List:
-                <span ng-repeat="pv in question.question.answers">
-                    <span class="label label-default" style="margin-right: 2px; background-color: #666">{{::pv.valueMeaningName}}</span>
-                </span>
-                {{question.question.multiselect?'(Multiple choices)':''}}
+            <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="defaultAnswer">
+                <span class="formViewQuestionLabel">Default Answer:</span>
+                <span class="label label-default formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
             </div>
-            <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="row defaultAnswer">
-                Default Answer: {{question.question.defaultAnswer}}
+            <div ng-if="question.question.uoms.length > 0" class="questionUom">
+                <span class="formViewQuestionLabel">Units of Measure:</span>
+                <span ng-repeat="uom in question.question.uoms" class="label label-info formViewSummaryLabel">
+                    {{::uom}}
+                </span>
             </div>
         </div>
     </div>

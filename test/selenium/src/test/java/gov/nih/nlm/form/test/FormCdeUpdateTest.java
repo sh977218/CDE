@@ -13,7 +13,7 @@ public class FormCdeUpdateTest extends BaseFormTest {
         textPresent("Some CDEs in this form have newer version.");
         clickElement(By.id("description_tab"));
         textPresent("(Outdated)", By.id("question_0_0"));
-        textPresent("(Multiple choices)", By.id("question_0_0"));
+        textPresent("Select Multiple", By.id("question_0_0"));
         clickElement(By.xpath("//*[@id='question_0_0']//button[contains(@class,'updateQuestionBtn')]"));
         textPresent("FormCdeUpdateTest", By.id("mdd_question_title"));
         textPresent("was", By.id("mdd_question_multi"));
@@ -27,6 +27,6 @@ public class FormCdeUpdateTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         textNotPresent("(Outdated)", By.id("question_0_0"));
-        textNotPresent("(Multiple choices)", By.id("question_0_0"));
+        textNotPresent("Select Multiple", By.id("question_0_0"));
     }
 }

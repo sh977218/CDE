@@ -28,9 +28,9 @@ public class CreateEditSectionTest extends BaseFormTest {
         Assert.assertEquals("Section 3", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]")).getText());
 
 
-        textNotPresent("Exactly 1", By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"));
-        textPresent("1 or more", By.xpath("//*[@id='section_1']//*[contains(@class,'section_cardinality')]"));
-        textPresent("0 or more", By.xpath("//*[@id='section_2']//*[contains(@class,'section_cardinality')]"));
+        textNotPresent("Exactly 1", By.xpath("//*[@id='section_0']"));
+        textPresent("1 or more", By.xpath("//*[@id='section_1']"));
+        textPresent("0 or more", By.xpath("//*[@id='section_2']"));
     }
 
 }
