@@ -76,7 +76,8 @@
                         return html;
                     }
                     function htmlSubQuestion(pv, subQNonValuelist, i) {
-                        var numSubQuestions = (pv && pv.subQuestions ? pv.subQuestions.length : 0);
+                        var numSubQuestions = (pv && pv.subQuestions ?
+                            pv.subQuestions.reduce(function(acc,subQ) { return !subQ.question.invisible; }, 0) : 0);
                         var html = '';
                         pv && pv.subQuestions && pv.subQuestions.forEach(function (formElement, j, formElements) {
                             // wrap sub-question
@@ -88,7 +89,7 @@
                                     ' ng-if="nativeFormService.evaluateSkipLogicAndClear(error, formElement.skipLogic.condition, formElement.question.answers[' + i + '].subQuestions, formElement, elt)"';
                             html +=
                                 ' class="native-question-header' +
-                                (pv.subQuestions && isOneLiner(pv.subQuestions[0],pv.subQuestions.length) ? ' native-question-oneline-r' : '') +
+                                (pv.subQuestions && isOneLiner(pv.subQuestions[0],numSubQuestions) ? ' native-question-oneline-r' : '') +
                                 (!subQNonValuelist && numSubQuestions && !isOneLiner(formElement,numSubQuestions) ? ' native-box' : '') + '">';
 
                             // sub-question
@@ -133,6 +134,9 @@
                     var disabled = !question.editable ? "disabled" : "";
                     var htmlText = '';
 
+                    if (question.invisible)
+                        htmlText +=
+                            '<div style="display: none">';
                     if (hasLabel(fe))
                         htmlText +=
                             '<label ng-class="{\'native-question-label\': !numSubQuestions && profile.displayNumbering}">' +
@@ -167,7 +171,8 @@
                                             '<div ng-class="classColumns(' + pv.index +',' + i + ')"' +
                                             ' class="col-xs-12">' +
                                                 '<label class="' +
-                                                    (pv.subQuestions && isOneLiner(pv.subQuestions[0],pv.subQuestions.length)
+                                                    (pv.subQuestions && isOneLiner(pv.subQuestions[0],
+                                                        pv.subQuestions.reduce(function(acc,subQ) { return !subQ.question.invisible; }, 0))
                                                         ? 'native-question-oneline-l ' : '') +
                                                     (question.multiselect ? 'checkbox-inline' : 'radio-inline') + '">';
 
@@ -218,23 +223,23 @@
                                 break;
                             case 'Number':
                                 htmlText +=
-                                    '<div' + (question.uoms.length > 0 ? ' class="input-group"' : '') + '>' +
+                                    (question.uoms.length > 0 ? '<div class="input-group">' : '') +
                                         '<input type="number" class="form-control" ' +
                                             ' ng-model="formElement.question.answer"' +
                                             (question.datatypeNumber ?
-                                                ' min="' + question.datatypeNumber.minValue +
-                                                '" max="' + question.datatypeNumber.maxValue + '"' : '' ) +
+                                                ' min="' + question.datatypeNumber.minValue + '"' +
+                                                ' max="' + question.datatypeNumber.maxValue + '"' : '' ) +
                                             ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
                                 if (question.uoms.length > 0)
                                     htmlText += htmlTextUoms(question.uoms);
 
                                 htmlText +=
-                                    '</div>' +
+                                    (question.uoms.length > 0 ? '</div>' : '') +
                                     '<div ng-bind="sectionLabel.$$element[0][\'' + fe.questionId + '\'].validationMessage"></div>';
                                 break;
                             default: // Text
                                 htmlText +=
-                                    '<div' + (question.uoms.length > 0 ? ' class="input-group"' : '') + '>' +
+                                    (question.uoms.length > 0 ? '<div class="input-group">' : '') +
                                         '<input type="text" class="form-control" ' +
                                             ' ng-model="formElement.question.answer"' +
                                             ' name="' + fe.questionId + '" ' + required + ' ' + disabled + '/>';
@@ -242,7 +247,7 @@
                                     htmlText += htmlTextUoms(question.uoms);
 
                                 htmlText +=
-                                    '</div>' +
+                                    (question.uoms.length > 0 ? '</div>' : '') +
                                     '<div ng-bind="sectionLabel.$$element[0][\'' + fe.questionId + '\'].validationMessage"></div>';
                         }
                     }
@@ -253,7 +258,10 @@
                     });
 
                     htmlText +=
-                        '</div></div>';  //end question answers and question
+                        '</div>';  //end question answers and question
+                    if (question.invisible)
+                        htmlText +=
+                            '</div>';
 
                     element.replaceWith($compile(htmlText)(scope));
                 }

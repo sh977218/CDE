@@ -227,7 +227,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     }
 
     function hasOwnRow(e) {
-        return !!e.subQuestions;
+        return !!e.subQuestions && e.subQuestions.some(function (subE) {return !subE.question.invisible});
     }
 
     function flattenForm(formElements) {

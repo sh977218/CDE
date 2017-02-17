@@ -28,6 +28,7 @@ var questionSchema = {
     }
     , uoms: [String]
     , required: {type: Boolean, default: false}
+    , invisible: {type: Boolean, default: false}
     , editable: {type: Boolean, default: true}
     , multiselect: Boolean
     , answers: [sharedSchemas.permissibleValueSchema]
