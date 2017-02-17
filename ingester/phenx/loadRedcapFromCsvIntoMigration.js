@@ -2,7 +2,7 @@ var parser = require('csv-parser');
 var fs = require('fs');
 var async = require('async');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
-var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
+var DataElementModel = require('../createNlmcdeConnection').DataElementModel;
 var MigrationPhenxRedcapModel = require('../createMigrationConnection').MigrationPhenxRedcapModel;
 var MigrationRedcapModel = require('../createMigrationConnection').MigrationRedcapModel;
 
@@ -182,44 +182,9 @@ function convertCdeToQuestion(data, skipLogicMap, cde) {
     return question;
 }
 
-function createCde(data, cb) {
-    var cde = {
-        tinyId: mongo_data.generateTinyId(),
-        naming: [{designation: data['Variable / Field Name']}, {
-            designation: data['Field Label'],
-            tags: [{tag: 'Question Text'}]
-        }],
-        stewardOrg: {name: 'NLM'},
-        sources: [{source: 'PhenX'}],
-        registrationState: {registrationStatus: 'Qualified'},
-        properties: [{source: '', key: 'Field Note', value: data['Field Note']}],
-        ids: [{id: data['Variable / Field Name'].trim()}]
-    };
-    if (data['Choices, Calculations, OR Slider Labels']) {
-        var permissibleValues = [];
-        var pvArray = data['Choices, Calculations, OR Slider Labels'].split('|');
-        pvArray.forEach((pvText)=> {
-            var tempArray = pvText.toString().split(',');
-            permissibleValues.push({
-                permissibleValue: tempArray[0],
-                valueMeaningName: tempArray[0],
-                valueMeaningCode: tempArray[1]
-            })
-        });
-        cde.valueDomain = {permissibleValues: permissibleValues};
-    }
-    new MigrationDataElementModel(cde).save((e, o)=> {
-        if (e) throw e;
-        else {
-            createdCdes.push(o.tinyId);
-            cb(o);
-        }
-    })
-}
-
 function findInDataElement(loincId, cb) {
     var query = {'archived': null, 'ids.id': loincId};
-    MigrationDataElementModel.find(query).exec((error, results)=> {
+    DataElementModel.find(query).exec((error, results)=> {
         if (error) throw error;
         else if (results.length === 0) {
             createCde(data, function (o) {
@@ -236,11 +201,9 @@ function findQuestion(data, formId, cb) {
     var variableName = data['Variable / Field Name'];
     var variableDesc = data['Field Label'];
     var query = {
-        'PhenX Variable': new RegExp('^' + formId + '$', 'i'),
-        'OR': [{'VARNAME': formId.toUpperCase() + '_' + variableName},
-            {'VARDESC': variableDesc}]
+        'ids.id': variableName
     };
-    MigrationPhenxRedcapModel.find(query).exec((error, results)=> {
+    Data.find(query).exec((error, results)=> {
         if (error) throw error;
         else if (results.length === 0) {
             createCde(data, function (o) {
@@ -339,6 +302,11 @@ function doCSV(filePath, redcap, formId, doneCsv) {
         else {
             formElements = redcap.formElements;
             var formattedFieldLabel = data['Field Label'].replace(/"/g, "'").trim();
+            var branchLogic = data['Branching Logic (Show field only if...)'];
+            if (branchLogic && branchLogic.trim().indexOf('(') > -1) {
+                special_skipLogic.push(branchLogic);
+                redcap.branchLogic = branchLogic;
+            }
             skipLogicMap[data['Variable / Field Name'].trim()] = formattedFieldLabel;
             if (name.designation && name.designation !== data['Form Name']) {
                 console.log('Form Name not match.');
@@ -445,14 +413,6 @@ function doZip(filePath, formId, doneZip) {
 }
 
 async.series([function (cb) {
-    MigrationDataElementModel.remove({}).exec(function (err) {
-        if (err) throw err;
-        else {
-            console.log('finished remove MigrationDataElementModel');
-            cb();
-        }
-    })
-}, function (cb) {
     MigrationRedcapModel.remove({}).exec(function (err) {
         if (err) throw err;
         else {
