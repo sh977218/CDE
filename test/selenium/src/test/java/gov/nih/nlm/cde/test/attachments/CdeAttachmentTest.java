@@ -28,7 +28,6 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         setAttachmentDefault();
         mustBeLoggedOut();
-//        hangon(5);
 
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
