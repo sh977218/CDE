@@ -3,10 +3,10 @@ import * as deValidator from "../../../../cde/shared/deValidator";
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal',
+        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal', '$sce',
         function ($scope, $routeParams, $modal, $window, $http, $timeout, DataElement, DataElementTinyId,
                   isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                  $q, QuickBoard, $log, userResource, PinModal)
+                  $q, QuickBoard, $log, userResource, PinModal, $sce)
 {
 
     $scope.module = 'cde';
@@ -101,7 +101,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
             }
         },
         ids: {
-            heading: "Identifiers", includes: ['/system/public/html/identifiers.html'],
+            heading: "Identifiers",
+            includes: ['/system/public/html/identifiers.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             }

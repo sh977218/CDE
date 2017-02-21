@@ -303,7 +303,7 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
 angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
     var isAllowedModel = {};
 
-    isAllowedModel.isAllowed = function ($scope, CuratedItem) {
+    isAllowedModel.isAllowed = function (CuratedItem) {
         if (!CuratedItem) return false;
         if (CuratedItem.archived) {
             return false;
@@ -325,7 +325,7 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
 
     isAllowedModel.setCanCurate = function ($scope) {
         isAllowedModel.runWhenInitialized($scope, function () {
-            $scope.canCurate = isAllowedModel.isAllowed($scope, $scope.elt);
+            $scope.canCurate = isAllowedModel.isAllowed($scope.elt);
         });
     };
 
