@@ -13,38 +13,38 @@
         <div class="row">
             <div class="col-md-5 col-xs-12">
                 <dl class="dl-horizontal">
-                    <dt>Name:</dt>
+                    <dt><label>Name:</label></dt>
                     <dd>
                         <div inline-edit id="profileNameEdit_{{$index}}" model="profile.name" is-allowed="canCurate"
                              on-ok="stageElt()"></div>
                     </dd>
-                    <dt>Sections as matrices:</dt>
+                    <dt><label for="displayAsMatrix_{{$index}}">Sections as matrices:</label></dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.sectionsAsMatrix" ng-disabled="!canCurate"
                                id="displayAsMatrix_{{$index}}" ng-click="stageElt()"/>
                     </dd>
-                    <dt>Display answer values:</dt>
+                    <dt><label for="displayValues_{{$index}}">Display answer values:</label></dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.displayValues" ng-disabled="!canCurate"
                                id="displayValues_{{$index}}" ng-click="stageElt()"/>
                     </dd>
-                    <dt>Display Instructions:</dt>
+                    <dt><label for="displayInstructions_{{$index}}">Display Instructions:</label></dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.displayInstructions" ng-disabled="!canCurate"
                                id="displayInstructions_{{$index}}" ng-click="stageElt()">
                     </dd>
-                    <dt>Display Question Numbers:</dt>
+                    <dt><label for="displayNumbering_{{$index}}">Display Question Numbers:</label></dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.displayNumbering" ng-disabled="!canCurate"
                                id="displayNumbering_{{$index}}" ng-click="stageElt()">
                     </dd>
-                    <dt>Display Printable Logic: </dt>
+                    <dt><label for="displayType_{{$index}}">Display Printable Logic:</label></dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.displayType" ng-disabled="!canCurate"
                                ng-true-value="'Follow-up'" ng-false-value="'Dynamic'"
                                id="displayType_{{$index}}" ng-click="stageElt();updateRender();">
 		            </dd>
-                    <dt>Number of Columns:</dt>
+                    <dt><label>Number of Columns:</label></dt>
                     <dd>
                         <div class="slider" id="nc_{{$index}}" style="width: 150px; top: 5px;"
                              jq-slider="profile.numberOfColumns" jq-slider-onslide="$scope.stageElt();$scope.updateRender();"
@@ -52,15 +52,20 @@
                             <div tabindex="0" class="ui-slider-handle"></div>
                         </div>
                     </dd>
+                    <dt><label for="displayInvisible_{{$index}}">Display Invisible Questions:</label></dt>
+                    <dd>
+                        <input type="checkbox" ng-model="profile.displayInvisible" ng-disabled="!canCurate"
+                               id="displayInvisible_{{$index}}" ng-click="stageElt();updateRender();">
+                    </dd>
                 </dl>
             </div>
             <div class="col-md-7 col-xs-12" ng-controller="DisplayProfileDataCtrl" style="border: dashed 1px;zoom:60%;" >
                 <form name="sectionLabel" role="form" class="form-horizontal">
                     <div ng-controller="FormRenderCtrl" >
-                        <div ng-if="nativeRenderType === SHOW_IF && elt && nativeFormService.evaluateSkipLogic(skipLogicError, formElement.skipLogic.condition, null, formElement)"
-                             native-section form-element="formElement" profile="profile" elt="getElt()" error="skipLogicError"></div>
-                        <div ng-if="nativeRenderType === FOLLOW_UP && followForm"
-                             native-section form-element="formElement" profile="profile" elt="getElt()" error="skipLogicError"></div>
+                        <div ng-if="profile.displayType === SHOW_IF && elt && nativeFormService.evaluateSkipLogic(skipLogicError, formElement.skipLogic.condition, null, formElement)"
+                             native-section form-element="elt" profile="profile" elt="getElt()" error="skipLogicError"></div>
+                        <div ng-if="profile.displayType === FOLLOW_UP && followForm"
+                             native-section form-element="followForm" profile="profile" elt="getElt()" error="skipLogicError"></div>
                     </div>
                 </form>
             </div>

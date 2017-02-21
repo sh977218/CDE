@@ -76,8 +76,7 @@
                         return html;
                     }
                     function htmlSubQuestion(pv, subQNonValuelist, i) {
-                        var numSubQuestions = (pv && pv.subQuestions ?
-                            pv.subQuestions.reduce(function(acc,subQ) { return !subQ.question.invisible; }, 0) : 0);
+                        var numSubQuestions = (pv && pv.subQuestions ? pv.subQuestions.length : 0);
                         var html = '';
                         pv && pv.subQuestions && pv.subQuestions.forEach(function (formElement, j, formElements) {
                             // wrap sub-question
@@ -136,7 +135,7 @@
 
                     if (question.invisible)
                         htmlText +=
-                            '<div style="display: none">';
+                            '<div ng-show="profile.displayInvisible">';
                     if (hasLabel(fe))
                         htmlText +=
                             '<label ng-class="{\'native-question-label\': !numSubQuestions && profile.displayNumbering}">' +
@@ -171,8 +170,7 @@
                                             '<div ng-class="classColumns(' + pv.index +',' + i + ')"' +
                                             ' class="col-xs-12">' +
                                                 '<label class="' +
-                                                    (pv.subQuestions && isOneLiner(pv.subQuestions[0],
-                                                        pv.subQuestions.reduce(function(acc,subQ) { return !subQ.question.invisible; }, 0))
+                                                    (pv.subQuestions && isOneLiner(pv.subQuestions[0], pv.subQuestions.length)
                                                         ? 'native-question-oneline-l ' : '') +
                                                     (question.multiselect ? 'checkbox-inline' : 'radio-inline') + '">';
 

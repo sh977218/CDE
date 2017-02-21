@@ -8,7 +8,8 @@ angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', functio
             displayNumbering: true,
             sectionsAsMatrix: true,
             displayType: 'Follow-up',
-            numberOfColumns: 4
+            numberOfColumns: 4,
+            displayInvisible: false
         };
         var elt = $scope.elt;
         if (!elt.displayProfiles) elt.displayProfiles = [newProfile];
@@ -123,6 +124,7 @@ angular.module('formModule').controller('DisplayProfileDataCtrl', ['$scope', fun
                                         }
                                     ],
                                     "editable": true,
+                                    "invisible": true,
                                     "required": false,
                                     "uoms": [],
                                     "cde" : {
