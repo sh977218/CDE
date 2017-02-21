@@ -20,6 +20,7 @@ public class EltIdMaps {
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
         eltMap.put("ExportLatest", "XkZpBf60z");
         eltMap.put("FAD Total score value", "fp-oYN6A-SJ");
+        eltMap.put("Family Assessment Device (FAD) - Discuss problem indicator", "mrKyN-kpt86");
         eltMap.put("Feature Modified By java.lang.String", "GKrk4H-tWNZ");
         eltMap.put("Form Element End Date", "UwnYawNOWYw");
         eltMap.put("Gastrointestinal therapy water flush status", "HyQz9G0oYaE");

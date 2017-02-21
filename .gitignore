@@ -20,6 +20,10 @@ config/simon.json
 
 ## Local Files
 my-*
+config/prod.json
+config/qa-live.json
+config/qa-mig.json
+config/migration.json
 
 ## Logs
 expressLog*
