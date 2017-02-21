@@ -23,8 +23,6 @@ public class EmptyLogic extends NlmCdeBaseTest {
         textPresent("Data unknown indicator");
         findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("995");
         textNotPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).clear();
-        textPresent("Data unknown indicator");
 
         // Value Lists
         textPresent("Pulmonary function test not done reason");
