@@ -23,7 +23,7 @@
 
     <div ng-if="!elt"><h1 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
 
-    <div ng-if="elt" class="row is-table-row">
+    <div ng-if="elt" class="row">
         <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <h1 class="page-header">
                 {{elt.naming[0].designation}}
@@ -65,11 +65,10 @@
                             ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
                         {{tab.heading}}
                     </uib-tab-heading>
-                    <div ng-repeat="incl in tab.includes" ng-if="currentTab == tabName" ng-include="incl"/>
+                    <div ng-if="tab.includes" ng-repeat="incl in tab.includes" ng-if="currentTab == tabName" ng-include="incl"/>
                 </uib-tab>
             </uib-tabset>
         </div>
-
 
         <div ng-if="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"
              style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">

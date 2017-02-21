@@ -75,7 +75,7 @@ angular.module('systemModule').controller('PropertiesCtrl',
     $scope.saveProperty = function() {
         $timeout(function() {
             $scope.elt.$save(function (newElt) {
-                $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
+                Alert.addAlert("success", "Saved");
                 $scope.elt = newElt;
             });
         }, 0);

@@ -8,7 +8,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
     @Test
     public void cdeAttachment() {
-        String cdeName = "Alcohol use frequency";
+        String cdeName = "Family Assessment Device (FAD) - Discuss problem indicator";
 
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
@@ -28,7 +28,6 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         setAttachmentDefault();
         mustBeLoggedOut();
-//        hangon(5);
 
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));

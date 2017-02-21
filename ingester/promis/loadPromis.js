@@ -173,7 +173,7 @@ var loadForm = function(file, cb) {
                 {designation: pForm.name, definition: "N/A"}
             ],
             ids: [{source: sourceName, id: file.substr(0, 36)}],
-            registrationState: {registrationStatus: "Qualified"},
+            registrationState: {registrationStatus: "Candidate"},
             formElements: [],
             classification: [{stewardOrg: {name: orgName}, elements: []}]
             , isCopyrighted: true
@@ -283,6 +283,7 @@ var loadForm = function(file, cb) {
                     dupForm.formElements = form.formElements;
                     dupForm.ids = form.ids;
                     dupForm.naming = form.naming;
+                    dupForm.registrationState = form.registrationState;
                     updateShare.removeClassificationTree(dupForm, orgName);
                     dupForm.classification.push(form.classification[0]);
                     mongo_form.update(dupForm, user, function (err) {
