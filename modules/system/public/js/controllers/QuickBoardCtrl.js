@@ -1,3 +1,6 @@
+import * as exportShared from "../../../../system/shared/exportShared";
+import {saveAs} from "../../../../cde/public/assets/js/FileSaver";
+
 angular.module('cdeModule').controller('QuickBoardCtrl',
     ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
         function ($scope, CdeList, OrgHelpers, userResource, QuickBoard, FormQuickBoard, localStorageService) {
@@ -25,9 +28,9 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             }
 
             $scope.exportQuickBoard = function () {
-                var result = exports.exportHeader.cdeHeader;
+                var result = exportShared.exportHeader.cdeHeader;
                 $scope.cdes.forEach(function (ele) {
-                    result += exports.convertToCsv(ele);
+                    result += exportShared.convertToCsv(ele);
                     result += "\n";
                 });
                 if (result) {

@@ -53,37 +53,6 @@ exports.init = function (app) {
         });
     });
 
-    var token = mongo_data_system.generateTinyId();
-    setInterval(function () {
-        token = mongo_data_system.generateTinyId();
-    }, (config.pm.tokenInterval || 5) * 60 * 1000);
-
-    app.post('/deploy', multer(), function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            if (!token) {
-                return res.status(500).send("No valid token");
-            }
-            request.post({
-                url: 'http://' + req.body.hostname + ':' + req.body.pmPort + '/' + "deploy",
-                formData: {
-                    token: token
-                    , "requester_host": config.hostname
-                    , "requester_port": config.port
-                    , deployFile: fs.createReadStream(req.files.deployFile.path)
-                }
-            }).on('response', function (response) {
-                res.status(response.statusCode).send();
-                fs.unlink(req.files.deployFile.path);
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
-
-    app.get('/statusToken', function (req, res) {
-        res.send(token);
-    });
-
     app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             var index = esInit.indices[req.params.indexPosition];
@@ -114,36 +83,6 @@ exports.init = function (app) {
                 mongo_data_system.getClusterHostStatuses(function (err, statuses) {
                     res.send({esIndices: esInit.indices, statuses: statuses});
                 });
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
-
-    app.post('/serverState', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            req.body.nodeStatus = "Stopped";
-            mongo_data_system.updateClusterHostStatus(req.body, function (err) {
-                if (err) return res.status(500).send("Unable to update cluster status");
-                request.post('http://' + req.body.hostname + ':' + req.body.pmPort + '/' + req.body.action,
-                    {
-                        json: true,
-                        body: {
-                            token: token,
-                            port: req.body.port,
-                            requester: {
-                                host: config.hostname, port: config.port
-                            }
-                        }
-                    },
-                    function (err, response) {
-                        if (err) {
-                            logging.errorLogger.error(JSON.stringify({msg: 'Unable to ' + req.body.action + ' server'}));
-                            return res.status(500).send('Unable.');
-                        }
-                        if (response.statusCode !== 200) return res.status(500).send('Unable ' + response.statusCode);
-                        return res.send('OK');
-                    });
             });
         } else {
             res.status(401).send();

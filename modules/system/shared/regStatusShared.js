@@ -1,6 +1,5 @@
-regStatusShared = {}; //jshint ignore:line
 // @TODO refactor this to = {"pref standard": {help: "", curHelp: ""}}
-regStatusShared.statusList = [
+exports.statusList = [
     {
         name: 'Preferred Standard'
         , help: "Preferred Standard elements are managed by the CDE Working Group and described by Meaninful Use terminology. <br/>Preferred Standard elements can only be editied by the CDE Working Group"
@@ -38,8 +37,4 @@ regStatusShared.statusList = [
     }
 ];
 
-if (typeof(exports) === "undefined") exports = {};
-
-if (exports) exports.statusList = regStatusShared.statusList.map(function(e){return e.name});
-
-regStatusShared.orderedList = regStatusShared.statusList.map(function(e){return e.name});
+exports.orderedList = exports.statusList.map(function(e){return e.name});

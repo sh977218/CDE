@@ -50,7 +50,7 @@
 
 </head>
 
-<body role="application" id="top" ng-app="printModule">
+<body role="application" id="top" style="padding: 5px;">
 
 <div ng-controller="PrintCtrl" style="max-width: 1000px;margin: 0 auto">
     <div ng-if="elt" ng-controller="FormRenderCtrl">
@@ -61,10 +61,10 @@
 			<div ng-view ng-if="!elt">
 				<h2 class="text-center mt20">Loading...</h2>
 			</div>
-            <div ng-if="nativeRenderType === SHOW_IF && elt"
-                 ng-include="'/form/public/html/formRenderSection.html'"></div>
+            <div ng-if="nativeRenderType === SHOW_IF && elt && nativeFormService.evaluateSkipLogic(skipLogicError, formElement.skipLogic.condition, null, formElement)"
+				 native-section form-element="formElement" profile="selection.selectedProfile" elt="getElt()" error="skipLogicError"></div>
 			<div ng-if="nativeRenderType === FOLLOW_UP && followForm"
-				 ng-include="'/form/public/html/formRenderSection.html'"></div>
+				 native-section form-element="formElement" profile="selection.selectedProfile" elt="getElt()" error="skipLogicError"></div>
 			<input type="hidden" value="{{formUrl}}" name="formUrl">
 			<input type="hidden" name="mapping" ng-value="mapping">
 			<input type="submit" class="ng-cloak btn btn-default" id="button_submit" ng-if="submitForm"
@@ -72,7 +72,7 @@
         </form>
 	</div>
 </div>
-
+<nih-cde></nih-cde>
 
 <!-- build:js /form/public/assets/js/vendor-printable.js -->
 <!-- bower:js -->
@@ -118,145 +118,10 @@
 <script src="/components/async/dist/async.js"></script>
 <script src="/components/angular-elastic/elastic.js"></script>
 <!-- endbower -->
+<!-- endbuild -->
 
-<script src="/cde/public/assets/js/match-media.js"></script>
-<script src="/system/public/js/ng-display-object.js"></script>
-<script src="/system/public/js/compare-primitive.js"></script>
-<script src="/system/public/js/compare-primitive-array.js"></script>
-<script src="/system/public/js/compare-object-array.js"></script>
-<script src="/system/public/js/compare-object.js"></script>
-<script src="/system/public/js/ng-compare-side-by-side.js"></script>
-<script src="/system/public/js/ng-text-truncate.js"></script>
-<script src="/article/public/js/articleConfig.js"></script>
-
-<script src="/board/public/js/angularTemplates.js"></script>
-<script src="/article/public/js/angularTemplates.js"></script>
-<script src="/cde/public/js/angularTemplates.js"></script>
-<script src="/form/public/js/angularTemplates.js"></script>
-<script src="/system/public/js/angularTemplates.js"></script>
-
-<!-- System Controllers -->
-<script src="/system/public/js/orgFactories.js"></script>
-<script src="/system/public/js/systemModule.js"></script>
-<script src="/system/public/js/exceptionHandler.js"></script>
-<script src="/system/public/js/controllers/MainCtrl.js"></script>
-<script src="/system/public/js/controllers/LogCtrl.js"></script>
-<script src="/system/public/js/controllers/AccountManagementCtrl.js"></script>
-<script src="/system/public/js/controllers/AttachmentsCtrl.js"></script>
-<script src="/system/public/js/controllers/ProfileCtrl.js"></script>
-<script src="/system/public/js/controllers/AuthCtrl.js"></script>
-<script src="/system/public/js/controllers/UsersMgtCtrl.js"></script>
-<script src="/system/public/js/controllers/HomeCtrl.js"></script>
-<script src="/system/public/js/controllers/DailyUsageCtrl.js"></script>
-<script src="/system/public/js/controllers/VersionCtrl.js"></script>
-<script src="/system/public/js/controllers/ListCtrl.js"></script>
-<script src="/system/public/js/controllers/ClassificationCtrl.js"></script>
-<script src="/system/public/js/controllers/AddClassificationModalCtrl.js"></script>
-<script src="/system/public/js/controllers/ClassificationManagementCtrl.js"></script>
-<script src="/system/public/js/classification.js"></script>
-<script src="/system/public/js/controllers/AddClassificationToOrgModalCtrl.js"></script>
-<script src="/system/public/js/controllers/IdsCtrl.js"></script>
-<script src="/system/public/js/controllers/PropertiesCtrl.js"></script>
-<script src="/system/public/js/controllers/ReferenceDocumentCtrl.js"></script>
-<script src="/system/public/js/controllers/CommentsCtrl.js"></script>
-<script src="/system/public/js/controllers/RegistrationCtrl.js"></script>
-<script src="/system/public/js/controllers/RegistrationModalCtrl.js"></script>
-<script src="/system/public/js/controllers/AuditServerErrorListCtrl.js"></script>
-<script src="/system/public/js/controllers/AuditClientErrorListCtrl.js"></script>
-<script src="/system/public/js/controllers/TriggerClientExceptionCtrl.js"></script>
-<script src="/system/public/js/controllers/AuditErrorListCtrl.js"></script>
-<script src="/system/public/js/controllers/TakeATourCtrl.js"></script>
-<script src="/system/public/js/controllers/ApproveCommentCtrl.js"></script>
-<script src="/system/public/js/controllers/RemoveClassificationModalCtrl.js"></script>
-<script src="/system/public/js/controllers/AuditLogCtrl.js"></script>
-<script src="/system/public/js/controllers/ClassificationAuditLogCtrl.js"></script>
-<script src="/system/public/js/controllers/SiteAuditCtrl.js"></script>
-<script src="/system/public/js/controllers/ServerStatusesCtrl.js"></script>
-<script src="/system/public/js/controllers/AccordionCtrl.js"></script>
-<script src="/system/public/js/controllers/ApproveAttachmentCtrl.js"></script>
-<script src="/system/public/js/controllers/SwitchListViewCtrl.js"></script>
-<script src="/system/public/js/controllers/DatepickerCtrl.js"></script>
-<script src="/system/public/js/controllers/DiffConfigCtrl.js"></script>
-<script src="/system/public/js/controllers/ExportCtrl.js"></script>
-<script src="/system/public/js/controllers/HasCommentsCtrl.js"></script>
-<script src="/system/public/js/controllers/ValidationRules/SaveValidRuleCtrl.js"></script>
-<script src="/system/public/js/controllers/ValidationRules/ShowValidRuleReportCtrl.js"></script>
-<script src="/system/public/js/controllers/ValidationRules/SaveValidRuleCtrl.js"></script>
-<script src="/system/public/js/controllers/TableViewCtrl.js"></script>
-<script src="/system/public/js/controllers/SearchSettingsCtrl.js"></script>
-<script src="/system/public/js/controllers/FeedbackBtnCtrl.js"></script>
-<script src="/system/public/js/controllers/FeedbackIssueListCtrl.js"></script>
-<script src="/system/public/js/controllers/OrgOverviewCtrl.js"></script>
-<script src="/system/public/js/controllers/NewNamePairModalCtrl.js"></script>
-<script src="/system/public/js/controllers/NamingCtrl.js"></script>
-<script src="/system/public/js/controllers/BatchUploadCtrl.js"></script>
-<script src="/system/public/js/controllers/GetProdCtrl.js"></script>
-<script src="/system/public/js/controllers/MeshMappingMgtCtrl.js"></script>
-<script src="/system/public/js/controllers/EmbedCtrl.js"></script>
-<script src="/system/public/js/controllers/LatestCommentsCtrl.js"></script>
-<script src="/system/public/js/resources.js"></script>
-<script src="/system/public/js/elastic.js"></script>
-<script src="/system/public/js/SearchSettings.js"></script>
-<script src="/system/shared/classificationShared.js"></script>
-<script src="/system/shared/regStatusShared.js"></script>
-<script src="/system/shared/authorizationShared.js"></script>
-<script src="/system/shared/exportShared.js"></script>
-<script src="/system/shared/compareShared.js"></script>
-
-<!-- CDE Controllers -->
-<script src="/cde/public/js/cdeModule.js"></script>
-<script src="/cde/public/js/controllers/AddForkModalCtrl.js"></script>
-<script src="/cde/public/js/controllers/BoardListCtrl.js"></script>
-<script src="/system/public/js/controllers/CompareCtrl.js"></script>
-<script src="/cde/public/js/controllers/ConceptsCtrl.js"></script>
-<script src="/cde/public/js/controllers/CreateCdeCtrl.js"></script>
-<script src="/cde/public/js/controllers/DEViewCtrl.js"></script>
-<script src="/cde/public/js/controllers/BoardExportCtrl.js"></script>
-<script src="/cde/public/js/controllers/PermissibleValuesCtrl.js"></script>
-<script src="/cde/public/js/controllers/MyBoardsCtrl.js"></script>
-<script src="/cde/public/js/controllers/NewBoardModalCtrl.js"></script>
-<script src="/cde/public/js/controllers/NewConceptModalCtrl.js"></script>
-<script src="/cde/public/js/controllers/MergeModalCtrl.js"></script>
-<script src="/cde/public/js/controllers/InboxCtrl.js"></script>
-<script src="/cde/public/js/controllers/MergeApproveCtrl.js"></script>
-<script src="/cde/public/js/controllers/MergeRequestCtrl.js"></script>
-<script src="/cde/public/js/merge.js"></script>
-<script src="/system/public/js/controllers/QuickBoardCtrl.js"></script>
-<script src="/cde/public/js/controllers/SDCViewCtrl.js"></script>
-<script src="/cde/public/js/controllers/DEListCtrl.js"></script>
-<script src="/cde/public/js/controllers/DerivationRulesCtrl.js"></script>
-<script src="/cde/public/js/controllers/CdeHistoryCtrl.js"></script>
-<script src="/cde/public/js/controllers/CdeCopyModalCtrl.js"></script>
-<script src="/cde/public/js/controllers/NewPvModalCtrl.js"></script>
-<script src="/cde/public/js/controllers/CreateCdeAbstractCtrl.js"></script>
-<script src="/cde/public/js/cdeDiff.js"></script>
-<script src="/cde/public/js/resources.js"></script>
-<script src="/cde/shared/deValidator.js"></script>
-<script src="/cde/public/js/controllers/RegStatusValidationCtrl.js"></script>
-
-<!-- Form Controllers -->
-<script src="/form/public/js/formModule.js"></script>
-<script src="/form/public/js/resources.js"></script>
-<script src="/form/public/js/native-question.js"></script>
-<script src="/form/public/js/printModule.js"></script>
-<script src="/form/public/js/controllers/FormListCtrl.js"></script>
-<script src="/form/public/js/controllers/FormDEListCtrl.js"></script>
-<script src="/form/public/js/controllers/FormFormListCtrl.js"></script>
-<script src="/form/public/js/controllers/CreateFormCtrl.js"></script>
-<script src="/form/public/js/controllers/FormViewCtrl.js"></script>
-<script src="/form/public/js/controllers/FormViewSectionCtrl.js"></script>
-<script src="/form/public/js/controllers/FormRenderCtrl.js"></script>
-<script src="/form/public/js/controllers/SectionCtrl.js"></script>
-<script src="/form/public/js/controllers/FormDiffCtrl.js"></script>
-<script src="/form/public/js/controllers/SelectQuestionNameModalCtrl.js"></script>
-<script src="/form/public/js/controllers/ClassifyFormCdesModalCtrl.js"></script>
-<script src="/form/public/js/controllers/FormGeneralDetailCollapseCtrl.js"></script>
-<script src="/form/public/js/controllers/DisplayProfileCtrl.js"></script>
-<script src="/form/public/js/controllers/CreateFormAbstractCtrl.js"></script>
-<script src="/form/public/js/controllers/CreateFormFromBoardModalCtrl.js"></script>
-<script src="/form/public/js/controllers/UpdateCdeRefVersionCtrl.js"></script>
-<script src="/form/shared/formShared.js"></script>
-<script src="/form/public/js/controllers/FormCopyModalCtrl.js"></script>
+<!-- build:webp /system/public/assets/js/print.js -->
+<script src="/static/print.js" defer></script>
 <!-- endbuild -->
 
 <script type="application/ld+json">

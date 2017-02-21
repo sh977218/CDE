@@ -1,3 +1,5 @@
+import * as regStatusShared from "../../../../system/shared/regStatusShared";
+
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
         'AutoCompleteResource', '$location', '$route', '$controller', 'ElasticBoard',
@@ -411,18 +413,18 @@ angular.module('systemModule').controller('ListCtrl',
         doSearch();
     };
 
-    var filterOutWorkingGroups = function(aggregations) {
-        this.setAggregations = function() {
+    function filterOutWorkingGroups(aggregations) {
+        function setAggregations() {
             aggregations.orgs.buckets = aggregations.orgs.orgs.buckets.filter(function(bucket) {
                 return OrgHelpers.showWorkingGroup(bucket.key, userResource.user) || userResource.user.siteAdmin;
             });
             $scope.aggregations = aggregations;
-        };
-        var filterOutWorkingGroups = this;
+        }
+
         OrgHelpers.deferred.promise.then(function() {
-            userResource.getPromise().then(filterOutWorkingGroups.setAggregations);
+            userResource.getPromise().then(setAggregations);
         });
-    };
+    }
 
     // TODO support only CDEs. Forms TODO later.
     $scope.showPinAllModal = function() {

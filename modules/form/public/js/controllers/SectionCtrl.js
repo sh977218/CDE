@@ -23,40 +23,6 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             }[cardinality.min][cardinality.max];
         };
 
-
-        $scope.getDatatypeDetails = function (question) {
-            var datatype = question.question.datatype;
-            if (datatype === 'Text') {
-                var min = question.question.datatypeText ? question.question.datatypeText.minLength : '';
-                var max = question.question.datatypeText ? question.question.datatypeText.maxLength : '';
-                var join = !isNaN(min) && !isNaN(max) && min < max ? ' to ' : ' ';
-                if (min && !max) {
-                    return "nimNoMax"
-                } else if (max && !min) {
-                    return "Text Input with maximum " + max + " characters";
-                } else if (min && max) {
-                    return "Text Input from " + min + " to " + max + " characters";
-                }
-                return "";
-                //return "Text " + min + join + max;
-            } else if (datatype === 'Number') {
-                var min = question.question.datatypeNumber ? question.question.datatypeNumber.minValue : '';
-                var max = question.question.datatypeNumber ? question.question.datatypeNumber.maxValue : '';
-                if (min && !max) {
-                    return "nimNoMax"
-                } else if (max && !min) {
-                    return "Number less than " + max;
-                } else if (min && max) {
-                    return "Number between " + min + " and " + max + "";
-                }
-                return "";
-            } else if (datatype === 'Date') {
-                return question.question.datatypeDate &&
-                    (question.question.datatypeDate.format && question.question.datatypeDate.format.length > 0)
-                    ? "Date format: " + question.question.datatypeDate.format : "";
-            }
-        };
-
         $scope.getDatatypeLabel = function (question) {
             var datatype = question.question.datatype;
             if (datatype === 'Number') {

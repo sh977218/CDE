@@ -1,3 +1,6 @@
+import * as exportShared from "../../../../system/shared/exportShared";
+import {saveAs} from "../../../../cde/public/assets/js/FileSaver";
+
 angular.module('cdeModule').controller('BoardViewCtrl',
     ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert', '$q',
         function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout, Alert, $q) {
@@ -94,9 +97,9 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $http.get('/board/' + $scope.board._id + '/0/500/?type=csv')
                     .then(function onSuccess(response) {
                         SearchSettings.getPromise().then(function (settings) {
-                            var csv = exports.getCdeCsvHeader(settings.tableViewFields);
+                            var csv = exportShared.getCdeCsvHeader(settings.tableViewFields);
                             response.data.elts.forEach(function (ele) {
-                                csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
+                                csv += exportShared.convertToCsv(exportShared.projectCdeForExport(ele, settings.tableViewFields));
                             });
                             if (csv) {
                                 var blob = new Blob([csv], {

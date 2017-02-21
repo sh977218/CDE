@@ -1,5 +1,3 @@
-if (typeof(exports) === "undefined") exports = {};
-
 function getValueByNestedProperty(obj, propertyString) {
     if (!obj) return "";
     // convert indexes to properties and strip a leading dot

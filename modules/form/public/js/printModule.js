@@ -1,3 +1,6 @@
+import * as authShared from "../../../system/shared/authorizationShared";
+import * as formShared from "../../../form/shared/formShared";
+
 angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
 
 .controller('PrintCtrl',
@@ -24,7 +27,18 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
                         else doneOne();
                     } else if (fe.elementType === 'section') {
                         loopFormElements(fe, doneOne);
-                    } else doneOne();
+                    } else {
+                        if (fe.question.cde.derivationRules)
+                            fe.question.cde.derivationRules.forEach(function (derRule) {
+                                delete fe.incompleteRule;
+                                if (derRule.ruleType === 'score') {
+                                    fe.question.isScore = true;
+                                    fe.question.scoreFormula = derRule.formula;
+                                    $scope.inScoreCdes = derRule.inputs;
+                                }
+                            });
+                        doneOne();
+                    }
                 }, cb);
             }
             else cb();
@@ -42,6 +56,7 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
     var overrideDisplayType = args.displayType;
     $scope.submitForm = args.submit;
 
+    var _getElt;
     if (window.formElt) {
         _getElt = function (id, cb) {
             cb(window.formElt);
@@ -60,10 +75,10 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
         var formCopy = angular.copy(form);
         fetchWholeForm(formCopy, function (wholeForm) {
             $scope.elt = wholeForm;
-            if (exports.hasRole(userResource.user, "FormEditor")) {
+            if (authShared.hasRole(userResource.user, "FormEditor")) {
                 isAllowedModel.setCanCurate($scope);
             }
-            $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
+            $scope.formCdeIds = formShared.getFormCdes($scope.elt).map(function (c) {
                 return c.tinyId;
             });
             isAllowedModel.setDisplayStatusWarning($scope);
@@ -80,6 +95,7 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
                     displayInstructions: true,
                     displayNumbering: true,
                     sectionsAsMatrix: true,
+                    displayValues: false,
                     displayType: 'Follow-up',
                     numberOfColumns: 4
                 }];

@@ -83,6 +83,7 @@ exports.createIndexJson = {
                     }
                 }
                 , "version": {"type": "string", "index": "no"}
+                , "views": {type: "integer"}
             }
         }
     }, settings: {

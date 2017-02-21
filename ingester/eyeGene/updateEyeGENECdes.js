@@ -44,6 +44,7 @@ function wipeUseless(toWipeCde) {
     delete toWipeCde.registrationState;
     delete toWipeCde.tinyId;
     delete toWipeCde.valueDomain.datatypeValueList;
+    delete toWipeCde.classification;
 
     Object.keys(toWipeCde).forEach(function (key) {
         if (Array.isArray(toWipeCde[key]) && toWipeCde[key].length === 0) {
@@ -70,6 +71,7 @@ function compareCdes(existingCde, newCde) {
 
     existingCde = JSON.parse(JSON.stringify(existingCde));
     wipeUseless(existingCde);
+/*
     if (!existingCde.classification || existingCde.classification === [])
         existingCde.classification = newCde.classification;
     else {
@@ -87,6 +89,8 @@ function compareCdes(existingCde, newCde) {
     }
 
     classificationShared.sortClassification(newCde);
+*/
+
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
 
@@ -112,6 +116,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         });
     } else if (deepDiff.length > 0) {
         newDe.naming = migrationCde.naming;
+        newDe.sources = migrationCde.sources;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
         newDe.imported = today;
@@ -122,10 +127,10 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
-        newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
-        newDe.properties = newDe.properties.concat(migrationCde.properties);
+        newDe.properties = migrationCde.properties;
 
         removeClassificationTree(newDe);
+/*
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
             newDe.classification.forEach(function (c, i) {
@@ -136,6 +141,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
                 newDe.classification.push(migrationCde.classification[0]);
             }
         }
+*/
         newDe._id = existingCde._id;
         try {
             mongo_cde.update(newDe, {username: "BatchLoader"}, function (err) {
@@ -244,6 +250,8 @@ function streamOnData(migrationCde) {
 }
 
 function streamOnClose() {
+    process.exit(1);
+    /*
     // Retire Missing CDEs
 
     DataElement.find({
@@ -274,7 +282,6 @@ function streamOnClose() {
                         Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
                             if (findOrgError) throw findOrgError;
                             else {
-                                theOrg.classifications = org.classifications;
                                 theOrg.save(function (saveOrgError) {
                                     if (saveOrgError) throw saveOrgError;
                                     else doneOneOrg();
@@ -289,7 +296,7 @@ function streamOnClose() {
                 });
             });
         }
-    });
+     });*/
 }
 
 function doStream() {

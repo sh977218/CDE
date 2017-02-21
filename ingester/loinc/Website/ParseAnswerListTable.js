@@ -84,10 +84,10 @@ exports.parseAnswerListTable = function (obj, task, table, cb) {
                         var thMapping = {};
                         trs[0].findElements(By.css('th')).then(function (ths) {
                             var thIndex = 0;
-                            async.forEach(ths, function (th, doneOneTh) {
+                            async.forEachSeries(ths, function (th, doneOneTh) {
                                 th.getText().then(function (text) {
                                     if (text.trim().length > 0) {
-                                        thMapping[text.trim()] = thIndex;
+                                        thMapping[text.trim().replace('\n', ' ')] = thIndex;
                                     }
                                     thIndex++;
                                     doneOneTh();

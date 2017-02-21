@@ -1,4 +1,5 @@
 ## Generated
+dist
 nbproject
 node_modules
 test/selenium/.gradle
@@ -9,6 +10,7 @@ bower_components
 modules/components/
 modules/system/views/version.html
 modules/board/public/js/bkup/
+modules/static
 *.orig
 
 ## Secret Config Files

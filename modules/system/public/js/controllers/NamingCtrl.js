@@ -50,5 +50,4 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
             $scope.elt.naming.splice(index, 1);
             $scope.stageElt($scope.elt);
         };
-
     }]);

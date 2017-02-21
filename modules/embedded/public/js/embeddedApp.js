@@ -1,3 +1,12 @@
+import * as formShared from "../../../form/shared/formShared";
+import * as regStatusShared from "../../../system/shared/regStatusShared";
+
+import "../../../system/public/js/elastic.js";
+import "../../../system/public/js/orgFactories.js";
+import "../../../embedded/public/js/SearchSettings.js";
+import "../../../components/angular-bootstrap/ui-bootstrap-tpls.js";
+import "../../../embedded/public/js/angularTemplates.js";
+
 angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFactories', 'embeddedTemplates'])
     .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http, SearchSettings) {
 
@@ -49,7 +58,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
         };
 
         $scope.concatenateQuestions = function(form) {
-            var cdes = exports.getFormCdes(form);
+            var cdes = formShared.getFormCdes(form);
             return cdes.map(function(c) {return c.name;}).join(",");
         };
 
@@ -101,10 +110,10 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             $scope.lastQueryTimeStamp = timestamp;
             $scope.accordionListStyle = "semi-transparent";
 
-            for (var i = 0; i < exports.statusList.length; i++) {
-                $scope.searchSettings.regStatuses.push(exports.statusList[i]);
-                if (exports.statusList[i] === embed4Type.minStatus) {
-                    i = exports.statusList.length;
+            for (var i = 0; i < regStatusShared.orderedList.length; i++) {
+                $scope.searchSettings.regStatuses.push(regStatusShared.orderedList[i]);
+                if (regStatusShared.orderedList[i] === embed4Type.minStatus) {
+                    i = regStatusShared.orderedList.length;
                 }
             }
 

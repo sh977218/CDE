@@ -91,7 +91,7 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']//span[. = 'More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
