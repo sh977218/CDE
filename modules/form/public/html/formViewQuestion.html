@@ -95,7 +95,7 @@
             </div>
             <div class="answerList" ng-if="question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
-                <span ng-repeat="pv in question.question.answers">
+                <span ng-repeat="pv in question.question.answers" style="margin-right: -3px">
                     <span class="label label-default formViewSummaryLabel" style="background-color: #666">{{::pv.valueMeaningName}}</span>
                 </span>
             </div>
