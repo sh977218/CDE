@@ -14,7 +14,6 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Reason for premature intervention discontinuation");
-        clickElement(By.xpath("//*[@id='Off study date_0']//button"));
         findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
         clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");
@@ -32,7 +31,6 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Reason for premature intervention discontinuation");
-        clickElement(By.xpath("//*[@id='Off study date and time_0']//button"));
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");
         clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");
