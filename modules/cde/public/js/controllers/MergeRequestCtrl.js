@@ -45,7 +45,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
     
     $scope.isMergeRequestPossible = function(cde, otherCde) {
         if ((!cde)||(!otherCde)) return false;
-        return isAllowedModel.isAllowed($scope, cde)
+        return isAllowedModel.isAllowed(cde)
                && !(cde.registrationState.administrativeStatus === "Retire Candidate")
                && !(otherCde.registrationState.administrativeStatus === "Retire Candidate")
                && !(cde.registrationState.registrationStatus === "Standard");
