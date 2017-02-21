@@ -23,18 +23,6 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             }[cardinality.min][cardinality.max];
         };
 
-        // $scope.getDatatype = function (question) {
-        //     var datatype = question.question.datatype;
-        //     if (datatype === 'Text')
-        //         return "Text Input";
-        //     if (datatype === 'Number')
-        //         return "Number Input";
-        //     if (datatype === 'Date')
-        //         return "Date Input";
-        //     if (datatype === 'Value List')
-        //         return "Multiple Choice"
-        // };
-
         $scope.getDatatypeLabel = function (question) {
             var datatype = question.question.datatype;
             if (datatype === 'Number') {
