@@ -23,6 +23,7 @@ stream.on('data', (protocol) => {
                     if (e) throw e;
                     else {
                         protocolCount++;
+                        console.log('protocolCount: ' + protocolCount);
                         stream.resume();
                     }
                 })
@@ -36,6 +37,7 @@ stream.on('data', (protocol) => {
                     if (e) throw e;
                     else {
                         protocolCount++;
+                        console.log('protocolCount: ' + protocolCount);
                         stream.resume();
                     }
                 })

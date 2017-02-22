@@ -1,5 +1,6 @@
-var parser = require('csv-parser');
+var csv = require('csv');
 var fs = require('fs');
+var capitalize = require('capitalize');
 var async = require('async');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
@@ -11,10 +12,12 @@ var foundLoincs = [];
 var foundCdes = [];
 
 function createCde(data, formId) {
+    var variableName = data['Variable / Field Name'];
+    var fieldLabel = data['Field Label'];
     var cde = {
         tinyId: mongo_data.generateTinyId(),
-        naming: [{designation: data['Variable / Field Name']}, {
-            designation: data['Field Label'],
+        naming: [{designation: capitalize(variableName.replace(/_/g, ' '))}, {
+            designation: fieldLabel,
             tags: [{tag: 'Question Text'}]
         }],
         stewardOrg: {name: 'PhenX'},
@@ -25,34 +28,65 @@ function createCde(data, formId) {
         }],
         registrationState: {registrationStatus: 'Qualified'},
         properties: [{source: '', key: 'Field Note', value: data['Field Note']}],
-        ids: [{source: 'PhenX', id: formId + '_' + data['Variable / Field Name'].trim()}],
+        ids: [{source: 'PhenX Variable', id: formId + '_' + data['Variable / Field Name'].trim()}],
         valueDomain: {}
     };
-    var pvText = data['Choices, Calculations, OR Slider Labels'];
-    if (pvText && pvText.length > 0) {
-        var permissibleValues = [];
-        var pvArray = pvText.split('|');
-        if (pvArray.length < 1) {
-            console.log(data);
-            console.log(formId);
-            process.exit(1);
+    var fieldType = data['Field Type'];
+    var validationType = data['Text Validation Type OR Show Slider Number'];
+    if (validationType.trim() === 'date_mdy') {
+        cde.valueDomain.datatype = 'Date';
+        cde.valueDomain.datatypeDate = {
+            format: 'mdy'
         }
-        pvArray.forEach((pvText)=> {
-            var tempArray = pvText.toString().split(',');
-            if (tempArray.length < 1) {
-                console.log(data);
-                console.log(tempArray);
-                console.log(formId);
-                process.exit(1);
+    }
+    else if (validationType.trim() === 'date_dmy') {
+        cde.valueDomain.datatype = 'Date';
+        cde.valueDomain.datatypeDate = {
+            format: 'dmy'
+        }
+    } else if (validationType.trim() === 'time') {
+        cde.valueDomain.datatype = 'Time';
+        cde.valueDomain.datatypeTime = {}
+    } else if (validationType.trim() === 'integer' || validationType.trim() === 'number') {
+        cde.valueDomain.datatype = 'Number';
+        cde.valueDomain.datatypeNUmber = {
+            precision: validationType.trim() === 'integer' ? 2 : 0
+        };
+        var textValidationMin = data['Text Validation Min'].trim();
+        var textValidationMax = data['Text Validation Max'].trim();
+        if (textValidationMin.length > 0) {
+            cde.valueDomain.datatypeNUmber.minValue = Number(textValidationMin);
+        }
+        if (textValidationMax.length > 0) {
+            cde.valueDomain.datatypeNUmber.maxValue = Number(textValidationMax);
+        }
+    } else {
+        if (fieldType === 'yesno') {
+            cde.valueDomain.datatype = 'Value List';
+            cde.valueDomain.permissibleValues = [{
+                permissibleValue: '1',
+                valueMeaningName: 'Yes'
+            }, {
+                permissibleValue: '0',
+                valueMeaningName: 'No'
+            }];
+        } else if (fieldType === 'calc') {
+        } else {
+            var pvText = data['Choices, Calculations, OR Slider Labels'];
+            if (pvText && pvText.length > 0) {
+                var permissibleValues = [];
+                var pvArray = pvText.split('|');
+                pvArray.forEach((pvText)=> {
+                    var tempArray = pvText.toString().split(',');
+                    permissibleValues.push({
+                        permissibleValue: tempArray[0],
+                        valueMeaningName: tempArray[1]
+                    })
+                });
+                cde.valueDomain.permissibleValues = permissibleValues;
+                cde.valueDomain.datatype = 'Value List';
             }
-            permissibleValues.push({
-                permissibleValue: tempArray[0],
-                valueMeaningName: tempArray[0],
-                valueMeaningCode: tempArray[1]
-            })
-        });
-        cde.valueDomain.permissibleValues = permissibleValues;
-        cde.valueDomain.datatype = 'Value List';
+        }
     }
     return cde;
 }
@@ -81,91 +115,24 @@ function findCde(data, formId, cb) {
     });
 }
 
-function validateCsvHeader(data, cb) {
-    if (data.length !== 17)
-        cb('header length is not 17.');
-    else if (data[0] !== 'Variable / Field Name') {
-        cb('header 0 is not Variable / Field Name.');
-    } else if (data[1] !== 'Form Name') {
-        cb('header 1 is not Form Name.');
-    } else if (data[2] !== 'Section Header') {
-        cb('header 2 is not Section Header.');
-    } else if (data[3] !== 'Field Type') {
-        cb('header 3 is not Field Type.');
-    } else if (data[4] !== 'Field Label') {
-        cb('header 4 is not Field Label.');
-    } else if (data[5] !== 'Choices, Calculations, OR Slider Labels') {
-        cb('header 5 is not Choices, Calculations, OR Slider Labels.');
-    } else if (data[6] !== 'Field Note') {
-        cb('header 6 is not Field Note.');
-    } else if (data[7] !== 'Text Validation Type OR Show Slider Number') {
-        cb('header 7 is not Text Validation Type OR Show Slider Number.');
-    } else if (data[8] !== 'Text Validation Min') {
-        cb('header 8 is not Text Validation Min.');
-    } else if (data[9] !== 'Text Validation Max') {
-        cb('header 9 is not Text Validation Max.');
-    } else if (data[10] !== 'Identifier?') {
-        cb('header 10 is not Identifier?.');
-    } else if (data[11] !== 'Branching Logic (Show field only if...)') {
-        cb('header 11 is not Branching Logic (Show field only if...).');
-    } else if (data[12] !== 'Required Field?') {
-        cb('header 12 is not Required Field?.');
-    } else if (data[13] !== 'Custom Alignment') {
-        cb('header 13 is not Custom Alignment.');
-    } else if (data[14] !== 'Question Number (surveys only)') {
-        cb('header 14 is not Question Number (surveys only).');
-    } else if (data[15] !== 'Matrix Group Name') {
-        cb('header 15 is not Matrix Group Name.');
-    } else if (data[16] !== 'Matrix Ranking?') {
-        cb('header 16 is not Matrix Ranking?.');
-    } else {
-        cb();
-    }
-}
-
 function doCSV(filePath, formId, doneCsv) {
-    var stream = fs.createReadStream(filePath).pipe(parser());
-    var index = 0;
-    stream.on('headers', function (data) {
-        index = 0;
-        validateCsvHeader(data, function (err) {
-            if (err) {
-                console.log(err);
-                console.log(filePath);
-                process.exit(1);
+    csv.parse(fs.readFileSync(filePath), {columns: true, relax_column_count: true}, function (err, rows) {
+        async.forEachSeries(rows, (row, doneOneRow)=> {
+            var fieldType = row['Field Type'].trim();
+            //@todo
+            if (fieldType === 'descriptive') {
+                doneOneRow();
             }
+            else {
+                findCde(row, formId, function (q) {
+                    doneOneRow();
+                });
+            }
+        }, ()=> {
+            doneCsv();
         })
-
-    });
-    stream.on('data', function (data) {
-        stream.pause();
-        index++;
-        var fieldType = data['Field Type'].trim();
-        if (fieldType === 'descriptive') {
-            stream.resume();
-        }
-        else {
-            findCde(data, formId, function (q) {
-                stream.resume();
-            });
-        }
-    });
-    stream.on('err', function (err) {
-        if (err) throw err;
-    });
-    stream.on('close', function () {
-        console.log('a');
-    });
-    stream.on('end', function () {
-        console.log(index);
-        if (doneCsv) doneCsv();
-        else {
-            console.log(filePath);
-            process.exit(1);
-        }
     });
 }
-
 
 async.series([function (cb) {
     MigrationDataElementModel.remove({}).exec(function (err) {

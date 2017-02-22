@@ -114,6 +114,7 @@
     "tslint-loader": "3.3.0",
     "typescript": "2.1.5",
     "webpack": "2.2.1",
-    "zone.js": "0.7.6"
+    "zone.js": "0.7.6",
+    "capitalize": "1.0.0"
   }
 }

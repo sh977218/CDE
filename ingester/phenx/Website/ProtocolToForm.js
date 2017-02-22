@@ -10,13 +10,14 @@ exports.protocolToForm = function (protocol) {
         created: new Date(),
         updated: new Date(),
         imported: new Date(),
+        origin: protocol['Source'],
         naming: [{
             designation: protocol['Protocol Name From Source'],
             definition: protocol['Description of Protocol'],
             tags: [{tag: ''}]
         }],
         sources: [{
-            sourceName: protocol['Source'],
+            sourceName: 'PhenX',
             created: protocol['Protocol Release Date']
         }],
         registrationState: {
@@ -40,7 +41,7 @@ exports.protocolToForm = function (protocol) {
         }]
     };
     if (protocol['classification']) {
-        classificationShare.classifyItem(cde, 'PhenX', ['REDCap'].concat(protocol['classification']));
+        classificationShare.classifyItem(form, 'PhenX', ['REDCap'].concat(protocol['classification']));
     }
     if (protocol['Protocol']) {
         form.properties.push({

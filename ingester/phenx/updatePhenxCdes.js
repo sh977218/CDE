@@ -24,7 +24,7 @@ var created = 0;
 var createdCDE = [];
 var same = 0;
 
-var source = 'PhenX';
+var source = 'PhenX Variable';
 
 function wipeUseless(toWipeCde) {
     delete toWipeCde._id;
