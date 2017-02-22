@@ -1,10 +1,10 @@
 var loincMapping = require('./loinc-mapping'),
-    async = require('async')
+    async = require('async');
 
 var notFound = {};
 
-exports.loadPvs = function(cdeArray, doneWithLoad) {
-    async.each(cdeArray.cdearray, function(cde, cb) {
+exports.loadPvs = function(cdeArray,  doneWithLoad) {
+    async.each(cdeArray, function(cde, cb) {
         cde.valueDomain.permissibleValues.forEach(function(pv) {
             var mapping = loincMapping.getMapping(pv.valueMeaningName);
              if (mapping) {

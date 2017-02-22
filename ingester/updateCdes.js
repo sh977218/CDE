@@ -248,7 +248,6 @@ function streamOnClose() {
     }, function (err) {
         if (err) {
             throw err;
-            process.exit(1);
         }
         console.log("Nothing left to do, saving Org");
         MigrationOrg.find().exec(function (err, orgs) {
