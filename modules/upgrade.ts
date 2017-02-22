@@ -10,3 +10,4 @@ export const upgradeAdapter = new UpgradeAdapter(forwardRef(() => CdeAppModule))
 upgradeAdapter.upgradeNg1Provider("Alert");
 upgradeAdapter.upgradeNg1Provider("userResource");
 upgradeAdapter.upgradeNg1Provider("ViewingHistory");
+upgradeAdapter.upgradeNg1Provider("isAllowedModel");

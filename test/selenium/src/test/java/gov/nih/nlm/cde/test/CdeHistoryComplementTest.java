@@ -57,8 +57,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         closeAlert();
         clickElement(By.id("addId"));
         findElement(By.xpath("//label[text()='Source']/following-sibling::input")).sendKeys("Origin 1");
-        findElement(By.xpath("//label[text()='Identifier']/following-sibling::textarea")).sendKeys("Identifier 1");
-        findElement(By.xpath("//label[text()='Version']/following-sibling::textarea")).sendKeys("Version 1");
+        findElement(By.xpath("//label[text()='Identifier']/following-sibling::input")).sendKeys("Identifier 1");
+        findElement(By.xpath("//label[text()='Version']/following-sibling::input")).sendKeys("Version 1");
         clickElement(By.id("createId"));
         modalGone();
         goToCdeByName(cdeName);

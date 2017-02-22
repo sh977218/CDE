@@ -141,6 +141,14 @@ exports.byId = function (id, callback) {
     Form.findById(id, callback);
 };
 
+exports.byOtherId = function (source, id, cb) {
+    Form.find({archived: null}).elemMatch("ids", {source: source, id: id}).exec(function (err, forms) {
+        if (forms.length > 1)
+            cb("Multiple results, returning first", forms[0]);
+        else cb(err, forms[0]);
+    });
+};
+
 exports.userTotalSpace = function (name, callback) {
     mongo_data_system.userTotalSpace(Form, name, callback);
 };
