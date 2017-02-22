@@ -196,10 +196,19 @@ exports.parseProtocol = function (protocol, link, cb) {
                     doneOneStandard();
                 }
             }, function doneAllStandards() {
-                new MigrationProtocolModel(protocol).save((e)=> {
-                    if (e) throw e;
-                    else cb();
-                })
+                driver.findElements(By.xpath("//p[@class='back'][1]/a")).then(function (classificationArr) {
+                    async.eachSeries(classificationArr, function (c, doneOneC) {
+                        c.getText().then(function (text) {
+                            protocol.classification.push(text.trim());
+                            doneOneC();
+                        });
+                    }, function () {
+                        new MigrationProtocolModel(protocol).save((e)=> {
+                            if (e) throw e;
+                            else cb();
+                        })
+                    })
+                });
             });
         })
     });

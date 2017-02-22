@@ -70,6 +70,7 @@ exports.wipeUseless = function (toWipe) {
 exports.compareObjects = function (existingForm, newForm) {
     existingForm = JSON.parse(JSON.stringify(existingForm));
     exports.wipeUseless(existingForm);
+    if (!existingForm.classification) existingForm.classification = [];
     for (var i = existingForm.classification.length - 1; i > 0; i--) {
         if (existingForm.classification[i].stewardOrg.name !== newForm.source) {
             existingForm.classification.splice(i, 1);

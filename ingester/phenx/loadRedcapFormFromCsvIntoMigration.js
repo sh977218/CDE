@@ -1,24 +1,17 @@
 var parser = require('csv-parser');
 var fs = require('fs');
 var async = require('async');
-var mongo_data = require('../../modules/system/node-js/mongo-data');
 var DataElementModel = require('../createNlmcdeConnection').DataElementModel;
-var MigrationPhenxRedcapModel = require('../createMigrationConnection').MigrationPhenxRedcapModel;
 var MigrationRedcapModel = require('../createMigrationConnection').MigrationRedcapModel;
 
-var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
-//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/test';
+//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
+var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/test';
 var zipCount = 0;
 var createdCdes = [];
 var foundLoincs = [];
 var foundCdes = [];
 
 var special_skipLogic = [];
-
-var SPECIAL_FOLDER = {
-    'PX661503': true,
-    'PX661504': true
-};
 
 var REDCAP_DATATYPE_MAP = {
     'radio': 'Value List',
@@ -182,47 +175,21 @@ function convertCdeToQuestion(data, skipLogicMap, cde) {
     return question;
 }
 
-function findInDataElement(loincId, cb) {
-    var query = {'archived': null, 'ids.id': loincId};
+function findInDataElement(data, formId, cb) {
+    var variableName = data['Variable / Field Name'];
+    var query = {'ids.id': formId + '_' + variableName};
     DataElementModel.find(query).exec((error, results)=> {
         if (error) throw error;
-        else if (results.length === 0) {
-            createCde(data, function (o) {
-                cb(o);
-            })
-        } else if (results.length === 1) {
-            foundCdes.push(results[0].tinyId);
-            cb(results[0]);
-        } else throw 'found ' + result.length + ' cdes with loincId: ' + loincId;
-    })
-}
-
-function findQuestion(data, formId, cb) {
-    var variableName = data['Variable / Field Name'];
-    var variableDesc = data['Field Label'];
-    var query = {
-        'ids.id': variableName
-    };
-    Data.find(query).exec((error, results)=> {
-        if (error) throw error;
-        else if (results.length === 0) {
-            createCde(data, function (o) {
-                cb(o);
-            })
-        }
         else if (results.length === 1) {
-            var loincId = results[0]['LOINC CODE'];
-            if (loincId) {
-                foundLoincs.push(loincId);
-                findInDataElement(loincId, function (o) {
-                    cb(o);
-                })
-            } else throw 'unknown loincId: ' + loincId;
-        } else {
-            console.log('found more than one loincId ' + loincId);
+            cb(results[0]);
+        }
+        else {
+            console.log('found ' + results.length + ' cde: ');
+            console.log(data);
+            console.log(formId);
             process.exit(1);
         }
-    });
+    })
 }
 
 function validateCsvHeader(data, cb) {
@@ -316,8 +283,8 @@ function doCSV(filePath, redcap, formId, doneCsv) {
             } else {
                 name.designation = data['Form Name'];
             }
-            findQuestion(data, formId, function (q) {
-                var question = convertCdeToQuestion(data, skipLogicMap, q);
+            findInDataElement(data, formId, function (cde) {
+                var question = convertCdeToQuestion(data, skipLogicMap, cde);
                 if (question === null) {
                     console.log('filePath ' + filePath);
                     console.log('line ' + index);
@@ -337,79 +304,56 @@ function doCSV(filePath, redcap, formId, doneCsv) {
     });
 }
 
-function doAuthorID(filePath, cb) {
-    fs.readFile(filePath, 'utf8', function (err, data) {
-        if (err) throw err;
-        else if (data === 'PhenX') {
-            return cb(data);
-        } else {
-            console.log('unknown authorID ' + data);
-            console.log(filePath);
-            process.exit(1);
-        }
-    })
-}
-
-function doInstrumentID(filePath, cb) {
-    fs.readFile(filePath, 'utf8', function (err, data) {
-        if (err) throw err;
-        else if (data.indexOf('PX') !== -1) {
-            return cb(data);
-        } else {
-            console.log('unknown instrumentID ' + data);
-            console.log(filePath);
-            process.exit(1);
-        }
-    })
-}
-
 function doZip(filePath, formId, doneZip) {
-    var allFiles = fs.readdirSync(filePath);
     var redcap = {
         formElements: []
     };
-    async.forEach(allFiles, (item, doneOneItem)=> {
-        if (item === 'instrument.csv') {
-            doCSV(filePath + '/instrument.csv', redcap, formId, function () {
-                console.log('done instrument.csv');
-                doneOneItem();
-            });
-        } else if (item === 'AuthorID.txt') {
-            doAuthorID(filePath + '/AuthorID.txt', function (authorID) {
-                console.log('done authorID.txt');
-                redcap.authorId = authorID;
-                doneOneItem();
+    async.series([
+        function doAuthorID(cb) {
+            fs.readFile(filePath + '/AuthorID.txt', 'utf8', function (err, data) {
+                if (err) throw err;
+                else if (data === 'PhenX') {
+                    redcap.authorId = data;
+                    cb();
+                } else {
+                    console.log('unknown authorID ' + data);
+                    console.log(filePath);
+                    process.exit(1);
+                }
             })
-        } else if (item === 'InstrumentID.txt') {
-            doInstrumentID(filePath + '/InstrumentID.txt', function (instrumentID) {
-                console.log('done instrumentID.txt');
-                redcap.instrumentId = instrumentID;
-                doneOneItem();
+        },
+        function doInstrumentID(cb) {
+            fs.readFile(filePath + '/InstrumentID.txt', 'utf8', function (err, data) {
+                if (err) throw err;
+                else if (data.indexOf('PX') !== -1) {
+                    redcap.instrumentId = data;
+                    cb();
+                } else {
+                    console.log('unknown instrumentID ' + data);
+                    console.log(filePath);
+                    process.exit(1);
+                }
             })
-        } else if (item === 'attachments') {
-            doneOneItem();
-        } else if (item.indexOf('PX') !== -1) {
-            if (SPECIAL_FOLDER[item]) {
-                doCSV(filePath + '/instrument.csv', redcap, formId, function () {
-                    console.log('done instrument.csv');
-                    doneOneItem();
-                });
-            } else {
-                doCSV(filePath + '/' + item + '/instrument.csv', redcap, formId, function () {
-                    console.log('done instrument.csv');
-                    doneOneItem();
-                });
+        },
+        function doAttachment(cb) {
+            cb()
+        },
+        function (cb) {
+            var instrumentPath = filePath + '/instrument.csv';
+            if (!fs.existsSync(instrumentPath)) {
+                instrumentPath = filePath + '/' + formId + '/instrument.csv';
             }
-        } else {
-            console.log('unknown folder ' + item + ' in zip. filePath: ' + filePath);
-            doneOneItem();
+            doCSV(instrumentPath, redcap, formId, function () {
+                console.log('done instrument.csv');
+                cb();
+            });
         }
-    }, ()=> {
+    ], () => {
         new MigrationRedcapModel(redcap).save((e)=> {
             if (e) throw e;
             else doneZip();
         })
-    })
+    });
 }
 
 async.series([function (cb) {
@@ -422,7 +366,7 @@ async.series([function (cb) {
     })
 }, function (cb) {
     var allZips = fs.readdirSync(ZIP_PATH);
-    async.forEach(allZips, (item, doneOneItem)=> {
+    async.forEachSeries(allZips, (item, doneOneItem)=> {
         try {
             var formId = item.replace('.zip', '');
             if (item.indexOf('.zip') !== -1) {

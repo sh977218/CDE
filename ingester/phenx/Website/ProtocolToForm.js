@@ -1,4 +1,5 @@
 var mongo_data = require('../../../modules/system/node-js/mongo-data');
+var classificationShare = require('../../../modules/system/shared/classificationShared');
 
 exports.protocolToForm = function (protocol) {
     var form = {
@@ -38,6 +39,9 @@ exports.protocolToForm = function (protocol) {
             }
         }]
     };
+    if (protocol['classification']) {
+        classificationShare.classifyItem(cde, 'PhenX', ['REDCap'].concat(protocol['classification']));
+    }
     if (protocol['Protocol']) {
         form.properties.push({
             key: 'Protocol',

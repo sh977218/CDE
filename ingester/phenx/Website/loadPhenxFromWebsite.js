@@ -2,6 +2,7 @@ var webdriver = require('selenium-webdriver');
 var async = require('async');
 var baseUrl = require('../../createMigrationConnection').PhenxURL;
 var MigrationMeasureModel = require('../../createMigrationConnection').MigrationMeasureModel;
+var MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
 var ParseOneMeasure = require('./ParseOneMeasure');
 
 var measureCount = 0;
@@ -50,6 +51,13 @@ exports.run = function (cb) {
                 console.log('Removed all doc in migration measure collection');
                 if (err) throw err;
                 doneRemoveMigrationMeasure();
+            });
+        },
+        function removeProtocolCollection(doneRemoveMigrationProtocol) {
+            MigrationProtocolModel.remove({}, function (err) {
+                console.log('Removed all doc in migration protocol collection');
+                if (err) throw err;
+                doneRemoveMigrationProtocol();
             });
         },
         function (doneLoadPhenxMeasure) {

@@ -4,7 +4,8 @@ var async = require('async');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
 
-var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
+//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
+var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/test';
 var createdCdes = [];
 var foundLoincs = [];
 var foundCdes = [];
@@ -18,22 +19,40 @@ function createCde(data, formId) {
         }],
         stewardOrg: {name: 'PhenX'},
         sources: [{source: 'PhenX'}],
+        classification: [{
+            stewardOrg: {name: 'PhenX'},
+            elements: [{name: 'REDCap', elements: []}]
+        }],
         registrationState: {registrationStatus: 'Qualified'},
         properties: [{source: '', key: 'Field Note', value: data['Field Note']}],
-        ids: [{source: 'PhenX', id: formId + '_' + data['Variable / Field Name'].trim()}]
+        ids: [{source: 'PhenX', id: formId + '_' + data['Variable / Field Name'].trim()}],
+        valueDomain: {}
     };
-    if (data['Choices, Calculations, OR Slider Labels']) {
+    var pvText = data['Choices, Calculations, OR Slider Labels'];
+    if (pvText && pvText.length > 0) {
         var permissibleValues = [];
-        var pvArray = data['Choices, Calculations, OR Slider Labels'].split('|');
+        var pvArray = pvText.split('|');
+        if (pvArray.length < 1) {
+            console.log(data);
+            console.log(formId);
+            process.exit(1);
+        }
         pvArray.forEach((pvText)=> {
             var tempArray = pvText.toString().split(',');
+            if (tempArray.length < 1) {
+                console.log(data);
+                console.log(tempArray);
+                console.log(formId);
+                process.exit(1);
+            }
             permissibleValues.push({
                 permissibleValue: tempArray[0],
                 valueMeaningName: tempArray[0],
                 valueMeaningCode: tempArray[1]
             })
         });
-        cde.valueDomain = {permissibleValues: permissibleValues};
+        cde.valueDomain.permissibleValues = permissibleValues;
+        cde.valueDomain.datatype = 'Value List';
     }
     return cde;
 }
@@ -134,7 +153,11 @@ function doCSV(filePath, formId, doneCsv) {
     stream.on('err', function (err) {
         if (err) throw err;
     });
+    stream.on('close', function () {
+        console.log('a');
+    });
     stream.on('end', function () {
+        console.log(index);
         if (doneCsv) doneCsv();
         else {
             console.log(filePath);
