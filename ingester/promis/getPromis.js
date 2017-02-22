@@ -39,8 +39,13 @@ var processForms = function(){
             console.log(form.Name);
 
             var req = request(options, function (err, res, body) {
-                console.log("statusCode: ", res.statusCode);
-                fs.writeFile(promisDir + "/forms" + formsDate + "/" + form.OID + ".json", "{\"name\": \"" + form.Name + "\", \"content\":" + body + "}");
+                if (res) {
+                    console.log("statusCode: ", res.statusCode);
+                    fs.writeFile(promisDir + "/forms" + formsDate + "/" + form.OID + ".json",
+                        "{\"name\": \"" + form.Name + "\", \"content\":" + body + "}");
+                } else {
+                    console.log("**** no response for " + form.Name);
+                }
             });
         });
 
