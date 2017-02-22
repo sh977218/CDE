@@ -2,6 +2,8 @@ package gov.nih.nlm.form.test.logic;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 public class SkipLogicDateTest extends BaseFormTest {
@@ -58,20 +60,25 @@ public class SkipLogicDateTest extends BaseFormTest {
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/11/2016");
         textPresent("Macula volume (OD)");
 
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/12/2016");
         textPresent("Macula volume (OS)");
 
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/10/2016");
         textPresent("Laterality Type");
 
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("2017");
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("01/01/2017");
         textPresent("Macula volume (OS)");
 
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("2015");
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("01/01/2015");
         textPresent("Laterality Type");
     }
 
