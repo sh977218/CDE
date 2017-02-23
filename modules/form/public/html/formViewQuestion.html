@@ -76,11 +76,14 @@
                 <span ng-if="question.question.required" class="label label-danger formViewSummaryLabel">
                     Required
                 </span>
+                <span ng-if="question.question.invisible" class="label label-default formViewSummaryLabel" style="background-color: #666">
+                    Invisible
+                </span>
                 <span ng-if="question.question.editable === false" class="label label-default formViewSummaryLabel" style="background-color: #666">
                     Disabled
                 </span>
                 <span ng-if="question.skipLogic && question.skipLogic.condition && question.skipLogic.condition.length > 0 && parent"
-                      class="label label-warning formViewSummaryLabel">
+                      class="label label-warning formViewSummaryLabel" style="white-space: normal; display: inline-flex">
                     Show if: {{question.skipLogic.condition}}
                 </span>
             </div>
@@ -92,8 +95,8 @@
             </div>
             <div class="answerList" ng-if="question.question.answers && question.question.answers.length > 0">
                 <span class="formViewQuestionLabel">Answer Choices:</span>
-                <span ng-repeat="pv in question.question.answers" class="label label-default formViewSummaryLabel" style="background-color: #666">
-                    {{::pv.valueMeaningName}}
+                <span ng-repeat="pv in question.question.answers" style="margin-right: -3px">
+                    <span class="label label-default formViewSummaryLabel" style="background-color: #666">{{::pv.valueMeaningName}}</span>
                 </span>
             </div>
             <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="defaultAnswer">

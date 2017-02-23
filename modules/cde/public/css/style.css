@@ -980,11 +980,11 @@ div + .questionPlaceholder {
 
 .questionSectionLabel {
     font-weight: bold;
-    min-width: 150px;
+    min-width: 120px;
 }
 
 .formViewQuestionLabel {
-    font-weight: bold;
+    font-size: small;
 }
 
 .formViewSummaryLabel {

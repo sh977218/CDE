@@ -6,7 +6,7 @@
     </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="q in ::formElement.formElements">
+        <tr ng-repeat="q in ::formElement.formElements" ng-show="!q.question.invisible || q.question.invisible && profile.displayInvisible">
             <td>
                 <label ng-bind="::q.label"
                        ng-class="{'native-question-label': !numSubQuestions && profile.displayNumbering }"></label>
