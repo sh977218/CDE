@@ -22,5 +22,6 @@ import { IdentifiersComponent } from "./components/adminItem/identifiers.compone
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
+
 export class SystemModule {
 }
