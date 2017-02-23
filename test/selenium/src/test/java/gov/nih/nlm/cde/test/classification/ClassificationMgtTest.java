@@ -38,7 +38,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
     public void removeClassificationMgt() {
         mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
-        textPresent("NINDS (9");
+        textPresent("NINDS (6");
         searchNestedClassifiedForms();
         Assert.assertTrue(getNumberOfResults() > 40);
         gotoClassificationMgt();
@@ -55,10 +55,10 @@ public class ClassificationMgtTest extends BaseClassificationTest {
 
         searchNestedClassifiedCdes();
         hangon(3);
-        textNotPresent("NINDS (9)");
+        textNotPresent("NINDS (6)");
         searchNestedClassifiedForms();
         hangon(1);
-        textNotPresent("NINDS (44)");
+        textNotPresent("NINDS (22)");
 
         openClassificationAudit("NINDS > Disease > Facioscapulohumeral muscular dystrophy");
         String body = findElement(By.cssSelector("body")).getText();
