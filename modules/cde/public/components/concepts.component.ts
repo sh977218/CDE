@@ -10,14 +10,14 @@ import { ModalDirective } from "ng2-bootstrap/modal";
 
 export class ConceptsComponent {
 
-    @ViewChild("childModal") public childModal:ModalDirective;
+    @ViewChild("childModal") public childModal: ModalDirective;
     @Input( ) public elt: any;
 
-    conceptConfigurations = {
-        "dataElementConcept": {display: "Data Element Concept", path: "dataElementConcept.concepts.name"},
-        "objectClass": {display: "Object Class", path: "objectClass.concepts.name"},
-        "property": {display: "Property", path: "property.concepts.name"}
-    };
+    conceptConfigurations = [
+        {type: "dataElementConcept", details: {display: "Data Element Concept", path: "dataElementConcept.concepts.name"}},
+        {type: "objectClass", details: {display: "Object Class", path: "objectClass.concepts.name"}},
+        {type: "property", details: {display: "Property", path: "property.concepts.name"}
+    }];
 
     openNewConcept () {
         this.childModal.show();
