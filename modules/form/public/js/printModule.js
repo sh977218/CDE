@@ -97,7 +97,8 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
                     sectionsAsMatrix: true,
                     displayValues: false,
                     displayType: 'Follow-up',
-                    numberOfColumns: 4
+                    numberOfColumns: 4,
+                    displayInvisible: false
                 }];
             if ((overrideDisplayType === 'Follow-up' || overrideDisplayType === 'Dynamic') && $scope.elt.displayProfiles[0])
                 $scope.elt.displayProfiles[0].displayType = overrideDisplayType;

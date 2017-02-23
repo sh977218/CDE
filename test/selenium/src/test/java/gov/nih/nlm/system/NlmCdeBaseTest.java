@@ -737,7 +737,11 @@ public class NlmCdeBaseTest {
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
         clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
         modalGone();
-        textPresent("Classification Deleted");
+        try {
+            textPresent("Classification Deleted");
+        } catch (TimeoutException e) {
+            textPresent("Classification Deleted");
+        }
         closeAlert();
     }
 
