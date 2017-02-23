@@ -7,24 +7,17 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ClassificationMgtTest extends BaseClassificationTest {
+
     private void searchNestedClassifiedCdes() {
         goToCdeSearch();
-        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Facioscapulohumeral muscular dystrophy");
         findElement(By.id("search.submit")).click();
     }
 
     private void searchNestedClassifiedForms() {
         goToFormSearch();
-        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Facioscapulohumeral muscular dystrophy");
         findElement(By.id("search.submit")).click();
-    }
-
-    private void deleteNestedClassifTree() {
-        deleteMgtClassification("classification-Disease,Epilepsy", "Epilepsy");
-        textNotPresent("Epilepsy");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
-        checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
     }
 
     @Test
@@ -50,11 +43,16 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         Assert.assertTrue(getNumberOfResults() > 40);
         gotoClassificationMgt();
 
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Classification'] .name")).getText().equals("Classification"));
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Classification,Supplemental'] .name")).getText().equals("Supplemental"));
+        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Facioscapulohumeral muscular dystrophy'] .name")).getText().equals("Facioscapulohumeral muscular dystrophy"));
+        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Facioscapulohumeral muscular dystrophy,Classification'] .name")).getText().equals("Classification"));
+        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Facioscapulohumeral muscular dystrophy,Classification,Supplemental'] .name")).getText().equals("Supplemental"));
 
-        deleteNestedClassifTree();
+        deleteMgtClassification("classification-Disease,Facioscapulohumeral muscular dystrophy", "Facioscapulohumeral muscular dystrophy");
+        textNotPresent("Facioscapulohumeral muscular dystrophy");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Facioscapulohumeral muscular dystrophy']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Facioscapulohumeral muscular dystrophy,Assessments and Examinations']");
+        checkElementDoesNotExistByCSS("[id='classification-Disease,Facioscapulohumeral muscular dystrophy,Assessments and Examinations,Imaging Diagnostics']");
+
         searchNestedClassifiedCdes();
         hangon(3);
         textNotPresent("NINDS (9)");
@@ -62,10 +60,10 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         hangon(1);
         textNotPresent("NINDS (44)");
 
-        openClassificationAudit("NINDS > Disease > Epilepsy");
+        openClassificationAudit("NINDS > Disease > Facioscapulohumeral muscular dystrophy");
         String body = findElement(By.cssSelector("body")).getText();
         Assert.assertTrue(body.contains("10+ elements") || body.contains("942 elements"));
-        textPresent("delete NINDS > Disease > Epilepsy");
+        textPresent("delete NINDS > Disease > Facioscapulohumeral muscular dystrophy");
     }
 
     @Test

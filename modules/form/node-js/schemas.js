@@ -28,6 +28,7 @@ var questionSchema = {
     }
     , uoms: [String]
     , required: {type: Boolean, default: false}
+    , invisible: {type: Boolean, default: false}
     , editable: {type: Boolean, default: true}
     , multiselect: Boolean
     , answers: [sharedSchemas.permissibleValueSchema]
@@ -140,6 +141,7 @@ exports.formJson = {
         , displayNumbering: {type: Boolean}
         , displayType: {type: String, enum: ['Dynamic', 'Follow-up']}
         , numberOfColumns: {type: Number, min: 1, max: 6}
+        , displayInvisible: {type: Boolean}
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]

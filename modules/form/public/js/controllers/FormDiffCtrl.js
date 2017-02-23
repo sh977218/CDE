@@ -18,8 +18,8 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
                 }
             }
         };
-        $scope.$on('openHistoryTab', loadPriorForms);
-        $scope.formHistoryCtrlLoadedPromise.resolve();
+        loadPriorForms();
+
         $scope.$on('eltReloaded', function () {
             delete $scope.priorForms;
             loadPriorForms();

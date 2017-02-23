@@ -153,8 +153,8 @@ angular.module('formModule').factory('nativeFormService', [ function() {
                 }
             } else return false;
         },
-        evaluateSkipLogicAndClear: function (skipLogicError, rule, formElements, question) {
-            var skipLogicResult = this.evaluateSkipLogic(skipLogicError, rule, formElements, question);
+        evaluateSkipLogicAndClear: function (skipLogicError, rule, formElements, question, elt) {
+            var skipLogicResult = this.evaluateSkipLogic(skipLogicError, rule, formElements, question, elt);
 
             if (!skipLogicResult) question.question.answer = undefined;
             return skipLogicResult;
