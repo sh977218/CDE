@@ -5,8 +5,8 @@ var async = require('async');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
 
-//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
-var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/test';
+var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/half';
+//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/test';
 var createdCdes = [];
 var foundLoincs = [];
 var foundCdes = [];
@@ -16,7 +16,7 @@ function createCde(data, formId) {
     var fieldLabel = data['Field Label'];
     var cde = {
         tinyId: mongo_data.generateTinyId(),
-        naming: [{designation: capitalize(variableName.replace(/_/g, ' '))}, {
+        naming: [{designation: capitalize.words(variableName.replace(/_/g, ' '))}, {
             designation: fieldLabel,
             tags: [{tag: 'Question Text'}]
         }],
@@ -44,6 +44,10 @@ function createCde(data, formId) {
         cde.valueDomain.datatypeDate = {
             format: 'dmy'
         }
+    } else if (validationType.trim() === 'notes') {
+        cde.valueDomain.datatype = 'text';
+    } else if (validationType.trim() === 'file') {
+        cde.valueDomain.datatype = 'File';
     } else if (validationType.trim() === 'time') {
         cde.valueDomain.datatype = 'Time';
         cde.valueDomain.datatypeTime = {}

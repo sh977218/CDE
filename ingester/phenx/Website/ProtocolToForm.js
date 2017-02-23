@@ -28,20 +28,24 @@ exports.protocolToForm = function (protocol) {
         referenceDocuments: [{
             document: protocol['General References']
         }],
-        ids: [{source: 'PhenX', id: protocol['protocolId']}],
+        ids: [{source: 'PhenX', id: 'PX' + protocol['protocolId']}],
         classification: [],
-        formElements: [{
-            elementType: 'section', label: protocol['Protocol Name From Source'],
-            instructions: {value: protocol['Specific Instructions']},
-            section: {},
-            formElements: [],
-            skipLogic: {
-                condition: ''
-            }
-        }]
+        formElements: []
     };
     if (protocol['classification']) {
         classificationShare.classifyItem(form, 'PhenX', ['REDCap'].concat(protocol['classification']));
+    }
+    if (protocol['Protocol Name From Source']) {
+        form.properties.push({
+            key: 'Protocol Name From Source',
+            value: protocol['Protocol Name From Source']
+        });
+    }
+    if (protocol['Specific Instructions']) {
+        form.properties.push({
+            key: 'Specific Instructions',
+            value: protocol['Specific Instructions']
+        });
     }
     if (protocol['Protocol']) {
         form.properties.push({
