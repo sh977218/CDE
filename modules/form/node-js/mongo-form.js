@@ -78,7 +78,7 @@ exports.update = function (elt, user, callback, special) {
         elt.updatedBy = {};
         elt.updatedBy.userId = user._id;
         elt.updatedBy.username = user.username;
-
+        elt.sources = form.sources;
         elt.comments = form.comments;
         var newForm = new Form(elt);
         form.archived = true;
