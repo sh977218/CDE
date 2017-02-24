@@ -264,6 +264,7 @@ exports.update = function (elt, user, callback, special) {
             userId: user._id,
             username: user.username
         };
+        elt.sources = dataElement.sources;
         elt.comments = dataElement.comments;
         var newDe = new DataElement(elt);
 
