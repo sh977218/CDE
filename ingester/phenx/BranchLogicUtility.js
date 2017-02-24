@@ -89,7 +89,7 @@ exports.convertCdeToQuestion = function (data, skipLogicMap, cde) {
                 ids: cde.ids ? cde.ids : [],
                 permissibleValues: cde.valueDomain.permissibleValues ? cde.valueDomain.permissibleValues : []
             },
-            datatype: REDCAP_DATATYPE_MAP[data['Field Type']],
+            datatype: cde.valueDomain.datatype,
             required: data['Required Field?'] ? data['Required Field?'] : false,
             uoms: cde.valueDomain.uom ? [cde.valueDomain.uom] : [],
             answers: []

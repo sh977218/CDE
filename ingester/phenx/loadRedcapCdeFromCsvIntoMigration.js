@@ -75,7 +75,7 @@ function createCde(data, formId) {
                 valueMeaningName: 'No'
             }];
         } else if (fieldType === 'calc') {
-        } else {
+        } else if (data['Choices, Calculations, OR Slider Labels'].length > 0) {
             var pvText = data['Choices, Calculations, OR Slider Labels'];
             if (pvText && pvText.length > 0) {
                 var permissibleValues = [];
@@ -90,6 +90,8 @@ function createCde(data, formId) {
                 cde.valueDomain.permissibleValues = permissibleValues;
                 cde.valueDomain.datatype = 'Value List';
             }
+        } else {
+            cde.valueDomain.datatype = 'text';
         }
     }
     return cde;
