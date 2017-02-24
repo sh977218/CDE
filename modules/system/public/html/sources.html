@@ -25,4 +25,11 @@
         <div class="col-sm-7 datatype">{{eltSource.datatype}}
         </div>
     </div>
+    <div class="row" ng-if="eltSource.copyright">
+        <div class="col-sm-5 questionSectionLabel text-right">Copyright:</div>
+        <div class="col-sm-7">
+            <div inline-area-edit inline-area-visibility="true" is-allowed="false"
+                 model="eltSource.copyright.value" def-format="eltSource.copyright.valueFormat"></div>
+        </div>
+    </div>
 </fieldset>
