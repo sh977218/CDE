@@ -45,38 +45,43 @@
 <div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="newConceptModal" aria-hidden="true">
 
-    <div class="modal-header" id="newConceptModalHeader">
-        <h4>Add Concept</h4>
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Add Concept</h4>
+            </div>
+            <div class="modal-body">
+
+                <form role="form" #conceptForm="ngForm">
+                    <div class="form-group">
+                        <label for="name">Code Name</label>
+                        <input class="form-control" [(ngModel)]="newConcept.name" name="name" id="name" Placeholder="Concept Code Name" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="codeId">Code ID</label>
+                        <input class="form-control" name="codeId" [(ngModel)]="newConcept.originId" id="codeId"
+                               placeholder="Concept Code Identifier" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codeSystem">Code System</label>
+                        <input class="form-control" name="codeSystem" [(ngModel)]="newConcept.origin" value="LOINC" id="codeSystem" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="conceptType">Concept Type</label>
+                        <select class="form-control" [(ngModel)]="newConcept.type" name="conceptType" id="conceptType" required>
+                            <option value="dec">Data Element</option>
+                            <option value="oc">Class</option>
+                            <option value="prop">Property</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer" id="newConceptModalFooter">
+                        <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
+                        <button class="btn btn-warning" (click)="okCreate()" [disabled]="!conceptForm.form.valid"
+                                id="createConcept" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <form name="form" role="form">
-        <div class="modal-body" id="newConceptModalBody">
-            <div class="form-group">
-                <label for="name">Code Name</label>
-                <input class="form-control" [(ngModel)]="newConcept.name" name="name" id="name" Placeholder="Concept Code Name" required/>
-            </div>
-            <div class="form-group">
-                <label for="codeId">Code ID</label>
-                <input class="form-control" name="codeId" [(ngModel)]="newConcept.originId" id="codeId"
-                       placeholder="Concept Code Identifier" required />
-            </div>
-
-            <div class="form-group">
-                <label for="codeSystem">Code System</label>
-                <input class="form-control" name="codeSystem" [(ngModel)]="newConcept.origin" value="LOINC" id="codeSystem" required />
-            </div>
-            <div class="form-group">
-                <label for="conceptType">Concept Type</label>
-                <select class="form-control" [(ngModel)]="newConcept.type" name="conceptType" id="conceptType" required>
-                    <option value="dec">Data Element</option>
-                    <option value="oc">Class</option>
-                    <option value="prop">Property</option>
-                </select>
-            </div>
-        </div>
-        <div class="modal-footer" id="newConceptModalFooter">
-            <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
-            <button class="btn btn-warning" (click)="okCreate()" ng-disabled="isClean() || form.$invalid" id="createConcept" type="submit">Save</button>
-        </div>
-    </form>
-
 </div>
