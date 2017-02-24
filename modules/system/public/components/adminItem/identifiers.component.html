@@ -78,7 +78,7 @@
                         </div>
                         <div class="modal-footer" id="newIdModalFooter">
                             <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
-                            <button class="btn btn-warning" (click)="addId()" ng-disabled="isClean() || form.$invalid"
+                            <button class="btn btn-warning" (click)="addId()" [disabled]="form.$invalid"
                             id="createId" type="submit">Save
                             </button>
                         </div>

@@ -13,6 +13,10 @@ export class ConceptsComponent {
     @ViewChild("childModal") public childModal: ModalDirective;
     @Input( ) public elt: any;
 
+    constructor(
+        @Inject("isAllowedModel") private isAllowedModel) {
+    }
+
     conceptConfigurations = [
         {type: "dataElementConcept", details: {display: "Data Element Concept", path: "dataElementConcept.concepts.name"}},
         {type: "objectClass", details: {display: "Object Class", path: "objectClass.concepts.name"}},
