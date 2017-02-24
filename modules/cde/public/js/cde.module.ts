@@ -9,6 +9,7 @@ import { ConceptsComponent } from "../components/concepts.component";
 
 @NgModule({
     declarations: [
+        upgradeAdapter.upgradeNg1Component("sortableArray"),
         ConceptsComponent
         ],
     providers: [],
