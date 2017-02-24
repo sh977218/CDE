@@ -92,7 +92,7 @@ exports.convertCdeToQuestion = function (data, skipLogicMap, cde) {
             datatype: REDCAP_DATATYPE_MAP[data['Field Type']],
             required: data['Required Field?'] ? data['Required Field?'] : false,
             uoms: cde.valueDomain.uom ? [cde.valueDomain.uom] : [],
-            answers: cde.valueDomain.permissibleValues ? cde.valueDomain.permissibleValues : []
+            answers: []
         }
     };
     var branchLogic = data['Branching Logic (Show field only if...)'];
@@ -123,6 +123,9 @@ exports.convertCdeToQuestion = function (data, skipLogicMap, cde) {
         question.question.datatypeNumber = cde.valueDomain.datatypeNumber ? cde.valueDomain.datatypeNumber : {};
     } else if (question.question.datatype === 'Text') {
         question.question.datatypeText = cde.valueDomain.datatypeText ? cde.valueDomain.datatypeText : {};
+        var validationType = data['Text Validation Type OR Show Slider Number'];
+        if (validationType.trim() === 'notes')
+            question.question.datatypeText.showAsTextarea = true;
     } else if (question.question.datatype === 'Date') {
         question.question.datatypeDate = cde.valueDomain.datatypeDate ? cde.valueDomain.datatypeDate : {};
     } else if (question.question.datatype === 'Value List') {

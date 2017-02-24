@@ -23,6 +23,7 @@ var questionSchema = {
         , maxLength: Number
         , regex: String
         , rule: String
+        , showAsTexArea: {type: Boolean, default: false}
     }, datatypeDate: {
         format: String
     }

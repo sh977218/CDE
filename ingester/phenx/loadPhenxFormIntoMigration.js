@@ -20,8 +20,7 @@ var protocolCount = 0;
 var today = new Date().toJSON();
 var source = 'PhenX';
 
-var ZIP_BASE_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/half';
-//var ZIP_BASE_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/test';
+var ZIP_BASE_PATH = require('../createMigrationConnection').PHENX_ZIP_BASE_FOLDER;
 
 function findInstrument(formId) {
     var instrumentPath = ZIP_BASE_PATH + '/' + formId + '.zip/' + 'instrument.csv';
@@ -45,9 +44,10 @@ function doCSV(filePath, form, formId, doneCsv) {
         var input = fs.readFileSync(filePath);
         csv.parse(input, option, function (err, rows) {
             var newSection = true;
-            var formElements;
+            var formElement;
             async.forEachSeries(rows, (row, doneOneRow)=> {
                 var fieldType = row['Field Type'].trim();
+                var fieldLabel = row['Field Label'].trim();
                 if (fieldType === 'descriptive') {
                     var variableName = row['Variable / Field Name'];
                     var attachmentPath = ZIP_BASE_PATH + '/' + formId + '.zip/attachments/' + variableName;
@@ -56,60 +56,72 @@ function doCSV(filePath, form, formId, doneCsv) {
                         form.formElements.push({
                             elementType: "section",
                             label: variableName,
-                            instructions: {value: row['Field Label'], valueFormat: 'html'},
+                            instructions: {value: fieldLabel, valueFormat: 'html'},
                             skipLogic: {condition: ''},
                             formElements: []
                         });
+                        formElement = form.formElements[form.formElements.length - 1];
+                        newSection = false;
                         if (attachmentExist) {
                             var allAttachmentFiles = fs.readdirSync(attachmentPath).filter((f)=> {
                                 return f.indexOf('Thumbs.db') === -1;
                             });
                             async.forEachSeries(allAttachmentFiles, (attachmentFile, doneOneAttachmentFile)=> {
+                                var attachmentStream = fs.createReadStream(attachmentPath + '/' + attachmentFile);
+                                var fileType = attachmentFile.split('.').pop();
+                                var fileSize = fs.statSync(attachmentPath + '/' + attachmentFile).size;
                                 mongo_data.addAttachment({
                                     originalname: attachmentFile,
-                                    mimetype: "image",
-                                    stream: fs.createReadStream(attachmentPath + '/' + attachmentFile)
-                                }, {username: 'batchloader'}, variableName, form, (attachment, newFileCreated, err)=> {
-                                    form.formElements.slice(-1)[0].instructions.value += '\n<img src="/data/' + attachment.fileid + '"/>';
+                                    mimetype: "image/" + fileType,
+                                    size: fileSize,
+                                    stream: attachmentStream
+                                }, {
+                                    username: 'batchloader',
+                                    roles: ["AttachmentReviewer"]
+                                }, variableName, form, (attachment, newFileCreated, err)=> {
+                                    formElement.instructions.value += '\n<img src="/data/' + attachment.fileid + '"/>';
                                     doneOneAttachmentFile();
                                 });
                             }, ()=> {
-                                newSection = false;
-                                formElements = form.formElements[0].formElements;
                                 doneOneRow()
                             });
                         } else {
                             doneOneRow();
                         }
                     } else {
-                        //@todo
-                        form.formElements.slice(-1)[0].instructions.value += row['Field Label'];
+                        formElement = form.formElements[form.formElements.length - 1];
+                        formElement.instructions.value += row['Field Label'];
                         if (attachmentExist) {
                             var allAttachmentFiles = fs.readdirSync(attachmentPath).filter((f)=> {
                                 return f.indexOf('Thumbs.db') === -1;
                             });
                             async.forEachSeries(allAttachmentFiles, (attachmentFile, doneOneAttachmentFile)=> {
+                                var attachmentStream = fs.createReadStream(attachmentPath + '/' + attachmentFile);
+                                var fileType = attachmentFile.split('.').pop();
+                                var fileSize = fs.statSync(attachmentPath + '/' + attachmentFile).size;
                                 mongo_data.addAttachment({
                                     originalname: attachmentFile,
-                                    mimetype: "image",
-                                    stream: fs.createReadStream(attachmentPath + '/' + attachmentFile)
-                                }, {username: 'batchloader'}, variableName, form, (attachment, newFileCreated, err)=> {
-                                    form.formElements.slice(-1)[0].instructions.value += '\n<img src="/data/' + attachment.fileid + '"/>';
+                                    mimetype: "image/" + fileType,
+                                    size: fileSize,
+                                    stream: attachmentStream
+                                }, {
+                                    username: 'batchloader',
+                                    roles: ["AttachmentReviewer"]
+                                }, variableName, form, (attachment, newFileCreated, err)=> {
+                                    formElement.instructions.value += '\n<img src="/data/' + attachment.fileid + '"/>';
                                     doneOneAttachmentFile();
                                 });
                             }, ()=> {
                                 newSection = false;
-                                formElements = form.formElements[0].formElements;
                                 doneOneRow()
                             });
                         } else {
                             doneOneRow();
                         }
                     }
-                }
-                else {
+                } else {
                     newSection = true;
-                    formElements = form.formElements;
+                    formElement = form.formElements[form.formElements.length - 1];
                     var formattedFieldLabel = row['Field Label'].replace(/"/g, "'").trim();
                     var branchLogic = row['Branching Logic (Show field only if...)'];
                     if (branchLogic && branchLogic.trim().indexOf('(') > -1) {
@@ -134,7 +146,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                                 console.log('filePath ' + filePath);
                                 process.exit(1);
                             }
-                            formElements.push(question);
+                            formElement.formElements.push(question);
                             doneOneRow();
                         } else {
                             console.log('found ' + cdes.length + ' cde: ');
@@ -146,15 +158,16 @@ function doCSV(filePath, form, formId, doneCsv) {
                 }
             }, ()=> {
                 form.naming.push(name);
-                form.formElements = formElements;
                 doneCsv();
             })
         });
-    } else
-        doneCsv();
+    } else doneCsv();
 }
 
-var stream = MigrationProtocolModel.find({protocolId: '020303'}).stream();
+//var migrationCon = {protocolId: '020303'};
+//var migrationCon = {protocolId: '011402'};
+var migrationCon = {};
+var stream = MigrationProtocolModel.find(migrationCon).stream();
 stream.on('data', (protocol) => {
     stream.pause();
     protocolCount++;
@@ -180,7 +193,8 @@ stream.on('data', (protocol) => {
                 if (err) throw "Unable to create Form." + form;
                 else doCSV(instrumentPath, thisForm, formId, function () {
                     thisForm.save(()=> {
-                        stream.pause();
+                        console.log('protocolCount: ' + protocolCount);
+                        stream.resume();
                     });
                 });
             });
@@ -205,7 +219,8 @@ stream.on('data', (protocol) => {
                     if (err)throw err;
                     else doCSV(instrumentPath, thisForm, formId, function () {
                         thisForm.save(()=> {
-                            stream.pause();
+                            console.log('protocolCount: ' + protocolCount);
+                            stream.resume();
                         });
                     });
                 });

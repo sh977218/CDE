@@ -5,8 +5,8 @@ var async = require('async');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
 
-var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/half';
-//var ZIP_PATH = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/test';
+var ZIP_PATH = require('../createMigrationConnection').PHENX_ZIP_BASE_FOLDER;
+
 var createdCdes = [];
 var foundLoincs = [];
 var foundCdes = [];

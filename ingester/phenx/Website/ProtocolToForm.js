@@ -108,49 +108,38 @@ exports.protocolToForm = function (protocol) {
         });
     }
     if (protocol['Variables'] && protocol['Variables'].length > 0) {
-        var variables = [];
+        var ths = '<tr><th>Variable Name</th><th>Variable ID</th><th>Variable Description</th><th>Version</th><th>Mapping</th></tr>';
+        var tbody = '';
         protocol['Variables'].forEach((v)=> {
-            variables.push({
-                'Mapping': v['Mapping'],
-                'Version': v['Version'],
-                'Variable Description': v['Variable Description'],
-                'Variable ID': v['Variable ID'],
-                'Variable Name': v['Variable Name']
-            })
+            tbody += '<tr><td>' + v['Variable Name'] + '</td><td>' + v['Variable ID'] + '</td><td>' + v['Variable Description'] + '</td><td>' + v['Version'] + '</td><td>' + v['Mapping'] + '</td></tr>'
         });
         form.properties.push({
             key: 'Variables',
-            value: variables,
+            value: '<table class="table table-striped">' + ths + tbody + '</table>',
             valueFormat: 'html'
         });
     }
     if (protocol['Standards'] && protocol['Standards'].length > 0) {
-        var standards = [];
+        var ths = '<tr><th>Standard</th><th>Name</th><th>ID</th><th>Source</th></tr>';
+        var tbody = '';
         protocol['Standards'].forEach((s)=> {
-            standards.push({
-                'Source': s['Source'],
-                'ID': s['ID'],
-                'Name': s['Name'],
-                'Standard': s['Standard']
-            })
+            tbody += '<tr><td>' + s['Standard'] + '</td><td>' + s['Name'] + '</td><td>' + s['ID'] + '</td><td>' + s['Source'] + '</td></tr>'
         });
         form.properties.push({
             key: 'Standards',
-            value: standards,
+            value: '<table class="table table-striped">' + ths + tbody + '</table>',
             valueFormat: 'html'
         });
     }
     if (protocol['Requirements'] && protocol['Requirements'].length > 0) {
-        var requirements = [];
+        var ths = '<tr><th>Requirement Category</th><th>Required</th></tr>';
+        var tbody = '';
         protocol['Requirements'].forEach((r)=> {
-            requirements.push({
-                'Required': r['Required'],
-                'Requirement Category': r['Requirement Category']
-            })
+            tbody += '<tr><td>' + r['Requirement Category'] + '</td><td>' + r['Required'] + '</td></tr>'
         });
         form.properties.push({
             key: 'Requirements',
-            value: requirements,
+            value: '<table class="table table-striped">' + ths + tbody + '</table>',
             valueFormat: 'html'
         });
     }
