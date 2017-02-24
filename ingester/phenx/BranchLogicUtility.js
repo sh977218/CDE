@@ -125,7 +125,7 @@ exports.convertCdeToQuestion = function (data, skipLogicMap, cde) {
         question.question.datatypeText = cde.valueDomain.datatypeText ? cde.valueDomain.datatypeText : {};
         var validationType = data['Text Validation Type OR Show Slider Number'];
         if (validationType.trim() === 'notes')
-            question.question.datatypeText.showAsTextarea = true;
+            question.question.datatypeText.showAsTextArea = true;
     } else if (question.question.datatype === 'Date') {
         question.question.datatypeDate = cde.valueDomain.datatypeDate ? cde.valueDomain.datatypeDate : {};
     } else if (question.question.datatype === 'Value List') {

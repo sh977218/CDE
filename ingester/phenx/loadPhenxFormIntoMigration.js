@@ -1,6 +1,7 @@
 var async = require('async');
 var csv = require('csv');
 var fs = require('fs');
+var capitalize = require('capitalize');
 
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
@@ -45,7 +46,9 @@ function doCSV(filePath, form, formId, doneCsv) {
         csv.parse(input, option, function (err, rows) {
             var newSection = true;
             var formElement;
+            var index = 0;
             async.forEachSeries(rows, (row, doneOneRow)=> {
+                index++;
                 var fieldType = row['Field Type'].trim();
                 var fieldLabel = row['Field Label'].trim();
                 if (fieldType === 'descriptive') {
@@ -90,7 +93,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                         }
                     } else {
                         formElement = form.formElements[form.formElements.length - 1];
-                        formElement.instructions.value += row['Field Label'];
+                        formElement.instructions.value += fieldLabel;
                         if (attachmentExist) {
                             var allAttachmentFiles = fs.readdirSync(attachmentPath).filter((f)=> {
                                 return f.indexOf('Thumbs.db') === -1;
@@ -120,6 +123,14 @@ function doCSV(filePath, form, formId, doneCsv) {
                         }
                     }
                 } else {
+                    if (index === 1)
+                        form.formElements.push({
+                            elementType: "section",
+                            label: '',
+                            instructions: {value: '', valueFormat: 'html'},
+                            skipLogic: {condition: ''},
+                            formElements: []
+                        });
                     newSection = true;
                     formElement = form.formElements[form.formElements.length - 1];
                     var formattedFieldLabel = row['Field Label'].replace(/"/g, "'").trim();
@@ -128,13 +139,14 @@ function doCSV(filePath, form, formId, doneCsv) {
                         form.properties.push({key: 'Unsolved branchLogic', value: branchLogic})
                     }
                     skipLogicMap[row['Variable / Field Name'].trim()] = formattedFieldLabel;
-                    if (name.designation && name.designation !== row['Form Name']) {
+                    var formName = capitalize.words(row['Form Name'].replace(/_/g, ' '));
+                    if (name.designation && name.designation !== formName) {
                         console.log('Form Name not match.');
                         console.log('Form Name: ' + row['Form Name']);
                         console.log('name.designation: ' + name.designation);
                         process.exit(1);
                     } else {
-                        name.designation = row['Form Name'];
+                        name.designation = formName;
                     }
                     var variableName = row['Variable / Field Name'];
                     var query = {'ids.id': formId + '_' + variableName};
@@ -150,14 +162,15 @@ function doCSV(filePath, form, formId, doneCsv) {
                             doneOneRow();
                         } else {
                             console.log('found ' + cdes.length + ' cde: ');
-                            console.log(data);
+                            console.log(row);
                             console.log(formId);
                             process.exit(1);
                         }
                     })
                 }
             }, ()=> {
-                form.naming.push(name);
+                form.naming.unshift(name);
+                form.markModified('formElements');
                 doneCsv();
             })
         });
@@ -182,7 +195,7 @@ stream.on('data', (protocol) => {
     };
     FormModel.find(formCond).where("ids").elemMatch(function (elem) {
         elem.where("source").equals(source);
-        elem.where("id").equals(formId);
+        elem.where("id").equals(protocol['protocolId']);
     }).exec((err, existingForms)=> {
         if (err) throw err;
         else if (existingForms.length === 0) {
@@ -192,6 +205,10 @@ stream.on('data', (protocol) => {
             createForm.save(function (err, thisForm) {
                 if (err) throw "Unable to create Form." + form;
                 else doCSV(instrumentPath, thisForm, formId, function () {
+                    thisForm.properties = form.properties.filter((p)=> {
+                        return p.key !== 'LOINC Fields';
+                    });
+                    thisForm.markModified('properties');
                     thisForm.save(()=> {
                         console.log('protocolCount: ' + protocolCount);
                         stream.resume();
@@ -218,6 +235,10 @@ stream.on('data', (protocol) => {
                 mongo_form.update(existingForm, {username: "batchloader"}, function (err, thisForm) {
                     if (err)throw err;
                     else doCSV(instrumentPath, thisForm, formId, function () {
+                        thisForm.properties = form.properties.filter((p)=> {
+                            return p.key !== 'LOINC Fields';
+                        });
+                        thisForm.markModified('properties');
                         thisForm.save(()=> {
                             console.log('protocolCount: ' + protocolCount);
                             stream.resume();

@@ -28,7 +28,7 @@ exports.protocolToForm = function (protocol) {
         referenceDocuments: [{
             document: protocol['General References']
         }],
-        ids: [{source: 'PhenX', id: 'PX' + protocol['protocolId']}],
+        ids: [{source: 'PhenX', id: protocol['protocolId']}],
         classification: [],
         formElements: []
     };
