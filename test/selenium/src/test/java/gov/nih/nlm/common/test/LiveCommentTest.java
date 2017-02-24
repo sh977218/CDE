@@ -2,12 +2,18 @@ package gov.nih.nlm.common.test;
 
 import gov.nih.nlm.cde.test.comments.CdeCommentTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.testng.annotations.Test;
 
 public class LiveCommentTest extends CdeCommentTest {
 
     private void replyComment(String reply, int i) {
-        findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
+        try {
+            findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
+        } catch (StaleElementReferenceException e) {
+            hangon(2);
+            findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
+        }
         hangon(1);
         scrollToViewById("replyBtn_" + i);
         clickElement(By.id("replyBtn_" + i));

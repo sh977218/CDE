@@ -19,5 +19,7 @@ public class CdeSourcesTest extends NlmCdeBaseTest {
         textPresent("standard");
         textPresent("Datatype:");
         textPresent("Number");
+        textPresent("Copyright:");
+        textPresent("Terms of Use");
     }
 }

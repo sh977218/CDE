@@ -17,8 +17,6 @@ angular.module('formModule').controller
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
 
-    $scope.formHistoryCtrlLoadedPromise = $q.defer();
-
     $scope.deferredEltLoaded = $q.defer();
     $scope.isFormValid = true;
 
@@ -118,7 +116,6 @@ angular.module('formModule').controller
             includes: ['/form/public/html/formHistory.html'],
             select: function (thisTab) {
                 $scope.setCurrentTab(thisTab);
-                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
             }
         }
     };

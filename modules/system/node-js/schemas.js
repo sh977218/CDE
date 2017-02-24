@@ -31,7 +31,11 @@ schemas.sourceSchema = new mongoose.Schema({
     created: Date,
     updated: Date,
     registrationStatus: String,
-    datatype: String
+    datatype: String,
+    copyright: {
+        value: String,
+        valueFormat: String,
+    }
 }, {_id: false});
 
 var commonEmbedSchema = {

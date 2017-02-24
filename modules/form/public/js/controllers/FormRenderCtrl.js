@@ -40,9 +40,12 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
 
     $scope.selection = {};
     var setSelectedProfile = function () {
-        if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0 &&
+        if ($scope.profile)
+            $scope.selection.selectedProfile = $scope.profile;
+        else if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0 &&
             $scope.elt.displayProfiles.indexOf($scope.selection.selectedProfile) === -1)
             $scope.selection.selectedProfile = $scope.elt.displayProfiles[0];
+
         if (!$scope.selection.selectedProfile)
             $scope.selection.selectedProfile = {
                 name: "Default Config",
@@ -51,7 +54,8 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
                 sectionsAsMatrix: true,
                 displayValues: false,
                 displayType: 'Follow-up',
-                numberOfColumns: 4
+                numberOfColumns: 4,
+                displayInvisible: false
             };
         $scope.setNativeRenderType($scope.selection.selectedProfile.displayType);
     };
