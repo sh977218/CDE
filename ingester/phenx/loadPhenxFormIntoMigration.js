@@ -229,6 +229,10 @@ stream.on('data', (protocol) => {
                 existingForm.referenceDocuments = form.referenceDocuments;
                 existingForm.formElements = form.formElements;
                 existingForm.properties = form.properties;
+                existingForm.ids = existingForm.ids.filter((i)=> {
+                    return i.source !== 'LOINC';
+                });
+
                 updateShare.removeClassificationTree(existingForm, 'PhenX');
                 if (form.classification[0])
                     existingForm.classification.push(form.classification[0]);

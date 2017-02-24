@@ -129,7 +129,11 @@ exports.convertCdeToQuestion = function (data, skipLogicMap, cde) {
     } else if (question.question.datatype === 'Date') {
         question.question.datatypeDate = cde.valueDomain.datatypeDate ? cde.valueDomain.datatypeDate : {};
     } else if (question.question.datatype === 'Value List') {
-        if (cde.valueDomain.permissibleValues.length === 0) throw ('Unknown CDE datatype: ' + cde.valueDomain.datatype);
+        if (cde.valueDomain.permissibleValues.length === 0) {
+            console.log(data);
+            console.log('id ' + cde.ids[0].id);
+            throw ('Unknown CDE datatype: ' + cde.valueDomain.datatype);
+        }
         cde.valueDomain.permissibleValues.forEach(function (pv) {
             if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
                 pv.valueMeaningName = pv.permissibleValue;
