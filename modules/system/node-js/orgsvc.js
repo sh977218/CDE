@@ -29,10 +29,6 @@ exports.removeOrg = function(req, res) {
     });
 };
 
-exports.updateOrg = function(req, res) {
-    mongo_data.updateOrg(req.body, res);
-};
-
 exports.transferSteward = function(req, res) {
     var results = [];
     var hasError = false;

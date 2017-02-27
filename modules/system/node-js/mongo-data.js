@@ -368,7 +368,7 @@ exports.getFile = function(user, id, res) {
 exports.updateOrg = function(org, res) {
     var id = org._id;
     delete org._id;
-    Org.findOneAndUpdate({_id: id}, org, function(err, found) {
+    Org.findOneAndUpdate({_id: id}, org, {new: true}, function(err, found) {
         if (found) {
             res.send('Org has been updated.');
         } else {

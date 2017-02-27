@@ -124,7 +124,6 @@ angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$uibM
                     " has a datatype other than 'Number' and may not be added to a score";
             }
         });
-        if ($scope.invalidCdeMessage) return;
     };
 
 }]);
