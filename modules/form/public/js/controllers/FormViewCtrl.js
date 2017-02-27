@@ -373,7 +373,9 @@ angular.module('formModule').controller
 
     function validateSingleExpression(tokens, previousQuestions) {
         var filteredQuestions = previousQuestions.filter(function (pq) {
-            return questionSanitizer(pq.label) === tokens[0];
+            var label = pq.label;
+            if (!label || label.length === 0) label = pq.question.cde.name;
+            return questionSanitizer(label) === tokens[0];
         });
         if (filteredQuestions.length !== 1) {
             return '"' + tokens[0] + '" is not a valid question label';
@@ -456,7 +458,9 @@ angular.module('formModule').controller
                  else if (q.question.datatype === 'Date' || q.question.datatype === 'Number') return true;
                  else return true;
              }).map(function (q) {
-                 return '"' + questionSanitizer(q.label) + '" ';
+                 var label = q.label;
+                 if (!label || label.length === 0) label = q.question.cde.name;
+                 return '"' + questionSanitizer(label) + '" ';
              });
          } else if (tokens.length % 4 === 1) {
              options = ["=", "<", ">", ">=", "<="];
@@ -474,8 +478,9 @@ angular.module('formModule').controller
 
     function getAnswer(previousLevel, questionName) {
         var questions = previousLevel.filter(function (q) {
-            if (q.label && questionName)
-                return questionSanitizer(q.label) === questionName;
+            var label = q.label;
+            if (!label || label.length === 0) label = q.question.cde.name;
+            if (label && questionName) return questionSanitizer(label) === questionName;
         });
         if (questions.length <= 0) return [];
         var question = questions[0];

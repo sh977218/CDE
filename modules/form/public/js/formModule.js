@@ -49,8 +49,12 @@ angular.module('formModule').factory('nativeFormService', [ function() {
             fe.forEach(function (element) {
                 if (element.elementType != 'question')
                     result = result.concat(service.getQuestions(element.formElements, qLabel));
-                else if (element.label == qLabel)
-                    result = result.concat(element);
+                else {
+                    var label = element.label;
+                    if (!label || label.length === 0) label = element.question.cde.name;
+                    if (label == qLabel)
+                        result = result.concat(element);
+                }
             });
             return result;
         },
