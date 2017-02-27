@@ -17,6 +17,8 @@ export class ConceptsComponent {
         @Inject("isAllowedModel") private isAllowedModel) {
     }
 
+    newConcept = {origin: "LOINC", type: "dec"};
+
     conceptConfigurations = [
         {type: "dataElementConcept", details: {display: "Data Element Concept", path: "dataElementConcept.concepts.name"}},
         {type: "objectClass", details: {display: "Object Class", path: "objectClass.concepts.name"}},
@@ -25,6 +27,7 @@ export class ConceptsComponent {
 
     openNewConcept () {
         this.childModal.show();
+        this.newConcept = {origin: "LOINC", type: "dec"};
     };
 
     dataElementConceptRemoveConcept (index) {
@@ -46,12 +49,9 @@ export class ConceptsComponent {
         this[type + "RemoveConcept"](i);
     };
 
-    relatedCdes (concept, type) {
-        // @TODO
-        // $location.url('/cde/search?q=' + $scope.conceptConfigurations[type].path + ':"' + concept + '"');
+    relatedCdes (concept, config) {
+        window.location.href = "/cde/search?q=" + config.details.path + ':"' + concept + '"';
     };
-
-    newConcept = {origin: "LOINC", type: "dec"};
 
     okCreate () {
         if (!this.elt.dataElementConcept) this.elt.dataElementConcept = {};

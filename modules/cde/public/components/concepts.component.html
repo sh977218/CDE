@@ -17,7 +17,7 @@
                         <tbody>
                         <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                             itemtype="http://schema.org/MedicalCode">
-                            <td><a tabindex="0" href (click)="relatedCdes(concept.name, config.type)" id="concept_cde_name_{{$index}}"
+                            <td><a tabindex="0" href (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
                                    itemprop="name">{{concept.name}}</a>
                             </td>
                             <td tabindex="0" itemprop="codeSystem">{{concept.origin}}</td>
