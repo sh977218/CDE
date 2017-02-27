@@ -296,7 +296,7 @@ exports.init = function (app) {
 
     app.post('/updateOrg', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            orgsvc.updateOrg(req, res);
+            mongo_data_system.updateOrg(req.body, res);
         } else {
             res.status(401).send();
         }
