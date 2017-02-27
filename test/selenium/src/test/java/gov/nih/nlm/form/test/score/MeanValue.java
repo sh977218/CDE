@@ -19,7 +19,7 @@ public class MeanValue extends NlmCdeBaseTest {
         clickElement(By.id("addNewScore"));
 
         findElement(By.id("newDerivationRule.name")).sendKeys("Mean Derivation Rule");
-        new Select(findElement(By.id("newDerivationRule.formula"))).selectByVisibleText("Mean / Average");
+        new Select(findElement(By.id("newDerivationRule.formula"))).selectByVisibleText("Mean (Average)");
 
         clickElement(By.id("createDerivationRule"));
         newCdeVersion();
