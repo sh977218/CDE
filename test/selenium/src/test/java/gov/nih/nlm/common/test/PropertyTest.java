@@ -77,6 +77,7 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]"));
+        hangon(1);
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
 
         textPresent("Saved");
