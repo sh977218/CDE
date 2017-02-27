@@ -64,9 +64,8 @@ module.exports = {
     devtool: prod ? '#source-map' : '#source-map',
     watch: !prod,
     watchOptions: {
-        aggregateTimeout: 300,
-        ignored: /node_modules/,
-        poll: 1000
+        aggregateTimeout: 1000,
+        ignored: /node_modules/
     },
     devServer: {
         contentBase: __dirname,
