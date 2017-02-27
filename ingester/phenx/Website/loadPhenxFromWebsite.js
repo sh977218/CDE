@@ -65,10 +65,8 @@ exports.run = function (cb) {
         },
         function () {
             console.log('Finished grab all measures from PhenX website');
-            if (cb)cb();
-            else {
-                process.exit(1);
-            }
+            if (cb) cb();
+            else process.exit(1);
         }])
 };
 

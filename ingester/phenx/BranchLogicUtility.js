@@ -1,3 +1,5 @@
+var capitalize = require('capitalize');
+
 var SYMBOL_MAP = require('./REDCAP_SYMBOL_MAP').map;
 var CONJUNCTION_MAP = require('./REDCAP_CONJUNCTION_MAP').map;
 var REDCAP_DATATYPE_MAP = require('./REDCAP_DATATYPE_MAP').map;
@@ -73,9 +75,12 @@ exports.convertSkipLogic = function (skipLogicMap, skipLogicText) {
 
 
 exports.convertCdeToQuestion = function (data, skipLogicMap, cde) {
+    var fieldLabel = data['Field Label'].trim();
+    var variableName = data['Variable / Field Name'];
     var question = {
         elementType: "question",
-        label: data['Field Label'],
+        label: fieldLabel,
+        hideLabel: fieldLabel.length === 0 ? true : false,
         cardinality: {min: 1, max: 1},
         skipLogic: {
             condition: ''
@@ -85,7 +90,7 @@ exports.convertCdeToQuestion = function (data, skipLogicMap, cde) {
                 tinyId: cde.tinyId,
                 version: cde.version,
                 derivationRules: cde.derivationRules,
-                name: cde.naming[0] ? cde.naming[0].designation : '',
+                name: fieldLabel.length === 0 ? capitalize.words(variableName.replace(/_/g, ' ')) : fieldLabel,
                 ids: cde.ids ? cde.ids : [],
                 permissibleValues: cde.valueDomain.permissibleValues ? cde.valueDomain.permissibleValues : []
             },

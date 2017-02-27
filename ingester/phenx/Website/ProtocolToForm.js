@@ -2,6 +2,7 @@ var mongo_data = require('../../../modules/system/node-js/mongo-data');
 var classificationShare = require('../../../modules/system/shared/classificationShared');
 
 exports.protocolToForm = function (protocol) {
+    var classificationLength = protocol['classification'].length;
     var form = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {
@@ -11,7 +12,7 @@ exports.protocolToForm = function (protocol) {
         updated: new Date(),
         imported: new Date(),
         origin: protocol['Source'],
-        naming: [{
+        naming: [{designation: protocol['classification'][classificationLength - 1], tags: [{tag: ''}]}, {
             designation: protocol['Protocol Name From Source'],
             definition: protocol['Description of Protocol'],
             tags: [{tag: ''}]

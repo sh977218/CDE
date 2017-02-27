@@ -4,6 +4,9 @@ var capitalize = require('capitalize');
 var async = require('async');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
+var MigrationProtocolModel = require('../createMigrationConnection').MigrationProtocolModel;
+var updateShare = require('../updateShare');
+var classificationShare = require('../../modules/system/shared/classificationShared');
 
 var ZIP_PATH = require('../createMigrationConnection').PHENX_ZIP_BASE_FOLDER;
 
@@ -16,10 +19,7 @@ function createCde(data, formId) {
     var fieldLabel = data['Field Label'];
     var cde = {
         tinyId: mongo_data.generateTinyId(),
-        naming: [{designation: capitalize.words(variableName.replace(/_/g, ' '))}, {
-            designation: fieldLabel,
-            tags: [{tag: 'Question Text'}]
-        }],
+        naming: [{designation: capitalize.words(variableName.replace(/_/g, ' '))}],
         stewardOrg: {name: 'PhenX'},
         sources: [{source: 'PhenX'}],
         classification: [{
@@ -31,6 +31,11 @@ function createCde(data, formId) {
         ids: [{source: 'PhenX Variable', id: formId + '_' + data['Variable / Field Name'].trim()}],
         valueDomain: {}
     };
+    if (fieldLabel.length > 0)
+        cde.naming.push({
+            designation: fieldLabel,
+            tags: [{tag: 'Question Text'}]
+        });
     var fieldType = data['Field Type'];
     var validationType = data['Text Validation Type OR Show Slider Number'];
     if (validationType.trim() === 'date_mdy') {
@@ -128,10 +133,23 @@ function doCSV(filePath, formId, doneCsv) {
             //@todo
             if (fieldType === 'descriptive') {
                 doneOneRow();
-            }
-            else {
-                findCde(row, formId, function (q) {
-                    doneOneRow();
+            } else {
+                findCde(row, formId, function (cde) {
+                    MigrationProtocolModel.find({protocolId: formId.replace('PX', '').trim()}).exec((e, protocols)=> {
+                        if (e) throw e;
+                        else if (protocols.length === 1) {
+                            var protocol = protocols[0].toObject();
+                            var classificationArray = protocol['classification'];
+                            updateShare.removeClassificationTree(cde, 'PhenX');
+                            classificationShare.classifyItem(cde, 'PhenX', classificationArray);
+                            cde.save(()=> {
+                                doneOneRow();
+                            });
+                        } else {
+                            console.log(formId + ' protocol not found');
+                            process.exit(1);
+                        }
+                    })
                 });
             }
         }, ()=> {

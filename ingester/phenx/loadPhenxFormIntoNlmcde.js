@@ -41,6 +41,7 @@ function doCSV(filePath, form, formId, doneCsv) {
     if (!filePath) {
         doneCsv();
     } else if (fs.existsSync(filePath)) {
+        form.changeNote = 'Load from REDCap';
         var option = {columns: true, relax_column_count: true};
         var input = fs.readFileSync(filePath);
         csv.parse(input, option, function (err, rows) {
@@ -51,8 +52,8 @@ function doCSV(filePath, form, formId, doneCsv) {
                 index++;
                 var fieldType = row['Field Type'].trim();
                 var fieldLabel = row['Field Label'].trim();
+                var variableName = row['Variable / Field Name'].trim();
                 if (fieldType === 'descriptive') {
-                    var variableName = row['Variable / Field Name'];
                     var attachmentPath = ZIP_BASE_PATH + '/' + formId + '.zip/attachments/' + variableName;
                     var attachmentExist = fs.existsSync(attachmentPath);
                     if (newSection) {
@@ -82,7 +83,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                                     username: 'batchloader',
                                     roles: ["AttachmentReviewer"]
                                 }, variableName, form, (attachment, newFileCreated, err)=> {
-                                    formElement.instructions.value += '\n<img src="/data/' + attachment.fileid + '"/>';
+                                    formElement.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + attachment.fileid + '"/></figure>';
                                     doneOneAttachmentFile();
                                 });
                             }, ()=> {
@@ -93,7 +94,6 @@ function doCSV(filePath, form, formId, doneCsv) {
                         }
                     } else {
                         formElement = form.formElements[form.formElements.length - 1];
-                        formElement.instructions.value += fieldLabel;
                         if (attachmentExist) {
                             var allAttachmentFiles = fs.readdirSync(attachmentPath).filter((f)=> {
                                 return f.indexOf('Thumbs.db') === -1;
@@ -111,7 +111,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                                     username: 'batchloader',
                                     roles: ["AttachmentReviewer"]
                                 }, variableName, form, (attachment, newFileCreated, err)=> {
-                                    formElement.instructions.value += '\n<img src="/data/' + attachment.fileid + '"/>';
+                                    formElement.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + attachment.fileid + '"/></figure>';
                                     doneOneAttachmentFile();
                                 });
                             }, ()=> {
@@ -133,12 +133,15 @@ function doCSV(filePath, form, formId, doneCsv) {
                         });
                     newSection = true;
                     formElement = form.formElements[form.formElements.length - 1];
-                    var formattedFieldLabel = row['Field Label'].replace(/"/g, "'").trim();
+                    var formattedFieldLabel = fieldLabel.replace(/"/g, "'").trim();
+                    if (formattedFieldLabel.length === 0) {
+                        formattedFieldLabel = capitalize.words(variableName.replace(/_/g, ' '))
+                    }
                     var branchLogic = row['Branching Logic (Show field only if...)'];
                     if (branchLogic && branchLogic.trim().indexOf('(') > -1) {
                         form.properties.push({key: 'Unsolved branchLogic', value: branchLogic})
                     }
-                    skipLogicMap[row['Variable / Field Name'].trim()] = formattedFieldLabel;
+                    skipLogicMap[variableName] = formattedFieldLabel;
                     var formName = capitalize.words(row['Form Name'].replace(/_/g, ' '));
                     if (name.designation && name.designation !== formName) {
                         console.log('Form Name not match.');
@@ -148,7 +151,6 @@ function doCSV(filePath, form, formId, doneCsv) {
                     } else {
                         name.designation = formName;
                     }
-                    var variableName = row['Variable / Field Name'];
                     var query = {'ids.id': formId + '_' + variableName};
                     DataElementModel.find(query).exec((error, cdes)=> {
                         if (error) throw error;
@@ -169,16 +171,25 @@ function doCSV(filePath, form, formId, doneCsv) {
                     })
                 }
             }, ()=> {
-                form.naming.unshift(name);
+                if (name.designation && name.designation.length > 0)
+                    form.naming.push(name);
                 form.markModified('formElements');
+                if (form.displayProfiles.length === 0)
+                    form.displayProfiles.push({
+                        name: 'default',
+                        sectionsAsMatrix: true,
+                        displayValues: true,
+                        displayInstructions: true
+                    });
+                else form.displayProfiles.forEach((d)=> {
+                    d.displayInstructions = true;
+                });
                 doneCsv();
             })
         });
     } else doneCsv();
 }
 
-//var migrationCon = {protocolId: '020303'};
-//var migrationCon = {protocolId: '011402'};
 var migrationCon = {};
 var stream = MigrationProtocolModel.find(migrationCon).stream();
 stream.on('data', (protocol) => {
