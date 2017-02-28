@@ -21,7 +21,6 @@ function removeClassificationTree(cde, org) {
 
 var changed = 0;
 var created = 0;
-var createdCDE = [];
 var same = 0;
 
 var source = 'PhenX Variable';
@@ -184,7 +183,6 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                     throw err;
                 } else {
                     created++;
-                    createdCDE.push(cdeId);
                     migrationCde.remove(function (err) {
                         if (err) console.log("unable to remove: " + err);
                         else findCdeDone();
