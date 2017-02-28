@@ -79,6 +79,8 @@ exports.compareSideBySide = {
                         property.match = JSON.stringify(getValueByNestedProperty(leftArray[found.leftIndex], property.property))
                             === JSON.stringify(getValueByNestedProperty(rightArray[found.rightIndex], property.property));
                         found.result.push(property);
+                        if (!property.match)
+                            found.notMatch = true;
                     });
                     result.push(found);
                     matchCount++;
