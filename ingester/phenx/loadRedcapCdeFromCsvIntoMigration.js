@@ -24,7 +24,7 @@ function createCde(data, formId, protocol) {
         tinyId: mongo_data.generateTinyId(),
         naming: [{designation: capitalize.words(variableName.replace(/_/g, ' '))}],
         stewardOrg: {name: 'PhenX'},
-        sources: [{source: 'PhenX'}],
+        sources: [{sourceName: 'PhenX'}],
         classification: [{
             stewardOrg: {name: 'PhenX'},
             elements: [{name: 'REDCap', elements: []}]

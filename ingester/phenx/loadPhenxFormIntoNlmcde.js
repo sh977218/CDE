@@ -60,7 +60,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                         form.formElements.push({
                             elementType: "section",
                             label: variableName,
-                            instructions: {value: fieldLabel, valueFormat: 'html'},
+                            instructions: {value: '', valueFormat: 'html'},
                             skipLogic: {condition: ''},
                             formElements: []
                         });
