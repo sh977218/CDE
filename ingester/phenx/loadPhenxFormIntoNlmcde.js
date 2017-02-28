@@ -178,7 +178,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                     form.displayProfiles.push({
                         name: 'default',
                         sectionsAsMatrix: true,
-                        displayValues: true,
+                        displayValues: false,
                         displayInstructions: true,
                         displayType: 'Follow-up'
                     });

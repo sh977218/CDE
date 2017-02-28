@@ -157,7 +157,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
 function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
     var cdeCond = {
         'archived': null,
-        'source.source': 'PhenX',
+        'sources.sourceName': 'PhenX',
         "registrationState.registrationStatus": {$not: /Retired/},
         'imported': {$ne: importDate}
     };
@@ -239,7 +239,8 @@ function streamOnClose() {
     // Retire Missing CDEs
     DataElement.update({
             imported: {$ne: importDate},
-            'source.sourceName': 'PhenX'
+        'sources': {$size: 1},
+        'sources.sourceName': 'PhenX'
         }, {
             "registrationState.registrationStatus": "Retired",
             "registrationState.administrativeNote": "Not present in import from " + importDate
