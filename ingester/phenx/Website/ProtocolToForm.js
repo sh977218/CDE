@@ -34,7 +34,7 @@ exports.protocolToForm = function (protocol) {
         formElements: []
     };
     if (protocol['classification']) {
-        classificationShare.classifyItem(form, 'PhenX', ['REDCap'].concat(protocol['classification']));
+        classificationShare.classifyItem(form, 'PhenX', protocol['classification']);
     }
     if (protocol['Protocol Name From Source']) {
         form.properties.push({
