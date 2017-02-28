@@ -179,10 +179,12 @@ function doCSV(filePath, form, formId, doneCsv) {
                         name: 'default',
                         sectionsAsMatrix: true,
                         displayValues: true,
-                        displayInstructions: true
+                        displayInstructions: true,
+                        displayType: 'Follow-up'
                     });
                 else form.displayProfiles.forEach((d)=> {
                     d.displayInstructions = true;
+                    d.displayType = 'Follow-up';
                 });
                 doneCsv();
             })
