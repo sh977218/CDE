@@ -59,7 +59,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                     if (newSection) {
                         form.formElements.push({
                             elementType: "section",
-                            label: variableName,
+                            label: '',
                             instructions: {value: '', valueFormat: 'html'},
                             skipLogic: {condition: ''},
                             formElements: []
@@ -192,7 +192,7 @@ function doCSV(filePath, form, formId, doneCsv) {
     } else doneCsv();
 }
 
-var migrationCon = {protocolId: '030501'};
+var migrationCon = {};
 var stream = MigrationProtocolModel.find(migrationCon).stream();
 stream.on('data', (protocol) => {
     stream.pause();
@@ -273,5 +273,16 @@ stream.on('error', (err)=> {
 stream.on('end', ()=> {
     console.log('end stream');
     console.log('protocolCount: ' + protocolCount);
-    process.exit(1);
+    FormModel.update({
+        imported: {$ne: new Date().toJSON()},
+        'source.sourceName': 'PhenX'
+    }, {
+        "registrationState.registrationStatus": "Retired",
+        "registrationState.administrativeNote": "Not present in import from " + importDate
+    }, (e)=> {
+        if (e) throw e;
+        else {
+            process.exit(1);
+        }
+    });
 });
