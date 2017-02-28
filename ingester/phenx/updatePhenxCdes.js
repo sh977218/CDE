@@ -239,8 +239,8 @@ function streamOnClose() {
     // Retire Missing CDEs
     DataElement.update({
             imported: {$ne: importDate},
-        'sources': {$size: 1},
-        'sources.sourceName': 'PhenX'
+            'sources': {$size: 1},
+            'sources.sourceName': 'PhenX'
         }, {
             "registrationState.registrationStatus": "Retired",
             "registrationState.administrativeNote": "Not present in import from " + importDate
