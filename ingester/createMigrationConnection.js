@@ -74,10 +74,33 @@ exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', 
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson, {
     collection: 'forms'
 }));
-
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson, {
     collection: 'orgs'
 }));
+
+// PHENX
+exports.MigrationMeasureModel = migrationConn.model('MigrationMeasure', new Schema({}, {
+    strict: false,
+    collection: 'Measure'
+}));
+exports.MigrationProtocolModel = migrationConn.model('MigrationProtocol', new Schema({}, {
+    strict: false,
+    collection: 'Protocol'
+}));
+exports.MigrationCacheModel = migrationConn.model('MigrationCache', new Schema({}, {
+    strict: false,
+    collection: 'Cache'
+}));
+exports.MigrationPhenxRedcapModel = migrationConn.model('MigrationPhenxRedcapModel', new Schema({}, {
+    strict: false,
+    collection: 'PhenxRedcap'
+}));
+exports.MigrationRedcapModel = migrationConn.model('MigrationRedcapModel', new Schema({}, {
+    strict: false,
+    collection: 'Redcap'
+}));
+exports.PhenxURL = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
+exports.PHENX_ZIP_BASE_FOLDER = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
 
 // MIGRATION REFERENCE COLLECTION
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {

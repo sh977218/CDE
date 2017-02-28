@@ -26,6 +26,7 @@
     "cron": "1.0.9",
     "csurf": "1.9.0",
     "csv": "0.4.6",
+    "csv-parser": "1.11.0",
     "deep-copy": "1.0.0",
     "deep-diff": "0.3.0",
     "ejs": "1.0.0",
@@ -113,6 +114,7 @@
     "tslint-loader": "3.3.0",
     "typescript": "2.1.5",
     "webpack": "2.2.1",
-    "zone.js": "0.7.6"
+    "zone.js": "0.7.6",
+    "capitalize": "1.0.0"
   }
 }
