@@ -106,7 +106,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         });
     } else if (deepDiff.length > 0) {
         newDe.naming = migrationCde.naming;
-        newDe.sources = migrationCde.source;
+        newDe.sources = migrationCde.sources;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
         newDe.imported = importDate;
@@ -156,10 +156,10 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
 
 function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
     var cdeCond = {
-        archived: null,
-        source: source,
+        'archived': null,
+        'source.source': 'PhenX',
         "registrationState.registrationStatus": {$not: /Retired/},
-        imported: {$ne: importDate}
+        'imported': {$ne: importDate}
     };
     //noinspection JSUnresolvedFunction
     DataElement.find(cdeCond).where("ids").elemMatch(function (elem) {
