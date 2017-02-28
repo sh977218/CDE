@@ -13,8 +13,11 @@ var ZIP_PATH = require('../createMigrationConnection').PHENX_ZIP_BASE_FOLDER;
 var createdCdes = [];
 var foundLoincs = [];
 var foundCdes = [];
+var csvCount = 0;
+var totalCdeCount = 0;
 
-function createCde(data, formId) {
+function createCde(data, formId, protocol) {
+    var classificationArray = protocol['classification'];
     var variableName = data['Variable / Field Name'];
     var fieldLabel = data['Field Label'];
     var cde = {
@@ -99,34 +102,46 @@ function createCde(data, formId) {
             cde.valueDomain.datatype = 'text';
         }
     }
+    updateShare.removeClassificationTree(cde, 'PhenX');
+    classificationShare.classifyItem(cde, 'PhenX', classificationArray);
     return cde;
 }
 
 function findCde(data, formId, cb) {
-    var variableName = data['Variable / Field Name'];
-    var query = {'ids.id': formId + '_' + variableName};
-    MigrationDataElementModel.find(query).exec((error, results)=> {
-        if (error) throw error;
-        else if (results.length === 0) {
-            var newCde = createCde(data, formId);
-            new MigrationDataElementModel(newCde).save((e, o)=> {
-                if (e) throw e;
-                else {
-                    createdCdes.push(o.tinyId);
-                    cb(o);
+    MigrationProtocolModel.find({protocolId: formId.replace('PX', '').trim()}).exec((e, protocols)=> {
+        if (e) throw e;
+        else if (protocols.length === 1) {
+            var variableName = data['Variable / Field Name'];
+            var query = {'ids.id': formId + '_' + variableName};
+            var protocol = protocols[0].toObject();
+            MigrationDataElementModel.find(query).exec((error, results)=> {
+                if (error) throw error;
+                else if (results.length === 0) {
+                    var newCde = createCde(data, formId, protocol);
+                    new MigrationDataElementModel(newCde).save((e, o)=> {
+                        if (e) throw e;
+                        else {
+                            createdCdes.push(o.tinyId);
+                            cb(o);
+                        }
+                    })
                 }
-            })
-        }
-        else {
-            console.log('found ' + results.length + ' cde in migration dataelements');
-            console.log(formId);
-            console.log(data);
-            process.exit(1);
+                else {
+                    console.log('found ' + results.length + ' cde in migration dataelements');
+                    console.log(formId);
+                    console.log(data);
+                    process.exit(1);
+                }
+            });
+        } else {
+            console.log(formId + ' protocol not found. Skipping.');
+            cb();
         }
     });
 }
 
 function doCSV(filePath, formId, doneCsv) {
+    var cdeCount = 0;
     csv.parse(fs.readFileSync(filePath), {columns: true, relax_column_count: true}, function (err, rows) {
         async.forEachSeries(rows, (row, doneOneRow)=> {
             var fieldType = row['Field Type'].trim();
@@ -134,25 +149,15 @@ function doCSV(filePath, formId, doneCsv) {
             if (fieldType === 'descriptive') {
                 doneOneRow();
             } else {
-                findCde(row, formId, function (cde) {
-                    MigrationProtocolModel.find({protocolId: formId.replace('PX', '').trim()}).exec((e, protocols)=> {
-                        if (e) throw e;
-                        else if (protocols.length === 1) {
-                            var protocol = protocols[0].toObject();
-                            var classificationArray = protocol['classification'];
-                            updateShare.removeClassificationTree(cde, 'PhenX');
-                            classificationShare.classifyItem(cde, 'PhenX', classificationArray);
-                            cde.save(()=> {
-                                doneOneRow();
-                            });
-                        } else {
-                            console.log(formId + ' protocol not found');
-                            process.exit(1);
-                        }
-                    })
+                findCde(row, formId, function () {
+                    cdeCount++;
+                    totalCdeCount++;
+                    console.log('cdeCount: ' + cdeCount);
+                    doneOneRow();
                 });
             }
         }, ()=> {
+            console.log('totalCdeCount: ' + totalCdeCount);
             doneCsv();
         })
     });
@@ -176,7 +181,8 @@ async.series([function (cb) {
                 instrumentPath = ZIP_PATH + '/' + item + '/' + formId + '/instrument.csv';
             }
             doCSV(instrumentPath, formId, function () {
-                console.log('done instrument.csv');
+                csvCount++;
+                console.log('csvCount: ' + csvCount);
                 doneOneItem();
             });
         } catch (exception) {
