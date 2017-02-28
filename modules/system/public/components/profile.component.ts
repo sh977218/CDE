@@ -4,7 +4,7 @@ import "rxjs/add/operator/map";
 
 @Component({
     selector: "cde-profile",
-    templateUrl: "./profile.component.html"
+    templateUrl: "profile.component.html"
 })
 export class ProfileComponent {
     cdes: any;
