@@ -22,7 +22,7 @@ exports.protocolToForm = function (protocol) {
             created: protocol['Protocol Release Date']
         }],
         registrationState: {
-            registrationStatus: "Qualified",
+            registrationStatus: "Candidate",
             effectiveDate: protocol['Protocol Release Date']
         },
         properties: [],

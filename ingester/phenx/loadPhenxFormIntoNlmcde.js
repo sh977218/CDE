@@ -139,7 +139,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                     }
                     var branchLogic = row['Branching Logic (Show field only if...)'];
                     if (branchLogic && branchLogic.trim().indexOf('(') > -1) {
-                        form.properties.push({key: 'Unsolved branchLogic', value: branchLogic})
+                        //form.properties.push({key: 'Unsolved branchLogic', value: branchLogic});
                     }
                     skipLogicMap[variableName] = formattedFieldLabel;
                     var formName = capitalize.words(row['Form Name'].replace(/_/g, ' '));
@@ -192,7 +192,7 @@ function doCSV(filePath, form, formId, doneCsv) {
     } else doneCsv();
 }
 
-var migrationCon = {};
+var migrationCon = {protocolId: '030501'};
 var stream = MigrationProtocolModel.find(migrationCon).stream();
 stream.on('data', (protocol) => {
     stream.pause();
@@ -245,7 +245,6 @@ stream.on('data', (protocol) => {
                 existingForm.ids = existingForm.ids.filter((i)=> {
                     return i.source !== 'LOINC';
                 });
-
                 updateShare.removeClassificationTree(existingForm, 'PhenX');
                 if (form.classification[0])
                     existingForm.classification.push(form.classification[0]);
