@@ -83,6 +83,7 @@ public class EltIdMaps {
         eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("Multi SubQuestion", "mk4r3nH77");
         eltMap.put("Neurological Assessment: TBI Symptoms and Signs", "mkqnEJHrtl");
+        eltMap.put("No Label Logic", "myMbx38V7");
         eltMap.put("Non Editable Questions", "m16LQuUCG");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
