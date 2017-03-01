@@ -21,7 +21,6 @@ function removeClassificationTree(cde, org) {
 
 var changed = 0;
 var created = 0;
-var createdCDE = [];
 var same = 0;
 
 var source = 'PhenX Variable';
@@ -157,7 +156,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
 function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
     var cdeCond = {
         'archived': null,
-        'source.source': 'PhenX',
+        'sources.sourceName': 'PhenX',
         "registrationState.registrationStatus": {$not: /Retired/},
         'imported': {$ne: importDate}
     };
@@ -184,7 +183,6 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                     throw err;
                 } else {
                     created++;
-                    createdCDE.push(cdeId);
                     migrationCde.remove(function (err) {
                         if (err) console.log("unable to remove: " + err);
                         else findCdeDone();
@@ -239,14 +237,12 @@ function streamOnClose() {
     // Retire Missing CDEs
     DataElement.update({
             imported: {$ne: importDate},
-            'source.sourceName': source
-        },
-        {
+            'sources': {$size: 1},
+            'sources.sourceName': 'PhenX'
+        }, {
             "registrationState.registrationStatus": "Retired",
             "registrationState.administrativeNote": "Not present in import from " + importDate
-        }
-        ,
-        function (err) {
+        }, function (err) {
             if (err) {
                 throw err;
                 process.exit(1);
