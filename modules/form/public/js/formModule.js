@@ -108,9 +108,9 @@ angular.module('formModule').factory('nativeFormService', [ function() {
                 return (this.evaluateSkipLogic(skipLogicError, /.+OR/.exec(rule)[0].slice(0, -3), formElements, question) ||
                 this.evaluateSkipLogic(skipLogicError, /OR.+/.exec(rule)[0].substr(3), formElements, question))
             }
-            var ruleArr = rule.split(/>=|<=|=|>|</);
+            var ruleArr = rule.split(/>=|<=|=|>|<|!=/);
             var questionLabel = ruleArr[0].replace(/"/g, "").trim();
-            var operatorArr = />=|<=|=|>|</.exec(rule);
+            var operatorArr = />=|<=|=|>|<|!=/.exec(rule);
             if (!operatorArr) {
                 skipLogicError.msg = "SkipLogic is incorrect. " + rule;
                 return true;
@@ -120,6 +120,7 @@ angular.module('formModule').factory('nativeFormService', [ function() {
             var realAnswerArr = this.getQuestions(formElements, questionLabel);
             var realAnswerObj = realAnswerArr[0];
             var realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ? this.score(realAnswerObj, elt) : realAnswerObj.question.answer) : undefined;
+            if (!realAnswer) realAnswer = "";
             if (expectedAnswer === "") {
                 if (realAnswerObj.question.datatype === 'Number') {
                     if (realAnswer === null || isNaN(realAnswer)) return true;
@@ -127,22 +128,25 @@ angular.module('formModule').factory('nativeFormService', [ function() {
                     if (!realAnswer || ("" + realAnswer).trim().length === 0) return true;
                 }
             }
-            else if (realAnswer) {
+            else if (realAnswer || realAnswer === "") {
                 if (realAnswerObj.question.datatype === 'Date') {
                     question.question.dateOptions = {};
                     if (operator === '=') return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
+                    if (operator === '!=') return new Date(realAnswer).getTime() != new Date(expectedAnswer).getTime();
                     if (operator === '<') return new Date(realAnswer) < new Date(expectedAnswer);
                     if (operator === '>') return new Date(realAnswer) > new Date(expectedAnswer);
                     if (operator === '<=') return new Date(realAnswer) <= new Date(expectedAnswer);
                     if (operator === '>=') return new Date(realAnswer) >= new Date(expectedAnswer);
                 } else if (realAnswerObj.question.datatype === 'Number') {
                     if (operator === '=') return realAnswer === parseInt(expectedAnswer);
+                    if (operator === '!=') return realAnswer != parseInt(expectedAnswer);
                     if (operator === '<') return realAnswer < parseInt(expectedAnswer);
                     if (operator === '>') return realAnswer > parseInt(expectedAnswer);
                     if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
                     if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
                 } else if (realAnswerObj.question.datatype === 'Text') {
                     if (operator === '=') return realAnswer === expectedAnswer;
+                    if (operator === '!=') return realAnswer != expectedAnswer;
                     else return false;
                 } else if (realAnswerObj.question.datatype === 'Value List') {
                     if (operator === '=') {
@@ -151,9 +155,17 @@ angular.module('formModule').factory('nativeFormService', [ function() {
                         else
                             return realAnswer === expectedAnswer;
                     }
+                    if (operator === '!=') {
+                        if (Array.isArray(realAnswer))
+                            return realAnswer.length != 1 || realAnswer[0] != expectedAnswer ;
+                        else
+                            return realAnswer != expectedAnswer;
+                    }
                     else return false;
                 } else {
-                    return realAnswer === expectedAnswer;
+                    if (operator === '=') return realAnswer === expectedAnswer;
+                    if (operator === '!=') return realAnswer != expectedAnswer;
+                    else return false;
                 }
             } else return false;
         },

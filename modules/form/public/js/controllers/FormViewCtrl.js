@@ -463,12 +463,14 @@ angular.module('formModule').controller
                  return '"' + questionSanitizer(label) + '" ';
              });
          } else if (tokens.length % 4 === 1) {
-             options = ["=", "<", ">", ">=", "<="];
+             options = ["=", "<", ">", ">=", "<=", "!="];
          } else if (tokens.length % 4 === 2) {
              options = getAnswer(previousQuestions, tokens[tokens.length - 2]);
          } else if (tokens.length % 4 === 3) {
              options = ["AND", "OR"];
          }
+         console.log("OPtions: ");
+         console.log(options);
          return options;
     };
 
