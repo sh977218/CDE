@@ -294,6 +294,11 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
                     status: null
                 }
             };
+            if (user.roles && user.roles.filter((r)=> {
+                    return r === "AttachmentReviewer";
+                }).length > 0) {
+                streamDescription.metadata.status = 'approved';
+            }
 
             if (file.scanned) streamDescription.metadata.status = "scanned";
             else streamDescription.metadata.status = "uploaded";

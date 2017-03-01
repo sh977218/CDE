@@ -29,8 +29,7 @@ exports.addAttachment = function (elt, xml, cb) {
     var origXml = builder.buildObject(xmlObj).toString();
     readable.push(origXml);
     readable.push(null);
-    mongo_data.addAttachment(
-        {
+    mongo_data.addAttachment({
             originalname: elt.ids[0].id + "v" + elt.ids[0].version + ".xml",
             mimetype: "application/xml",
             size: origXml.length,
@@ -39,7 +38,7 @@ exports.addAttachment = function (elt, xml, cb) {
         {username: "batchloader", roles: ["AttachmentReviewer"]},
         "Original XML File", elt, function (attachment, newFileCreated, e) {
             if (e) throw e;
-            cb();
+            cb(attachment, newFileCreated, e);
         });
 };
 
@@ -70,6 +69,7 @@ exports.wipeUseless = function (toWipe) {
 exports.compareObjects = function (existingForm, newForm) {
     existingForm = JSON.parse(JSON.stringify(existingForm));
     exports.wipeUseless(existingForm);
+    if (!existingForm.classification) existingForm.classification = [];
     for (var i = existingForm.classification.length - 1; i > 0; i--) {
         if (existingForm.classification[i].stewardOrg.name !== newForm.source) {
             existingForm.classification.splice(i, 1);
