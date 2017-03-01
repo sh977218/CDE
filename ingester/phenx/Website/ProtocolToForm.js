@@ -12,8 +12,13 @@ exports.protocolToForm = function (protocol) {
         updated: new Date(),
         imported: new Date(),
         origin: protocol['Source'],
-        naming: [{designation: protocol['classification'][classificationLength - 1], tags: [{tag: ''}]}, {
+        naming: [{
+            designation: protocol['classification'][classificationLength - 1],
+            source: 'PhenX',
+            tags: [{tag: ''}]
+        }, {
             designation: protocol['Protocol Name From Source'],
+            source: 'PhenX',
             definition: protocol['Description of Protocol'],
             tags: [{tag: ''}]
         }],
@@ -22,12 +27,13 @@ exports.protocolToForm = function (protocol) {
             created: protocol['Protocol Release Date']
         }],
         registrationState: {
-            registrationStatus: "Qualified",
+            registrationStatus: "Candidate",
             effectiveDate: protocol['Protocol Release Date']
         },
         properties: [],
         referenceDocuments: [{
-            document: protocol['General References']
+            document: protocol['General References'],
+            source: 'PhenX'
         }],
         ids: [{source: 'PhenX', id: protocol['protocolId']}],
         classification: [],
@@ -39,73 +45,85 @@ exports.protocolToForm = function (protocol) {
     if (protocol['Protocol Name From Source']) {
         form.properties.push({
             key: 'Protocol Name From Source',
-            value: protocol['Protocol Name From Source']
+            value: protocol['Protocol Name From Source'],
+            source: 'PhenX'
         });
     }
     if (protocol['Specific Instructions']) {
         form.properties.push({
             key: 'Specific Instructions',
-            value: protocol['Specific Instructions']
+            value: protocol['Specific Instructions'],
+            source: 'PhenX'
         });
     }
     if (protocol['Protocol']) {
         form.properties.push({
             key: 'Protocol',
-            value: protocol['Protocol']
+            value: protocol['Protocol'],
+            source: 'PhenX'
         });
     }
     if (protocol['Selection Rationale']) {
         form.properties.push({
             key: 'Selection Rationale',
-            value: protocol['Selection Rationale']
+            value: protocol['Selection Rationale'],
+            source: 'PhenX'
         });
     }
     if (protocol['Life Stage']) {
         form.properties.push({
             key: 'Life Stage',
-            value: protocol['Life Stage']
+            value: protocol['Life Stage'],
+            source: 'PhenX'
         });
     }
     if (protocol['Language']) {
         form.properties.push({
             key: 'Language',
-            value: protocol['Language']
+            value: protocol['Language'],
+            source: 'PhenX'
         });
     }
     if (protocol['Participant']) {
         form.properties.push({
             key: 'Participant',
-            value: protocol['Participant']
+            value: protocol['Participant'],
+            source: 'PhenX'
         });
     }
     if (protocol['Personnel and Training Required']) {
         form.properties.push({
             key: 'Personnel and Training Required',
-            value: protocol['Personnel and Training Required']
+            value: protocol['Personnel and Training Required'],
+            source: 'PhenX'
         });
     }
     if (protocol['Equipment Needs']) {
         form.properties.push({
             key: 'Equipment Needs',
-            value: protocol['Equipment Needs']
+            value: protocol['Equipment Needs'],
+            source: 'PhenX'
         });
     }
     if (protocol['Mode of Administration']) {
         form.properties.push({
             key: 'Mode of Administration',
-            value: protocol['Mode of Administration']
+            value: protocol['Mode of Administration'],
+            source: 'PhenX'
         });
     }
     if (protocol['Derived Variables']) {
         form.properties.push({
             key: 'Derived Variables',
-            value: protocol['Derived Variables']
+            value: protocol['Derived Variables'],
+            source: 'PhenX'
         });
     }
     if (protocol['Process and Review']) {
         form.properties.push({
             key: 'Process and Review',
-            value: protocol['Process and Review']
+            value: protocol['Process and Review'],
+            source: 'PhenX'
         });
     }
     if (protocol['Variables'] && protocol['Variables'].length > 0) {
@@ -117,7 +135,8 @@ exports.protocolToForm = function (protocol) {
         form.properties.push({
             key: 'Variables',
             value: '<table class="table table-striped">' + ths + tbody + '</table>',
-            valueFormat: 'html'
+            valueFormat: 'html',
+            source: 'PhenX'
         });
     }
     if (protocol['Standards'] && protocol['Standards'].length > 0) {
@@ -129,7 +148,8 @@ exports.protocolToForm = function (protocol) {
         form.properties.push({
             key: 'Standards',
             value: '<table class="table table-striped">' + ths + tbody + '</table>',
-            valueFormat: 'html'
+            valueFormat: 'html',
+            source: 'PhenX'
         });
     }
     if (protocol['Requirements'] && protocol['Requirements'].length > 0) {
@@ -141,7 +161,8 @@ exports.protocolToForm = function (protocol) {
         form.properties.push({
             key: 'Requirements',
             value: '<table class="table table-striped">' + ths + tbody + '</table>',
-            valueFormat: 'html'
+            valueFormat: 'html',
+            source: 'PhenX'
         });
     }
 
