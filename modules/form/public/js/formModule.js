@@ -1,3 +1,6 @@
+import {upgradeAdapter} from "../../../upgrade";
+import {IdentifyQuestionsComponent} from "../formMerge/identifyQuestions.component";
+
 angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'formTemplates', 'nativeSection', 'nativeQuestion']).config(
     ["$routeProvider", function($routeProvider)
 {
@@ -14,6 +17,7 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
         when('/createForm', {controller: 'CreateFormCtrl', templateUrl: '/form/public/html/createForm.html'}).
         when('/formView', {controller: 'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
 }]);
+angular.module('formModule').directive('identifyQuestions', upgradeAdapter.downgradeNg2Component(IdentifyQuestionsComponent));
 
 angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$parse", function ($compile, $timeout, $parse) {
     return {

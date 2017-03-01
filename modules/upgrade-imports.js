@@ -44,7 +44,6 @@ import "./system/public/js/controllers/LogCtrl";
 import "./system/public/js/controllers/AccountManagementCtrl";
 import "./system/public/js/controllers/SiteManagementCtrl";
 import "./system/public/js/controllers/AttachmentsCtrl";
-import "./system/public/js/controllers/ProfileCtrl"; // ported
 import "./system/public/js/controllers/AuthCtrl";
 import "./system/public/js/controllers/UsersMgtCtrl";
 import "./system/public/js/controllers/HomeCtrl";
@@ -144,8 +143,6 @@ import "./form/public/js/controllers/UpdateCdeRefVersionCtrl";
 import * as formShared from "./form/shared/formShared";
 import "./form/public/js/controllers/FormCopyModalCtrl";
 import "./form/public/js/controllers/PublishedFormExportCtrl";
-import "./form/public/js/controllers/FormMergeRequestCtrl";
-import "./form/public/js/controllers/IdentifyQuestionsModalCtrl";
 
 import "./board/public/js/controllers/ShareBoardCtrl";
 import "./board/public/js/controllers/BoardViewCtrl";

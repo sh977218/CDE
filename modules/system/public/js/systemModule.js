@@ -2,7 +2,7 @@ import {upgradeAdapter} from "../../../upgrade";
 import {ClassificationService} from "../../../core/public/classification.service";
 import {SkipLogicService} from "../../../core/public/skipLogic.service";
 import {UserCommentsComponent} from "../userComments.component";
-
+import {ProfileComponent} from "../profile.component";
 import * as authShared from "../../../system/shared/authorizationShared";
 
 
@@ -264,6 +264,7 @@ angular.module('systemModule').filter('tagsToArray', [function () {
         }).join(', ');
     };
 }]);
+angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeNg2Component(ProfileComponent));
 
 angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
 angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));

@@ -19,10 +19,9 @@
                 Pending Merge Request
                 </span>
             </span>
-            <span class="leftObj" ng-controller="FormMergeRequestCtrl" ng-if="forms">
-                <a class='btn btn-small btn-default fa fa-clipboard'
-                   ng-click="identifyQuestions(eltsToCompare[0],eltsToCompare[1])">Merge Form</a>
-            </span>
+
+            <identify-questions class="leftObj" *ngIf="forms"></identify-questions>
+
         </div>
         <div class="col-xs-6">
             <span class="rightObj">
@@ -40,6 +39,10 @@
             </span>
         </div>
     </div>
+
+    <div ng-compare-side-by-side ng-compare-side-by-side-options="Option"
+         ng-compare-side-by-side-left="eltsToCompare[0]"
+         ng-compare-side-by-side-right="eltsToCompare[1]"></div>
 
     <div id="qb_compare_gd">
         <hr class="divider compare-divider">
