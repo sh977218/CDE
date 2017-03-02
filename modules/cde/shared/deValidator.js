@@ -1,7 +1,8 @@
 exports.checkPvUnicity = function (valueDomain) {
     var result = {allValid: true};
     if (valueDomain.datatype === 'Value List' && valueDomain.permissibleValues.length === 0) {
-        return result.pvNotValidMsg = "permissibleValues is empty";
+        result.pvNotValidMsg = "permissibleValues is empty";
+        return result.allValid = false;
     }
     var allPvs = {}, allCodes = {}, allVms = {};
     valueDomain.permissibleValues.forEach(function (pv) {
