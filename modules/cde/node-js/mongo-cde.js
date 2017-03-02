@@ -9,6 +9,7 @@ var config = require('../../system/node-js/parseConfig')
     , async = require('async')
     , CronJob = require('cron').CronJob
     , elastic = require('./elastic')
+    , deValidator = require('../shared/deValidator')
     ;
 
 exports.type = "cde";
@@ -25,39 +26,20 @@ exports.User = User;
 var mongo_data = this;
 exports.DataElement = DataElement;
 
-function invalidateDataElement(cde) {
-    var valueDomain = cde.valueDomain;
-    if (valueDomain && valueDomain.datatype === 'Value List') {
-        if (valueDomain.permissibleValues.length === 0) {
-            return "permissibleValues is empty";
-        } else {
-            for (var i = 0; i < valueDomain.permissibleValues.length; i++) {
-                var pv = valueDomain.permissibleValues[i];
-                var pvCode = pv.valueMeaningCode;
-                var pvCodeSystem = pv.codeSystemName;
-                if (pvCode.length > 0 && pvCodeSystem.length === 0) {
-                    return "pvCode is not empty, pvCodeSystem is empty";
-                }
-                if (pvCode.length === 0 && pvCodeSystem.length > 0) {
-                    return "pvCode is empty, pvCodeSystem is not empty";
-                }
-            }
-        }
-    }
-}
-
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
-    var cdeError = invalidateDataElement(self);
-    if (cdeError) {
+    var cdeError = deValidator.checkPvUnicity(self.valueDomain);
+    if (cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError);
+        next(cdeError);
+    } else {
+        try {
+            elastic.updateOrInsert(self);
+        } catch (exception) {
+            logging.errorLogger.error(exception);
+        }
+        next();
     }
-    try {
-        elastic.updateOrInsert(self);
-    } catch (exception) {
-        logging.errorLogger.error(exception);
-    }
-    next();
 });
 
 exports.elastic = elastic;

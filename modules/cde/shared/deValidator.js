@@ -1,7 +1,22 @@
-exports.checkPvUnicity = function(valueDomain) {
+exports.checkPvUnicity = function (valueDomain) {
     var result = {allValid: true};
+    if (valueDomain.datatype === 'Value List' && valueDomain.permissibleValues.length === 0) {
+        return result.pvNotValidMsg = "permissibleValues is empty";
+    }
     var allPvs = {}, allCodes = {}, allVms = {};
     valueDomain.permissibleValues.forEach(function (pv) {
+        var pvCode = pv.valueMeaningCode ? pv.valueMeaningCode : '';
+        var pvCodeSystem = pv.codeSystemName ? pv.codeSystemName : '';
+        if (pvCode.length > 0 && pvCodeSystem.length === 0) {
+            pv.notValid = "pvCode is not empty, pvCodeSystem is empty";
+            result.pvNotValidMsg = pv.notValid;
+            return result.allValid = false;
+        }
+        if (pvCode.length === 0 && pvCodeSystem.length > 0) {
+            pv.notValid = "pvCode is empty, pvCodeSystem is not empty";
+            result.pvNotValidMsg = pv.notValid;
+            return result.allValid = false;
+        }
         if (allPvs[pv.permissibleValue]) {
             pv.notValid = "Duplicate Permissible Value";
             result.pvNotValidMsg = pv.notValid;
