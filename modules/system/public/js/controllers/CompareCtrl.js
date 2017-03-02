@@ -173,6 +173,14 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard',
 
         $scope.eltsToCompare[1].questions = [];
         flatFormQuestions($scope.eltsToCompare[1], $scope.eltsToCompare[1].questions);
+
+        $scope.alignQuestionBy = function () {
+            var alignBy = $scope.alignBy;
+            $scope.questionOption.equal = function (a, b) {
+                return a[alignBy] === b[alignBy];
+            }
+        }
+
     }
 ])
 ;

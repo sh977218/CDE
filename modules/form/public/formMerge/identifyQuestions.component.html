@@ -1,17 +1,39 @@
-
 <a class='btn btn-small btn-default fa fa-clipboard'
    (click)="openIdentifyQuestions()">Identify Questions</a>
 
+<div bsModal #identifyQuestionsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
 
-
-<div bsModal #identifyQuestionsModal="bs-modal" class="modal fade">
-    <div class="modal-header">
-        header
-    </div>
-    <div class="modal-body">
-        body
-    </div>
-    <div class="modal-footer">
-        footer
+            </div>
+            <div class="modal-body overflowHidden">
+                <div class="col-xs-6">
+                    <div *ngFor="let leftQuestion of left.questions">
+                        <div class="row">
+                            <div class="col-xs-4 Label">Label:</div>
+                            <div class="col-xs-7">{{leftQuestion.label}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4 Label">CDE:</div>
+                            <div class="col-xs-7">{{leftQuestion.question.cde.tinyId}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4 Label">Unit of Measurement:</div>
+                            <div class="col-xs-7">{{leftQuestion.question.uoms}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4 Label">Answer:</div>
+                            <div class="col-xs-7">{{leftQuestion.question.answers}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel" (click)="identifyQuestionsModal.hide()" type="button">Cancel</button>
+                <button class="btn btn-warning">Save</button>
+            </div>
+        </div>
     </div>
 </div>

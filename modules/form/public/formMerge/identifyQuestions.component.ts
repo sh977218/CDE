@@ -10,6 +10,9 @@ import "rxjs/add/operator/map";
 export class IdentifyQuestionsComponent {
 
     @ViewChild("identifyQuestionsModal") public identifyQuestionsModal: ModalDirective;
+    @Input() public left:any;
+    @Input() public right:any;
+
 
     constructor(private http: Http) {
     }
