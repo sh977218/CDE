@@ -33,7 +33,7 @@
     "angular-ui-scrollpoint": "2.1.1",
     "async": "2.0.0-rc.5",
     "angular-elastic": "2.5.1",
-    "lforms": "7.6.0",
+    "lforms": "11.0.2",
     "autocomplete-lhc": "9.1.2",
     "lforms-converter": "https://github.com/sh977218/lforms-converter.git#05d8a5c5eb031d159d747f4534836086aa4fd3ea"
   },
