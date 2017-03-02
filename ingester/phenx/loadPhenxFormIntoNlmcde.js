@@ -278,7 +278,7 @@ stream.on('end', ()=> {
         'source.sourceName': 'PhenX'
     }, {
         "registrationState.registrationStatus": "Retired",
-        "registrationState.administrativeNote": "Not present in import from " + importDate
+        "registrationState.administrativeNote": "Not present in import from " + today
     }, (e)=> {
         if (e) throw e;
         else {
