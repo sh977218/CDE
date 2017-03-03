@@ -13,11 +13,6 @@ exports.checkPvUnicity = function (valueDomain) {
             result.pvNotValidMsg = pv.notValid;
             return result.allValid = false;
         }
-        if (pvCode.length === 0 && pvCodeSystem.length > 0) {
-            pv.notValid = "pvCode is empty, pvCodeSystem is not empty";
-            result.pvNotValidMsg = pv.notValid;
-            return result.allValid = false;
-        }
         if (allPvs[pv.permissibleValue]) {
             pv.notValid = "Duplicate Permissible Value";
             result.pvNotValidMsg = pv.notValid;
