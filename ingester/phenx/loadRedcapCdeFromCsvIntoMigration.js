@@ -24,19 +24,20 @@ function createCde(data, formId, protocol) {
         tinyId: mongo_data.generateTinyId(),
         naming: [{designation: capitalize.words(variableName.replace(/_/g, ' '))}],
         stewardOrg: {name: 'PhenX'},
-        sources: [{source: 'PhenX'}],
+        sources: [{sourceName: 'PhenX'}],
         classification: [{
             stewardOrg: {name: 'PhenX'},
             elements: [{name: 'REDCap', elements: []}]
         }],
         registrationState: {registrationStatus: 'Qualified'},
-        properties: [{source: '', key: 'Field Note', value: data['Field Note']}],
+        properties: [{source: 'PhenX', key: 'Field Note', value: data['Field Note']}],
         ids: [{source: 'PhenX Variable', id: formId + '_' + data['Variable / Field Name'].trim()}],
         valueDomain: {}
     };
     if (fieldLabel.length > 0)
         cde.naming.push({
             designation: fieldLabel,
+            source: 'PhenX',
             tags: [{tag: 'Question Text'}]
         });
     var fieldType = data['Field Type'];

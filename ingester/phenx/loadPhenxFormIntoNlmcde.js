@@ -59,8 +59,8 @@ function doCSV(filePath, form, formId, doneCsv) {
                     if (newSection) {
                         form.formElements.push({
                             elementType: "section",
-                            label: variableName,
-                            instructions: {value: fieldLabel, valueFormat: 'html'},
+                            label: '',
+                            instructions: {value: '', valueFormat: 'html'},
                             skipLogic: {condition: ''},
                             formElements: []
                         });
@@ -139,7 +139,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                     }
                     var branchLogic = row['Branching Logic (Show field only if...)'];
                     if (branchLogic && branchLogic.trim().indexOf('(') > -1) {
-                        form.properties.push({key: 'Unsolved branchLogic', value: branchLogic})
+                        //form.properties.push({key: 'Unsolved branchLogic', value: branchLogic});
                     }
                     skipLogicMap[variableName] = formattedFieldLabel;
                     var formName = capitalize.words(row['Form Name'].replace(/_/g, ' '));
@@ -178,7 +178,7 @@ function doCSV(filePath, form, formId, doneCsv) {
                     form.displayProfiles.push({
                         name: 'default',
                         sectionsAsMatrix: true,
-                        displayValues: true,
+                        displayValues: false,
                         displayInstructions: true,
                         displayType: 'Follow-up'
                     });
@@ -245,7 +245,6 @@ stream.on('data', (protocol) => {
                 existingForm.ids = existingForm.ids.filter((i)=> {
                     return i.source !== 'LOINC';
                 });
-
                 updateShare.removeClassificationTree(existingForm, 'PhenX');
                 if (form.classification[0])
                     existingForm.classification.push(form.classification[0]);
@@ -274,5 +273,16 @@ stream.on('error', (err)=> {
 stream.on('end', ()=> {
     console.log('end stream');
     console.log('protocolCount: ' + protocolCount);
-    process.exit(1);
+    FormModel.update({
+        imported: {$ne: new Date().toJSON()},
+        'source.sourceName': 'PhenX'
+    }, {
+        "registrationState.registrationStatus": "Retired",
+        "registrationState.administrativeNote": "Not present in import from " + importDate
+    }, (e)=> {
+        if (e) throw e;
+        else {
+            process.exit(1);
+        }
+    });
 });
