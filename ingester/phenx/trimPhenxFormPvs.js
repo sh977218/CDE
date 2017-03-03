@@ -5,7 +5,7 @@ var FormModel = mongo_form.Form;
 var formCount = 0;
 
 function loopFormElements(form) {
-    form.formElements.forEach(form.formElements, function (fe, doneOne) {
+    form.formElements.forEach((fe)=> {
         if (fe.elementType === 'question') {
             if (fe.question.datatype === 'Value List') {
                 fe.question.answers.forEach((a)=> {
