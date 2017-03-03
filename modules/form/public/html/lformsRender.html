@@ -127,7 +127,7 @@
         $scope.lfOptions = {
             showCodingInstruction: true
         };
-        var converter = new LFormsConverter();
+        var converter = new LForms.LFormsConverter();
         converter.convert('/wholeform/' + getUrlParameter('tinyId'),
             function(lfData) {
                 $scope.lfData = new LFormsData(lfData);
