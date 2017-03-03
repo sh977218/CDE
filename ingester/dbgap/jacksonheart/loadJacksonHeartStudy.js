@@ -1,60 +1,34 @@
 const async = require('async');
 const fs = require('fs');
-const mongoose = require('mongoose');
 const path = require('path');
 const xml2js = require('xml2js');
 
 process.env.NODE_CONFIG_DIR = path.resolve('../../../config');
 const config = require('config');
 
-const connHelper = require('../../../modules/system/node-js/connections');
 const mongo_cde = require('../../../modules/cde/node-js/mongo-cde');
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
 const mongo_form = require('../../../modules/form/node-js/mongo-form');
 
-const Schema = mongoose.Schema;
 const DataElement = mongo_cde.DataElement;
 const FormModel = mongo_form.Form;
 
-
-let conn = connHelper.establishConnection(config.database.appData);
-conn.on('connecting', function () {
-    console.log('connecting');
-});
-conn.on('error', function (error) {
-    console.error('Error in MongoDb connection: ' + error);
-    mongoose.disconnect();
-    conn = connHelper.establishConnection(config.database.appData);
-});
-conn.on('connected', function () {
-    console.log('connected!');
-});
-conn.on('reconnected', function () {
-    console.log('reconnected');
-});
-conn.on('disconnected', function () {
-    console.log('disconnected');
-    conn = connHelper.establishConnection(config.database.appData);
-    // connect
-});
-conn.once('open', function callback() {
-    let dir = path.resolve('raw');
-    fs.readdir(dir, (err, files) => {
-        async.eachSeries(files.filter(f => f.match(/data_dict\.xml$/)), (f, cb) => {
-            fs.readFile(path.resolve(dir, f), (err, xmlData) => {
-                if (err) throw err;
-                xml2js.parseString(xmlData, (err, data) => {
-                    if (err) cb(err);
-                    addForm(data.data_table, cb);
-                });
+let dir = path.resolve('raw');
+fs.readdir(dir, (err, files) => {
+    async.eachSeries(files.filter(f => f.match(/data_dict\.xml$/)), (f, cb) => {
+        fs.readFile(path.resolve(dir, f), (err, xmlData) => {
+            if (err) throw err;
+            xml2js.parseString(xmlData, (err, data) => {
+                if (err) cb(err);
+                addForm(data.data_table, cb);
             });
-        }, (err) => {
-            if (err)
-                console.log('A file failed to process');
-            else
-                console.log('All files have been processed successfully');
-            process.exit();
         });
+    }, (err) => {
+        if (err)
+            console.log('A file failed to process');
+        else
+            console.log('All files have been processed successfully');
+        process.exit();
     });
 });
 
