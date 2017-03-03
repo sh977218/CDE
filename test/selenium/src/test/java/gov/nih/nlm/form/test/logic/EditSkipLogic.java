@@ -35,7 +35,7 @@ public class EditSkipLogic extends BaseFormTest {
         startEditQuestionSectionById("question_3_2");
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true,
                 "Unexpected number of tokens in expression 1");
-        editSkipLogic(inputXpath, "=", 5, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
 
         editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 4");

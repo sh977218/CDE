@@ -469,8 +469,6 @@ angular.module('formModule').controller
          } else if (tokens.length % 4 === 3) {
              options = ["AND", "OR"];
          }
-         console.log("OPtions: ");
-         console.log(options);
          return options;
     };
 
