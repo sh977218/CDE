@@ -24,6 +24,7 @@ var cond = {'classification.stewardOrg.name': 'PhenX', archived: null};
 FormModel.find(cond).exec((err, forms)=> {
     async.forEach(forms, (form, doneOneForm)=> {
         loopFormElements(form);
+        form.markModified('formElements');
         form.save(()=> {
             formCount++;
             console.log('formCount: ' + formCount);

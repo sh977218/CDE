@@ -15,6 +15,7 @@ DataElement.find(cond).exec((err, cdes)=> {
             cde.valueDomain.permissibleValues.forEach((p)=> {
                 p.permissibleValue = p.permissibleValue.trim();
             });
+            cde.markModified('valueDomain');
             cde.save(()=> {
                 modifiedDeCount++;
                 console.log('modifiedDeCount: ' + modifiedDeCount);
