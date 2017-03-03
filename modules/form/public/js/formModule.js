@@ -119,8 +119,10 @@ angular.module('formModule').factory('nativeFormService', [ function() {
             var expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
             var realAnswerArr = this.getQuestions(formElements, questionLabel);
             var realAnswerObj = realAnswerArr[0];
-            var realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ? this.score(realAnswerObj, elt) : realAnswerObj.question.answer) : undefined;
-            if (realAnswer === undefined || realAnswer === null || isNaN(realAnswer)) realAnswer = "";
+            var realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ?
+                this.score(realAnswerObj, elt) : realAnswerObj.question.answer) : undefined;
+            if (realAnswer === undefined || realAnswer === null ||
+                (typeof realAnswer === "number" && isNaN(realAnswer))) realAnswer = "";
             if (expectedAnswer === "" && operator === '=') {
                 if (realAnswerObj.question.datatype === 'Number') {
                     if (realAnswer === "" || isNaN(realAnswer)) return true;
