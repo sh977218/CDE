@@ -56,42 +56,50 @@
     </div>
 </div>
 
-<script type="text/ng-template" id="newScoreModalContent.html">
-    <div class="modal-header" id="newScoreModalHeader">
-        <h4 tabindex="0">Add Score</h4>
+
+<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="derRuleModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm" *ngIf="newId">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 tabindex="0">Add Score</h4>
+            </div>
+            <div class="modal-body">
+                <form name="form" role="form">
+                    <div class="modal-body" id="newScoreModalBody">
+                        <div class="form-group">All Data Elements in your quickboard will be added to the score.</div>
+                        <div class="form-group">
+                            <label tabindex="0" for="newDerivationRule.name">Name: </label>
+                            <input tabindex="0" class="form-control" ng-model="newDerivationRule.name"
+                                   id="newDerivationRule.name" Placeholder="Score Name" required />
+                        </div>
+                        <div class="form-group">
+                            <label tabindex="0" for="newDerivationRule.inputs">Inputs: </label>
+                            <span ng-switch="invalidCdeMessage === undefined" id="newDerivationRule.inputs">
+                                <span ng-switch-when="true">All {{modalQuickBoard.elts.length}} CDEs in your quickboard.</span>
+                                <span ng-switch-default class="error-block">{{invalidCdeMessage}}</span>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label tabindex="0" for="newDerivationRule.ruleType">Rule Type: </label>
+                            <span id="newDerivationRule.ruleType">Score</span>
+                        </div>
+                        <div class="form-group">
+                            <label tabindex="0" for="newDerivationRule.formula">Formula: </label>
+                            <select ng-model="newDerivationRule.formula" id="newDerivationRule.formula" class="form-control">
+                                <option value="sumAll">Sum of All</option>
+                                <option value="mean">Mean (Average)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="newDerivationModalFooter">
+                        <button class="btn cancel" ng-click="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
+                        <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="someCdesInvalid() || isClean() || form.$invalid"
+                                id="createDerivationRule" type="submit">Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <form name="form" role="form">
-        <div class="modal-body" id="newScoreModalBody">
-            <div class="form-group">All Data Elements in your quickboard will be added to the score.</div>
-            <div class="form-group">
-                <label tabindex="0" for="newDerivationRule.name">Name: </label>
-                <input tabindex="0" class="form-control" ng-model="newDerivationRule.name"
-                       id="newDerivationRule.name" Placeholder="Score Name" required />
-            </div>
-            <div class="form-group">
-                <label tabindex="0" for="newDerivationRule.inputs">Inputs: </label>
-                <span ng-switch="invalidCdeMessage === undefined" id="newDerivationRule.inputs">
-                    <span ng-switch-when="true">All {{modalQuickBoard.elts.length}} CDEs in your quickboard.</span>
-                    <span ng-switch-default class="error-block">{{invalidCdeMessage}}</span>
-                </span>
-            </div>
-            <div class="form-group">
-                <label tabindex="0" for="newDerivationRule.ruleType">Rule Type: </label>
-                <span id="newDerivationRule.ruleType">Score</span>
-            </div>
-            <div class="form-group">
-                <label tabindex="0" for="newDerivationRule.formula">Formula: </label>
-                <select ng-model="newDerivationRule.formula" id="newDerivationRule.formula" class="form-control">
-                    <option value="sumAll">Sum of All</option>
-                    <option value="mean">Mean (Average)</option>
-                </select>
-            </div>
-        </div>
-        <div class="modal-footer" id="newDerivationModalFooter">
-            <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
-            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="someCdesInvalid() || isClean() || form.$invalid"
-                    id="createDerivationRule" type="submit">Save
-            </button>
-        </div>
-    </form>
-</script>
+</div>
