@@ -1,5 +1,5 @@
 import { Http } from "@angular/http";
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
 
 @Component({
@@ -16,10 +16,11 @@ export class DerivationRulesComponent {
     constructor(private http: Http,
                 @Inject("QuickBoard") private quickBoard,
                 @Inject("isAllowedModel") private isAllowedModel) {
+    }
 
+    ngOnInit () {
         this.updateRules();
         this.findDerivationOutputs();
-
     }
 
     newDerivationRule: {
@@ -41,6 +42,10 @@ export class DerivationRulesComponent {
             });
         }
     };
+
+    getViewCdes (dr) {
+        return dr.fullCdes.filter((item, index) => index > 8);
+    }
 
     // $scope.deferredEltLoaded.promise.then(updateRules);
 

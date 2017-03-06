@@ -6,11 +6,13 @@ import { ModalModule } from "ng2-bootstrap";
 
 import { upgradeAdapter } from "../../../upgrade";
 import { ConceptsComponent } from "../components/concepts.component";
+import { DerivationRulesComponent } from "../components/derivationRules.component";
 
 @NgModule({
     declarations: [
         upgradeAdapter.upgradeNg1Component("sortableArray"),
-        ConceptsComponent
+        ConceptsComponent,
+        DerivationRulesComponent
         ],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],

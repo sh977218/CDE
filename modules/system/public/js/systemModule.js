@@ -190,8 +190,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             },
             templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
             controller: ["$scope", function ($scope) {
-                console.log($scope.theArray)
-                console.log($scope.index)
                 $scope.moveUp = function () {
                     $scope.theArray.splice($scope.index - 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
                     $scope.cb();
