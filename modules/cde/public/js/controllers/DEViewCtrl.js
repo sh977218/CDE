@@ -609,4 +609,18 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }).result.then(function () {}, function() {});
     };
 
+    $scope.validateAndStageElt = function (elt) {
+        if (elt.valueDomain.datatype === 'Value List'
+            && (!elt.valueDomain.permissibleValues || elt.valueDomain.permissibleValues.length === 0)) {
+            $scope.allValid = false;
+            $scope.pvNotValidMsg = 'Empty Permissible Values';
+            return;
+        }
+        else {
+            $scope.allValid = true;
+            delete $scope.pvNotValidMsg;
+            elt.unsaved = true;
+        }
+    }
+
 }]);
