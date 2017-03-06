@@ -1,12 +1,12 @@
 <div ng-controller="DerivationRulesCtrl">
     <h4>Derivation Rules</h4>
 
-    <div tabindex="0" ng-if="elt.derivationRules < 1">There are no derivation rules.</div>
+    <div tabindex="0" *ngIf="elt.derivationRules < 1">There are no derivation rules.</div>
 
-    <div ng-repeat="derRule in elt.derivationRules">
+    <div *ngFor="let derRule of elt.derivationRules; let $index = index">
         <div class="row">
-            <div class="col-md-1 text-right" ng-show="canCurate">
-                <a ng-click="removeDerivationRule($index)" ng-hide="showDelete" class="fa fa-trash-o"
+            <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
+                <a (click)="removeDerivationRule($index)" *ngIf="!showDelete" class="fa fa-trash-o"
                    id="removeDerivationRule-{{$index}}" title="Remove" href=""></a>
             </div>
             <div class="col-md-11">
@@ -19,10 +19,10 @@
                     <dd tabindex="0" id="dd_derRule_formula_{{$index}}">{{derRule.formula}}</dd>
                     <dt tabindex="0">Input CDEs:</dt>
                     <dd tabindex="0" id="dd_derRule_input_{{$index}}">
-                        <a ng-repeat="input in derRule.fullCdes | limitTo:8"
-                           ng-href="/deview/?tinyId={{input.tinyId}}">
+                        <a *ngFor="let input of derRule.fullCdes | limitTo:8"
+                           href="/deview/?tinyId={{input.tinyId}}">
                             {{input.naming[0].designation}} {{!$last?'- ':''}}</a>
-                        <span ng-if="derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
+                        <span *ngIf="derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
                     </dd>
                 </dl>
             </div>

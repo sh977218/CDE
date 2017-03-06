@@ -10,8 +10,8 @@ import { ModalDirective } from "ng2-bootstrap/modal";
 
 export class DerivationRulesComponent {
 
-    @ViewChild("childModal") public childModal:ModalDirective;
-    @Input() public elt:any;
+    @ViewChild("childModal") public childModal: ModalDirective;
+    @Input() public elt: any;
 
     constructor(private http: Http,
                 @Inject("QuickBoard") private quickBoard,
@@ -60,14 +60,14 @@ export class DerivationRulesComponent {
         }
     };
 
-    //$scope.$on('elementReloaded', function() {
+    // scope.$on('elementReloaded', function() {
     //    updateRules();
     //    if ($scope.tabs.derivationRules.active) {
     //        findDerivationOutputs();
     //    }
-    //});
+    // });
 
-    //$scope.$on('loadDerivationRules', findDerivationOutputs);
+    // $scope.$on('loadDerivationRules', findDerivationOutputs);
 
     openNewScore () {
         this.childModal.show();
@@ -93,13 +93,13 @@ export class DerivationRulesComponent {
     canAddScore () {
         if (!this.isAllowedModel.isAllowed(this.elt)) return false;
         if (this.elt.derivationRules) {
-            return this.elt.derivationRules.filter(function(derRule) {return derRule.ruleType === 'score'}).length < 1;
+            return this.elt.derivationRules.filter(derRule => derRule.ruleType === 'score').length < 1;
         } else {
             return true;
         }
     };
 
-    //$scope.derRulesCtrlLoadedPromise.resolve();
+    // $scope.derRulesCtrlLoadedPromise.resolve();
 
     someCdesInvalid () {
         this.invalidCdeMessage = undefined;
@@ -109,7 +109,7 @@ export class DerivationRulesComponent {
         }
         this.quickBoard.elts.forEach(function(qbElt:any) {
             if (qbElt.tinyId === this.elt.tinyId) {
-                this.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board."
+                this.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board.";
             }
         });
         this.quickBoard.elts.forEach(function(qbElt:any) {
