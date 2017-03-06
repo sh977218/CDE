@@ -28,7 +28,7 @@
 
                                 <sortable-array [theArray]="elt[config.type].concepts"
                                                 [sortableArray]="elt[config.type].concepts"
-                                                [index]="$index" (cb)="stageElt(elt)"></sortable-array>
+                                                [index]="$index" (cb)="elt.unsaved = true"></sortable-array>
                             </td>
                         </tr>
                         </tbody>

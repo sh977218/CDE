@@ -32,18 +32,17 @@ export class DerivationRulesComponent {
 
     updateRules () {
         if (this.elt.derivationRules) {
-            this.elt.derivationRules.forEach(function(dr:any) {
+            this.elt.derivationRules.forEach(function(dr: any) {
                 if (dr.inputs[0] !== null) {
                     this.http.post("/cdesByTinyIdList", dr.inputs, function(result) {
                         dr.fullCdes = result;
-                        //dr.cdeNamesAsString = result.map(function(r) {return r.naming[0].designation}).join(' , ');
                     });
                 }
             });
         }
     };
 
-    //$scope.deferredEltLoaded.promise.then(updateRules);
+    // $scope.deferredEltLoaded.promise.then(updateRules);
 
     findDerivationOutputs () {
         if (!this.elt.derivationOutputs) {
@@ -76,7 +75,7 @@ export class DerivationRulesComponent {
     okCreate () {
         this.childModal.hide();
         if (!this.elt.derivationRules) this.elt.derivationRules = [];
-        this.quickBoard.elts.forEach(function(qbElt:any) {
+        this.quickBoard.elts.forEach(function(qbElt: any) {
             this.newDerivationRule.inputs.push(qbElt.tinyId);
         });
         this.elt.derivationRules.push(this.newDerivationRule);
@@ -93,7 +92,7 @@ export class DerivationRulesComponent {
     canAddScore () {
         if (!this.isAllowedModel.isAllowed(this.elt)) return false;
         if (this.elt.derivationRules) {
-            return this.elt.derivationRules.filter(derRule => derRule.ruleType === 'score').length < 1;
+            return this.elt.derivationRules.filter(derRule => derRule.ruleType === "score").length < 1;
         } else {
             return true;
         }
@@ -107,15 +106,15 @@ export class DerivationRulesComponent {
             this.invalidCdeMessage = "There are no CDEs in your Quick Board. Add some before you can create a rule.";
             return true;
         }
-        this.quickBoard.elts.forEach(function(qbElt:any) {
+        this.quickBoard.elts.forEach(function(qbElt: any) {
             if (qbElt.tinyId === this.elt.tinyId) {
                 this.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board.";
             }
         });
-        this.quickBoard.elts.forEach(function(qbElt:any) {
+        this.quickBoard.elts.forEach(function(qbElt: any) {
             if (qbElt.valueDomain.datatype === "Number") return;
             if (qbElt.valueDomain.datatype === "Value List") {
-                qbElt.valueDomain.permissibleValues.forEach((pv:any) => {
+                qbElt.valueDomain.permissibleValues.forEach((pv: any) => {
                     if (isNaN(pv.permissibleValue)) {
                         this.invalidCdeMessage = "CDE " + qbElt.naming[0].designation +
                             " contains a Permissible Value that is not a number. It may not be added to a score.";

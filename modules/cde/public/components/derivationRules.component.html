@@ -6,7 +6,7 @@
     <div *ngFor="let derRule of elt.derivationRules; let $index = index">
         <div class="row">
             <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
-                <a (click)="removeDerivationRule($index)" *ngIf="!showDelete" class="fa fa-trash-o"
+                <a (click)="removeDerivationRule($index)" class="fa fa-trash-o"
                    id="removeDerivationRule-{{$index}}" title="Remove" href=""></a>
             </div>
             <div class="col-md-11">
@@ -21,7 +21,7 @@
                     <dd tabindex="0" id="dd_derRule_input_{{$index}}">
                         <a *ngFor="let input of derRule.fullCdes | limitTo:8"
                            href="/deview/?tinyId={{input.tinyId}}">
-                            {{input.naming[0].designation}} {{!$last?'- ':''}}</a>
+                            {{input.naming[0].designation}} {{!$index === elt.derivationRules.length -1?'- ':''}}</a>
                         <span *ngIf="derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
                     </dd>
                 </dl>
@@ -45,7 +45,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="derOut in elt.derivationOutputs">
+            <tr *ngFor="let derOut of elt.derivationOutputs">
                 <td class="col-xs-3">{{derOut.ruleName}}</td>
                 <td class="col-xs-9">
                     <a ng-href="/deview/?tinyId={{derOut.cde.tinyId}}">{{derOut.cde.naming[0].designation}}</a>
@@ -59,7 +59,7 @@
 
 <div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="derRuleModal" aria-hidden="true">
-    <div class="modal-dialog modal-sm" *ngIf="newId">
+    <div class="modal-dialog modal-sm" *ngIf="newDerivationRule">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 tabindex="0">Add Score</h4>
@@ -76,7 +76,7 @@
                         <div class="form-group">
                             <label tabindex="0" for="newDerivationRule.inputs">Inputs: </label>
                             <span ng-switch="invalidCdeMessage === undefined" id="newDerivationRule.inputs">
-                                <span ng-switch-when="true">All {{modalQuickBoard.elts.length}} CDEs in your quickboard.</span>
+                                <span ng-switch-when="true">All {{quickBoard.elts.length}} CDEs in your quickboard.</span>
                                 <span ng-switch-default class="error-block">{{invalidCdeMessage}}</span>
                             </span>
                         </div>
