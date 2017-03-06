@@ -131,7 +131,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: ['/cde/public/html/derivationRules.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.derRulesCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadDerivationRules');});
+                //$scope.derRulesCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadDerivationRules');});
             }
         },
         validRules: {

@@ -15,13 +15,23 @@ export class DerivationRulesComponent {
 
     constructor(private http: Http,
                 @Inject("isAllowedModel") private isAllowedModel) {
+
+        this.updateRules();
+        this.findDerivationOutputs();
+
     }
+
+    newDerivationRule: {
+        ruleType: "score",
+        formula: "sumAll",
+        inputs: [any]
+    };
 
     updateRules () {
         if (this.elt.derivationRules) {
             this.elt.derivationRules.forEach(function(dr) {
                 if (dr.inputs[0] !== null) {
-                    CdeList.byTinyIdList(dr.inputs, function(result) {
+                    this.http.post("/cdesByTinyIdList", dr.inputs, function(result) {
                         dr.fullCdes = result;
                         //dr.cdeNamesAsString = result.map(function(r) {return r.naming[0].designation}).join(' , ');
                     });
@@ -30,12 +40,12 @@ export class DerivationRulesComponent {
         }
     };
 
-    $scope.deferredEltLoaded.promise.then(updateRules);
+    //$scope.deferredEltLoaded.promise.then(updateRules);
 
     findDerivationOutputs () {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
-            this.http.get("/cde/derivationOutputs/" + this.elt.tinyId).then(function(result){
+            this.http.get("/cde/derivationOutputs/" + this.elt.tinyId, function(result) {
                 result.data.forEach(function(outputCde) {
                     outputCde.derivationRules.forEach(function(derRule) {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
@@ -47,33 +57,30 @@ export class DerivationRulesComponent {
         }
     };
 
-    $scope.$on('elementReloaded', function() {
-        updateRules();
-        if ($scope.tabs.derivationRules.active) {
-            findDerivationOutputs();
-        }
-    });
+    //$scope.$on('elementReloaded', function() {
+    //    updateRules();
+    //    if ($scope.tabs.derivationRules.active) {
+    //        findDerivationOutputs();
+    //    }
+    //});
 
-    $scope.$on('loadDerivationRules', findDerivationOutputs);
+    //$scope.$on('loadDerivationRules', findDerivationOutputs);
 
-    $scope.openNewScore = function () {
-    $modal.open({
-        animation: false,
-        templateUrl: 'newScoreModalContent.html',
-        controller: 'NewScoreModalCtrl',
-        resolve: {
-            elt: function() {return $scope.elt;}
-        }
-    }).result.then(function (newDerivationRule) {
-        if (!$scope.elt.derivationRules) $scope.elt.derivationRules = [];
+    openNewScore () {
+        this.childModal.show();
+    };
+
+    okCreate () {
+        this.childModal.hide();
+        if (!this.elt.derivationRules) this.elt.derivationRules = [];
         quickBoard.elts.forEach(function(qbElt) {
             newDerivationRule.inputs.push(qbElt.tinyId);
         });
-        $scope.elt.derivationRules.push(newDerivationRule);
+        this.elt.derivationRules.push(newDerivationRule);
         $scope.stageElt($scope.elt);
         updateRules();
-    }, function () {});
-};
+    };
+
 
     $scope.removeDerivationRule = function (index) {
     $scope.elt.derivationRules.splice(index, 1);
@@ -100,15 +107,7 @@ angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$uibM
 
         $scope.modalQuickBoard = quickBoard;
 
-        $scope.newDerivationRule = {
-            ruleType: "score",
-            formula: "sumAll",
-            inputs: []
-        };
 
-        $scope.okCreate = function () {
-            $modalInstance.close($scope.newDerivationRule);
-        };
 
         $scope.cancelCreate = function() {
             $modalInstance.dismiss("Cancel");
