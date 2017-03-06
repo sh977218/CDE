@@ -2,12 +2,12 @@ import * as compareShared from "../../../system/shared/compareShared";
 
 (function () {
     'use strict';
-
     angular.module('ngCompareSideBySide', [])
-        .directive("ngCompareSideBySide", ["$compile", "Comparison",
-            function ($compile, Comparison) {
+        .directive("ngCompareSideBySide", ["$compile", "$templateRequest", "Comparison",
+            function ($compile, $templateRequest, Comparison) {
                 return {
                     restrict: "AE",
+                    replace: true,
                     scope: {
                         _left: '<ngCompareSideBySideLeft',
                         _right: '<ngCompareSideBySideRight',
@@ -15,45 +15,28 @@ import * as compareShared from "../../../system/shared/compareShared";
                     },
                     templateUrl: '/system/public/html/ngCompareTemplate/compareSwitchTemplate.html',
                     link: function ($scope) {
-                        $scope.left = angular.copy($scope._left);
-                        $scope.right = angular.copy($scope._right);
-                        if (!$scope.left && !$scope.right) {
-                            $scope.err = {error: true, errorMessage: "left and right are null"};
-                        } else {
-                            $scope.options.type = Comparison.getType($scope.left, $scope.right);
-                            Comparison.initialize($scope);
-                            var result1 = Comparison.compareImpl($scope.left, $scope.right, $scope.options);
-                            var result2 = Comparison.compareImpl($scope.right, $scope.left, $scope.options);
-                            if (result1.result && result2.result) {
-                                if (result1.result.length < result2.result.length) {
-                                    $scope.result = result1.result;
-                                } else if (result1.result.length > result2.result.length) {
-                                    Comparison.swapIndex(result2);
-                                    $scope.result = result2.result;
-                                } else {
-                                    if (result1.matchCount < result2.matchCount) {
-                                        $scope.result = result1.result;
-                                    } else if (result1.matchCount > result2.matchCount) {
-                                        Comparison.swapIndex(result2);
-                                    } else {
-                                        $scope.result = result1.result;
-                                    }
-                                }
+                        $scope.$watch("options", function () {
+                            $scope.left = angular.copy($scope._left);
+                            $scope.right = angular.copy($scope._right);
+                            if (!$scope.left && !$scope.right) {
+                                $scope.err = {error: true, errorMessage: "left and right are null"};
                             } else {
-                                $scope.result = result1.result;
+                                $scope.options.type = Comparison.getType($scope.left, $scope.right);
+                                Comparison.initialize($scope);
+                                $scope.result = Comparison.compareImpl($scope.left, $scope.right, $scope.options).result;
+                                $scope.displayTemplate = {
+                                    array: '/system/public/html/ngCompareTemplate/compareArray.html',
+                                    stringArray: '/system/public/html/ngCompareTemplate/compareStringArray.html',
+                                    object: '/system/public/html/ngCompareTemplate/compareObject.html',
+                                    string: '/system/public/html/ngCompareTemplate/compareString.html',
+                                    number: '/system/public/html/ngCompareTemplate/compareNumber.html'
+                                }[$scope.options.type];
                             }
-                            $scope.displayTemplate = {
-                                array: '/system/public/html/ngCompareTemplate/compareArray.html',
-                                stringArray: '/system/public/html/ngCompareTemplate/compareStringArray.html',
-                                object: '/system/public/html/ngCompareTemplate/compareObject.html',
-                                string: '/system/public/html/ngCompareTemplate/compareString.html',
-                                number: '/system/public/html/ngCompareTemplate/compareNumber.html'
-                            }[$scope.options.type];
-                        }
+                        })
                     }
                 };
             }])
-        .factory("Comparison", ["$compile", function () {
+        .factory("Comparison", [function () {
             return {
                 initialize: function (scope) {
                     var type;

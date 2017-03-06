@@ -159,7 +159,7 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard',
         };
         $scope.questionOption = {
             equal: function (a, b) {
-                return (a.question.cde.tinyId === b.question.cde.tinyId);
+                return a.question.cde.tinyId === b.question.cde.tinyId;
             },
             properties: [{label: 'Label', property: 'label'},
                 {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/deview/?tinyId='},
@@ -174,11 +174,27 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard',
         $scope.eltsToCompare[1].questions = [];
         flatFormQuestions($scope.eltsToCompare[1], $scope.eltsToCompare[1].questions);
 
+        var questionEqualFunctionMap = {
+            label: function (a, b) {
+                return a.label === b.label;
+            },
+            tinyId: function (a, b) {
+                return a.question.cde.tinyId === b.question.cde.tinyId;
+            }
+        };
+
         $scope.alignQuestionBy = function () {
             var alignBy = $scope.alignBy;
-            $scope.questionOption.equal = function (a, b) {
-                return a[alignBy] === b[alignBy];
-            }
+            $scope.questionOption = {
+                equal: questionEqualFunctionMap[alignBy],
+                properties: [{label: 'Label', property: 'label'},
+                    {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/deview/?tinyId='},
+                    {label: 'Unit of Measurement', property: 'question.uoms'},
+                    {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
+                ],
+                wipeUseless: $scope.wipeUseless
+            };
+            console.log('a');
         }
 
     }

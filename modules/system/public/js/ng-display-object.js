@@ -85,7 +85,7 @@
                         ' <a ng-href="{{properties.url}}' + propertyValue + '">' + propertyValue + '</a></div>' +
                         '<div ng-if="!properties.link" class="col-xs-7" data-title="{{properties.property}}"' +
                         ' ng-bind-html="value" ng-text-truncate="value" ng-tt-threshold="100"></div>';
-                    if ($scope.showWarningIcon)
+                    if ($scope.showWarningIcon && !$scope.properties.match)
                         objectHtml +=
                             '<i class="fa fa-exclamation-triangle unmatchedIcon"></i>';
                     objectHtml += '</div>';
