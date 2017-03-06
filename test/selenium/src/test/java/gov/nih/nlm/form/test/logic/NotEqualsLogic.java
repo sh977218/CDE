@@ -19,6 +19,8 @@ public class NotEqualsLogic extends BaseFormTest {
         findElement(By.name("q1")).sendKeys("11");
         textNotPresent("Spinal surgery indicator");
 
+        scrollDownBy(500);
+
         // test date
         textPresent("Diagnosis age type");
         findElement(By.name("q3")).sendKeys("01/01/2016");
