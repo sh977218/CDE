@@ -74,32 +74,31 @@ export class DerivationRulesComponent {
         this.childModal.hide();
         if (!this.elt.derivationRules) this.elt.derivationRules = [];
         quickBoard.elts.forEach(function(qbElt) {
-            newDerivationRule.inputs.push(qbElt.tinyId);
+            this.newDerivationRule.inputs.push(qbElt.tinyId);
         });
-        this.elt.derivationRules.push(newDerivationRule);
+        this.elt.derivationRules.push(this.newDerivationRule);
         $scope.stageElt($scope.elt);
-        updateRules();
+        this.updateRules();
     };
 
 
-    $scope.removeDerivationRule = function (index) {
-    $scope.elt.derivationRules.splice(index, 1);
-    $scope.stageElt($scope.elt);
-};
+    removeDerivationRule (index) {
+        this.elt.derivationRules.splice(index, 1);
+        $scope.stageElt($scope.elt);
+    };
 
-    $scope.canAddScore = function() {
-    if (!$scope.isOrgCurator($scope.user)) return false;
-    if ($scope.elt.derivationRules) {
-        return $scope.elt.derivationRules.filter(function(derRule) {return derRule.ruleType === 'score'}).length < 1;
-    } else {
-        return true;
-    }
-};
+    canAddScore () {
+        if (!$scope.isOrgCurator($scope.user)) return false;
+        if (this.elt.derivationRules) {
+            return this.elt.derivationRules.filter(function(derRule) {return derRule.ruleType === 'score'}).length < 1;
+        } else {
+            return true;
+        }
+    };
 
     $scope.derRulesCtrlLoadedPromise.resolve();
 
 }
-]);
 
 angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$uibModalInstance', 'QuickBoard', 'elt',
     function($scope, $modalInstance, quickBoard, elt)
