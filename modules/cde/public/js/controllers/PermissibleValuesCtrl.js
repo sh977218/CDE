@@ -272,5 +272,4 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
             "codeSystemVersion": vsacValue.codeSystemVersion
         };        
     };
-
 }]);
