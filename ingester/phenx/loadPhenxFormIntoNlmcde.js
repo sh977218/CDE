@@ -245,6 +245,7 @@ stream.on('data', (protocol) => {
                 existingForm.ids = existingForm.ids.filter((i)=> {
                     return i.source !== 'LOINC';
                 });
+                existingForm.registrationState.registrationStatus = 'Candidate';
                 updateShare.removeClassificationTree(existingForm, 'PhenX');
                 if (form.classification[0])
                     existingForm.classification.push(form.classification[0]);
@@ -278,7 +279,7 @@ stream.on('end', ()=> {
         'source.sourceName': 'PhenX'
     }, {
         "registrationState.registrationStatus": "Retired",
-        "registrationState.administrativeNote": "Not present in import from " + importDate
+        "registrationState.administrativeNote": "Not present in import from " + today
     }, (e)=> {
         if (e) throw e;
         else {

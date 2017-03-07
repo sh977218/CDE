@@ -1636,3 +1636,13 @@ div.slider .ui-slider-handle {
     width: 80%;
     display: inline-block
 }
+
+.rotate90 {
+    transform: rotate(90deg);
+}
+.rotate180 {
+    transform: rotate(180deg);
+}
+.rotate270 {
+    transform: rotate(270deg);
+}

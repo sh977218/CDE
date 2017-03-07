@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h4 tabindex="0">Add Naming</h4>
+    <h4 tabindex="0">Add Permissible Value</h4>
 </div>
 <form name="form" role="form">
     <div class="modal-body">
@@ -28,7 +28,7 @@
         <div class="form-group">
             <label tabindex="0" for="codeSystemInput">Code System</label>
             <input tabindex="0" class="form-control" ng-model="newPv.codeSystemName" id="codeSystemInput"
-                      Placeholder="Code System"/>
+                   Placeholder="Code System" ng-required="newPv.valueMeaningCode.length > 0"/>
         </div>
         <div ng-if="umlsTerms.length > 0">
             <h4>Choices from UMLS: </h4>
