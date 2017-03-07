@@ -24,13 +24,14 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
 
         $scope.$on('$routeChangeStart', function(event, next, current) {
             var path = current.originalPath;
-            if (path === '/cde/search')
-                path = path + '?q=' + current.params.q + '&page=' + current.params.page;
-            else if (path === '/form/search')
-                path = path + '?selectedOrg=' + encodeURIComponent(current.params.selectedOrg);
-            else
-                return;
-            localStorageService.set('scroll.' + path, $(window).scrollTop(), 'sessionStorage');
+            if (path === '/cde/search' || path === '/form/search') {
+                path = path + '?' +
+                    (current.params.q ? 'q=' + encodeURIComponent(current.params.q) : '') +
+                    (current.params.q && current.params.selectedOrg ? '&' : '' ) +
+                    (current.params.selectedOrg ? 'selectedOrg=' + encodeURIComponent(current.params.selectedOrg) : '' ) +
+                    (current.params.page ? '&page=' + encodeURIComponent(current.params.page) : '');
+                localStorageService.set('scroll.' + path, $(window).scrollTop(), 'sessionStorage');
+            }
         });
         $window.addEventListener('unload', function () {
             if (/^\/(cde|form)\/search/.exec($location.url()))
