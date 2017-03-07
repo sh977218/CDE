@@ -35,7 +35,7 @@ public class NotEqualsLogic extends BaseFormTest {
         findElement(By.name("q5")).sendKeys("Swe");
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
         textPresent("Birth Weight");
-        findElement(By.name("q5")).sendKeys("Sweden");
+        findElement(By.name("q5")).sendKeys("den");
         textNotPresent("Birth Weight");
         findElement(By.name("q5")).clear();
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
