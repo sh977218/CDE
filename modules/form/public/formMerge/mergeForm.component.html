@@ -1,0 +1,129 @@
+<a class='btn btn-small btn-default fa fa-clipboard'
+   (click)="openMergeForm()">Merge Form</a>
+
+<div bsModal #mergeFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="col-xs-4">Merge From</div>
+                <div class="col-xs-4">
+                    <button class="btn btn-default" (click)="selectAllMergerFields();">Select All</button>
+                </div>
+                <div class="col-xs-4">Merge Into</div>
+            </div>
+            <div class="modal-body overflowHidden">
+                <div class="row">
+                    <input type="checkbox" [(ngModel)]="fields.naming">Naming
+                    <div class="col-xs-12" *ngIf="fields.naming">
+                        <div class="col-xs-6 boxed-div">
+                            <div *ngFor="let leftName of left.naming">
+                                <div class="col-xs-3">designation:</div>
+                                <div class="col-xs-8">{{leftName.designation}}</div>
+                                <div class="col-xs-3">definition:</div>
+                                <div class="col-xs-8">{{leftName.definition}}</div>
+                                <div class="col-xs-3">tags:</div>
+                                <div class="col-xs-8">{{leftName.tags}}</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 boxed-div">
+                            <div *ngFor="let rightName of right.naming">
+                                <div class="col-xs-3">designation:</div>
+                                <div class="col-xs-8">{{rightName.designation}}</div>
+                                <div class="col-xs-3">definition:</div>
+                                <div class="col-xs-8">{{rightName.definition}}</div>
+                                <div class="col-xs-3">tags:</div>
+                                <div class="col-xs-8">{{rightName.tags}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="checkbox" [(ngModel)]="fields.referenceDocuments">Reference Documents
+                    <div class="col-xs-12" *ngIf="fields.referenceDocuments">
+                        <div class="col-xs-6">
+                            <div *ngFor="let leftReferenceDocument of left.referenceDocuments">
+                                <div class="col-xs-3">Title:</div>
+                                <div class="col-xs-8">{{leftReferenceDocument.title}}</div>
+                                <div class="col-xs-3">URI:</div>
+                                <div class="col-xs-8">{{leftReferenceDocument.uri}}</div>
+                                <div class="col-xs-3">Provider Org:</div>
+                                <div class="col-xs-8">{{leftReferenceDocument.providerOrg}}</div>
+                                <div class="col-xs-3">Language Code:</div>
+                                <div class="col-xs-8">{{leftReferenceDocument.languageCode}}</div>
+                                <div class="col-xs-3">Document:</div>
+                                <div class="col-xs-8">{{leftReferenceDocument.document}}</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div *ngFor="let rightReferenceDocument of right.referenceDocuments">
+                                <div class="col-xs-3">Title:</div>
+                                <div class="col-xs-8">{{rightReferenceDocument.title}}</div>
+                                <div class="col-xs-3">URI:</div>
+                                <div class="col-xs-8">{{rightReferenceDocument.uri}}</div>
+                                <div class="col-xs-3">Provider Org:</div>
+                                <div class="col-xs-8">{{rightReferenceDocument.providerOrg}}</div>
+                                <div class="col-xs-3">Language Code:</div>
+                                <div class="col-xs-8">{{rightReferenceDocument.languageCode}}</div>
+                                <div class="col-xs-3">Document:</div>
+                                <div class="col-xs-8">{{rightReferenceDocument.document}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="checkbox" [(ngModel)]="fields.properties">Properties
+                    <div class="col-xs-12" *ngIf="fields.properties">
+                        <div class="col-xs-6">
+                            <div *ngFor="let leftProperty of left.properties">
+                                <div class="col-xs-3">Key:</div>
+                                <div class="col-xs-8">{{leftProperty.key}}</div>
+                                <div class="col-xs-3">Value:</div>
+                                <div class="col-xs-8">{{leftProperty.value}}</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div *ngFor="let rightProperty of right.properties">
+                                <div class="col-xs-3">Key:</div>
+                                <div class="col-xs-8">{{rightProperty.key}}</div>
+                                <div class="col-xs-3">Value:</div>
+                                <div class="col-xs-8">{{rightProperty.value}}</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="checkbox" [(ngModel)]="fields.questions">Questions
+                    <div class="col-xs-12" *ngIf="fields.questions">
+                        <div class="col-xs-6">
+                            <div *ngFor="let leftQuestion of left.questions">
+                                <div class="row">
+                                    <div class="col-xs-4 Label">Label:</div>
+                                    <div class="col-xs-7">{{leftQuestion.label}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4 Label">CDE:</div>
+                                    <div class="col-xs-7">{{leftQuestion.question.cde.tinyId}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4 Label">Unit of Measurement:</div>
+                                    <div class="col-xs-7">{{leftQuestion.question.uoms}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4 Label">Answer:</div>
+                                    <div class="col-xs-7">{{leftQuestion.question.answers}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel" (click)="mergeFormModal.hide()" type="button">Cancel</button>
+                <button class="btn btn-warning">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -20,8 +20,7 @@
                 </span>
             </span>
 
-            <identify-questions class="leftObj" *ngIf="forms" [left]="eltsToCompare[0]"
-                                [right]="eltsToCompare[1]"></identify-questions>
+            <merge-form class="leftObj" *ngIf="forms" [left]="eltsToCompare[0]" [right]="eltsToCompare[1]"></merge-form>
 
         </div>
         <div class="col-xs-6">
@@ -92,11 +91,6 @@
 
     <div id="qb_compare_questions">
         <hr class="divider compare-divider">
-        Align by
-        <select ng-model='alignBy' ng-change="alignQuestionBy()">
-            <option value="tinyId">TinyId</option>
-            <option value="label">Label</option>
-        </select>
         <h4 class="compareSectionTitle">Questions</h4>
         <div ng-compare-side-by-side ng-compare-side-by-side-options='questionOption'
              ng-compare-side-by-side-left="eltsToCompare[0].questions"

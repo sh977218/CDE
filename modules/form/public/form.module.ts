@@ -5,12 +5,12 @@ import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
 
 import { upgradeAdapter } from "../../upgrade";
-import {IdentifyQuestionsComponent} from "./formMerge/identifyQuestions.component";
+import {MergeFormComponent} from "./formMerge/mergeForm.component";
 
 
 @NgModule({
     declarations: [
-        IdentifyQuestionsComponent
+        MergeFormComponent
     ],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
