@@ -19,7 +19,7 @@ export class SkipLogicService {
         t = t.substring(1, t.length - 1);
         tokens.push(t);
 
-        res = str.match(/^(>=|<=|=|>|<)/);
+        res = str.match(/^(>=|<=|=|>|<|!=)/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
