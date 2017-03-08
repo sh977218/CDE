@@ -22,20 +22,14 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
         $scope.maxLines = 5;
         $scope.lineLength = 50;
 
-        $scope.$on('$routeChangeStart', function(event, next, current) {
-            var path = current.originalPath;
-            if (path === '/cde/search' || path === '/form/search') {
-                path = path + '?' +
-                    (current.params.q ? 'q=' + encodeURIComponent(current.params.q) : '') +
-                    (current.params.q && current.params.selectedOrg ? '&' : '' ) +
-                    (current.params.selectedOrg ? 'selectedOrg=' + encodeURIComponent(current.params.selectedOrg) : '' ) +
-                    (current.params.page ? '&page=' + encodeURIComponent(current.params.page) : '');
-                localStorageService.set('scroll.' + path, $(window).scrollTop(), 'sessionStorage');
-            }
+        $scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
+            var match = /\/(cde|form)\/search(.*)/.exec(oldUrl);
+            if (match)
+                $window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
         });
         $window.addEventListener('unload', function () {
             if (/^\/(cde|form)\/search/.exec($location.url()))
-                localStorageService.set('scroll.' + $location.url(), $(window).scrollTop(), 'sessionStorage');
+                $window.sessionStorage['nlmcde.scroll.' + $location.url()] = $(window).scrollTop();
         });
         var previousSpot = $window.sessionStorage['nlmcde.scroll.' + $location.url()];
         if (previousSpot != null)
