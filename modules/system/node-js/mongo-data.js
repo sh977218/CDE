@@ -63,6 +63,35 @@ exports.findMeshClassification = function(query, cb) {
     MeshClassification.find(query, cb);
 };
 
+exports.addToViewHistory = function (elt, user) {
+    if (!elt || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
+        origin: "system.mongo-system.addToViewHistory",
+        stack: new Error().stack,
+        details: {"elt": elt, user: user}
+    });
+    let updStmt = {viewHistory: {
+        $each: [elt.tinyId]
+            , $position: 0
+            , $slice: 1000
+    }};
+    if (elt.formDescription) {
+        updStmt = {formViewHistory: {
+            $each: [elt.tinyId]
+            , $position: 0
+            , $slice: 1000
+        }};
+    }
+    User.update({'_id': user._id}, {
+        $push: updStmt
+    }).exec(function (err) {
+        if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
+            origin: "cde.mongo-cde.addToViewHistory",
+            stack: new Error().stack,
+            details: {"cde": cde, user: user}
+        });
+    });
+};
+
 exports.embeds = {
     save: function(embed, cb) {
         if (embed._id) {

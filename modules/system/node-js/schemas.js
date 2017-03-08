@@ -149,6 +149,7 @@ schemas.userSchema = new mongoose.Schema({
     , siteAdmin: Boolean
     , quota: Number
     , viewHistory: [String]
+    , formViewHistory: [String]
     , knownIPs: [String]
     , roles: [{type: String, enum: authorizationShared.rolesEnum}]
     , searchSettings: {
