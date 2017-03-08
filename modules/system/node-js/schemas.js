@@ -34,7 +34,7 @@ schemas.sourceSchema = new mongoose.Schema({
     datatype: String,
     copyright: {
         value: String,
-        valueFormat: String,
+        valueFormat: String
     }
 }, {_id: false});
 

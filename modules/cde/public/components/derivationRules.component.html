@@ -1,7 +1,7 @@
-<div ng-controller="DerivationRulesCtrl">
+<div>
     <h4>Derivation Rules</h4>
 
-    <div tabindex="0" *ngIf="elt.derivationRules < 1">There are no derivation rules.</div>
+    <div *ngIf="elt.derivationRules < 1">There are no derivation rules.</div>
 
     <div *ngFor="let derRule of elt.derivationRules; let $index = index">
         <div class="row">
@@ -11,15 +11,15 @@
             </div>
             <div class="col-md-11">
                 <dl class="dl-horizontal">
-                    <dt tabindex="0">Name:</dt>
-                    <dd tabindex="0" id="dd_derRule_name_{{$index}}">{{derRule.name}}</dd>
-                    <dt tabindex="0">Rule Type:</dt>
-                    <dd tabindex="0" id="dd_derRule_type_{{$index}}">{{derRule.ruleType}}</dd>
-                    <dt tabindex="0">Formula: </dt>
-                    <dd tabindex="0" id="dd_derRule_formula_{{$index}}">{{derRule.formula}}</dd>
-                    <dt tabindex="0">Input CDEs:</dt>
-                    <dd tabindex="0" id="dd_derRule_input_{{$index}}">
-                        <a *ngFor="let input of getViewCdes()"
+                    <dt>Name:</dt>
+                    <dd id="dd_derRule_name_{{$index}}">{{derRule.name}}</dd>
+                    <dt>Rule Type:</dt>
+                    <dd id="dd_derRule_type_{{$index}}">{{derRule.ruleType}}</dd>
+                    <dt>Formula: </dt>
+                    <dd id="dd_derRule_formula_{{$index}}">{{derRule.formula}}</dd>
+                    <dt>Input CDEs:</dt>
+                    <dd id="dd_derRule_input_{{$index}}">
+                        <a *ngFor="let input of getViewCdes(derRule)"
                            href="/deview/?tinyId={{input.tinyId}}">
                             {{input.naming[0].designation}} {{!$index === elt.derivationRules.length -1?'- ':''}}</a>
                         <span *ngIf="derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
@@ -54,52 +54,55 @@
             </tbody>
         </table>
     </div>
-</div>
 
 
-<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-     aria-labelledby="derRuleModal" aria-hidden="true">
-    <div class="modal-dialog modal-sm" *ngIf="newDerivationRule">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 tabindex="0">Add Score</h4>
-            </div>
-            <div class="modal-body">
-                <form role="form" #drForm="ngForm">
-                    <div class="modal-body" id="newScoreModalBody">
-                        <div class="form-group">All Data Elements in your quickboard will be added to the score.</div>
-                        <div class="form-group">
-                            <label tabindex="0" for="newDerivationRule.name">Name: </label>
-                            <input tabindex="0" class="form-control" [(ngModel)]="newDerivationRule.name"
-                                   id="newDerivationRule.name" Placeholder="Score Name" required />
-                        </div>
-                        <div class="form-group">
-                            <label tabindex="0" for="newDerivationRule.inputs">Inputs: </label>
+    <div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+         aria-labelledby="derRuleModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 tabindex="0">Add Score</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" #drForm="ngForm">
+                        <div class="modal-body" id="newScoreModalBody">
+                            <div class="form-group">All Data Elements in your quickboard will be added to the score.</div>
+                            <div class="form-group">
+                                <label tabindex="0" for="newDerivationRule.name">Name: </label>
+                                <input tabindex="0" class="form-control" [(ngModel)]="newDerivationRule.name"
+                                       id="newDerivationRule.name" Placeholder="Score Name" name="scoreName" required/>
+                            </div>
+                            <div class="form-group">
+                                <label tabindex="0" for="newDerivationRule.inputs">Inputs: </label>
                             <span id="newDerivationRule.inputs">
                                 <span *ngIf="invalidCdeMessage === undefined">All {{quickBoard.elts.length}} CDEs in your quickboard.</span>
                                 <span *ngIf="invalidCdeMessage !== undefined" class="error-block">{{invalidCdeMessage}}</span>
                             </span>
+                            </div>
+                            <div class="form-group">
+                                <label tabindex="0" for="newDerivationRule.ruleType">Rule Type: </label>
+                                <span id="newDerivationRule.ruleType">Score</span>
+                            </div>
+                            <div class="form-group">
+                                <label tabindex="0" for="newDerivationRule.formula">Formula: </label>
+                                <select [(ngModel)]="newDerivationRule.formula" id="newDerivationRule.formula"
+                                        name="formula" class="form-control">
+                                    <option value="sumAll">Sum of All</option>
+                                    <option value="mean">Mean (Average)</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label tabindex="0" for="newDerivationRule.ruleType">Rule Type: </label>
-                            <span id="newDerivationRule.ruleType">Score</span>
+                        <div class="modal-footer" id="newDerivationModalFooter">
+                            <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
+                            <button class="btn btn-warning" (click)="okCreate()" [disabled]="someCdesInvalid() || !drForm.form.valid"
+                                    id="createDerivationRule" type="submit">Save
+                            </button>
                         </div>
-                        <div class="form-group">
-                            <label tabindex="0" for="newDerivationRule.formula">Formula: </label>
-                            <select [(ngModel)]="newDerivationRule.formula" id="newDerivationRule.formula" class="form-control">
-                                <option value="sumAll">Sum of All</option>
-                                <option value="mean">Mean (Average)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer" id="newDerivationModalFooter">
-                        <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
-                        <button class="btn btn-warning" (click)="okCreate()" [disabled]="someCdesInvalid() || !drForm.form.valid"
-                                id="createDerivationRule" type="submit">Save
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
+

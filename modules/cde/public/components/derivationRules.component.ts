@@ -13,9 +13,18 @@ export class DerivationRulesComponent {
     @ViewChild("childModal") public childModal: ModalDirective;
     @Input() public elt: any;
 
+    newDerivationRule: any;
+
     constructor(private http: Http,
                 @Inject("QuickBoard") private quickBoard,
                 @Inject("isAllowedModel") private isAllowedModel) {
+
+        this.newDerivationRule = {
+            ruleType: "score",
+            formula: "sumAll",
+            inputs: []
+        };
+
     }
 
     ngOnInit () {
@@ -23,20 +32,16 @@ export class DerivationRulesComponent {
         this.findDerivationOutputs();
     }
 
-    newDerivationRule: {
-        ruleType: "score",
-        formula: "sumAll",
-        inputs: [any]
-    };
-
     invalidCdeMessage: string;
 
     updateRules () {
         if (this.elt.derivationRules) {
-            this.elt.derivationRules.forEach(function(dr: any) {
+            this.elt.derivationRules.forEach((dr: any) => {
                 if (dr.inputs[0] !== null) {
-                    this.http.post("/cdesByTinyIdList", dr.inputs, function(result) {
-                        dr.fullCdes = result;
+                    this.http.post("/cdesByTinyIdList", dr.inputs)
+                        .map(res => res.json())
+                    .subscribe(data => {
+                        dr.fullCdes = data;
                     });
                 }
             });
@@ -44,6 +49,7 @@ export class DerivationRulesComponent {
     };
 
     getViewCdes (dr) {
+        if (!dr.fullCdes) return [];
         return dr.fullCdes.filter((item, index) => index > 8);
     }
 
@@ -52,7 +58,7 @@ export class DerivationRulesComponent {
     findDerivationOutputs () {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
-            this.http.get("/cde/derivationOutputs/" + this.elt.tinyId, function(result) {
+            this.http.get("/cde/derivationOutputs/" + this.elt.tinyId, (result) => {
                 result.data.forEach(function(outputCde) {
                     outputCde.derivationRules.forEach((derRule) => {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
@@ -80,7 +86,7 @@ export class DerivationRulesComponent {
     okCreate () {
         this.childModal.hide();
         if (!this.elt.derivationRules) this.elt.derivationRules = [];
-        this.quickBoard.elts.forEach(function(qbElt: any) {
+        this.quickBoard.elts.forEach((qbElt: any) => {
             this.newDerivationRule.inputs.push(qbElt.tinyId);
         });
         this.elt.derivationRules.push(this.newDerivationRule);
@@ -111,7 +117,7 @@ export class DerivationRulesComponent {
             this.invalidCdeMessage = "There are no CDEs in your Quick Board. Add some before you can create a rule.";
             return true;
         }
-        this.quickBoard.elts.forEach(function(qbElt: any) {
+        this.quickBoard.elts.forEach((qbElt: any) => {
             if (qbElt.tinyId === this.elt.tinyId) {
                 this.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board.";
             }
