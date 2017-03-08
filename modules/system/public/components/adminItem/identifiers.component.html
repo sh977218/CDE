@@ -60,27 +60,26 @@
                     <h4 tabindex="0">Add Identifier</h4>
                 </div>
                 <div class="modal-body">
-                    <form name="form" role="form">
+                    <form role="form" #idForm="ngForm">
                         <div class="form-group">
-                            <label tabindex="0" for="newSource">Source</label>
-                            <input tabindex="0" class="form-control"  name="source"
+                            <label for="newSource">Source</label>
+                            <inputclass="form-control"  name="source"
                                 Placeholder="Id Source" required id="newSource" [(ngModel)]="newId.source"/>
                         </div>
                         <div class="form-group">
-                            <label tabindex="0" for="newId">Identifier</label>
-                            <input tabindex="0" class="form-control"  name="id" id="newId" Placeholder="Identifier"
+                            <label for="newId">Identifier</label>
+                            <input class="form-control" name="id" id="newId" Placeholder="Identifier"
                             required [(ngModel)]="newId.id"/>
                         </div>
                         <div class="form-group">
-                            <label tabindex="0" for="newVersion">Version</label>
-                            <input tabindex="0" class="form-control"  name="version"
+                            <label for="newVersion">Version</label>
+                            <input class="form-control"  name="version"
                                 Placeholder="Version" id="newVersion" [(ngModel)]="newId.version"/>
                         </div>
                         <div class="modal-footer" id="newIdModalFooter">
                             <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
-                            <button class="btn btn-warning" (click)="addId()" ng-disabled="isClean() || form.$invalid"
-                            id="createId" type="submit">Save
-                            </button>
+                            <button class="btn btn-warning" (click)="addId()" [disabled]="!idForm.form.valid"
+                                id="createId" type="submit">Save</button>
                         </div>
                     </form>
                 </div>

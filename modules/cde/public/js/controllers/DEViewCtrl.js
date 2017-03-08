@@ -3,10 +3,10 @@ import * as deValidator from "../../../../cde/shared/deValidator";
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal', '$sce',
+        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal',
         function ($scope, $routeParams, $modal, $window, $http, $timeout, DataElement, DataElementTinyId,
                   isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                  $q, QuickBoard, $log, userResource, PinModal, $sce)
+                  $q, QuickBoard, $log, userResource, PinModal)
 {
 
     $scope.module = 'cde';
@@ -131,7 +131,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: ['/cde/public/html/derivationRules.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.derRulesCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadDerivationRules');});
             }
         },
         validRules: {

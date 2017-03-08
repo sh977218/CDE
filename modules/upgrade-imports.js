@@ -107,7 +107,6 @@ import "./cde/public/js/controllers/BoardExportCtrl";
 import "./cde/public/js/controllers/PermissibleValuesCtrl";
 import "./cde/public/js/controllers/MyBoardsCtrl";
 import "./cde/public/js/controllers/NewBoardModalCtrl";
-import "./cde/public/js/controllers/NewConceptModalCtrl";
 import "./cde/public/js/controllers/MergeModalCtrl";
 import "./cde/public/js/controllers/InboxCtrl";
 import "./cde/public/js/controllers/MergeApproveCtrl";

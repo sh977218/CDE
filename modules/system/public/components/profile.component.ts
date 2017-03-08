@@ -4,7 +4,7 @@ import "rxjs/add/operator/map";
 
 @Component({
     selector: "cde-profile",
-    templateUrl: "./profile.component.html"
+    templateUrl: "profile.component.html"
 })
 export class ProfileComponent {
     cdes: any;
@@ -29,7 +29,7 @@ export class ProfileComponent {
     saveProfile() {
         this.http.post("/user/me", this.user)
             .subscribe(
-                (data) => {
+                () => {
                     this.reloadUser();
                     this.alert.addAlert("success", "Saved");
                 },
@@ -50,7 +50,7 @@ export class ProfileComponent {
     }
 
     removePublishedForm(pf) {
-        this.user.publishedForms = this.user.publishedForms.filter(function (p) {
+        this.user.publishedForms = this.user.publishedForms.filter(function (p: any) {
             return p._id !== pf._id;
         });
         this.saveProfile();

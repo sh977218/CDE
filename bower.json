@@ -16,7 +16,7 @@
     "select2": "~3.4.5",
     "selectize": "~0.8.5",
     "angular-ui-select": "0.19.6",
-    "textAngular": "1.4.0",
+    "textAngular": "1.5.16",
     "bootstrap": "3.3.6",
     "bootstrap-css-only": "3.3.6",
     "bootstrap-tour": "0.10.1",
