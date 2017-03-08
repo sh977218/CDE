@@ -69,12 +69,12 @@ exports.addToViewHistory = function (elt, user) {
         stack: new Error().stack,
         details: {"elt": elt, user: user}
     });
-    let updStmt = {viewHistory: {
+    var updStmt = {viewHistory: {
         $each: [elt.tinyId]
             , $position: 0
             , $slice: 1000
     }};
-    if (elt.formDescription) {
+    if (elt.formElements) {
         updStmt = {formViewHistory: {
             $each: [elt.tinyId]
             , $position: 0
