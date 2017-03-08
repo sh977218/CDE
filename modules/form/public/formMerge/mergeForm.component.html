@@ -16,24 +16,24 @@
                 <div class="row">
                     <input type="checkbox" [(ngModel)]="fields.naming">Naming
                     <div class="col-xs-12" *ngIf="fields.naming">
-                        <div class="col-xs-5" *ngIf="left.naming.length > 0">
+                        <div class="col-xs-6" *ngIf="left.naming.length > 0">
                             <div *ngFor="let leftName of left.naming" class="boxed-div overflowHidden">
                                 <div class="col-xs-3 ">designation:</div>
-                                <div class="col-xs-8">{{leftName.designation}}</div>
+                                <div class="col-xs-9">{{leftName.designation}}</div>
                                 <div class="col-xs-3 ">definition:</div>
-                                <div class="col-xs-8">{{leftName.definition}}</div>
+                                <div class="col-xs-9">{{leftName.definition}}</div>
                                 <div class="col-xs-3 ">tags:</div>
-                                <div class="col-xs-8">{{leftName.tags}}</div>
+                                <div class="col-xs-9">{{leftName.tags}}</div>
                             </div>
                         </div>
-                        <div class="col-xs-5" *ngIf="right.naming.length > 0">
+                        <div class="col-xs-6" *ngIf="right.naming.length > 0">
                             <div *ngFor="let rightName of right.naming" class="boxed-div overflowHidden">
                                 <div class="col-xs-3 ">designation:</div>
-                                <div class="col-xs-8">{{rightName.designation}}</div>
+                                <div class="col-xs-9">{{rightName.designation}}</div>
                                 <div class="col-xs-3 ">definition:</div>
-                                <div class="col-xs-8">{{rightName.definition}}</div>
+                                <div class="col-xs-9">{{rightName.definition}}</div>
                                 <div class="col-xs-3 ">tags:</div>
-                                <div class="col-xs-8">{{rightName.tags}}</div>
+                                <div class="col-xs-9">{{rightName.tags}}</div>
                             </div>
                         </div>
                     </div>
@@ -41,34 +41,34 @@
                 <div class="row">
                     <input type="checkbox" [(ngModel)]="fields.referenceDocuments">Reference Documents
                     <div class="col-xs-12" *ngIf="fields.referenceDocuments">
-                        <div class="col-xs-5" *ngIf="left.referenceDocuments.length > 0">
+                        <div class="col-xs-6" *ngIf="left.referenceDocuments.length > 0">
                             <div *ngFor="let leftReferenceDocument of left.referenceDocuments"
                                  class="boxed-div overflowHidden">
                                 <div class="col-xs-3 ">Title:</div>
-                                <div class="col-xs-8">{{leftReferenceDocument.title}}</div>
+                                <div class="col-xs-9">{{leftReferenceDocument.title}}</div>
                                 <div class="col-xs-3 ">URI:</div>
-                                <div class="col-xs-8">{{leftReferenceDocument.uri}}</div>
+                                <div class="col-xs-9">{{leftReferenceDocument.uri}}</div>
                                 <div class="col-xs-3 ">Provider Org:</div>
-                                <div class="col-xs-8">{{leftReferenceDocument.providerOrg}}</div>
+                                <div class="col-xs-9">{{leftReferenceDocument.providerOrg}}</div>
                                 <div class="col-xs-3 ">Language Code:</div>
-                                <div class="col-xs-8">{{leftReferenceDocument.languageCode}}</div>
+                                <div class="col-xs-9">{{leftReferenceDocument.languageCode}}</div>
                                 <div class="col-xs-3 ">Document:</div>
-                                <div class="col-xs-8">{{leftReferenceDocument.document}}</div>
+                                <div class="col-xs-9">{{leftReferenceDocument.document}}</div>
                             </div>
                         </div>
-                        <div class="col-xs-5" *ngIf="right.referenceDocuments.length > 0">
+                        <div class="col-xs-6" *ngIf="right.referenceDocuments.length > 0">
                             <div *ngFor="let rightReferenceDocument of right.referenceDocuments"
                                  class="boxed-div overflowHidden">
                                 <div class="col-xs-3 ">Title:</div>
-                                <div class="col-xs-8">{{rightReferenceDocument.title}}</div>
+                                <div class="col-xs-9">{{rightReferenceDocument.title}}</div>
                                 <div class="col-xs-3 ">URI:</div>
-                                <div class="col-xs-8">{{rightReferenceDocument.uri}}</div>
+                                <div class="col-xs-9">{{rightReferenceDocument.uri}}</div>
                                 <div class="col-xs-3 ">Provider Org:</div>
-                                <div class="col-xs-8">{{rightReferenceDocument.providerOrg}}</div>
+                                <div class="col-xs-9">{{rightReferenceDocument.providerOrg}}</div>
                                 <div class="col-xs-3 ">Language Code:</div>
-                                <div class="col-xs-8">{{rightReferenceDocument.languageCode}}</div>
+                                <div class="col-xs-9">{{rightReferenceDocument.languageCode}}</div>
                                 <div class="col-xs-3 ">Document:</div>
-                                <div class="col-xs-8">{{rightReferenceDocument.document}}</div>
+                                <div class="col-xs-9">{{rightReferenceDocument.document}}</div>
                             </div>
                         </div>
                     </div>
@@ -76,20 +76,20 @@
                 <div class="row">
                     <input type="checkbox" [(ngModel)]="fields.properties">Properties
                     <div class="col-xs-12" *ngIf="fields.properties">
-                        <div class="col-xs-5" *ngIf="left.properties.length > 0">
+                        <div class="col-xs-6" *ngIf="left.properties.length > 0">
                             <div *ngFor="let leftProperty of left.properties" class="boxed-div overflowHidden">
                                 <div class="col-xs-3 ">Key:</div>
-                                <div class="col-xs-8">{{leftProperty.key}}</div>
+                                <div class="col-xs-9">{{leftProperty.key}}</div>
                                 <div class="col-xs-3 ">Value:</div>
-                                <div class="col-xs-8">{{leftProperty.value}}</div>
+                                <div class="col-xs-9">{{leftProperty.value}}</div>
                             </div>
                         </div>
-                        <div class="col-xs-5" *ngIf="right.properties.length > 0">
+                        <div class="col-xs-6" *ngIf="right.properties.length > 0">
                             <div *ngFor="let rightProperty of right.properties" class="boxed-div overflowHidden">
                                 <div class="col-xs-3 ">Key:</div>
-                                <div class="col-xs-8">{{rightProperty.key}}</div>
+                                <div class="col-xs-9">{{rightProperty.key}}</div>
                                 <div class="col-xs-3 ">Value:</div>
-                                <div class="col-xs-8">{{rightProperty.value}}</div>
+                                <div class="col-xs-9">{{rightProperty.value}}</div>
                             </div>
                         </div>
                     </div>
@@ -97,36 +97,37 @@
                 <div class="row">
                     <input type="checkbox" [(ngModel)]="fields.questions">Questions
                     <div class="col-xs-12" *ngIf="fields.questions">
-                        <div class="col-xs-5">
+                        <div class="col-xs-6">
                             <bs-sortable [(ngModel)]="left.questions" fieldName="label" itemClass="sortable-item"
                                          itemActiveClass="sortable-item-active" placeholderItem="Drag here"
-                                         placeholderClass="sortable-item" wrapperClass="sortable-wrapper"
+                                         placeholderClass="sortable-item" wrapperClass="sortable-wrapper boxed-div"
                                          ngDefaultControl>
                             </bs-sortable>
+                            <pre>model: {{ left.questions | json }}</pre>
                             <!--
                             <div *ngFor="let leftQuestion of left.questions"
                                  class="boxed-div overflowHidden">
                                 <div class="col-xs-3 Label">Label:</div>
-                                <div class="col-xs-8 ">{{leftQuestion.label}}</div>
+                                <div class="col-xs-9 ">{{leftQuestion.label}}</div>
                                 <div class="col-xs-3 Label">CDE:</div>
-                                <div class="col-xs-8 ">{{leftQuestion.question.cde.tinyId}}</div>
+                                <div class="col-xs-9 ">{{leftQuestion.question.cde.tinyId}}</div>
                                 <div class="col-xs-3 Label">Unit of Measurement:</div>
-                                <div class="col-xs-8 ">{{leftQuestion.question.uoms}}</div>
+                                <div class="col-xs-9 ">{{leftQuestion.question.uoms}}</div>
                                 <div class="col-xs-3 Label">Answer:</div>
-                                <div class="col-xs-8 ">{{leftQuestion.question.answers}}</div>
+                                <div class="col-xs-9 ">{{leftQuestion.question.answers}}</div>
                             </div>
                             -->
                         </div>
-                        <div class="col-xs-5">
+                        <div class="col-xs-6">
                             <div *ngFor="let rightQuestion of right.questions" class="boxed-div overflowHidden">
                                 <div class="col-xs-3 Label">Label:</div>
-                                <div class="col-xs-8 ">{{rightQuestion.label}}</div>
+                                <div class="col-xs-9 ">{{rightQuestion.label}}</div>
                                 <div class="col-xs-3 Label">CDE:</div>
-                                <div class="col-xs-8 ">{{rightQuestion.question.cde.tinyId}}</div>
+                                <div class="col-xs-9 ">{{rightQuestion.question.cde.tinyId}}</div>
                                 <div class="col-xs-3 Label">Unit of Measurement:</div>
-                                <div class="col-xs-8 ">{{rightQuestion.question.uoms}}</div>
+                                <div class="col-xs-9 ">{{rightQuestion.question.uoms}}</div>
                                 <div class="col-xs-3 Label">Answer:</div>
-                                <div class="col-xs-8 ">{{rightQuestion.question.answers}}</div>
+                                <div class="col-xs-9 ">{{rightQuestion.question.answers}}</div>
                             </div>
                         </div>
                     </div>

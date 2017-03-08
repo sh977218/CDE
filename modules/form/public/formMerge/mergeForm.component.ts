@@ -1,6 +1,7 @@
 import { Http, Response } from "@angular/http";
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
+import { SortableComponent } from "ng2-bootstrap/sortable";
 import "rxjs/add/operator/map";
 
 @Component({
@@ -8,8 +9,8 @@ import "rxjs/add/operator/map";
     templateUrl: "./mergeForm.component.html"
 })
 export class MergeFormComponent {
-
     @ViewChild("mergeFormModal") public mergeFormModal:ModalDirective;
+    @ViewChild(SortableComponent) sortableComponent: SortableComponent;
     @Input() public left:any;
     @Input() public right:any;
     @Input() public fields:any;
@@ -24,7 +25,7 @@ export class MergeFormComponent {
     }
 
     openMergeForm() {
-        this.mergeFormModal.show();
+        this.mergeFormModal.toggle();
     }
 
     selectAllMergerFields() {
@@ -32,5 +33,9 @@ export class MergeFormComponent {
         this.fields.referenceDocuments = true;
         this.fields.properties = true;
         this.fields.questions = true;
+    }
+    public addItem() {
+        this.left.questions.push({});
+        this.sortableComponent.writeValue(this.left);
     }
 }
