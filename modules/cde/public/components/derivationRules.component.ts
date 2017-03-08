@@ -52,8 +52,6 @@ export class DerivationRulesComponent {
         return dr.fullCdes.filter((item, index) => index < 8);
     }
 
-    // $scope.deferredEltLoaded.promise.then(updateRules);
-
     findDerivationOutputs () {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
@@ -68,15 +66,6 @@ export class DerivationRulesComponent {
             });
         }
     };
-
-    // scope.$on('elementReloaded', function() {
-    //    updateRules();
-    //    if ($scope.tabs.derivationRules.active) {
-    //        findDerivationOutputs();
-    //    }
-    // });
-
-    // $scope.$on('loadDerivationRules', findDerivationOutputs);
 
     openNewScore () {
         this.newDerivationRule = {
@@ -113,8 +102,6 @@ export class DerivationRulesComponent {
             return true;
         }
     };
-
-    // $scope.derRulesCtrlLoadedPromise.resolve();
 
     someCdesInvalid () {
         this.invalidCdeMessage = undefined;
