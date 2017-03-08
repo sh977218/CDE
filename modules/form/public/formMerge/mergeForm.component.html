@@ -98,13 +98,15 @@
                     <input type="checkbox" [(ngModel)]="fields.questions">Questions
                     <div class="col-xs-12" *ngIf="fields.questions">
                         <div class="col-xs-6">
-                            <button (click)="addItem()">add</button>
+                            <button (click)="addItem()">add Empty Question</button>
                             <bs-sortable [(ngModel)]="left.questions" fieldName="label" itemClass="sortable-item"
                                          itemActiveClass="sortable-item-active" placeholderItem="Drag here"
                                          placeholderClass="sortable-item" wrapperClass="sortable-wrapper boxed-div"
                                          ngDefaultControl>
                             </bs-sortable>
+<!--
                             <pre>model: {{ left.questions | json }}</pre>
+-->
                             <!--
                             <div *ngFor="let leftQuestion of left.questions"
                                  class="boxed-div overflowHidden">
