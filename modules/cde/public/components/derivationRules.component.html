@@ -3,26 +3,27 @@
 
     <div *ngIf="elt.derivationRules < 1">There are no derivation rules.</div>
 
-    <div *ngFor="let derRule of elt.derivationRules; let $index = index">
+    <div *ngFor="let derRule of elt.derivationRules; let i = index">
         <div class="row">
             <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
-                <a (click)="removeDerivationRule($index)" class="fa fa-trash-o"
-                   id="removeDerivationRule-{{$index}}" title="Remove" href=""></a>
+                <a (click)="removeDerivationRule(i)" class="fa fa-trash-o"
+                   id="removeDerivationRule-{{i}}" title="Remove" href=""></a>
             </div>
             <div class="col-md-11">
                 <dl class="dl-horizontal">
                     <dt>Name:</dt>
-                    <dd id="dd_derRule_name_{{$index}}">{{derRule.name}}</dd>
+                    <dd id="dd_derRule_name_{{i}}">{{derRule.name}}</dd>
                     <dt>Rule Type:</dt>
-                    <dd id="dd_derRule_type_{{$index}}">{{derRule.ruleType}}</dd>
+                    <dd id="dd_derRule_type_{{i}}">{{derRule.ruleType}}</dd>
                     <dt>Formula: </dt>
-                    <dd id="dd_derRule_formula_{{$index}}">{{derRule.formula}}</dd>
+                    <dd id="dd_derRule_formula_{{i}}">{{derRule.formula}}</dd>
                     <dt>Input CDEs:</dt>
-                    <dd id="dd_derRule_input_{{$index}}">
+                    <dd id="dd_derRule_input_{{i}}">
                         <a *ngFor="let input of getViewCdes(derRule)"
                            href="/deview/?tinyId={{input.tinyId}}">
-                            {{input.naming[0].designation}} {{!$index === elt.derivationRules.length -1?'- ':''}}</a>
-                        <span *ngIf="derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
+                            {{input.naming[0].designation}} {{!i === elt.derivationRules.length -1?'- ':''}}
+                        </a>
+                        <span *ngIf="derRule.fullCdes && derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
                     </dd>
                 </dl>
             </div>

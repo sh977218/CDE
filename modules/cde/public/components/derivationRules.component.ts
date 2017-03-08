@@ -39,9 +39,8 @@ export class DerivationRulesComponent {
             this.elt.derivationRules.forEach((dr: any) => {
                 if (dr.inputs[0] !== null) {
                     this.http.post("/cdesByTinyIdList", dr.inputs)
-                        .map(res => res.json())
                     .subscribe(data => {
-                        dr.fullCdes = data;
+                        dr.fullCdes = data.json();
                     });
                 }
             });
@@ -50,7 +49,7 @@ export class DerivationRulesComponent {
 
     getViewCdes (dr) {
         if (!dr.fullCdes) return [];
-        return dr.fullCdes.filter((item, index) => index > 8);
+        return dr.fullCdes.filter((item, index) => index < 8);
     }
 
     // $scope.deferredEltLoaded.promise.then(updateRules);
@@ -80,6 +79,12 @@ export class DerivationRulesComponent {
     // $scope.$on('loadDerivationRules', findDerivationOutputs);
 
     openNewScore () {
+        this.newDerivationRule = {
+            name: "",
+            ruleType: "score",
+            formula: "sumAll",
+            inputs: []
+        };
         this.childModal.show();
     };
 
