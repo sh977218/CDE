@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('OrgOverviewCtrl',
-    ['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource', '$routeParams', '$anchorScroll', '$uibModal', 'OrgHelpers',
-    function($scope, OrgHelpers, $location, AutoCompleteResource, $routeParams, $anchorScroll, $modal, OrgHelper)
+    ['$scope', 'OrgHelpers', '$location', '$window', 'AutoCompleteResource', '$routeParams', '$anchorScroll', '$uibModal', 'OrgHelpers',
+    function($scope, OrgHelpers, $location, $window, AutoCompleteResource, $routeParams, $anchorScroll, $modal, OrgHelper)
 {
     $scope.orgs = [];
     $scope.autocomplete = AutoCompleteResource;
@@ -54,6 +54,7 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
             $scope.searchSettings.selectedOrg = orgName;
             $scope.reload($scope.module);
         } else {
+            $window.sessionStorage.removeItem('nlmcde.scroll.' + "/search?selectedOrg=" + encodeURIComponent(orgName));
             $location.url($scope.module + "/search?selectedOrg=" + encodeURIComponent(orgName));
             $anchorScroll('top');
         }

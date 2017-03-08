@@ -23,12 +23,12 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
         $scope.lineLength = 50;
 
         $scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
-            var match = /\/(cde|form)\/search(.*)/.exec(oldUrl);
+            var match = /\/(cde|form)\/search\?.*/.exec(oldUrl);
             if (match)
                 $window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
         });
         $window.addEventListener('unload', function () {
-            if (/^\/(cde|form)\/search/.exec($location.url()))
+            if (/^\/(cde|form)\/search\?.*/.exec($location.url()))
                 $window.sessionStorage['nlmcde.scroll.' + $location.url()] = $(window).scrollTop();
         });
         var previousSpot = $window.sessionStorage['nlmcde.scroll.' + $location.url()];
