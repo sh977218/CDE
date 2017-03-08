@@ -1,5 +1,5 @@
 import { Http } from "@angular/http";
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import {Component, Inject, Input, ViewChild, OnChanges} from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
 
 @Component({
@@ -7,13 +7,13 @@ import { ModalDirective } from "ng2-bootstrap/modal";
     templateUrl: "./derivationRules.component.html"
 })
 
-
-export class DerivationRulesComponent {
+export class DerivationRulesComponent implements OnChanges {
 
     @ViewChild("childModal") public childModal: ModalDirective;
     @Input() public elt: any;
 
     newDerivationRule: any;
+    invalidCdeMessage: string;
 
     constructor(private http: Http,
                 @Inject("QuickBoard") private quickBoard,
@@ -24,15 +24,12 @@ export class DerivationRulesComponent {
             formula: "sumAll",
             inputs: []
         };
-
     }
 
-    ngOnInit () {
+    ngOnChanges () {
         this.updateRules();
         this.findDerivationOutputs();
     }
-
-    invalidCdeMessage: string;
 
     updateRules () {
         if (this.elt.derivationRules) {

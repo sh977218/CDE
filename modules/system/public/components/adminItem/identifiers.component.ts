@@ -24,7 +24,7 @@ export class IdentifiersComponent {
         this.newId = {};
     }
 
-    static showDelete(id) {
+    showDelete(id) {
         id.showDelete = true;
     }
 
