@@ -14,8 +14,6 @@
     }
   },
   "internalRules": {
-      "ipv6Prefix": "2607:f220:411:2122:",
-      "ipv4Prefix": "130.14",
       "redirectTo": "cde-local.nlm.nih.gov"
   },
   "mesh": {

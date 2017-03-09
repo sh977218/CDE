@@ -455,6 +455,17 @@ exports.init = function (app) {
         }
     });
 
+    app.post('/updateTesterStatus', function (req, res) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+            mongo_data_system.User.findOne({_id: req.body._id}, function(err, u) {
+                u.tester = req.body.tester;
+                u.save(() => res.send());
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
     app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
         if (req.user && req.user.siteAdmin) {
             res.render('siteaccountmanagement', "system");

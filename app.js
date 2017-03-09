@@ -129,21 +129,11 @@ app.use(function preventSessionCreation(req, res, next) {
 app.use (function (req, res, next) {
     try {
         if (req.headers.host === "cde.nlm.nih.gov") {
-                if (req.headers["x-forwarded-for-ipv6"]) {
-                    if (req.headers["x-forwarded-for-ipv6"].indexOf(config.internalRules.ipv6Prefix) === 0) {
-                        // local ipv6 traffic
-                        localRedirectProxy.web(req, res, { target: config.internalRules.redirectTo});
-                    } else {
-                        return next();
-                    }
-                } else {
-                    if (req.ip.indexOf(config.internalRules.ipv4Prefix) === 0) {
-                        // local ipv4 traffic
-                        localRedirectProxy.web(req, res, { target: config.internalRules.redirectTo});
-                    } else {
-                        return next();
-                    }
-                }
+            if (req.user && req.user.tester) {
+                localRedirectProxy.web(req, res, {target: config.internalRules.redirectTo});
+            } else {
+                return next();
+            }
         } else {
             return next();
         }
