@@ -9,6 +9,7 @@ var config = require('../../system/node-js/parseConfig')
     , async = require('async')
     , CronJob = require('cron').CronJob
     , elastic = require('./elastic')
+    , deValidator = require('../shared/deValidator')
     ;
 
 exports.type = "cde";
@@ -27,12 +28,18 @@ exports.DataElement = DataElement;
 
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
-    try {
-        elastic.updateOrInsert(self);
-    } catch (exception) {
-        logging.errorLogger.error(exception);
+    var cdeError = deValidator.checkPvUnicity(self.valueDomain);
+    if (cdeError.pvNotValidMsg) {
+        logging.errorLogger.error(cdeError);
+        next(cdeError);
+    } else {
+        try {
+            elastic.updateOrInsert(self);
+        } catch (exception) {
+            logging.errorLogger.error(exception);
+        }
+        next();
     }
-    next();
 });
 
 exports.elastic = elastic;

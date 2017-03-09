@@ -358,6 +358,26 @@ public class NlmCdeBaseTest {
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
     }
 
+    protected void searchEltAny(String name, String type) {
+        goToSearch(type);
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
+
+        // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
+        hangon(0.5);
+        clickElement(By.id("search.submit"));
+        try {
+            textPresent("results for");
+        } catch (Exception e) {
+            System.out.println("Failing to find, trying again: " + name);
+            findElement(By.id("ftsearch-input")).clear();
+            findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
+            clickElement(By.id("search.submit"));
+            textPresent("results for");
+        }
+    }
+
+
     protected void searchElt(String name, String type) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();

@@ -92,8 +92,8 @@ function createCde(data, formId, protocol) {
                 pvArray.forEach((pvText)=> {
                     var tempArray = pvText.toString().split(',');
                     permissibleValues.push({
-                        permissibleValue: tempArray[0],
-                        valueMeaningName: tempArray[1]
+                        permissibleValue: tempArray[0].trim(),
+                        valueMeaningName: tempArray[1].trim()
                     })
                 });
                 cde.valueDomain.permissibleValues = permissibleValues;

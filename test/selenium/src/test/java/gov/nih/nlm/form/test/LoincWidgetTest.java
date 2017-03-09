@@ -18,22 +18,20 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
         textNotPresent("Imaging reference scan date");
         textNotPresent("Imaging dimension type");
 
-        findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).sendKeys("Yes");
-        clickElement(By.xpath("//label[@for='/Section_1/1']"));
+        clickElement(By.id("/Section_1/VmtVCdXBxcs/1/1Yes"));
         textPresent("BMSCT Section");
         textPresent("Imaging reference scan date");
         textNotPresent("Imaging dimension type");
 
-        findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).clear();
-        findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).sendKeys("No");
-        clickElement(By.xpath("//label[@for='/Section_1/1']"));
+        clickElement(By.id("/Section_1/VmtVCdXBxcs/1/1No"));
         textNotPresent("BMSCT Section");
         textNotPresent("Imaging reference scan date");
         textPresent("Imaging dimension type");
         // End test Skip logic
 
         // Test UOM
-        findElement(By.id("ac1"));
+        clickElement(By.id("unit_/Section_3/oYgcKSa7NSr/1/1"));
+        textPresent("lbs");
         // End Test UOM
 
         // Test instructions
@@ -41,8 +39,8 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
 
         // @TODO
         // re-enable after Loinc supports the new format for instructions
-//        textPresent("Instructions for section 1");
-//        textPresent("Instructions for Priod BMSCT");
+        textPresent("Instructions for section 1");
+        textPresent("Instructions for Priod BMSCT");
 
         switchTabAndClose(0);
     }
