@@ -299,6 +299,19 @@ exports.init = function (app, daoManager) {
             res.end();
         })
     });
+    app.post('/mergeCde', function (req, res) {
+        var cdeMergeTo = req.body.mergeTo;
+        var cdeMergeFrom = req.body.mergeFrom;
+        cdeMergeFrom.registrationState.registrationStatus = "Retired";
+        if (cdeMergeTo && cdeMergeTo.tinyId)
+            cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
+        cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
+        mongo_cde.update(cdeMergeFrom, req.user, function () {
+            mongo_cde.update(cdeMergeTo, req.user, function () {
+                res.end();
+            })
+        })
+    });
 
     var systemAlert = "";
     app.get("/systemAlert", exportShared.nocacheMiddleware, function (req, res) {
