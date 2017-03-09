@@ -31,8 +31,15 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
 
         driver.navigate().refresh();
-        hangon(1);
-        Assert.assertEquals(600L, ((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", ""));
+
+        int i = 0;
+        while(!((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", "").equals(600L) && i < 10) {
+            hangon(1);
+            i++;
+        }
+        if (i == 10) { 
+            Assert.fail();
+        }
 
         driver.navigate().back();
         driver.navigate().back();

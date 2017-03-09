@@ -62,9 +62,9 @@ export class DerivationRulesComponent implements OnChanges {
     findDerivationOutputs () {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
-            this.http.get("/cde/derivationOutputs/" + this.elt.tinyId, (result) => {
-                result.data.forEach(function(outputCde) {
-                    outputCde.derivationRules.forEach((derRule) => {
+            this.http.get("/cde/derivationOutputs/" + this.elt.tinyId).subscribe(result => {
+                result.json().forEach(outputCde => {
+                    outputCde.derivationRules.forEach(derRule => {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
                             this.elt.derivationOutputs.push({ruleName: derRule.name, cde: outputCde});
                         }
