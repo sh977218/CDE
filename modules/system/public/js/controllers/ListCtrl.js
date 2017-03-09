@@ -403,6 +403,7 @@ angular.module('systemModule').controller('ListCtrl',
 
     var doSearch = function() {
         var loc = $scope.generateSearchForTerm();
+        $window.sessionStorage.removeItem('nlmcde.scroll.' + loc);
         $location.url(loc);
     };
 
