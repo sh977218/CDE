@@ -13,6 +13,9 @@
       "SNOMEDCT_US": {"requiresLogin": true}
     }
   },
+  "internalRules": {
+      "redirectTo": "cde-local.nlm.nih.gov"
+  },
   "mesh": {
     "baseUrl": "https://meshb.nlm.nih.gov"
   },
