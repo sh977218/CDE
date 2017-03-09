@@ -46,6 +46,13 @@
         </div>
 
         <div class="row">
+            <div class="col-md-2"><strong><label for="user.tester">Early Feature User: </label></strong></div>
+            <div class="col-md-10">
+                <input id="user.tester" ng-model="u.tester" type="checkbox" ng-change="updateTesterStatus(u)">
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-2"><strong>Roles: </strong></div>
             <div class="col-md-10" id="user_roles_{{$index}}">
                 <ui-select multiple ng-model="u.roles" sortable="true" close-on-select="false"
