@@ -1,6 +1,7 @@
 var path = require('path')
     , express = require('express')
     , http = require('http')
+    , httpProxy = require('http-proxy')
     , flash = require('connect-flash')
     , mongo_data_system = require('./modules/system/node-js/mongo-data')
     , config = require('config')
@@ -32,6 +33,7 @@ app.use(auth.ticketAuth);
 app.use(compress());
 
 kibanaProxy.setUp(app);
+var localRedirectProxy = httpProxy.createProxyServer({});
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
@@ -123,6 +125,23 @@ app.use(function preventSessionCreation(req, res, next) {
     }
 
 });
+
+app.use (function (req, res, next) {
+    try {
+        if (req.headers.host === "cde.nlm.nih.gov") {
+            if (req.user && req.user.tester) {
+                localRedirectProxy.web(req, res, {target: config.internalRules.redirectTo});
+            } else {
+                return next();
+            }
+        } else {
+            return next();
+        }
+    } catch (e) {
+        return next();
+    }
+});
+
 
 // this hack for angular-send-feedback
 app.get("/icons.png", function (req, res) {
