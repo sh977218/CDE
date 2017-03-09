@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('SwitchListViewCtrl',
-    ['$scope', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
-        function ($scope, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService) {
+    ['$scope', '$location', '$window', '$timeout', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
+        function ($scope, $location, $window, $timeout, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService) {
 
 
         $scope.setViewTypes = function (module) {
@@ -21,6 +21,29 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
 
         $scope.maxLines = 5;
         $scope.lineLength = 50;
+
+        $scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
+            var match = /\/(cde|form)\/search\?.*/.exec(oldUrl);
+            if (match)
+                $window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
+        });
+        $window.addEventListener('unload', function () {
+            if (/^\/(cde|form)\/search\?.*/.exec($location.url()))
+                $window.sessionStorage['nlmcde.scroll.' + $location.url()] = $(window).scrollTop();
+        });
+        var previousSpot = $window.sessionStorage['nlmcde.scroll.' + $location.url()];
+        if (previousSpot != null)
+            waitScroll(3);
+
+        function waitScroll(count) {
+            if (count > 0)
+                $timeout(function () {
+                    waitScroll(count - 1);
+                }, 0);
+            else
+                $window.scrollTo(0, previousSpot);
+        }
+
 
         var listViewCacheName = $scope.module + "listViewType";
         if ($scope.cache.get(listViewCacheName)) $scope.listViewType = $scope.cache.get(listViewCacheName);
