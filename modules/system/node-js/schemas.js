@@ -147,6 +147,7 @@ schemas.userSchema = new mongoose.Schema({
     , orgAdmin: [String]
     , orgCurator: [String]
     , siteAdmin: Boolean
+    , tester: Boolean
     , quota: Number
     , viewHistory: [String]
     , formViewHistory: [String]

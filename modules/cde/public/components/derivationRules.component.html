@@ -35,7 +35,7 @@
             id="addNewScore"><i class="fa fa-plus"> </i> Add Score
     </button>
 
-    <div *ngIf="elt.derivationOutputs.length > 0">
+    <div *ngIf="elt.derivationOutputs && elt.derivationOutputs.length > 0">
         <hr>
         <h5>This Data Element is used to derive to the following Data Elements:</h5>
         <table class="table cdeTable">

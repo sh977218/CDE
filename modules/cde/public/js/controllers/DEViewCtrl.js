@@ -166,7 +166,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     size: 'lg',
                     animation: false,
                     template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
-                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt,oldModule) {
+                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt, oldModule) {
                         $scope.elt = elt;
                         $scope.oldModule = oldModule;
                     }],
@@ -320,7 +320,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.save = function() {
         $scope.elt.$save({}, function (elt) {
+            // var ct = $scope.currentTab;
+            // $scope.currentTab = "";
             $scope.elt = elt;
+            // $scope.currentTab = ct;
             $scope.$broadcast("elementReloaded");
             $scope.addAlert("success", "Saved.");
         }, function() {

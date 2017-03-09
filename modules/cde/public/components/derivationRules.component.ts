@@ -14,6 +14,7 @@ export class DerivationRulesComponent implements OnChanges {
 
     newDerivationRule: any;
     invalidCdeMessage: string;
+    previousCdeId: string;
 
     constructor(private http: Http,
                 @Inject("QuickBoard") private quickBoard,
@@ -26,9 +27,18 @@ export class DerivationRulesComponent implements OnChanges {
         };
     }
 
-    ngOnChanges () {
+    ngOnChanges (changes) {
+        this.previousCdeId = this.elt._id;
         this.updateRules();
         this.findDerivationOutputs();
+    }
+
+    ngDoCheck () {
+        if (this.elt._id !== this.previousCdeId) {
+            this.previousCdeId = this.elt._id;
+            this.updateRules();
+            this.findDerivationOutputs();
+        }
     }
 
     updateRules () {
@@ -52,9 +62,9 @@ export class DerivationRulesComponent implements OnChanges {
     findDerivationOutputs () {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
-            this.http.get("/cde/derivationOutputs/" + this.elt.tinyId, (result) => {
-                result.data.forEach(function(outputCde) {
-                    outputCde.derivationRules.forEach((derRule) => {
+            this.http.get("/cde/derivationOutputs/" + this.elt.tinyId).subscribe(result => {
+                result.json().forEach(outputCde => {
+                    outputCde.derivationRules.forEach(derRule => {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
                             this.elt.derivationOutputs.push({ruleName: derRule.name, cde: outputCde});
                         }
@@ -111,7 +121,7 @@ export class DerivationRulesComponent implements OnChanges {
                 this.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board.";
             }
         });
-        this.quickBoard.elts.forEach(function(qbElt: any) {
+        this.quickBoard.elts.forEach((qbElt: any) => {
             if (qbElt.valueDomain.datatype === "Number") return;
             if (qbElt.valueDomain.datatype === "Value List") {
                 qbElt.valueDomain.permissibleValues.forEach((pv: any) => {

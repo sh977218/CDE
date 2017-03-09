@@ -31,6 +31,7 @@ exports.Message = Message;
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.Org = Org;
+exports.User = User;
 exports.MeshClassification = MeshClassification;
 exports.Comment = Comment;
 
