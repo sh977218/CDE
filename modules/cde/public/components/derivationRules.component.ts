@@ -121,7 +121,7 @@ export class DerivationRulesComponent implements OnChanges {
                 this.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board.";
             }
         });
-        this.quickBoard.elts.forEach(function(qbElt: any) {
+        this.quickBoard.elts.forEach((qbElt: any) => {
             if (qbElt.valueDomain.datatype === "Number") return;
             if (qbElt.valueDomain.datatype === "Value List") {
                 qbElt.valueDomain.permissibleValues.forEach((pv: any) => {
