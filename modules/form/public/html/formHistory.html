@@ -28,7 +28,7 @@
                     </td>
                     <td>{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                     <td>{{elt.updatedBy.username}}</td>
-                    <td>{{elt.changeNote}}</td>
+                    <td>{{$index === 0?elt._changeNote:elt.changeNote}}</td>
                     <td>{{elt.version}}</td>
                     <td class="historyView disabledText">Viewing</td>
                 </tr>
