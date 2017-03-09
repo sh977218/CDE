@@ -166,7 +166,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     size: 'lg',
                     animation: false,
                     template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
-                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt,oldModule) {
+                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt, oldModule) {
                         $scope.elt = elt;
                         $scope.oldModule = oldModule;
                     }],
