@@ -14,6 +14,7 @@ export class DerivationRulesComponent implements OnChanges {
 
     newDerivationRule: any;
     invalidCdeMessage: string;
+    previousCdeId: string;
 
     constructor(private http: Http,
                 @Inject("QuickBoard") private quickBoard,
@@ -26,9 +27,18 @@ export class DerivationRulesComponent implements OnChanges {
         };
     }
 
-    ngOnChanges () {
+    ngOnChanges (changes) {
+        this.previousCdeId = this.elt._id;
         this.updateRules();
         this.findDerivationOutputs();
+    }
+
+    ngDoCheck () {
+        if (this.elt._id !== this.previousCdeId) {
+            this.previousCdeId = this.elt._id;
+            this.updateRules();
+            this.findDerivationOutputs();
+        }
     }
 
     updateRules () {
