@@ -38,6 +38,7 @@
     "fstream": "1.0.4",
     "gridfs-stream": "1.1.0",
     "helmet": "2.1.0",
+    "http-proxy": "1.16.2",
     "js2xmlparser": "1.0.0",
     "jxon": "2.0.0-beta.2",
     "log-buffer": "0.0.3",
