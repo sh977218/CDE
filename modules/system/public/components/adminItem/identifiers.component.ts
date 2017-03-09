@@ -1,4 +1,3 @@
-import { Http } from "@angular/http";
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
 import "rxjs/add/operator/map";
@@ -16,8 +15,7 @@ export class IdentifiersComponent {
 
     newId: any;
 
-    constructor(private http: Http,
-                @Inject("Alert") private alert,
+    constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") private isAllowedModel) {
     }
 

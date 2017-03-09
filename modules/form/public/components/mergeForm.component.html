@@ -1,0 +1,91 @@
+<a class='btn btn-small btn-default fa fa-clipboard'
+   (click)="openMergeForm()">Merge Form</a>
+
+<div bsModal #MergeFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="col-xs-4">Merge From</div>
+                <div class="col-xs-4">
+                    <button class="btn btn-default" (click)="selectAllMergerFields();">Select All</button>
+                    <button class="btn btn-default" (click)="deselectAllMergerFields();">Deselect All</button>
+                </div>
+                <div class="col-xs-4">Merge Into</div>
+            </div>
+            <div class="modal-body overflowHidden">
+                <div class="row">
+                    <label><input type="checkbox" [(ngModel)]="mergFields.naming">Naming</label>
+                </div>
+                <div class="row">
+                    <label><input type="checkbox" [(ngModel)]="mergFields.referenceDocuments">
+                        Reference Documents</label>
+                </div>
+                <div class="row">
+                    <label><input type="checkbox" [(ngModel)]="mergFields.properties">Properties</label>
+                </div>
+                <div class="row">
+                    <label><input type="checkbox" [(ngModel)]="mergFields.ids">IDs</label>
+                </div>
+                <div class="row">
+                    <label><input type="checkbox" [(ngModel)]="mergFields.questions">Questions</label>
+                    <div *ngIf="mergFields.questions">
+                        <label><input type="checkbox" [(ngModel)]="mergFields.cde.naming">CDE naming</label>
+                        <label><input type="checkbox" [(ngModel)]="mergFields.cde.referenceDocuments">
+                            CDE Reference Documents</label>
+                        <label><input type="checkbox" [(ngModel)]="mergFields.cde.properties">CDE Properties</label>
+                    </div>
+
+                    <div class="col-xs-12" *ngIf="mergFields.questions">
+                        <div class="col-xs-6">
+                            <bs-sortable #LeftSortableComponent [(ngModel)]="left.questions"
+                                         [itemTemplate]="questionTemplate"
+                                         itemClass="sortable-item" itemActiveClass="sortable-item-active"
+                                         placeholderItem="Drag here" placeholderClass="sortable-item"
+                                         wrapperClass="sortable-wrapper"
+                                         onChange="changeSort(reordering,insert,remove)">
+                            </bs-sortable>
+                            <button (click)="addItem(left.questions,LeftSortableComponent)">Add Empty Question To End
+                            </button>
+                            <button (click)="removeItem(left.questions,LeftSortableComponent)">Remove Last Question
+                            </button>
+                        </div>
+                        <div class="col-xs-6">
+                            <div *ngFor="let rightQuestion of right.questions" class="boxed-div overflowHidden"
+                                 style="height: 61px;">
+                                <div class="row">
+                                    <div class="col-xs-3 Label">Label:</div>
+                                    <div class="col-xs-9">
+                                        <a target="_blank" href="deview?tinyId={{rightQuestion.question.cde.tinyId}}">
+                                            {{rightQuestion.label}}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <button (click)="addItem(right.questions)">Add Empty Question To End
+                            </button>
+                            <button (click)="removeItem(right.questions)">Remove Last Question
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel" (click)="mergeFormModal.hide()" type="button">Cancel</button>
+                <button class="btn btn-warning" (click)="doMerge()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<template #questionTemplate let-item="item" let-index="index">
+    <div class="boxed-div overflowHidden" style="height: 61px;">
+        <div class="row">
+            <div class="col-xs-3 Label">Label:</div>
+            <div class="col-xs-9 ">
+                <a target="_blank" href="deview?tinyId={{item.value.question.cde.tinyId}}">
+                    {{item.value.label}}
+                </a>
+            </div>
+        </div>
+    </div>
+</template>

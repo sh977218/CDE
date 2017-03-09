@@ -1,5 +1,5 @@
 import {upgradeAdapter} from "../../../upgrade";
-import {MergeFormComponent} from "../formMerge/mergeForm.component";
+import {MergeFormComponent} from "../components/mergeForm.component";
 
 angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'formTemplates', 'nativeSection', 'nativeQuestion']).config(
     ["$routeProvider", function($routeProvider)

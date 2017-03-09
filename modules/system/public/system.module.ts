@@ -3,7 +3,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { PaginationModule } from "ng2-bootstrap/pagination";
 import { ModalModule } from "ng2-bootstrap/modal";
-import { SortableModule } from "ng2-bootstrap/sortable";
 
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./profile.component";
@@ -20,7 +19,7 @@ import { IdentifiersComponent } from "./components/adminItem/identifiers.compone
         UserCommentsComponent,
         PlaceHoldEmptyPipe],
     providers: [],
-    imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot(), SortableModule.forRoot()],
+    imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SystemModule {

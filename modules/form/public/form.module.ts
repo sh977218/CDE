@@ -1,11 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { PaginationModule } from "ng2-bootstrap";
-import { ModalModule } from "ng2-bootstrap";
+import { PaginationModule, AlertModule, ModalModule, SortableModule } from "ng2-bootstrap";
 
 import { upgradeAdapter } from "../../upgrade";
-import {MergeFormComponent} from "./formMerge/mergeForm.component";
+import {MergeFormComponent} from "./components/mergeForm.component";
 
 
 @NgModule({
@@ -13,7 +12,7 @@ import {MergeFormComponent} from "./formMerge/mergeForm.component";
         MergeFormComponent
     ],
     providers: [],
-    imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
+    imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot(), SortableModule.forRoot(), AlertModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormModule {
