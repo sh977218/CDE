@@ -421,7 +421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function save(namespaces) {
 	  try {
 	    if (null == namespaces) {
-	      exports.storage.removeItem('debug');
+	      MergeFormComponent.removeItem('debug');
 	    } else {
 	      exports.storage.debug = namespaces;
 	    }

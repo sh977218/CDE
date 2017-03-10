@@ -98,7 +98,7 @@ angularLocalStorage.provider('localStorageService', function() {
         if (supported) {
           webStorage = $window[storageType];
           webStorage.setItem(key, '');
-          webStorage.removeItem(key);
+          MergeFormComponent.removeItem(key);
         }
 
         return supported;
@@ -180,7 +180,7 @@ angularLocalStorage.provider('localStorageService', function() {
       }
 
       try {
-        webStorage.removeItem(deriveQualifiedKey(key));
+        MergeFormComponent.removeItem(deriveQualifiedKey(key));
         if (notify.removeItem) {
           $rootScope.$broadcast('LocalStorageModule.notification.removeitem', {key: key, storageType: this.storageType});
         }

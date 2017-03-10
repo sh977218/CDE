@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import { Component, Inject, Input, ViewChild } from "@angular/core";
-import { ModalDirective } from "ng2-bootstrap/modal";
-=======
 import {Component, Inject, Input, ViewChild} from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap/modal";
->>>>>>> 7d7c87519790de4569df6ab446200378164e548a
 import "rxjs/add/operator/map";
 
 @Component({

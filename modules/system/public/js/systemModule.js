@@ -2,7 +2,7 @@ import {upgradeAdapter} from "../../../upgrade";
 import {ClassificationService} from "../../../core/public/classification.service";
 import {SkipLogicService} from "../../../core/public/skipLogic.service";
 import {UserCommentsComponent} from "../userComments.component";
-import {ProfileComponent} from "../profile.component";
+import {ProfileComponent} from "../components/profile.component";
 import * as authShared from "../../../system/shared/authorizationShared";
 
 

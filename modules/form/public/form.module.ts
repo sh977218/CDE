@@ -3,9 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { PaginationModule, AlertModule, ModalModule, SortableModule, ProgressbarModule } from "ng2-bootstrap";
 
-import { upgradeAdapter } from "../../upgrade";
-import {MergeFormComponent} from "./components/mergeForm.component";
-
+import { MergeFormComponent } from "./components/mergeForm.component";
 
 @NgModule({
     declarations: [

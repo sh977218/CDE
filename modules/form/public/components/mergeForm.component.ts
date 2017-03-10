@@ -1,23 +1,23 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
-import { Http } from "@angular/http";
-import { ModalDirective } from "ng2-bootstrap/modal";
-import { MergeFormService } from "../../../core/public/mergeForm.service"
+import { MergeFormService } from "../../../core/public/mergeForm.service";
 import "rxjs/add/operator/map";
+import { ModalDirective } from "ng2-bootstrap/index";
 
 @Component({
     selector: "merge-form",
     templateUrl: "./mergeForm.component.html"
 })
 export class MergeFormComponent {
-    @ViewChild("MergeFormModal") public mergeFormModal:ModalDirective;
-    @Input() public left:any;
-    @Input() public right:any;
-    public mergeFields:any;
-    public questionsMerged:any;
-    public allQuestions:any;
-    public showProgressBar:any;
+    @ViewChild("MergeFormModal") public mergeFormModal: ModalDirective;
+    @Input() public left: any;
+    @Input() public right: any;
+    public mergeFields: any;
+    public questionsMerged: any;
+    public allQuestions: any;
+    public showProgressBar: any;
 
-    constructor(private http:Http, @Inject("Alert") private alert, private mergeFormService:MergeFormService) {
+    constructor(@Inject("Alert") private alert,
+                private mergeFormService: MergeFormService) {
         this.showProgressBar = false;
         this.mergeFields = {
             naming: false,
@@ -53,22 +53,41 @@ export class MergeFormComponent {
         this.mergeFields.questions = false;
     }
 
-    public addItem(questions, sortableComponent) {
+    addItem(questions, sortableComponent) {
         questions.push({question: {cde: ""}});
         if (sortableComponent)
             sortableComponent.writeValue(questions);
     }
 
-    public removeItem(questions, sortableComponent) {
+    removeItem(questions, sortableComponent) {
         questions.splice(-1, 1);
         if (sortableComponent)
             sortableComponent.writeValue(questions);
     }
 
     public doMerge() {
-        let result = this.mergeFormService.doMerge(this.left, this.right);
-        this.showProgressBar = false;
         this.showProgressBar = true;
-        this.allQuestions = mergeFrom.questions.length;
+        this.allQuestions = this.left.questions.length;
+        this.mergeFormService.doMerge(this.left, this.right, this.mergeFields, (index, next) => {
+            this.questionsMerged = index;
+            next();
+        }, (err) => {
+            if (err) {
+                this.alert.add("danger", err);
+                return;
+            }
+            else {
+                this.mergeFormService.saveForm(this.right, (err) => {
+                    if (err) this.alert.add("danger", err);
+                    else {
+                        this.alert.add("success", "form merged");
+                        setTimeout(() => {
+                            this.showProgressBar = false;
+                            return;
+                        }, 3000);
+                    }
+                });
+            }
+        });
     }
 }

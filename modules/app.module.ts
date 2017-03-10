@@ -8,6 +8,8 @@ import { CdeAppComponent } from "./app.component";
 import { ClassificationService } from "./core/public/classification.service";
 import { SkipLogicService } from "./core/public/skipLogic.service";
 import { MergeFormService } from "./core/public/mergeForm.service";
+import { MergeCdeService } from "./core/public/mergeCde.service";
+import { MergeShareService } from "./core/public/mergeShare.service";
 import { SystemModule } from "./system/public/system.module";
 import { FormModule } from "./form/public/form.module";
 import { CdeModule } from "./cde/public/js/cde.module";
@@ -18,7 +20,10 @@ import { CdeModule } from "./cde/public/js/cde.module";
     providers: [
         ClassificationService,
         SkipLogicService,
-        MergeFormService],
+        MergeFormService,
+        MergeCdeService,
+        MergeShareService
+    ],
     imports: [
         BrowserModule,
         CommonModule,
