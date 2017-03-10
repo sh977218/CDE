@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.export;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -59,9 +60,15 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
 
-        clickElement(By.id("export"));
-        textPresent("CSV Export");
-        clickElement(By.id("csvExport"));
+        try {
+            clickElement(By.id("export"));
+            textPresent("CSV Export");
+            clickElement(By.id("csvExport"));
+        } catch (TimeoutException e) {
+            clickElement(By.id("export"));
+            textPresent("CSV Export");
+            clickElement(By.id("csvExport"));
+        }
 
         textPresent("export is being generated");
         textPresent("Export downloaded.");
