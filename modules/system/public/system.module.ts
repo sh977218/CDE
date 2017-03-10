@@ -5,7 +5,7 @@ import { PaginationModule } from "ng2-bootstrap/pagination";
 import { ModalModule } from "ng2-bootstrap/modal";
 
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
-import { ProfileComponent } from "./profile.component";
+import { ProfileComponent } from "./components/profile.component";
 import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
@@ -14,6 +14,7 @@ import { IdentifiersComponent } from "./components/adminItem/identifiers.compone
     declarations: [
         upgradeAdapter.upgradeNg1Component("inlineEdit"),
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
+        upgradeAdapter.upgradeNg1Component("formAccordionList"),
         ProfileComponent,
         IdentifiersComponent,
         UserCommentsComponent,
@@ -22,5 +23,6 @@ import { IdentifiersComponent } from "./components/adminItem/identifiers.compone
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
+
 export class SystemModule {
 }

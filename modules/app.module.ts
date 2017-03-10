@@ -10,6 +10,7 @@ import { SkipLogicService } from "./core/public/skipLogic.service";
 import { MergeFormService } from "./core/public/mergeForm.service";
 import { SystemModule } from "./system/public/system.module";
 import { FormModule } from "./form/public/form.module";
+import { CdeModule } from "./cde/public/js/cde.module";
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { FormModule } from "./form/public/form.module";
         FormsModule,
         HttpModule,
         SystemModule,
-        FormModule
+        FormModule,
+        CdeModule
     ],
     bootstrap: [CdeAppComponent]
 })

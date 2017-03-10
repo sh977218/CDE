@@ -4,10 +4,11 @@ import "rxjs/add/operator/map";
 
 @Component({
     selector: "cde-profile",
-    templateUrl: "./profile.component.html"
+    templateUrl: "profile.component.html"
 })
 export class ProfileComponent {
     cdes: any;
+    forms: any;
     hasQuota: any;
     orgCurator: string;
     orgAdmin: string;
@@ -18,10 +19,15 @@ export class ProfileComponent {
                 @Inject("userResource") private userService,
                 @Inject("ViewingHistory") private viewingHistoryService) {
         viewingHistoryService.getViewingHistory();
-        viewingHistoryService.getPromise().then((response) => {
+        viewingHistoryService.getCdes().then((response) => {
             this.cdes = [];
             if (Array.isArray(response))
                 this.cdes = response;
+        });
+        viewingHistoryService.getForms().then((response) => {
+            this.forms = [];
+            if (Array.isArray(response))
+                this.forms = response;
         });
         this.reloadUser();
     }
@@ -29,7 +35,7 @@ export class ProfileComponent {
     saveProfile() {
         this.http.post("/user/me", this.user)
             .subscribe(
-                (data) => {
+                () => {
                     this.reloadUser();
                     this.alert.addAlert("success", "Saved");
                 },
@@ -50,7 +56,7 @@ export class ProfileComponent {
     }
 
     removePublishedForm(pf) {
-        this.user.publishedForms = this.user.publishedForms.filter(function (p) {
+        this.user.publishedForms = this.user.publishedForms.filter(function (p: any) {
             return p._id !== pf._id;
         });
         this.saveProfile();

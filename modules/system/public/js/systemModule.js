@@ -65,9 +65,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             templateUrl: '/system/public/html/searchSettings.html'
         });
     }])
-    //.config(['$qProvider', function ($qProvider) {
-    //    $qProvider.errorOnUnhandledRejections(false);
-    //}])
     .directive('inlineEdit', ["$timeout", function ($timeout) {
         return {
             restrict: 'AE',
@@ -187,26 +184,26 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         return {
             restrict: 'AE',
             scope: {
-                array: "=sortableArray"
+                theArray: "="
                 , index: '=index'
                 , cb: '&'
             },
             templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
             controller: ["$scope", function ($scope) {
                 $scope.moveUp = function () {
-                    $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
+                    $scope.theArray.splice($scope.index - 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
                 $scope.moveDown = function () {
-                    $scope.array.splice($scope.index + 1, 0, $scope.array.splice($scope.index, 1)[0]);
+                    $scope.theArray.splice($scope.index + 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
                 $scope.moveTop = function () {
-                    $scope.array.splice(0, 0, $scope.array.splice($scope.index, 1)[0]);
+                    $scope.theArray.splice(0, 0, $scope.theArray.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
                 $scope.moveBottom = function () {
-                    $scope.array.push($scope.array.shift());
+                    $scope.theArray.push($scope.array.shift());
                     $scope.cb();
                 };
             }]

@@ -19,6 +19,13 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
 }]);
 angular.module('formModule').directive('mergeForm', upgradeAdapter.downgradeNg2Component(MergeFormComponent));
 
+// Angular 2 upgraded
+angular.module('formModule').directive('formAccordionList', function () {
+    return {
+        scope: {forms: '=', ejsPage: '=', module: '='},
+        templateUrl: '/form/public/html/formAccordionList.html'};
+});
+
 angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$parse", function ($compile, $timeout, $parse) {
     return {
         link: function ($scope, element, attrs) {
