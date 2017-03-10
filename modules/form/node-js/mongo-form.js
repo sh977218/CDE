@@ -185,6 +185,17 @@ exports.byTinyIdList = function (idList, callback) {
         });
 };
 
+exports.byTinyIdListInOrder = function (idList, callback) {
+    exports.byTinyIdList(idList, function (err, forms) {
+        var reorderedForms = idList.map(function (id) {
+            for (var i = 0; i < forms.length; i++) {
+                if (id === forms[i].tinyId) return forms[i];
+            }
+        });
+        callback(err, reorderedForms);
+    });
+};
+
 exports.eltByTinyId = function (tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null);
     if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
