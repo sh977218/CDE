@@ -153,6 +153,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     }
 
     function getShowIfQ(q, prevQ) {
+        if (!prevQ) prevQ = [];
         if (q.skipLogic && q.skipLogic.condition) {
             var strPieces = q.skipLogic.condition.split('"');
             if (strPieces[0] === '') strPieces.shift();
