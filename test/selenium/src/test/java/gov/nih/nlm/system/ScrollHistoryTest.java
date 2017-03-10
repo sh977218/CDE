@@ -7,6 +7,18 @@ import org.testng.annotations.Test;
 
 public class ScrollHistoryTest extends NlmCdeBaseTest {
 
+    private void checkScroll(long value) {
+        int i = 0;
+        while(!((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", "").equals(value) && i < 10) {
+            hangon(1);
+            i++;
+        }
+        if (i == 10) {
+            Assert.fail();
+        }
+    }
+
+
     @Test
     public void scrollHistory() {
         searchEltAny("apple", "cde");
@@ -31,19 +43,19 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
 
         driver.navigate().refresh();
-        hangon(1);
-        Assert.assertEquals(600L, ((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", ""));
+
+        checkScroll(600L);
 
         driver.navigate().back();
         driver.navigate().back();
         driver.navigate().back();
-        hangon(1);
-        Assert.assertEquals(550L, ((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", ""));
+
+        checkScroll(550L);
 
         driver.navigate().back();
         driver.navigate().back();
         driver.navigate().back();
-        hangon(1);
-        Assert.assertEquals(500L, ((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", ""));
+    
+        checkScroll(500L);
     }
 }

@@ -5,7 +5,7 @@ import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
 
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
-import { ProfileComponent } from "./profile.component";
+import { ProfileComponent } from "./components/profile.component.ts";
 import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
@@ -22,5 +22,6 @@ import { IdentifiersComponent } from "./components/adminItem/identifiers.compone
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
+
 export class SystemModule {
 }
