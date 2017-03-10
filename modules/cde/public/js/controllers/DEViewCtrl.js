@@ -256,6 +256,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
         service.get(query, function(de) {
             $scope.elt = de;
+            $scope.elt._changeNote = $scope.elt.changeNote;
+            delete $scope.elt.changeNote;
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
             $scope.loadBoards();
@@ -320,10 +322,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.save = function() {
         $scope.elt.$save({}, function (elt) {
-            // var ct = $scope.currentTab;
-            // $scope.currentTab = "";
             $scope.elt = elt;
-            // $scope.currentTab = ct;
+            $scope.elt._changeNote = $scope.elt.changeNote;
+            delete $scope.elt.changeNote;
             $scope.$broadcast("elementReloaded");
             $scope.addAlert("success", "Saved.");
         }, function() {

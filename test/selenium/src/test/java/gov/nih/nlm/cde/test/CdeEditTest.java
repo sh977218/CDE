@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import static com.jayway.restassured.RestAssured.get;
 
 public class CdeEditTest extends NlmCdeBaseTest {
+
     @Test
     public void editCde() {
         mustBeLoggedInAs(ctepCurator_username, password);
@@ -49,7 +50,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent(cdeName + "[name change number 1]", By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='designation']"));
         textPresent(cdeDefinitionChange, By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='definition']"));
 
-
         // View Prior Version
         clickElement(By.xpath("//*[@id='prior-1']"));
         switchTab(1);
@@ -64,6 +64,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         openCdeAudit(cdeName);
         textPresent(cdeName + cdeNameChange);
         textPresent("the free text field to specify the other type of mediastinal lymph node dissection." + cdeDefinitionChange);
+
+        switchTabAndClose(0);
     }
 
     @Test(dependsOnMethods = {"editCde"})
