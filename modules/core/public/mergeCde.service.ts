@@ -6,8 +6,7 @@ import { MergeShareService } from "./mergeShare.service";
 
 @Injectable()
 export class MergeCdeService {
-    constructor(private http:Http,
-                private mergeShareService:MergeShareService) {
+    constructor(private http: Http, private mergeShareService: MergeShareService) {
     }
 
     private getCdeByTinyId(tinyId) {

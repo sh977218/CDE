@@ -1,5 +1,5 @@
 import { Http } from "@angular/http";
-import {Component, Inject, Input, ViewChild, OnChanges} from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnChanges } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
 
 @Component({

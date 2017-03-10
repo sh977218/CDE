@@ -4,7 +4,7 @@ import "rxjs/add/operator/map";
 import { ModalDirective } from "ng2-bootstrap/index";
 
 @Component({
-    selector: "merge-form",
+    selector: "cde-merge-form",
     templateUrl: "./mergeForm.component.html"
 })
 export class MergeFormComponent {
@@ -16,8 +16,7 @@ export class MergeFormComponent {
     public allQuestions: any;
     public showProgressBar: any;
 
-    constructor(@Inject("Alert") private alert,
-                private mergeFormService: MergeFormService) {
+    constructor(@Inject("Alert") private alert, private mergeFormService: MergeFormService) {
         this.showProgressBar = false;
         this.mergeFields = {
             naming: false,
@@ -78,7 +77,7 @@ export class MergeFormComponent {
             }
             else {
                 this.mergeFormService.saveForm(this.right, (err) => {
-                    if (err) 
+                    if (err)
                         this.alert.addAlert("danger", err);
                     else {
                         this.alert.addAlert("success", "form merged");

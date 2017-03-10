@@ -6,11 +6,8 @@ import * as async from "async";
 
 @Injectable()
 export class MergeFormService {
-    constructor(private http: Http,
-                private mergeCdeService: MergeCdeService,
-                private mergeShareService: MergeShareService) {
+    constructor(private http: Http, private mergeCdeService: MergeCdeService, private mergeShareService: MergeShareService) {
     }
-
     public saveForm(form, cb) {
         //noinspection TypeScriptValidateTypes
         this.http.post("/form", form).subscribe(
@@ -22,7 +19,6 @@ export class MergeFormService {
             }
         );
     }
-
     private mergeQuestions(questionsFrom, questionsTo, fields, doneOne, cb) {
         let index = 0;
         //noinspection TypeScriptUnresolvedFunction
@@ -46,7 +42,6 @@ export class MergeFormService {
             cb(err);
         });
     }
-
     public doMerge(mergeFrom, mergeTo, fields, doneOne, cb) {
         if (mergeFrom.length !== mergeTo.length) {
             return {error: "number of question on left is not same on right."};
