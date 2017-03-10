@@ -1,0 +1,88 @@
+<h4 tabindex="0">Concepts</h4>
+<div id="conceptsDiv">
+    <div class="row">
+        <div class="col-md-5">
+            <div *ngFor="let config of conceptConfigurations; ">
+                <div *ngIf="elt[config.type].concepts.length > 0">
+                    <h5 tabindex="0" [innerHTML]="config.details.display"></h5>
+                    <table class="table-bordered table-condensed table-striped">
+                        <thead>
+                        <tr>
+                            <th tabindex="0">Code Name</th>
+                            <th tabindex="0">Code System</th>
+                            <th tabindex="0">Code ID</th>
+                            <th tabindex="0" id="conceptActions" *ngIf="isAllowedModel.isAllowed(elt)"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
+                            itemtype="http://schema.org/MedicalCode">
+                            <td><a tabindex="0" href (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
+                                   itemprop="name">{{concept.name}}</a>
+                            </td>
+                            <td tabindex="0" itemprop="codeSystem">{{concept.origin}}</td>
+                            <td tabindex="0" itemprop="codeValue">{{concept.originId}}</td>
+                            <td headers="actions" *ngIf="isAllowedModel.isAllowed(elt)">
+                                <span tabindex="0" id="remove{{config.type}}-{{$index}}" class="btn-default fa fa-trash-o"
+                                      (click)="removeConcept(config.type, $index)" title="Remove" href></span>
+
+                                <sortable-array [theArray]="elt[config.type].concepts"
+                                                [sortableArray]="elt[config.type].concepts"
+                                                [index]="$index" (cb)="elt.unsaved = true"></sortable-array>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <hr/>
+            <button class="btn btn-small btn-default" value="add" (click)="openNewConcept()" id="addConcept"
+                    *ngIf="isAllowedModel.isAllowed(elt)"><i class="fa fa-plus"> </i> Add Concept
+            </button>
+        </div>
+    </div>
+</div>
+
+<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="newConceptModal" aria-hidden="true">
+
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Add Concept</h4>
+            </div>
+            <div class="modal-body">
+
+                <form role="form" #conceptForm="ngForm">
+                    <div class="form-group">
+                        <label for="name">Code Name</label>
+                        <input class="form-control" [(ngModel)]="newConcept.name" name="name" id="name" Placeholder="Concept Code Name" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="codeId">Code ID</label>
+                        <input class="form-control" name="codeId" [(ngModel)]="newConcept.originId" id="codeId"
+                               placeholder="Concept Code Identifier" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codeSystem">Code System</label>
+                        <input class="form-control" name="codeSystem" [(ngModel)]="newConcept.origin" value="LOINC" id="codeSystem" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="conceptType">Concept Type</label>
+                        <select class="form-control" [(ngModel)]="newConcept.type" name="conceptType" id="conceptType" required>
+                            <option value="dec">Data Element</option>
+                            <option value="oc">Class</option>
+                            <option value="prop">Property</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer" id="newConceptModalFooter">
+                        <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
+                        <button class="btn btn-warning" (click)="okCreate()" [disabled]="!conceptForm.form.valid"
+                                id="createConcept" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
