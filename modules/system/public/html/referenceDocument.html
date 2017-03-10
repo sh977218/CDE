@@ -16,7 +16,7 @@
                     <span ng-click="showDelete = true" ng-hide="showDelete" class="btn-default fa fa-trash-o"
                           id="removeReferenceDocument-{{$index}}" title="Remove" href=""></span>
 
-                    <div sortable-array="elt.referenceDocuments" index="$index" cb="stageElt(elt)"></div>
+                    <sortable-array the-array="elt.referenceDocuments" index="$index" cb="stageElt(elt)"></sortable-array>
                 </div>
             </div>
             <div class="col-xs-11">

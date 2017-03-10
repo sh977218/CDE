@@ -8,6 +8,7 @@ import { CdeAppComponent } from "./app.component";
 import { ClassificationService } from "./core/public/classification.service";
 import { SkipLogicService } from "./core/public/skipLogic.service";
 import { SystemModule } from "./system/public/system.module";
+import { CdeModule } from "./cde/public/js/cde.module";
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { SystemModule } from "./system/public/system.module";
         CommonModule,
         FormsModule,
         HttpModule,
-        SystemModule
+        SystemModule,
+        CdeModule
     ],
     bootstrap: [CdeAppComponent]
 })

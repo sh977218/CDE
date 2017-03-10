@@ -1,6 +1,6 @@
 import * as authShared from "../../../../system/shared/authorizationShared";
 
- angular.module('systemModule').controller('UsersMgtCtrl',
+angular.module('systemModule').controller('UsersMgtCtrl',
      ['$scope', '$http', '$timeout', '$uibModal', 'Alert', function($scope, $http, $timeout, $modal, Alert) {
 
     $scope.search = {username: ""};
@@ -17,14 +17,22 @@ import * as authShared from "../../../../system/shared/authorizationShared";
 
      $scope.updateAvatar = function(user) {
          $http.post("/updateUserAvatar", user).then(function () {
-             $scope.addAlert("success", "Saved.");
+             Alert.addAlert("success", "Saved.");
+         });
+     };
+
+     $scope.updateTesterStatus = function(user) {
+         $timeout(function() {
+             $http.post("/updateTesterStatus", user).then(function () {
+                 Alert.addAlert("success", "Saved.");
+             });
          });
      };
 
     $scope.updateRoles = function(user) {
         $timeout(function() {
             $http.post("/updateUserRoles", user).then(function () {
-                $scope.addAlert("success", "Roles saved.");
+                Alert.addAlert("success", "Roles saved.");
             });}
         , 0);
     };

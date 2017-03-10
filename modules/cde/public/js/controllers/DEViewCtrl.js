@@ -3,10 +3,10 @@ import * as deValidator from "../../../../cde/shared/deValidator";
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal', '$sce',
+        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal',
         function ($scope, $routeParams, $modal, $window, $http, $timeout, DataElement, DataElementTinyId,
                   isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                  $q, QuickBoard, $log, userResource, PinModal, $sce)
+                  $q, QuickBoard, $log, userResource, PinModal)
 {
 
     $scope.module = 'cde';
@@ -131,7 +131,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: ['/cde/public/html/derivationRules.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.derRulesCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadDerivationRules');});
             }
         },
         validRules: {
@@ -167,7 +166,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     size: 'lg',
                     animation: false,
                     template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
-                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt,oldModule) {
+                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt, oldModule) {
                         $scope.elt = elt;
                         $scope.oldModule = oldModule;
                     }],
@@ -321,7 +320,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.save = function() {
         $scope.elt.$save({}, function (elt) {
+            // var ct = $scope.currentTab;
+            // $scope.currentTab = "";
             $scope.elt = elt;
+            // $scope.currentTab = ct;
             $scope.$broadcast("elementReloaded");
             $scope.addAlert("success", "Saved.");
         }, function() {
