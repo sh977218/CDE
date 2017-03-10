@@ -200,30 +200,6 @@ exports.incDeView = function (cde) {
     }
 };
 
-exports.addToViewHistory = function (cde, user) {
-    if (!cde || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
-        origin: "cde.mongo-cde.addToViewHistory",
-        stack: new Error().stack,
-        details: {"cde": cde, user: user}
-    });
-    User.update({'_id': user._id}, {
-        $push: {
-            viewHistory: {
-                $each: [cde.tinyId]
-                , $position: 0
-                , $slice: 1000
-            }
-        }
-    }).exec(function (err) {
-        if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
-            origin: "cde.mongo-cde.addToViewHistory",
-            stack: new Error().stack,
-            details: {"cde": cde, user: user}
-        });
-    });
-};
-
-
 // TODO this method should be removed.
 exports.save = function (mongooseObject, callback) {
     mongooseObject.save(function (err) {

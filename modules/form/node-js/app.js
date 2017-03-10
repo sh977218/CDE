@@ -56,6 +56,21 @@ exports.init = function (app, daoManager) {
 
     app.get('/formByTinyIdAndVersion/:id/:version', exportShared.nocacheMiddleware, formCtrl.formByTinyIdVersion);
 
+    app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
+        if (!req.user) {
+            res.send("You must be logged in to do that");
+        } else {
+            var splicedArray = req.user.formViewHistory.splice(0, 10);
+            var idList = [];
+            for (var i = 0; i < splicedArray.length; i++) {
+                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
+            }
+            mongo_form.byTinyIdListInOrder(idList, function (err, forms) {
+                res.send(forms);
+            });
+        }
+    });
+
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_form.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
             if (err) {

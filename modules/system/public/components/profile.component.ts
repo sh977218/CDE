@@ -8,6 +8,7 @@ import "rxjs/add/operator/map";
 })
 export class ProfileComponent {
     cdes: any;
+    forms: any;
     hasQuota: any;
     orgCurator: string;
     orgAdmin: string;
@@ -18,10 +19,15 @@ export class ProfileComponent {
                 @Inject("userResource") private userService,
                 @Inject("ViewingHistory") private viewingHistoryService) {
         viewingHistoryService.getViewingHistory();
-        viewingHistoryService.getPromise().then((response) => {
+        viewingHistoryService.getCdes().then((response) => {
             this.cdes = [];
             if (Array.isArray(response))
                 this.cdes = response;
+        });
+        viewingHistoryService.getForms().then((response) => {
+            this.forms = [];
+            if (Array.isArray(response))
+                this.forms = response;
         });
         this.reloadUser();
     }
