@@ -7,6 +7,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { CdeAppComponent } from "./app.component";
 import { ClassificationService } from "./core/public/classification.service";
 import { SkipLogicService } from "./core/public/skipLogic.service";
+import { MergeFormService } from "./core/public/mergeForm.service";
 import { SystemModule } from "./system/public/system.module";
 import { FormModule } from "./form/public/form.module";
 
@@ -15,7 +16,8 @@ import { FormModule } from "./form/public/form.module";
     declarations: [CdeAppComponent],
     providers: [
         ClassificationService,
-        SkipLogicService],
+        SkipLogicService,
+        MergeFormService],
     imports: [
         BrowserModule,
         CommonModule,
