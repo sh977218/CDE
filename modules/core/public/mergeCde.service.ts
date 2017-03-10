@@ -18,6 +18,7 @@ export class MergeCdeService {
     public doMerge(tinyIdFrom, tinyIdTo, fields, cb) {
         let cdeFromObservable = this.getCdeByTinyId(tinyIdFrom);
         let cdeToObservable = this.getCdeByTinyId(tinyIdTo);
+        //noinspection TypeScriptUnresolvedFunction
         Observable.forkJoin([cdeFromObservable, cdeToObservable]).subscribe(results => {
                 let cdeFrom = results[0];
                 let cdeTo = results[1];

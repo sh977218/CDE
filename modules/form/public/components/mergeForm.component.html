@@ -15,27 +15,22 @@
             </div>
             <div class="modal-body overflowHidden">
                 <div class="row">
+                    From fields:
                     <label><input type="checkbox" [(ngModel)]="mergeFields.naming">Naming</label>
-                </div>
-                <div class="row">
                     <label><input type="checkbox" [(ngModel)]="mergeFields.referenceDocuments">
                         Reference Documents</label>
-                </div>
-                <div class="row">
                     <label><input type="checkbox" [(ngModel)]="mergeFields.properties">Properties</label>
-                </div>
-                <div class="row">
                     <label><input type="checkbox" [(ngModel)]="mergeFields.ids">IDs</label>
+                    <label><input type="checkbox" [(ngModel)]="mergeFields.questions">Questions</label>
+                </div>
+                <div class="row" *ngIf="mergeFields.questions">
+                    CDE fields
+                    <label><input type="checkbox" [(ngModel)]="mergeFields.cde.naming">CDE naming</label>
+                    <label><input type="checkbox" [(ngModel)]="mergeFields.cde.referenceDocuments">
+                        CDE Reference Documents</label>
+                    <label><input type="checkbox" [(ngModel)]="mergeFields.cde.properties">CDE Properties</label>
                 </div>
                 <div class="row">
-                    <label><input type="checkbox" [(ngModel)]="mergeFields.questions">Questions</label>
-                    <div *ngIf="mergeFields.questions">
-                        <label><input type="checkbox" [(ngModel)]="mergeFields.cde.naming">CDE naming</label>
-                        <label><input type="checkbox" [(ngModel)]="mergeFields.cde.referenceDocuments">
-                            CDE Reference Documents</label>
-                        <label><input type="checkbox" [(ngModel)]="mergeFields.cde.properties">CDE Properties</label>
-                    </div>
-
                     <div class="col-xs-12" *ngIf="mergeFields.questions">
                         <div class="col-xs-6">
                             <bs-sortable #LeftSortableComponent [(ngModel)]="left.questions"

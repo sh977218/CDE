@@ -73,14 +73,15 @@ export class MergeFormComponent {
             next();
         }, (err) => {
             if (err) {
-                this.alert.add("danger", err);
+                this.alert.addAlert("danger", err);
                 return;
             }
             else {
                 this.mergeFormService.saveForm(this.right, (err) => {
-                    if (err) this.alert.add("danger", err);
+                    if (err) 
+                        this.alert.addAlert("danger", err);
                     else {
-                        this.alert.add("success", "form merged");
+                        this.alert.addAlert("success", "form merged");
                         setTimeout(() => {
                             this.showProgressBar = false;
                             return;

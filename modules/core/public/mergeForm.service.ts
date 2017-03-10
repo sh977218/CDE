@@ -12,12 +12,13 @@ export class MergeFormService {
     }
 
     public saveForm(form, cb) {
+        //noinspection TypeScriptValidateTypes
         this.http.post("/form", form).subscribe(
-            (data) => {
-                cb(data);
+            data => {
+                cb(null, data);
             },
-            (err) => {
-                cb("danger", "Error, unable to save form " + form.tinyId);
+            err => {
+                cb("Error, unable to save form " + form.tinyId + " " + err);
             }
         );
     }
@@ -26,7 +27,7 @@ export class MergeFormService {
         let index = 0;
         //noinspection TypeScriptUnresolvedFunction
         async.forEachSeries(questionsFrom, (questionFrom, doneOneQuestion) => {
-            let questionTo = questionsTo.questions[index];
+            let questionTo = questionsTo[index];
             if (!questionFrom.question.cde.tinyId || !questionTo.question.cde.tinyId) {
                 index++;
                 doneOne(index, doneOneQuestion);
@@ -35,7 +36,10 @@ export class MergeFormService {
                 let tinyIdTo = questionTo.question.cde.tinyId;
                 this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, fields, (err) => {
                     if (err) return cb(err);
-                    else doneOne(index, doneOneQuestion);
+                    else {
+                        index++;
+                        doneOne(index, doneOneQuestion);
+                    }
                 });
             }
         }, (err) => {
