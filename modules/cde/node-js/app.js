@@ -98,7 +98,7 @@ exports.init = function (app, daoManager) {
             else return res.status(404).send("Cannot recognize export type.");
 
             if (req.isAuthenticated()) {
-                mongo_cde.addToViewHistory(cde, req.user);
+                mongo_data_system.addToViewHistory(cde, req.user);
             }
             mongo_cde.incDeView(cde);
         }
@@ -138,7 +138,6 @@ exports.init = function (app, daoManager) {
             });
         }
     });
-
 
     app.get('/autocomplete/org/:name', exportShared.nocacheMiddleware, function (req, res) {
         mongo_cde.org_autocomplete(req.params.name, function (result) {
