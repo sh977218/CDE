@@ -130,7 +130,7 @@ app.use (function (req, res, next) {
     try {
         if (req.headers.host === "cde.nlm.nih.gov") {
             if (req.user && req.user.tester) {
-                localRedirectProxy.web(req, res, {target: config.internalRules.redirectTo});
+                localRedirectProxy.web(req, res, {target: config.internalRules.redirectTo}, next);
             } else {
                 return next();
             }
