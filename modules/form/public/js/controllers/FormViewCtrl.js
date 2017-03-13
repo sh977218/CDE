@@ -272,9 +272,11 @@ angular.module('formModule').controller
                 $scope.elt._changeNote = $scope.elt.changeNote;
                 delete $scope.elt.changeNote;
                 $scope.formLoading = false;
-                if (authShared.hasRole(userResource.user, "FormEditor")) {
-                    isAllowedModel.setCanCurate($scope);
-                }
+                userResource.getPromise().then(function () {
+                    if (authShared.hasRole(userResource.user, "FormEditor")) {
+                        isAllowedModel.setCanCurate($scope);
+                    }
+                });
                 $scope.formCdeIds = formShared.getFormCdes($scope.elt).map(function (c) {
                     return c.tinyId;
                 });
