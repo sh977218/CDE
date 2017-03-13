@@ -3,8 +3,8 @@ import * as compareShared from "../../../system/shared/compareShared";
 (function () {
     'use strict';
     angular.module('ngCompareSideBySide', [])
-        .directive("ngCompareSideBySide", ["$compile", "$templateRequest", "Comparison",
-            function ($compile, $templateRequest, Comparison) {
+        .directive("ngCompareSideBySide", ["$compile", "Comparison",
+            function ($compile, Comparison) {
                 return {
                     restrict: "AE",
                     replace: true,
