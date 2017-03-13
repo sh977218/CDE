@@ -7,7 +7,7 @@
     <div class="row" id="qb_compare_viewDetail">
         <div class="col-xs-6">
             <span class="leftObj">
-                <a tabindex="0" class='btn btn-small btn-default'
+                <a tabindex="0" class='btn btn-small btn-default' target="_blank"
                    ng-href="/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[0].tinyId}}">
                     <i class="fa fa-eye"></i> View Full Detail</a>
             </span>
@@ -20,12 +20,13 @@
                 </span>
             </span>
 
-            <cde-merge-form class="leftObj" *ngIf="forms" [left]="eltsToCompare[0]" [right]="eltsToCompare[1]"></cde-merge-form>
+            <cde-merge-form class="leftObj" *ngIf="forms && user._id" [left]="eltsToCompare[0]"
+                            [right]="eltsToCompare[1]"></cde-merge-form>
 
         </div>
         <div class="col-xs-6">
             <span class="rightObj">
-                <a tabindex="0" class='btn btn-small btn-default'
+                <a tabindex="0" class='btn btn-small btn-default' target="_blank"
                    ng-href="/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[1].tinyId}}">
                     <i class="fa fa-eye"></i> View Full Detail</a>
             </span>

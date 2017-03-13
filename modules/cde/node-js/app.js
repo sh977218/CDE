@@ -301,7 +301,6 @@ exports.init = function (app, daoManager) {
     app.post('/mergeCde', function (req, res) {
         var cdeMergeTo = req.body.mergeTo;
         var cdeMergeFrom = req.body.mergeFrom;
-        cdeMergeFrom.registrationState.registrationStatus = "Retired";
         if (cdeMergeTo && cdeMergeTo.tinyId)
             cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
         cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;

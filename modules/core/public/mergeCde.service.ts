@@ -22,13 +22,15 @@ export class MergeCdeService {
                 let cdeFrom = results[0];
                 let cdeTo = results[1];
                 if (fields.naming)
-                    this.mergeShareService.mergeArray(cdeFrom.naming, cdeTo.naming);
+                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "naming");
                 if (fields.referenceDocuments)
-                    this.mergeShareService.mergeArray(cdeFrom.referenceDocuments, cdeTo.referenceDocuments);
+                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "referenceDocuments");
                 if (fields.properties)
-                    this.mergeShareService.mergeArray(cdeFrom.properties, cdeTo.properties);
+                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "properties");
                 if (fields.ids)
-                    this.mergeShareService.mergeArray(cdeFrom.ids, cdeTo.ids);
+                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "ids");
+                if (fields.classifications)
+                    this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
                 this.http.post("/mergeCde", {
                     mergeFrom: cdeFrom,
                     mergeTo: cdeTo

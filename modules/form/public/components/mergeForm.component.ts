@@ -15,6 +15,7 @@ export class MergeFormComponent {
     public questionsMerged: any;
     public allQuestions: any;
     public showProgressBar: any;
+    public doneMerge:any = false;
 
     constructor(@Inject("Alert") private alert, private mergeFormService: MergeFormService) {
         this.showProgressBar = false;
@@ -23,11 +24,14 @@ export class MergeFormComponent {
             referenceDocuments: false,
             properties: false,
             ids: false,
+            classifications: false,
             questions: false,
             cde: {
                 naming: false,
                 referenceDocuments: false,
-                properties: false
+                properties: false,
+                ids: false,
+                classifications: false
             }
         };
     }
@@ -41,6 +45,7 @@ export class MergeFormComponent {
         this.mergeFields.referenceDocuments = true;
         this.mergeFields.properties = true;
         this.mergeFields.ids = true;
+        this.mergeFields.classifications = true;
         this.mergeFields.questions = true;
     }
 
@@ -49,6 +54,7 @@ export class MergeFormComponent {
         this.mergeFields.referenceDocuments = false;
         this.mergeFields.properties = false;
         this.mergeFields.ids = false;
+        this.mergeFields.classifications = false;
         this.mergeFields.questions = false;
     }
 
@@ -80,10 +86,11 @@ export class MergeFormComponent {
                     if (err)
                         this.alert.addAlert("danger", err);
                     else {
+                        this.doneMerge = true;
                         this.alert.addAlert("success", "form merged");
                         setTimeout(() => {
                             this.showProgressBar = false;
-                            return;
+                            return this.mergeFormModal.hide();
                         }, 3000);
                     }
                 });

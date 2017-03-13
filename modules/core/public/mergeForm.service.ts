@@ -8,9 +8,10 @@ import * as async from "async";
 export class MergeFormService {
     constructor(private http: Http, private mergeCdeService: MergeCdeService, private mergeShareService: MergeShareService) {
     }
+
     public saveForm(form, cb) {
         //noinspection TypeScriptValidateTypes
-        this.http.post("/form", form).subscribe(
+        this.http.post("/form", form).map(res => res.json()).subscribe(
             data => {
                 cb(null, data);
             },
@@ -47,16 +48,19 @@ export class MergeFormService {
             return {error: "number of question on left is not same on right."};
         }
         if (fields.naming) {
-            this.mergeShareService.mergeArray(mergeFrom.naming, mergeTo.naming);
+            this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "naming");
         }
         if (fields.referenceDocuments) {
-            this.mergeShareService.mergeArray(mergeFrom.referenceDocuments, mergeTo.referenceDocuments);
+            this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "referenceDocuments");
         }
         if (fields.properties) {
-            this.mergeShareService.mergeArray(mergeFrom.properties, mergeTo.properties);
+            this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "properties");
         }
         if (fields.ids) {
-            this.mergeShareService.mergeArray(mergeFrom.ids, mergeTo.ids);
+            this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "ids");
+        }        
+        if (fields.classifications) {
+            this.mergeShareService.mergeClassifications(mergeFrom, mergeTo);
         }
         if (fields.questions) {
             this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, (index, next) => {

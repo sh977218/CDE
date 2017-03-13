@@ -1649,3 +1649,7 @@ div.slider .ui-slider-handle {
 .rotate270 {
     transform: rotate(270deg);
 }
+
+.mergeFormArray {
+    position: absolute;
+}
