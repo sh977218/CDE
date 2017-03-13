@@ -1,4 +1,5 @@
-angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "$interval", "FormQuickBoard", "PinModal", function($scope, $interval, QuickBoard, PinModal)
+angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "$interval", "FormQuickBoard", "PinModal",
+    function($scope, $interval, QuickBoard, PinModal)
 {
 
     $scope.module = "form";

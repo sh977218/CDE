@@ -1,3 +1,5 @@
+import {upgradeAdapter} from "../../../upgrade.ts";
+
 angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplates', 'boardTemplates']).config(
     ["$routeProvider", function($routeProvider)
 {
@@ -33,3 +35,13 @@ angular.module('cdeModule').directive('cdeAccordionList', function () {
         scope: {cdes: '=', ejsPage: '=', module: '='},
         templateUrl: '/cde/public/html/cdeAccordionList.html'};
 });
+
+import {LinkedForms} from "../components/linkedForms.component";
+angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgradeNg2Component(LinkedForms));
+
+import {ConceptsComponent} from "../components/concepts.component";
+angular.module('cdeModule').directive('cdeConcepts', upgradeAdapter.downgradeNg2Component(ConceptsComponent));
+
+import {DerivationRulesComponent} from "../components/derivationRules.component";
+angular.module('systemModule').directive('cdeDerivationRules', upgradeAdapter.downgradeNg2Component(DerivationRulesComponent));
+
