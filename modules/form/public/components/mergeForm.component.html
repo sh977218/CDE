@@ -27,8 +27,8 @@
                         <label><input type="checkbox" [(ngModel)]="mergeFields.ids">IDs</label>
                         <label><input type="checkbox" [(ngModel)]="mergeFields.classifications">Classifications</label>
                         <label><input type="checkbox" [(ngModel)]="mergeFields.questions">Questions</label>
-                        <button class="btn btn-default" (click)="selectAllMergerFields();">Select All</button>
-                        <button class="btn btn-default" (click)="deselectAllMergerFields();">Deselect All</button>
+                        <button class="btn btn-default" (click)="selectAllFormMergerFields();">Select All</button>
+                        <button class="btn btn-default" (click)="deselectAllFormMergerFields();">Deselect All</button>
                     </div>
                 </div>
                 <div class="row" *ngIf="mergeFields.questions">
@@ -40,6 +40,8 @@
                         <label><input type="checkbox" [(ngModel)]="mergeFields.cde.ids">CDE Ids</label>
                         <label><input type="checkbox" [(ngModel)]="mergeFields.cde.classifications">
                             CDE Classifications</label>
+                        <button class="btn btn-default" (click)="selectAllCdeMergerFields();">Select All</button>
+                        <button class="btn btn-default" (click)="deselectAllCdeMergerFields();">Deselect All</button>
                     </div>
                 </div>
                 <div class="row">

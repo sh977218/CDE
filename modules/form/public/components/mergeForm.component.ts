@@ -40,7 +40,7 @@ export class MergeFormComponent {
         this.mergeFormModal.toggle();
     }
 
-    selectAllMergerFields() {
+    selectAllFormMergerFields() {
         this.mergeFields.naming = true;
         this.mergeFields.referenceDocuments = true;
         this.mergeFields.properties = true;
@@ -49,13 +49,29 @@ export class MergeFormComponent {
         this.mergeFields.questions = true;
     }
 
-    deselectAllMergerFields() {
+    selectAllCdeMergerFields() {
+        this.mergeFields.cde.naming = true;
+        this.mergeFields.cde.referenceDocuments = true;
+        this.mergeFields.cde.properties = true;
+        this.mergeFields.cde.ids = true;
+        this.mergeFields.cde.classifications = true;
+    }
+
+    deselectAllFormMergerFields() {
         this.mergeFields.naming = false;
         this.mergeFields.referenceDocuments = false;
         this.mergeFields.properties = false;
         this.mergeFields.ids = false;
         this.mergeFields.classifications = false;
         this.mergeFields.questions = false;
+    }
+
+    deselectAllCdeMergerFields() {
+        this.mergeFields.cde.naming = false;
+        this.mergeFields.cde.referenceDocuments = false;
+        this.mergeFields.cde.properties = false;
+        this.mergeFields.cde.ids = false;
+        this.mergeFields.cde.classifications = false;
     }
 
     addItem(questions, sortableComponent) {
