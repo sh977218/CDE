@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import * as classificationShared from "../../system/shared/classificationShared.js"
+import * as classificationShared from "../../system/shared/classificationShared.js";
 
 @Injectable()
 export class MergeShareService {

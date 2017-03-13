@@ -63,7 +63,7 @@
                         var oResult = o.map(function (m) {
                             return m[firstKey];
                         }).join(', ');
-                        return firstKey + ' ' + oResult;
+                        return firstKey + ': ' + oResult;
                     } else return o;
                 },
                 applyHtml: function ($scope, $element) {

@@ -1,7 +1,7 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import { MergeFormService } from "../../../core/public/mergeForm.service";
 import "rxjs/add/operator/map";
-import { ModalDirective } from "ng2-bootstrap/index";
+import { ModalDirective, SortableComponent } from "ng2-bootstrap/index";
 
 @Component({
     selector: "cde-merge-form",
@@ -9,13 +9,15 @@ import { ModalDirective } from "ng2-bootstrap/index";
 })
 export class MergeFormComponent {
     @ViewChild("MergeFormModal") public mergeFormModal: ModalDirective;
+    @ViewChild("LeftSortableComponent") leftSortableComponent: SortableComponent;
     @Input() public left: any;
     @Input() public right: any;
     public mergeFields: any;
     public questionsMerged: any;
     public allQuestions: any;
     public showProgressBar: any;
-    public doneMerge:any = false;
+    public doneMerge: any = false;
+    public error: any;
 
     constructor(@Inject("Alert") private alert, private mergeFormService: MergeFormService) {
         this.showProgressBar = false;
@@ -31,9 +33,18 @@ export class MergeFormComponent {
                 referenceDocuments: false,
                 properties: false,
                 ids: false,
-                classifications: false
+                classifications: false,
+                retireCde: false
             }
         };
+    }
+
+    ngOnInit() {
+        if (this.left.questions.length > this.right.questions.length) {
+            this.error = "Left form has too many questions";
+        } else {
+            this.error = false;
+        }
     }
 
     openMergeForm() {
@@ -74,16 +85,25 @@ export class MergeFormComponent {
         this.mergeFields.cde.classifications = false;
     }
 
-    addItem(questions, sortableComponent) {
+    addItem(questions) {
         questions.push({question: {cde: ""}});
-        if (sortableComponent)
-            sortableComponent.writeValue(questions);
+        this.leftSortableComponent.writeValue(questions);
+        if (this.left.questions.length > this.right.questions.length) {
+            this.error = "Left form has too many questions";
+        } else {
+            this.error = false;
+        }
     }
 
-    removeItem(questions, sortableComponent) {
-        questions.splice(-1, 1);
-        if (sortableComponent)
-            sortableComponent.writeValue(questions);
+    removeItem(questions, index) {
+        if (index === undefined) index = -1;
+        questions.splice(index, 1);
+        this.leftSortableComponent.writeValue(questions);
+        if (this.left.questions.length > this.right.questions.length) {
+            this.error = "Left form has too many questions";
+        } else {
+            this.error = false;
+        }
     }
 
     public doMerge() {
@@ -103,10 +123,11 @@ export class MergeFormComponent {
                         this.alert.addAlert("danger", err);
                     else {
                         this.doneMerge = true;
+                        this.leftSortableComponent.writeValue(this.left.questions);
                         this.alert.addAlert("success", "form merged");
                         setTimeout(() => {
                             this.showProgressBar = false;
-                            return this.mergeFormModal.hide();
+                            return;
                         }, 3000);
                     }
                 });

@@ -800,6 +800,14 @@ input:required:invalid, input:focus:invalid {
     color: red;
 }
 
+.orange {
+    color: orange;
+}
+
+.grey {
+    color: grey;
+}
+
 .placeholderForDrop {
     border: 1px solid #ddd;
     padding: 10px;
@@ -1650,6 +1658,6 @@ div.slider .ui-slider-handle {
     transform: rotate(270deg);
 }
 
-.mergeFormArray {
+.positionAbsolute {
     position: absolute;
 }

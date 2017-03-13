@@ -31,10 +31,14 @@ export class MergeCdeService {
                     this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "ids");
                 if (fields.classifications)
                     this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
+                if (fields.retireCde)
+                    cdeFrom.registrationState.registrationStatus = "Retired";
                 this.http.post("/mergeCde", {
                     mergeFrom: cdeFrom,
                     mergeTo: cdeTo
-                }).subscribe(() => cb(), err => cb("unable to mergeCde " + err));
+                }).subscribe(() => {
+                    cb(null, "retired");
+                }, err => cb("unable to mergeCde " + err));
             },
             err => cb("unable to get cde " + err)
         );

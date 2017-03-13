@@ -31,10 +31,11 @@ export class MergeFormService {
             } else {
                 let tinyIdFrom = questionFrom.question.cde.tinyId;
                 let tinyIdTo = questionTo.question.cde.tinyId;
-                this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, fields, (err) => {
+                this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, fields, (err, isRetired) => {
                     if (err) return cb(err);
                     else {
                         index++;
+                        if (isRetired) questionFrom.retired = true;
                         doneOne(index, doneOneQuestion);
                     }
                 });
@@ -58,7 +59,7 @@ export class MergeFormService {
         }
         if (fields.ids) {
             this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "ids");
-        }        
+        }
         if (fields.classifications) {
             this.mergeShareService.mergeClassifications(mergeFrom, mergeTo);
         }
