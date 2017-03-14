@@ -8,14 +8,10 @@ angular.module('systemModule').controller('AddClassificationToOrgModalCtrl',
     $scope.newClassificationValue = '';
     
     $scope.parentScope = {newClassifName: ""};
-     
-    $scope.close = function () {
-        $modalInstance.close();
-    };
-    
+
     $scope.addClassification = function () {
         $scope.newClassification.categories.push($scope.parentScope.newClassifName);
-        $modalInstance.close($scope.newClassification);
+        $scope.$close($scope.newClassification);
     };
     
 }]);
