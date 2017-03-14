@@ -133,7 +133,8 @@
     </div>
 </div>
 <template #questionTemplate let-item="item" let-index="index">
-    <div class="boxed-div overflowHidden" [ngClass]="item.value.isRetired?'grey':''" style="height: 75px;">
+    <div class="boxed-div overflowHidden" [ngClass]="item.value.isRetired?'grey':''" style="height: 75px;"
+         title="{{item.value.isRetired?'CDE is Retired':''}}">
         <div class="row">
             <div class="col-xs-3 Label">Name:</div>
             <div class="col-xs-8 noLeftRightPadding">
