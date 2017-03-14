@@ -1,2 +1,25 @@
-HELLO
-<button type="button" class="btn btn-default" id="cdeLinkedFormsBtn" ng-click="open()">Linked Forms</button>
+<button type="button" class="btn btn-default" id="cdeLinkedFormsBtn" (click)="open()">Linked Forms</button>
+
+<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="linkedFormsModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Linked Forms</h3>
+            </div>
+            <div class="modal-body">
+                <div class="overflowHidden">
+                    <p ng-bind="getFormText()"></p>
+                    <a id="seeAllLinkedFormsButton" href="/form/search?q={{cde.tinyId}}" class="btn btn-default" target="_blank"
+                       *ngIf="forms && forms.length > 0">
+                        <i class="fa fa-file-text-o"></i> See all linked forms</a>
+                    <hr/>
+                    <div *ngIf="forms && forms.length > 0">
+                        <h4>Preview: </h4>
+                        <form-summary-list id="linkedFormsAccordionList" [forms]="forms" ejsPage="list" module="form"></form-summary-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

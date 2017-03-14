@@ -21,6 +21,11 @@ angular.module('formModule').directive('formAccordionList', function () {
         scope: {forms: '=', ejsPage: '=', module: '='},
         templateUrl: '/form/public/html/formAccordionList.html'};
 });
+angular.module('formModule').directive('formSummaryList', function () {
+    return {
+        scope: {forms: '=', ejsPage: '=', module: '='},
+        templateUrl: '/form/public/html/formSummaryList.html'};
+});
 
 angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$parse", function ($compile, $timeout, $parse) {
     return {

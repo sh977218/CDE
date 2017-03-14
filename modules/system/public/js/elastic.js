@@ -1,6 +1,14 @@
 angular.module('ElasticSearchResource', ['ngResource'])
 .factory('Elastic', ["$http", "SearchSettings", function($http, SearchSettings) {
     return {
+        defaultSearchSettings: {
+            q: ""
+            , page: 1
+            , classification: []
+            , classificationAlt: []
+            , regStatuses: []
+            , resultPerPage: 20
+        },
         searchToken: "id" + Math.random().toString(16).slice(2)
         , buildElasticQuerySettings: function(queryParams) {
             var regStatuses = queryParams.regStatuses;

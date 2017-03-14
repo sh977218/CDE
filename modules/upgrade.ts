@@ -12,3 +12,5 @@ upgradeAdapter.upgradeNg1Provider("userResource");
 upgradeAdapter.upgradeNg1Provider("ViewingHistory");
 upgradeAdapter.upgradeNg1Provider("isAllowedModel");
 upgradeAdapter.upgradeNg1Provider("QuickBoard");
+upgradeAdapter.upgradeNg1Provider("PinModal");
+upgradeAdapter.upgradeNg1Provider("Elastic");
