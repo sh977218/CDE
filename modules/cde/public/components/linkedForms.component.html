@@ -9,14 +9,15 @@
             </div>
             <div class="modal-body">
                 <div class="overflowHidden">
-                    <p ng-bind="getFormText()"></p>
-                    <a id="seeAllLinkedFormsButton" href="/form/search?q={{cde.tinyId}}" class="btn btn-default" target="_blank"
+                    <p>{{getFormText()}}</p>
+                    <a id="seeAllLinkedFormsButton" href="/form/search?q={{elt.tinyId}}" class="btn btn-default" target="_blank"
                        *ngIf="forms && forms.length > 0">
                         <i class="fa fa-file-text-o"></i> See all linked forms</a>
                     <hr/>
                     <div *ngIf="forms && forms.length > 0">
                         <h4>Preview: </h4>
-                        <form-summary-list id="linkedFormsAccordionList" [forms]="forms" ejsPage="list" module="form"></form-summary-list>
+                        <form-summary-list id="linkedFormsAccordionList" [forms]="forms" ejsPage="list"
+                                           module="eltType"></form-summary-list>
                     </div>
                 </div>
             </div>

@@ -36,8 +36,8 @@ angular.module('cdeModule').directive('cdeAccordionList', function () {
         templateUrl: '/cde/public/html/cdeAccordionList.html'};
 });
 
-import {LinkedForms} from "../components/linkedForms.component";
-angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgradeNg2Component(LinkedForms));
+import {LinkedFormsComponent} from "../components/linkedForms.component";
+angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgradeNg2Component(LinkedFormsComponent));
 
 import {ConceptsComponent} from "../components/concepts.component";
 angular.module('cdeModule').directive('cdeConcepts', upgradeAdapter.downgradeNg2Component(ConceptsComponent));

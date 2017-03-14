@@ -114,7 +114,6 @@ import "./system/public/js/controllers/QuickBoardCtrl";
 import "./cde/public/js/controllers/SDCViewCtrl";
 import "./cde/public/js/controllers/DEListCtrl";
 import "./cde/public/js/controllers/MoreLikeThisModalCtrl";
-import "./cde/public/js/controllers/LinkedFormsCtrl";
 import "./cde/public/js/controllers/CdeHistoryCtrl";
 import "./cde/public/js/controllers/CdeCopyModalCtrl";
 import "./cde/public/js/controllers/NewPvModalCtrl";

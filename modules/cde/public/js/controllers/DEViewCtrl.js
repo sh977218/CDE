@@ -159,28 +159,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 }).result.then(function () {}, function() {});
             }
         }, {
-            btnId: 'cdeLinkedFormsBtn',
-            title: 'Linked Forms',
-            open: function () {
-                $modal.open({
-                    size: 'lg',
-                    animation: false,
-                    template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
-                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt, oldModule) {
-                        $scope.elt = elt;
-                        $scope.oldModule = oldModule;
-                    }],
-                    resolve: {
-                        elt: function () {
-                            return $scope.elt;
-                        },
-                        OldModule: function () {
-                            return $scope.module;
-                        }
-                    }
-                }).result.then(function () {}, function() {});
-            }
-        }, {
             btnId: 'cdeLinkedBoardsBtn',
             title: 'Linked Boards',
             open: function () {
