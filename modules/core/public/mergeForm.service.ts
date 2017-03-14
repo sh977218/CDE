@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 import { Http } from "@angular/http";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeShareService } from "./mergeShare.service";
@@ -6,7 +6,9 @@ import * as async from "async";
 
 @Injectable()
 export class MergeFormService {
-    constructor(private http: Http, private mergeCdeService: MergeCdeService, private mergeShareService: MergeShareService) {
+    constructor(private http: Http,
+                private mergeCdeService: MergeCdeService,
+                private mergeShareService: MergeShareService) {
     }
 
     public saveForm(form, cb) {

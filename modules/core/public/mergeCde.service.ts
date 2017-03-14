@@ -9,7 +9,7 @@ export class MergeCdeService {
     constructor(private http: Http, private mergeShareService: MergeShareService) {
     }
 
-    private getCdeByTinyId(tinyId) {
+    public getCdeByTinyId(tinyId) {
         //noinspection TypeScriptValidateTypes
         return this.http.get("/debytinyid/" + tinyId).map(res => res.json());
     }
@@ -29,6 +29,14 @@ export class MergeCdeService {
                     this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "properties");
                 if (fields.ids)
                     this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "ids");
+                if (fields.attachments)
+                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "attachments");
+                if (fields.dataSets)
+                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "dataSets");
+                if (fields.derivationRules)
+                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "derivationRules");
+                if (fields.sources)
+                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "sources");
                 if (fields.classifications)
                     this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
                 if (fields.retireCde)
