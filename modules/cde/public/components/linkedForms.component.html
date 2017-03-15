@@ -17,7 +17,9 @@
                     <div *ngIf="forms && forms.length > 0">
                         <h4>Preview: </h4>
                         <form-summary-list id="linkedFormsAccordionList" [forms]="forms" ejsPage="list"
-                                           module="eltType"></form-summary-list>
+                                           module="eltType" [includeInAccordion]="
+                                           ['/cde/public/html/accordion/pinAccordionActions.html',
+                                            '/system/public/html/accordion/addToQuickBoardActions.html']"></form-summary-list>
                     </div>
                 </div>
             </div>

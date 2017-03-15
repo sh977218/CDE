@@ -13,14 +13,10 @@ export class LinkedFormsComponent {
     @Input() public elt: any;
     @Input() public eltType: string;
 
-    pinModal: any;
     forms: [any];
 
     constructor (@Inject("QuickBoard") private quickBoard,
-                 @Inject("PinModal") private pinModalSvc,
-                 @Inject("Elastic") private elastic
-    ) {
-          this.pinModal = pinModalSvc.new("form");
+                 @Inject("Elastic") private elastic) {
     };
 
     private open () {
@@ -37,13 +33,6 @@ export class LinkedFormsComponent {
 
         });
     }
-
-    //
-    // $scope.includeInAccordion = [
-    //     "/cde/public/html/accordion/pinAccordionActions.html",
-    //     "/system/public/html/accordion/addToQuickBoardActions.html"
-    // ];
-    //
 
     getFormText () {
         if (!this.forms || this.forms.length === 0) {
