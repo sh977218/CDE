@@ -25,8 +25,9 @@ angular.module('formModule').directive('formSummaryList', ["PinModal", function 
     return {
         scope: {forms: '=', ejsPage: '=', module: '=', includeInAccordion: "="},
         templateUrl: '/form/public/html/formSummaryList.html',
-        controller: ["$scope", "PinModal", function ($scope, PinModal) {
+        controller: ["$scope", "PinModal", "FormQuickBoard", function ($scope, PinModal, QuickBoard) {
             $scope.PinModal = PinModal.new("form");
+            $scope.quickBoard = QuickBoard;
         }]
     };
 }]);
