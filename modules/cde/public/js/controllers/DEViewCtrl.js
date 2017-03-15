@@ -143,22 +143,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.groups = [
         {
-            btnId: 'cdeDataSetBtn',
-            title: 'Data Set',
-            open: function () {
-                $modal.open({
-                    templateUrl: '/cde/public/html/cdeDatasetModal.html',
-                    controller: ['$scope', 'elt', function ($scope, elt) {
-                        $scope.elt = elt;
-                    }],
-                    resolve: {
-                        elt: function () {
-                            return $scope.elt;
-                        }
-                    }
-                }).result.then(function () {}, function() {});
-            }
-        }, {
             btnId: 'cdeLinkedBoardsBtn',
             title: 'Linked Boards',
             open: function () {

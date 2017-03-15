@@ -39,6 +39,9 @@ angular.module('cdeModule').directive('cdeAccordionList', function () {
 import {LinkedFormsComponent} from "../components/linkedForms.component";
 angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgradeNg2Component(LinkedFormsComponent));
 
+import {DatasetsComponent} from "../components/datasets/datasets.component";
+angular.module('cdeModule').directive('cdeDatasets', upgradeAdapter.downgradeNg2Component(DatasetsComponent));
+
 import {ConceptsComponent} from "../components/concepts.component";
 angular.module('cdeModule').directive('cdeConcepts', upgradeAdapter.downgradeNg2Component(ConceptsComponent));
 
