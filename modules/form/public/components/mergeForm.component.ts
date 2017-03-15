@@ -56,19 +56,15 @@ export class MergeFormComponent {
         } else {
             this.error = false;
         }
-        for (let i = 0; i < this.right.questions; i++) {
-            let tinyId = this.right.questions[i].question.cde.tinyId;
+        this.right.questions.forEach((rightQuestion)=> {
+            let tinyId = rightQuestion.question.cde.tinyId;
             this.mergeCdeService.getCdeByTinyId(tinyId).subscribe(cde => {
-                this.right.questions[i].own = this.isAllowedModel.isAllowed(cde);
+                rightQuestion.own = this.isAllowedModel.isAllowed(cde);
             }, err => {
-                this.alert.addAlert('danger', err);
+                this.alert.addAlert("danger", err);
             });
-        }
+        });
         this.check();
-    }
-
-    openMergeForm() {
-        this.mergeFormModal.toggle();
     }
 
     check() {
@@ -81,14 +77,17 @@ export class MergeFormComponent {
         if (this.mergeFields.questions && this.left.questions.length > this.right.questions.length) {
             return this.warning = "Source form has too many questions";
         }
-        for (let i = 0; i < this.left.questions; i++) {
-            let leftTinyId = this.left.questions[i].question.cde.tinyId;
-            this.right.questions.filter((q, j) => {
-                if (leftTinyId === q.question.cde.tinyId && i !== j) {
-                    this.left.questions.error = "question not align";
+        this.left.questions.forEach((leftQuestion, i) => {
+            let leftTinyId = leftQuestion.question.cde.tinyId;
+            console.log(leftTinyId);
+            this.right.questions.filter((rightQuestion, j) => {
+                let rightTinyId = rightQuestion.question.cde.tinyId;
+                console.log(rightTinyId);
+                if (leftTinyId === rightTinyId && i !== j) {
+                    leftQuestion.error = "question not align";
                 }
             })
-        }
+        })
     }
 
     selectAllFormMergerFields() {

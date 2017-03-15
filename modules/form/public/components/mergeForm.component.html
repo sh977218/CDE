@@ -1,4 +1,4 @@
-<a class='btn btn-small btn-default fa fa-clipboard' (click)="openMergeForm()"> Merge Form</a>
+<a class='btn btn-small btn-default fa fa-clipboard' (click)="mergeFormModal.toggle()"> Merge Form</a>
 
 <div bsModal #MergeFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -177,7 +177,7 @@
                 </a>
             </div>
             <span *ngIf="item.value.own" class="red">Not own</span>
-            <span *ngIf="item.value.error" class="red">{{item.value.error}}</span>
+            <span *ngIf="item.value.error" class="red" style="position:absolute;left:-100px">{{item.value.error}}</span>
             <span class="fa fa-trash col-xs-1 noLeftRightPadding"
                   (click)="removeItem(left.questions,index)"></span>
         </div>
