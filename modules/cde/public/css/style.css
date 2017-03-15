@@ -800,8 +800,16 @@ input:required:invalid, input:focus:invalid {
     color: red;
 }
 
+.bgLightYellow {
+    background-color: #fcf8e3;
+}
+
+.bgGrey {
+    background-color: lightgrey;
+}
+
 .bgOrange {
-    background-color: orange;
+    background-color: #f3bf92;;
 }
 
 .placeholderForDrop {
@@ -1656,4 +1664,9 @@ div.slider .ui-slider-handle {
 
 .positionAbsolute {
     position: absolute;
+}
+
+.mergeRightArrow {
+    position: absolute;
+    right: -5px;
 }

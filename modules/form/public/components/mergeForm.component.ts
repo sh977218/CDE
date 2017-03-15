@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import { MergeFormService } from "../../../core/public/mergeForm.service";
 import { MergeCdeService } from "../../../core/public/mergeCde.service";
 import "rxjs/add/operator/map";
@@ -8,7 +8,7 @@ import { ModalDirective, SortableComponent } from "ng2-bootstrap/index";
     selector: "cde-merge-form",
     templateUrl: "./mergeForm.component.html"
 })
-export class MergeFormComponent {
+export class MergeFormComponent implements OnInit {
     @ViewChild("MergeFormModal") public mergeFormModal: ModalDirective;
     @ViewChild("LeftSortableComponent") leftSortableComponent: SortableComponent;
     @Input() public left: any;
@@ -56,15 +56,23 @@ export class MergeFormComponent {
         } else {
             this.error = false;
         }
-        this.right.questions.forEach((rightQuestion)=> {
+        this.right.questions.forEach((rightQuestion) => {
             let tinyId = rightQuestion.question.cde.tinyId;
             this.mergeCdeService.getCdeByTinyId(tinyId).subscribe(cde => {
-                rightQuestion.own = this.isAllowedModel.isAllowed(cde);
+                rightQuestion.error = this.isAllowedModel.isAllowed(cde) ? "" : "you do not own";
             }, err => {
                 this.alert.addAlert("danger", err);
             });
         });
         this.check();
+    }
+
+    swapForm() {
+        let temp = this.left;
+        this.left = this.right;
+        this.right = temp;
+        this.check();
+        this.leftSortableComponent.writeValue(this.left.questions);
     }
 
     check() {
@@ -79,15 +87,16 @@ export class MergeFormComponent {
         }
         this.left.questions.forEach((leftQuestion, i) => {
             let leftTinyId = leftQuestion.question.cde.tinyId;
-            console.log(leftTinyId);
             this.right.questions.filter((rightQuestion, j) => {
                 let rightTinyId = rightQuestion.question.cde.tinyId;
-                console.log(rightTinyId);
                 if (leftTinyId === rightTinyId && i !== j) {
-                    leftQuestion.error = "question not align";
+                    leftQuestion.error = "not align";
+                } else if (leftTinyId === rightTinyId && i === j) {
+                    leftQuestion.warning = "same tinyId";
                 }
-            })
-        })
+            });
+        });
+        return this.warning = "";
     }
 
     selectAllFormMergerFields() {
@@ -140,12 +149,14 @@ export class MergeFormComponent {
         } else {
             this.error = false;
         }
+        this.check();
     }
 
     removeItem(questions, index) {
         if (index === undefined) index = -1;
         questions.splice(index, 1);
         this.leftSortableComponent.writeValue(questions);
+        this.check();
     }
 
     public doMerge() {

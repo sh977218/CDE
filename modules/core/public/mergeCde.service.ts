@@ -15,40 +15,44 @@ export class MergeCdeService {
     }
 
     public doMerge(tinyIdFrom, tinyIdTo, fields, cb) {
-        let cdeFromObservable = this.getCdeByTinyId(tinyIdFrom);
-        let cdeToObservable = this.getCdeByTinyId(tinyIdTo);
-        //noinspection TypeScriptUnresolvedFunction
-        Observable.forkJoin([cdeFromObservable, cdeToObservable]).subscribe(results => {
-                let cdeFrom = results[0];
-                let cdeTo = results[1];
-                if (fields.naming)
-                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "naming");
-                if (fields.referenceDocuments)
-                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "referenceDocuments");
-                if (fields.properties)
-                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "properties");
-                if (fields.ids)
-                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "ids");
-                if (fields.attachments)
-                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "attachments");
-                if (fields.dataSets)
-                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "dataSets");
-                if (fields.derivationRules)
-                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "derivationRules");
-                if (fields.sources)
-                    this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "sources");
-                if (fields.classifications)
-                    this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
-                if (fields.retireCde)
-                    cdeFrom.registrationState.registrationStatus = "Retired";
-                this.http.post("/mergeCde", {
-                    mergeFrom: cdeFrom,
-                    mergeTo: cdeTo
-                }).subscribe(() => {
-                    cb(null, "retired");
-                }, err => cb("unable to mergeCde " + err));
-            },
-            err => cb("unable to get cde " + err)
-        );
+        if (tinyIdFrom === tinyIdTo) {
+            return cb();
+        } else {
+            let cdeFromObservable = this.getCdeByTinyId(tinyIdFrom);
+            let cdeToObservable = this.getCdeByTinyId(tinyIdTo);
+            //noinspection TypeScriptUnresolvedFunction
+            Observable.forkJoin([cdeFromObservable, cdeToObservable]).subscribe(results => {
+                    let cdeFrom = results[0];
+                    let cdeTo = results[1];
+                    if (fields.naming)
+                        this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "naming");
+                    if (fields.referenceDocuments)
+                        this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "referenceDocuments");
+                    if (fields.properties)
+                        this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "properties");
+                    if (fields.ids)
+                        this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "ids");
+                    if (fields.attachments)
+                        this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "attachments");
+                    if (fields.dataSets)
+                        this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "dataSets");
+                    if (fields.derivationRules)
+                        this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "derivationRules");
+                    if (fields.sources)
+                        this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "sources");
+                    if (fields.classifications)
+                        this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
+                    if (fields.retireCde)
+                        cdeFrom.registrationState.registrationStatus = "Retired";
+                    this.http.post("/mergeCde", {
+                        mergeFrom: cdeFrom,
+                        mergeTo: cdeTo
+                    }).subscribe(() => {
+                        cb(null, "retired");
+                    }, err => cb("unable to mergeCde " + err));
+                },
+                err => cb("unable to get cde " + err)
+            );
+        }
     }
 }

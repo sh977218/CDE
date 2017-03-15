@@ -6,15 +6,17 @@
         <div class="modal-content container-fluid">
             <div class="modal-header">
                 <div class="alert-warning">{{warning}}</div>
-                <h4>Merge <a target=_blank href="formView?tinyId={{left.tinyId}}">
-                    {{left.naming[0].designation}}
-                </a> into <a target=_blank href="formView?tinyId={{right.tinyId}}">
-                    {{right.naming[0].designation}}
-                </a></h4>
+                <h4>Merge
+                    <a target=_blank href="formView?tinyId={{left.tinyId}}">
+                        {{left.naming[0].designation}}</a>
+                    Into <i class="fa fa-arrows-h" aria-hidden="true" (click)="swapForm()"></i>
+                    <a target=_blank href="formView?tinyId={{right.tinyId}}">
+                        {{right.naming[0].designation}}</a>
+                </h4>
             </div>
             <div class="modal-body overflowHidden">
                 <div class="row">
-                    <div class="col-xs-12 col-md-2 col-lg-3 noRightPadding">
+                    <div class="col-xs-12 col-md-2 col-lg-2 noRightPadding">
                         <div class="row">
                             <div class="col-xs-6 col-md-12 col-lg-12">
                                 <h4>Form fields:</h4>
@@ -120,14 +122,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-md-10 col-lg-9 noLeftRightPadding">
+                    <div class="col-xs-12 col-md-10 col-lg-10 noLeftRightPadding">
                         <div class="row">
                             <div class="col-xs-12" *ngIf="mergeFields.questions">
                                 <div class="col-xs-6">
                                     <bs-sortable #LeftSortableComponent [(ngModel)]="left.questions"
                                                  [itemTemplate]="questionTemplate" itemClass="sortable-item"
                                                  itemActiveClass="sortable-item-active" placeholderItem="Drag here"
-                                                 placeholderClass="sortable-item" wrapperClass="sortable-wrapper">
+                                                 placeholderClass="sortable-item" wrapperClass="sortable-wrapper"
+                                                 (onChange)="check()">
                                     </bs-sortable>
                                     <button class="btn btn-default"
                                             (click)="addItem(left.questions)">
@@ -135,15 +138,21 @@
                                     </button>
                                 </div>
                                 <div class="col-xs-6">
-                                    <div *ngFor="let rightQuestion of right.questions" class="boxed-div overflowHidden"
-                                         style="height: 75px;">
-                                        <div class="row">
-                                            <div class="col-xs-3 Label">Name:</div>
+                                    <div *ngFor="let rightQuestion of right.questions; let i = index"
+                                         class="boxed-div overflowHidden" id="targetQuestion_{{i}}">
+                                        <div class="row" style="height: 65px;">
+                                            <div class="col-xs-3 Label">CDE Name:</div>
                                             <div class="col-xs-9 noLeftRightPadding">
                                                 <a target="_blank"
                                                    href="deview?tinyId={{rightQuestion.question.cde.tinyId}}">
                                                     {{rightQuestion.question.cde.name}}
                                                 </a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-3 Label">Tiny Id:</div>
+                                            <div class="col-xs-8 noLeftRightPadding">
+                                                {{rightQuestion.question.cde.tinyId}}
                                             </div>
                                         </div>
                                     </div>
@@ -167,19 +176,28 @@
     </div>
 </div>
 <template #questionTemplate let-item="item" let-index="index">
-    <div class="boxed-div overflowHidden" [ngClass]="item.value.isRetired?'bgOrange':''" style="height: 75px;"
+    <div class="boxed-div overflowHidden" [ngClass]="item.value.isRetired?'bgGrey':''"
          title="{{item.value.isRetired?'CDE is Retired':''}}">
-        <div class="row">
-            <div class="col-xs-3 Label">Name:</div>
+        <div class="row" style="height: 65px;">
+            <div class="col-xs-3 Label">CDE Name:</div>
             <div class="col-xs-8 noLeftRightPadding">
                 <a target="_blank" href="deview?tinyId={{item.value.question.cde.tinyId}}">
                     {{item.value.question.cde.name}}
                 </a>
             </div>
-            <span *ngIf="item.value.own" class="red">Not own</span>
-            <span *ngIf="item.value.error" class="red" style="position:absolute;left:-100px">{{item.value.error}}</span>
             <span class="fa fa-trash col-xs-1 noLeftRightPadding"
                   (click)="removeItem(left.questions,index)"></span>
+        </div>
+        <span class="fa fa-arrow-right mergeRightArrow" [ngClass]="item.value.error?'':'bgOrange'"></span>
+        <div class="row">
+            <div class="col-xs-3 Label">Tiny Id:</div>
+            <div class="col-xs-4 noLeftRightPadding">
+                {{item.value.question.cde.tinyId}}
+            </div>
+            <div class="col-xs-5">
+                <span *ngIf="item.value.error" class="red right">{{item.value.error}}</span>
+                <span *ngIf="item.value.warning" class="bgLightYellow right">{{item.value.warning}}</span>
+            </div>
         </div>
     </div>
 </template>
