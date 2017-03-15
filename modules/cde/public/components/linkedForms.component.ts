@@ -6,7 +6,6 @@ import { ModalDirective } from "ng2-bootstrap/modal";
     templateUrl: "./linkedForms.component.html"
 })
 
-
 export class LinkedFormsComponent {
 
     @ViewChild("childModal") public childModal: ModalDirective;
@@ -15,9 +14,7 @@ export class LinkedFormsComponent {
 
     forms: [any];
 
-    constructor (@Inject("QuickBoard") private quickBoard,
-                 @Inject("Elastic") private elastic) {
-    };
+    constructor (@Inject("Elastic") private elastic) {};
 
     private open () {
         let searchSettings = this.elastic.defaultSearchSettings;

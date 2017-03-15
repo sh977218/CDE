@@ -1,7 +1,9 @@
 <button type="button" class="btn btn-default" id="cdeLinkedFormsBtn" (click)="open()">Linked Forms</button>
 
+<!-- z-index until all modals are upgraded to NG2 -->
+
 <div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-     aria-labelledby="linkedFormsModal" aria-hidden="true">
+     aria-labelledby="linkedFormsModal" aria-hidden="true" style="z-index: 1045">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
