@@ -10,6 +10,9 @@
                 {{group.title}}
             </button>
         </div>
+
+        <cde-linked-forms [elt]="elt" [elt-type]="'form'"></cde-linked-forms>
+
     </div>
     <div class="{{rightPanel}}">
         <div ng-include="'/form/public/html/formGeneralDetailsRender.html'"></div>

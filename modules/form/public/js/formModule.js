@@ -19,8 +19,18 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
 angular.module('formModule').directive('formAccordionList', function () {
     return {
         scope: {forms: '=', ejsPage: '=', module: '='},
-        templateUrl: '/form/public/html/formAccordionList.html'};
+        templateUrl: '/form/public/html/formAccordionList.html'}
 });
+angular.module('formModule').directive('formSummaryList', ["PinModal", function (PinModal) {
+    return {
+        scope: {forms: '=', ejsPage: '=', module: '=', includeInAccordion: "="},
+        templateUrl: '/form/public/html/formSummaryList.html',
+        controller: ["$scope", "PinModal", "FormQuickBoard", function ($scope, PinModal, QuickBoard) {
+            $scope.PinModal = PinModal.new("form");
+            $scope.quickBoard = QuickBoard;
+        }]
+    };
+}]);
 
 angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$parse", function ($compile, $timeout, $parse) {
     return {
