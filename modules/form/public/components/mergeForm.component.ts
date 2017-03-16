@@ -146,11 +146,6 @@ export class MergeFormComponent implements OnInit {
     addItem(questions) {
         questions.push({question: {cde: {tinyId: "", name: ""}}});
         this.leftSortableComponent.writeValue(questions);
-        if (this.left.questions.length > this.right.questions.length) {
-            this.error = "Left form has too many questions";
-        } else {
-            this.error = false;
-        }
         this.check();
     }
 
