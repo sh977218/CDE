@@ -36,7 +36,7 @@ angular.module('cdeModule').directive('cdeAccordionList', function () {
         templateUrl: '/cde/public/html/cdeAccordionList.html'};
 });
 
-import {LinkedFormsComponent} from "../components/linkedForms.component";
+import {LinkedFormsComponent} from "../../../system/public/components/linkedForms.component";
 angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgradeNg2Component(LinkedFormsComponent));
 
 import {DatasetsComponent} from "../components/datasets/datasets.component";

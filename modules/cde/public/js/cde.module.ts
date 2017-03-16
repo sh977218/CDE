@@ -7,15 +7,12 @@ import { ModalModule } from "ng2-bootstrap";
 import { upgradeAdapter } from "../../../upgrade";
 import { ConceptsComponent } from "../components/concepts.component";
 import { DerivationRulesComponent } from "../components/derivationRules.component";
-import { LinkedFormsComponent } from "../components/linkedForms.component";
 import { DatasetsComponent } from "../components/datasets/datasets.component";
 
 @NgModule({
     declarations: [
         upgradeAdapter.upgradeNg1Component("sortableArray"),
-        upgradeAdapter.upgradeNg1Component("formSummaryList"),
         ConceptsComponent,
-        LinkedFormsComponent,
         DerivationRulesComponent,
         DatasetsComponent
         ],
