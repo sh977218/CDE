@@ -11,6 +11,7 @@ import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
+import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 
 @NgModule({
     declarations: [
@@ -21,6 +22,7 @@ import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.comp
         IdentifiersComponent,
         UserCommentsComponent,
         LogAuditComponent,
+        UsersMgtComponent,
         PlaceHoldEmptyPipe],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot(), DataTableModule],
