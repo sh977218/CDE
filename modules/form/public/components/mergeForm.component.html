@@ -1,11 +1,12 @@
-<a class='btn btn-small btn-default fa fa-clipboard' (click)="mergeFormModal.toggle()"> Merge Form</a>
+<a class='btn btn-small btn-default fa fa-clipboard' id="mergeFormLeftToRight" (click)="mergeFormModal.toggle()">
+    Merge Form</a>
 
 <div bsModal #MergeFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:90%">
         <div class="modal-content container-fluid">
             <div class="modal-header">
-                <div class="alert-warning">{{warning}}</div>
+                <div class="alert-warning" id="mergFormWarningDiv">{{warning}}</div>
                 <h4>Merge
                     <a target=_blank href="formView?tinyId={{left.tinyId}}">
                         {{left.naming[0].designation}}</a>
@@ -168,9 +169,11 @@
                     <span style="color:white; white-space:nowrap;">{{questionsMerged}} / {{allQuestions}}</span>
                 </progressbar>
                 <button class="btn cancel" (click)="mergeFormModal.hide()" type="button">
-                    {{doneMerge?'Close':'Cancel'}}
+                    {{(doneMerge && error && warning)?'Close':'Cancel'}}
                 </button>
-                <button class="btn btn-warning" *ngIf="!doneMerge" [disabled]="error" (click)="doMerge()">Merge</button>
+                <button class="btn btn-warning" *ngIf="!doneMerge &&  !error &&  !warning" (click)="doMerge()">
+                    Merge
+                </button>
             </div>
         </div>
     </div>

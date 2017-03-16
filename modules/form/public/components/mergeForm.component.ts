@@ -76,8 +76,10 @@ export class MergeFormComponent implements OnInit {
     }
 
     check() {
-        if (!this.userService.user._id)
-            return this.warning = "Log in to merge";
+        if (!this.userService.user._id) {
+            this.warning = "Log in to merge";
+            return;
+        }
         this.ownTargetForm = this.isAllowedModel.isAllowed(this.right);
         if (!this.ownTargetForm) {
             return this.warning = "You do not own the target form";

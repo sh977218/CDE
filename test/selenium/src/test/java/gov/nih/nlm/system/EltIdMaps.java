@@ -87,6 +87,8 @@ public class EltIdMaps {
         eltMap.put("Non Editable Questions", "m16LQuUCG");
         eltMap.put("Not Equals Test", "QJBWLKc47");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
+        eltMap.put("Patient Health Questionnaire-2 (PHQ-2)", "XJzVz1TZDe");
+        eltMap.put("Patient Health Questionnaire 2 item (PHQ-2) [Reported]", "XkZqYRlqKf");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
         eltMap.put("PROMIS SF v1.0 - Applied Cog Abilities 4a", "Q1Ogr2OtIe");
