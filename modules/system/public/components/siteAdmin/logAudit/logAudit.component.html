@@ -22,8 +22,6 @@
         </form>
     </div>
     <div class="row">
-
-
         <table class="table table-striped" [mfData]="gridLogEvents" #mf="mfDataTable">
             <thead>
             <tr>
@@ -63,7 +61,7 @@
         <!--<a class="btn btn-mini fa fa-external-link" ng-click="downloadCsv()" id="exportLink"> Export</a>-->
     </div>
     <div class="row">
-        <pagination [totalItems]="search.totalItems" [(ngModel)]="search.currentPage"
-                    [itemsPerPage]="search.itemsPerPage" [maxSize]="10" (pageChanged)="searchLogs()"></pagination>
+        <pagination [totalItems]="totalItems" [(ngModel)]="search.currentPage"
+                    [itemsPerPage]="itemsPerPage" [maxSize]="10" (pageChanged)="searchLogs()"></pagination>
     </div>
 </div>

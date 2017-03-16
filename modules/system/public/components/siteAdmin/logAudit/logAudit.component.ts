@@ -14,40 +14,21 @@ export class LogAuditComponent {
     gridOptions: any;
     search: any;
     table: any;
-    columns: any = [
-        {title: "date", name: "date"},
-        {title: "IP", name: "ip"},
-        {title: "URL", name: "url"},
-        {title: "Method", name: "method"},
-        {title: "Status", name: "status"},
-        {title: "Resp. Time", name: "respTime"}
-        ];
-    // config: any = {sorting: {columns: this.columns}};
+    totalItems: number;
+    itemsPerPage: number;
 
     constructor(private http: Http, @Inject ("Alert") private Alert) {
         this.gridLogEvents = [];
-        this.gridOptions = {
-            data: 'gridLogEvents'
-            , enableColumnResize: true
-            , enableRowReordering: true
-            , enableCellSelection: true
-        };
         this.search = {currentPage: 0};
     }
 
-
-
-    // $scope.$on('showLogsForIP', function(event, args) {
-    //     $scope.search.remoteAddr = args.IP;
-    //     $scope.searchLogs();
-    // });
-
     searchLogs () {
         this.gridLogEvents = [];
+        this.search = {currentPage: 0};
 
         this.http.post("/logs", {query: this.search}).map(res => res.json()).subscribe((res) => {
-            this.search.totalItems = res.count;
-            this.search.itemsPerPage = res.itemsPerPage;
+            this.totalItems = res.count;
+            this.itemsPerPage = res.itemsPerPage;
             res.logs.forEach(log => {
                 if (log !== undefined) {
                     this.gridLogEvents.push({
