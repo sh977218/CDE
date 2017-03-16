@@ -171,7 +171,8 @@
                 <button class="btn cancel" (click)="mergeFormModal.ngOnDestroy()" type="button">
                     {{(doneMerge && info)?'Close':'Cancel'}}
                 </button>
-                <button class="btn btn-warning" *ngIf="!(doneMerge || info)" (click)="doMerge()">
+                <button class="btn btn-warning" *ngIf="!doneMerge && !info.error && !info.warning"
+                        (click)="doMerge()">
                     Merge
                 </button>
             </div>
