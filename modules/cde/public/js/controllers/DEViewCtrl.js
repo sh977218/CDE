@@ -540,10 +540,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
             placement: "top"
         },
         {
-            element: "#cdeLinkedFormsBtn",
+            element: "#linkedFormsBtn",
             title: "Forms",
             placement: "top",
-            content: "If a the CDE is used in a Form, it will be displayed here. "
+            content: "If an element is used in a Form, it will be displayed here. "
         },
         {
             element: "#cdeLinkedBoardsBtn",
