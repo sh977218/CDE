@@ -33,8 +33,7 @@ export class NativeRenderComponent implements OnInit {
     }
     private load() {
         this.nativeRenderService.elt = this.elt;
-        if (this.endpointUrl)
-            this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt.formElements)});
+        this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt.formElements)});
         this.nativeRenderService.setSelectedProfile(this.profile);
     }
     getEndpointUrl() {

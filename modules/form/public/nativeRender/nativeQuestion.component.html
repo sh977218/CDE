@@ -20,13 +20,17 @@
                                                    'checkbox-inline': formElement.question.multiselect,
                                                    'radio-inline': !formElement.question.multiselect}">
                                     <input type="radio" *ngIf="!formElement.question.multiselect"
-                                           [(ngModel)]="formElement.question.answer" [name]="formElement.questionId"
+                                           [name]="formElement.questionId"
+                                           [(ngModel)]="formElement.question.answer"
                                            [value]="pv.permissibleValue"
                                            [required]="formElement.question.required"
                                            [disabled]="!formElement.question.editable"/>
                                     <input type="checkbox" *ngIf="formElement.question.multiselect"
                                            [name]="formElement.questionId"
-                                           [value]="pv.permissibleValue"/> <!--[checklist-model]="formElement.question.answer"--><!--[checklist-value]="pv.permissibleValue"-->
+                                           [checked]="checkBoxIsChecked(formElement.question, pv.permissibleValue)"
+                                           (change)="checkboxOnChange($event, formElement.question, pv.permissibleValue)"
+                                           [required]="formElement.question.required"
+                                           [disabled]="!formElement.question.editable"/>
                                     {{getLabel(pv)}}
                                     <span *ngIf="nativeRenderService.profile.displayValues"
                                           [textContent]="getValue(pv)"></span>

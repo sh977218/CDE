@@ -17,9 +17,6 @@ export class NativeRenderService {
     form: any;
     followForm: any;
 
-    // getNativeRenderType() {
-    //     return this.overrideNativeRenderType || this.profile.displayType;
-    // }
     getNativeRenderType() {
         let newType = this.overrideNativeRenderType || (this.profile && this.profile.displayType);
         if (newType !== this.currentNativeRenderType)

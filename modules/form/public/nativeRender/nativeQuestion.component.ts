@@ -71,4 +71,18 @@ export class NativeQuestionComponent {
         return numSubQuestions && !this.hasLabel(question) &&
             question.question.datatype !== "Value List";
     }
+
+    checkboxOnChange($event: any, model: any, value: any) {
+        if (!Array.isArray(model.answer))
+            model.answer = [];
+        if ($event.target.checked)
+            model.answer.push(value);
+        else
+            model.answer.splice(model.answer.indexOf(value), 1);
+    }
+    checkBoxIsChecked(model: any, value: any) {
+        if (!Array.isArray(model.answer))
+            model.answer = [];
+        return (model.answer.indexOf(value) !== -1);
+    }
 }
