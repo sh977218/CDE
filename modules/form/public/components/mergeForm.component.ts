@@ -1,26 +1,29 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import { ModalDirective, SortableComponent } from "ng2-bootstrap/index";
+import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../core/public/mergeForm.service";
 import { MergeCdeService } from "../../../core/public/mergeCde.service";
-import "rxjs/add/operator/map";
-import { ModalDirective, SortableComponent } from "ng2-bootstrap/index";
 
 @Component({
     selector: "cde-merge-form",
     templateUrl: "./mergeForm.component.html"
 })
 export class MergeFormComponent implements OnInit {
-    @ViewChild("MergeFormModal") public mergeFormModal: ModalDirective;
-    @ViewChild("LeftSortableComponent") leftSortableComponent: SortableComponent;
-    @Input() public left: any;
-    @Input() public right: any;
+    @ViewChild("MergeFormModal")
+    public mergeFormModal: ModalDirective;
+    @ViewChild("LeftSortableComponent")
+    leftSortableComponent: SortableComponent;
+    @Input()
+    public left: any;
+    @Input()
+    public right: any;
     public mergeFields: any;
-    public questionsMerged: any;
-    public allQuestions: any;
+    public numMergedQuestions: any;
+    public maxNumberQuestions: any;
     public showProgressBar: any;
     public doneMerge: any = false;
-    public error: any;
-    public warning: any;
     public ownTargetForm: any;
+    public info: any = {};
 
     constructor(@Inject("Alert") private alert,
                 private mergeFormService: MergeFormService,
@@ -48,57 +51,6 @@ export class MergeFormComponent implements OnInit {
                 retireCde: false
             }
         };
-    }
-
-    ngOnInit() {
-        if (this.left.questions.length > this.right.questions.length) {
-            this.error = "Left form has too many questions";
-        } else {
-            this.error = false;
-        }
-        this.right.questions.forEach((rightQuestion) => {
-            let tinyId = rightQuestion.question.cde.tinyId;
-            this.mergeCdeService.getCdeByTinyId(tinyId).subscribe(cde => {
-                rightQuestion.error = this.isAllowedModel.isAllowed(cde) ? "" : "you do not own";
-            }, err => {
-                this.alert.addAlert("danger", err);
-            });
-        });
-        this.check();
-    }
-
-    swapForm() {
-        let temp = this.left;
-        this.left = this.right;
-        this.right = temp;
-        this.check();
-        this.leftSortableComponent.writeValue(this.left.questions);
-    }
-
-    check() {
-        if (!this.userService.user._id) {
-            this.warning = "Log in to merge";
-            return;
-        }
-        this.ownTargetForm = this.isAllowedModel.isAllowed(this.right);
-        if (!this.ownTargetForm) {
-            return this.warning = "You do not own the target form";
-        }
-        if (this.mergeFields.questions && this.left.questions.length > this.right.questions.length) {
-            return this.warning = "Source form has too many questions";
-        }
-        this.left.questions.forEach((leftQuestion, i) => {
-            let leftTinyId = leftQuestion.question.cde.tinyId;
-            this.right.questions.filter((rightQuestion, j) => {
-                let rightTinyId = rightQuestion.question.cde.tinyId;
-                if (leftTinyId === rightTinyId && i !== j) {
-                    leftQuestion.error = "not align";
-                } else if (leftTinyId === rightTinyId && i === j) {
-                    leftQuestion.warning = "same tinyId";
-                }
-            });
-        });
-        return this.warning = "";
     }
 
     selectAllFormMergerFields() {
@@ -143,6 +95,50 @@ export class MergeFormComponent implements OnInit {
         this.mergeFields.cde.classifications = false;
     }
 
+    private checkCdeOwnShip(array) {
+        array.forEach((question) => {
+            let tinyId = question.question.cde.tinyId;
+            question.info = {};
+            this.mergeCdeService.getCdeByTinyId(tinyId).subscribe(cde => {
+                question.info.error = this.isAllowedModel.isAllowed(cde) ? "" : "not own";
+            }, err => {
+                this.alert.addAlert("danger", err);
+            });
+        });
+    }
+
+    ngOnInit() {
+        this.checkCdeOwnShip(this.left.questions);
+        this.checkCdeOwnShip(this.right.questions);
+        this.check();
+    }
+
+    check() {
+        this.info = {};
+        if (!this.userService.user._id) {
+            return this.info.warning = "Log in to merge";
+        }
+        this.ownTargetForm = this.isAllowedModel.isAllowed(this.right);
+        if (!this.ownTargetForm) {
+            return this.info.warning = "You do not own the target form";
+        }
+        if (this.mergeFields.questions && this.left.questions.length > this.right.questions.length) {
+            return this.info.warning = "Source form has too many questions";
+        }
+        this.left.questions.forEach((leftQuestion, i) => {
+            let leftTinyId = leftQuestion.question.cde.tinyId;
+            leftQuestion.info = {};
+            this.right.questions.filter((rightQuestion, j) => {
+                let rightTinyId = rightQuestion.question.cde.tinyId;
+                if (leftTinyId === rightTinyId && i !== j) {
+                    leftQuestion.info.error = "not align";
+                } else if (leftTinyId === rightTinyId && i === j) {
+                    leftQuestion.info.warning = "same tinyId";
+                }
+            });
+        });
+    }
+
     addItem(questions) {
         questions.push({question: {cde: {tinyId: "", name: ""}}});
         this.leftSortableComponent.writeValue(questions);
@@ -158,27 +154,22 @@ export class MergeFormComponent implements OnInit {
 
     public doMerge() {
         this.showProgressBar = true;
-        this.allQuestions = this.left.questions.length;
+        this.maxNumberQuestions = this.right.questions.length;
         this.mergeFormService.doMerge(this.left, this.right, this.mergeFields, (index, next) => {
-            this.questionsMerged = index;
+            this.numMergedQuestions = index;
             next();
         }, (err) => {
-            if (err) {
-                this.alert.addAlert("danger", err);
-                return;
-            }
+            if (err) return this.alert.addAlert("danger", err);
             else {
                 this.left.changeNote = "Merge to tinyId " + this.right.tinyId;
                 if (this.isAllowedModel.isAllowed(this.left))
                     this.left.registrationState.registrationStatus = "Retired";
                 this.mergeFormService.saveForm(this.left, (err) => {
-                    if (err)
-                        this.alert.addAlert("danger", err);
+                    if (err) this.alert.addAlert("danger", err);
                     else {
                         this.right.changeNote = "Merge from tinyId " + this.left.tinyId;
                         this.mergeFormService.saveForm(this.right, (err) => {
-                            if (err)
-                                this.alert.addAlert("danger", err);
+                            if (err) this.alert.addAlert("danger", err);
                             else {
                                 this.doneMerge = true;
                                 this.leftSortableComponent.writeValue(this.left.questions);

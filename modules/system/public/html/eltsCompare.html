@@ -38,6 +38,9 @@
                 Pending Merge Request
                 </span>
             </span>
+            <cde-merge-form class="rightObj" *ngIf="forms && user._id" [left]="eltsToCompare[1]"
+                            [right]="eltsToCompare[0]"></cde-merge-form>
+
         </div>
     </div>
 
