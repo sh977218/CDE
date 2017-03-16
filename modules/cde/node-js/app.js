@@ -299,19 +299,39 @@ exports.init = function (app, daoManager) {
         })
     });
     app.post('/mergeCde', function (req, res) {
-        var cdeMergeTo = req.body.mergeTo;
-        var cdeMergeFrom = req.body.mergeFrom;
-        if (cdeMergeTo && cdeMergeTo.tinyId)
-            cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
-        cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
-        mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
-            if (err) return res.status(500).send(err);
-            else
-                mongo_cde.update(cdeMergeTo, req.user, function (err, newCdeMergeTo) {
-                    if (err) return res.status(500).send(err);
-                    else res.status(200).end();
-                })
-        })
+        if (req.isAuthenticated()) {
+            var cdeMergeTo = req.body.mergeTo;
+            var cdeMergeFrom = req.body.mergeFrom;
+            if (cdeMergeTo && cdeMergeTo.tinyId)
+                cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
+            cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
+            if (req.user.orgCurator.indexOf(cdeMergeFrom.stewardOrg.name) < 0 &&
+                req.user.orgAdmin.indexOf(cdeMergeFrom.stewardOrg.name) < 0 && !req.user.siteAdmin) {
+                res.status(403).send("Not authorized");
+            } else {
+                if ((cdeMergeFrom.registrationState.registrationStatus === "Standard" ||
+                    cdeMergeFrom.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+                    res.status(403).send("This record is already standard.");
+                } else {
+                    if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
+                        (item.registrationState.registrationStatus === "Standard" ||
+                        item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
+                    ) {
+                        res.status(403).send("Not authorized");
+                    } else {
+                        mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
+                            if (err) return res.status(500).send(err);
+                            else
+                                mongo_cde.update(cdeMergeTo, req.user, function (err, newCdeMergeTo) {
+                                    if (err) return res.status(500).send(err);
+                                    else res.status(200).end();
+                                })
+                        })
+                    }
+                }
+            }
+        }
+        else res.status(403).send("You are not authorized to do this.");
     });
 
     var systemAlert = "";
