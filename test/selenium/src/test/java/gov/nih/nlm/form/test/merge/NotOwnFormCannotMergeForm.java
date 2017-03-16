@@ -16,7 +16,7 @@ public class NotOwnFormCannotMergeForm extends BaseFormTest {
         addFormToQuickBoard(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
-        clickElement(By.id("mergeFormLeftToRight"));
+        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
         textPresent("You do not own the target form", By.id("mergFormWarningDiv"));
     }
 }

@@ -8,7 +8,7 @@ public class SourceFormHasMoreQuestionCannotMergeForm extends BaseFormTest {
 
     @Test
     public void sourceFormHasMoreQuestionCannotMergeForm() {
-        mustBeLoggedInAs(nlm_username,nlm_password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         String form1 = "Patient Health Questionnaire-2 (PHQ-2) More Questions";
         String form2 = "Patient Health Questionnaire 2 item (PHQ-2) [Reported]";
 
@@ -16,7 +16,7 @@ public class SourceFormHasMoreQuestionCannotMergeForm extends BaseFormTest {
         addFormToQuickBoard(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
-        clickElement(By.id("mergeFormLeftToRight"));
+        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
         textPresent("Source form has too many questions", By.id("mergFormWarningDiv"));
     }
 }
