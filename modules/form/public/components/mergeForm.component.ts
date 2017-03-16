@@ -133,7 +133,7 @@ export class MergeFormComponent implements OnInit {
                 if (leftTinyId === rightTinyId && i !== j) {
                     leftQuestion.info.error = "not align";
                 } else if (leftTinyId === rightTinyId && i === j) {
-                    leftQuestion.info.warning = "same tinyId";
+                    leftQuestion.info.match = true;
                 }
             });
         });

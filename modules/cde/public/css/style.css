@@ -809,8 +809,13 @@ input:required:invalid, input:focus:invalid {
 }
 
 .bgOrange {
-    background-color: #f3bf92;;
+    background-color: #f3000e;;
 }
+
+.bgGreen {
+    background-color: #7ff3ab;;
+}
+
 
 .placeholderForDrop {
     border: 1px solid #ddd;
