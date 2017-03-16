@@ -1,5 +1,7 @@
 import { Http } from "@angular/http";
 import { Component, Inject } from "@angular/core";
+import "rxjs/add/operator/map";
+
 
 @Component({
     selector: "cde-log-audit",
@@ -10,6 +12,7 @@ export class LogAuditComponent {
 
     gridLogEvents: any[];
     gridOptions: any;
+    search: any;
 
     constructor(private http: Http, @Inject ("Alert") private Alert) {
         this.gridLogEvents = [];
@@ -19,31 +22,23 @@ export class LogAuditComponent {
             , enableRowReordering: true
             , enableCellSelection: true
         };
+        this.search = {currentPage: 0};
     }
-
-    $scope.search = {currentPage: 0};
 
     // $scope.$on('showLogsForIP', function(event, args) {
     //     $scope.search.remoteAddr = args.IP;
     //     $scope.searchLogs();
     // });
 
-    // $scope.pageChanged = function() {
-    //     $scope.searchLogs();
-    // };
-
     searchLogs () {
         this.gridLogEvents = [];
 
-        this.http.post("/logs", {query: $scope.search}).then(function (res) {
-            if (res.data.error !== undefined) {
-                this.Alert.addAlert("danger", res.data.error);
-            }
-            $scope.totalItems = res.data.count;
-            $scope.itemsPerPage = res.data.itemsPerPage;
-            res.data.logs.forEach(function(log) {
+        this.http.post("/logs", {query: this.search}).map(res => res.json()).subscribe((res) => {
+            this.search.totalItems = res.data.count;
+            // $scope.itemsPerPage = res.data.itemsPerPage;
+            res.logs.forEach(log => {
                 if (log !== undefined) {
-                    $scope.gridLogEvents.push({
+                    this.gridLogEvents.push({
                         date: new Date(log.date).toLocaleString()
                         , ip: log.remoteAddr
                         , url: log.url

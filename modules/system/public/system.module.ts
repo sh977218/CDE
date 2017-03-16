@@ -9,6 +9,7 @@ import { ProfileComponent } from "./components/profile.component";
 import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
+import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 
 @NgModule({
     declarations: [
@@ -18,6 +19,7 @@ import { IdentifiersComponent } from "./components/adminItem/identifiers.compone
         ProfileComponent,
         IdentifiersComponent,
         UserCommentsComponent,
+        LogAuditComponent,
         PlaceHoldEmptyPipe],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
