@@ -299,26 +299,17 @@ exports.init = function (app, daoManager) {
         })
     });
     app.post('/mergeCde', function (req, res) {
-        if (req.isAuthenticated()) {
-            var cdeMergeTo = req.body.mergeTo;
-            var cdeMergeFrom = req.body.mergeFrom;
-            if (cdeMergeTo && cdeMergeTo.tinyId)
-                cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
-            cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
-            if (req.user.orgCurator.indexOf(cdeMergeFrom.stewardOrg.name) < 0 &&
-                req.user.orgAdmin.indexOf(cdeMergeFrom.stewardOrg.name) < 0 && !req.user.siteAdmin) {
-                res.status(403).send("Not authorized");
-            } else {
-                if ((cdeMergeFrom.registrationState.registrationStatus === "Standard" ||
-                    cdeMergeFrom.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
-                    res.status(403).send("This record is already standard.");
-                } else {
-                    if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
-                        (item.registrationState.registrationStatus === "Standard" ||
-                        item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
-                    ) {
-                        res.status(403).send("Not authorized");
-                    } else {
+        var cdeMergeTo = req.body.mergeTo;
+        var cdeMergeFrom = req.body.mergeFrom;
+        if (cdeMergeTo && cdeMergeTo.tinyId)
+            cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
+        cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
+        if (req.body.retireCde) {
+            mongo_cde.numFormUseCde(cdeMergeFrom.tinyId, (err, forms) => {
+                if (err) req.status(500).send(err);
+                else if (forms.length === 1) {
+                    cdeMergeFrom.registrationState.registrationStatus = "Retired";
+                    mongo_cde.checkEligibleToRetire(req, res, cdeMergeTo, () => {
                         mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
                             if (err) return res.status(500).send(err);
                             else
@@ -327,11 +318,20 @@ exports.init = function (app, daoManager) {
                                     else res.status(200).end();
                                 })
                         })
-                    }
+                    })
                 }
-            }
+            })
+        } else {
+            mongo_cde.checkEligibleToRetire(req, res, cdeMergeTo, () => {
+                mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
+                    if (err) return res.status(500).send(err);
+                    else mongo_cde.update(cdeMergeTo, req.user, function (err, newCdeMergeTo) {
+                        if (err) return res.status(500).send(err);
+                        else res.status(200).end();
+                    })
+                })
+            })
         }
-        else res.status(403).send("You are not authorized to do this.");
     });
 
     var systemAlert = "";

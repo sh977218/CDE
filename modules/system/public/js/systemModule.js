@@ -298,6 +298,7 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
     };
 }]);
 
+
 angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
     var isAllowedModel = {};
 

@@ -120,58 +120,34 @@ angular.module('formModule').controller
         }
     };
 
-        $scope.groups = [{
-            btnId: 'formLinkedFormsBtn',
-            title: 'Linked Forms',
-            open: function () {
-                $modal.open({
-                    size: 'lg',
-                    animation: false,
-                    template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
-                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt, oldModule) {
-                        $scope.elt = elt;
-                        $scope.oldModule = oldModule;
-                    }],
-                    resolve: {
-                        elt: function () {
-                            return $scope.elt;
-                        },
-                        OldModule: function () {
-                            return $scope.module;
+    $scope.groups = [{
+        btnId: 'cdeLinkedBoardsBtn',
+        title: 'Linked Boards',
+        open: function () {
+            $modal.open({
+                templateUrl: '/system/public/html/linkedBoards.html',
+                controller: ['$scope', 'tinyId', function ($scope, tinyId) {
+                    $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
+                        "/system/public/html/accordion/addToQuickBoardActions.html"];
+                    $http.get("/formBoards/" + tinyId).then(function (response) {
+                        if (response.error) {
+                            $log.error(response.error);
+                            $scope.boards = [];
+                        } else {
+                            $scope.boards = response.data;
                         }
+                    });
+                }],
+                resolve: {
+                    tinyId: function () {
+                        return $scope.elt.tinyId;
                     }
-                }).result.then(function () {
-                }, function () {
-                });
-            }
-        }, {
-            btnId: 'cdeLinkedBoardsBtn',
-            title: 'Linked Boards',
-            open: function () {
-                $modal.open({
-                    templateUrl: '/system/public/html/linkedBoards.html',
-                    controller: ['$scope', 'tinyId', function ($scope, tinyId) {
-                        $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
-                            "/system/public/html/accordion/addToQuickBoardActions.html"];
-                        $http.get("/formBoards/" + tinyId).then(function (response) {
-                            if (response.error) {
-                                $log.error(response.error);
-                                $scope.boards = [];
-                            } else {
-                                $scope.boards = response.data;
-                            }
-                        });
-                    }],
-                    resolve: {
-                        tinyId: function () {
-                            return $scope.elt.tinyId;
-                        }
-                    }
-                }).result.then(function () {
-                }, function () {
-                });
-            }
-        }];
+                }
+            }).result.then(function () {
+            }, function () {
+            });
+        }
+    }];
 
     $scope.setToAddCdeMode = function () {
         $scope.addMode = $scope.addMode === 'cde' ? undefined : 'cde';

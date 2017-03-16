@@ -2,6 +2,7 @@ var config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
+    , mongo_form = require('../../form/node-js/mongo-form')
     , mongo_board = require('../../board/node-js/mongo-board')
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
@@ -411,7 +412,8 @@ exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, versio
 exports.fileUsed = function (id, cb) {
     DataElement.find({"attachments.fileid": id}).count().exec(function (err, count) {
         cb(err, count > 0);
-    });};
+    });
+};
 
 exports.findCurrCdesInFormElement = function (allCdes, cb) {
     DataElement.find({archived: null}, "tinyId version derivationRules").where("tinyId").in(allCdes).exec(cb);
@@ -466,4 +468,38 @@ exports.findModifiedElementsSince = function (date, cb) {
 
 
     //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
+};
+
+exports.numFormUseCde = function (cdeTinyId, cb) {
+    mongo_form.query({
+        "archived": null,
+        "formElements.formElements.question.cde.tinyId": cdeTinyId
+    }).exec((err, forms) => {
+        cb(err, forms);
+    })
+};
+
+exports.checkEligibleToRetire = function (req, res, elt, cb) {
+    if (!req.isAuthenticated())
+        res.status(403).send("You are not authorized to do this.");
+    if (req.user.orgCurator.indexOf(cdeMergeFrom.stewardOrg.name) < 0 
+        && req.user.orgAdmin.indexOf(cdeMergeFrom.stewardOrg.name) < 0 
+        && !req.user.siteAdmin) {
+        res.status(403).send("Not authorized");
+    } else {
+        if ((elt.registrationState.registrationStatus === "Standard" ||
+            elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+            res.status(403).send("This record is already standard.");
+        } else {
+            if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard") &&
+                (elt.registrationState.registrationStatus === "Standard" ||
+                elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
+            ) {
+                res.status(403).send("Not authorized");
+            } else {
+                cb();
+            }
+        }
+    }
+
 };
