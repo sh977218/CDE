@@ -1,4 +1,3 @@
-import { Http } from "@angular/http";
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
 

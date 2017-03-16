@@ -1,5 +1,6 @@
 angular.module('formModule').controller('SelectBoardModalCtrl', ['$scope', 'type',
     function ($scope, type) {
+
         $scope.filter = {
             reset: function () {
                 this.tags = [];
