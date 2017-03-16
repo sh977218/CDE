@@ -23,8 +23,6 @@ import "./board/public/js/angularTemplates";
 import "./form/public/js/formModule";
 import "./form/public/js/resources";
 import "./form/public/js/angularTemplates";
-import "./form/public/js/native-section";
-import "./form/public/js/native-question";
 
 import "./article/public/js/articleConfig";
 import "./article/public/js/angularTemplates";
@@ -131,7 +129,6 @@ import "./form/public/js/controllers/FormFormListCtrl";
 import "./form/public/js/controllers/CreateFormCtrl";
 import "./form/public/js/controllers/FormViewCtrl";
 import "./form/public/js/controllers/FormViewSectionCtrl";
-import "./form/public/js/controllers/FormRenderCtrl";
 import "./form/public/js/controllers/SectionCtrl";
 import "./form/public/js/controllers/FormDiffCtrl";
 import "./form/public/js/controllers/SelectQuestionNameModalCtrl";

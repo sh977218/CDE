@@ -5,5 +5,6 @@
 <div ng-if="!formLoading && !elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
      class="text-center mt20">This form has no content. There is nothing to preview.</div>
 
-<div ng-if="!formLoading && !elt.noRenderAllowed && elt.formElements.length > 0"
-     ng-include="'/form/public/html/nativeFormRender.html'"></div>
+<div ng-if="!formLoading && !elt.noRenderAllowed && elt.formElements.length > 0">
+    <cde-native-render-full [elt-loaded]="deferredEltLoaded" [elt]="elt"></cde-native-render-full>
+</div>

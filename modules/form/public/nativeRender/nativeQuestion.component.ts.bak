@@ -1,0 +1,263 @@
+import { Component, Input, OnInit, Output, ViewChild, ViewContainerRef } from "@angular/core";
+import { NativeRenderService } from "./nativeRender.service";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+
+@Component({
+    selector: "cde-native-question",
+    template: `<div #rendered_question></div>`
+})
+export class NativeQuestionComponent {
+    @Input() formElement: any;
+    @Input() numSubQuestions: number;
+    @Input() parentValue: any;
+    @Input() index: any;
+
+    generatedHtml: SafeHtml = "";
+    @ViewChild('rendered_question', {read: ViewContainerRef}) templateRef: ViewContainerRef;
+
+    constructor(private sanitizer: DomSanitizer,
+                private nativeRenderService: NativeRenderService) {
+    }
+
+    classColumns(pvIndex, index) {
+        let result = "";
+
+        if (pvIndex !== -1 && this.nativeRenderService.profile && this.nativeRenderService.profile.numberOfColumns) {
+            switch (this.nativeRenderService.profile.numberOfColumns) {
+                case 2:
+                    result = "col-sm-6";
+                    break;
+                case 3:
+                    result = "col-sm-4";
+                    break;
+                case 4:
+                    result = "col-sm-3";
+                    break;
+                case 5:
+                    result = "col-sm-2-4";
+                    break;
+                case 6:
+                    result = "col-sm-2";
+                    break;
+                default:
+            }
+        }
+
+        if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index))
+            result += " clear";
+        return result;
+    }
+
+    isFirstInRow(index) {
+        if (this.nativeRenderService.profile && this.nativeRenderService.profile.numberOfColumns > 0)
+            return index % this.nativeRenderService.profile.numberOfColumns === 0;
+        else
+            return index % 4 === 0;
+    }
+
+    getHtml() {
+        if (this.generatedHtml)
+            return this.generatedHtml;
+
+        function getLabel(pv) {
+            return pv ? (pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue) : "";
+        }
+        function getValue(pv) {
+            return pv ? (pv.permissibleValue ? pv.permissibleValue : pv.permissibleValue) : "";
+        }
+        function hasLabel(question) {
+            return question.label && !question.hideLabel;
+        }
+        function isOneLiner(question, numSubQuestions) {
+            return numSubQuestions && !hasLabel(question) &&
+                question.question.datatype !== "Value List";
+        }
+        function htmlTextUoms(uoms) {
+            let html = "";
+            uoms.forEach(function (uom) {
+                html +=
+                    `<label class="input-group-addon` + (required ? ` nativeRequiredBox` : ``) + `">` +
+                    `<input type="radio" [(ngModel)]="formElement.question.answerUom" ` +
+                    `value="` + uom + `" ` +
+                    `name="` + fe.questionId + `_uom" ` + required + ` ` + disabled + `/> ` + uom + `</label>`;
+            });
+            return html;
+        }
+        function htmlSubQuestion(pv, subQNonValuelist, i) {
+            let numSubQuestions = (pv && pv.subQuestions ? pv.subQuestions.length : 0);
+            let html = ``;
+            pv && pv.subQuestions && pv.subQuestions.forEach(function (formElement, j, formElements) {
+                // wrap sub-question
+                html +=
+                    `<div`;
+                if (this.nativeRenderService.status.nativeRenderType === this.nativeRenderService.FOLLOW_UP) {}
+                else if (this.nativeRenderService.status.nativeRenderType === this.nativeRenderService.SHOW_IF)
+                    html +=
+                        ` ng-if="nativeFormService.evaluateSkipLogicAndClear(error, formElement.skipLogic.condition, formElement.question.answers[` + i + `].subQuestions, formElement, elt)"`;
+                html +=
+                    ` class="native-question-header` +
+                    (pv.subQuestions && isOneLiner(pv.subQuestions[0], numSubQuestions) ? ` native-question-oneline-r` : ``) +
+                    (!subQNonValuelist && numSubQuestions && !isOneLiner(formElement, numSubQuestions) ? ` native-box` : ``) + `">`;
+
+                // sub-question
+                if ((formElement.elementType === "question") && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist)) {
+                    html +=
+                        `<cde-native-question` +
+                        ` [formElement]="formElement.question.answers[` + i + `].subQuestions[` + j + `]"` +
+                        ` numSubQuestions="` + numSubQuestions + `"` +
+                        ` index="` + i + `"`;
+
+                    if (subQNonValuelist)
+                        html +=
+                            ` [parentValue]="formElement.question.answers[` + i + `].permissibleValue"`;
+
+                    html +=
+                        `></cde-native-question>`;
+                }
+                if ((formElement.elementType === "section" || formElement.elementType === "form") && (!subQNonValuelist || subQNonValuelist && pv.nonValuelist))
+                    html +=
+                        `<cde-native-section` +
+                        ` [formElements]="formElement.question.answers[` + i + `].subQuestions"` +
+                        ` [formElement]="formElement.question.answers[` + i + `].subQuestions[` + j + `]"` +
+                        ` numSubQuestions="` + numSubQuestions + `"` +
+                        `></cde-native-section>`;
+
+                html +=
+                    `</div>`;
+            });
+            return html;
+        }
+
+        let fe = this.formElement;
+        if (!fe) return "";
+        let question = fe.question;
+        let type = question.datatype || "text";
+        let required = question.required ? `ng-required="true"` : "";
+        let disabled = !question.editable ? "disabled" : "";
+        let htmlText = ``;
+
+        if (question.invisible)
+            htmlText +=
+                `<div [hidden]="!profile.displayInvisible">`;
+        if (hasLabel(fe))
+            htmlText +=
+                `<label [ngClass]="{'native-question-label': !numSubQuestions && profile.displayNumbering}">` +
+                `<span *ngIf="parentValue">If {{parentValue}}: </span>` + fe.label + `</label>`;
+        if (fe.instructions && fe.instructions.value) {
+            htmlText +=
+                `<div *ngIf="profile.displayInstructions" class="native-instructions">`;
+            if (fe.instructions.valueFormat === "html")
+                htmlText +=
+                    `<span [innerHtml]="formElement.instructions.value"></span>`;
+            else
+                htmlText +=
+                    `<span class="text-muted">` + fe.instructions.value + `</span>`;
+            htmlText +=
+                `</div>`;
+        }
+
+        htmlText +=
+            `<div id="` + fe.label + `_` + this.index + `"` +
+            (hasLabel(fe) ? ` class="native-box"` : ``) + `>`;
+        if (question.isScore) // Label
+            htmlText +=
+                `Score: <span [textContent]="nativeFormService.score(formElement, elt)"></span>`;
+        else {
+            switch (question.datatype) {
+                case "Value List":
+                    htmlText +=
+                        `<div class="row">`;
+                    question.answers.forEach(function (pv, i) {
+                        if (!pv.nonValuelist) {
+                            htmlText +=
+                                `<div [ngClass]="classColumns(` + pv.index + `,` + i + `)"` +
+                                ` class="col-xs-12">` +
+                                `<label class="` +
+                                (pv.subQuestions && isOneLiner(pv.subQuestions[0], pv.subQuestions.length)
+                                    ? `native-question-oneline-l ` : ``) +
+                                (question.multiselect ? `checkbox-inline` : `radio-inline`) + `">`;
+
+                            if (!question.multiselect)
+                                htmlText +=
+                                    `<input type="radio"` +
+                                    ` [(ngModel)]="formElement.question.answer"` +
+                                    ` [value]="formElement.question.answers[` + i + `].permissibleValue"` +
+                                    ` name="` + fe.questionId + `" ` + required + ` ` + disabled + `/>`;
+                            else
+                                htmlText +=
+                                    `<input type="checkbox"` +
+                                    ` checklist-model="formElement.question.answer"` +
+                                    ` checklist-value="formElement.question.answers[` + i + `].permissibleValue"` +
+                                    ` [value]="formElement.question.answers[` + i + `].permissibleValue"` +
+                                    ` name="` + fe.questionId + `" ` + required + ` ` + disabled + `/>`;
+
+                            htmlText +=
+                                getLabel(pv) + `<span *ngIf="nativeRenderService.profile.displayValues">  ` + getValue(pv) + `  </span>` + `</label>`;
+
+                            if (pv.subQuestions)
+                                htmlText +=
+                                    htmlSubQuestion(pv, false, i); // sub-question of value-list option
+
+                            htmlText +=
+                                `</div>`;
+                        }
+                    });
+                    htmlText +=
+                        `</div>` +
+                        `<div [textContent]="sectionLabel.$$element[0]['` + fe.questionId + `'][0].validationMessage"></div>`;
+                    break;
+                case "Date":
+                    htmlText +=
+                        `<div class="input-group">` +
+                        `<input class="form-control" datepicker-options="formElement.question.dateOptions"` +
+                        ` is-open="formElement.question.opened"` +
+                        ` type="date" [(ngModel)]="formElement.question.answer"` +
+                        ` name="` + fe.questionId + `" ` + required + ` ` + disabled + `/>` +
+                        `<div [textContent]="sectionLabel.$$element[0]['` + fe.questionId + `'].validationMessage"></div>`;
+                    break;
+                case "Number":
+                    htmlText +=
+                        (question.uoms.length > 0 ? `<div class="input-group">` : ``) +
+                        `<input type="number" class="form-control" ` +
+                        ` [(ngModel)]="formElement.question.answer"` +
+                        (question.datatypeNumber ?
+                            ` min="` + question.datatypeNumber.minValue + `"` +
+                            ` max="` + question.datatypeNumber.maxValue + `"` : `` ) +
+                        ` name="` + fe.questionId + `" ` + required + ` ` + disabled + `/>`;
+                    if (question.uoms.length > 0)
+                        htmlText += htmlTextUoms(question.uoms);
+
+                    htmlText +=
+                        (question.uoms.length > 0 ? `</div>` : ``) +
+                        `<div ng-bind="sectionLabel.$$element[0]['` + fe.questionId + `'].validationMessage"></div>`;
+                    break;
+                default: // Text
+                    htmlText +=
+                        (question.uoms.length > 0 ? `<div class="input-group">` : ``) +
+                        `<input type="text" class="form-control" ` +
+                        ` [(ngModel)]="formElement.question.answer"` +
+                        ` name="` + fe.questionId + `" ` + required + ` ` + disabled + `/>`;
+                    if (question.uoms.length > 0)
+                        htmlText += htmlTextUoms(question.uoms);
+
+                    htmlText +=
+                        (question.uoms.length > 0 ? `</div>` : ``) +
+                        `<div [textContent]="sectionLabel.$$element[0]['` + fe.questionId + `'].validationMessage"></div>`;
+            }
+        }
+        question.answers.forEach(function (pv, i){
+            if (pv.nonValuelist && pv.subQuestions)
+                htmlText +=
+                    htmlSubQuestion(pv, true, i); // sub-question not of value-list option
+        });
+
+        htmlText +=
+            `</div>`;  // end question answers and question
+        if (question.invisible)
+            htmlText +=
+                `</div>`;
+
+        this.generatedHtml = this.sanitizer.bypassSecurityTrustHtml(htmlText);
+        return this.generatedHtml;
+    }
+}

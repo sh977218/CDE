@@ -18,7 +18,7 @@ export class IdentifiersComponent {
 
     constructor(private http: Http,
                 @Inject("Alert") private alert,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                @Inject("isAllowedModel") public isAllowedModel) {
     }
 
     openNewId () {

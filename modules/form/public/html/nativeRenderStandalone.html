@@ -53,23 +53,13 @@
 <body role="application" id="top" style="padding: 5px;">
 
 <div ng-controller="PrintCtrl" style="max-width: 1000px;margin: 0 auto">
-    <div ng-if="elt" ng-controller="FormRenderCtrl">
-        <h2 class="ng-cloak">{{elt.naming[0].designation}}</h2>
-        <form name="sectionLabel" role="form" class="form-horizontal"
-			  action="{{getEndpointUrl()}}"
-			  method="post">
-			<div ng-view ng-if="!elt">
-				<h2 class="text-center mt20">Loading...</h2>
-			</div>
-            <div ng-if="nativeRenderType === SHOW_IF && elt && nativeFormService.evaluateSkipLogic(skipLogicError, formElement.skipLogic.condition, null, formElement)"
-				 native-section form-element="formElement" profile="selection.selectedProfile" elt="getElt()" error="skipLogicError"></div>
-			<div ng-if="nativeRenderType === FOLLOW_UP && followForm"
-				 native-section form-element="formElement" profile="selection.selectedProfile" elt="getElt()" error="skipLogicError"></div>
-			<input type="hidden" value="{{formUrl}}" name="formUrl">
-			<input type="hidden" name="mapping" ng-value="mapping">
-			<input type="submit" class="ng-cloak btn btn-default" id="button_submit" ng-if="submitForm"
-					style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" ng-disabled="sectionLabel.$invalid">
-        </form>
+	<div ng-if="!elt">
+		<h2 class="text-center mt20">Loading...</h2>
+	</div>
+	<div ng-if="elt">
+		<cde-native-render [elt]="elt" [submit-form]="submitForm"
+						   [profile]="elt.displayProfiles.length > selectedProfile ? elt.displayProfiles[selectedProfile] : null">
+		</cde-native-render>
 	</div>
 </div>
 <nih-cde></nih-cde>
