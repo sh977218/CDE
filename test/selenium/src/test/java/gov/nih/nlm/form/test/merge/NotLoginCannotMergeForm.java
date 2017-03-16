@@ -17,6 +17,6 @@ public class NotLoginCannotMergeForm extends BaseFormTest {
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
-        textPresent("Log in to merge", By.id("mergFormWarningDiv"));
+        textPresent("Log in to merge", By.id("mergeFormWarningDiv"));
     }
 }

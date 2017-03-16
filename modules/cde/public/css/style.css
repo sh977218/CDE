@@ -813,7 +813,7 @@ input:required:invalid, input:focus:invalid {
 }
 
 .bgGreen {
-    background-color: #7ff3ab;;
+    background-color: rgba(132, 175, 26, 0.58);
 }
 
 
@@ -1674,4 +1674,8 @@ div.slider .ui-slider-handle {
 .mergeRightArrow {
     position: absolute;
     right: -5px;
+}
+
+.mergeCdeName {
+    height: 50px;
 }

@@ -140,9 +140,9 @@
                                 <div class="col-xs-6">
                                     <div *ngFor="let rightQuestion of right.questions; let i = index"
                                          class="boxed-div overflowHidden" id="targetQuestion_{{i}}">
-                                        <div class="row" style="height: 45px;">
+                                        <div class="row">
                                             <div class="col-xs-3 Label">CDE Name:</div>
-                                            <div class="col-xs-9 noLeftRightPadding">
+                                            <div class="col-xs-9 noLeftRightPadding mergeCdeName">
                                                 <a target="_blank"
                                                    href="deview?tinyId={{rightQuestion.question.cde.tinyId}}">
                                                     {{rightQuestion.question.cde.name}}
@@ -156,7 +156,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" id="mergeFormWarningDiv">
                 <div *ngIf="info.warning" class="alert alert-warning">{{info.warning}}</div>
                 <div *ngIf="info.error" class="alert alert-error">{{info.error}}</div>
                 <progressbar *ngIf="showProgressBar" [max]="maxNumberQuestions" [value]="numMergedQuestions">
@@ -176,9 +176,9 @@
 <template #questionTemplate let-item="item" let-index="index">
     <div class="boxed-div overflowHidden" [ngClass]="{'bgGreen': item.value.info.match, 'bgOrange': item.value.info.error}"
          title="{{item.value.isRetired?'CDE is Retired':''}}">
-        <div class="row" style="height: 45px;">
+        <div class="row">
             <div class="col-xs-3 Label">CDE Name:</div>
-            <div class="col-xs-8 noLeftRightPadding">
+            <div class="col-xs-8 noLeftRightPadding mergeCdeName">
                 <a target="_blank" href="deview?tinyId={{item.value.question.cde.tinyId}}">
                     {{item.value.question.cde.name}}
                 </a>
