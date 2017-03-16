@@ -2,7 +2,8 @@
     <div uib-tabset class="container-fluid" >
 
         <div uib-tab heading="{{tabs[0].title}}" active="tabs[0].active">
-            <div ng-include="'/system/public/html/logAudit.html'"></div>
+            <cde-log-audit></cde-log-audit>
+            <!--<div ng-include="'/system/public/html/logAudit.html'"></div>-->
         </div>
 
         <div uib-tab heading="{{tabs[1].title}}" active="tabs[1].active">
