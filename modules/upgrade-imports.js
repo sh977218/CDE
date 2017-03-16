@@ -44,7 +44,6 @@ import "./system/public/js/controllers/LogCtrl";
 import "./system/public/js/controllers/AccountManagementCtrl";
 import "./system/public/js/controllers/SiteManagementCtrl";
 import "./system/public/js/controllers/AttachmentsCtrl";
-import "./system/public/js/controllers/ProfileCtrl"; // ported
 import "./system/public/js/controllers/AuthCtrl";
 import "./system/public/js/controllers/UsersMgtCtrl";
 import "./system/public/js/controllers/HomeCtrl";

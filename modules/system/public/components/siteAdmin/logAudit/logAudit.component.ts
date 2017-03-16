@@ -13,6 +13,16 @@ export class LogAuditComponent {
     gridLogEvents: any[];
     gridOptions: any;
     search: any;
+    table: any;
+    columns: any = [
+        {title: "date", name: "date"},
+        {title: "IP", name: "ip"},
+        {title: "URL", name: "url"},
+        {title: "Method", name: "method"},
+        {title: "Status", name: "status"},
+        {title: "Resp. Time", name: "respTime"}
+        ];
+    // config: any = {sorting: {columns: this.columns}};
 
     constructor(private http: Http, @Inject ("Alert") private Alert) {
         this.gridLogEvents = [];
@@ -25,6 +35,8 @@ export class LogAuditComponent {
         this.search = {currentPage: 0};
     }
 
+
+
     // $scope.$on('showLogsForIP', function(event, args) {
     //     $scope.search.remoteAddr = args.IP;
     //     $scope.searchLogs();
@@ -34,8 +46,8 @@ export class LogAuditComponent {
         this.gridLogEvents = [];
 
         this.http.post("/logs", {query: this.search}).map(res => res.json()).subscribe((res) => {
-            this.search.totalItems = res.data.count;
-            // $scope.itemsPerPage = res.data.itemsPerPage;
+            this.search.totalItems = res.count;
+            this.search.itemsPerPage = res.itemsPerPage;
             res.logs.forEach(log => {
                 if (log !== undefined) {
                     this.gridLogEvents.push({

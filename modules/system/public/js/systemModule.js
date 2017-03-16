@@ -403,3 +403,11 @@ angular.module('systemModule').run(["$rootScope", "$location", function ($rootSc
         });
     });
 }]);
+
+import {upgradeAdapter} from "../../../upgrade.ts";
+
+import {ProfileComponent} from "../components/profile.component";
+angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeNg2Component(ProfileComponent));
+
+import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
+angular.module('systemModule').directive('cdeLogAudit', upgradeAdapter.downgradeNg2Component(LogAuditComponent));

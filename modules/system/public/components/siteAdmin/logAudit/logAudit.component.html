@@ -22,21 +22,48 @@
         </form>
     </div>
     <div class="row">
-        <div [ngGrid]="{'resizeable': false, 'margins': [5, 10]}">
-            <div *ngFor="let box of boxes" [(ngGridItem)]="box.config">
-                <div class="title">{{box.title}}</div>
-                <p>{{box.text}}</p>
-            </div>
-        </div>
 
+
+        <table class="table table-striped" [mfData]="gridLogEvents" #mf="mfDataTable">
+            <thead>
+            <tr>
+                <th style="width: 20%">
+                    <mfDefaultSorter by="date">Date</mfDefaultSorter>
+                </th>
+                <th style="width: 50%">
+                    <mfDefaultSorter by="ip">IP</mfDefaultSorter>
+                </th>
+                <th style="width: 10%">
+                    <mfDefaultSorter by="url">URL</mfDefaultSorter>
+                </th>
+                <th style="width: 20%">
+                    <mfDefaultSorter by="method">Method</mfDefaultSorter>
+                </th>
+                <th style="width: 20%">
+                    <mfDefaultSorter by="status">Status</mfDefaultSorter>
+                </th>
+                <th style="width: 20%">
+                    <mfDefaultSorter by="respTime">Resp. Time</mfDefaultSorter>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of mf.data">
+                <td>{{item.date}}</td>
+                <td>{{item.ip}}</td>
+                <td>{{item.url}}</td>
+                <td>{{item.method}}</td>
+                <td>{{item.status}}</td>
+                <td>{{item.respTime}}</td>
+            </tr>
+            </tbody>
+        </table>
 
         <!--<div id="logGridView" class="gridStyle" ng-grid="gridOptions"></div>-->
         <!--<a class="btn btn-mini fa fa-external-link" ng-click="downloadCsv()" id="exportLink"> Export</a>-->
     </div>
     <div class="row">
-        <pagination [totalItems]="search.totalItems" [(ngModel)]="search.currentPage" (pageChanged)="searchLogs()"></pagination>
-
-        <!--<ul uib-pagination align="center" direction-links="true" items-per-page="itemsPerPage"-->
-            <!--total-items="totalItems" ng-model="search.currentPage" max-size="10" ng-change="pageChanged()"></ul>-->
+        <pagination [totalItems]="search.totalItems" [(ngModel)]="search.currentPage"
+                    [itemsPerPage]="search.itemsPerPage" [maxSize]="10" (pageChanged)="searchLogs()"></pagination>
     </div>
 </div>
