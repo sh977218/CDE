@@ -319,7 +319,8 @@ exports.init = function (app, daoManager) {
                                 })
                         })
                     })
-                }
+                } else
+                    res.status(200).send();
             })
         } else {
             mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {

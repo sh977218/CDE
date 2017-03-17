@@ -7,11 +7,11 @@ export class MergeShareService {
     }
 
     public mergeArrayByProperty(arrayFrom, arrayTo, property) {
-        arrayFrom.forEach((objFrom) => {
-            let exist = arrayTo.filter((objTo) => {
+        arrayFrom[property].forEach((objFrom) => {
+            let exist = arrayTo[property].filter((objTo) => {
                 return JSON.stringify(objTo) === JSON.stringify(objFrom);
-            });
-            if (!exist) arrayTo.push(objFrom);
+                }).length > 0;
+            if (!exist) arrayTo[property].push(objFrom);
         });
     }
 

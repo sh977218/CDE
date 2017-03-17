@@ -474,9 +474,7 @@ exports.numFormUseCde = function (cdeTinyId, cb) {
     mongo_form.query({
         "archived": null,
         "formElements.formElements.question.cde.tinyId": cdeTinyId
-    }).exec((err, forms) => {
-        cb(err, forms);
-    })
+    }, cb)
 };
 
 exports.checkEligibleToRetire = function (req, res, elt, cb) {
