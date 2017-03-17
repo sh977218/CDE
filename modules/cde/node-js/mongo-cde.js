@@ -482,8 +482,8 @@ exports.numFormUseCde = function (cdeTinyId, cb) {
 exports.checkEligibleToRetire = function (req, res, elt, cb) {
     if (!req.isAuthenticated())
         res.status(403).send("You are not authorized to do this.");
-    if (req.user.orgCurator.indexOf(cdeMergeFrom.stewardOrg.name) < 0 
-        && req.user.orgAdmin.indexOf(cdeMergeFrom.stewardOrg.name) < 0 
+    if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0
+        && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0
         && !req.user.siteAdmin) {
         res.status(403).send("Not authorized");
     } else {
