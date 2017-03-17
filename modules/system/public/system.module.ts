@@ -14,13 +14,16 @@ import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
+import { LinkedFormsComponent } from "./components/linkedForms.component";
 
 @NgModule({
     declarations: [
         upgradeAdapter.upgradeNg1Component("inlineEdit"),
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
+        upgradeAdapter.upgradeNg1Component("formSummaryList"),
         ProfileComponent,
+        LinkedFormsComponent,
         IdentifiersComponent,
         UserCommentsComponent,
         LogAuditComponent,
