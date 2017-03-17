@@ -96,7 +96,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
-                    <button class="btn btn-warning" ng-click="newUser(newUsername)" ng-disabled="!uForm.form.valid"
+                    <button class="btn btn-warning" (click)="newUser(newUsername)" [disabled]="!uForm.form.valid"
                             id="createNewUser" type="submit">Save
                     </button>
                 </div>
