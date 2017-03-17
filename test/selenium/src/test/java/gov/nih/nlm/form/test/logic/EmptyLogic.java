@@ -19,14 +19,14 @@ public class EmptyLogic extends NlmCdeBaseTest {
 
         // Dates
         textPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("1");
+        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("01");
         textPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("995");
+        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("011995");
         textNotPresent("Data unknown indicator");
 
         // Value Lists
         textPresent("Pulmonary function test not done reason");
-        findElement(By.xpath("//div[@id='Image Acquisition Event Yes No Not Done Indicator_2']//input[@value='No']")).click();
+        findElement(By.xpath("//div[@id='Image Acquisition Event Yes No Not Done Indicator_2']//label[text()='No: C49487']")).click();
         textNotPresent("Pulmonary function test not done reason");
 
         // Numbers

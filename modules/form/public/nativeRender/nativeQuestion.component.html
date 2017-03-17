@@ -6,7 +6,7 @@
         <span *ngIf="formElement.instructions.valueFormat !== 'html'" class="text-muted">{{formElement.instructions.value}}</span>
     </div>
 
-    <div id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
+    <div attr.id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
         <div *ngIf="formElement.question.isScore">Score: <span [textContent]="nativeRenderService.score(formElement, elt)"></span></div>
         <div *ngIf="!formElement.question.isScore">
             <div [ngSwitch]="formElement.question.datatype">
@@ -63,8 +63,6 @@
                            type="date"
                            [(ngModel)]="formElement.question.answer" [attr.name]="formElement.questionId"
                            [required]="formElement.question.required" [disabled]="!formElement.question.editable"/>
-                    <!--[datepicker-options]="formElement.question.dateOptions"-->
-                    <!--[is-open]="formElement.question.opened"-->
                     <!--<div [textContent]="nativeRenderService.form.$$element[0][formElement.questionId].validationMessage"></div>`;-->
                 </div>
                 <div *ngSwitchCase="'Number'">
@@ -85,20 +83,17 @@
                     <!--<div [textContent]="nativeRenderService.form.$$element[0][formElement.questionId].validationMessage"></div>-->
                 </div>
                 <div *ngSwitchDefault>
-                    <div class="{'input-group': question.uoms.length > 0}">
+                    <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">
                         <input type="text" class="form-control"
                                [(ngModel)]="formElement.question.answer" [attr.name]="formElement.questionId"
                                [required]="formElement.question.required" [disabled]="!formElement.question.editable"/>
-                        <span *ngIf="formElement.question.uoms.length > 0">
-                         <span *ngFor="let uom of formElement.question.uoms">
-                             <label [ngClass]="{'nativeRequiredBox': formElement.question.required}"
-                                    class="input-group-addon">
-                                 <input type="radio" [(ngModel)]="formElement.question.answerUom" [value]="uom"
-                                        [required]="formElement.question.required"
-                                        [disabled]="!formElement.question.editable"
-                                        [attr.name]="formElement.questionId + '_uom'"/>{{uom}}</label>
-                         </span>
-                     </span>
+                        <label *ngFor="let uom of formElement.question.uoms"
+                               [ngClass]="{'nativeRequiredBox': formElement.question.required}"
+                               class="input-group-addon">
+                            <input type="radio" [(ngModel)]="formElement.question.answerUom" [value]="uom"
+                                   [required]="formElement.question.required"
+                                   [disabled]="!formElement.question.editable"
+                                   [attr.name]="formElement.questionId + '_uom'"/> {{uom}}</label>
                     </div>
                     <!--<div [textContent]="nativeRenderService.form.$$element[0][formElement.questionId].validationMessage"></div>-->
                 </div>
