@@ -19,6 +19,7 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
         upgradeAdapter.upgradeNg1Component("inlineEdit"),
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
+        upgradeAdapter.upgradeNg1Component("uiSelect"),
         ProfileComponent,
         IdentifiersComponent,
         UserCommentsComponent,
