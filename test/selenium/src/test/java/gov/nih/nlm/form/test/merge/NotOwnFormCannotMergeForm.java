@@ -18,7 +18,7 @@ public class NotOwnFormCannotMergeForm extends NlmCdeBaseTest {
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
-        textPresent("You do not own the target form", By.id("mergeFormWarningDiv"));
+        textPresent("You do not own at least one of forms", By.id("mergeFormWarningDiv"));
     }
 
     @Test

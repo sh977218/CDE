@@ -1,10 +1,10 @@
 package gov.nih.nlm.form.test.merge;
 
-import gov.nih.nlm.form.test.BaseFormTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class NotLoginCannotMergeForm extends BaseFormTest {
+public class NotLoginCannotMergeForm extends NlmCdeBaseTest {
 
     @Test
     public void notLoginCannotMergeForm() {
