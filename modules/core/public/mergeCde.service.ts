@@ -46,8 +46,8 @@ export class MergeCdeService {
                         mergeFrom: cdeFrom,
                         mergeTo: cdeTo,
                         retireCde: fields.retireCde
-                    }).subscribe(() => {
-                        cb(null, "retired");
+                    }).subscribe((result) => {
+                        cb(null, result["_body"]);
                     }, err => cb("unable to mergeCde " + err));
                 },
                 err => cb("unable to get cde " + err)

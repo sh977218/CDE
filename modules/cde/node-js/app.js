@@ -314,16 +314,16 @@ exports.init = function (app, daoManager) {
                 else if (result.hits.hits.length === 1) {
                     cdeMergeFrom.registrationState.registrationStatus = "Retired";
                     mongo_cde.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
-                        mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
+                        mongo_cde.update(cdeMergeFrom, req.user, function (err) {
                             if (err) return res.status(500).send(err);
                             else
-                                mongo_cde.update(cdeMergeTo, req.user, function (err, newCdeMergeTo) {
+                                mongo_cde.update(cdeMergeTo, req.user, function (err) {
                                     if (err) return res.status(500).send(err);
-                                    else res.status(200).end();
+                                    else res.status(200).end("retired");
                                 })
                         })
                     })
-                } else res.status(200).send();
+                } else res.status(200).end();
             });
         } else {
             mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {

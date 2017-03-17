@@ -33,14 +33,11 @@ export class MergeFormService {
             } else {
                 let tinyIdFrom = questionFrom.question.cde.tinyId;
                 let tinyIdTo = questionTo.question.cde.tinyId;
-                this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, fields, (err, isRetired) => {
+                this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, fields, (err, result) => {
                     if (err) return cb(err);
                     else {
                         index++;
-                        if (isRetired) {
-                            questionFrom.isRetired = true;
-                            questionFrom.error = "RETIRED";
-                        }
+                        if (result === "retired") questionFrom.isRetired = true;
                         doneOne(index, doneOneQuestion);
                     }
                 });
