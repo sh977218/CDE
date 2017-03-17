@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { PaginationModule } from "ng2-bootstrap";
 import { DataTableModule } from "angular2-datatable";
 import { ModalModule } from "ng2-bootstrap";
+import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
 
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
@@ -25,7 +26,8 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
         UsersMgtComponent,
         PlaceHoldEmptyPipe],
     providers: [],
-    imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot(), DataTableModule],
+    imports: [CommonModule, FormsModule, ModalModule.forRoot(), TypeaheadModule.forRoot(),
+        PaginationModule.forRoot(), DataTableModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

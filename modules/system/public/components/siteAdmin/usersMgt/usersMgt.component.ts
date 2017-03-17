@@ -15,11 +15,17 @@ export class UsersMgtComponent {
 
     @ViewChild("childModal") public childModal: ModalDirective;
 
-    constructor(private http: Http, @Inject ("Alert") private Alert) {
+    constructor(private http: Http, @Inject ("Alert") private Alert,
+        @Inject ("AccountManagement") private AccountManagement) {
+
+        this.AccountManagement.getAllUsernames(usernames => {
+            this.allUsernames = usernames.map(u => u.username);
+        });
     }
 
     search: any = {username: ""};
     foundUsers: any[] = [];
+    allUsernames: string[] = [];
     comments: any = {currentCommentsPage: 1, totalItems: 10000};
     rolesEnum: any = authShared.rolesEnum;
 
@@ -50,7 +56,8 @@ export class UsersMgtComponent {
     }
 
     newUser (username) {
-        this.http.put("/user", {username: username}).subscribe(() => this.Alert.addAlert("success", "User created"))
+        this.http.put("/user", {username: username}).subscribe(() => this.Alert.addAlert("success", "User created"));
+        this.childModal.hide();
     };
 
     getComments (page) {
