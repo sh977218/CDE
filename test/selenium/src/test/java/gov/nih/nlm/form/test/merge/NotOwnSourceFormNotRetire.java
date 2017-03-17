@@ -1,10 +1,10 @@
 package gov.nih.nlm.form.test.merge;
 
-import gov.nih.nlm.form.test.BaseFormTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class NotOwnSourceFormNotRetire extends BaseFormTest {
+public class NotOwnSourceFormNotRetire extends NlmCdeBaseTest {
 
     @Test
     public void notOwnSourceFormNotRetire() {

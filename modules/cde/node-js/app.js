@@ -322,13 +322,11 @@ exports.init = function (app, daoManager) {
                 }
             })
         } else {
-            mongo_cde.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
-                mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
+            mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
+                if (err) return res.status(500).send(err);
+                else mongo_cde.update(cdeMergeTo, req.user, function (err, newCdeMergeTo) {
                     if (err) return res.status(500).send(err);
-                    else mongo_cde.update(cdeMergeTo, req.user, function (err, newCdeMergeTo) {
-                        if (err) return res.status(500).send(err);
-                        else res.status(200).end();
-                    })
+                    else res.status(200).end();
                 })
             })
         }
