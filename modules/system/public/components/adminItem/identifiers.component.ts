@@ -1,6 +1,5 @@
-import { Http } from "@angular/http";
-import { Component, Inject, Input, ViewChild } from "@angular/core";
-import { ModalDirective } from "ng2-bootstrap/modal";
+import {Component, Inject, Input, ViewChild} from "@angular/core";
+import {ModalDirective} from "ng2-bootstrap/modal";
 import "rxjs/add/operator/map";
 
 @Component({
@@ -11,30 +10,29 @@ import "rxjs/add/operator/map";
 
 export class IdentifiersComponent {
 
-    @ViewChild( "childModal" ) public childModal: ModalDirective;
-    @Input( ) public elt: any;
+    @ViewChild("childModal") public childModal: ModalDirective;
+    @Input() public elt: any;
 
     newId: any;
 
-    constructor(private http: Http,
-                @Inject("Alert") private alert,
+    constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel) {
     }
 
-    openNewId () {
+    openNewId() {
         this.childModal.show();
         this.newId = {};
     }
 
-    showDelete (id) {
+    showDelete(id) {
         id.showDelete = true;
     }
 
-    hideDelete (id) {
+    hideDelete(id) {
         delete id.showDelete;
     }
 
-    addId () {
+    addId() {
         this.elt.ids.push(this.newId);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Identifier added. Save to confirm.");
@@ -47,7 +45,7 @@ export class IdentifiersComponent {
         this.childModal.hide();
     }
 
-    removeId (index) {
+    removeId(index) {
         this.elt.ids.splice(index, 1);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Identifier removed. Save to confirm.");

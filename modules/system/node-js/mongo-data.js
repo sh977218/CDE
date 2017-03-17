@@ -31,6 +31,7 @@ exports.Message = Message;
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.Org = Org;
+exports.User = User;
 exports.MeshClassification = MeshClassification;
 exports.Comment = Comment;
 
@@ -61,6 +62,35 @@ exports.updateClusterHostStatus = function(status, callback) {
 
 exports.findMeshClassification = function(query, cb) {
     MeshClassification.find(query, cb);
+};
+
+exports.addToViewHistory = function (elt, user) {
+    if (!elt || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
+        origin: "system.mongo-system.addToViewHistory",
+        stack: new Error().stack,
+        details: {"elt": elt, user: user}
+    });
+    var updStmt = {viewHistory: {
+        $each: [elt.tinyId]
+            , $position: 0
+            , $slice: 1000
+    }};
+    if (elt.formElements) {
+        updStmt = {formViewHistory: {
+            $each: [elt.tinyId]
+            , $position: 0
+            , $slice: 1000
+        }};
+    }
+    User.update({'_id': user._id}, {
+        $push: updStmt
+    }).exec(function (err) {
+        if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
+            origin: "cde.mongo-cde.addToViewHistory",
+            stack: new Error().stack,
+            details: {"cde": cde, user: user}
+        });
+    });
 };
 
 exports.embeds = {

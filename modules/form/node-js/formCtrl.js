@@ -220,6 +220,9 @@ exports.formById = function (req, res) {
             else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form.toObject(), res);
             else getFormJson(form, req, res);
         });
+        if (req.isAuthenticated()) {
+            mongo_data_system.addToViewHistory(form, req.user);
+        }
     });
 };
 

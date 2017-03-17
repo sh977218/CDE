@@ -61,12 +61,11 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
         modules: ["modules", "modules/components", "node_modules"]
     },
-    devtool: prod ? '#source-map' : '#eval-source-map ',
+    devtool: prod ? '#source-map' : '#eval-source-map',
     watch: !prod,
     watchOptions: {
-        aggregateTimeout: 300,
-        ignored: /node_modules/,
-        poll: 1000
+        aggregateTimeout: 1000,
+        ignored: /node_modules/
     },
     devServer: {
         contentBase: __dirname,
