@@ -22,7 +22,7 @@ export class MergeFormComponent implements OnInit {
     public maxNumberQuestions: any;
     public showProgressBar: any;
     public doneMerge: any = false;
-    public ownTargetForm: any;
+    public ownForm: any;
     public info: any = {};
 
     constructor(@Inject("Alert") private alert,
@@ -118,9 +118,9 @@ export class MergeFormComponent implements OnInit {
         if (!this.userService.user._id) {
             return this.info.warning = "Log in to merge";
         }
-        this.ownTargetForm = this.isAllowedModel.isAllowed(this.right);
-        if (!this.ownTargetForm) {
-            return this.info.warning = "You do not own the target form";
+        if (!this.isAllowedModel.isAllowed(this.right) || !this.isAllowedModel.isAllowed(this.left)) {
+            this.ownForm = false;
+            return this.info.warning = "You do not own forms";
         }
         if (this.mergeFields.questions && this.left.questions.length > this.right.questions.length) {
             return this.info.warning = "Source form has too many questions";

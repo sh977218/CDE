@@ -22,46 +22,46 @@
                                 <h4>Form fields:</h4>
                                 <div>
                                     <button class="btn btn-default btn-xs" (click)="selectAllFormMergerFields();"
-                                            [disabled]="!ownTargetForm">
+                                            [disabled]="!ownForm">
                                         All
                                     </button>
                                     <button class="btn btn-default btn-xs" (click)="deselectAllFormMergerFields();"
-                                            [disabled]="!ownTargetForm">
+                                            [disabled]="!ownForm">
                                         None
                                     </button>
                                 </div>
                                 <div>
                                     <label>
                                         <input type="checkbox" [(ngModel)]="mergeFields.naming"
-                                               [disabled]="!ownTargetForm"> Naming</label>
+                                               [disabled]="!ownForm"> Naming</label>
                                 </div>
                                 <div>
                                     <label>
                                         <input type="checkbox" [(ngModel)]="mergeFields.referenceDocuments"
-                                               [disabled]="!ownTargetForm">
+                                               [disabled]="!ownForm">
                                         Ref Documents</label>
                                 </div>
                                 <div>
                                     <label>
                                         <input type="checkbox" [(ngModel)]="mergeFields.properties"
-                                               [disabled]="!ownTargetForm">
+                                               [disabled]="!ownForm">
                                         Properties</label>
                                 </div>
                                 <div>
                                     <label>
                                         <input type="checkbox" [(ngModel)]="mergeFields.ids"
-                                               [disabled]="!ownTargetForm"> IDs</label>
+                                               [disabled]="!ownForm"> IDs</label>
                                 </div>
                                 <div>
                                     <label>
                                         <input type="checkbox" [(ngModel)]="mergeFields.classifications"
-                                               [disabled]="!ownTargetForm">
+                                               [disabled]="!ownForm">
                                         Classifications</label>
                                 </div>
                                 <div>
                                     <label>
                                         <input type="checkbox" [(ngModel)]="mergeFields.questions"
-                                               [disabled]="!ownTargetForm"> Questions</label>
+                                               [disabled]="!ownForm"> Questions</label>
                                 </div>
                             </div>
                             <div class="smallSpace left"></div>
@@ -160,7 +160,7 @@
                 <div *ngIf="info.warning" class="alert alert-warning">{{info.warning}}</div>
                 <div *ngIf="info.error" class="alert alert-error">{{info.error}}</div>
                 <progressbar *ngIf="showProgressBar" [max]="maxNumberQuestions" [value]="numMergedQuestions">
-                    <span style="color:white; white-space:nowrap;">{{questionsMerged}} / {{allQuestions}}</span>
+                    <span style="color:white; white-space:nowrap;">{{numMergedQuestions}} / {{maxNumberQuestions}}</span>
                 </progressbar>
                 <button class="btn cancel" (click)="mergeFormModal.ngOnDestroy()" id="cancelMergeFormBtn" type="button">
                     {{(doneMerge && info)?'Close':'Cancel'}}

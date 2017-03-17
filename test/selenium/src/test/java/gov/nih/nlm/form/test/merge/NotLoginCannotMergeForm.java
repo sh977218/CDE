@@ -9,8 +9,8 @@ public class NotLoginCannotMergeForm extends BaseFormTest {
     @Test
     public void notLoginCannotMergeForm() {
         mustBeLoggedOut();
-        String form1 = "Patient Health Questionnaire-2 (PHQ-2)";
-        String form2 = "Patient Health Questionnaire 2 item (PHQ-2) [Reported]";
+        String form1 = "PROMIS SF v1.0 - Pain Behavior 7a";
+        String form2 = "Two Dimensional Speckle Tracking Echocardiography Imaging";
 
         addFormToQuickBoard(form1);
         addFormToQuickBoard(form2);

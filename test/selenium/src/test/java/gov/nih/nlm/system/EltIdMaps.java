@@ -95,6 +95,7 @@ public class EltIdMaps {
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
         eltMap.put("PROMIS SF v1.0 - Applied Cog Abilities 4a", "Q1Ogr2OtIe");
+        eltMap.put("PROMIS SF v1.0 - Pain Behavior 7a", "QkggxHhuF8x");
         eltMap.put("PROMIS Bank v1.2 - Physical Function", "Xko4nuKLg");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
@@ -103,6 +104,7 @@ public class EltIdMaps {
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
+        eltMap.put("Two Dimensional Speckle Tracking Echocardiography Imaging", "7kKLUkHBtl");
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("Vital Signs", "m1j_L1HHte");
