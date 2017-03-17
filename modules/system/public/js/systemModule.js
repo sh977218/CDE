@@ -28,8 +28,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 return "/cde/search";
             }
         }).when('/home', {
-            controller: 'HomeCtrl',
-            templateUrl: '/system/public/html/home.html'
+            template: '<cde-home></cde-home>'
         }).when('/login', {
             controller: 'AuthCtrl',
             templateUrl: '/system/public/html/login.html'
@@ -404,3 +403,8 @@ angular.module('systemModule').run(["$rootScope", "$location", function ($rootSc
         });
     });
 }]);
+
+import {upgradeAdapter} from "../../../upgrade.ts";
+
+import {HomeComponent} from "../components/home/home.component";
+angular.module('systemModule').directive('cdeHome', upgradeAdapter.downgradeNg2Component(HomeComponent));

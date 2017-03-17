@@ -10,6 +10,7 @@ import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
+import { HomeComponent } from "./components/home/home.component";
 
 @NgModule({
     declarations: [
@@ -21,6 +22,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
         LinkedFormsComponent,
         IdentifiersComponent,
         UserCommentsComponent,
+        HomeComponent,
         PlaceHoldEmptyPipe],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],

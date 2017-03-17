@@ -47,7 +47,6 @@ import "./system/public/js/controllers/AttachmentsCtrl";
 import "./system/public/js/controllers/ProfileCtrl"; // ported
 import "./system/public/js/controllers/AuthCtrl";
 import "./system/public/js/controllers/UsersMgtCtrl";
-import "./system/public/js/controllers/HomeCtrl";
 import "./system/public/js/controllers/DailyUsageCtrl";
 import "./system/public/js/controllers/VersionCtrl";
 import "./system/public/js/controllers/ListCtrl";
@@ -90,8 +89,6 @@ import "./system/public/js/controllers/FeedbackIssueListCtrl";
 import "./system/public/js/controllers/OrgOverviewCtrl";
 import "./system/public/js/controllers/NewNamePairModalCtrl";
 import "./system/public/js/controllers/NamingCtrl";
-import "./system/public/js/controllers/BatchUploadCtrl";
-import "./system/public/js/controllers/GetProdCtrl";
 import "./system/public/js/controllers/MeshMappingMgtCtrl";
 import "./system/public/js/controllers/EmbedCtrl";
 import "./system/public/js/controllers/LatestCommentsCtrl";
