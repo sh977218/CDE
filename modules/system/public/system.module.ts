@@ -9,13 +9,16 @@ import { ProfileComponent } from "./components/profile.component";
 import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
+import { LinkedFormsComponent } from "./components/linkedForms.component";
 
 @NgModule({
     declarations: [
         upgradeAdapter.upgradeNg1Component("inlineEdit"),
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
+        upgradeAdapter.upgradeNg1Component("formSummaryList"),
         ProfileComponent,
+        LinkedFormsComponent,
         IdentifiersComponent,
         UserCommentsComponent,
         PlaceHoldEmptyPipe],

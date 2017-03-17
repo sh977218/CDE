@@ -143,44 +143,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.groups = [
         {
-            btnId: 'cdeDataSetBtn',
-            title: 'Data Set',
-            open: function () {
-                $modal.open({
-                    templateUrl: '/cde/public/html/cdeDatasetModal.html',
-                    controller: ['$scope', 'elt', function ($scope, elt) {
-                        $scope.elt = elt;
-                    }],
-                    resolve: {
-                        elt: function () {
-                            return $scope.elt;
-                        }
-                    }
-                }).result.then(function () {}, function() {});
-            }
-        }, {
-            btnId: 'cdeLinkedFormsBtn',
-            title: 'Linked Forms',
-            open: function () {
-                $modal.open({
-                    size: 'lg',
-                    animation: false,
-                    template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
-                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt, oldModule) {
-                        $scope.elt = elt;
-                        $scope.oldModule = oldModule;
-                    }],
-                    resolve: {
-                        elt: function () {
-                            return $scope.elt;
-                        },
-                        OldModule: function () {
-                            return $scope.module;
-                        }
-                    }
-                }).result.then(function () {}, function() {});
-            }
-        }, {
             btnId: 'cdeLinkedBoardsBtn',
             title: 'Linked Boards',
             open: function () {
@@ -578,10 +540,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
             placement: "top"
         },
         {
-            element: "#cdeLinkedFormsBtn",
+            element: "#linkedFormsBtn",
             title: "Forms",
             placement: "top",
-            content: "If a the CDE is used in a Form, it will be displayed here. "
+            content: "If an element is used in a Form, it will be displayed here. "
         },
         {
             element: "#cdeLinkedBoardsBtn",
