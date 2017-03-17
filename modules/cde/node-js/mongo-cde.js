@@ -470,13 +470,6 @@ exports.findModifiedElementsSince = function (date, cb) {
     //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
 };
 
-exports.numFormUseCde = function (cdeTinyId, cb) {
-    mongo_form.query({
-        "archived": null,
-        "formElements.formElements.question.cde.tinyId": cdeTinyId
-    }, cb)
-};
-
 exports.checkEligibleToRetire = function (req, res, elt, cb) {
     if (!req.isAuthenticated())
         res.status(403).send("You are not authorized to do this.");

@@ -305,9 +305,13 @@ exports.init = function (app, daoManager) {
             cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
         cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
         if (req.body.retireCde) {
-            mongo_cde.numFormUseCde(cdeMergeFrom.tinyId, (err, forms) => {
+            elastic.esClient.search({
+                type: 'form',
+                index: config.elastic.formIndex.name,
+                q: cdeMergeFrom.tinyId
+            }, function (err, result) {
                 if (err) req.status(500).send(err);
-                else if (forms.length === 1) {
+                else if (result.hits.hits.length === 1) {
                     cdeMergeFrom.registrationState.registrationStatus = "Retired";
                     mongo_cde.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
                         mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
@@ -319,9 +323,8 @@ exports.init = function (app, daoManager) {
                                 })
                         })
                     })
-                } else
-                    res.status(200).send();
-            })
+                } else res.status(200).send();
+            });
         } else {
             mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
                 if (err) return res.status(500).send(err);
