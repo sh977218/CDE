@@ -30,15 +30,14 @@
                                            [checked]="checkBoxIsChecked(formElement.question, pv.permissibleValue)"
                                            (change)="checkboxOnChange($event, formElement.question, pv.permissibleValue)"
                                            [required]="formElement.question.required"
-                                           [disabled]="!formElement.question.editable"/>
-                                    {{getLabel(pv)}}
-                                    <span *ngIf="nativeRenderService.profile.displayValues"
+                                           [disabled]="!formElement.question.editable"
+                                    />{{getLabel(pv)}}<span *ngIf="nativeRenderService.profile.displayValues"
                                           [textContent]="getValue(pv)"></span>
                                 </label>
                                 <div *ngIf="pv?.subQuestions">
                                     <div *ngFor="let fe of pv.subQuestions; let j = index">
                                         <div *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
-                                               || nativeRenderService.evaluateSkipLogicAndClear(error, fe.skipLogic?.condition, pv.subQuestions, fe)"
+                                               || nativeRenderService.evaluateSkipLogicAndClear(fe.skipLogic?.condition, pv.subQuestions, fe)"
                                              [ngClass]="{'native-question-oneline-r': pv.subQuestions && isOneLiner(pv.subQuestions[0], (pv && pv.subQuestions ? pv.subQuestions.length : 0)),
                                                             'native-box': pv.subQuestions && !isOneLiner(fe, (pv && pv.subQuestions ? pv.subQuestions.length : 0))}"
                                              class="native-question-header">
@@ -109,7 +108,7 @@
             <div *ngIf="pv.nonValuelist && pv.subQuestions">
                 <div *ngFor="let fe of pv.subQuestions; let j = index">
                     <div *ngIf="nativeRenderService.getNativeRenderType() !== this.nativeRenderService.SHOW_IF
-                                        || nativeRenderService.evaluateSkipLogicAndClear(error, fe.skipLogic?.condition, pv.subQuestions, fe)"
+                                        || nativeRenderService.evaluateSkipLogicAndClear(fe.skipLogic?.condition, pv.subQuestions, fe)"
                          [ngClass]="{'native-question-oneline-r': pv.subQuestions && isOneLiner(pv.subQuestions[0], (pv && pv.subQuestions ? pv.subQuestions.length : 0))}"
                          class="native-question-header">
                         <cde-native-question
