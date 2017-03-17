@@ -162,7 +162,7 @@
                 <progressbar *ngIf="showProgressBar" [max]="maxNumberQuestions" [value]="numMergedQuestions">
                     <span style="color:white; white-space:nowrap;">{{questionsMerged}} / {{allQuestions}}</span>
                 </progressbar>
-                <button class="btn cancel" (click)="mergeFormModal.ngOnDestroy()" type="button">
+                <button class="btn cancel" (click)="mergeFormModal.ngOnDestroy()" id="cancelMergeFormBtn" type="button">
                     {{(doneMerge && info)?'Close':'Cancel'}}
                 </button>
                 <button class="btn btn-warning" *ngIf="!doneMerge && !info.error && !info.warning"
@@ -183,7 +183,7 @@
                     {{item.value.question.cde.name}}
                 </a>
             </div>
-            <span class="fa fa-trash col-xs-1 noLeftRightPadding"
+            <span class="fa fa-trash col-xs-1 noLeftRightPadding" id="removeLeftQuestion_{{index}}"
                   (click)="removeItem(left.questions,index)"></span>
         </div>
     </div>

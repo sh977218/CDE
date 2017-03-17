@@ -18,5 +18,8 @@ public class SourceFormHasMoreQuestionCannotMergeForm extends BaseFormTest {
         clickElement(By.id("qb_form_compare"));
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
         textPresent("Source form has too many questions", By.id("mergeFormWarningDiv"));
+
+        clickElement(By.id("removeLeftQuestion_3"));
+        textNotPresent("Source form has too many questions");
     }
 }
