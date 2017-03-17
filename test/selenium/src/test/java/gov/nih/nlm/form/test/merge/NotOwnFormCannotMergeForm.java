@@ -23,7 +23,7 @@ public class NotOwnFormCannotMergeForm extends NlmCdeBaseTest {
 
     @Test
     public void notOwnRightFormCannotMergeForm() {
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(promis_username, password);
         String form1 = "Patient Health Questionnaire-2 (PHQ-2)";
         String form2 = "Patient Health Questionnaire 2 item (PHQ-2) [Reported]";
 
@@ -31,8 +31,8 @@ public class NotOwnFormCannotMergeForm extends NlmCdeBaseTest {
         addFormToQuickBoard(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
-        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
-        textPresent("You do not own the target form", By.id("mergeFormWarningDiv"));
+        clickElement(By.xpath("//*[@class='rightObj']/*[contains(@class,'mergeForm')]"));
+        textPresent("You do not own at least one of forms", By.id("mergeFormWarningDiv"));
     }
 
 

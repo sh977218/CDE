@@ -8,7 +8,7 @@ public class NotOwnSourceFormNotRetire extends NlmCdeBaseTest {
 
     @Test
     public void notOwnSourceFormNotRetire() {
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         String form1 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
         String form2 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
         addFormToQuickBoard(form1);
@@ -17,5 +17,6 @@ public class NotOwnSourceFormNotRetire extends NlmCdeBaseTest {
         clickElement(By.id("qb_form_compare"));
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
 
+        closeAlert();
     }
 }

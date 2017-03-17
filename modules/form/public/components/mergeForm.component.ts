@@ -120,10 +120,10 @@ export class MergeFormComponent implements OnInit {
         }
         if (!this.isAllowedModel.isAllowed(this.right) || !this.isAllowedModel.isAllowed(this.left)) {
             this.ownForm = false;
-            return this.info.warning = "You do not own forms";
+            return this.info.warning = "You do not own at least one of forms";
         }
         if (this.mergeFields.questions && this.left.questions.length > this.right.questions.length) {
-            return this.info.warning = "Source form has too many questions";
+            return this.info.warning = "Form merge from has too many questions";
         }
         this.left.questions.forEach((leftQuestion, i) => {
             let leftTinyId = leftQuestion.question.cde.tinyId;

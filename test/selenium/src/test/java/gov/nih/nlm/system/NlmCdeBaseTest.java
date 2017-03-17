@@ -56,6 +56,7 @@ public class NlmCdeBaseTest {
     protected static String nlm_username = "nlm";
     protected static String nlm_password = "nlm";
     protected static String cabigAdmin_username = "cabigAdmin";
+    protected static String promis_username = "promis";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
     static String history_username = "historyuser";

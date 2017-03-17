@@ -53,6 +53,9 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard',
             $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
             $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
         }
+        if ($scope.module === 'form') {
+            $scope.forms = $scope.eltsToCompare;
+        }
 
         $scope.wipeUseless = function (obj) {
             delete obj.$$hashKey;
