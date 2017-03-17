@@ -20,13 +20,13 @@
                                                    'checkbox-inline': formElement.question.multiselect,
                                                    'radio-inline': !formElement.question.multiselect}">
                                     <input type="radio" *ngIf="!formElement.question.multiselect"
-                                           [name]="formElement.questionId"
+                                           [attr.name]="formElement.questionId"
                                            [(ngModel)]="formElement.question.answer"
                                            [value]="pv.permissibleValue"
                                            [required]="formElement.question.required"
                                            [disabled]="!formElement.question.editable"/>
                                     <input type="checkbox" *ngIf="formElement.question.multiselect"
-                                           [name]="formElement.questionId"
+                                           [attr.name]="formElement.questionId"
                                            [checked]="checkBoxIsChecked(formElement.question, pv.permissibleValue)"
                                            (change)="checkboxOnChange($event, formElement.question, pv.permissibleValue)"
                                            [required]="formElement.question.required"
@@ -62,7 +62,7 @@
                 <div *ngSwitchCase="'Date'">
                     <input class="form-control"
                            type="date"
-                           [(ngModel)]="formElement.question.answer" [name]="formElement.questionId"
+                           [(ngModel)]="formElement.question.answer" [attr.name]="formElement.questionId"
                            [required]="formElement.question.required" [disabled]="!formElement.question.editable"/>
                     <!--[datepicker-options]="formElement.question.dateOptions"-->
                     <!--[is-open]="formElement.question.opened"-->
@@ -71,7 +71,7 @@
                 <div *ngSwitchCase="'Number'">
                     <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">
                         <input type="number" class="form-control"
-                               [(ngModel)]="formElement.question.answer" [name]="formElement.questionId"
+                               [(ngModel)]="formElement.question.answer" [attr.name]="formElement.questionId"
                                [attr.min]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.minValue : null"
                                [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                [required]="formElement.question.required" [disabled]="!formElement.question.editable"/>
@@ -81,14 +81,14 @@
                             <input type="radio" [(ngModel)]="formElement.question.answerUom" [value]="uom"
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable"
-                                   [name]="formElement.questionId + '_uom'"/> {{uom}}</label>
+                                   [attr.name]="formElement.questionId + '_uom'"/> {{uom}}</label>
                     </div>
                     <!--<div [textContent]="nativeRenderService.form.$$element[0][formElement.questionId].validationMessage"></div>-->
                 </div>
                 <div *ngSwitchDefault>
                     <div class="{'input-group': question.uoms.length > 0}">
                         <input type="text" class="form-control"
-                               [(ngModel)]="formElement.question.answer" [name]="formElement.questionId"
+                               [(ngModel)]="formElement.question.answer" [attr.name]="formElement.questionId"
                                [required]="formElement.question.required" [disabled]="!formElement.question.editable"/>
                         <span *ngIf="formElement.question.uoms.length > 0">
                          <span *ngFor="let uom of formElement.question.uoms">
@@ -97,7 +97,7 @@
                                  <input type="radio" [(ngModel)]="formElement.question.answerUom" [value]="uom"
                                         [required]="formElement.question.required"
                                         [disabled]="!formElement.question.editable"
-                                        [name]="formElement.questionId + '_uom'"/>{{uom}}</label>
+                                        [attr.name]="formElement.questionId + '_uom'"/>{{uom}}</label>
                          </span>
                      </span>
                     </div>
