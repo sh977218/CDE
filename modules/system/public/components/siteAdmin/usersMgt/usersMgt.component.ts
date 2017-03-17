@@ -1,7 +1,7 @@
 import { Http } from "@angular/http";
 import { Component, Inject, ViewChild } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
-import { Select2OptionData } from 'ng2-select2';
+import { Select2OptionData } from "ng2-select2";
 
 import "rxjs/add/operator/map";
 
@@ -25,10 +25,11 @@ export class UsersMgtComponent {
     }
 
     search: any = {username: ""};
+    newUsername: string;
     foundUsers: any[] = [];
+    user: any;
     allUsernames: string[] = [];
-    comments: any = {currentCommentsPage: 1, totalItems: 10000};
-    rolesEnum: Array<Select2OptionData> = authShared.rolesEnum.map(r => {return {"id": r, "text": r}});
+    rolesEnum: Array<Select2OptionData> = authShared.rolesEnum.map(r => {return {"id": r, "text": r};});
     s2Options: Select2Options = {
         multiple: true
     };
@@ -36,8 +37,8 @@ export class UsersMgtComponent {
     searchUsers () {
         this.http.get("/searchUsers/" + this.search.username).map(res => res.json()).subscribe(result => {
             this.foundUsers = result.users;
-            if (this.foundUsers.length === 1) this.getComments(1);
-            else delete this.comments.latestComments;
+            if (this.foundUsers.length === 1) this.user = this.foundUsers[0];
+            // else delete this.comments.latestComments;
         });
     }
 
@@ -62,32 +63,13 @@ export class UsersMgtComponent {
     newUser (username) {
         this.http.put("/user", {username: username}).subscribe(() => this.Alert.addAlert("success", "User created"));
         this.childModal.hide();
-    };
-
-    getComments (page) {
-        if (this.foundUsers && this.foundUsers[0]) {
-            this.http.get("/commentsFor/" + this.foundUsers[0].username + "/" + (page - 1) * 30 + "/30")
-                .map(res => res.json())
-                .subscribe(result => {
-                    this.comments.latestComments = result;
-                    if (this.comments.latestComments.length === 0) {
-                        this.comments.totalItems = (page - 2) * 30;
-                    } else if (this.comments.latestComments.length < 30) {
-                        this.comments.totalItems = (page - 1) * 30 + this.comments.latestComments.length;
-                    }
-            });
-        }
-    };
-
-//     $scope.$watch("comments.currentCommentsPage", function () {
-//         $scope.getComments($scope.comments.currentCommentsPage);
-// }   );
+    }
 
     getEltLink (c) {
         return {
-                'cde': "/deview?tinyId=",
-                'form': "/formView?tinyId=",
-                'board': "/board/"
+                cde: "/deview?tinyId=",
+                form: "/formView?tinyId=",
+                board: "/board/"
             }[c.element.eltType] + c.element.eltId;
     }
 }

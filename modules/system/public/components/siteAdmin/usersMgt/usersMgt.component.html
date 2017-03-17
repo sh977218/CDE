@@ -13,7 +13,7 @@
         </button>
     </form>
 
-    <div *ngFor="let u of foundUsers">
+    <div *ngFor="let u of foundUsers; let $index = index">
         <div class="row">
             <div class="col-md-2"><strong>Username:</strong></div>
             <div id="user_username" class="col-md-10">{{u.username}}</div>
@@ -55,14 +55,6 @@
         <div class="row">
             <div class="col-md-2"><strong>Roles: </strong></div>
             <div class="col-md-10" id="user_roles_{{$index}}">
-                <!--<ui-select multiple ng-model="u.roles" sortable="true" close-on-select="false"-->
-                           <!--theme="select2" style="min-width: 300px"-->
-                           <!--on-remove="updateRoles(u)" on-select="updateRoles(u)">-->
-                    <!--<ui-select-match placeholder="Select answers...">{{$item}}</ui-select-match>-->
-                    <!--<ui-select-choices repeat="role in rolesEnum | filter:$select.search">-->
-                        <!--{{role}}-->
-                    <!--</ui-select-choices>-->
-                <!--</ui-select>-->
                 <select2
                         [data]="rolesEnum"
                         [value]="u.roles"
@@ -80,7 +72,7 @@
             <div class="col-md-10">{{u.knownIPs}}</div>
         </div>
 
-        <user-comments></user-comments>
+        <cde-user-comments *ngIf="user" [user]="user"></cde-user-comments>
 
         <hr/>
     </div>
