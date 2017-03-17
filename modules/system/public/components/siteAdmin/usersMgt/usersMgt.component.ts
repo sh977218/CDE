@@ -1,6 +1,7 @@
 import { Http } from "@angular/http";
 import { Component, Inject, ViewChild } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
+import { Select2OptionData } from 'ng2-select2';
 
 import "rxjs/add/operator/map";
 
@@ -27,7 +28,10 @@ export class UsersMgtComponent {
     foundUsers: any[] = [];
     allUsernames: string[] = [];
     comments: any = {currentCommentsPage: 1, totalItems: 10000};
-    rolesEnum: any = authShared.rolesEnum;
+    rolesEnum: Array<Select2OptionData> = authShared.rolesEnum.map(r => {return {"id": r, "text": r}});
+    s2Options: Select2Options = {
+        multiple: true
+    };
 
     searchUsers () {
         this.http.get("/searchUsers/" + this.search.username).map(res => res.json()).subscribe(result => {

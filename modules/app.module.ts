@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
-import { SelectModule } from 'ng2-select';
 
 import { CdeAppComponent } from "./app.component";
 import { ClassificationService } from "./core/public/classification.service";
@@ -22,7 +21,6 @@ import { CdeModule } from "./cde/public/js/cde.module";
         CommonModule,
         FormsModule,
         HttpModule,
-        SelectModule,
         SystemModule,
         CdeModule
     ],

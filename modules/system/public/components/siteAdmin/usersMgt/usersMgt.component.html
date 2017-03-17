@@ -63,12 +63,15 @@
                         <!--{{role}}-->
                     <!--</ui-select-choices>-->
                 <!--</ui-select>-->
-                <!--<ng-select [multiple]="true" ([ngModel])="u.roles"-->
-                           <!--&lt;!&ndash;sortable="true" close-on-select="false"&ndash;&gt;-->
-                           <!--style="min-width: 300px"-->
-                           <!--(remove)="updateRoles(u)" (selected)="updateRoles(u)"-->
-                            <!--[items]="rolesEnum">-->
-                <!--</ng-select>-->
+                <select2
+                        [data]="rolesEnum"
+                        [value]="u.roles"
+                        [options]="s2Options"
+                        [width]="500"
+                        style="min-width: 300px"
+                        (valueChanged)="updateRoles(u)"
+                    >
+                </select2>
             </div>
         </div>
 

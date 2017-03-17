@@ -5,6 +5,7 @@ import { PaginationModule } from "ng2-bootstrap";
 import { DataTableModule } from "angular2-datatable";
 import { ModalModule } from "ng2-bootstrap";
 import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
+import { Select2Module } from 'ng2-select2';
 
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
@@ -19,7 +20,6 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
         upgradeAdapter.upgradeNg1Component("inlineEdit"),
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
-        upgradeAdapter.upgradeNg1Component("uiSelect"),
         ProfileComponent,
         IdentifiersComponent,
         UserCommentsComponent,
@@ -28,7 +28,7 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
         PlaceHoldEmptyPipe],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), TypeaheadModule.forRoot(),
-        PaginationModule.forRoot(), DataTableModule],
+        PaginationModule.forRoot(), DataTableModule, Select2Module],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
