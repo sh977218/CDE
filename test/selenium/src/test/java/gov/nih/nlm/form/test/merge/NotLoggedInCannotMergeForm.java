@@ -2,12 +2,13 @@ package gov.nih.nlm.form.test.merge;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class NotLoginCannotMergeForm extends NlmCdeBaseTest {
+public class NotLoggedInCannotMergeForm extends NlmCdeBaseTest {
 
     @Test
-    public void notLoginCannotMergeForm() {
+    public void notLoggedInCannotMergeForm() {
         mustBeLoggedOut();
         String form1 = "PROMIS SF v1.0 - Pain Behavior 7a";
         String form2 = "Two Dimensional Speckle Tracking Echocardiography Imaging";
@@ -16,7 +17,6 @@ public class NotLoginCannotMergeForm extends NlmCdeBaseTest {
         addFormToQuickBoard(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
-        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
-        textPresent("Log in to merge", By.id("mergeFormWarningDiv"));
+        Assert.assertEquals(0, findElements(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]")).size());
     }
 }
