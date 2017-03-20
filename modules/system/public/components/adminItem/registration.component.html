@@ -43,7 +43,7 @@
 
 
 <div bsModal #childModal="bs-modal" class="modal" tabindex="-1" role="dialog"
-     aria-labelledby="linkedFormsModal" aria-hidden="true" style="z-index: 1045">
+     aria-labelledby="updateRegStatus" aria-hidden="true" style="z-index: 1045">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header" id="regStatusModalHeader">
@@ -54,8 +54,8 @@
                     <div class="alert-warning">{{helpMessage}}</div>
                     <div class="form-group">
                         <label for="registrationStatus">Registration Status</label>
-                        <select id="registrationStatus" class="form-control"
-                                ([ngModel])="elt.registrationState.registrationStatus"
+                        <select id="newRegistrationStatus" class="form-control"
+                                [(ngModel)]="elt.registrationState.registrationStatus"
                                 name="registrationStatus" (ngModelChange)="setHelpMessage($event)">
                             <option *ngFor="let s of validRegStatuses" value="{{s}}">{{s}}</option>
                         </select>
@@ -88,21 +88,21 @@
 
                     <div class="form-group">
                         <label for="administrativeStatus">Administrative Status</label>
-                        <input id="administrativeStatus" class="form-control" type="text" name="administrativeStatus"
+                        <input id="newAdministrativeStatus" class="form-control" type="text" name="administrativeStatus"
                                ng-model="elt.registrationState.administrativeStatus"
                                placeholder="Optional Administrative Status"/>
                     </div>
 
                     <div class="form-group">
                         <label for="administrativeNote">Administrative Note</label>
-                        <textarea id="administrativeNote" class="form-control" name="administrativeNote"
+                        <textarea id="newAdministrativeNote" class="form-control" name="administrativeNote"
                                   ng-model="elt.registrationState.administrativeNote"
                                   placeholder="Optional Administrative Note"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="unresolvedIssue">Unresolved Issue</label>
-                        <textarea id="unresolvedIssue" class="form-control" name="unresolvedIssue"
+                        <textarea id="newUnresolvedIssue" class="form-control" name="unresolvedIssue"
                                   ng-model="elt.registrationState.unresolvedIssue"
                                   placeholder="Optional Unresolved Issue Note"></textarea>
                     </div>

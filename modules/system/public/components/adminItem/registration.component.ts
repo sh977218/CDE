@@ -15,7 +15,7 @@ export class RegistrationComponent {
     regStatusShared: any = require("../../../shared/regStatusShared");
     helpMessage: string;
 
-    validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate' ];
+    validRegStatuses: string[] = ["Retired", "Incomplete", "Candidate" ];
 
     constructor (private http: Http,
                  @Inject("Alert") private alert,
@@ -24,7 +24,7 @@ export class RegistrationComponent {
     ) {}
 
     openRegStatusUpdate () {
-        this.http.get('/comments/eltId/' + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
+        this.http.get("/comments/eltId/" + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
                     return a.status !== 'resolved' && a.status !== 'deleted'
                 }).length > 0) {
@@ -56,10 +56,9 @@ export class RegistrationComponent {
         this.alert.addAlert("success", "Saved");
     }
 
-    setHelpMessage () {
+    setHelpMessage (newValue) {
         this.regStatusShared.statusList.forEach((status) => {
-            if (status.name === this.elt.registrationState.registrationStatus)
-                this.helpMessage = status.curHelp;
+            if (status.name === newValue) this.helpMessage = status.curHelp;
         });
     };
 
