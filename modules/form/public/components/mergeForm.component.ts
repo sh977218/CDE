@@ -10,19 +10,35 @@ import * as async from "async";
     templateUrl: "./mergeForm.component.html"
 })
 export class MergeFormComponent {
-    @ViewChild("MergeFormModal")
-    public mergeFormModal: ModalDirective;
-    @ViewChild("LeftSortableComponent")
-    leftSortableComponent: SortableComponent;
-    @Input()
-    public left: any;
-    @Input()
-    public right: any;
-    public mergeFields: any;
+    @ViewChild("MergeFormModal") public mergeFormModal: ModalDirective;
+    @ViewChild("LeftSortableComponent") leftSortableComponent: SortableComponent;
+    @Input() public left: any;
+    @Input() public right: any;
+
+    public mergeFields: any = {
+        naming: true,
+        referenceDocuments: true,
+        properties: true,
+        ids: true,
+        classifications: true,
+        questions: true,
+        cde: {
+            naming: true,
+            referenceDocuments: true,
+            properties: true,
+            attachments: true,
+            dataSets: true,
+            derivationRules: true,
+            sources: true,
+            ids: true,
+            classifications: true,
+            retireCde: false
+        }
+    };
     public numMergedQuestions: any;
     public maxNumberQuestions: any;
-    public showProgressBar: any;
-    public doneMerge: any = false;
+    public showProgressBar: boolean = false;
+    public doneMerge: boolean = false;
     public ownTargetForm: any;
     public ownSourceForm: any;
     public info: any = {};
@@ -32,27 +48,6 @@ export class MergeFormComponent {
                 private mergeCdeService: MergeCdeService,
                 @Inject("userResource") private userService,
                 @Inject("isAllowedModel") private isAllowedModel) {
-        this.showProgressBar = false;
-        this.mergeFields = {
-            naming: true,
-            referenceDocuments: true,
-            properties: true,
-            ids: true,
-            classifications: true,
-            questions: true,
-            cde: {
-                naming: true,
-                referenceDocuments: true,
-                properties: true,
-                attachments: true,
-                dataSets: true,
-                derivationRules: true,
-                sources: true,
-                ids: true,
-                classifications: true,
-                retireCde: false
-            }
-        };
     }
 
     selectAllFormMergerFields() {
