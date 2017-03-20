@@ -80,6 +80,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Saved");
         closeAlert();
 
+        scrollDownBy(500);
         clickElement(By.id("resolveReply-1-0"));
         textPresent("Saved");
         closeAlert();
