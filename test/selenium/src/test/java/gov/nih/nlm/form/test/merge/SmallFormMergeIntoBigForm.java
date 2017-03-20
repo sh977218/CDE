@@ -5,13 +5,13 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class MergeFormAndCde extends NlmCdeBaseTest {
+public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
 
     @Test
-    public void mergeFormAndCde() {
+    public void smallFormMergeIntoBigForm() {
         mustBeLoggedInAs(ninds_username, password);
-        String form1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
-        String form2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
+        String form1 = "PROMIS SF v1.0-Sleep Disturbance 4a";
+        String form2 = "PROMIS SF v1.0-Sleep Disturbance 6a";
         clickElement(By.id("menu_forms_link"));
         findElement(By.id("ftsearch-input")).sendKeys(EltIdMaps.eltMap.get(form1));
         clickElement(By.id("menu_forms_link"));
