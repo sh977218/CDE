@@ -800,10 +800,6 @@ input:required:invalid, input:focus:invalid {
     color: red;
 }
 
-.bgLightYellow {
-    background-color: #fcf8e3;
-}
-
 .bgGrey {
     background-color: lightgrey;
 }
