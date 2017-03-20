@@ -57,8 +57,6 @@ import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
 import "./system/public/js/controllers/PropertiesCtrl";
 import "./system/public/js/controllers/ReferenceDocumentCtrl";
 import "./system/public/js/controllers/CommentsCtrl";
-import "./system/public/js/controllers/RegistrationCtrl";
-import "./system/public/js/controllers/RegistrationModalCtrl";
 import "./system/public/js/controllers/AuditServerErrorListCtrl";
 import "./system/public/js/controllers/AuditClientErrorListCtrl";
 import "./system/public/js/controllers/TriggerClientExceptionCtrl";

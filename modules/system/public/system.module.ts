@@ -12,6 +12,7 @@ import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
+import { RegistrationComponent } from "./components/adminItem/registration.component";
 
 @NgModule({
     declarations: [
@@ -24,6 +25,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
         IdentifiersComponent,
         UserCommentsComponent,
         LogAuditComponent,
+        RegistrationComponent,
         PlaceHoldEmptyPipe],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot(), DataTableModule],

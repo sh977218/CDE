@@ -1,0 +1,119 @@
+
+<fieldset class="cdeFieldset" id="registrationStateDiv">
+    <legend>Registration State:
+        <button tabindex="0" title="Edit Status" role="link" id="editStatus"
+                *ngIf="isAllowedModel.isAllowed(elt) && !elt.unsaved" class="btn btn-default"
+                (click)="openRegStatusUpdate()"><span class="fa fa-edit"> Edit</span>
+        </button>
+    </legend>
+    <div class="row" *ngIf="elt.registrationState.effectiveDate">
+        <div class="col-sm-5 questionSectionLabel text-right">Effective Date:</div>
+        <div class="col-sm-7" id="effectiveDate">
+            {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | placeHoldEmpty}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.effectiveDate">
+        <div class="col-sm-5 questionSectionLabel text-right">Until Date:</div>
+        <div class="col-sm-7" id="untilDate">
+            {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | placeHoldEmpty}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.administrativeNote">
+        <div class="col-sm-5 questionSectionLabel text-right">Administrative Note:</div>
+        <div class="col-sm-7" id="administrativeNote">
+            {{elt.registrationState.administrativeNote | placeHoldEmpty}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.unresolvedIssue">
+        <div class="col-sm-5 questionSectionLabel text-right">Unresolved Issue:</div>
+        <div class="col-sm-7" id="unresolvedIssue">{{elt.registrationState.unresolvedIssue | placeHoldEmpty}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.registrationStatus">
+        <div class="col-sm-5 questionSectionLabel text-right">Registration Status:</div>
+        <div class="col-sm-7" id="registrationStatus">{{elt.registrationState.registrationStatus | placeHoldEmpty}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.administrativeStatus">
+        <div class="col-sm-5 questionSectionLabel text-right">Administrative Status:</div>
+        <div class="col-sm-7" id="administrativeStatus">{{elt.registrationState.administrativeStatus}}
+        </div>
+    </div>
+</fieldset>
+
+
+<div bsModal #childModal="bs-modal" class="modal" tabindex="-1" role="dialog"
+     aria-labelledby="linkedFormsModal" aria-hidden="true" style="z-index: 1045">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id="regStatusModalHeader">
+                <h4>Update Registration Status</h4>
+            </div>
+            <form name="reg-form" role="form">
+                <div class="modal-body" id="regStatusModalBody">
+                    <div class="alert-warning">{{helpMessage}}</div>
+                    <div class="form-group">
+                        <label for="registrationStatus">Registration Status</label>
+                        <select id="registrationStatus" class="form-control" ([ngModel])="elt.registrationState.registrationStatus"
+                                name="registrationStatus" (change)="setHelpMessage()">
+                            <option *ngFor="let s of validRegStatuses" value="{{s}}">{{s}}</option>
+                        </select>
+                    </div>
+
+                    <div id="effectiveDateDiv" ng-controller="DatepickerCtrl">
+                        <label for="effectiveDate">Effective Date</em></pre></label>
+                        <div class="input-group">
+                            <input id="effectiveDate" name="effectiveDate" type="text" class="form-control pickdaterInput"
+                                   uib-datepicker-popup="{{format}}" ng-model="elt.registrationState.effectiveDate"
+                                   is-open="opened" min-date="minDate" datepicker-options="dateOptions" close-text="Close"/>
+                            <span class="input-group-btn">
+                                <button type="button" id="effectiveDateDatepicker" class="btn btn-default"
+                                        ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="untilDateDiv" ng-controller="DatepickerCtrl">
+                        <label for="untilDate">Until Date</em></pre></label>
+                        <div class="input-group">
+                            <input id="untilDate" name="untilDate" type="text" class="form-control"
+                                   uib-datepicker-popup="{{format}}" ng-model="elt.registrationState.untilDate"
+                                   is-open="opened" min-date="minDate" datepicker-options="dateOptions" close-text="Close"/>
+                            <span class="input-group-btn">
+                                <button type="button" id="untilDateDatepicker" class="btn btn-default" ng-click="open($event)">
+                                <i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="administrativeStatus">Administrative Status</label>
+                        <input id="administrativeStatus" class="form-control" type="text" name="administrativeStatus"
+                               ng-model="elt.registrationState.administrativeStatus"
+                               placeholder="Optional Administrative Status"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="administrativeNote">Administrative Note</label>
+                        <textArea id="administrativeNote" class="form-control" name="administrativeNote"
+                                  ng-model="elt.registrationState.administrativeNote"
+                                  placeholder="Optional Administrative Note"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="unresolvedIssue">Unresolved Issue</label>
+                        <textArea id="unresolvedIssue" class="form-control" name="unresolvedIssue"
+                                  ng-model="elt.registrationState.unresolvedIssue"
+                                  placeholder="Optional Unresolved Issue Note"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer" id="regStatusModalFooter">
+                    <button class="btn cancel" (click)="childModal.hide()" id="cancelRegStatus" type="button">Cancel</button>
+                    <button class="btn btn-warning" (click)="ok()" ng-disabled="isClean() || reg-form.$invalid" id="saveRegStatus"
+                            type="submit">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
