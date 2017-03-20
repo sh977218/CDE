@@ -12,7 +12,8 @@ export class RegistrationComponent {
 
     @ViewChild("childModal") public childModal: ModalDirective;
     @Input() elt: any;
-
+    regStatusShared: any = require("../../../shared/regStatusShared");
+    helpMessage: string;
 
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate' ];
 
@@ -56,9 +57,9 @@ export class RegistrationComponent {
     }
 
     setHelpMessage () {
-        regStatusShared.statusList.forEach(function(status) { // jshint ignore:line
-            if (status.name === $scope.elt.registrationState.registrationStatus)
-                $scope.helpMessage = status.curHelp;
+        this.regStatusShared.statusList.forEach((status) => {
+            if (status.name === this.elt.registrationState.registrationStatus)
+                this.helpMessage = status.curHelp;
         });
     };
 
