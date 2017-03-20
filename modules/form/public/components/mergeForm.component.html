@@ -183,7 +183,9 @@
                 {{item.value.question.cde.name}}
             </a>
         </div>
-            <span class="fa fa-trash col-xs-1 noLeftRightPadding" id="removeLeftQuestion_{{index}}"
+        <div class="col-xs-1 noLeftRightPadding">
+            <span class="fa fa-trash right" id="removeLeftQuestion_{{index}}"
                   (click)="removeItem(left.questions,index)"></span>
+        </div>
     </div>
 </template>
