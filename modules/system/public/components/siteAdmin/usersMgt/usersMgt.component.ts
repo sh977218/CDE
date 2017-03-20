@@ -27,7 +27,6 @@ export class UsersMgtComponent {
     search: any = {username: ""};
     newUsername: string;
     foundUsers: any[] = [];
-    user: any;
     allUsernames: string[] = [];
     rolesEnum: Array<Select2OptionData> = authShared.rolesEnum.map(r => {return {"id": r, "text": r};});
     s2Options: Select2Options = {
@@ -37,7 +36,7 @@ export class UsersMgtComponent {
     searchUsers () {
         this.http.get("/searchUsers/" + this.search.username).map(res => res.json()).subscribe(result => {
             this.foundUsers = result.users;
-            if (this.foundUsers.length === 1) this.user = this.foundUsers[0];
+            // if (this.foundUsers.length === 1) this.user = this.foundUsers[0];
             // else delete this.comments.latestComments;
         });
     }
@@ -48,13 +47,15 @@ export class UsersMgtComponent {
         });
     }
 
-    updateTesterStatus (user) {
+    updateTesterStatus (user, newValue) {
+        user.tester = newValue;
         this.http.post("/updateTesterStatus", user).subscribe(() => {
             this.Alert.addAlert("success", "Saved.");
         });
     }
 
-    updateRoles (user) {
+    updateRoles (user, data: {value: string[]}) {
+        user.roles = data.value;
         this.http.post("/updateUserRoles", user).subscribe(() => {
             this.Alert.addAlert("success", "Roles saved.");
         });

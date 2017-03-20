@@ -42,13 +42,13 @@
 
         <div class="row">
             <div class="col-md-2"><strong>Site Admin: </strong></div>
-            <div id="user_siteadmin" class="col-md-10" ng-bind="u.siteAdmin?'Yes':'No'"></div>
+            <div id="user_siteadmin" class="col-md-10" [innerHtml]="u.siteAdmin?'Yes':'No'"></div>
         </div>
 
         <div class="row">
             <div class="col-md-2"><strong><label for="user.tester">Early Feature User: </label></strong></div>
             <div class="col-md-10">
-                <input id="user.tester" ([ngModel])="u.tester" type="checkbox" (change)="updateTesterStatus(u)">
+                <input id="user.tester" [ngModel]="u.tester" type="checkbox" (ngModelChange)="updateTesterStatus(u, $event)">
             </div>
         </div>
 
@@ -61,7 +61,7 @@
                         [options]="s2Options"
                         [width]="500"
                         style="min-width: 300px"
-                        (valueChanged)="updateRoles(u)"
+                        (valueChanged)="updateRoles(u, $event)"
                     >
                 </select2>
             </div>
@@ -72,7 +72,7 @@
             <div class="col-md-10">{{u.knownIPs}}</div>
         </div>
 
-        <cde-user-comments *ngIf="user" [user]="user"></cde-user-comments>
+        <cde-user-comments [user]="u"></cde-user-comments>
 
         <hr/>
     </div>
