@@ -22,24 +22,21 @@ public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
         textPresent("Form merged");
         closeAlert();
-        
+
         goToFormByName(form1);
         textNotPresent("Warning: this form is retired.");
 
-        goToCdeByName("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]");
+        goToCdeByName("Patient-Reported Outcome Measurement Information System (PROMIS) - Awake early time lack sleep assessment past week scale");
+        textPresent("Warning: this data element is retired.");
+        goToCdeByName("In the past 7 days I was satisfied with my sleep.");
         textNotPresent("Warning: this data element is retired.");
 
         goToFormByName(form2);
         clickElement(By.id("naming_tab"));
         textPresent(form1);
-        clickElement(By.id("referenceDocument_tab"));
-        textPresent("Description: Kroenke K, Spitzer RL, Williams JB. The PHQ-9: validity of a brief depression severity measure. J Gen Intern Med. 2001 Sep;16(9):606-13.");
-        clickElement(By.id("properties_tab"));
-        textPresent("CopyrightStarted");
         clickElement(By.id("ids_tab"));
-        textPresent("44249-1");
-        textPresent("F0374");
+        textPresent("795B07C1-067E-4FBD-9B60-A57985E69B5D");
         clickElement(By.id("history_tab"));
-        textPresent("Merge from tinyId mJsGoMU1m");
+        textPresent("Merge from tinyId Q1JxnV2OYIx");
     }
 }

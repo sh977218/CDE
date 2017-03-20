@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test.merge;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class NotLoggedInCannotMergeForm extends NlmCdeBaseTest {
@@ -17,6 +16,6 @@ public class NotLoggedInCannotMergeForm extends NlmCdeBaseTest {
         addFormToQuickBoard(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
-        Assert.assertEquals(0, findElements(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]")).size());
+        textNotPresent("Merge Form");
     }
 }
