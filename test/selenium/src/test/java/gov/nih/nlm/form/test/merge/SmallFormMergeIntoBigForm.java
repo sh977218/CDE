@@ -9,7 +9,7 @@ public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
 
     @Test
     public void smallFormMergeIntoBigForm() {
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(promis_username, password);
         String form1 = "PROMIS SF v1.0-Sleep Disturbance 4a";
         String form2 = "PROMIS SF v1.0-Sleep Disturbance 6a";
         clickElement(By.id("menu_forms_link"));

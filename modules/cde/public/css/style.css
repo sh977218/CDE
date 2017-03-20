@@ -808,8 +808,8 @@ input:required:invalid, input:focus:invalid {
     background-color: lightgrey;
 }
 
-.bgOrange {
-    background-color: #f3dc44;;
+.bgRed {
+    background-color: #f35f3a;;
 }
 
 .bgGreen {

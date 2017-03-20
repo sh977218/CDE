@@ -164,7 +164,7 @@
                 <button class="btn cancel" (click)="mergeFormModal.ngOnDestroy()" id="cancelMergeFormBtn" type="button">
                     {{(doneMerge && info)?'Close':'Cancel'}}
                 </button>
-                <button class="btn btn-warning" *ngIf="!doneMerge && !info.error && !info.warning"
+                <button class="btn btn-warning" *ngIf="!doneMerge || info.error || info.warning"
                         (click)="doMerge()">
                     Merge
                 </button>
@@ -174,10 +174,11 @@
 </div>
 <template #questionTemplate let-item="item" let-index="index">
     <div class="boxed-div overflowHidden"
-         [ngClass]="{'bgGreen': item.value.info.match, 'bgOrange': item.value.info.error}"
+         [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
          title="{{item.value.isRetired?'CDE is Retired':''}}">
         <div class="col-xs-3 Label noLeftRightPadding">CDE Name:
             <div *ngIf="item.value.isRetired">Retired</div>
+            <div *ngIf="item.value.info && item.value.info.error">{{item.value.info.error}}</div>
         </div>
         <div class="col-xs-8 noLeftRightPadding mergeCdeName">
             <a target="_blank" href="deview?tinyId={{item.value.question.cde.tinyId}}">

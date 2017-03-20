@@ -22,6 +22,7 @@ export class MergeFormService {
             }
         );
     }
+
     private mergeQuestions(questionsFrom, questionsTo, fields, doneOne, cb) {
         let index = 0;
         //noinspection TypeScriptUnresolvedFunction
@@ -46,31 +47,33 @@ export class MergeFormService {
             cb(err);
         });
     }
+
     public doMerge(mergeFrom, mergeTo, fields, doneOne, cb) {
         if (mergeFrom.length !== mergeTo.length) {
-            return {error: "number of question on left is not same on right."};
-        }
-        if (fields.naming) {
-            this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "naming");
-        }
-        if (fields.referenceDocuments) {
-            this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "referenceDocuments");
-        }
-        if (fields.properties) {
-            this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "properties");
-        }
-        if (fields.ids) {
-            this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "ids");
-        }
-        if (fields.classifications) {
-            this.mergeShareService.mergeClassifications(mergeFrom, mergeTo);
-        }
-        if (fields.questions) {
-            this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, (index, next) => {
-                doneOne(index, next);
-            }, (err) => {
-                cb(err);
-            });
+            cb({error: "number of question on left is not same on right."});
+        } else {
+            if (fields.naming) {
+                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "naming");
+            }
+            if (fields.referenceDocuments) {
+                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "referenceDocuments");
+            }
+            if (fields.properties) {
+                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "properties");
+            }
+            if (fields.ids) {
+                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, "ids");
+            }
+            if (fields.classifications) {
+                this.mergeShareService.mergeClassifications(mergeFrom, mergeTo);
+            }
+            if (fields.questions) {
+                this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, (index, next) => {
+                    doneOne(index, next);
+                }, (err) => {
+                    cb(err);
+                });
+            }
         }
     }
 }

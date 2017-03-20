@@ -3,12 +3,13 @@ import { ModalDirective, SortableComponent } from "ng2-bootstrap/index";
 import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../core/public/mergeForm.service";
 import { MergeCdeService } from "../../../core/public/mergeCde.service";
+import * as async from "async";
 
 @Component({
     selector: "cde-merge-form",
     templateUrl: "./mergeForm.component.html"
 })
-export class MergeFormComponent implements OnInit {
+export class MergeFormComponent {
     @ViewChild("MergeFormModal")
     public mergeFormModal: ModalDirective;
     @ViewChild("LeftSortableComponent")
@@ -96,22 +97,35 @@ export class MergeFormComponent implements OnInit {
         this.mergeFields.cde.classifications = false;
     }
 
-    private checkCdeOwnShip(array) {
-        array.forEach((question) => {
+    private checkCdeOwnShip(array, cb) {
+        //noinspection TypeScriptUnresolvedFunction
+        async.forEachSeries(array, (question, doneOneQuestion) => {
+            if (!question.info)
+                question.info = {error: "", match: false};
             let tinyId = question.question.cde.tinyId;
-            question.info = {};
             this.mergeCdeService.getCdeByTinyId(tinyId).subscribe(cde => {
                 question.info.error = this.isAllowedModel.isAllowed(cde) ? "" : "not own";
             }, err => {
                 this.alert.addAlert("danger", err);
+            }, () => {
+                doneOneQuestion();
             });
+        }, () => {
+            cb();
         });
     }
 
-    ngOnInit() {
-        this.checkCdeOwnShip(this.left.questions);
-        this.checkCdeOwnShip(this.right.questions);
-        this.check();
+
+    ngOnChanges() {
+        //noinspection TypeScriptUnresolvedFunction
+        async.series([(cb) => {
+            this.checkCdeOwnShip(this.left.questions, cb);
+        }, (cb) => {
+            this.checkCdeOwnShip(this.right.questions, cb);
+        }
+        ], () => {
+            this.check();
+        })
     }
 
     check() {
@@ -159,7 +173,8 @@ export class MergeFormComponent implements OnInit {
             this.numMergedQuestions = index;
             next();
         }, (err) => {
-            if (err) return this.alert.addAlert("danger", err);
+            if (err)
+                return this.alert.addAlert("danger", err);
             else {
                 if (this.ownSourceForm) {
                     this.left.changeNote = "Merge to tinyId " + this.right.tinyId;
