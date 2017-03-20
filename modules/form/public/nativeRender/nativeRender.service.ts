@@ -173,6 +173,9 @@ export class NativeRenderService {
         }
         else if (realAnswer || realAnswer === "") {
             if (realAnswerObj.question.datatype === "Date") {
+                // format American DD/MM/YYYY to HTML5 standard YYYY-MM-DD
+                if (expectedAnswer && expectedAnswer.length === 10)
+                    expectedAnswer = expectedAnswer.substr(6, 4) + "-" + expectedAnswer.substr(3, 2) + "-" + expectedAnswer.substr(0, 2);
                 question.question.dateOptions = {};
                 if (operator === "=") return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
                 if (operator === "!=") return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();
@@ -333,6 +336,8 @@ export class NativeRenderService {
         switch (oper) {
             case "=":
                 return values.join(" or ");
+            case "!=":
+                return "not " + values.join(" or ");
             case ">":
                 return "more than " + NativeRenderService.min(values);
             case "<":
