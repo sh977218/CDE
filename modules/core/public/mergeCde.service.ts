@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/observable/forkJoin";
@@ -6,7 +6,8 @@ import { MergeShareService } from "./mergeShare.service";
 
 @Injectable()
 export class MergeCdeService {
-    constructor(private http: Http, private mergeShareService: MergeShareService) {
+    constructor(private http: Http, private mergeShareService: MergeShareService,
+                @Inject("isAllowedModel") private isAllowedModel) {
     }
 
     public getCdeByTinyId(tinyId) {
@@ -42,13 +43,14 @@ export class MergeCdeService {
                         this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "sources");
                     if (fields.classifications)
                         this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
+                    let ownCdeFrom = this.isAllowedModel.isAllowed(cdeFrom);
                     this.http.post("/mergeCde", {
                         mergeFrom: cdeFrom,
                         mergeTo: cdeTo,
-                        retireCde: fields.retireCde
+                        retireCde: fields.retireCde && ownCdeFrom
                     }).subscribe((result) => {
                         cb(null, result["_body"]);
-                    }, err => cb("unable to mergeCde " + err));
+                    }, err => cb("Unable to mergeCde " + tinyIdFrom));
                 },
                 err => cb("unable to get cde " + err)
             );

@@ -119,15 +119,9 @@ export class MergeFormComponent implements OnInit {
         if (!this.userService.user._id) {
             return this.info.warning = "Log in to merge";
         }
-        if (!this.isAllowedModel.isAllowed(this.right)) {
-            this.ownSourceForm = false;
-            this.ownTargetForm = false;
-            return this.info.warning = "You do not own target form";
-        }
-        this.ownTargetForm = true;
-        if (!this.isAllowedModel.isAllowed(this.left)) {
-            this.ownSourceForm = false;
-        }
+        this.ownSourceForm = this.isAllowedModel.isAllowed(this.left);
+        this.ownTargetForm = this.isAllowedModel.isAllowed(this.right);
+        if (!this.ownTargetForm) return this.info.warning = "You do not own target form";
         if (this.mergeFields.questions && this.left.questions.length > this.right.questions.length) {
             return this.info.warning = "Form merge from has too many questions";
         }
@@ -167,10 +161,10 @@ export class MergeFormComponent implements OnInit {
         }, (err) => {
             if (err) return this.alert.addAlert("danger", err);
             else {
-                this.left.changeNote = "Merge to tinyId " + this.right.tinyId;
-                if (this.isAllowedModel.isAllowed(this.left))
-                    this.left.registrationState.registrationStatus = "Retired";
                 if (this.ownSourceForm) {
+                    this.left.changeNote = "Merge to tinyId " + this.right.tinyId;
+                    if (this.isAllowedModel.isAllowed(this.left))
+                        this.left.registrationState.registrationStatus = "Retired";
                     this.mergeFormService.saveForm(this.left, (err) => {
                         if (err) this.alert.addAlert("danger", "Can not save source form.");
                         else {

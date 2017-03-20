@@ -31,6 +31,7 @@ public class EltIdMaps {
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");
         eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
+        eltMap.put("Little interest or pleasure in doing things in last 2 weeks [Reported.PHQ]", "QkWPURx5Fz");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL) - troublesome physical symptom problem score", "QXpcS9boYtk");
         eltMap.put("Medication affecting cardiovascular function type exam day indicator", "xug6J6R8fkf");
@@ -66,6 +67,7 @@ public class EltIdMaps {
         eltMap.put("Temperature measurement", "2V9Th1t2guY");
         eltMap.put("Temperature maximum daily measurement", "hO8j7EqG61K");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
+        eltMap.put("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]", "m1xj2YMI1X");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
 
         // Forms
@@ -97,6 +99,8 @@ public class EltIdMaps {
         eltMap.put("PROMIS SF v1.0 - Applied Cog Abilities 4a", "Q1Ogr2OtIe");
         eltMap.put("PROMIS SF v1.0 - Pain Behavior 7a", "QkggxHhuF8x");
         eltMap.put("PROMIS Bank v1.2 - Physical Function", "Xko4nuKLg");
+        eltMap.put("PROMIS SF v1.0-Sleep Disturbance 4a", "Q1JxnV2OYIx");
+        eltMap.put("PROMIS SF v2.0 - Emotional Support 4a", "7JznNnOYIg");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");

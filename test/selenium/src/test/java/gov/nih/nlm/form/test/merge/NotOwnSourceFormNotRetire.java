@@ -18,9 +18,16 @@ public class NotOwnSourceFormNotRetire extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys(EltIdMaps.eltMap.get(form2));
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
+        clickElement(By.id("retireCde"));
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
         textPresent("Form merged");
         closeAlert();
+
+        goToFormByName(form1);
+        textNotPresent("Warning: this form is retired.");
+
+        goToCdeByName("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]");
+        textNotPresent("Warning: this data element is retired.");
 
         goToFormByName(form2);
         clickElement(By.id("naming_tab"));
