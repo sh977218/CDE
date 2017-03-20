@@ -23,10 +23,10 @@ public class NotEqualsLogic extends BaseFormTest {
 
         // test date
         textPresent("Diagnosis age type");
-        findElement(By.name("q3")).sendKeys("01/01/2016");
+        findElement(By.name("q3")).sendKeys("2015-01-02");
         textPresent("Diagnosis age type");
         findElement(By.name("q3")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("q3")).sendKeys("2015");
+        findElement(By.name("q3")).sendKeys("1" + Keys.TAB);
         textNotPresent("Diagnosis age type");
 
         // text and empty logic
@@ -37,6 +37,7 @@ public class NotEqualsLogic extends BaseFormTest {
         textPresent("Birth Weight");
         findElement(By.name("q5")).sendKeys("den");
         textNotPresent("Birth Weight");
+        findElement(By.name("q5")).sendKeys(Keys.BACK_SPACE);
         findElement(By.name("q5")).clear();
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
 

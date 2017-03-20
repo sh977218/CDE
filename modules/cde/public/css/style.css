@@ -1,3 +1,15 @@
+/* Bootstrap 4 overrides for Bootstrap 3 */
+.nav, .navbar, .navbar-nav, .form-inline, .form-inline label {
+    display: initial;
+}
+
+.dropdown-toggle::after {
+    content: "";
+    display: initial;
+    border: none;
+    margin: 0;
+}
+
 /*fixes an issue in bootstrap #1078 */
 .modal-body {
     overflow-y: inherit;

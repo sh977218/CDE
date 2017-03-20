@@ -174,8 +174,8 @@ export class NativeRenderService {
         else if (realAnswer || realAnswer === "") {
             if (realAnswerObj.question.datatype === "Date") {
                 // format American DD/MM/YYYY to HTML5 standard YYYY-MM-DD
-                if (expectedAnswer && expectedAnswer.length === 10)
-                    expectedAnswer = expectedAnswer.substr(6, 4) + "-" + expectedAnswer.substr(3, 2) + "-" + expectedAnswer.substr(0, 2);
+                if (realAnswer)
+                    realAnswer = realAnswer.month + "/" + realAnswer.day + "/" + realAnswer.year;
                 question.question.dateOptions = {};
                 if (operator === "=") return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
                 if (operator === "!=") return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();

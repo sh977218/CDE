@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.logic;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 public class EmptyLogic extends NlmCdeBaseTest {
@@ -19,9 +20,10 @@ public class EmptyLogic extends NlmCdeBaseTest {
 
         // Dates
         textPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("01");
+        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("19");
         textPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("011995");
+        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("95-01-01");
+        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys(Keys.TAB);
         textNotPresent("Data unknown indicator");
 
         // Value Lists
@@ -40,7 +42,9 @@ public class EmptyLogic extends NlmCdeBaseTest {
         textPresent("Perianal problem other text");
         findElement(By.xpath("//div[@id='Noncompliant Reason Text_6']//input")).sendKeys("abc");
         textNotPresent("Perianal problem other text");
-        findElement(By.xpath("//div[@id='Noncompliant Reason Text_6']//input")).clear();
+        findElement(By.xpath("//div[@id='Noncompliant Reason Text_6']//input")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.xpath("//div[@id='Noncompliant Reason Text_6']//input")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.xpath("//div[@id='Noncompliant Reason Text_6']//input")).sendKeys(Keys.BACK_SPACE);
         textPresent("Perianal problem other text");
 
     }

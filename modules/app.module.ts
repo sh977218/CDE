@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { CdeAppComponent } from "./app.component";
 import { ClassificationService } from "./core/public/classification.service";
@@ -18,6 +19,7 @@ import { FormModule } from "./form/public/form.module";
         ClassificationService,
         SkipLogicService],
     imports: [
+        NgbModule.forRoot(),
         BrowserModule,
         CommonModule,
         FormsModule,
