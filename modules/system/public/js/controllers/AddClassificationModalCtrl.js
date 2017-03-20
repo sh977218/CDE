@@ -2,9 +2,9 @@ import * as authShared from "../../../../system/shared/authorizationShared";
 
 // @TODO this many dependencies is a warning of poor design. Refac.
 angular.module('systemModule').controller('AddClassificationModalCtrl',
-    ['$scope', '$timeout', '$uibModalInstance', 'ClassificationTree', 'Organization', 'ClassificationPathBuilder',
+    ['$scope', '$timeout', 'ClassificationTree', 'Organization', 'ClassificationPathBuilder',
         'module', 'cde', 'orgName', 'pathArray', 'addClassification', 'localStorageService', 'userResource',
-        function($scope, $timeout, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module,
+        function($scope, $timeout, ClassificationTree, Organization, ClassificationPathBuilder, module,
                  cde, orgName, pathArray, addClassification, localStorageService, userResource)
 {
 
@@ -48,10 +48,6 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
         }
     };
 
-    $scope.close = function () {
-        $modalInstance.close();
-    };
-    
     $scope.addClassification = function (lastLeafName) {        
         var deepCopy = {
             orgName: $scope.newClassification.orgName

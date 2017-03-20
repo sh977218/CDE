@@ -408,3 +408,13 @@ import {upgradeAdapter} from "../../../upgrade.ts";
 
 import {HomeComponent} from "../components/home/home.component";
 angular.module('systemModule').directive('cdeHome', upgradeAdapter.downgradeNg2Component(HomeComponent));
+
+import {ProfileComponent} from "../components/profile.component";
+angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeNg2Component(ProfileComponent));
+
+import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
+angular.module('systemModule').directive('cdeLogAudit', upgradeAdapter.downgradeNg2Component(LogAuditComponent));
+
+import {IdentifiersComponent} from "../components/adminItem/identifiers.component";
+angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downgradeNg2Component(IdentifiersComponent));
+

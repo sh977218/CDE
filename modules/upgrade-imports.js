@@ -44,7 +44,6 @@ import "./system/public/js/controllers/LogCtrl";
 import "./system/public/js/controllers/AccountManagementCtrl";
 import "./system/public/js/controllers/SiteManagementCtrl";
 import "./system/public/js/controllers/AttachmentsCtrl";
-import "./system/public/js/controllers/ProfileCtrl"; // ported
 import "./system/public/js/controllers/AuthCtrl";
 import "./system/public/js/controllers/UsersMgtCtrl";
 import "./system/public/js/controllers/DailyUsageCtrl";
@@ -54,7 +53,6 @@ import "./system/public/js/controllers/ClassificationCtrl";
 import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
 import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
-import "./system/public/js/controllers/IdsCtrl";
 import "./system/public/js/controllers/PropertiesCtrl";
 import "./system/public/js/controllers/ReferenceDocumentCtrl";
 import "./system/public/js/controllers/CommentsCtrl";

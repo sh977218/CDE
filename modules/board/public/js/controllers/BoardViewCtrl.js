@@ -190,7 +190,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             };
                         }
                     }
-                });
+                    });
                 $modalInstance.result.then(function () {}, function() {});
             };
 
@@ -291,11 +291,9 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 });
             };
             $scope.endReview = function () {
-                $http.post("/board/endReview", {
-                    boardId: $scope.board._id
-                }).then(function () {
+                $http.post("/board/endReview", {boardId: $scope.board._id}).then(function () {
                     $scope.reload(function () {
-                        Alert.addAlert('success', 'board review started.')
+                        Alert.addAlert('success', 'Board review started.')
                     });
                 }).catch(function (response) {
                     Alert.addAlert("danger", response.data);
