@@ -3,13 +3,12 @@ import { ModalDirective, SortableComponent } from "ng2-bootstrap/index";
 import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../core/public/mergeForm.service";
 import { MergeCdeService } from "../../../core/public/mergeCde.service";
-import * as async from "async";
 
 @Component({
     selector: "cde-merge-form",
     templateUrl: "./mergeForm.component.html"
 })
-export class MergeFormComponent {
+export class MergeFormComponent implements OnInit {
     @ViewChild("MergeFormModal") public mergeFormModal: ModalDirective;
     @ViewChild("LeftSortableComponent") leftSortableComponent: SortableComponent;
     @Input() public left: any;
@@ -92,35 +91,20 @@ export class MergeFormComponent {
         this.mergeFields.cde.classifications = false;
     }
 
-    private checkCdeOwnShip(array, cb) {
-        //noinspection TypeScriptUnresolvedFunction
-        async.forEachSeries(array, (question, doneOneQuestion) => {
-            if (!question.info)
-                question.info = {error: "", match: false};
-            let tinyId = question.question.cde.tinyId;
-            this.mergeCdeService.getCdeByTinyId(tinyId).subscribe(cde => {
-                question.info.error = this.isAllowedModel.isAllowed(cde) ? "" : "not own";
-            }, err => {
-                this.alert.addAlert("danger", err);
-            }, () => {
-                doneOneQuestion();
-            });
-        }, () => {
-            cb();
-        });
+    ngOnInit() {
+        this.check();
     }
 
-
-    ngOnChanges() {
-        //noinspection TypeScriptUnresolvedFunction
-        async.series([(cb) => {
-            this.checkCdeOwnShip(this.left.questions, cb);
-        }, (cb) => {
-            this.checkCdeOwnShip(this.right.questions, cb);
-        }
-        ], () => {
-            this.check();
-        })
+    checkOneQuestion(question, i) {
+        if (!question.info) question.info = {};
+        this.right.questions.filter((rightQuestion, j) => {
+            let rightTinyId = rightQuestion.question.cde.tinyId;
+            if (question.cde.tinyId === rightTinyId && i !== j) {
+                question.info.error = "Not align";
+            } else if (question === rightTinyId && i === j) {
+                question.info.match = true;
+            }
+        });
     }
 
     check() {
