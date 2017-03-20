@@ -146,7 +146,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
 
             $scope.classifyEltBoard = function () {
-                $modal.open({
+                var $modalInstance = $modal.open({
                     animation: false,
                     templateUrl: '/system/public/html/classifyCdesInBoard.html',
                     controller: 'AddClassificationModalCtrl',
@@ -190,7 +190,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             };
                         }
                     }
-                }).result.then(function () {}, function() {});
+                    });
+                $modalInstance.result.then(function () {}, function() {});
             };
 
             $scope.createFormFromBoard = function () {
