@@ -17,7 +17,7 @@ public class SourceFormHasMoreQuestionCannotMergeForm extends NlmCdeBaseTest {
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
-        textPresent("Form merge from has too many questions", By.id("mergeFormWarningDiv"));
+        textPresent("Form merge from has too many questions", By.id("mergeFormErrorDiv"));
 
         clickElement(By.id("removeLeftQuestion_3"));
         textNotPresent("Form merge from has too many questions");
