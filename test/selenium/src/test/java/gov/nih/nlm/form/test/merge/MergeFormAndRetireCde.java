@@ -18,8 +18,7 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
 
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
         clickElement(By.id("retireCde"));
-        scrollDownBy(100);
-        hangon(2);
+        scrollToViewById("mergeFormBtn");
         clickElement(By.id("mergeFormBtn"));
         closeAlert();
 
@@ -36,7 +35,7 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         textPresent("Retired", By.id("leftQuestion_10"));
 
         goToFormByName(form1);
-        textNotPresent("Warning: this form is retired.");
+        textPresent("Warning: this form is retired.");
 
         goToCdeByName("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]");
         textNotPresent("Warning: this data element is retired.");

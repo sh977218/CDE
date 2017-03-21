@@ -133,7 +133,7 @@
                                                  placeholderClass="sortable-item" wrapperClass="sortable-wrapper"
                                                  (onChange)="check()">
                                     </bs-sortable>
-                                    <button class="btn btn-default"
+                                    <button class="btn btn-default" id="addPlaceHolderToLeft"
                                             (click)="addItem(left.questions)">
                                         <i class="fa fa-plus-square-o"></i> Add Placeholder
                                     </button>
@@ -155,8 +155,8 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" id="mergeFormWarningDiv">
-                <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+            <div class="modal-footer">
+                <div *ngIf="error" id="mergeFormErrorDiv" class="alert alert-danger">{{error}}</div>
                 <progressbar *ngIf="showProgressBar" [max]="maxNumberQuestions" [value]="numMergedQuestions">
                     <span style="color:white; white-space:nowrap;">{{numMergedQuestions}} / {{maxNumberQuestions}}</span>
                 </progressbar>
