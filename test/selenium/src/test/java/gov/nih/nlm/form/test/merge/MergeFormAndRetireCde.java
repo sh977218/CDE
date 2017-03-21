@@ -4,21 +4,34 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class NotOwnSourceFormNotRetire extends NlmCdeBaseTest {
+public class MergeFormAndRetireCde extends NlmCdeBaseTest {
 
     @Test
-    public void notOwnSourceFormNotRetire() {
-        mustBeLoggedInAs(ninds_username, password);
+    public void mergeFormAndRetireCde() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
         String form1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
         String form2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
         addFormToQuickBoardByTinyId(form1);
         addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
-        clickElement(By.id("retireCde"));
+
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
-        textPresent("Form merged");
+        clickElement(By.id("retireCde"));
+        clickElement(By.id("mergeFormBtn"));
         closeAlert();
+
+        textNotPresent("Retired", By.id("leftQuestion_0"));
+        textNotPresent("Retired", By.id("leftQuestion_1"));
+        textPresent("Retired", By.id("leftQuestion_2"));
+        textPresent("Retired", By.id("leftQuestion_3"));
+        textPresent("Retired", By.id("leftQuestion_4"));
+        textPresent("Retired", By.id("leftQuestion_5"));
+        textPresent("Retired", By.id("leftQuestion_6"));
+        textPresent("Retired", By.id("leftQuestion_7"));
+        textPresent("Retired", By.id("leftQuestion_8"));
+        textPresent("Retired", By.id("leftQuestion_9"));
+        textPresent("Retired", By.id("leftQuestion_10"));
 
         goToFormByName(form1);
         textNotPresent("Warning: this form is retired.");

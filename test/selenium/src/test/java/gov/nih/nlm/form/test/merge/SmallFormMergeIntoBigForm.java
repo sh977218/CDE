@@ -21,6 +21,7 @@ public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
 
         clickElement(By.id("retireCde"));
+        scrollDownBy(100);
         textPresent("Form not align");
         Actions builder = new Actions(driver);
         builder.clickAndHold(findElement(By.id("leftQuestion_3"))).moveToElement(findElement(By.id("leftQuestion_5"))).release().build();
