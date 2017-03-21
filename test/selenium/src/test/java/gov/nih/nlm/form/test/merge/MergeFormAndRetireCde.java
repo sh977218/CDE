@@ -18,6 +18,8 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
 
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
         clickElement(By.id("retireCde"));
+        scrollDownBy(100);
+        hangon(2);
         clickElement(By.id("mergeFormBtn"));
         closeAlert();
 

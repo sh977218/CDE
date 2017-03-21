@@ -4,7 +4,6 @@ import { Observable } from "rxjs/Rx";
 import "rxjs/add/observable/forkJoin";
 import { MergeShareService } from "./mergeShare.service";
 
-@Injectable()
 export class MergeCdeService {
     constructor(private http: Http, private mergeShareService: MergeShareService,
                 @Inject("isAllowedModel") private isAllowedModel) {
