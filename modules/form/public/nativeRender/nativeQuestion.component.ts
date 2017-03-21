@@ -4,10 +4,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
     selector: "cde-native-question",
-    templateUrl: "./nativeQuestion.component.html",
-    styleUrls: [
-        String("../../../../node_modules/bootstrap/dist/css/bootstrap.css")
-    ]
+    templateUrl: "./nativeQuestion.component.html"
 })
 export class NativeQuestionComponent {
     @Input() formElement: any;

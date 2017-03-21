@@ -124,7 +124,7 @@ export class NativeRenderService {
                         if (isNaN(result)) return;
                         if (q) {
                             let answer = q.question.answer;
-                            if (answer === undefined) return result = "Incomplete answers";
+                            if (answer == null) return result = "Incomplete answers";
                             if (isNaN(answer)) return result = "Unable to score";
                             else result = result + parseFloat(answer);
                         }
