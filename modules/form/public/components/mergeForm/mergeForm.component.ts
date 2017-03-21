@@ -40,7 +40,7 @@ export class MergeFormComponent implements OnInit {
     public doneMerge: boolean = false;
     public ownTargetForm: any;
     public ownSourceForm: any;
-    public info: any = {};
+    public error: any = "";
 
     constructor(@Inject("Alert") private alert,
                 private mergeFormService: MergeFormService,
@@ -108,15 +108,15 @@ export class MergeFormComponent implements OnInit {
     }
 
     check() {
-        this.info = {};
+        this.error = "";
         if (!this.userService.user._id) {
-            return this.info.warning = "Log in to merge";
+            return this.error = "Log in to merge";
         }
         this.ownSourceForm = this.isAllowedModel.isAllowed(this.left);
         this.ownTargetForm = this.isAllowedModel.isAllowed(this.right);
-        if (!this.ownTargetForm) return this.info.warning = "You do not own target form";
+        if (!this.ownTargetForm) return this.error = "You do not own target form";
         if (this.mergeFields.questions && this.left.questions.length > this.right.questions.length) {
-            return this.info.warning = "Form merge from has too many questions";
+            return this.error = "Form merge from has too many questions";
         }
         this.left.questions.forEach((leftQuestion, i) => {
             let leftTinyId = leftQuestion.question.cde.tinyId;
@@ -124,7 +124,8 @@ export class MergeFormComponent implements OnInit {
             this.right.questions.filter((rightQuestion, j) => {
                 let rightTinyId = rightQuestion.question.cde.tinyId;
                 if (leftTinyId === rightTinyId && i !== j) {
-                    leftQuestion.info.error = "not align";
+                    leftQuestion.info.error = "Not align";
+                    this.error = "Form not align";
                 } else if (leftTinyId === rightTinyId && i === j) {
                     leftQuestion.info.match = true;
                 }
@@ -168,7 +169,7 @@ export class MergeFormComponent implements OnInit {
                                 else {
                                     this.doneMerge = true;
                                     this.leftSortableComponent.writeValue(this.left.questions);
-                                    this.alert.addAlert("success", "form merged");
+                                    this.alert.addAlert("success", "Form merged");
                                     setTimeout(() => {
                                         this.showProgressBar = false;
                                         return;

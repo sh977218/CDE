@@ -156,15 +156,14 @@
                 </div>
             </div>
             <div class="modal-footer" id="mergeFormWarningDiv">
-                <div *ngIf="info.warning" class="alert alert-warning">{{info.warning}}</div>
-                <div *ngIf="info.error" class="alert alert-error">{{info.error}}</div>
+                <div *ngIf="error" class="alert alert-danger">{{error}}</div>
                 <progressbar *ngIf="showProgressBar" [max]="maxNumberQuestions" [value]="numMergedQuestions">
                     <span style="color:white; white-space:nowrap;">{{numMergedQuestions}} / {{maxNumberQuestions}}</span>
                 </progressbar>
                 <button class="btn cancel" (click)="mergeFormModal.ngOnDestroy()" id="cancelMergeFormBtn" type="button">
                     {{(doneMerge && info)?'Close':'Cancel'}}
                 </button>
-                <button class="btn btn-warning" *ngIf="!doneMerge || info.error || info.warning"
+                <button class="btn btn-warning" *ngIf="!doneMerge && !error"
                         (click)="doMerge()">
                     Merge
                 </button>
@@ -173,9 +172,9 @@
     </div>
 </div>
 <template #questionTemplate let-item="item" let-index="index">
-    <div class="boxed-div overflowHidden"
+    <div class="boxed-div overflowHidden" title="{{item.value.isRetired?'CDE is Retired':''}}"
          [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
-         title="{{item.value.isRetired?'CDE is Retired':''}}">
+         id="leftQuestion_{{index}}">
         <div class="col-xs-3 Label noLeftRightPadding">CDE Name:
             <div *ngIf="item.value.isRetired">Retired</div>
             <div *ngIf="item.value.info && item.value.info.error">{{item.value.info.error}}</div>

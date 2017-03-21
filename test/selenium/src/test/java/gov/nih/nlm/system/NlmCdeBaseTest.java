@@ -622,6 +622,8 @@ public class NlmCdeBaseTest {
             System.out.println("form " + formName + " is not present in the eltMap.");
         }
         findElement(By.id("ftsearch-input")).sendKeys(tinyId);
+        hangon(0.5);
+        clickElement(By.id("search.submit"));
         clickElement(By.id("addToCompare_0"));
         closeAlert();
         findElement(By.name("q")).clear();

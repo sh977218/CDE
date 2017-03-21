@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.merge;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
@@ -16,6 +17,13 @@ public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         clickElement(By.id("retireCde"));
+        textPresent("Form not align");
+
+        Actions builder = new Actions(driver);
+        builder.clickAndHold(findElement(By.id("leftQuestion_3"))).moveToElement(findElement(By.id("leftQuestion_5"))).release().build();
+        builder.perform();
+        textNotPresent("Form not align");
+
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
         textPresent("Form merged");
         closeAlert();
