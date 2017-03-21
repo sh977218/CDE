@@ -313,7 +313,7 @@ exports.init = function (app, daoManager) {
                 if (err) req.status(500).send(err);
                 else if (result.hits.hits.length === 1) {
                     cdeMergeFrom.registrationState.registrationStatus = "Retired";
-                    mongo_cde.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
+                    cdesvc.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
                         mongo_cde.update(cdeMergeFrom, req.user, function (err) {
                             if (err) return res.status(500).send(err);
                             else

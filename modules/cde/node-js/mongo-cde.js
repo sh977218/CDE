@@ -469,28 +469,3 @@ exports.findModifiedElementsSince = function (date, cb) {
 
     //find({updated: {$gte: date}}).distinct('tinyId').limit(1000).sort({updated: -1}).exec(cb);
 };
-
-exports.checkEligibleToRetire = function (req, res, elt, cb) {
-    if (!req.isAuthenticated())
-        res.status(403).send("You are not authorized to do this.");
-    if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0
-        && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0
-        && !req.user.siteAdmin) {
-        res.status(403).send("Not authorized");
-    } else {
-        if ((elt.registrationState.registrationStatus === "Standard" ||
-            elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
-            res.status(403).send("This record is already standard.");
-        } else {
-            if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard") &&
-                (elt.registrationState.registrationStatus === "Standard" ||
-                elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
-            ) {
-                res.status(403).send("Not authorized");
-            } else {
-                cb();
-            }
-        }
-    }
-
-};
