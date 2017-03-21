@@ -12,8 +12,8 @@ public class SourceFormHasMoreQuestionCannotMergeForm extends NlmCdeBaseTest {
         String form1 = "Patient Health Questionnaire-2 (PHQ-2) More Questions";
         String form2 = "Patient Health Questionnaire 2 item (PHQ-2) [Reported]";
 
-        addFormToQuickBoard(form1);
-        addFormToQuickBoard(form2);
+        addFormToQuickBoardByTinyId(form1);
+        addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));

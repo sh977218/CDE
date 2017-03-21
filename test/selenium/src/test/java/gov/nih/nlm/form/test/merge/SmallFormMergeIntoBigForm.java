@@ -9,6 +9,8 @@ public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
 
     @Test
     public void smallFormMergeIntoBigForm() {
+
+
         mustBeLoggedInAs(promis_username, password);
         String form1 = "PROMIS SF v1.0-Sleep Disturbance 4a";
         String form2 = "PROMIS SF v1.0-Sleep Disturbance 6a";
@@ -16,15 +18,16 @@ public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
         addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
+        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
+
         clickElement(By.id("retireCde"));
         textPresent("Form not align");
-
         Actions builder = new Actions(driver);
         builder.clickAndHold(findElement(By.id("leftQuestion_3"))).moveToElement(findElement(By.id("leftQuestion_5"))).release().build();
         builder.perform();
         textNotPresent("Form not align");
 
-        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
+        clickElement(By.id("mergeFormBtn"));
         textPresent("Form merged");
         closeAlert();
 

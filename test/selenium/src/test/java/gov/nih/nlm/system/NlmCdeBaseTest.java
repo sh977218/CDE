@@ -616,7 +616,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void addFormToQuickBoardByTinyId(String formName) {
-        clickElement(By.id("menu_forms_link"));
+        goToSearch("form");
         String tinyId = EltIdMaps.eltMap.get(formName);
         if (tinyId.length() == 0) {
             System.out.println("form " + formName + " is not present in the eltMap.");
@@ -626,7 +626,6 @@ public class NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
         clickElement(By.id("addToCompare_0"));
         closeAlert();
-        findElement(By.name("q")).clear();
     }
 
     public void goToQuickBoardByModule(String module) {
