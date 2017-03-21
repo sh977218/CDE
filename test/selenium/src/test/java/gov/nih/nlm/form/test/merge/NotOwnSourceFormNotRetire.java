@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test.merge;
 
-import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
@@ -12,10 +11,8 @@ public class NotOwnSourceFormNotRetire extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         String form1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
         String form2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
-        clickElement(By.id("menu_forms_link"));
-        findElement(By.id("ftsearch-input")).sendKeys(EltIdMaps.eltMap.get(form1));
-        clickElement(By.id("menu_forms_link"));
-        findElement(By.id("ftsearch-input")).sendKeys(EltIdMaps.eltMap.get(form2));
+        addFormToQuickBoardByTinyId(form1);
+        addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         clickElement(By.id("retireCde"));

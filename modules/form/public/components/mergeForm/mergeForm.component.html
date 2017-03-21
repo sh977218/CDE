@@ -1,5 +1,5 @@
-<a class='btn btn-small btn-default fa fa-clipboard mergeForm' (click)="mergeFormModal.toggle()">
-    Merge Form</a>
+<a *ngIf="ownTargetForm && ownSourceForm" class='btn btn-small btn-default fa fa-clipboard mergeForm'
+   (click)="mergeFormModal.toggle()">Merge Form</a>
 
 <div bsModal #MergeFormModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="mySmallModalLabel" aria-hidden="true">

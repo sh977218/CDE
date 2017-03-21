@@ -615,6 +615,18 @@ public class NlmCdeBaseTest {
         findElement(By.name("q")).clear();
     }
 
+    protected void addFormToQuickBoardByTinyId(String formName) {
+        clickElement(By.id("menu_forms_link"));
+        String tinyId = EltIdMaps.eltMap.get(formName);
+        if (tinyId.length() == 0) {
+            System.out.println("form " + formName + " is not present in the eltMap.");
+        }
+        findElement(By.id("ftsearch-input")).sendKeys(tinyId);
+        clickElement(By.id("addToCompare_0"));
+        closeAlert();
+        findElement(By.name("q")).clear();
+    }
+
     public void goToQuickBoardByModule(String module) {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));

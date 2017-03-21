@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test.merge;
 
-import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
@@ -12,10 +11,8 @@ public class SmallFormMergeIntoBigForm extends NlmCdeBaseTest {
         mustBeLoggedInAs(promis_username, password);
         String form1 = "PROMIS SF v1.0-Sleep Disturbance 4a";
         String form2 = "PROMIS SF v1.0-Sleep Disturbance 6a";
-        clickElement(By.id("menu_forms_link"));
-        findElement(By.id("ftsearch-input")).sendKeys(EltIdMaps.eltMap.get(form1));
-        clickElement(By.id("menu_forms_link"));
-        findElement(By.id("ftsearch-input")).sendKeys(EltIdMaps.eltMap.get(form2));
+        addFormToQuickBoardByTinyId(form1);
+        addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         clickElement(By.id("retireCde"));

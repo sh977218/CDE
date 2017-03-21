@@ -13,8 +13,8 @@ public class NotOwnFormCannotMergeForm extends NlmCdeBaseTest {
         String form1 = "PROMIS SF v1.0 - Pain Behavior 7a";
         String form2 = "Two Dimensional Speckle Tracking Echocardiography Imaging";
 
-        addFormToQuickBoard(form1);
-        addFormToQuickBoard(form2);
+        addFormToQuickBoardByTinyId(form1);
+        addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         textNotPresent("Merge Form");
@@ -26,8 +26,8 @@ public class NotOwnFormCannotMergeForm extends NlmCdeBaseTest {
         String form1 = "Patient Health Questionnaire-2 (PHQ-2)";
         String form2 = "Patient Health Questionnaire 2 item (PHQ-2) [Reported]";
 
-        addFormToQuickBoard(form1);
-        addFormToQuickBoard(form2);
+        addFormToQuickBoardByTinyId(form1);
+        addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
         textNotPresent("Merge Form");
