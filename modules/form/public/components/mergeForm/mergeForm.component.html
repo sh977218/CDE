@@ -126,7 +126,7 @@
                     <div class="col-xs-12 col-md-10 col-lg-10 noLeftRightPadding">
                         <div class="row">
                             <div class="col-xs-12" *ngIf="mergeFields.questions">
-                                <div class="col-xs-6">
+                                <div class="col-xs-6" id="dropArea">
                                     <bs-sortable #LeftSortableComponent [(ngModel)]="left.questions"
                                                  [itemTemplate]="questionTemplate" itemClass="sortable-item"
                                                  itemActiveClass="sortable-item-active" placeholderItem="Drag here"

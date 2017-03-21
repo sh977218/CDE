@@ -693,6 +693,11 @@ public class NlmCdeBaseTest {
         je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.id(id)));
         hangon(2);
     }
+    protected void scrollToViewByXpath(String xpath) {
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.xpath(xpath)));
+        hangon(2);
+    }
 
     protected void hoverOverElement(WebElement ele) {
         Actions action = new Actions(driver);

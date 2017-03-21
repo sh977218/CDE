@@ -38,7 +38,7 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         textPresent("Warning: this form is retired.");
 
         goToCdeByName("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]");
-        textNotPresent("Warning: this data element is retired.");
+        textPresent("Warning: this data element is retired.");
 
         goToFormByName(form2);
         clickElement(By.id("naming_tab"));
