@@ -40,7 +40,7 @@ public class AnswerListTest extends BaseFormTest {
         textNotPresent("Female Gender");
         startEditQuestionSectionById("question_0_0");
         clickElement(By.xpath("//input[@ng-click='$select.activate()']"));
-        clickElement(By.xpath("//div[contains(text(), 'Female Gender')]"));
+        clickElement(By.xpath("//span[contains(text(), 'Female Gender')]"));
         saveForm();
 
         goToFormByName(formName);
