@@ -48,8 +48,8 @@ export class MergeCdeService {
                         mergeFrom: cdeFrom,
                         mergeTo: cdeTo,
                         retireCde: fields.retireCde && ownCdeFrom
-                    }).subscribe((result) => {
-                        cb(null, result["_body"]);
+                    }).map(res => res.text()).subscribe((result) => {
+                        cb(null, result);
                     }, err => cb("Unable to mergeCde " + tinyIdFrom));
                 },
                 err => cb("unable to get cde " + err)

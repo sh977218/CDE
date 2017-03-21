@@ -26,7 +26,7 @@ public class AnswerListTest extends BaseFormTest {
         Assert.assertEquals(lis.get(1).getText(), "Male Gender");
         Assert.assertEquals(lis.get(2).getText(), "Unknown");
 
-        clickElement(By.xpath("//div[@id='question_0_0']//ul[@class='select2-choices']//li[1]/a"));
+        clickElement(By.xpath("//span[span[@uis-transclude-append and contains(., \"Female Gender\")]]/span[contains(@class, 'close')]"));
         textNotPresent("Female Gender");
         lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//span[@uis-transclude-append]"));
         Assert.assertEquals(lis.size(), 2);
@@ -40,7 +40,7 @@ public class AnswerListTest extends BaseFormTest {
         textNotPresent("Female Gender");
         startEditQuestionSectionById("question_0_0");
         clickElement(By.xpath("//input[@ng-click='$select.activate()']"));
-        clickElement(By.xpath("//div[contains(text(), 'Female Gender')]"));
+        clickElement(By.xpath("//span[contains(text(), 'Female Gender')]"));
         saveForm();
 
         goToFormByName(formName);
