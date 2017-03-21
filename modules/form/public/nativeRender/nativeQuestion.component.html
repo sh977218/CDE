@@ -7,7 +7,7 @@
     </div>
 
     <div attr.id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
-        <div *ngIf="formElement.question.isScore">Score: <span [textContent]="nativeRenderService.score(formElement, elt)"></span></div>
+        <div *ngIf="formElement.question.isScore">Score: <span [textContent]="nativeRenderService.score(formElement)"></span></div>
         <div *ngIf="!formElement.question.isScore">
             <div [ngSwitch]="formElement.question.datatype">
                 <div *ngSwitchCase="'Value List'">
@@ -44,7 +44,7 @@
                                             <cde-native-question *ngIf="fe.elementType === 'question'"
                                                                  [formElement]="fe"
                                                                  [numSubQuestions]="pv && pv.subQuestions ? pv.subQuestions.length : 0"
-                                                                 index="i"></cde-native-question>
+                                                                 [index]="i"></cde-native-question>
                                             <cde-native-section
                                                     *ngIf="fe.elementType === 'section' || fe.elementType === 'form'"
                                                     [formElements]="pv.subQuestions"
@@ -116,7 +116,7 @@
                                 [formElement]="fe"
                                 [numSubQuestions]="pv && pv.subQuestions ? pv.subQuestions.length : 0"
                                 [parentValue]="pv.permissibleValue"
-                                index="i"></cde-native-question>
+                                [index]="i"></cde-native-question>
                         <cde-native-section
                                 *ngIf="(fe.elementType === 'section' || fe.elementType === 'form') && pv.nonValuelist"
                                 [formElements]="pv.subQuestions"

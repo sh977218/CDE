@@ -1,4 +1,8 @@
 /* Bootstrap 4 overrides for Bootstrap 3 */
+.row {
+    display: block;
+}
+
 .nav, .navbar, .navbar-nav, .form-inline, .form-inline label {
     display: initial;
 }
