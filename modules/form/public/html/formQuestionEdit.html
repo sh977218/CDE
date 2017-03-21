@@ -105,10 +105,9 @@
     <div class="clear"></div>
     <div class="col-xs-2 questionSectionLabel text-right">Answer List:</div>
     <div class="col-xs-10 mb5">
-        <ui-select multiple ng-model="question.question.answers" theme="select2" search-enabled=false
+        <ui-select multiple ng-model="question.question.answers" theme="bootstrap"
                    on-remove="stageElt()" on-select="stageElt()" append-to-body="true" style="display: block">
-            <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}
-            </ui-select-match>
+            <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}</ui-select-match>
             <ui-select-choices
                     repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.valueMeaningName">
                 {{pv.valueMeaningName}}

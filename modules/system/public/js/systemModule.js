@@ -413,6 +413,9 @@ angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeN
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
 angular.module('systemModule').directive('cdeLogAudit', upgradeAdapter.downgradeNg2Component(LogAuditComponent));
 
+import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
+angular.module('systemModule').directive('cdeUsersMgt', upgradeAdapter.downgradeNg2Component(UsersMgtComponent));
+
 import {IdentifiersComponent} from "../components/adminItem/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downgradeNg2Component(IdentifiersComponent));
 
