@@ -26,7 +26,7 @@ public class BrowseUsers extends NlmCdeBaseTest {
 
         textPresent("nlm", By.id("user_username"));
         Assert.assertEquals("nlm", findElement(By.id("user_username")).getText());
-        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\",\"org / or Org\",\"TEST\",\"PhenX\"]", findElement(By.id("user_orgadmin")).getText());
+        Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\",\"org / or Org\",\"TEST\",\"PhenX\",\"NLM\",\"NIDA\"]", findElement(By.id("user_orgadmin")).getText());
         Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "Yes");
 
         // make sure same tab is in 2 places.

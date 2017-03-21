@@ -12,6 +12,6 @@ public class SearchByConcept extends NlmCdeBaseTest{
         clickElement(By.id("concepts_tab"));
         clickElement(By.linkText("Database"));
         textPresent("Organism External Database Accession Number java.lang.String");
-        textPresent("2 results for property.concepts.name:\"Database\"");
+        textPresent("2 results for property.concepts.name:'Database'");
     }
 }
