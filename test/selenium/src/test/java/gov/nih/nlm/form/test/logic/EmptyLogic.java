@@ -20,9 +20,9 @@ public class EmptyLogic extends NlmCdeBaseTest {
 
         // Dates
         textPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("19");
+        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("1");
         textPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("95-01-01");
+        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("995");
         findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys(Keys.TAB);
         textNotPresent("Data unknown indicator");
 

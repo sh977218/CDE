@@ -23,10 +23,10 @@ public class NotEqualsLogic extends BaseFormTest {
 
         // test date
         textPresent("Diagnosis age type");
-        findElement(By.name("q3")).sendKeys("2015-01-02");
+        findElement(By.name("q3")).sendKeys("01/01/2016");
         textPresent("Diagnosis age type");
         findElement(By.name("q3")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("q3")).sendKeys("1" + Keys.TAB);
+        findElement(By.name("q3")).sendKeys("5" + Keys.TAB);
         textNotPresent("Diagnosis age type");
 
         // text and empty logic
