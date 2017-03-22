@@ -2,7 +2,7 @@ var mongo_form = require('../modules/form/node-js/mongo-form');
 
 var stream = mongo_form.getStream({
     "formElements.formElements.question.datatypeNumber.maxValue": 0,
-    archived: null,
+    archived: false,
     "stewardOrg.name": "NINDS"
 });
 

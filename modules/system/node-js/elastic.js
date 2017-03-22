@@ -123,7 +123,7 @@ exports.reIndex = function (index, cb) {
     var indexType = Object.keys(index.indexJson.mappings)[0];
     // start re-index all
     var injector = new EsInjector(esClient, index.indexName, indexType);
-    var condition = {archived: null};
+    var condition = {archived: false};
     index.count = 0;
     exports.daoMap[index.name].count(condition, function (err, totalCount) {
         if (err) {

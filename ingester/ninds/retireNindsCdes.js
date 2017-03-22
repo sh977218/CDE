@@ -7,7 +7,7 @@ DataElement.find({
     'imported': {$lt: new Date('12/15/2016')},
     'sources.sourceName': 'NINDS',
     'classification.stewardOrg.name': 'NINDS',
-    'archived': null
+    'archived': false
 }).exec(function (err, cdes) {
     if (err) throw err;
     else {

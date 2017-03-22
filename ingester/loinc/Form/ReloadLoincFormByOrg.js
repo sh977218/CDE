@@ -80,7 +80,7 @@ exports.reloadLoincFormsByOrg = function (orgName, next) {
                 'stewardOrg.name': orgInfo['stewardOrgName'],
                 'classification.stewardOrg.name': orgInfo['stewardOrgName'],
                 'classification.elements.name': orgInfo['classificationOrgName'],
-                'archived': null
+                'archived': false
             }).exec(function (findRetiredFormError, retireForms) {
                 if (findRetiredFormError) throw findRetiredFormError;
                 console.log('There are ' + retireForms.length + ' forms need to be retired.');

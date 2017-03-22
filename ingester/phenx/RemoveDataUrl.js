@@ -9,7 +9,7 @@ var modifiedCDE = 0;
 var sameCDE = 0;
 var totalCDE = 0;
 function run() {
-    DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).exec(function (err, allDes) {
+    DataElementModel.find({'stewardOrg.name': 'PhenX', archived: false}).exec(function (err, allDes) {
         async.each(allDes, function (de, cb) {
             totalCDE++;
             var dataSets = de.get('dataSets');

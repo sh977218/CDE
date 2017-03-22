@@ -226,7 +226,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/deCount', function (req, res) {
-        mongo_cde.count({archived: null}, function (err, result) {
+        mongo_cde.count({archived: false}, function (err, result) {
             res.send({count: result});
         });
     });

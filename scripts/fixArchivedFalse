@@ -1,2 +1,2 @@
-db.getCollection('dataelements').update({"archived" : null},{$set:{archived:false}},{"multi" : true  // update only one document });
-db.getCollection('forms').update({"archived" : null},{$set:{archived:false}},{"multi" : true  // update only one document });
+db.getCollection('dataelements').update({"archived" : false},{$set:{archived:false}},{"multi" : true  // update only one document });
+db.getCollection('forms').update({"archived" : false},{$set:{archived:false}},{"multi" : true  // update only one document });

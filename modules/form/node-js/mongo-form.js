@@ -64,7 +64,7 @@ exports.findForms = function (request, callback) {
             "naming.designation": new RegExp(request.term)
         };
     }
-    Form.find(criteria).where("archived").equals(null).exec(callback);
+    Form.find(criteria).where("archived").equals(false).exec(callback);
 };
 
 exports.update = function (elt, user, callback, special) {
@@ -142,7 +142,7 @@ exports.byId = function (id, callback) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    Form.find({archived: null}).elemMatch("ids", {source: source, id: id}).exec(function (err, forms) {
+    Form.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, forms) {
         if (forms.length > 1)
             cb("Multiple results, returning first", forms[0]);
         else cb(err, forms[0]);
@@ -168,7 +168,7 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     if (version) {
         query.version = version;
     } else {
-        query.archived = null;
+        query.archived = false;
     }
     Form.findOne(query).exec(function (err, elt) {
         if (err) callback(err);
@@ -177,7 +177,7 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
 };
 
 exports.byTinyIdList = function (idList, callback) {
-    Form.find({'archived': null}).where('tinyId')
+    Form.find({'archived': false}).where('tinyId')
         .in(idList)
         .exec(function (err, forms) {
             forms.forEach(mongo_data_system.formatElt);
@@ -199,7 +199,7 @@ exports.byTinyIdListInOrder = function (idList, callback) {
 exports.eltByTinyId = function (tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null);
     if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
-    else Form.findOne({'tinyId': tinyId, "archived": null}).exec(callback);
+    else Form.findOne({'tinyId': tinyId, "archived": false}).exec(callback);
 };
 
 exports.removeAttachmentLinks = function (id) {

@@ -11,7 +11,7 @@ var connection = connHelper.establishConnection(config.database.appData);
 var Article = connection.model('Article', schemas.articleSchema);
 
 exports.byKey = function(key, cb) {
-    Article.findOne({key: key, archived: null}).exec(cb);
+    Article.findOne({key: key, archived: false}).exec(cb);
 };
 
 exports.byId = function(id, cb) {
