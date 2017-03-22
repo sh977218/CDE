@@ -62,7 +62,6 @@
             "spaces"
         ],
         "invoke-injectable": true,
-        "no-access-missing-member": true,
         "no-attribute-parameter-decorator": true,
         "no-eval": true,
         "no-forward-ref": true,

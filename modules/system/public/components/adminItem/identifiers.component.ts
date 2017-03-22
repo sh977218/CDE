@@ -1,5 +1,5 @@
-import {Component, Inject, Input, ViewChild} from "@angular/core";
-import {ModalDirective} from "ng2-bootstrap/modal";
+import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { ModalDirective } from "ng2-bootstrap/modal";
 import "rxjs/add/operator/map";
 
 @Component({
@@ -16,7 +16,7 @@ export class IdentifiersComponent {
     newId: any;
 
     constructor(@Inject("Alert") private alert,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                @Inject("isAllowedModel") public isAllowedModel) {
     }
 
     openNewId() {

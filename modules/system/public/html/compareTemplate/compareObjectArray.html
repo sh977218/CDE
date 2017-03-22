@@ -2,7 +2,7 @@
        uib-tooltip="{{options.tooltip}}">{{options.title}}:</label>
 <div class="overflowHidden" id="historyCompare_{{options.title}}" ng-repeat="result in options.results track by $index"
         ng-init="sectionIndex = $index">
-    <div class="col-md-6 historyCompareLeft">
+    <div class="col-xs-6 historyCompareLeft">
         <div class="row quickBoardContentCompareCol overflowHidden"
              id="historyCompareLeft_{{options.title}}_{{sectionIndex}}_{{$index}}"
              ng-repeat="entry in result track by $index"
@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="col-xs-6 historyCompareRight">
-        <div class="quickBoardContentCompareCol overflowHidden"
+        <div class="row quickBoardContentCompareCol overflowHidden"
              id="historyCompareRight_{{options.title}}_{{sectionIndex}}_{{$index}}"
              ng-repeat="entry in result track by $index"
              ng-if="(entry.match === true && entry.partialMatchItems.length > 0) || (entry.match === false && right[entry.rightIndex] !== undefined)">
