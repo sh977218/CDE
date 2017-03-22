@@ -49,7 +49,7 @@ export class ConceptsComponent {
     };
 
     relatedCdes (concept, config) {
-        window.location.href = "/cde/search?q=" + config.details.path + ":'" + concept + "'";
+        window.location.href = "/cde/search?q=" + config.details.path + `:"` + concept + `"`;
     };
 
     okCreate () {

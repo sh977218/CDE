@@ -57,27 +57,27 @@ public class SkipLogicDateTest extends BaseFormTest {
         textNotPresent("Macula volume (OS)");
         textNotPresent("Laterality Type");
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/11/2016");
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.TAB);
         textPresent("Macula volume (OD)");
 
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
-
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/12/2016");
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.TAB);
         textPresent("Macula volume (OS)");
 
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/10/2016");
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.TAB);
         textPresent("Laterality Type");
 
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("01/01/2017");
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.TAB);
         textPresent("Macula volume (OS)");
 
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
-        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.ARROW_LEFT);
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("01/01/2015");
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys(Keys.TAB);
         textPresent("Laterality Type");
     }
 

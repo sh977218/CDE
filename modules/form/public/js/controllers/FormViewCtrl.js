@@ -49,7 +49,6 @@ angular.module('formModule').controller
             includes: ['/form/public/html/formGeneralDetail.html'],
             select: function (thisTab) {
                 $scope.setCurrentTab(thisTab);
-                $timeout($scope.$broadcast('tabGeneral'), 0);
             }
         },
         description: {

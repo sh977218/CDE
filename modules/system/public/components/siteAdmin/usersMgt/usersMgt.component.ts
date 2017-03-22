@@ -28,7 +28,9 @@ export class UsersMgtComponent {
     newUsername: string;
     foundUsers: any[] = [];
     allUsernames: string[] = [];
-    rolesEnum: Array<Select2OptionData> = authShared.rolesEnum.map(r => {return {"id": r, "text": r};});
+    rolesEnum: Array<Select2OptionData> = authShared.rolesEnum.map(r => {
+        return {"id": r, "text": r};
+    });
     s2Options: Select2Options = {
         multiple: true
     };

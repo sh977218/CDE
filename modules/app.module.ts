@@ -3,35 +3,28 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { CdeAppComponent } from "./app.component";
-import { ClassificationService } from "./core/public/classification.service";
-import { SkipLogicService } from "./core/public/skipLogic.service";
-import { MergeFormService } from "./core/public/mergeForm.service";
-import { MergeCdeService } from "./core/public/mergeCde.service";
-import { MergeShareService } from "./core/public/mergeShare.service";
-import { SystemModule } from "./system/public/system.module";
-import { FormModule } from "./form/public/form.module";
+import { CoreModule } from "./core/public/core.module";
 import { CdeModule } from "./cde/public/js/cde.module";
+import { FormModule } from "./form/public/form.module";
+import { SystemModule } from "./system/public/system.module";
 
 
 @NgModule({
     declarations: [CdeAppComponent],
-    providers: [
-        ClassificationService,
-        SkipLogicService,
-        MergeFormService,
-        MergeCdeService,
-        MergeShareService
-    ],
+    providers: [],
     imports: [
+        NgbModule.forRoot(),
         BrowserModule,
         CommonModule,
         FormsModule,
         HttpModule,
-        SystemModule,
+        CoreModule,
+        CdeModule,
         FormModule,
-        CdeModule
+        SystemModule
     ],
     bootstrap: [CdeAppComponent]
 })

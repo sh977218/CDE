@@ -1,5 +1,5 @@
 import { Http } from "@angular/http";
-import { Component, Inject, Input, ViewChild, OnChanges } from "@angular/core";
+import { Component, DoCheck, Inject, Input, ViewChild, OnChanges,  } from "@angular/core";
 import { ModalDirective } from "ng2-bootstrap/modal";
 
 @Component({
@@ -7,7 +7,7 @@ import { ModalDirective } from "ng2-bootstrap/modal";
     templateUrl: "./derivationRules.component.html"
 })
 
-export class DerivationRulesComponent implements OnChanges {
+export class DerivationRulesComponent implements DoCheck, OnChanges {
 
     @ViewChild("childModal") public childModal: ModalDirective;
     @Input() public elt: any;
