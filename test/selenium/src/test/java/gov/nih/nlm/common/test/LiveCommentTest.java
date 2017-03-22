@@ -37,6 +37,7 @@ public class LiveCommentTest extends CdeCommentTest {
         switchTab(0);
         textPresent(newComment);
         String reply = "can you see this";
+        scrollToTop();
         replyComment(reply, 0);
 
         switchTab(1);

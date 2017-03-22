@@ -15,6 +15,7 @@ import { IdentifiersComponent } from "./components/adminItem/identifiers.compone
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
+import { HomeComponent } from "./components/home/home.component";
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
         LinkedFormsComponent,
         IdentifiersComponent,
         UserCommentsComponent,
+        HomeComponent,
         LogAuditComponent,
         UsersMgtComponent,
         PlaceHoldEmptyPipe],

@@ -73,7 +73,7 @@ gulp.task('wiredep', ['bower'], function () {
 });
 
 gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], function () {
-    ['article', 'cde', 'form', 'processManager', 'system', 'batch', 'embedded', 'board'].forEach(function (module) {
+    ['article', 'cde', 'form', 'processManager', 'system', 'embedded', 'board'].forEach(function (module) {
         gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
         gulp.src('./modules/' + module + '/shared/**/*')
