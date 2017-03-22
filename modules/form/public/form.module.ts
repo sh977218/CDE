@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
 
@@ -18,7 +19,7 @@ import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component
         NativeSectionMatrixComponent,
         NativeQuestionComponent
     ],
-    imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
+    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormModule {

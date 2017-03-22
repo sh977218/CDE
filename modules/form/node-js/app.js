@@ -15,6 +15,8 @@ var express = require('express')
     , exportShared = require('../../system/shared/exportShared')
     , boardsvc = require('../../board/node-js/boardsvc')
     , usersrvc = require('../../system/node-js/usersrvc')
+    , dns = require('dns')
+    , os = require('os')
     ;
 
 exports.init = function (app, daoManager) {
@@ -209,13 +211,31 @@ exports.init = function (app, daoManager) {
     app.post('/sendMockFormData', function (req, res) {
         console.log(JSON.stringify(req.body));
         if (
-            req.body.q1 === "1" &&
-            req.body.q2 === "2" &&
-            req.body.q3 === "Lab Name" &&
-            req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14936\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsLargerAlleleNum\"}],\"tinyId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14937\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsSmallerAlleleNum\"}],\"tinyId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C17744\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"MolecularStdyLabName\"}],\"tinyId\":\"EdUB2kWmV61\"}]}]}"
-        &&  req.body.formUrl.indexOf(config.publicUrl + "/data") === 0
+            req.body.q1 === "1"
+            && req.body.q2 === "2"
+            && req.body.q3 === "Lab Name"
+            && req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14936\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsLargerAlleleNum\"}],\"tinyId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14937\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsSmallerAlleleNum\"}],\"tinyId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C17744\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"MolecularStdyLabName\"}],\"tinyId\":\"EdUB2kWmV61\"}]}]}"
         ) {
-            res.send("<html><body>Form Submitted</body></html>");
+            if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0)
+                res.send("<html><body>Form Submitted</body></html>");
+            else if (config.publicUrl.indexOf('localhost') === -1) {
+                dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
+                    if (!err && req.body.formUrl.indexOf(result + "/data") === 0 )
+                        res.send("<html><body>Form Submitted</body></html>");
+                    else
+                        res.status(401).send("<html><body>Not the right input</body></html>");
+                });
+            } else {
+                let ifaces = os.networkInterfaces();
+                if (Object.keys(ifaces).some(ifname => {
+                    return ifaces[ifname].filter(iface => {
+                        return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
+                    }).length > 0;
+                }))
+                    res.send("<html><body>Form Submitted</body></html>");
+                else
+                    res.status(401).send("<html><body>Not the right input</body></html>");
+            }
         } else {
             res.status(401).send("<html><body>Not the right input</body></html>");
         }

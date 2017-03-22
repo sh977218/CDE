@@ -5,8 +5,8 @@
                                   || nativeRenderService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition, null, formElement)"
                         [formElement]="nativeRenderService.getElt()"></cde-native-section>
 </form>
-<form *ngIf="endpointUrl && nativeRenderService.getElt()" #formData name="sectionLabel" role="form" class="form-horizontal"
-      action="{{getEndpointUrl()}}" method="post">
+<form ngNoForm *ngIf="endpointUrl && nativeRenderService.getElt()" #formData name="sectionLabel" role="form" class="form-horizontal"
+      [action]="getEndpointUrl()" method="post">
 
     <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
                                   || nativeRenderService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition, null, formElement)"

@@ -97,7 +97,7 @@ export class NativeRenderService {
         return result;
     }
 
-    findQuestionByTinyId(tinyId, elt) {
+    findQuestionByTinyId(tinyId) {
         let result = null;
         let doFormElement = function (formElt) {
             if (formElt.elementType === "question") {
@@ -108,11 +108,11 @@ export class NativeRenderService {
                 formElt.formElements.forEach(doFormElement);
             }
         };
-        elt.formElements.forEach(doFormElement);
+        this.getElt().formElements.forEach(doFormElement);
         return result;
     }
 
-    score(question, elt) {
+    score(question) {
         if (!question.question.isScore) return;
         let result: any = 0;
         let service = this;
@@ -120,11 +120,11 @@ export class NativeRenderService {
             if (derRule.ruleType === "score") {
                 if (derRule.formula === "sumAll" || derRule.formula === "mean") {
                     derRule.inputs.forEach(function (cdeTinyId) {
-                        let q = service.findQuestionByTinyId(cdeTinyId, elt);
+                        let q = service.findQuestionByTinyId(cdeTinyId);
                         if (isNaN(result)) return;
                         if (q) {
                             let answer = q.question.answer;
-                            if (answer === undefined) return result = "Incomplete answers";
+                            if (answer == null) return result = "Incomplete answers";
                             if (isNaN(answer)) return result = "Unable to score";
                             else result = result + parseFloat(answer);
                         }
@@ -161,7 +161,7 @@ export class NativeRenderService {
         let realAnswerArr = this.getQuestions(formElements, questionLabel);
         let realAnswerObj = realAnswerArr[0];
         let realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ?
-                this.score(realAnswerObj, this.elt) : realAnswerObj.question.answer) : undefined;
+                this.score(realAnswerObj) : realAnswerObj.question.answer) : undefined;
         if (realAnswer === undefined || realAnswer === null ||
             (typeof realAnswer === "number" && isNaN(realAnswer))) realAnswer = "";
         if (expectedAnswer === "" && operator === "=") {
@@ -174,8 +174,8 @@ export class NativeRenderService {
         else if (realAnswer || realAnswer === "") {
             if (realAnswerObj.question.datatype === "Date") {
                 // format American DD/MM/YYYY to HTML5 standard YYYY-MM-DD
-                if (expectedAnswer && expectedAnswer.length === 10)
-                    expectedAnswer = expectedAnswer.substr(6, 4) + "-" + expectedAnswer.substr(3, 2) + "-" + expectedAnswer.substr(0, 2);
+                if (realAnswer)
+                    realAnswer = realAnswer.month + "/" + realAnswer.day + "/" + realAnswer.year;
                 question.question.dateOptions = {};
                 if (operator === "=") return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
                 if (operator === "!=") return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();

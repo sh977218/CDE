@@ -1,5 +1,6 @@
 import "core-js/client/shim";
 import "zone.js";
+import "../node_modules/zone.js/dist/long-stack-trace-zone.js";
 import "reflect-metadata";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
