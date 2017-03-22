@@ -59,15 +59,10 @@
                     </dd>
                 </dl>
             </div>
-            <div class="col-md-7 col-xs-12" ng-controller="DisplayProfileDataCtrl" style="border: dashed 1px;zoom:60%;" >
-                <form name="sectionLabel" role="form" class="form-horizontal">
-                    <div ng-controller="FormRenderCtrl" >
-                        <div ng-if="profile.displayType === SHOW_IF && elt && nativeFormService.evaluateSkipLogic(skipLogicError, formElement.skipLogic.condition, null, formElement)"
-                             native-section form-element="elt" profile="profile" elt="getElt()" error="skipLogicError"></div>
-                        <div ng-if="profile.displayType === FOLLOW_UP && followForm"
-                             native-section form-element="followForm" profile="profile" elt="getElt()" error="skipLogicError"></div>
-                    </div>
-                </form>
+            <div class="col-md-7 col-xs-12">
+                <div ng-controller="DisplayProfileDataCtrl" style="border: dashed 1px; zoom:60%; padding: 0 15px;">
+                    <cde-native-render [elt]="elt" [profile]="profile"></cde-native-render>
+                </div>
             </div>
         </div>
     </div>

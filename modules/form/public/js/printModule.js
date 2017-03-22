@@ -54,6 +54,7 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
     var profileSelected = args.profile;
     var defaultProfile = args.defaultProfile;
     var overrideDisplayType = args.displayType;
+    $scope.selectedProfile = args.selectedProfile;
     $scope.submitForm = args.submit;
 
     var _getElt;
@@ -82,27 +83,10 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
                 return c.tinyId;
             });
             isAllowedModel.setDisplayStatusWarning($scope);
-            //setDefaultValues();
-            $scope.deferredEltLoaded.resolve();
+
             $scope.formElements = [];
             $scope.formElement = wholeForm;
-
-            if (profileSelected > 0 && $scope.elt.displayProfiles.length > profileSelected)
-                $scope.elt.displayProfiles = $scope.elt.displayProfiles[$scope.displayProfiles];
-            if (defaultProfile || $scope.elt.displayProfiles.length === 0)
-                $scope.elt.displayProfiles = [{
-                    name: "Default Config",
-                    displayInstructions: true,
-                    displayNumbering: true,
-                    sectionsAsMatrix: true,
-                    displayValues: false,
-                    displayType: 'Follow-up',
-                    numberOfColumns: 4,
-                    displayInvisible: false
-                }];
-            if ((overrideDisplayType === 'Follow-up' || overrideDisplayType === 'Dynamic') && $scope.elt.displayProfiles[0])
-                $scope.elt.displayProfiles[0].displayType = overrideDisplayType;
-
+            $scope.deferredEltLoaded.resolve();
         });
     }, function () {
         Alert.addAlert("danger", "Sorry, we are unable to retrieve this element.");
