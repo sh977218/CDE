@@ -25,10 +25,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $scope.curator = {};
     }
 
-    $scope.initBatchUpload = function() {
-        $timeout($scope.$broadcast('initBatchUpload'), 0);
-    };
-
     $http.get("/systemAlert").then(function onSuccess(response) {
        $scope.broadcast = {message: response.data}; 
     }).catch(function onError() {});
