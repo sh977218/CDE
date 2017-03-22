@@ -35,7 +35,7 @@
             {{entry.number}}
         </div>
         <div class="col-md-3">
-            <a class="hand-cursor" ng-click="showLogsForIP(entry._id.ip)">{{entry._id.ip}}</a>
+            {{entry._id.ip}}
         </div>
         <div class="col-md-4" ng-switch="entry.usernames.length > 0">
             <span ng-switch-when="true">

@@ -7,19 +7,13 @@
             <div ng-include="'/system/public/html/siteAdmin.html'"></div>
         </div>
         <div uib-tab heading="Users">
-            <div ng-include="'/system/public/html/usersMgt.html'"></div>
+            <cde-users-mgt></cde-users-mgt>
         </div>
         <div uib-tab heading="Comments">
             <div ng-include="'/system/public/html/latestComments.html'"></div>
         </div>
-        <div uib-tab heading="Batch Uploads" select="initBatchUpload()">
-            <div ng-include="'/system/public/html/batchUpload.html'"></div>
-        </div>
         <div uib-tab heading="Server Statuses">
             <div ng-include="'/system/public/html/serverStatuses.html'"></div>
-        </div>
-        <div ng-show="prodDumpEnabled" uib-tab heading="Get Latest Prod Data">
-            <div ng-include="'/system/public/html/getProd.html'"></div>
         </div>
     </uib-tabset>
 </div>

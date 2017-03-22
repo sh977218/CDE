@@ -71,6 +71,7 @@ public abstract class CommentTest extends CommonTest {
         scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));
 
+        scrollToTop();
         clickElement(By.id("resolveReply-0-0"));
         textPresent("Saved");
         closeAlert();
@@ -80,6 +81,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Saved");
         closeAlert();
 
+        scrollDownBy(500);
         clickElement(By.id("resolveReply-1-0"));
         textPresent("Saved");
         closeAlert();

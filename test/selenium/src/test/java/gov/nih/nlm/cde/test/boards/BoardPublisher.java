@@ -17,7 +17,7 @@ public class BoardPublisher extends BoardTest {
         findElement(By.name("searchUsers")).sendKeys("boardPublisherTest");
         clickElement(By.id("searchUsersSubmit"));
         findElement(By.xpath("//div[@id='user_roles_0']//input")).sendKeys("boardp");
-        clickElement(By.xpath("//div[@id='user_roles_0']//div[@uis-transclude-append]"));
+        clickElement(By.xpath("//li[. = \"BoardPublisher\"]"));
         textPresent("Roles saved");
         closeAlert();
 
