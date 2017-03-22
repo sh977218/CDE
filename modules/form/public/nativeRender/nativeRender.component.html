@@ -1,0 +1,23 @@
+<h2 [textContent]="elt?.naming && elt.naming[0]?.designation"></h2>
+
+<form *ngIf="!endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal">
+    <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
+                                  || nativeRenderService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition, null, formElement)"
+                        [formElement]="nativeRenderService.getElt()"></cde-native-section>
+</form>
+<form ngNoForm *ngIf="endpointUrl && nativeRenderService.getElt()" #formData name="sectionLabel" role="form" class="form-horizontal"
+      [action]="getEndpointUrl()" method="post">
+
+    <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
+                                  || nativeRenderService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition, null, formElement)"
+                        [formElement]="nativeRenderService.getElt()"></cde-native-section>
+
+    <input type="hidden" name="formUrl" [value]="formUrl">
+    <input type="hidden" name="mapping" [value]="mapping">
+    <input type="submit" class="btn btn-default" id="button_submit" *ngIf="submitForm"
+           style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" [disabled]="formData.$invalid">
+</form>
+
+<uib-alert type="danger" *ngIf="nativeRenderService.hasErrors() > 0">
+    <span [textContent]="nativeRenderService.gerErrors().join(' -- ')"></span>
+</uib-alert>

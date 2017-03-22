@@ -16,9 +16,9 @@ export class LinkedFormsComponent {
 
     constructor (@Inject("Elastic") private elastic) {};
 
-    private open () {
+    open () {
         let searchSettings = this.elastic.defaultSearchSettings;
-        searchSettings.q = '"' + this.elt.tinyId + '"';
+        searchSettings.q = `"` + this.elt.tinyId + `"`;
 
         this.elastic.generalSearchQuery(this.elastic.buildElasticQuerySettings(searchSettings), "form", (err, result) => {
             if (err) return;
