@@ -12,6 +12,7 @@ import { ProfileComponent } from "./components/profile.component";
 import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
+import { PropertiesComponent } from "./components/adminItem/properties.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
@@ -26,6 +27,7 @@ import { HomeComponent } from "./components/home/home.component";
         ProfileComponent,
         LinkedFormsComponent,
         IdentifiersComponent,
+        PropertiesComponent,
         UserCommentsComponent,
         HomeComponent,
         LogAuditComponent,
