@@ -1,6 +1,5 @@
 angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', function($scope)
 {
-
     $scope.addProfile = function() {
         var newProfile = {
             name: "New Profile",
@@ -25,7 +24,6 @@ angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', functio
     };
 
     $scope.updateRender = function () {
-        $scope.$broadcast('eltReloaded');
     }
 
 }]);

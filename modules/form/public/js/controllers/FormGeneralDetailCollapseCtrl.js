@@ -13,6 +13,5 @@ angular.module('formModule').controller('FormGeneralDetailCollapseCtrl',
                 $scope.rightPanel = 'col-lg-7';
                 $scope.arrow = '<<';
             }
-        }
-
+        };
     }]);

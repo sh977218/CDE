@@ -1,0 +1,37 @@
+<div *ngIf="formElement" class="native-section" id="formRenderSection_{{formElement.label}}">
+    <div *ngIf="formElement.label" [ngClass]="{'native-section-header': isSectionDisplayed(formElement)}" class="keep-together">
+        <div class="row">
+            <div [ngClass]="{'col-sm-9':canRepeat(formElement)}" class="col-xs-12">
+                <h4 [textContent]="formElement.label"></h4>
+            </div>
+            <div class="col-sm-3" *ngIf="canRepeat(formElement)">
+                <button class="btn btn-default fa fa-plus"
+                        (click)="addSection(formElement, formElements, $index)">Add One</button>
+                <button *ngIf="formElement.isCopy" class="btn btn-default fa fa-trash-o"
+                        (click)="removeSection($index)">Remove</button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="nativeRenderService.profile.displayInstructions && formElement.instructions?.value"
+         class="native-instructions" [ngSwitch]="formElement.instructions.valueFormat">
+        <span *ngSwitchCase="html"><span [innerHtml]="formElement.instructions.value"></span></span>
+        <span *ngSwitchDefault class="text-muted"><span [textContent]="formElement.instructions.value"></span></span>
+    </div>
+
+    <cde-native-section-matrix *ngIf="nativeRenderService.profile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement)"
+                               [formElement]="formElement" [numsubquestions]="numSubQuestions"></cde-native-section-matrix>
+    <div *ngIf="!(nativeRenderService.profile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement))">
+        <div *ngFor="let element of formElement.formElements; let i = index">
+            <div *ngIf="nativeRenderService.evaluateSkipLogicAndClear(element.skipLogic?.condition, formElement.formElements, element)">
+                <div *ngIf="element.elementType === 'question'" [ngClass]="{'keep-with-previous':i===0}"
+                     class="native-question-header native-question-answers">
+                    <cde-native-question [formElement]="element" [index]="i"
+                                     [numSubQuestions]="numSubQuestions"></cde-native-question>
+                </div>
+                <cde-native-section *ngIf="element.elementType === 'section' || element.elementType === 'form'"
+                                [formElements]="formElement.formElements" [formElement]="element"
+                                [numSubQuestions]="numSubQuestions"></cde-native-section>
+            </div>
+        </div>
+    </div>
+</div>
