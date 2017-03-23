@@ -5,15 +5,13 @@
         <div class="row">
             <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
                 <div class="row">
-                    <span *ngIf="showDelete">Confirm Delete
-                        <span class="btn-default fa fa-check" (click)="showDelete = false; removeProperty($index)"
+                    <span *ngIf="prop.edit">Confirm Delete
+                        <span class="btn-default fa fa-check" (click)="removeProperty($index)"
                               id="confirmRemoveProperty-{{$index}}" title="OK" href=""></span>
-                        <span class="btn-default fa fa-times" (click)="showDelete = false" title="Cancel"
-                              href=""></span>
+                        <span class="btn-default fa fa-times" (click)="prop.edit = false" title="Cancel" href=""></span>
                     </span>
-                    <span (click)="showDelete = true" ng-hide="showDelete" class="btn-default fa fa-trash-o"
+                    <span (click)="prop.edit = true" *ngIf="!prop.edit" class="btn-default fa fa-trash-o"
                           id="removeProperty-{{$index}}" title="Remove" href=""></span>
-
                     <sortable-array the-array="elt.properties" index="$index" cb="stageElt(elt)"></sortable-array>
                 </div>
             </div>
@@ -34,7 +32,7 @@
         <hr/>
     </div>
     <button *ngIf="isAllowedModel.isAllowed(elt)" id="openNewPropertyModalBtn"
-            class="btn btn-small btn-default" (click)="modalService.open()">
+            class="btn btn-small btn-default" (click)="open();">
         <i class="fa fa-plus"></i> Add Property
     </button>
 </div>
@@ -60,7 +58,6 @@
     </div>
     <div class="modal-footer" id="newPropertyModalFooter">
         <button type="button" class="btn" (click)="c('Close click')" id="cancelNewPropertyBtn">Cancel</button>
-        <button type="button" class="btn" (click)="addNewProperty()" id="addNewPropertyBtn">Save
-        </button>
+        <button type="button" class="btn" (click)="addNewProperty()" id="addNewPropertyBtn">Save</button>
     </div>
 </template>

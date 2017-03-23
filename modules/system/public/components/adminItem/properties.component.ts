@@ -1,5 +1,6 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
+//import { NgbModalModule, NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { NgbModalModule, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -8,25 +9,24 @@ import { NgbModalModule, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class PropertiesComponent {
 
-    @ViewChild("newPropertyModal") public newPropertyModal: NgbModalModule;
+    @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: any;
 
     newProperty: any;
 
     constructor(@Inject("Alert") private alert,
                 public modalService: NgbModal,
+                /*
+                 public activeModal: NgbActiveModal,*/
                 @Inject("isAllowedModel") public isAllowedModel) {
     }
 
-    showDelete(modal) {
-        modal.showDelete = true;
+    open() {
+        const modalRef = this.modalService.open(this.newPropertyContent);
+        modalRef.componentInstance.newProperty = this.newProperty;
     }
 
-    hideDelete(modal) {
-        delete modal.showDelete;
-    }
-
-    addId() {
+    addNewProperty() {
         this.elt.properties.push(this.newProperty);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property added. Save to confirm.");
@@ -36,10 +36,11 @@ export class PropertiesComponent {
                 this.alert.addAlert("success", "Property Added");
             });
         }
-        this.childModal.hide();
+        /*
+         this.activeModal.close();*/
     }
 
-    removeId(index) {
+    removeProperty(index) {
         this.elt.properties.splice(index, 1);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property removed. Save to confirm.");
