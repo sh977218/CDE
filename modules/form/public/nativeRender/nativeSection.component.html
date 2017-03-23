@@ -18,9 +18,10 @@
         <span *ngSwitchDefault class="text-muted"><span [textContent]="formElement.instructions.value"></span></span>
     </div>
 
-    <cde-native-section-matrix *ngIf="nativeRenderService.profile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement)"
+    <cde-native-table *ngIf="sectionType() === 'table'" [formElement]="formElement"></cde-native-table>
+    <cde-native-section-matrix *ngIf="sectionType() === 'matrix'"
                                [formElement]="formElement" [numsubquestions]="numSubQuestions"></cde-native-section-matrix>
-    <div *ngIf="!(nativeRenderService.profile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement))">
+    <div *ngIf="sectionType() === 'section'">
         <div *ngFor="let element of formElement.formElements; let i = index">
             <div *ngIf="nativeRenderService.evaluateSkipLogicAndClear(element.skipLogic?.condition, formElement.formElements, element)">
                 <div *ngIf="element.elementType === 'question'" [ngClass]="{'keep-with-previous':i===0}"

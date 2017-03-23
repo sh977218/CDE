@@ -27,12 +27,12 @@
                                            [disabled]="!formElement.question.editable"/>
                                     <input type="checkbox" *ngIf="formElement.question.multiselect"
                                            [attr.name]="formElement.questionId"
-                                           [checked]="checkBoxIsChecked(formElement.question, pv.permissibleValue)"
-                                           (change)="checkboxOnChange($event, formElement.question, pv.permissibleValue)"
+                                           [checked]="nativeRenderService.checkboxIsChecked(formElement.question, pv.permissibleValue)"
+                                           (change)="nativeRenderService.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
                                            [required]="formElement.question.required"
                                            [disabled]="!formElement.question.editable"
-                                    />{{getLabel(pv)}}<span *ngIf="nativeRenderService.profile.displayValues"
-                                          [textContent]="getValue(pv)"></span>
+                                    />{{nativeRenderService.getPvLabel(pv)}}<span *ngIf="nativeRenderService.profile.displayValues"
+                                          [textContent]="nativeRenderService.getPvValue(pv)"></span>
                                 </label>
                                 <div *ngIf="pv?.subQuestions">
                                     <div *ngFor="let fe of pv.subQuestions; let j = index">

@@ -223,6 +223,46 @@ export class NativeRenderService {
         return skipLogicResult;
     }
 
+    getPvLabel(pv) {
+        return pv ? (pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue) : "";
+    }
+
+    getPvValue(pv) {
+        return (pv && pv.permissibleValue !== pv.valueMeaningName ? pv.permissibleValue : "");
+    }
+
+    checkboxOnChange($event: any, model: any, value: any) {
+        if (!Array.isArray(model.answer))
+            model.answer = [];
+        if ($event.target.checked)
+            model.answer.push(value);
+        else
+            model.answer.splice(model.answer.indexOf(value), 1);
+    }
+    checkboxIsChecked(model: any, value: any) {
+        if (!Array.isArray(model.answer))
+            model.answer = [];
+        return (model.answer.indexOf(value) !== -1);
+    }
+
+    checkboxOnChangeRepeat($event: any, model: any, value: any, i) {
+        NativeRenderService.checkboxModelExistsRepeat(model, i);
+        if ($event.target.checked)
+            model.answer[i].push(value);
+        else
+            model.answer[i].splice(model.answer.indexOf(value), 1);
+    }
+    checkboxIsCheckedRepeat(model: any, value: any, i) {
+        NativeRenderService.checkboxModelExistsRepeat(model, i);
+        return (model.answer[i].indexOf(value) !== -1);
+    }
+    static checkboxModelExistsRepeat(model: any, i) {
+        if (!Array.isArray(model.answer))
+            model.answer = [];
+        if (model.answer.length <= i || !Array.isArray(model.answer[i]))
+            model.answer[i] = [];
+    }
+
     static transformFormToInline(form) {
         let prevQ = [];
         let transformed = false;
