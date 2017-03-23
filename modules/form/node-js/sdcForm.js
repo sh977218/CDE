@@ -20,23 +20,24 @@ function addQuestion(parent, question) {
 
     var questionEle = parent.ele({Question: newQuestion});
 
-    if (question.question.cde.ids.length>0) {
-        question.question.cde.ids.forEach(function(id){
+    if (question.question.cde.ids.length > 0) {
+        question.question.cde.ids.forEach(function (id) {
             var codedValueEle = questionEle.ele(
-                {CodedValue: {
-                    "Code": {"@val": id.id}
-                    , "CodeSystem": {
-                        "CodeSystemName": {"@val": id.source}
+                {
+                    CodedValue: {
+                        "Code": {"@val": id.id}
+                        , "CodeSystem": {
+                            "CodeSystemName": {"@val": id.source}
+                        }
                     }
-                }
                 });
             if (id.version) {
-                codedValueEle.children.filter(c => c.name === 'CodeSystem')[0].ele({Version: {"@val":id.version}});
+                codedValueEle.children.filter(c => c.name === 'CodeSystem')[0].ele({Version: {"@val": id.version}});
             }
         });
     }
 
-    if (question.question.datatype === 'Value List') {
+    if (question.question.datatype === 'Value List' && question.question.answers.length > 0) {
         var newListField = questionEle.ele("ListField");
         var newList = newListField.ele("List");
         if (question.question.multiselect) newListField.att("maxSelections", "0");
@@ -50,7 +51,7 @@ function addQuestion(parent, question) {
                 };
                 if (answer.codeSystemName) {
                     q["CodedValue"] = {
-                        "Code":{"@val":answer.valueMeaningCode}
+                        "Code": {"@val": answer.valueMeaningCode}
                         , "CodeSystem": {
                             "CodeSystemName": {"@val": answer.codeSystemName}
                         }
@@ -60,7 +61,10 @@ function addQuestion(parent, question) {
             });
         }
     } else {
-        questionEle.ele("ResponseField").ele("Response").ele("string", {"name": "NA_" + Math.random(), "maxLength": "4000"});
+        questionEle.ele("ResponseField").ele("Response").ele("string", {
+            "name": "NA_" + Math.random(),
+            "maxLength": "4000"
+        });
     }
 
     idToName[question.question.cde.tinyId] = question.label;
@@ -87,14 +91,14 @@ function doQuestion(parent, question) {
                         if (li.attributes["title"] && li.attributes['title'].value === terms[1]) {
                             embed = true;
                             if (question.question.datatype === 'Value List') {
-                                var liChildItems = li.children.filter( c => c.name === 'ChildItems')[0];
+                                var liChildItems = li.children.filter(c => c.name === 'ChildItems')[0];
                                 if (!liChildItems) liChildItems = li.ele({ChildItems: {}});
                                 addQuestion(liChildItems, question);
                             } else {
                                 if (question.label === "" || question.hideLabel) {
                                     li.ele({ListItemResponseField: {Response: {string: ""}}});
                                 } else {
-                                    var liChildItems2 = li.children.filter( c => c.name === 'ChildItems')[0];
+                                    var liChildItems2 = li.children.filter(c => c.name === 'ChildItems')[0];
                                     if (!liChildItems2) liChildItems2 = li.ele({ChildItems: {}});
                                     addQuestion(liChildItems2, question);
                                 }
