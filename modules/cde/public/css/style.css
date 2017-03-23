@@ -7,11 +7,19 @@
     display: initial;
 }
 
+.navbar {
+    padding: 0;
+}
+
 .dropdown-toggle::after {
     content: "";
     display: initial;
     border: none;
     margin: 0;
+}
+
+select.form-control:not([size]):not([multiple]) {
+    height: auto;
 }
 
 .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6,
@@ -1498,10 +1506,6 @@ input.ng-invalid {
 .form-horizontal .native-section .radio-inline,
 .form-horizontal .native-section .checkbox-inline {
     padding-top: 0;
-}
-
-table.table > tbody > tr > td {
-    padding: 8px 8px 8px 0;
 }
 
 label.input-group-addon {
