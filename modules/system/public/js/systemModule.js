@@ -1,7 +1,6 @@
 import {upgradeAdapter} from "../../../upgrade";
 import {ClassificationService} from "../../../core/public/classification.service";
 import {SkipLogicService} from "../../../core/public/skipLogic.service";
-import {UserCommentsComponent} from "../userComments.component";
 
 import * as authShared from "../../../system/shared/authorizationShared";
 
@@ -179,36 +178,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html'
         };
     }])
-    .directive('sortableArray', [function () {
-        return {
-            restrict: 'AE',
-            scope: {
-                theArray: "="
-                , index: '=index'
-                , cb: '&'
-            },
-            templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
-            controller: ["$scope", function ($scope) {
-                $scope.moveUp = function () {
-                    $scope.theArray.splice($scope.index - 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveDown = function () {
-                    $scope.theArray.splice($scope.index + 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveTop = function () {
-                    $scope.theArray.splice(0, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveBottom = function () {
-                    $scope.theArray.push($scope.array.shift());
-                    $scope.cb();
-                };
-            }]
-        };
-    }])
-    .directive('user-comments', upgradeAdapter.downgradeNg2Component(UserCommentsComponent))
 ;
 
 angular.module('systemModule').filter('placeHoldEmpty', [function () {
@@ -424,3 +393,8 @@ angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downg
 import {PropertiesComponent} from "../components/adminItem/properties.component";
 angular.module('systemModule').directive('cdeAdminItemProperties', upgradeAdapter.downgradeNg2Component(PropertiesComponent));
 
+import {SortableArrayComponent} from "../components/sortableArray.component.html";
+angular.module('systemModule').directive('sortable-array', upgradeAdapter.downgradeNg2Component(SortableArrayComponent));
+
+import {UserCommentsComponent} from "../components/userComments.component";
+angular.module('systemModule').directive('user-comments', upgradeAdapter.downgradeNg2Component(UserCommentsComponent));

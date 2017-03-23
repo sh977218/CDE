@@ -18,6 +18,7 @@ export class UserCommentsComponent implements OnInit {
     }
 
     getComments(page) {
+        //noinspection TypeScriptValidateTypes
         this.http.get("/commentsFor/" + this.user.username + "/" + (page - 1) * 30 + "/30").map((res: Response) => res.json()).subscribe((data) => {
             this.comments.latestComments = data;
             let len = this.comments.latestComments.length;

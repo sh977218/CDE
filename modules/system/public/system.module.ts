@@ -10,7 +10,7 @@ import { Select2Module } from "ng2-select2";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
 import { upgradeAdapter } from "../../upgrade";
-import { UserCommentsComponent } from "./userComments.component";
+import { UserCommentsComponent } from "./components/userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
 import { PropertiesComponent } from "./components/adminItem/properties.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
