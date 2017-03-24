@@ -202,14 +202,14 @@ schemas.namingSchema = new mongoose.Schema({
 }, {_id: false});
 
 var attachmentSchema = {
-    fileid: String
+    fileid: {type: String, index: true}
     , filename: String
     , filetype: String
     , uploadDate: Date
     , comment: String
     , uploadedBy: {
         userId: mongoose.Schema.Types.ObjectId
-        , username: String
+        , username: {type: String, index: true}
     }
     , filesize: Number
     , isDefault: Boolean
