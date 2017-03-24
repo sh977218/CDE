@@ -17,7 +17,7 @@ stream.on('data', function (ninds) {
                 cde.dataType === 'Date or Date & Time' )) {
                 DataElement.find({
                     'sources.sourceName': 'NINDS',
-                    archived: null, 'ids.id': cde.cdeId,
+                    archived: false, 'ids.id': cde.cdeId,
                     "registrationState.registrationStatus": {$not: /Retired/}
                 }, function (err, existingCdes) {
                     if (err) throw err;

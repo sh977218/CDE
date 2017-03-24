@@ -4,7 +4,7 @@ var FormModel = require('../../modules/form/node-js/mongo-form').Form;
 var totalForm = 0;
 FormModel.find({
     'stewardOrg.name': 'NINDS',
-    archived: null,
+    archived: false,
     'formElements': {$size: 1},
     $or: [{'formElements.formElements.label': ''}, {'formElements.formElements.label': 'N/A'}]
 }).exec(function (err, allForms) {

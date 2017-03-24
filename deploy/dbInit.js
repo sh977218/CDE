@@ -128,5 +128,5 @@ users.forEach(function(u) {
 
 db.users.insert({username: 'oldUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: [], searchSettings: oldSettings});
 
-db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this."});
-db.articles.insert({key: "testEdits", body: "Testing edits"});
+db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this.", archived: false});
+db.articles.insert({key: "testEdits", body: "Testing edits", archived: false});

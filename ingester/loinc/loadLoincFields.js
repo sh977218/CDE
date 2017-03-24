@@ -81,7 +81,7 @@ function createLoincMap(){
 
 
 function lookupElts(model, cb){
-    var stream = model.find({"ids.source":"LOINC", archived: null}).stream();
+    var stream = model.find({"ids.source":"LOINC", archived: false}).stream();
     stream.on('data', function(cde){
         var loincId = "";
         cde.ids.forEach(function(id){
@@ -96,7 +96,7 @@ function lookupElts(model, cb){
 
 var doneCount = 0;
 function updateElts(model, cb){
-    var stream = model.find({"ids.source": "LOINC", archived: null}).stream();
+    var stream = model.find({"ids.source": "LOINC", archived: false}).stream();
     stream.on('data', function(cde){
         var loincId = "";
         cde.ids.forEach(function(id){

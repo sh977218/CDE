@@ -10,7 +10,7 @@ var deCounter = 0;
 var query = {
     $and: [{
         'stewardOrg.name': 'NCI',
-        'archived': null,
+        'archived': false,
         'registrationState.registrationStatus': {$ne: "Retired"}
     }, {
         $or: [{'updated': {$exists: false}}, {

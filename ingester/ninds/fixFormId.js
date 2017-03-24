@@ -5,7 +5,7 @@ var Form = require('../../modules/form/node-js/mongo-form').Form;
 
 
 function run() {
-    var stream = Form.find({'stewardOrg.name': 'NINDS', archived: null}).stream();
+    var stream = Form.find({'stewardOrg.name': 'NINDS', archived: false}).stream();
     var i = 0;
     stream.on('data', function (form) {
         stream.pause();
