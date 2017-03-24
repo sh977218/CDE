@@ -10,6 +10,8 @@ var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
+exports.esClient = esClient;
+
 exports.updateOrInsert = function (elt, cb) {
     esInit.riverFunction(elt.toObject(), function (doc) {
         if (doc) {

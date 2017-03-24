@@ -31,6 +31,7 @@ public class EltIdMaps {
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");
         eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
+        eltMap.put("Little interest or pleasure in doing things in last 2 weeks [Reported.PHQ]", "QkWPURx5Fz");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL) - troublesome physical symptom problem score", "QXpcS9boYtk");
         eltMap.put("Medication affecting cardiovascular function type exam day indicator", "xug6J6R8fkf");
@@ -66,6 +67,7 @@ public class EltIdMaps {
         eltMap.put("Temperature measurement", "2V9Th1t2guY");
         eltMap.put("Temperature maximum daily measurement", "hO8j7EqG61K");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
+        eltMap.put("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]", "m1xj2YMI1X");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
 
         // Forms
@@ -87,10 +89,18 @@ public class EltIdMaps {
         eltMap.put("Non Editable Questions", "m16LQuUCG");
         eltMap.put("Not Equals Test", "QJBWLKc47");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
+        eltMap.put("Patient Health Questionnaire-2 (PHQ-2)", "XJzVz1TZDe");
+        eltMap.put("Patient Health Questionnaire-2 (PHQ-2) More Questions", "XJzVz1TZDE");
+        eltMap.put("Patient Health Questionnaire 2 item (PHQ-2) [Reported]", "XkZqYRlqKf");
+        eltMap.put("PHQ-9 quick depression assessment panel [Reported.PHQ]", "mJsGoMU1m");
+        eltMap.put("Patient Health Questionnaire - 9 (PHQ-9) Depression Scale", "mJP_B1HrFg");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
         eltMap.put("PROMIS SF v1.0 - Applied Cog Abilities 4a", "Q1Ogr2OtIe");
+        eltMap.put("PROMIS SF v1.0 - Pain Behavior 7a", "QkggxHhuF8x");
         eltMap.put("PROMIS Bank v1.2 - Physical Function", "Xko4nuKLg");
+        eltMap.put("PROMIS SF v1.0-Sleep Disturbance 4a", "Q1JxnV2OYIx");
+        eltMap.put("PROMIS SF v1.0-Sleep Disturbance 6a", "QJbbHnOFUl");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
@@ -98,6 +108,7 @@ public class EltIdMaps {
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
+        eltMap.put("Two Dimensional Speckle Tracking Echocardiography Imaging", "7kKLUkHBtl");
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("Vital Signs", "m1j_L1HHte");

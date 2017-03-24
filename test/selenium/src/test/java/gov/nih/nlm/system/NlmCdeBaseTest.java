@@ -56,6 +56,7 @@ public class NlmCdeBaseTest {
     protected static String nlm_username = "nlm";
     protected static String nlm_password = "nlm";
     protected static String cabigAdmin_username = "cabigAdmin";
+    protected static String promis_username = "promis";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
     static String history_username = "historyuser";
@@ -614,6 +615,19 @@ public class NlmCdeBaseTest {
         findElement(By.name("q")).clear();
     }
 
+    protected void addFormToQuickBoardByTinyId(String formName) {
+        goToSearch("form");
+        String tinyId = EltIdMaps.eltMap.get(formName);
+        if (tinyId.length() == 0) {
+            System.out.println("form " + formName + " is not present in the eltMap.");
+        }
+        findElement(By.id("ftsearch-input")).sendKeys(tinyId);
+        hangon(0.5);
+        clickElement(By.id("search.submit"));
+        clickElement(By.id("addToCompare_0"));
+        closeAlert();
+    }
+
     public void goToQuickBoardByModule(String module) {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));
@@ -676,8 +690,13 @@ public class NlmCdeBaseTest {
 
     protected void scrollToViewById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        findElement(By.id(id));
-        je.executeScript("document.getElementById('" + id + "').scrollIntoView(true);");
+        je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.id(id)));
+        hangon(2);
+    }
+    protected void scrollToViewByXpath(String xpath) {
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.xpath(xpath)));
+        hangon(2);
     }
 
     protected void hoverOverElement(WebElement ele) {
