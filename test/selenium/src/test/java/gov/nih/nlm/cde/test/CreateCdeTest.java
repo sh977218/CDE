@@ -19,8 +19,8 @@ public class CreateCdeTest extends BaseClassificationTest {
 
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("Select One");
         textPresent("Please select a steward for the new CDE");
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
 
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
         modalGone();
         textPresent("Traumatic Brain Injury");

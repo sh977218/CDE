@@ -78,7 +78,7 @@ exports.desByConcept = function (concept, callback) {
         },
         "naming source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
         .limit(20)
-        .where("archived").equals(null)
+        .where("archived").equals(false)
         .exec(function (err, cdes) {
             callback(cdes);
         });
@@ -98,7 +98,7 @@ exports.eltByTinyId = function (tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null);
     DataElement.findOne({
         'tinyId': tinyId,
-        "archived": null
+        "archived": false
     }).exec(function (err, de) {
         callback(err, de);
     });
@@ -115,7 +115,7 @@ exports.cdesByIdList = function (idList, callback) {
 };
 
 exports.byTinyIdList = function (tinyIdList, callback) {
-    DataElement.find({'archived': null}).where('tinyId')
+    DataElement.find({'archived': false}).where('tinyId')
         .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
         .exec(function (err, cdes) {
@@ -164,7 +164,7 @@ exports.acceptFork = function (fork, orig, callback) {
 };
 
 exports.isForkOf = function (fork, callback) {
-    return DataElement.findOne({tinyId: fork.forkOf}).where("archived").equals(null).exec(function (err, cde) {
+    return DataElement.findOne({tinyId: fork.forkOf}).where("archived").equals(false).exec(function (err, cde) {
         callback(err, cde);
     });
 };
@@ -173,7 +173,7 @@ exports.forks = function (cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement !== null) {
             return DataElement.find({forkOf: dataElement.tinyId}, "tinyId naming stewardOrg updated updatedBy createdBy created updated changeNote")
-                .where("archived").equals(null).where("registrationState.registrationStatus").ne("Retired").exec(function (err, cdes) {
+                .where("archived").equals(false).where("registrationState.registrationStatus").ne("Retired").exec(function (err, cdes) {
                     callback("", cdes);
                 });
         } else {
@@ -229,7 +229,7 @@ exports.fork = function (elt, user, callback) {
         newDe.forkOf = dataElement.tinyId;
         newDe.registrationState.registrationStatus = "Incomplete";
         newDe.tinyId = mongo_data_system.generateTinyId();
-        dataElement.archived = undefined;
+        dataElement.archived = false;
     });
 };
 
@@ -370,7 +370,7 @@ exports.setAttachmentApproved = function (id) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    DataElement.find({archived: null}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
+    DataElement.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
         if (cdes.length > 1)
             cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
@@ -379,7 +379,7 @@ exports.byOtherId = function (source, id, cb) {
 
 exports.byOtherIdAndNotRetired = function (source, id, cb) {
     DataElement.find({
-        archived: null,
+        archived: false,
         "registrationState.registrationStatus": {$ne: "Retired"}
     }).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
         if (err) cb(err, null);
@@ -390,7 +390,7 @@ exports.byOtherIdAndNotRetired = function (source, id, cb) {
 };
 
 exports.bySourceIdVersion = function (source, id, version, cb) {
-    DataElement.find({archived: null}).elemMatch("ids", {
+    DataElement.find({archived: false}).elemMatch("ids", {
         source: source, id: id, version: version
     }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
@@ -400,7 +400,7 @@ exports.bySourceIdVersion = function (source, id, version, cb) {
 exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, version, cb) {
     //noinspection JSUnresolvedFunction
     DataElement.find({
-        "archived": null,
+        "archived": false,
         "registrationState.registrationStatus": {$ne: "Retired"}
     }).elemMatch("ids", {
         source: source, id: id, version: version
@@ -416,11 +416,11 @@ exports.fileUsed = function (id, cb) {
 };
 
 exports.findCurrCdesInFormElement = function (allCdes, cb) {
-    DataElement.find({archived: null}, "tinyId version derivationRules").where("tinyId").in(allCdes).exec(cb);
+    DataElement.find({archived: false}, "tinyId version derivationRules").where("tinyId").in(allCdes).exec(cb);
 };
 
 exports.derivationOutputs = function (inputTinyId, cb) {
-    DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
+    DataElement.find({archived: false, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
 var correctBoardPinsForCde = function (doc, cb) {
@@ -445,7 +445,7 @@ new CronJob({
         mongo_board.PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
             if (err) throw "Cannot repair CDE references.";
             async.eachSeries(ids, function (id, cb) {
-                DataElement.findOne({tinyId: id, archived: null}).exec(function (err, de) {
+                DataElement.findOne({tinyId: id, archived: false}).exec(function (err, de) {
                     correctBoardPinsForCde(de, function () {
                         cb();
                     });

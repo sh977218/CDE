@@ -5,7 +5,7 @@ var mongo_cde = require('../modules/cde/node-js/mongo-cde'),
 var idList = [];
 
 var stream = mongo_cde.getStream({$where: "this.valueDomain.permissibleValues.length > 2",
-    archived: null,
+    archived: false,
     retired: {$ne: 'Retired'},
     source: 'caDSR'
 });

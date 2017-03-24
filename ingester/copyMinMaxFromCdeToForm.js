@@ -25,7 +25,7 @@ async.series([
                 {'valueDomain.datatypeNumber.minValue': {$exists: true}},
                 {'valueDomain.datatypeNumber.maxValue': {$exists: true}}
             ],
-            "archived": null
+            "archived": false
         }).exec(function (err, cdes) {
             async.eachSeries(cdes, function (cde, doneOneCde) {
                 console.log('cde id: ' + cde.get('tinyId'));
@@ -33,7 +33,7 @@ async.series([
                 var tinyId = cdeObj.tinyId;
                 Form.find({
                     'formElements.formElements.question.cde.tinyId': tinyId,
-                    "archived": null
+                    "archived": false
                 }).exec(function (err, forms) {
                     async.eachSeries(forms, function (form, doneOneForm) {
                         var formElements = form.get('formElements');
