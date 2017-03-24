@@ -22,12 +22,8 @@
                     <dd tabindex="0" id="dd_name_{{$index}}">{{prop.key}}</dd>
                     <dt tabindex="0">Value:</dt>
                     <dd tabindex="0" id="dd_prop_value_{{$index}}">
-                        <inline-area-edit ></inline-area-edit>
-<!--
-[(model)]="prop.value"
-                                     (onOk)="saveProperty()"     [defFormat]="prop.valueFormat"
-                        [isAllowed]="isAllowedModel.isAllowed(elt)"
--->
+                        <inline-area-edit [(model)]="prop.value" (onOk)="saveProperty()" [defFormat]="prop.valueFormat"
+                                          [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-area-edit>
                     </dd>
                 </dl>
             </div>

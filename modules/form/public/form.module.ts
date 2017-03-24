@@ -10,6 +10,7 @@ import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
 import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
+import { SharedModule } from "../../shared/public/shared.module";
 
 @NgModule({
     declarations: [
@@ -20,7 +21,7 @@ import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component
         NativeSectionMatrixComponent,
         NativeQuestionComponent
     ],
-    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot(), SortableModule.forRoot(), AlertModule.forRoot(), ProgressbarModule.forRoot()],
+    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot(), SortableModule.forRoot(), AlertModule.forRoot(), ProgressbarModule.forRoot(), SharedModule],
 
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

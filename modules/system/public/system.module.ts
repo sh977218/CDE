@@ -14,12 +14,11 @@ import { UserCommentsComponent } from "./components/userComments.component";
 import { HomeComponent } from "./components/home/home.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
+import { SharedModule } from "../../shared/public/shared.module";
 
 @NgModule({
     declarations: [
         upgradeAdapter.upgradeNg1Component("sortableArray"),
-        upgradeAdapter.upgradeNg1Component("inlineEdit"),
-        upgradeAdapter.upgradeNg1Component("inlineAreaEdit"),
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
         upgradeAdapter.upgradeNg1Component("formSummaryList"),
@@ -34,7 +33,7 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
         PlaceHoldEmptyPipe],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), TypeaheadModule.forRoot(),
-        PaginationModule.forRoot(), DataTableModule, Select2Module],
+        PaginationModule.forRoot(), DataTableModule, Select2Module, SharedModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

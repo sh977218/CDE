@@ -29,10 +29,4 @@ export class CoreModule {
                 "CoreModule is already loaded. Import it in the AppModule only.");
         }
     }
-    static forRoot(): ModuleWithProviders {
-        return {
-            ngModule: CoreModule,
-            providers: []
-        };
-    }
 }
