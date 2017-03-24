@@ -1,7 +1,7 @@
 <h4 tabindex="0">History</h4>
 <div ng-controller="DiffConfigCtrl">
     <div class="row" ng-controller="FormDiffCtrl">
-        <div class="col-lg-4 col-md-5" ng-if="priorForms.length > 0">
+        <div class="col-lg-4 col-xs-12" ng-if="priorForms.length > 0">
             <table class="table table-hover" id="historyTable">
                 <caption>List of previous versions. Click rows to select them.
                     <button ng-if="selectedIds.length === 2" id="historyCompareBtn"
@@ -51,8 +51,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-lg-4 col-md-5" ng-if="!(priorForms.length > 0)">This Form has no history</div>
-        <div class="col-lg-8 col-md-7">
+        <div class="col-lg-4 col-xs-12" ng-if="!(priorForms.length > 0)">This Form has no history</div>
+        <div class="col-lg-8 col-xs-12">
             <div ng-include="'/system/public/html/historyCompare.html'"></div>
         </div>
     </div>

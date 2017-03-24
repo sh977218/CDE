@@ -81,7 +81,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
 
 function doMigrationFormModel(formId, migrationForm, source, orgName, findFormDone) {
     var formCond = {
-        archived: null,
+        archived: false,
         "registrationState.registrationStatus": {$not: /Retired/},
         created: {$ne: importDate}
     };
@@ -143,7 +143,7 @@ function streamOnClose() {
         'sources.sourceName': source,
         'classification.stewardOrg.name': source,
         'updatedBy.username': {$not: /lizamos/},
-        'archived': null
+        'archived': false
     }).exec(function (e, fs) {
         if (e) throw e;
         else {

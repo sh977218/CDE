@@ -42,11 +42,12 @@ var users = [
         username: 'nlm',
         password: 'nlm',
         siteAdmin: true,
-        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org", "TEST", "PhenX"],
+        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org", "TEST", "PhenX", "NLM", "NIDA"],
         viewHistory: [],
         email: "admin@email.com"
     }
     , {username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
+    , {username: 'promis', password: 'pass', orgAdmin: ["PROMIS / Neuro-QOL"], quota: 1073741826, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'userToPromote', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
@@ -127,5 +128,5 @@ users.forEach(function(u) {
 
 db.users.insert({username: 'oldUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: [], searchSettings: oldSettings});
 
-db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this."});
-db.articles.insert({key: "testEdits", body: "Testing edits"});
+db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this.", archived: false});
+db.articles.insert({key: "testEdits", body: "Testing edits", archived: false});

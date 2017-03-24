@@ -25,7 +25,7 @@ module.exports = {
         rules: [
             {test: /.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {test: /\.ts$/, exclude: /node_modules/, use: ['ts-loader', 'angular2-template-loader']},
-            {test: /\.css$/, use: ['style-loader', 'css-loader']},
+            {test: /\.css$/, use: ['style-loader?insertAt=top', 'css-loader']},
             {test: /\.html$/, use: ['raw-loader']}
         ]
     },

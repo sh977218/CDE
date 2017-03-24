@@ -3,7 +3,7 @@
         <h4>History</h4>
 
         <div class="row">
-            <div class="col-lg-4 col-md-5" ng-if="priorCdes.length > 0">
+            <div class="col-lg-4 col-xs-12" ng-if="priorCdes.length > 0">
                 <input id="showVersionedHistory" type="checkbox" ng-model="showVersioned">
                 <label for="showVersionedHistory">Only show versioned revisions.</label>
                 <table class="table table-hover" id="historyTable">
@@ -50,8 +50,8 @@
 
                 </table>
             </div>
-            <div class="col-md-4" ng-if="!(priorCdes.length > 0)">This Data Element has no history</div>
-            <div class="col-md-7 col-lg-8">
+            <div class="col-lg-4 col-xs-12" ng-if="!(priorCdes.length > 0)">This Data Element has no history</div>
+            <div class="col-lg-8 col-xs-12">
                 <div ng-include="'/system/public/html/historyCompare.html'"></div>
             </div>
         </div>

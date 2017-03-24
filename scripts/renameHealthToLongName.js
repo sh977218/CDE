@@ -5,7 +5,7 @@ var mongo_cde = require('../modules/cde/node-js/mongo-cde'),
 var idList = [];
 
 var stream = mongo_cde.getStream({
-    archived: null,
+    archived: false,
     retired: {$ne: 'Retired'},
     source: 'caDSR'
 });

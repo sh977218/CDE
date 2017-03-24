@@ -2,7 +2,7 @@ import {upgradeAdapter} from "../../../upgrade";
 import {ClassificationService} from "../../../core/public/classification.service";
 import {SkipLogicService} from "../../../core/public/skipLogic.service";
 import {UserCommentsComponent} from "../userComments.component";
-
+import {ProfileComponent} from "../components/profile.component";
 import * as authShared from "../../../system/shared/authorizationShared";
 
 
@@ -28,8 +28,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 return "/cde/search";
             }
         }).when('/home', {
-            controller: 'HomeCtrl',
-            templateUrl: '/system/public/html/home.html'
+            template: '<cde-home></cde-home>'
         }).when('/login', {
             controller: 'AuthCtrl',
             templateUrl: '/system/public/html/login.html'
@@ -261,6 +260,7 @@ angular.module('systemModule').filter('tagsToArray', [function () {
         }).join(', ');
     };
 }]);
+angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeNg2Component(ProfileComponent));
 
 angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
 angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
@@ -407,11 +407,17 @@ angular.module('systemModule').run(["$rootScope", "$location", function ($rootSc
 
 import {upgradeAdapter} from "../../../upgrade.ts";
 
+import {HomeComponent} from "../components/home/home.component";
+angular.module('systemModule').directive('cdeHome', upgradeAdapter.downgradeNg2Component(HomeComponent));
+
 import {ProfileComponent} from "../components/profile.component";
 angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeNg2Component(ProfileComponent));
 
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
 angular.module('systemModule').directive('cdeLogAudit', upgradeAdapter.downgradeNg2Component(LogAuditComponent));
+
+import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
+angular.module('systemModule').directive('cdeUsersMgt', upgradeAdapter.downgradeNg2Component(UsersMgtComponent));
 
 import {IdentifiersComponent} from "../components/adminItem/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downgradeNg2Component(IdentifiersComponent));

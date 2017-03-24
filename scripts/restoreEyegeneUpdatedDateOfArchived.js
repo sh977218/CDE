@@ -5,7 +5,7 @@ var MigrationDateElementModel = require('../ingester/createMigrationConnection')
 
 var count = 0;
 
-var stream = DataElementModel.find({archived: null, 'classification.stewardOrg.name': 'NEI'}).stream();
+var stream = DataElementModel.find({archived: false, 'classification.stewardOrg.name': 'NEI'}).stream();
 stream.on('data', function (data) {
     stream.pause();
     async.forEach(data.history, function (h, doneOneH) {

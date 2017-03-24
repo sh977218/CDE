@@ -6,7 +6,7 @@ var async = require('async'),
 var formCount = 0;
 
 Form.find({
-    archived: null,
+    archived: false,
     'stewardOrg.name': 'NINDS',
     "registrationState.registrationStatus": {$not: /Retired/}
 }).exec(function (e, forms) {

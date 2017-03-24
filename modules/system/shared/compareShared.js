@@ -33,11 +33,12 @@ exports.compareSideBySide = {
                 if (options.wipeUseless) {
                     options.wipeUseless(o);
                 }
-                var rightIndex = exports.findIndexInArray(rightArray.slice(beginIndex, rightArray.length), o, options.equal);
+                var rightArrayCopy = rightArray.slice(beginIndex, rightArray.length);
+                var rightIndex = exports.findIndexInArray(rightArrayCopy, o, options.equal);
                 // element didn't found in right list.
                 if (rightIndex === -1) {
                     // put all right list elements before this element
-                    if (beginIndex === 0) {
+                    if (beginIndex === leftArray.length - 1) {
                         for (var m = 0; m < rightArray.length; m++) {
                             result.push({
                                 found: "right",
@@ -79,6 +80,8 @@ exports.compareSideBySide = {
                         property.match = JSON.stringify(getValueByNestedProperty(leftArray[found.leftIndex], property.property))
                             === JSON.stringify(getValueByNestedProperty(rightArray[found.rightIndex], property.property));
                         found.result.push(property);
+                        if (!property.match)
+                            found.notMatch = true;
                     });
                     result.push(found);
                     matchCount++;
@@ -154,7 +157,8 @@ exports.compareSideBySide = {
 
 exports.findIndexInArray = function (array, item, equal) {
     for (var index = 0; index < array.length; index++) {
-        if (equal(item, array[index])) return index;
+        if (equal(item, array[index]))
+            return index;
     }
     return -1;
 };

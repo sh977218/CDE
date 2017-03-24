@@ -202,7 +202,7 @@ stream.on('data', (protocol) => {
     var form = ProtocolToForm.protocolToForm(protocol);
     var instrumentPath = findInstrument(formId);
     var formCond = {
-        archived: null,
+        archived: false,
         "registrationState.registrationStatus": {$not: /Retired/},
         created: {$ne: today}
     };

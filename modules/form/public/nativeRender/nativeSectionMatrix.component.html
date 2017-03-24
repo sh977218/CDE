@@ -1,0 +1,21 @@
+<table class="table">
+    <thead>
+    <tr>
+        <th></th>
+        <th *ngFor="let a of formElement.formElements[0].question.answers" [textContent]="a.valueMeaningName"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let q of formElement.formElements"
+        [hidden]="!(!q.question.invisible || q.question.invisible && nativeRenderService.profile.displayInvisible)">
+        <td>
+            <label [ngClass]="{'native-question-label': !numSubQuestions && nativeRenderService.profile.displayNumbering}"
+                   [textContent]="q.label"></label>
+        </td>
+        <td *ngFor="let qa of q.question.answers">
+            <span *ngIf="nativeRenderService.profile.displayValues" [textContent]="qa.permissibleValue"></span>
+            <input type="radio" [value]="qa.permissibleValue" [(ngModel)]="q.question.answer" name="{{q.questionId}}">
+        </td>
+    </tr>
+    </tbody>
+</table>

@@ -13,7 +13,7 @@
     "angular-timeago": "0.4.4",
     "font-awesome": "4.7.0",
     "jquery": "~1.10.2",
-    "select2": "~3.4.5",
+    "select2": "4.0.3",
     "selectize": "~0.8.5",
     "angular-ui-select": "0.19.6",
     "textAngular": "1.5.16",
