@@ -57,7 +57,7 @@ angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$pa
     };
 }]);
 
-// Angular 2 upgraded
+// Angular 2 downgrade
 import {upgradeAdapter} from "../../../upgrade";
 
 import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";

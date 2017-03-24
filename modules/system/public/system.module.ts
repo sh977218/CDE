@@ -1,3 +1,4 @@
+import { upgradeAdapter } from "../../upgrade";
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
@@ -6,14 +7,13 @@ import { DataTableModule } from "angular2-datatable";
 import { Select2Module } from "ng2-select2";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
-import { upgradeAdapter } from "../../upgrade";
-import { UserCommentsComponent } from "./components/userComments.component";
+import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
 import { PropertiesComponent } from "./components/adminItem/properties.component";
+import { UserCommentsComponent } from "./components/userComments.component";
+import { HomeComponent } from "./components/home/home.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
-import { LinkedFormsComponent } from "./components/linkedForms.component";
-import { HomeComponent } from "./components/home/home.component";
 
 @NgModule({
     declarations: [

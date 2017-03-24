@@ -33,7 +33,7 @@ angular.module('cdeModule').directive('cdeAccordionList', function () {
         templateUrl: '/cde/public/html/cdeAccordionList.html'};
 });
 
-// Angular 2 upgraded
+// Angular 2 downgrade
 import {upgradeAdapter} from "../../../upgrade.ts";
 
 import {LinkedFormsComponent} from "../../../system/public/components/linkedForms.component";

@@ -400,7 +400,7 @@ angular.module('systemModule').run(["$rootScope", "$location", function ($rootSc
     });
 }]);
 
-// Angular 2 upgraded
+// Angular 2 downgrade
 import {upgradeAdapter} from "../../../upgrade.ts";
 
 import {HomeComponent} from "../components/home/home.component";
