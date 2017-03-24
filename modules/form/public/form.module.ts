@@ -10,9 +10,20 @@ import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
 import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
-import { SharedModule } from "../../shared/public/shared.module";
+import { AdminModule } from "../../admin/public/admin.module";
 
 @NgModule({
+    imports: [
+        CommonModule, 
+        FormsModule,
+        NgbModule,
+        ModalModule.forRoot(),
+        PaginationModule.forRoot(),
+        SortableModule.forRoot(),
+        AlertModule.forRoot(),
+        ProgressbarModule.forRoot(),
+        AdminModule
+    ],
     declarations: [
         MergeFormComponent,
         NativeRenderFullComponent,
@@ -21,8 +32,6 @@ import { SharedModule } from "../../shared/public/shared.module";
         NativeSectionMatrixComponent,
         NativeQuestionComponent
     ],
-    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot(), SortableModule.forRoot(), AlertModule.forRoot(), ProgressbarModule.forRoot(), SharedModule],
-
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormModule {

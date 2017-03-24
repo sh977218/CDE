@@ -18,5 +18,5 @@ const SortableArrayComponent = upgradeAdapter.upgradeNg1Component("sortableArray
         SortableArrayComponent
     ]
 })
-export class SharedModule {
+export class AdminModule {
 }

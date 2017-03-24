@@ -7,18 +7,22 @@ import { ModalModule } from "ng2-bootstrap";
 import { ConceptsComponent } from "../components/concepts.component";
 import { DerivationRulesComponent } from "../components/derivationRules.component";
 import { DatasetsComponent } from "../components/datasets/datasets.component";
-import { SharedModule } from "../../../shared/public/shared.module";
-import { upgradeAdapter } from "../../../upgrade";
+import { AdminModule } from "../../../admin/public/admin.module";
 
 @NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        ModalModule.forRoot(),
+        PaginationModule.forRoot(),
+        AdminModule
+    ],
     declarations: [
-        upgradeAdapter.upgradeNg1Component("inlineAreaEdit"),
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent
-        ],
+    ],
     providers: [],
-    imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
