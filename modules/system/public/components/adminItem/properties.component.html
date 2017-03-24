@@ -23,10 +23,8 @@
                     <dd tabindex="0" id="dd_name_{{$index}}">{{prop.key}}</dd>
                     <dt tabindex="0">Value:</dt>
                     <dd tabindex="0" id="dd_prop_value_{{$index}}">
-                        <!--
-                                                <inline-area-edit [(model)]="prop.value" [isAllowed]="true"
-                                                                  [defFormat]="prop.valueFormat" (onOk)="saveProperty()"></inline-area-edit>
-                        -->
+                        <inline-area-edit [(model)]="prop.value" [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                          [defFormat]="prop.valueFormat" (onOk)="saveProperty()"></inline-area-edit>
                     </dd>
                 </dl>
             </div>
@@ -41,26 +39,26 @@
     <div class="modal-header" id="newPropertyModalHeader">
         <h4 class="modal-title">Add Property</h4>
     </div>
-    <form name="form" role="form">
+    <form role="form" #newPropertyForm="ngForm">
         <div class="modal-body" id="newPropertyModalBody">
             <div class="form-group">
                 <label tabindex="0" for="newPropertyKey">Key</label>
-                <select ng-model="newProperty.key" id="newPropertyKey" name="key" class="form-control">
+                <select [(ngModel)]="newProperty.key" id="newPropertyKey" name="key" class="form-control">
                     <option ng-repeat="key in orgPropertyKeys" value="{{key}}">{{key}}</option>
                 </select>
             </div>
             <div class="form-group">
-                <label tabindex="0" for="newValue">Value</label>
-                    <textarea tabindex="0" class="form-control" ng-model="newProperty.value" name="value" id="newValue"
-                              Placeholder="Property Value" required></textarea>
+                <label tabindex="0" for="newPropertyValue">Value</label>
+                    <textarea tabindex="0" class="form-control" [(ngModel)]="newProperty.value" name="value"
+                              id="newPropertyValue" Placeholder="Property Value" required></textarea>
             </div>
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">
             <button class="btn cancel" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
                 Cancel
             </button>
-            <button class="btn btn-warning" [disabled]="isClean() || form.$invalid" id="createProperty" type="submit">
-                Save
+            <button class="btn btn-warning" [disabled]="!newPropertyForm.form.valid" id="createPropertyBtn"
+                    type="submit">Save
             </button>
         </div>
     </form>

@@ -387,7 +387,6 @@ angular.module('systemModule').config(["localStorageServiceProvider", function (
     localStorageServiceProvider.setPrefix('nlmcde');
 }]);
 
-
 angular.module('systemModule').run(["$rootScope", "$location", function ($rootScope, $location) {
     var dataLayer = window.dataLayer = window.dataLayer || [];
 
@@ -401,6 +400,7 @@ angular.module('systemModule').run(["$rootScope", "$location", function ($rootSc
     });
 }]);
 
+// Angular 2 upgraded
 import {upgradeAdapter} from "../../../upgrade.ts";
 
 import {HomeComponent} from "../components/home/home.component";

@@ -1,8 +1,3 @@
-import {upgradeAdapter} from "../../../upgrade";
-import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
-import {NativeRenderComponent} from "../nativeRender/nativeRender.component";
-import {NativeRenderFullComponent} from "../nativeRender/nativeRenderFull.component";
-
 angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'formTemplates']).config(
     ["$routeProvider", function($routeProvider)
 {
@@ -19,9 +14,7 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
         when('/createForm', {controller: 'CreateFormCtrl', templateUrl: '/form/public/html/createForm.html'}).
         when('/formView', {controller: 'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
 }]);
-angular.module('formModule').directive('cdeMergeForm', upgradeAdapter.downgradeNg2Component(MergeFormComponent));
 
-// Angular 2 upgraded
 angular.module('formModule').directive('formAccordionList', function () {
     return {
         scope: {forms: '=', ejsPage: '=', module: '='},
@@ -64,5 +57,14 @@ angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$pa
     };
 }]);
 
-angular.module('formModule').directive('cdeNativeRenderFull', upgradeAdapter.downgradeNg2Component(NativeRenderFullComponent));
+// Angular 2 upgraded
+import {upgradeAdapter} from "../../../upgrade";
+
+import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
+angular.module('formModule').directive('cdeMergeForm', upgradeAdapter.downgradeNg2Component(MergeFormComponent));
+
+import {NativeRenderComponent} from "../nativeRender/nativeRender.component";
 angular.module('formModule').directive('cdeNativeRender', upgradeAdapter.downgradeNg2Component(NativeRenderComponent));
+
+import {NativeRenderFullComponent} from "../nativeRender/nativeRenderFull.component";
+angular.module('formModule').directive('cdeNativeRenderFull', upgradeAdapter.downgradeNg2Component(NativeRenderFullComponent));
