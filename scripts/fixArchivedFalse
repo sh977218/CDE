@@ -1,2 +1,4 @@
 db.getCollection('dataelements').update({"archived" : null},{$set:{archived:false}},{"multi" : true  });
 db.getCollection('forms').update({"archived" : null},{$set:{archived:false}},{"multi" : true  });
+db.getCollection('articles').update({"archived" : null},{$set:{archived:false}},{"multi" : true  });
+db.getCollection('pinningBoards').update({"archived" : null},{$set:{archived:false}},{"multi" : true  });
