@@ -5,7 +5,7 @@ var mongo_cde = require('../modules/cde/node-js/mongo-cde'),
 
 var i = 0;
 
-var stream = mongo_cde.getStream({archived: null});
+var stream = mongo_cde.getStream({archived: false});
 stream.on('data', function(elt) {
     stream.pause();
     esClient.search({

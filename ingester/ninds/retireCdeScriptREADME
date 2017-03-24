@@ -3,7 +3,7 @@ $loadDay format: 2015-09-16
 
 db.dataelements.update({
 	"source" : "NINDS",
-	archived : null,
+	archived : false,
 	"registrationState.registrationStatus" : "Qualified",
 	imported : {
 		$lt : new ISODate($loadDay)
@@ -17,7 +17,7 @@ db.dataelements.update({
 });
 
 db.dataelements.count({
-	"source" : "NINDS",	archived : null,"registrationState.registrationStatus" : "Qualified",imported : {$lt : new ISODate($loadDay)	}
+	"source" : "NINDS",	archived : false,"registrationState.registrationStatus" : "Qualified",imported : {$lt : new ISODate($loadDay)	}
 });
 
 report:
