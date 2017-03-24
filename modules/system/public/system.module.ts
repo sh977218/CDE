@@ -20,7 +20,9 @@ import { HomeComponent } from "./components/home/home.component";
 
 @NgModule({
     declarations: [
+        upgradeAdapter.upgradeNg1Component("sortableArray"),
         upgradeAdapter.upgradeNg1Component("inlineEdit"),
+        upgradeAdapter.upgradeNg1Component("inlineAreaEdit"),
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
         upgradeAdapter.upgradeNg1Component("formSummaryList"),

@@ -1,62 +1,67 @@
 <div id="propertiesDiv">
     <h4 tabindex="0">Properties</h4>
     <div tabindex="0" *ngIf="elt.properties.length === 0">There are no properties.</div>
-    <div *ngFor="let prop of elt.properties; let i = index">
+    <div *ngFor="let prop of elt.properties;">
         <div class="row">
             <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
                 <div class="row">
                     <span *ngIf="prop.edit">Confirm Delete
-                        <span class="btn-default fa fa-check" (click)="removeProperty(i)"
+                        <span class="btn-default fa fa-check" (click)="removeProperty($index)"
                               id="confirmRemoveProperty-{{i}}" title="OK" href=""></span>
                         <span class="btn-default fa fa-times" (click)="prop.edit = false" title="Cancel" href=""></span>
                     </span>
                     <span (click)="prop.edit = true" *ngIf="!prop.edit" class="btn-default fa fa-trash-o"
-                          id="removeProperty-{{i}}" title="Remove" href=""></span>
-                    <!--<cde-sortable-array [array]="elt.properties" [index]="i" (cb)="stageElt(elt);"></cde-sortable-array>-->
+                          id="removeProperty-{{$index}}" title="Remove" href=""></span>
+                    <sortable-array [theArray]="elt.properties"
+                                    [sortableArray]="elt.properties"
+                                    [index]="$index" (cb)="elt.unsaved = true"></sortable-array>
                 </div>
             </div>
             <div class="col-md-11">
                 <dl class="dl-horizontal">
                     <dt tabindex="0">Key:</dt>
-                    <dd tabindex="0" id="dd_name_{{i}}">{{prop.key}}</dd>
+                    <dd tabindex="0" id="dd_name_{{$index}}">{{prop.key}}</dd>
                     <dt tabindex="0">Value:</dt>
-                    <dd tabindex="0" id="dd_prop_value_{{i}}">
-                        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
-                             model="prop.value" is-allowed="canEditProperty()" def-format="prop.valueFormat"
-                             on-ok="saveProperty()"></div>
+                    <dd tabindex="0" id="dd_prop_value_{{$index}}">
+                        <!--
+                                                <inline-area-edit [(model)]="prop.value" [isAllowed]="true"
+                                                                  [defFormat]="prop.valueFormat" (onOk)="saveProperty()"></inline-area-edit>
+                        -->
                     </dd>
                 </dl>
             </div>
         </div>
-        <hr/>
     </div>
     <button *ngIf="isAllowedModel.isAllowed(elt)" id="openNewPropertyModalBtn"
-            class="btn btn-small btn-default" (click)="open();">
+            class="btn btn-small btn-default" (click)="openNewPropertyModal();">
         <i class="fa fa-plus"></i> Add Property
     </button>
 </div>
 <template #newPropertyContent id="newPropertyModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="newPropertyModalHeader">
         <h4 class="modal-title">Add Property</h4>
-        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
-    <div class="modal-body" id="newPropertyModalBody">
-        <div class="row">
-            <label tabindex="0" for="newPropertyKey">Key</label>
-            <select ng-model="newProperty.key" id="newPropertyKey" name="key" class="form-control">
-                <option ng-repeat="key in orgPropertyKeys" value="{{key}}">{{key}}</option>
-            </select>
+    <form name="form" role="form">
+        <div class="modal-body" id="newPropertyModalBody">
+            <div class="form-group">
+                <label tabindex="0" for="newPropertyKey">Key</label>
+                <select ng-model="newProperty.key" id="newPropertyKey" name="key" class="form-control">
+                    <option ng-repeat="key in orgPropertyKeys" value="{{key}}">{{key}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label tabindex="0" for="newValue">Value</label>
+                    <textarea tabindex="0" class="form-control" ng-model="newProperty.value" name="value" id="newValue"
+                              Placeholder="Property Value" required></textarea>
+            </div>
         </div>
-        <div class="row">
-            <label tabindex="0" for="newValue">Value</label>
-            <textarea tabindex="0" class="form-control" ng-model="newProperty.value" name="value" id="newValue"
-                      Placeholder="Property Value" required></textarea>
+        <div class="modal-footer" id="newPropertyModalFooter">
+            <button class="btn cancel" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
+                Cancel
+            </button>
+            <button class="btn btn-warning" [disabled]="isClean() || form.$invalid" id="createProperty" type="submit">
+                Save
+            </button>
         </div>
-    </div>
-    <div class="modal-footer" id="newPropertyModalFooter">
-        <button type="button" class="btn" (click)="c('Close click')" id="cancelNewPropertyBtn">Cancel</button>
-        <button type="button" class="btn" (click)="addNewProperty()" id="addNewPropertyBtn">Save</button>
-    </div>
+    </form>
 </template>

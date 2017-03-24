@@ -1,9 +1,4 @@
-import {upgradeAdapter} from "../../../upgrade";
-import {ClassificationService} from "../../../core/public/classification.service";
-import {SkipLogicService} from "../../../core/public/skipLogic.service";
-
 import * as authShared from "../../../system/shared/authorizationShared";
-
 
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule']);
 
@@ -37,7 +32,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'InboxCtrl',
             templateUrl: '/system/public/html/inbox.html'
         }).when('/orgComments', {
-            controller: ['$scope', function($scope) {
+            controller: ['$scope', function ($scope) {
                 $scope.commentsUrl = "/orgComments/";
             }],
             templateUrl: '/system/public/html/latestComments.html'
@@ -93,7 +88,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }])
-    .directive('inlineSelectEdit', ["$timeout", function($timeout) {
+    .directive('inlineSelectEdit', ["$timeout", function ($timeout) {
         return {
             restrict: 'AE',
             scope: {
@@ -178,7 +173,35 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html'
         };
     }])
-;
+    .directive('sortableArray', [function () {
+        return {
+            restrict: 'AE',
+            scope: {
+                theArray: "="
+                , index: '=index'
+                , cb: '&'
+            },
+            templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
+            controller: ["$scope", function ($scope) {
+                $scope.moveUp = function () {
+                    $scope.theArray.splice($scope.index - 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
+                    $scope.cb();
+                };
+                $scope.moveDown = function () {
+                    $scope.theArray.splice($scope.index + 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
+                    $scope.cb();
+                };
+                $scope.moveTop = function () {
+                    $scope.theArray.splice(0, 0, $scope.theArray.splice($scope.index, 1)[0]);
+                    $scope.cb();
+                };
+                $scope.moveBottom = function () {
+                    $scope.theArray.push($scope.array.shift());
+                    $scope.cb();
+                };
+            }]
+        };
+    }]);
 
 angular.module('systemModule').filter('placeHoldEmpty', [function () {
     return function (input) {
@@ -229,9 +252,6 @@ angular.module('systemModule').filter('tagsToArray', [function () {
         }).join(', ');
     };
 }]);
-
-angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
-angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
 angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {
     return {
         new: function (type) {
@@ -242,7 +262,11 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
                             animation: false,
                             templateUrl: '/system/public/html/selectBoardModal.html',
                             controller: 'SelectBoardModalCtrl',
-                            resolve: {type: function () {return type;}}
+                            resolve: {
+                                type: function () {
+                                    return type;
+                                }
+                            }
                         }).result.then(function (selectedBoard) {
                             $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
                                 if (response.status === 200) {
@@ -252,12 +276,15 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
                             }, function (response) {
                                 Alert.addAlert("danger", response.data);
                             });
-                        }, function () {});
+                        }, function () {
+                        });
                     } else {
                         $modal.open({
                             animation: false,
                             templateUrl: '/system/public/html/ifYouLogInModal.html'
-                        }).result.then(function () {}, function() {});
+                        }).result.then(function () {
+                        }, function () {
+                        });
                     }
                 }
             };
@@ -393,8 +420,11 @@ angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downg
 import {PropertiesComponent} from "../components/adminItem/properties.component";
 angular.module('systemModule').directive('cdeAdminItemProperties', upgradeAdapter.downgradeNg2Component(PropertiesComponent));
 
-import {SortableArrayComponent} from "../components/sortableArray.component.html";
-angular.module('systemModule').directive('sortable-array', upgradeAdapter.downgradeNg2Component(SortableArrayComponent));
-
 import {UserCommentsComponent} from "../components/userComments.component";
 angular.module('systemModule').directive('user-comments', upgradeAdapter.downgradeNg2Component(UserCommentsComponent));
+
+import {ClassificationService} from "../../../core/public/classification.service";
+angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
+
+import {SkipLogicService} from "../../../core/public/skipLogic.service";
+angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));

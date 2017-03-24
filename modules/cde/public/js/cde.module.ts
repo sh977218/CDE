@@ -4,14 +4,12 @@ import { FormsModule } from "@angular/forms";
 import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
 
-import { upgradeAdapter } from "../../../upgrade";
 import { ConceptsComponent } from "../components/concepts.component";
 import { DerivationRulesComponent } from "../components/derivationRules.component";
 import { DatasetsComponent } from "../components/datasets/datasets.component";
 
 @NgModule({
     declarations: [
-        upgradeAdapter.upgradeNg1Component("sortableArray"),
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent

@@ -1,10 +1,10 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-//import { NgbModalModule, NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { NgbModalModule, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-admin-item-properties",
+    providers: [NgbActiveModal],
     templateUrl: "./properties.component.html"
 })
 export class PropertiesComponent {
@@ -12,18 +12,16 @@ export class PropertiesComponent {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: any;
 
-    newProperty: any;
+    public newProperty: any = {};
 
     constructor(@Inject("Alert") private alert,
                 public modalService: NgbModal,
-                /*
-                 public activeModal: NgbActiveModal,*/
+                public activeModal: NgbActiveModal,
                 @Inject("isAllowedModel") public isAllowedModel) {
     }
 
-    open() {
-        const modalRef = this.modalService.open(this.newPropertyContent);
-        modalRef.componentInstance.newProperty = this.newProperty;
+    openNewPropertyModal() {
+        const modalRef = this.modalService.open(this.newPropertyContent, {size: 'lg'});
     }
 
     addNewProperty() {
@@ -36,8 +34,6 @@ export class PropertiesComponent {
                 this.alert.addAlert("success", "Property Added");
             });
         }
-        /*
-         this.activeModal.close();*/
     }
 
     removeProperty(index) {
@@ -51,6 +47,5 @@ export class PropertiesComponent {
             });
         }
     }
-
 
 }
