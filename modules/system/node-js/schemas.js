@@ -8,11 +8,11 @@ var schemas = {};
 
 var csEltSchema = new mongoose.Schema({
     elements: []
-    , name: String
+    , name: {type: String, index: true}
 }, {_id: false});
 
 schemas.classificationSchema = new mongoose.Schema({
-    stewardOrg: {name: String}
+    stewardOrg: {name: String, index: true}
     , workingGroup: Boolean
     , elements: [csEltSchema]
 }, {_id: false});
