@@ -24,7 +24,7 @@ var cdesvc = require('./cdesvc')
     , js2xml = require('js2xmlparser')
     , usersrvc = require('../../system/node-js/usersrvc')
 
-;
+    ;
 
 exports.init = function (app, daoManager) {
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
@@ -114,9 +114,9 @@ exports.init = function (app, daoManager) {
 
     app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.params.version) {
-            mongo_cde.eltByTinyId(req.params.tinyId,  new CdeServe(req, res).serveCde);
+            mongo_cde.eltByTinyId(req.params.tinyId, new CdeServe(req, res).serveCde);
         } else {
-            mongo_cde.byTinyIdAndVersion(req.params.tinyId, req.params.version,  new CdeServe(req, res).serveCde);
+            mongo_cde.byTinyIdAndVersion(req.params.tinyId, req.params.version, new CdeServe(req, res).serveCde);
         }
     });
 
@@ -298,6 +298,43 @@ exports.init = function (app, daoManager) {
             res.end();
         })
     });
+    app.post('/mergeCde', function (req, res) {
+        var cdeMergeTo = req.body.mergeTo;
+        var cdeMergeFrom = req.body.mergeFrom;
+        if (cdeMergeTo && cdeMergeTo.tinyId)
+            cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
+        cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
+        if (req.body.retireCde) {
+            elastic.esClient.search({
+                type: 'form',
+                index: config.elastic.formIndex.name,
+                q: cdeMergeFrom.tinyId
+            }, function (err, result) {
+                if (err) req.status(500).send(err);
+                else if (result.hits.hits.length === 1) {
+                    cdeMergeFrom.registrationState.registrationStatus = "Retired";
+                    cdesvc.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
+                        mongo_cde.update(cdeMergeFrom, req.user, function (err) {
+                            if (err) return res.status(500).send(err);
+                            else
+                                mongo_cde.update(cdeMergeTo, req.user, function (err) {
+                                    if (err) return res.status(500).send(err);
+                                    else res.status(200).end("retired");
+                                })
+                        })
+                    })
+                } else res.status(200).end();
+            });
+        } else {
+            mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
+                if (err) return res.status(500).send(err);
+                else mongo_cde.update(cdeMergeTo, req.user, function (err, newCdeMergeTo) {
+                    if (err) return res.status(500).send(err);
+                    else res.status(200).end();
+                })
+            })
+        }
+    });
 
     var systemAlert = "";
     app.get("/systemAlert", exportShared.nocacheMiddleware, function (req, res) {
@@ -408,11 +445,13 @@ exports.init = function (app, daoManager) {
 
         var date = new Date(dstring);
         mongo_cde.findModifiedElementsSince(date, function (err, elts) {
-            res.send(elts.map(function (e) { return {tinyId: e._id}}));
+            res.send(elts.map(function (e) {
+                return {tinyId: e._id}
+            }));
         });
     });
 
-    app.get('/esRecord/:id', function(req, res) {
+    app.get('/esRecord/:id', function (req, res) {
         elastic.get(req.params.id, function (err, result) {
             if (err) throw err;
             else res.send(result);
