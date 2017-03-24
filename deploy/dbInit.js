@@ -42,11 +42,12 @@ var users = [
         username: 'nlm',
         password: 'nlm',
         siteAdmin: true,
-        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org", "TEST", "PhenX"],
+        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org", "TEST", "PhenX", "NLM", "NIDA"],
         viewHistory: [],
         email: "admin@email.com"
     }
     , {username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
+    , {username: 'promis', password: 'pass', orgAdmin: ["PROMIS / Neuro-QOL"], quota: 1073741826, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'userToPromote', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}

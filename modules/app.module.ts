@@ -24,7 +24,7 @@ import { SystemModule } from "./system/public/system.module";
         CoreModule,
         CdeModule,
         FormModule,
-        SystemModule,
+        SystemModule
     ],
     bootstrap: [CdeAppComponent]
 })

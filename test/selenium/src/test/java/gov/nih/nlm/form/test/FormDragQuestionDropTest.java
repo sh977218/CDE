@@ -4,10 +4,9 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class FormDragQuestionDropTest extends QuestionTest {
-    CreateEditSectionTest sectionTest = new CreateEditSectionTest();
-
     @Test
     public void dragQuestionDropTest() {
+
         mustBeLoggedInAs(ninds_username, password);
         String formName = "JFK Coma Recovery Scale- Revised";
         goToFormByName(formName);
