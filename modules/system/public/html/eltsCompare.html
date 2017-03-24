@@ -7,7 +7,7 @@
     <div class="row" id="qb_compare_viewDetail">
         <div class="col-xs-6">
             <span class="leftObj">
-                <a tabindex="0" class='btn btn-small btn-default'
+                <a tabindex="0" class='btn btn-small btn-default' target="_blank"
                    ng-href="/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[0].tinyId}}">
                     <i class="fa fa-eye"></i> View Full Detail</a>
             </span>
@@ -19,10 +19,14 @@
                 Pending Merge Request
                 </span>
             </span>
+            <span ng-if="module === 'form' && user._id">
+                <cde-merge-form class="leftObj" [left]="eltsToCompare[0]" [right]="eltsToCompare[1]"></cde-merge-form>
+            </span>
+
         </div>
         <div class="col-xs-6">
             <span class="rightObj">
-                <a tabindex="0" class='btn btn-small btn-default'
+                <a tabindex="0" class='btn btn-small btn-default' target="_blank"
                    ng-href="/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[1].tinyId}}">
                     <i class="fa fa-eye"></i> View Full Detail</a>
             </span>
@@ -34,6 +38,10 @@
                 Pending Merge Request
                 </span>
             </span>
+            <span ng-if="module === 'form' && user._id">
+                <cde-merge-form class="rightObj" [left]="eltsToCompare[1]" [right]="eltsToCompare[0]"></cde-merge-form>
+            </span>
+
         </div>
     </div>
 
@@ -58,7 +66,8 @@
              ng-compare-side-by-side-right="eltsToCompare[1].naming"></div>
     </div>
 
-    <div id="qb_compare_referenceDocuments">
+    <div id="qb_compare_referenceDocuments"
+         ng-if="eltsToCompare[0].referenceDocuments.length > 0 || eltsToCompare[0].referenceDocuments.length > 0">
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Reference Documents</h4>
 
@@ -67,8 +76,8 @@
              ng-compare-side-by-side-right="eltsToCompare[1].referenceDocuments"></div>
     </div>
 
-    <div id="qb_compare_properties">
-
+    <div id="qb_compare_properties"
+         ng-if="eltsToCompare[0].properties.length > 0 || eltsToCompare[0].properties.length > 0">
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Properties</h4>
 
@@ -88,7 +97,6 @@
     <div id="qb_compare_questions">
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Questions</h4>
-
         <div ng-compare-side-by-side ng-compare-side-by-side-options='questionOption'
              ng-compare-side-by-side-left="eltsToCompare[0].questions"
              ng-compare-side-by-side-right="eltsToCompare[1].questions">

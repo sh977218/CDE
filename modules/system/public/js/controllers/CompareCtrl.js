@@ -53,6 +53,9 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard',
             $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
             $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
         }
+        if ($scope.module === 'form') {
+            $scope.forms = $scope.eltsToCompare;
+        }
 
         $scope.wipeUseless = function (obj) {
             delete obj.$$hashKey;
@@ -159,7 +162,7 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard',
         };
         $scope.questionOption = {
             equal: function (a, b) {
-                return (a.question.cde.tinyId === b.question.cde.tinyId);
+                return a.question.cde.tinyId === b.question.cde.tinyId;
             },
             properties: [{label: 'Label', property: 'label'},
                 {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/deview/?tinyId='},
