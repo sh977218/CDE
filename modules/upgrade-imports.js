@@ -131,6 +131,7 @@ import "./form/public/js/controllers/UpdateCdeRefVersionCtrl";
 import * as formShared from "./form/shared/formShared";
 import "./form/public/js/controllers/FormCopyModalCtrl";
 import "./form/public/js/controllers/PublishedFormExportCtrl";
+
 import "./board/public/js/controllers/ShareBoardCtrl";
 import "./board/public/js/controllers/BoardViewCtrl";
 import "./board/public/js/controllers/SelectBoardModalCtrl";

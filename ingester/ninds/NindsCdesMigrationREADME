@@ -24,7 +24,7 @@ report:
 use nlmcde;
 db.dataelements.count({
 	"source" : "NINDS",
-	archived : null,
+	archived : false,
 	"registrationState.registrationStatus" : "Qualified",
 	imported : {
 		$lt : new ISODate("2015-09-20")
@@ -35,7 +35,7 @@ db.dataelements.count({
 use nlmcde
 db.dataelements.update({
 	"source" : "NINDS",
-	archived : null,
+	archived : false,
 	"registrationState.registrationStatus" : "Qualified",
 	imported : {
 		$lt : new ISODate("2015-09-20")
@@ -51,7 +51,7 @@ db.dataelements.update({
 6. remove suggested question text from properties
 use nlmcde
 db.dataelements.update(
-{source: "NINDS", archived: null}
+{source: "NINDS", archived: false}
 , {$pull: {properties:
 {key: "NINDS Suggested Question"}
 }},

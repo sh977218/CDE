@@ -13,7 +13,7 @@ var Form = conn.model('Form', form_schemas.formSchema);
 var formCounter = 0;
 
 var myStream = Form.find({
-    archived: null
+    archived: false
 }).stream();
 
 myStream.on('data', function (form) {

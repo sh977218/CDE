@@ -1,12 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { PaginationModule } from "ng2-bootstrap";
+import { PaginationModule, ModalModule, TypeaheadModule } from "ng2-bootstrap/index";
 import { DataTableModule } from "angular2-datatable";
-import { ModalModule } from "ng2-bootstrap";
-import { TypeaheadModule } from "ng2-bootstrap/typeahead";
 import { Select2Module } from "ng2-select2";
-
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
 import { upgradeAdapter } from "../../upgrade";

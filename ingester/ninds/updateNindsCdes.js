@@ -141,7 +141,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
 
 function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
     var cdeCond = {
-        archived: null,
+        archived: false,
         'sources.sourceName': source,
         "registrationState.registrationStatus": {$not: /Retired/},
         imported: {$ne: importDate}
@@ -225,7 +225,7 @@ function streamOnClose() {
         'imported': {$lt: lastEightHours},
         'sources.sourceName': source,
         'classification.stewardOrg.name': 'NINDS',
-        'archived': null
+        'archived': false
     }).exec(function (retiredCdeError, retireCdes) {
         if (retiredCdeError) throw retiredCdeError;
         else {

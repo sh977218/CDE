@@ -23,7 +23,7 @@ async.series([
         });
     }, function (cb) {
         DataElement.aggregate([
-            {$match: {archived: null, "registrationState.registrationStatus": {$ne: "Retired"}}}
+            {$match: {archived: false, "registrationState.registrationStatus": {$ne: "Retired"}}}
             , {$unwind: "$ids"}
             , {$match: {"ids.source": orgName}}
             , {$group: {_id: {source: "$ids.source", id: "$ids.id"}, count: {$sum: 1}}}
@@ -38,7 +38,7 @@ async.series([
                     duplicatedCdeId.push(cdeId);
                     console.log('there are ' + result.count + ' records for cde id: ' + cdeId);
                     console.log(counter + ': start removing duplicate of cde id: ' + cdeId);
-                    DataElement.find({"archived": null}).elemMatch("ids", {
+                    DataElement.find({"archived": false}).elemMatch("ids", {
                         "source": 'NINDS',
                         "id": cdeId
                     }).exec(function (err, cdes) {

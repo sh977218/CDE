@@ -76,7 +76,7 @@ function startMapping() {
     var cdeStream = DataElement.find(
         {
             "ids.id": "2976193",
-            "valueDomain.permissibleValues.valueMeaningCode": {$exists: true}, archived: null,
+            "valueDomain.permissibleValues.valueMeaningCode": {$exists: true}, archived: false,
             "valueDomain.permissibleValues.codeSystemName": {$nin: ['AHRQ Common Formats', 'UMLS', 'NA']}
         }).stream();
 

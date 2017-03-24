@@ -100,7 +100,7 @@ var deJson = {
         {content: String, spec_type: String, script: String, _id: false}
     ]
     , comments: [sharedSchemas.commentSchema]
-    , archived: {type: Boolean, index: true}
+    , archived: {type: Boolean, default: false, index: true}
     , forkOf: String
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
