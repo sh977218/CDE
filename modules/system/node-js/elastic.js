@@ -105,10 +105,22 @@ function EsInjector(esClient, indexName, documentType) {
 }
 
 exports.daoMap = {
-    "cde": mongo_cde,
-    "form": mongo_form,
-    "board": mongo_board,
-    "storedQuery": mongo_storedQuery
+    "cde": {
+        condition: {archived: false},
+        dao: mongo_cde
+    },
+    "form": {
+        condition: {archived: false},
+        dao: mongo_form
+    },
+    "board": {
+        condition: {archived: null},
+        dao: mongo_board
+    },
+    "storedQuery": {
+        condition: {archived: null},
+        dao: mongo_storedQuery
+    }
 };
 
 
@@ -123,15 +135,15 @@ exports.reIndex = function (index, cb) {
     var indexType = Object.keys(index.indexJson.mappings)[0];
     // start re-index all
     var injector = new EsInjector(esClient, index.indexName, indexType);
-    var condition = {archived: false};
+    var condition = exports.daoMap[index.name].condition;
     index.count = 0;
-    exports.daoMap[index.name].count(condition, function (err, totalCount) {
+    exports.daoMap[index.name].dao.count(condition, function (err, totalCount) {
         if (err) {
             console.log("Error getting count: " + err);
         }
         console.log("Total count for " + index.name + " is " + totalCount);
         index.totalCount = totalCount;
-        var stream = exports.daoMap[index.name].getStream(condition);
+        var stream = exports.daoMap[index.name].dao.getStream(condition);
         stream.on('data', function (elt) {
             stream.pause();
             riverFunction(elt.toObject(), function (afterRiverElt) {
