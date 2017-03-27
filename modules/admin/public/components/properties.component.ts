@@ -21,7 +21,7 @@ export class PropertiesComponent {
     }
 
     openNewPropertyModal() {
-        const modalRef = this.modalService.open(this.newPropertyContent, {size: 'lg'});
+        const modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
     }
 
     addNewProperty() {

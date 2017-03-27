@@ -64,7 +64,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             scope: {
                 model: '=',
                 inputType: '=?',
-                isAllowed: '<',
+                isAllowed: '&',
                 onOk: '&',
                 typeaheadSource: '=',
                 linkSource: '@'
@@ -125,7 +125,12 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 defFormat: '=',
                 inlineAreaVisibility: '='
             },
-            controller: ["$scope", "$element", "$attrs", function ($scope, $element, $attrs) {
+            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
+            link: function ($scope) {
+                var allow = $scope.isAllowed();
+                console.log($scope);
+            },
+            controller: ["$scope", "$element", function ($scope, $element) {
                 $scope.clickEdit = function () {
                     $scope.inScope = {
                         value: $scope.model
@@ -152,11 +157,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 };
                 $scope.confirm = function () {
                     if ($scope.isInvalidHtml($scope.inScope.value)) {
-                        if ($attrs.onErr) {
-                            $scope.onErr({
-                                error: true,
-                                message: 'Error. Img src may only be a relative url starting with /data'
-                            });
+                        if ($scope.onErr) {
+                            $scope.onErr();
                         } else {
                             alert('Error. Img src may only be a relative url starting with /data');
                         }
@@ -169,8 +171,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 $scope.cancel = function () {
                     $scope.editMode = false;
                 };
-            }],
-            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html'
+            }]
         };
     }])
     .directive('sortableArray', [function () {

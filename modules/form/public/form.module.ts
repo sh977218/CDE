@@ -14,7 +14,7 @@ import { AdminModule } from "../../admin/public/admin.module";
 
 @NgModule({
     imports: [
-        CommonModule, 
+        CommonModule,
         FormsModule,
         NgbModule,
         ModalModule.forRoot(),

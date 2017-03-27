@@ -1,13 +1,13 @@
 <div>
-    <div ng-hide="editMode" ng-switch="defFormat" class="wordwrap">
-        <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit"
+    <div ng-if="!editMode" ng-switch="defFormat" class="wordwrap">
+        <i tabindex="0" title="Edit" role="link" ng-if="isAllowed" class="fa fa-edit"
            ng-click="clickEdit()"></i>
         <span ng-switch-default><span ng-bind="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>
         <span ng-switch-when="html">
             <span ng-bind-html="model" ng-text-truncate="model" ng-tt-threshold="500"></span>
         </span>
     </div>
-    <div ng-show="editMode">
+    <div ng-if="editMode">
         <div class="btn-group definitionFormatRadio">
             <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" uib-btn-radio="null">Plain Text
             </button>

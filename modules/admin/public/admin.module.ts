@@ -2,8 +2,8 @@ import { NgModule } from "@angular/core";
 import { upgradeAdapter } from "../../upgrade";
 import { CommonModule } from "@angular/common";
 
-const InlineAreaEditComponent = upgradeAdapter.upgradeNg1Component("inlineAreaEdit");
 const InlineEditComponent = upgradeAdapter.upgradeNg1Component("inlineEdit");
+const InlineAreaEditComponent = upgradeAdapter.upgradeNg1Component("inlineAreaEdit");
 const SortableArrayComponent = upgradeAdapter.upgradeNg1Component("sortableArray");
 
 @NgModule({
@@ -11,8 +11,8 @@ const SortableArrayComponent = upgradeAdapter.upgradeNg1Component("sortableArray
         CommonModule
     ],
     declarations: [
-        InlineAreaEditComponent,
         InlineEditComponent,
+        InlineAreaEditComponent,
         SortableArrayComponent
     ],
     providers: [],
