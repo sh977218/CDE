@@ -9,7 +9,10 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
 
     private void checkScroll(long value) {
         int i = 0;
-        while(!((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", "").equals(value) && i < 10) {
+        while(Math.abs(
+                Integer.parseUnsignedInt((((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", ""))
+                        .toString()) - value) < 10
+                && i < 10) {
             hangon(1);
             i++;
         }
@@ -18,7 +21,6 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
                     + ((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", "").equals(value));
         }
     }
-
 
     @Test
     public void scrollHistory() {
