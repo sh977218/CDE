@@ -29,6 +29,7 @@
                                            [attr.name]="formElement.questionId"
                                            [checked]="nativeRenderService.checkboxIsChecked(formElement.question, pv.permissibleValue)"
                                            (change)="nativeRenderService.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
+                                           [value]="pv.permissibleValue"
                                            [required]="formElement.question.required"
                                            [disabled]="!formElement.question.editable"
                                     />{{nativeRenderService.getPvLabel(pv)}}<span *ngIf="nativeRenderService.profile.displayValues"

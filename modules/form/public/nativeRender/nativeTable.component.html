@@ -1,9 +1,16 @@
 <table *ngIf="tableForm && nativeRenderService.getNativeRenderType() === nativeRenderService.FOLLOW_UP" class="table">
     <thead>
         <tr *ngFor="let s of tableForm.s; let i = index">
-            <th *ngIf="i === 0 && tableForm.entry" [attr.colspan]="tableForm.entry.cspan" [attr.rowspan]="tableForm.entry.rspan">
-                <span *ngIf="tableForm.entry.label" [textContent]="tableForm.entry.label"></span>
-                <span *ngIf="!tableForm.entry.label"></span>
+            <th *ngIf="i === 0 && tableForm.entry"
+                [attr.colspan]="tableForm.entry.cspan"
+                [attr.rowspan]="tableForm.entry.rspan"
+                [style.font]="s.q[0].style.font"
+                [style.color]="s.q[0].style.color"
+                [style.backgroundColor]="s.q[0].style.backgroundColor"
+                [style.borderColor]="s.q[0].style.borderColor"
+                [style.borderStyle]="s.q[0].style.borderStyle"
+                [style.borderWidth]="s.q[0].style.borderWidth">
+                <span [textContent]="tableForm.entry.label"></span>
             </th>
             <th *ngFor="let q of s.q"
                 [attr.colspan]="q.cspan"
@@ -20,27 +27,26 @@
     <tbody>
         <tr *ngFor="let n of tableForm.rows; let ni = index">
             <td *ngFor="let q of tableForm.q"
-                style="height: 10px"
+                style="height: 10px;max-width: 300px;max-height: 200px;"
                 [style.font]="q.style.font"
                 [style.color]="q.style.color"
                 [style.backgroundColor]="q.style.backgroundColor"
                 [style.borderColor]="q.style.borderColor"
                 [style.borderStyle]="q.style.borderStyle"
                 [style.borderWidth]="q.style.borderWidth">
-                <div *ngIf="q.type === 'label'" style="height: 100%">
+                <div *ngIf="q.type === 'label'" class="native-table-cell">
                     <label [textContent]="n.label"></label>
                 </div>
-                <div *ngIf="q.type === 'list'" class="radio" style="height: 100%">
+                <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
                     <label style="display: block" *ngFor="let a of q.question.answers">
                         <input type="radio"
                                [attr.name]="q.name + '-' + ni"
-                               [(ngModel)]="q.question.answer[ni]"
                                [value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"
                         />{{nativeRenderService.getPvLabel(a)}}</label>
                 </div>
-                <div *ngIf="q.type === 'mlist'" style="height: 100%">
+                <div *ngIf="q.type === 'mlist'" class="native-table-cell">
                     <input type="checkbox"
                            [attr.name]="q.name + '-' + ni"
                            [checked]="nativeRenderService.checkboxIsCheckedRepeat(q.question, a.permissibleValue, ni)"
@@ -48,15 +54,19 @@
                            [required]="q.question.required"
                            [disabled]="!q.question.editable"/>
                 </div>
-                <div *ngIf="q.type === 'date'" style="height: 100%">
-                    <input class="form-control nativeTableBox"
-                           [attr.name]="q.name + '-' + ni"
-                           [(ngModel)]="q.question.answer[ni]"
-                           ngbDatepicker #d1="ngbDatepicker"
-                           [required]="q.question.required"
-                           [disabled]="!q.question.editable">
+                <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
+                    <div class="input-group">
+                        <input class="form-control nativeTableBox"
+                               [attr.name]="q.name + '-' + ni"
+                               [(ngModel)]="q.question.answer[ni]"
+                               ngbDatepicker #d1="ngbDatepicker"
+                               [required]="q.question.required" [disabled]="!q.question.editable">
+                        <div class="input-group-addon" (click)="d1.toggle()" >
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </div>
+                    </div>
                 </div>
-                <div *ngIf="q.type === 'number'" [ngClass]="{'input-group': q.question.uoms.length > 0}" style="height: 100%">
+                <div *ngIf="q.type === 'number'" [ngClass]="{'input-group': q.question.uoms.length > 0}" class="native-table-cell" style="min-width: 100px;">
                     <input type="number"
                            class="form-control nativeTableBox"
                            [attr.name]="q.name + '-' + ni"
@@ -70,13 +80,12 @@
                            class="input-group-addon">
                         <input type="radio"
                                [attr.name]="q.name + '-' + ni + '_uom'"
-                               [(ngModel)]="q.question.answerUom[ni]"
                                [value]="uom"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"
                         /> {{uom}}</label>
                 </div>
-                <div *ngIf="q.type === 'text'" [ngClass]="{'input-group': q.question.uoms.length > 0}" style="height: 100%">
+                <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;">
                     <input type="text"
                            class="form-control nativeTableBox"
                            [attr.name]="q.name + '-' + ni"
@@ -85,10 +94,9 @@
                            [disabled]="!q.question.editable"/>
                     <label *ngFor="let uom of q.question.uoms"
                            [ngClass]="{'nativeRequiredBox': q.question.required}"
-                           class="input-group-addon">
+                           style="padding-left: 10px">
                         <input type="radio"
                                [attr.name]="q.name + '-' + ni + '_uom'"
-                               [(ngModel)]="q.question.answerUom[ni]"
                                [value]="uom"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"
