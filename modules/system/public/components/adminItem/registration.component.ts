@@ -63,7 +63,7 @@ export class RegistrationComponent {
     };
 
     ok () {
-        this.http.post("/dataelement/" + this.elt._id, this.elt).subscribe(() => this.childModal.hide());
+        this.http.post("/debytinyid/" + this.elt.tinyId, this.elt).subscribe(() => this.childModal.hide());
     }
 
 }

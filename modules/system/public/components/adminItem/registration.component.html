@@ -49,7 +49,7 @@
             <div class="modal-header" id="regStatusModalHeader">
                 <h4>Update Registration Status</h4>
             </div>
-            <form name="reg-form" role="form">
+            <form role="form" #regForm="ngForm">
                 <div class="modal-body" id="regStatusModalBody">
                     <div class="alert-warning">{{helpMessage}}</div>
                     <div class="form-group">
@@ -89,21 +89,21 @@
                     <div class="form-group">
                         <label for="administrativeStatus">Administrative Status</label>
                         <input id="newAdministrativeStatus" class="form-control" type="text" name="administrativeStatus"
-                               ng-model="elt.registrationState.administrativeStatus"
+                               [(ngModel)]="elt.registrationState.administrativeStatus"
                                placeholder="Optional Administrative Status"/>
                     </div>
 
                     <div class="form-group">
                         <label for="administrativeNote">Administrative Note</label>
                         <textarea id="newAdministrativeNote" class="form-control" name="administrativeNote"
-                                  ng-model="elt.registrationState.administrativeNote"
+                                  [(ngModel)]="elt.registrationState.administrativeNote"
                                   placeholder="Optional Administrative Note"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="unresolvedIssue">Unresolved Issue</label>
                         <textarea id="newUnresolvedIssue" class="form-control" name="unresolvedIssue"
-                                  ng-model="elt.registrationState.unresolvedIssue"
+                                  [(ngModel)]="elt.registrationState.unresolvedIssue"
                                   placeholder="Optional Unresolved Issue Note"></textarea>
                     </div>
 
@@ -111,7 +111,7 @@
                 <div class="modal-footer" id="regStatusModalFooter">
                     <button class="btn cancel" (click)="childModal.hide()" id="cancelRegStatus"
                             type="button">Cancel</button>
-                    <button class="btn btn-warning" (click)="ok()" ng-disabled="isClean() || reg-form.$invalid"
+                    <button class="btn btn-warning" (click)="ok()" [disabled]="!regForm.form.valid"
                             id="saveRegStatus" type="submit">Save
                     </button>
                 </div>
