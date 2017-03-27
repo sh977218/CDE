@@ -143,6 +143,7 @@ exports.formJson = {
         , displayType: {type: String, enum: ['Dynamic', 'Follow-up']}
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
+        , repeatFormat: {type: String, default: ''}
         , repeatMax: {type: Number}
         , _id: false
     }]

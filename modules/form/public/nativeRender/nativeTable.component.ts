@@ -28,20 +28,28 @@ export class NativeTableComponent implements OnInit {
         this.getRows();
         this.sectionNumber = 0;
         let ret = this.renderSection(this.formElement, 0);
-        this.setDepth(ret.r);
+        this.setDepth(ret.r + 1);
 
+        this.entry.cspan = 1;
+        this.entry.rspan = ret.r + 1;
         this.entry.style = this.getSectionStyle(0).sectionStyle;
         this.tableForm.q[0].style = this.getSectionStyle(0).answerStyle;
     }
 
     getRows() {
         this.tableForm.rows = [];
+        let format = "#.";
         let maxValue = this.formElement.cardinality.max;
         if (maxValue > 0 || maxValue === -1) {
-            if (maxValue === -1 && this.nativeRenderService.profile && this.nativeRenderService.profile.repeatMax)
-                maxValue = this.nativeRenderService.profile.repeatMax;
+            if (this.nativeRenderService.profile) {
+                format = this.nativeRenderService.profile.repeatFormat;
+                if (maxValue === -1 && this.nativeRenderService.profile.repeatMax)
+                    maxValue = this.nativeRenderService.profile.repeatMax;
+            }
+            if (!format)
+                format = "";
             for (let i = 1; i <= maxValue; i++) {
-                this.tableForm.rows.push({label: i + "."});
+                this.tableForm.rows.push({label: format.replace(/\#/, Number(i).toString())});
             }
         } else if (maxValue === -2) {
             let elem = this.formElement;
@@ -66,13 +74,16 @@ export class NativeTableComponent implements OnInit {
     renderSection(s, level, r = 1, c = 0) {
         let sectionStyle = this.getSectionStyle(this.sectionNumber++);
         let section = {header: true, cspan: c, label: s.label, style: sectionStyle.sectionStyle};
+        if (level === 0)
+            section.label = "";
         this.tableForm.s[level].q.push(section);
         let tcontent = this.getSectionLevel(level + 1);
+        let retr = 0;
         s.formElements.forEach(f =>  {
             if (f.elementType === "section" || f.elementType === "form") {
                 let ret = this.renderSection(f, level + 1);
-                r += ret.r;
                 c += ret.c;
+                retr = Math.max(retr, ret.r);
             }
             else if (f.elementType === "question" && f !== this.firstQuestion) {
                 c++;
@@ -87,6 +98,7 @@ export class NativeTableComponent implements OnInit {
                     f.question.answer = Array(this.tableForm.rows.length);
             }
         });
+        r += retr;
         section.cspan = c;
         return {r: r, c: c};
     }

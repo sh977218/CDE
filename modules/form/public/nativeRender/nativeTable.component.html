@@ -1,4 +1,4 @@
-<table *ngIf="tableForm && nativeRenderService.getNativeRenderType() === nativeRenderService.FOLLOW_UP" class="table">
+<table *ngIf="tableForm && (nativeRenderService.getNativeRenderType() === nativeRenderService.FOLLOW_UP || nativeRenderService.getNativeRenderType() === nativeRenderService.SHOW_IF)" class="table">
     <thead>
         <tr *ngFor="let s of tableForm.s; let i = index">
             <th *ngFor="let q of s.q"
@@ -35,13 +35,15 @@
                                [disabled]="!q.question.editable"
                         />{{nativeRenderService.getPvLabel(a)}}</label>
                 </div>
-                <div *ngIf="q.type === 'mlist'" class="native-table-cell">
-                    <input type="checkbox"
-                           [attr.name]="q.name + '-' + ni"
-                           [checked]="nativeRenderService.checkboxIsCheckedRepeat(q.question, a.permissibleValue, ni)"
-                           (change)="nativeRenderService.checkboxOnChangeRepeat($event, q.question, a.permissibleValue, ni)"
-                           [required]="q.question.required"
-                           [disabled]="!q.question.editable"/>
+                <div *ngIf="q.type === 'mlist'" class="checkbox native-table-cell native-table-list">
+                    <label style="display: block" *ngFor="let a of q.question.answers">
+                        <input type="checkbox"
+                               [attr.name]="q.name + '-' + ni"
+                               [checked]="nativeRenderService.checkboxIsCheckedRepeat(q.question, a.permissibleValue, ni)"
+                               (change)="nativeRenderService.checkboxOnChangeRepeat($event, q.question, a.permissibleValue, ni)"
+                               [required]="q.question.required"
+                               [disabled]="!q.question.editable"
+                        />{{nativeRenderService.getPvLabel(a)}}</label>
                 </div>
                 <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                     <div class="input-group">
@@ -99,17 +101,3 @@
     <!--<tfoot>-->
     <!--</tfoot>-->
 </table>
-<div *ngIf="nativeRenderService.getNativeRenderType() === nativeRenderService.SHOW_IF" >
-    <div *ngFor="let element of formElement.formElements; let i = index">
-        <div *ngIf="nativeRenderService.evaluateSkipLogicAndClear(element.skipLogic?.condition, formElement.formElements, element)">
-            <div *ngIf="element.elementType === 'question'" [ngClass]="{'keep-with-previous':i===0}"
-                 class="native-question-header native-question-answers">
-                <cde-native-question [formElement]="element" [index]="i"
-                                     [numSubQuestions]="numSubQuestions"></cde-native-question>
-            </div>
-            <cde-native-section *ngIf="element.elementType === 'section' || element.elementType === 'form'"
-                                [formElements]="formElement.formElements" [formElement]="element"
-                                [numSubQuestions]="numSubQuestions"></cde-native-section>
-        </div>
-    </div>
-</div>
