@@ -3,8 +3,12 @@
     display: block;
 }
 
-.nav, .navbar, .navbar-nav, .form-inline, .form-inline label {
+.nav, .navbar, .navbar-nav {
     display: block;
+}
+
+.form-inline, .form-inline label {
+    display: inline-block;
 }
 
 .navbar {

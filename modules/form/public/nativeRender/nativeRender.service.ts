@@ -58,7 +58,8 @@ export class NativeRenderService {
                 displayValues: false,
                 displayType: this.FOLLOW_UP,
                 numberOfColumns: 4,
-                displayInvisible: false
+                displayInvisible: false,
+                repeatMax: 10
             };
         this.setNativeRenderType(this.profile.displayType);
     }

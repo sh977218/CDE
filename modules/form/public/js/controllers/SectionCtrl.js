@@ -5,7 +5,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 {label: "Exactly 1", value: {min: 1, max: 1}},
                 {label: "1 or more", value: {min: 1, max: -1}},
                 {label: "0 or more", value: {min: 0, max: -1}},
-                {label: "0 or 1", value: {min: 0, max: 1}}
+                {label: "0 or 1", value: {min: 0, max: 1}},
+                {label: "Over first question", value: {min: 0, max: -2}}
             ];
         $scope.getCardinalityLabel = function (question) {
             var cardinality = question.cardinality;

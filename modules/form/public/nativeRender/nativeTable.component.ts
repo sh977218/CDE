@@ -8,29 +8,59 @@ import { NativeRenderService } from "./nativeRender.service";
 export class NativeTableComponent implements OnInit {
     @Input() formElement: any;
 
+    firstQuestion: any;
     sectionNumber: number;
     tableForm: any = {
-        s: [{q: []}],
+        s: [{q: [{cspan: 1}]}],
         q: [{type: "label", style: {}}]
     };
+    entry: any;
 
     constructor(public nativeRenderService: NativeRenderService) {
     }
 
     ngOnInit() {
-        this.tableForm.rows = [
-            {n: 0, label: "1."}, {n: 1, label: "2."}, {n: 2, label: "3."}, {n: 3, label: "4."}, {n: 4, label: "5."},
-            {n: 5, label: "6."}, {n: 6, label: "7."}, {n: 7, label: "8."}, {n: 8, label: "9."}, {n: 9, label: "10."}
-        ];
         this.render();
     }
 
     render() {
+        this.entry = this.tableForm.s[0].q[0];
+        this.getRows();
         this.sectionNumber = 0;
         let ret = this.renderSection(this.formElement, 0);
         this.setDepth(ret.r);
-        this.tableForm.entry = {cspan: 1, rspan: ret.r + 1};
+
+        this.entry.style = this.getSectionStyle(0).sectionStyle;
         this.tableForm.q[0].style = this.getSectionStyle(0).answerStyle;
+    }
+
+    getRows() {
+        this.tableForm.rows = [];
+        let maxValue = this.formElement.cardinality.max;
+        if (maxValue > 0 || maxValue === -1) {
+            if (maxValue === -1 && this.nativeRenderService.profile && this.nativeRenderService.profile.repeatMax)
+                maxValue = this.nativeRenderService.profile.repeatMax;
+            for (let i = 1; i <= maxValue; i++) {
+                this.tableForm.rows.push({label: i + "."});
+            }
+        } else if (maxValue === -2) {
+            let elem = this.formElement;
+            while (this.firstQuestion == null) {
+                if (elem.elementType !== "question")
+                    elem = elem.formElements[0];
+                else
+                    this.firstQuestion = elem;
+            }
+
+            if (!this.firstQuestion || this.firstQuestion.question.datatype !== "Value List")
+                throw "First Question is not available.";
+
+            this.firstQuestion.question.answers.forEach(a => {
+                this.tableForm.rows.push({label: this.nativeRenderService.getPvLabel(a)});
+            });
+
+            this.entry.label = this.firstQuestion.label;
+        }
     }
 
     renderSection(s, level, r = 1, c = 0) {
@@ -44,7 +74,7 @@ export class NativeTableComponent implements OnInit {
                 r += ret.r;
                 c += ret.c;
             }
-            else if (f.elementType === "question") {
+            else if (f.elementType === "question" && f !== this.firstQuestion) {
                 c++;
                 tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
                 this.tableForm.q.push({type: NativeTableComponent.getQuestionType(f), name: f.questionId, question: f.question, style: sectionStyle.answerStyle});

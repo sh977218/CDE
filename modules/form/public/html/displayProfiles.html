@@ -57,6 +57,11 @@
                         <input type="checkbox" ng-model="profile.displayInvisible" ng-disabled="!canCurate"
                                id="displayInvisible_{{$index}}" ng-click="stageElt();updateRender();">
                     </dd>
+                    <dt><label for="displayInvisible_{{$index}}">Repeat Maximum:</label></dt>
+                    <dd>
+                        <input type="text" class="form-control" ng-model="profile.repeatMax" ng-disabled="!canCurate"
+                               id="displayRepeatMax_{{$index}}" ng-click="stageElt();updateRender();">
+                    </dd>
                 </dl>
             </div>
             <div class="col-md-7 col-xs-12">

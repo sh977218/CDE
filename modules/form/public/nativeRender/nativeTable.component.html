@@ -1,17 +1,6 @@
 <table *ngIf="tableForm && nativeRenderService.getNativeRenderType() === nativeRenderService.FOLLOW_UP" class="table">
     <thead>
         <tr *ngFor="let s of tableForm.s; let i = index">
-            <th *ngIf="i === 0 && tableForm.entry"
-                [attr.colspan]="tableForm.entry.cspan"
-                [attr.rowspan]="tableForm.entry.rspan"
-                [style.font]="s.q[0].style.font"
-                [style.color]="s.q[0].style.color"
-                [style.backgroundColor]="s.q[0].style.backgroundColor"
-                [style.borderColor]="s.q[0].style.borderColor"
-                [style.borderStyle]="s.q[0].style.borderStyle"
-                [style.borderWidth]="s.q[0].style.borderWidth">
-                <span [textContent]="tableForm.entry.label"></span>
-            </th>
             <th *ngFor="let q of s.q"
                 [attr.colspan]="q.cspan"
                 [attr.rowspan]="q.rspan"
@@ -75,9 +64,10 @@
                            [attr.max]="q.question.datatypeNumber ? q.question.datatypeNumber.maxValue : null"
                            [required]="q.question.required"
                            [disabled]="!q.question.editable"/>
+                    <div *ngIf="q.question.uoms.length > 0">Units of Measure:</div>
                     <label *ngFor="let uom of q.question.uoms"
                            [ngClass]="{'nativeRequiredBox': q.question.required}"
-                           class="input-group-addon">
+                           style="padding-left: 10px;display: block">
                         <input type="radio"
                                [attr.name]="q.name + '-' + ni + '_uom'"
                                [value]="uom"
@@ -92,9 +82,10 @@
                            [(ngModel)]="q.question.answer[ni]"
                            [required]="q.question.required"
                            [disabled]="!q.question.editable"/>
+                    <div *ngIf="q.question.uoms.length > 0">Units of Measure:</div>
                     <label *ngFor="let uom of q.question.uoms"
                            [ngClass]="{'nativeRequiredBox': q.question.required}"
-                           style="padding-left: 10px">
+                           style="padding-left: 10px;display: block">
                         <input type="radio"
                                [attr.name]="q.name + '-' + ni + '_uom'"
                                [value]="uom"

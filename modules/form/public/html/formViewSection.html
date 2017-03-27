@@ -21,9 +21,12 @@
         </div>
 
         <div ng-if="!(canCurate && section.edit)">
-            <span ng-if="section.cardinality && (section.cardinality.min !== 1 || section.cardinality.max !== 1)"
+            <span ng-if="section.cardinality && (section.cardinality.min !== 1 || section.cardinality.max !== 1) && section.cardinality.max !== -2"
                   class="label label-primary formViewSummaryLabel">
                 Repeats: {{getCardinalityLabel(section)}} times
+            </span>
+            <span ng-if="section.cardinality && section.cardinality.max === -2" class="label label-primary">
+                Repeats: over first question
             </span>
             <span ng-if="section.skipLogic.condition" class="label label-warning formViewSummaryLabel">
                 Show if: {{section.skipLogic.condition}}
