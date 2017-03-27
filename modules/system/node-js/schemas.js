@@ -12,7 +12,9 @@ var csEltSchema = new mongoose.Schema({
 }, {_id: false});
 
 schemas.classificationSchema = new mongoose.Schema({
-    stewardOrg: {name: String, index: true}
+    stewardOrg: {
+        name: {type: String, index: true}
+    }
     , workingGroup: Boolean
     , elements: [csEltSchema]
 }, {_id: false});
