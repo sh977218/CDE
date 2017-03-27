@@ -415,10 +415,10 @@ angular.module('systemModule').directive('cdeLogAudit', upgradeAdapter.downgrade
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', upgradeAdapter.downgradeNg2Component(UsersMgtComponent));
 
-import {IdentifiersComponent} from "../../../shared/public/components/adminItem/identifiers.component";
+import {IdentifiersComponent} from "../../../admin/public/components/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downgradeNg2Component(IdentifiersComponent));
 
-import {PropertiesComponent} from "../../../shared/public/components/adminItem/properties.component";
+import {PropertiesComponent} from "../../../admin/public/components/properties.component";
 angular.module('systemModule').directive('cdeAdminItemProperties', upgradeAdapter.downgradeNg2Component(PropertiesComponent));
 
 import {UserCommentsComponent} from "../components/userComments.component";

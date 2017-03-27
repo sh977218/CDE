@@ -8,12 +8,13 @@ import { Select2Module } from "ng2-select2";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
-import { IdentifiersComponent } from "../../shared/public/components/adminItem/identifiers.component";
-import { PropertiesComponent } from "../../shared/public/components/adminItem/properties.component";
 import { UserCommentsComponent } from "./components/userComments.component";
 import { HomeComponent } from "./components/home/home.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
+import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
+import { PropertiesComponent } from "../../admin/public/components/properties.component";
+import { AdminModule } from "../../admin/public/admin.module";
 
 @NgModule({
     imports: [
@@ -23,7 +24,8 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
         TypeaheadModule.forRoot(),
         PaginationModule.forRoot(),
         DataTableModule,
-        Select2Module
+        Select2Module,
+        AdminModule
     ],
     declarations: [
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
