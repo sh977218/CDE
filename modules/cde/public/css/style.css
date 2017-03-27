@@ -1699,7 +1699,6 @@ div.slider .ui-slider-handle {
     transform: rotate(270deg);
 }
 
-<<<<<<< HEAD
 .native-table-list {
     /*display: flex;*/
     /*flex-flow: column wrap;*/
@@ -1718,11 +1717,11 @@ div.slider .ui-slider-handle {
     margin-bottom: 0;
 }
 
-.native-tableB-box {
+.native-table-box {
     /*height: 100%;*/
     /*max-height: 70px;*/
 }
-=======
+
 .positionAbsolute {
     position: absolute;
 }
@@ -1735,4 +1734,3 @@ div.slider .ui-slider-handle {
 .mergeCdeName {
     height: 50px;
 }
->>>>>>> origin/master
