@@ -164,7 +164,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
 
 function findCde(cdeId, migrationCde, idv, findCdeDone) {
     var cdeCond = {
-        archived: null,
+        archived: false,
         source: source,
         "registrationState.registrationStatus": {$not: /Retired/},
         imported: {$ne: today}
@@ -251,7 +251,7 @@ function streamOnClose() {
         'source': source,
         'classification.stewardOrg.name': stewardOrgName,
         'classification.elements.name': 'Newborn Screening',
-        'archived': null
+        'archived': false
     }).exec(function (retiredCdeError, retireCdes) {
         if (retiredCdeError) throw retiredCdeError;
         else {

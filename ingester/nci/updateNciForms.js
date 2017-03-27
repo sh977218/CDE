@@ -94,7 +94,7 @@ function processForm(migrationForm, existingForm, xml, orgName, processFormCb) {
 
 function doMigrationFormModel(migrationForm, xml, source, formId, formVersion, orgName, findFormDone) {
     var formCond = {
-        archived: null,
+        archived: false,
         "registrationState.registrationStatus": {$not: /Retired/},
         created: {$ne: importDate}
     };

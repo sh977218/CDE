@@ -163,7 +163,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
 
 function findCde(cdeId, migrationCde, idv, findCdeDone) {
     var cdeCond = {
-        archived: null,
+        archived: false,
         source: 'LOINC',
         "registrationState.registrationStatus": {$not: /Retired/},
         imported: {$ne: today}
@@ -253,7 +253,7 @@ function streamOnClose() {
     DataElement.find({
         'imported': {$lt: lastEightHours},
         'source': 'AHRQ',
-        'archived': null,
+        'archived': false,
         'stewardOrg.name': 'AHRQ'
     }).exec(function (retiredCdeError, retireCdes) {
         if (retiredCdeError) throw retiredCdeError;

@@ -3,7 +3,7 @@ var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
 var DataElement = mongo_cde.DataElement;
 var totalDeCount = 0;
 var modifiedDeCount = 0;
-var cond = {'classification.stewardOrg.name': 'PhenX', archived: null};
+var cond = {'classification.stewardOrg.name': 'PhenX', archived: false};
 DataElement.find(cond).exec((err, cdes)=> {
     async.forEach(cdes, (cde, doneOneCde)=> {
         totalDeCount++;
