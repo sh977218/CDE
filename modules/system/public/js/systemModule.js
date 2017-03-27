@@ -126,10 +126,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 inlineAreaVisibility: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
-            link: function ($scope) {
-                var allow = $scope.isAllowed();
-                console.log($scope);
-            },
             controller: ["$scope", "$element", function ($scope, $element) {
                 $scope.clickEdit = function () {
                     $scope.inScope = {
