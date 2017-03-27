@@ -14,7 +14,8 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
             i++;
         }
         if (i == 10) {
-            Assert.fail();
+            Assert.fail("Assert failed. Expected: " + value + " Actual value: "
+                    + ((JavascriptExecutor) driver).executeScript("return $(window).scrollTop();", "").equals(value));
         }
     }
 

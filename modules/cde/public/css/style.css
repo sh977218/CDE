@@ -4,7 +4,7 @@
 }
 
 .nav, .navbar, .navbar-nav, .form-inline, .form-inline label {
-    display: initial;
+    display: block;
 }
 
 .navbar {
@@ -13,7 +13,7 @@
 
 .dropdown-toggle::after {
     content: "";
-    display: initial;
+    display: block;
     border: none;
     margin: 0;
 }
