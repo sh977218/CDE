@@ -54,14 +54,17 @@
                             return "";
                         }
                     }
-                    if (typeof o === 'boolean') return (o ? 'Yes' : 'No');
-                    if (typeof o === 'number') return o.toString();
-                    if (o.constructor === Array) {
-                        return o.map(function (m) {
-                            return m.tag;
+                    if (typeof o === 'boolean')
+                        return (o ? 'Yes' : 'No');
+                    else if (typeof o === 'number')
+                        return o.toString();
+                    else if (o.constructor === Array && o.length > 0) {
+                        var firstKey = Object.keys(o[0])[0];
+                        var oResult = o.map(function (m) {
+                            return m[firstKey];
                         }).join(', ');
-                    }
-                    return o;
+                        return firstKey + ': ' + oResult;
+                    } else return o;
                 },
                 applyHtml: function ($scope, $element) {
                     if (typeof $scope.showAttribute !== 'undefined' && !$scope.showAttribute) return;
@@ -85,7 +88,7 @@
                         ' <a ng-href="{{properties.url}}' + propertyValue + '">' + propertyValue + '</a></div>' +
                         '<div ng-if="!properties.link" class="col-xs-7" data-title="{{properties.property}}"' +
                         ' ng-bind-html="value" ng-text-truncate="value" ng-tt-threshold="100"></div>';
-                    if ($scope.showWarningIcon)
+                    if ($scope.showWarningIcon && !$scope.properties.match)
                         objectHtml +=
                             '<i class="fa fa-exclamation-triangle unmatchedIcon"></i>';
                     objectHtml += '</div>';

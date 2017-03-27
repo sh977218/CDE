@@ -83,7 +83,7 @@ app_status.getStatus = function(done) {
     app_status.isElasticUp(function() {
         if (app_status.statusReport.elastic.up) {
             app_status.statusReport.elastic.indices = [];
-            var condition = {archived: null};
+            var condition = {archived: false};
             async.series([
                 function(done) {
                     mongo_cde.count(condition, function (err, deCount) {

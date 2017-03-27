@@ -11,22 +11,25 @@ var connection = connHelper.establishConnection(config.database.appData);
 var Article = connection.model('Article', schemas.articleSchema);
 
 exports.byKey = function(key, cb) {
-    Article.findOne({key: key, archived: null}).exec(cb);
+    Article.findOne({key: key, archived: false}).exec(cb);
 };
 
 exports.byId = function(id, cb) {
     Article.findOne({_id: id}).exec(cb);
 };
 
-exports.newArticle = function(key, cb) {
-    exports.byKey(key, function(err, found) {
+exports.newArticle = function (key, cb) {
+    exports.byKey(key, function (err, found) {
         if (found) cb("Duplicate", null);
         else {
             var article = new Article(
-                    {key: key
-                    , body: "This article has no content"
-                    , created: Date.now()});
-            article.save(cb);            
+                {
+                    key: key,
+                    body: "This article has no content",
+                    created: Date.now(),
+                    archived: false
+                });
+            article.save(cb);
         }
     });
 };

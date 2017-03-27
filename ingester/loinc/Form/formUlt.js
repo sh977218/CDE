@@ -19,7 +19,7 @@ var formCount = 0;
 
 exports.createForm = function (loinc, org, orgInfo, cb) {
     FormModel.find({
-        archived: null,
+        archived: false,
         "registrationState.registrationStatus": {$ne: "Retired"}
     }).elemMatch("ids", {source: 'LOINC', id: loinc['loincId']}).exec(function (err, existingForms) {
         if (err) throw err;
@@ -91,7 +91,7 @@ exports.loadElement = function (element, fe, org, orgInfo, next) {
 
 exports.loadCde = function (element, fe, next) {
     DataElementModel.find({
-        archived: null,
+        archived: false,
         "registrationState.registrationStatus": {$ne: "Retired"}
     }).elemMatch("ids", {source: 'LOINC', id: element['LOINC#']}).exec(function (err, existingCdes) {
         if (err) throw err;
@@ -167,7 +167,7 @@ exports.loadCde = function (element, fe, next) {
 
 exports.loadForm = function (element, fe, org, orgInfo, next) {
     FormModel.find({
-        archived: null,
+        archived: false,
         "registrationState.registrationStatus": {$ne: "Retired"}
     }).elemMatch("ids", {source: 'LOINC', id: element['LOINC#']}).exec(function (err, existingForms) {
         if (err) throw err;

@@ -169,7 +169,7 @@ function processCde(existingCde, migrationCde, xml, cb) {
 
 function findCde(migrationCde, xml, source, cdeId, version, cb) {
     var cdeCond = {
-        archived: null,
+        archived: false,
         source: source,
         "registrationState.registrationStatus": {$not: /Retired/},
         imported: {$ne: today}

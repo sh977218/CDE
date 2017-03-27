@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -9,7 +8,7 @@ import org.testng.Assert;
 
 import java.util.concurrent.TimeUnit;
 
-public class BaseFormTest extends NlmCdeBaseTest {
+public class BaseFormTest extends FormCommentTest {
 
     protected void startAddingQuestions() {
         scrollToTop();

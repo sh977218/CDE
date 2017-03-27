@@ -837,6 +837,19 @@ input:required:invalid, input:focus:invalid {
     color: red;
 }
 
+.bgGrey {
+    background-color: lightgrey;
+}
+
+.bgRed {
+    background-color: #f35f3a;;
+}
+
+.bgGreen {
+    background-color: rgba(132, 175, 26, 0.58);
+}
+
+
 .placeholderForDrop {
     border: 1px solid #ddd;
     padding: 10px;
@@ -1279,6 +1292,9 @@ div + .questionPlaceholder {
     box-shadow: inset 10px 0 5px -2px #888;
 }
 
+.right {
+    float: right;
+}
 .reply {
     border: none;
     border-bottom: 1px solid #e5e5e5;
@@ -1683,6 +1699,7 @@ div.slider .ui-slider-handle {
     transform: rotate(270deg);
 }
 
+<<<<<<< HEAD
 .native-table-list {
     /*display: flex;*/
     /*flex-flow: column wrap;*/
@@ -1705,3 +1722,17 @@ div.slider .ui-slider-handle {
     /*height: 100%;*/
     /*max-height: 70px;*/
 }
+=======
+.positionAbsolute {
+    position: absolute;
+}
+
+.mergeRightArrow {
+    position: absolute;
+    right: -5px;
+}
+
+.mergeCdeName {
+    height: 50px;
+}
+>>>>>>> origin/master

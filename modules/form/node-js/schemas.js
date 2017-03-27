@@ -132,7 +132,7 @@ exports.formJson = {
         , username: String
     }
     , formElements: [formElementSchema]
-    , archived: {type: Boolean, index: true}
+    , archived: {type: Boolean, default: false, index: true}
     , classification: [sharedSchemas.classificationSchema]
     , displayProfiles: [{
         name: String
