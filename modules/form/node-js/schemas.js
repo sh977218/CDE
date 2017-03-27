@@ -144,7 +144,7 @@ exports.formJson = {
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
         , repeatFormat: {type: String, default: ''}
-        , repeatMax: {type: Number}
+        , repeatMax: {type: Number, default: 10}
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]

@@ -32,15 +32,15 @@ export class NativeTableComponent implements OnInit {
 
         this.entry.cspan = 1;
         this.entry.rspan = ret.r + 1;
-        this.entry.style = this.getSectionStyle(0).sectionStyle;
-        this.tableForm.q[0].style = this.getSectionStyle(0).answerStyle;
+        this.entry.style = {backgroundColor: "#ddd"};
+        this.tableForm.q[0].style = {backgroundColor: "#f2f2f2"};
     }
 
     getRows() {
         this.tableForm.rows = [];
-        let format = "#.";
         let maxValue = this.formElement.cardinality.max;
         if (maxValue > 0 || maxValue === -1) {
+            let format = "#.";
             if (this.nativeRenderService.profile) {
                 format = this.nativeRenderService.profile.repeatFormat;
                 if (maxValue === -1 && this.nativeRenderService.profile.repeatMax)
