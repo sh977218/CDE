@@ -64,7 +64,6 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[@uib-btn-radio=\"'html'\"]"));
         findElement(By.xpath("//*[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(@class,'fa fa-check')]"));
-        textPresent("Saved");
         closeAlert();
         //following tests that we go back to properties tab without clicking it.
         textPresent("Hello From Selenium");
