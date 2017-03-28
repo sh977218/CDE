@@ -14,27 +14,27 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.xpath("//option[.='propKey0']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey0");
         findElement(By.name("value")).sendKeys("MyValue0");
-        clickElement(By.id("createProperty"));
+        clickElement(By.id("createPropertyBtn"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.id("addProperty"));
+        clickElement(By.id("openNewPropertyModalBtn"));
         findElement(By.xpath("//option[.='propKey1']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey1");
         findElement(By.name("value")).sendKeys("MyValue1");
-        clickElement(By.id("createProperty"));
+        clickElement(By.id("createPropertyBtn"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.id("addProperty"));
+        clickElement(By.id("openNewPropertyModalBtn"));
         findElement(By.xpath("//option[.='propKey2']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
-        clickElement(By.id("createProperty"));
+        clickElement(By.id("createPropertyBtn"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
@@ -83,7 +83,7 @@ public abstract class PropertyTest extends CommonTest {
         textPresent("Saved");
         closeAlert();
 
-        scrollToViewById("addProperty");
+        scrollToViewById("openNewPropertyModalBtn");
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
