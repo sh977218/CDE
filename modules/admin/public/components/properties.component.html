@@ -7,7 +7,7 @@
                 <div class="row">
                     <span *ngIf="prop.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removeProperty($index)"
-                              id="confirmRemoveProperty-{{i}}" title="OK" href=""></span>
+                              id="confirmRemoveProperty-{{$index}}" title="OK" href=""></span>
                         <span class="btn-default fa fa-times" (click)="prop.edit = false" title="Cancel" href=""></span>
                     </span>
                     <span (click)="prop.edit = true" *ngIf="!prop.edit" class="btn-default fa fa-trash-o"
