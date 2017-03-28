@@ -1,6 +1,6 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import { NgbModalModule, NgbModal, NgbActiveModal, } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-admin-item-properties",
@@ -12,8 +12,8 @@ export class PropertiesComponent {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: any;
     orgPropertyKeys: any;
-
     public newProperty: any = {};
+    public modalRef: NgbModalRef;
 
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
@@ -24,17 +24,20 @@ export class PropertiesComponent {
 
     openNewPropertyModal() {
         this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
-        const modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
+        this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
     }
 
     addNewProperty() {
+        this.newProperty = {};
         this.elt.properties.push(this.newProperty);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property added. Save to confirm.");
+            this.modalRef.close();
         } else {
             this.elt.$save(newElt => {
                 this.elt = newElt;
                 this.alert.addAlert("success", "Property Added");
+                this.modalRef.close();
             });
         }
     }
