@@ -12,7 +12,7 @@ public class NoPropertyKey extends NlmCdeBaseTest {
         goToCdeByName("Neoadjuvant Therapy");
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.id("addProperty"));
+        clickElement(By.id("openNewPropertyModalBtn"));
         textPresent("No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
     }
 
