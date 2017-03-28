@@ -25,10 +25,12 @@ export class PropertiesComponent {
     openNewPropertyModal() {
         this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
         this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
+        this.modalRef.result.then(result => {
+            this.newProperty = {};
+        });
     }
 
     addNewProperty() {
-        this.newProperty = {};
         this.elt.properties.push(this.newProperty);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property added. Save to confirm.");

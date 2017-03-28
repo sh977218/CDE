@@ -14,7 +14,6 @@ public class NoPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
         textPresent("No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
-        closeAlert();
     }
 
 }
