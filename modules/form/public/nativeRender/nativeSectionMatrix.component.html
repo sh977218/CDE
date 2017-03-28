@@ -9,7 +9,8 @@
     <tr *ngFor="let q of formElement.formElements"
         [hidden]="!(!q.question.invisible || q.question.invisible && nativeRenderService.profile.displayInvisible)">
         <td>
-            <label [ngClass]="{'native-question-label': !numSubQuestions && nativeRenderService.profile.displayNumbering}"
+            <label [ngClass]="{'native-question-label-number': !numSubQuestions && nativeRenderService.profile.displayNumbering}"
+                   class="native-question-label"
                    [textContent]="q.label"></label>
         </td>
         <td *ngFor="let qa of q.question.answers">

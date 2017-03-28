@@ -1546,7 +1546,7 @@ label.input-group-addon {
     margin-bottom: 0px;
 }
 
-.native-question-label:before {
+.native-question-label-number:before {
     counter-increment: section;
     content: counter(section) ". ";
 }

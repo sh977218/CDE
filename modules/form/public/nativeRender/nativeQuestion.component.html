@@ -1,5 +1,6 @@
 <div [hidden]="formElement.question.invisible && !nativeRenderService.profile.displayInvisible">
-    <label [hidden]="!hasLabel(formElement)" [ngClass]="{'native-question-label': !numSubQuestions && nativeRenderService.profile.displayNumbering}">
+    <label [hidden]="!hasLabel(formElement)" class="native-question-label"
+           [ngClass]="{'native-question-label-number': !numSubQuestions && nativeRenderService.profile.displayNumbering}">
         <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</label>
     <div *ngIf="nativeRenderService.profile.displayInstructions && formElement?.instructions?.value" class="native-instructions">
         <span *ngIf="formElement.instructions.valueFormat === 'html'" [innerHtml]="formElement.instructions.value"></span>
