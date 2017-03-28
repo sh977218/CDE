@@ -69,7 +69,7 @@ export class NativeQuestionComponent {
 
     isOneLiner(question, numSubQuestions) {
         return numSubQuestions && !this.hasLabel(question) && !question.instructions
-            && question.question.datatype !== "Value List";
+            && question.elementType === "question" && question.question.datatype !== "Value List";
     }
 
     checkboxOnChange($event: any, model: any, value: any) {
