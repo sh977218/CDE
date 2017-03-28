@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from "@angular/core";
+import { ModuleWithProviders, NgModule } from "@angular/core";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 
 import { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
@@ -23,10 +23,4 @@ export { SkipLogicService } from "./skipLogic.service";
     ]
 })
 export class CoreModule {
-    constructor (@Optional() @SkipSelf() parentModule: CoreModule) {
-        if (parentModule) {
-            throw new Error(
-                "CoreModule is already loaded. Import it in the AppModule only.");
-        }
-    }
 }

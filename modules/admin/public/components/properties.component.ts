@@ -11,16 +11,19 @@ export class PropertiesComponent {
 
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: any;
+    orgPropertyKeys: any;
 
     public newProperty: any = {};
 
     constructor(@Inject("Alert") private alert,
+                @Inject("isAllowedModel") public isAllowedModel,
+                @Inject("OrgHelpers") private orgHelpers,
                 public modalService: NgbModal,
-                public activeModal: NgbActiveModal,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                public activeModal: NgbActiveModal) {
     }
 
     openNewPropertyModal() {
+        this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
         const modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
     }
 

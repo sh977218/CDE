@@ -10,7 +10,7 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, status);
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.id("addProperty"));
+        clickElement(By.id("openNewPropertyModalBtn"));
         findElement(By.xpath("//option[.='propKey0']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey0");
         findElement(By.name("value")).sendKeys("MyValue0");
