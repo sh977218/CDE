@@ -20,7 +20,7 @@
 
     <cde-native-table *ngIf="sectionType() === 'table'" [formElement]="formElement"></cde-native-table>
     <cde-native-section-matrix *ngIf="sectionType() === 'matrix'"
-                               [formElement]="formElement" [numsubquestions]="numSubQuestions"></cde-native-section-matrix>
+                               [formElement]="formElement" [numSubQuestions]="numSubQuestions"></cde-native-section-matrix>
     <div *ngIf="sectionType() === 'section'">
         <div *ngFor="let element of formElement.formElements; let i = index">
             <div *ngIf="nativeRenderService.evaluateSkipLogicAndClear(element.skipLogic?.condition, formElement.formElements, element)">

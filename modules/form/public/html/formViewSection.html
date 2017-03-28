@@ -45,9 +45,13 @@
                      is-allowed="canCurate && section.edit" on-ok="stageElt()"></div>
             </div>
             <div class="questionSectionLabel section_cardinality">Repeats:
-                <select class="form-control" ng-model="section.cardinality" ng-change="stageElt()"
+                <select class="form-control" ng-model="section.cardinalityOption" ng-change="setCardinality();stageElt()"
                         ng-options="item.value as item.label for item in cardinalityOptions">
                 </select>
+            </div>
+            <div ng-if="section.cardinalityOption === '0+' || section.cardinalityOption === '1+'"
+                 class="questionSectionLabel section_cardinality">Repeat Maximum Times:
+                <input type="number" class="form-control" ng-model="section.cardinality.max" ng-change="stageElt()"/>
             </div>
             <div class="questionSectionLabel">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" ng-class="{'has-error':section.skipLogic.skipLogicError}">

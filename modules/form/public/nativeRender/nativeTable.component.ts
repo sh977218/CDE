@@ -80,27 +80,46 @@ export class NativeTableComponent implements OnInit {
         let tcontent = this.getSectionLevel(level + 1);
         let retr = 0;
         s.formElements.forEach(f =>  {
-            if (f.elementType === "section" || f.elementType === "form") {
-                let ret = this.renderSection(f, level + 1);
-                c += ret.c;
-                retr = Math.max(retr, ret.r);
-            }
-            else if (f.elementType === "question" && f !== this.firstQuestion) {
-                c++;
-                tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
-                this.tableForm.q.push({type: NativeTableComponent.getQuestionType(f), name: f.questionId, question: f.question, style: sectionStyle.answerStyle});
-                if ((!Array.isArray(f.question.answer) || this.tableForm.rows.length !== f.question.answer.length) && this.tableForm.q.slice(-1)[0].type === "list") {
-                    f.question.answer = [];
-                    this.tableForm.rows.forEach(r => {
-                        f.question.answer.push({answer: ""});
-                    });
-                } else
-                    f.question.answer = Array(this.tableForm.rows.length);
-            }
+            let ret = this.renderFormElement(f, tcontent, level, retr, r, c, sectionStyle);
+            retr = ret.retr;
+            c = ret.c;
         });
         r += retr;
         section.cspan = c;
         return {r: r, c: c};
+    }
+    renderFormElement(f, tcontent, level, retr, r, c, sectionStyle) {
+        if (f.elementType === "section" || f.elementType === "form") {
+            let ret = this.renderSection(f, level + 1);
+            c += ret.c;
+            retr = Math.max(retr, ret.r);
+        }
+        else if (f.elementType === "question" && f !== this.firstQuestion) {
+            c++;
+            tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
+            this.tableForm.q.push({
+                type: NativeTableComponent.getQuestionType(f),
+                name: f.questionId,
+                question: f.question,
+                style: sectionStyle.answerStyle
+            });
+            if ((!Array.isArray(f.question.answer) || this.tableForm.rows.length !== f.question.answer.length) && this.tableForm.q.slice(-1)[0].type === "list") {
+                f.question.answer = [];
+                this.tableForm.rows.forEach(r => {
+                    f.question.answer.push({answer: ""});
+                });
+            } else
+                f.question.answer = Array(this.tableForm.rows.length);
+
+            f.question.answers.forEach(a => {
+                a.subQuestions && a.subQuestions.forEach(sf => {
+                    let ret = this.renderFormElement(sf, tcontent, level, retr, r, c, sectionStyle);
+                    retr = ret.retr;
+                    c = ret.c;
+                });
+            });
+        }
+        return {retr: retr, c: c};
     }
     setDepth(r) {
         this.tableForm.s.forEach((s, level) => {

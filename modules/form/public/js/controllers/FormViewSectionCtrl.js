@@ -10,4 +10,28 @@ angular.module('formModule').controller('FormViewSectionCtrl', ['$scope',
                 }
             }
         };
+        $scope.section.cardinalityOption = $scope.getCardinalityOption($scope.section.cardinality.min, $scope.section.cardinality.max);
+        $scope.setCardinality = function() {
+            switch ($scope.section.cardinalityOption) {
+                case '1':
+                    $scope.section.cardinality.min = 1;
+                    $scope.section.cardinality.max = 1;
+                    break;
+                case '01':
+                    $scope.section.cardinality.min = 0;
+                    $scope.section.cardinality.max = 1;
+                    break;
+                case 'FQ':
+                    $scope.section.cardinality.max = -2;
+                    break;
+                case '1+':
+                    $scope.section.cardinality.min = 1;
+                    $scope.section.cardinality.max = 10;
+                    break;
+                case '0+':
+                    $scope.section.cardinality.min = 0;
+                    $scope.section.cardinality.max = 10;
+                    break;
+            }
+        };
     }]);

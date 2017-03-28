@@ -49,6 +49,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6, true);
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1, false);
         createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false);
+        scrollToTop();
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
         Assert.assertTrue(
