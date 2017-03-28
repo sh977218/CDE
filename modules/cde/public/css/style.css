@@ -3,8 +3,16 @@
     display: block;
 }
 
-.nav, .navbar, .navbar-nav, .form-inline, .form-inline label {
+.nav, .navbar, .navbar-nav {
     display: block;
+}
+
+.form-inline, .form-inline label {
+    display: inline-block;
+}
+
+.navbar {
+    padding: 0;
 }
 
 .dropdown-toggle::after {
@@ -1518,10 +1526,6 @@ input.ng-invalid {
 .form-horizontal .native-section .radio-inline,
 .form-horizontal .native-section .checkbox-inline {
     padding-top: 0;
-}
-
-table.table > tbody > tr > td {
-    padding: 8px 8px 8px 0;
 }
 
 label.input-group-addon {
