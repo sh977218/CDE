@@ -14,7 +14,7 @@
     </div>
     <div *ngIf="nativeRenderService.profile.displayInstructions && formElement.instructions?.value"
          class="native-instructions" [ngSwitch]="formElement.instructions.valueFormat">
-        <span *ngSwitchCase="html"><span [innerHtml]="formElement.instructions.value"></span></span>
+        <span *ngSwitchCase="'html'"><span [innerHtml]="formElement.instructions.value"></span></span>
         <span *ngSwitchDefault class="text-muted"><span [textContent]="formElement.instructions.value"></span></span>
     </div>
 
