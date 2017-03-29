@@ -13,7 +13,7 @@ var conceptSchema = new mongoose.Schema({
 var derivationRuleSchema = new mongoose.Schema(
     {
         name: String,
-        inputs: {type: String, index: true},
+        inputs: {type: [String], index: true},
         outputs: [String],
         ruleType: {type: String, enum: ['score', 'panel']},
         formula: {type: String, enum: ['sumAll', 'mean']}
