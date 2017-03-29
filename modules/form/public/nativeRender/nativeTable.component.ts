@@ -58,15 +58,12 @@ export class NativeTableComponent implements OnInit {
         } else {
             let maxValue = parseInt(this.formElement.repeat);
             let format = "#.";
-            if (this.nativeRenderService.profile) {
+            if (this.nativeRenderService.profile)
                 format = this.nativeRenderService.profile.repeatFormat;
-                if ((!Number.isFinite(maxValue) || maxValue <= 0)  && this.nativeRenderService.profile.repeatMax)
-                    maxValue = this.nativeRenderService.profile.repeatMax;
-            }
             if (!format)
                 format = "";
             for (let i = 1; i <= maxValue; i++) {
-                this.tableForm.rows.push({label: format.replace(/\#/, Number(i).toString())});
+                this.tableForm.rows.push({label: format.replace(/\#/, i.toString())});
             }
         }
     }

@@ -32,8 +32,9 @@
                                            (change)="nativeRenderService.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
                                            [value]="pv.permissibleValue"
                                            [required]="formElement.question.required"
-                                           [disabled]="!formElement.question.editable"
-                                    />{{nativeRenderService.getPvLabel(pv)}}<span *ngIf="nativeRenderService.profile.displayValues"
+                                           [disabled]="!formElement.question.editable"/>
+                                    <span [textContent]="nativeRenderService.getPvLabel(pv)"></span>
+                                    <span class="native-value" *ngIf="nativeRenderService.profile.displayValues"
                                           [textContent]="nativeRenderService.getPvValue(pv)"></span>
                                 </label>
                                 <div *ngIf="pv?.subQuestions">

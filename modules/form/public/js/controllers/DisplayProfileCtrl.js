@@ -6,9 +6,11 @@ angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', functio
             displayInstructions: true,
             displayNumbering: true,
             sectionsAsMatrix: true,
+            displayValues: false,
             displayType: 'Follow-up',
             numberOfColumns: 4,
-            displayInvisible: false
+            displayInvisible: false,
+            repeatFormat: "#."
         };
         var elt = $scope.elt;
         if (!elt.displayProfiles) elt.displayProfiles = [newProfile];

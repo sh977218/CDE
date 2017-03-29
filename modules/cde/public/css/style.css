@@ -1575,6 +1575,10 @@ div.row .native-question-oneline-r {
     margin-bottom: 1px;
 }
 
+.native-value {
+    font-weight: bold;
+}
+
 .radio-inline,
 .wordwrap {
     word-wrap: break-word;

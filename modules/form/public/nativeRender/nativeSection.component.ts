@@ -14,7 +14,7 @@ export class NativeSectionComponent {
     }
 
     sectionType() {
-        if (this.formElement.repeat)
+        if (this.formElement.repeat && this.formElement.repeat !== "1")
             return "table";
         if (this.nativeRenderService.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement))
             return "matrix";

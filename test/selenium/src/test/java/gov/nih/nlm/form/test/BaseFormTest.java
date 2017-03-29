@@ -54,7 +54,7 @@ public class BaseFormTest extends FormCommentTest {
         showSearchFilters();
     }
 
-    public void addSectionTop(String title, String card) {
+    public void addSectionTop(String title, String repeat) {
         clickElement(By.id("addSectionTop"));
         String sectionId = "section_0";
         scrollToViewById(sectionId);
@@ -64,13 +64,10 @@ public class BaseFormTest extends FormCommentTest {
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
-
-        if (card != null) {
-            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(card);
-        }
+        setRepeat(sectionId, repeat);
     }
 
-    public void addSectionBottom(String title, String card) {
+    public void addSectionBottom(String title, String repeat) {
         int nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
         clickElement(By.id("addSectionBottom"));
         textPresent("New Section");
@@ -82,9 +79,17 @@ public class BaseFormTest extends FormCommentTest {
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+        setRepeat(sectionId, repeat);
+    }
 
-        if (card != null) {
-            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(card);
+    public void setRepeat(String sectionId, String repeat) {
+        if (repeat != null) {
+            if (repeat.charAt(0) == 'F')
+                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("F");
+            else {
+                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("N");
+                findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
+            }
         }
     }
 

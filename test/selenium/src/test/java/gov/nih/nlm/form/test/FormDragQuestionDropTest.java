@@ -13,9 +13,9 @@ public class FormDragQuestionDropTest extends QuestionTest {
         textPresent("The CRS-R consists of twenty-three items comprising six hierarchically-arranged subscales addressing auditory, visual, motor, oromotor/verbal, communication and arousal functions. The lowest item on each subscale represents reflexive activity while the highest items represent cognitively-mediated behaviors.");
         clickElement(By.id("description_tab"));
         textPresent("Show Question Search Area");
-        addSectionTop("Third Section Name", "1 or more");
-        addSectionTop("Second Section Name", "1 or more");
-        addSectionTop("First Section Name", "0 or more");
+        addSectionTop("Third Section Name", null);
+        addSectionTop("Second Section Name", null);
+        addSectionTop("First Section Name", null);
         startAddingQuestions();
 
         String cdeName = "Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score";

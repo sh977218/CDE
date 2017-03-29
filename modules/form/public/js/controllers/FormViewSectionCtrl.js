@@ -12,11 +12,12 @@ angular.module('formModule').controller('FormViewSectionCtrl', ['$scope',
         };
 
         $scope.repeatOptions = [
+            {label: "", value: ""},
             {label: "Set Number of Times", value: "N"},
             {label: "Over first question", value: "F"}
         ];
         $scope.getRepeatOption = function(section) {
-            if (section.repeat == null)
+            if (!section.repeat)
                 return "";
             if (section.repeat[0] === 'F')
                 return 'F';
@@ -30,7 +31,7 @@ angular.module('formModule').controller('FormViewSectionCtrl', ['$scope',
             if ($scope.section.repeatOption === "F")
                 $scope.section.repeat = "First Question";
             else if ($scope.section.repeatOption === "N")
-                $scope.section.repeat = $scope.section.repeatNumber.toString();
+                $scope.section.repeat = ($scope.section.repeatNumber ? $scope.section.repeatNumber.toString() : "");
         };
         $scope.getRepeatLabel = function (section) {
             if (section.repeat == null)

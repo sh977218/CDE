@@ -5,6 +5,7 @@
                 [attr.colspan]="q.cspan"
                 [attr.rowspan]="q.rspan"
                 [textContent]="q.label"
+                [style.padding]="i === 0 && !q.label ? 0 : null"
                 [style.font]="q.style.font"
                 [style.color]="q.style.color"
                 [style.backgroundColor]="q.style.backgroundColor"
@@ -17,13 +18,14 @@
         <tr *ngFor="let n of tableForm.rows; let ni = index">
             <td *ngFor="let q of tableForm.q"
                 style="height: 10px;max-width: 300px;max-height: 200px;"
+                [style.padding]="q.type === 'label' && !n.label ? 0 : null"
                 [style.font]="q.style.font"
                 [style.color]="q.style.color"
                 [style.backgroundColor]="q.style.backgroundColor"
                 [style.borderColor]="q.style.borderColor"
                 [style.borderStyle]="q.style.borderStyle"
                 [style.borderWidth]="q.style.borderWidth">
-                <div *ngIf="q.type === 'label'" class="native-table-cell">
+                <div *ngIf="q.type === 'label'" class="native-table-cell" style="text-align: center">
                     <label [textContent]="n.label"></label>
                 </div>
                 <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
@@ -32,8 +34,11 @@
                                [attr.name]="q.name + '-' + ni"
                                [value]="a.permissibleValue"
                                [required]="q.question.required"
-                               [disabled]="!q.question.editable"
-                        />{{nativeRenderService.getPvLabel(a)}}</label>
+                               [disabled]="!q.question.editable"/>
+                        <span [textContent]="nativeRenderService.getPvLabel(a)"></span>
+                        <span class="native-value" *ngIf="nativeRenderService.profile.displayValues"
+                              [textContent]="nativeRenderService.getPvValue(a)"></span>
+                    </label>
                 </div>
                 <div *ngIf="q.type === 'mlist'" class="checkbox native-table-cell native-table-list">
                     <label style="display: block" *ngFor="let a of q.question.answers">
@@ -42,8 +47,11 @@
                                [checked]="nativeRenderService.checkboxIsCheckedRepeat(q.question, a.permissibleValue, ni)"
                                (change)="nativeRenderService.checkboxOnChangeRepeat($event, q.question, a.permissibleValue, ni)"
                                [required]="q.question.required"
-                               [disabled]="!q.question.editable"
-                        />{{nativeRenderService.getPvLabel(a)}}</label>
+                               [disabled]="!q.question.editable"/>
+                        <span [textContent]="nativeRenderService.getPvLabel(a)"></span>
+                        <span class="native-value" *ngIf="nativeRenderService.profile.displayValues"
+                              [textContent]="nativeRenderService.getPvValue(a)"></span>
+                    </label>
                 </div>
                 <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                     <div class="input-group">

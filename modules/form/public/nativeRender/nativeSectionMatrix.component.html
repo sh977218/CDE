@@ -14,8 +14,8 @@
                    [textContent]="q.label"></label>
         </td>
         <td *ngFor="let qa of q.question.answers">
-            <span *ngIf="nativeRenderService.profile.displayValues" [textContent]="qa.permissibleValue"></span>
             <input type="radio" [value]="qa.permissibleValue" [(ngModel)]="q.question.answer" name="{{q.questionId}}">
+            <span class="native-value" *ngIf="nativeRenderService.profile.displayValues" [textContent]="nativeRenderService.getPvValue(qa)"></span>
         </td>
     </tr>
     </tbody>
