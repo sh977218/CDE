@@ -268,7 +268,7 @@ export class NativeRenderService {
     static transformFormToInline(form) {
         let prevQ = [];
         let transformed = false;
-        let feSize = form.formElements.length;
+        let feSize = (form.formElements ? form.formElements.length : 0);
         for (let i = 0; i < feSize; i++) {
             let fe = form.formElements[i];
             let qs = NativeRenderService.getShowIfQ(fe, prevQ);
@@ -400,7 +400,7 @@ export class NativeRenderService {
     }
 
     static preprocessValueLists(formElements) {
-        formElements.forEach(function (fe) {
+        formElements && formElements.forEach(function (fe) {
             if (fe.elementType === "section" || fe.elementType === "form") {
                 NativeRenderService.preprocessValueLists(fe.formElements);
                 return;
@@ -435,7 +435,7 @@ export class NativeRenderService {
         }
 
         function flattenFormSection(formElements, section) {
-            formElements.forEach(function (fe) {
+            formElements && formElements.forEach(function (fe) {
                 flattenFormFe(fe, section.concat(fe.label));
             });
             flattenFormPushQuestions(section);
