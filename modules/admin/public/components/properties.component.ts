@@ -56,4 +56,11 @@ export class PropertiesComponent {
         }
     }
 
+    saveProperty() {
+        this.elt.$save(function (newElt) {
+            this.alert.addAlert("success", "Saved");
+            this.elt = newElt;
+        });
+    };
+
 }
