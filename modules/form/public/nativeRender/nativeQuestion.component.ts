@@ -60,7 +60,7 @@ export class NativeQuestionComponent {
     }
 
     isOneLiner(question, numSubQuestions) {
-        return numSubQuestions && !this.hasLabel(question) &&
-            question.question.datatype !== "Value List";
+        return numSubQuestions && !this.hasLabel(question) && !question.instructions
+            && question.elementType === "question" && question.question.datatype !== "Value List";
     }
 }
