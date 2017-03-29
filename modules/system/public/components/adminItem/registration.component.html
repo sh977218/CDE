@@ -55,7 +55,7 @@
                     <div class="form-group">
                         <label for="registrationStatus">Registration Status</label>
                         <select id="newRegistrationStatus" class="form-control"
-                                [(ngModel)]="elt.registrationState.registrationStatus"
+                                [(ngModel)]="newState.registrationStatus"
                                 name="registrationStatus" (ngModelChange)="setHelpMessage($event)">
                             <option *ngFor="let s of validRegStatuses" value="{{s}}">{{s}}</option>
                         </select>
@@ -89,21 +89,21 @@
                     <div class="form-group">
                         <label for="administrativeStatus">Administrative Status</label>
                         <input id="newAdministrativeStatus" class="form-control" type="text" name="administrativeStatus"
-                               [(ngModel)]="elt.registrationState.administrativeStatus"
+                               [(ngModel)]="newState.administrativeStatus"
                                placeholder="Optional Administrative Status"/>
                     </div>
 
                     <div class="form-group">
                         <label for="administrativeNote">Administrative Note</label>
                         <textarea id="newAdministrativeNote" class="form-control" name="administrativeNote"
-                                  [(ngModel)]="elt.registrationState.administrativeNote"
+                                  [(ngModel)]="newState.administrativeNote"
                                   placeholder="Optional Administrative Note"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="unresolvedIssue">Unresolved Issue</label>
                         <textarea id="newUnresolvedIssue" class="form-control" name="unresolvedIssue"
-                                  [(ngModel)]="elt.registrationState.unresolvedIssue"
+                                  [(ngModel)]="newState.unresolvedIssue"
                                   placeholder="Optional Unresolved Issue Note"></textarea>
                     </div>
 

@@ -1,5 +1,4 @@
 <div class="navbar-fixed-bottom">
-    <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">
-        {{alert.msg}}
+    <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" ng-bind="alert.msg">
     </uib-alert>
 </div>

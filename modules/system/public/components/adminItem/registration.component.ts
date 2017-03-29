@@ -1,4 +1,4 @@
-import {Component, Inject, Input, ViewChild} from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap/modal";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
@@ -8,12 +8,12 @@ import { Http } from "@angular/http";
     templateUrl: "./registration.component.html"
 })
 
-export class RegistrationComponent {
-
+export class RegistrationComponent implements OnInit {
     @ViewChild("childModal") public childModal: ModalDirective;
     @Input() elt: any;
     regStatusShared: any = require("../../../shared/regStatusShared");
     helpMessage: string;
+    newState: any = {};
 
     validRegStatuses: string[] = ["Retired", "Incomplete", "Candidate" ];
 
@@ -23,7 +23,12 @@ export class RegistrationComponent {
                  @Inject("userResource") private userService
     ) {}
 
+    ngOnInit(): void {
+        this.newState = {regisrationStatus: this.elt.registrationState.registrationStatus};
+    }
+
     openRegStatusUpdate () {
+
         this.http.get("/comments/eltId/" + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
                     return a.status !== 'resolved' && a.status !== 'deleted'
@@ -41,6 +46,7 @@ export class RegistrationComponent {
                 this.validRegStatuses.reverse();
             });
 
+
             this.childModal.show();
             // $modal.open({
             // }).result.then(function (newElt) {
@@ -50,12 +56,6 @@ export class RegistrationComponent {
         });
     }
 
-    doUpdate() {
-        // why?
-        // location.assign($scope.baseLink + newElt.tinyId);
-        this.alert.addAlert("success", "Saved");
-    }
-
     setHelpMessage (newValue) {
         this.regStatusShared.statusList.forEach((status) => {
             if (status.name === newValue) this.helpMessage = status.curHelp;
@@ -63,6 +63,7 @@ export class RegistrationComponent {
     };
 
     ok () {
+        this.elt.registrationState = this.newState;
         this.http.post("/debytinyid/" + this.elt.tinyId, this.elt).subscribe(() => this.childModal.hide());
     }
 
