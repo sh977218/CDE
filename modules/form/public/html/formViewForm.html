@@ -23,9 +23,9 @@
 
 
         <div ng-if="!(canCurate && section.edit)">
-            <span ng-if="section.cardinality && (section.cardinality.min !== 1 || section.cardinality.max !== 1)"
+            <span ng-if="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
                   class="label label-primary formViewSummaryLabel">
-                Repeats: {{getCardinalityLabel(section)}} times
+                Repeats: {{getRepeatLabel(section)}}
             </span>
             <span ng-if="section.skipLogic.condition" class="label label-warning formViewSummaryLabel">
                 Show if: {{section.skipLogic.condition}}
@@ -44,9 +44,13 @@
                      is-allowed="canCurate && section.edit" on-ok="stageElt()"></div>
             </div>
             <div class="questionSectionLabel section_cardinality">Repeats:
-                <select class="form-control" ng-model="section.cardinality" ng-change="stageElt()"
-                        ng-options="item.value as item.label for item in cardinalityOptions">
+                <select class="form-control" ng-model="section.repeatOption" ng-change="setRepeat();stageElt()"
+                        ng-options="item.value as item.label for item in repeatOptions">
                 </select>
+            </div>
+            <div ng-if="section.repeatOption === 'N'"
+                 class="questionSectionLabel section_cardinality">Repeat Maximum Times:
+                <input type="number" class="form-control" ng-model="section.repeatNumber" ng-change="setRepeat();stageElt()"/>
             </div>
             <div class="questionSectionLabel">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" ng-class="{'has-error':section.skipLogic.skipLogicError}">

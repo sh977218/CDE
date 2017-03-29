@@ -10,28 +10,35 @@ angular.module('formModule').controller('FormViewSectionCtrl', ['$scope',
                 }
             }
         };
-        $scope.section.cardinalityOption = $scope.getCardinalityOption($scope.section.cardinality.min, $scope.section.cardinality.max);
-        $scope.setCardinality = function() {
-            switch ($scope.section.cardinalityOption) {
-                case '1':
-                    $scope.section.cardinality.min = 1;
-                    $scope.section.cardinality.max = 1;
-                    break;
-                case '01':
-                    $scope.section.cardinality.min = 0;
-                    $scope.section.cardinality.max = 1;
-                    break;
-                case 'FQ':
-                    $scope.section.cardinality.max = -2;
-                    break;
-                case '1+':
-                    $scope.section.cardinality.min = 1;
-                    $scope.section.cardinality.max = 10;
-                    break;
-                case '0+':
-                    $scope.section.cardinality.min = 0;
-                    $scope.section.cardinality.max = 10;
-                    break;
-            }
+
+        $scope.repeatOptions = [
+            {label: "Set Number of Times", value: "N"},
+            {label: "Over first question", value: "F"}
+        ];
+        $scope.getRepeatOption = function(section) {
+            if (section.repeat == null)
+                return "";
+            if (section.repeat[0] === 'F')
+                return 'F';
+            else
+                return 'N';
         };
+        $scope.getRepeatNumber = function(section) {
+            return parseInt(section.repeat);
+        };
+        $scope.setRepeat = function() {
+            if ($scope.section.repeatOption === "F")
+                $scope.section.repeat = "First Question";
+            else if ($scope.section.repeatOption === "N")
+                $scope.section.repeat = $scope.section.repeatNumber.toString();
+        };
+        $scope.getRepeatLabel = function (section) {
+            if (section.repeat == null)
+                return "";
+            if (section.repeat[0] === 'F')
+                return "over First Question";
+            return parseInt(section.repeat) + " times";
+        };
+        $scope.section.repeatOption = $scope.getRepeatOption($scope.section);
+        $scope.section.repeatNumber = $scope.getRepeatNumber($scope.section);
     }]);

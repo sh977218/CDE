@@ -14,7 +14,7 @@ export class NativeSectionComponent {
     }
 
     sectionType() {
-        if (this.formElement.cardinality && (this.formElement.cardinality.max === -1 || this.formElement.cardinality.max === -2))
+        if (this.formElement.repeat)
             return "table";
         if (this.nativeRenderService.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement))
             return "matrix";
