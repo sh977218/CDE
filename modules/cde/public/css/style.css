@@ -1604,15 +1604,6 @@ div.row .native-question-oneline-r {
     padding-top: 0;
 }
 
-.native-table-list {
-    /*display: flex;*/
-    /*flex-flow: column wrap;*/
-    /*justify-content: flex-start;*/
-    /*align-items: flex-start;*/
-    /*align-content: flex-start;*/
-    /*height: 10px;*/
-}
-
 .native-table-cell {
     height: auto;
 }
@@ -1620,11 +1611,6 @@ div.row .native-question-oneline-r {
 .native-table-cell label {
     font-weight: normal;
     margin-bottom: 0;
-}
-
-.native-table-box {
-    /*height: 100%;*/
-    /*max-height: 70px;*/
 }
 
 @media print {
