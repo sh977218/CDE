@@ -39,10 +39,10 @@ public class FormEditTest extends BaseFormTest {
         textNotPresent("Confirm");
         textPresent(newSectionInstruction, By.xpath("//*[@id='section_0']//*[contains(@class,'section_instruction')]//div/span"));
 
-        String newCardinality = "Exactly 1";
-        new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newCardinality);
+        new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
+        findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]/input")).sendKeys("1");
         saveEditQuestionSectionById("section_0");
-        textNotPresent(newCardinality, By.xpath("//*[@id='section_0']"));
+        textNotPresent("Repeats", By.xpath("//*[@id='section_0']"));
     }
 
     private void editQuestion() {
