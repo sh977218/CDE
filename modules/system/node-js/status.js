@@ -112,7 +112,7 @@ app_status.getStatus = function(done) {
                     });
                 },
                 function(done) {
-                    mongo_board.count(condition, function (err, boardCount) {
+                    mongo_board.count({}, function (err, boardCount) {
                         esInit.indices[2].totalCount = boardCount;
                         app_status.checkElasticCount(boardCount, config.elastic.boardIndex.name, "board", function (up, message) {
                             app_status.statusReport.elastic.indices.push({
@@ -125,7 +125,7 @@ app_status.getStatus = function(done) {
                     });
                 },
                 function (done) {
-                    mongo_storedQuery.count(condition, function (err, storedQueryCount) {
+                    mongo_storedQuery.count({}, function (err, storedQueryCount) {
                         esInit.indices[3].totalCount = storedQueryCount;
                         app_status.checkElasticCount(storedQueryCount, config.elastic.storedQueryIndex.name, "storedquery", function (up, message) {
                             app_status.statusReport.elastic.indices.push({
