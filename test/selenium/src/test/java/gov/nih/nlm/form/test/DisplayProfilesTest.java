@@ -53,12 +53,12 @@ public class DisplayProfilesTest extends BaseFormTest {
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='profile_0']//table//input[@type='radio']")).size(), 10);
         textPresent("1", By.xpath("//div[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
         Assert.assertTrue(
-                findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label[text()='1st Grade']")).getLocation().y + 8 <
-                        findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label[text()='2nd Grade']")).getLocation().y
+                findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label/span[text()='1st Grade']")).getLocation().y + 8 <
+                        findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label/span[text()='2nd Grade']")).getLocation().y
         );
         Assert.assertEquals(
-                findElement(By.xpath("//div[@id='profile_3']//div[label[text()='Education level USA type']]//label[text()='1st Grade']")).getLocation().y,
-                findElement(By.xpath("//div[@id='profile_3']//div[label[text()='Education level USA type']]//label[text()='5th Grade']")).getLocation().y
+                findElement(By.xpath("//div[@id='profile_3']//div[label[text()='Education level USA type']]//label/span[text()='1st Grade']")).getLocation().y,
+                findElement(By.xpath("//div[@id='profile_3']//div[label[text()='Education level USA type']]//label/span[text()='5th Grade']")).getLocation().y
         );
         saveForm();
 
@@ -82,14 +82,14 @@ public class DisplayProfilesTest extends BaseFormTest {
         hangon(1);
         assertNoElt(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']"));
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
-        Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//label[text()[contains(., 'Never')]]")).getLocation().y + 8 <
-                findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//label[text()[contains(., 'Rarely')]]")).getLocation().y
+        Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//label/span[text()[contains(., 'Never')]]")).getLocation().y + 8 <
+                findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//label/span[text()[contains(., 'Rarely')]]")).getLocation().y
         );
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values Wider");
         hangon(1);
-        Assert.assertEquals(findElement(By.xpath("//div[label[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
-                findElement(By.xpath("//div[label[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
+        Assert.assertEquals(findElement(By.xpath("//div[label[text()='I was irritated more than people knew']]//label/span[text()='Never']")).getLocation().y,
+                findElement(By.xpath("//div[label[text()='I was irritated more than people knew']]//label/span[text()='Always']")).getLocation().y
         );
         clickElement(By.id("displayProfiles_tab"));
 

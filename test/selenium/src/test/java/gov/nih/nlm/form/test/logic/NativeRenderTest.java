@@ -14,8 +14,8 @@ public class NativeRenderTest extends BaseFormTest {
         goToFormByName(formName);
 
         Assert.assertEquals(
-                findElement(By.xpath("//label[text()='Not specified']")).getLocation().y,
-                findElement(By.xpath("//label[text()='Not specified']/following-sibling::div//input")).getLocation().y,
+                findElement(By.xpath("//label/span[text()='Not specified']")).getLocation().y,
+                findElement(By.xpath("//label[span[text()='Not specified']]/following-sibling::div//input")).getLocation().y,
                 8
         );
     }
