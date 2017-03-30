@@ -21,7 +21,7 @@
                     <div  class="col-xs-2 text-right text_label">Name:</div>
                     <div  class="col-xs-10 ng-binding" id="designation_{{i}}">
                         <inline-edit id="nameEdit" [(model)]="name.designation" (onOk)="saveNaming()"
-                                     [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+                                     [isAllowed]="isAllowed"></inline-edit>
                     </div>
                 </div>
                 <div class="row">
@@ -29,7 +29,7 @@
                     <div  class="col-xs-10 ng-binding" id="definition_{{i}}">
                         <inline-area-edit [(model)]="name.definition" (onOk)="saveNaming()"
                                           [defFormat]="name.definitionFormat"
-                                          [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-area-edit>
+                                          [isAllowed]="isAllowed"></inline-area-edit>
                     </div>
                 </div>
                 <div class="row">

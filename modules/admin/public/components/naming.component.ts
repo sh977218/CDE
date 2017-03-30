@@ -9,6 +9,22 @@ import { Select2OptionData } from "ng2-select2";
     templateUrl: "./naming.component.html"
 })
 export class NamingComponent implements OnInit {
+    @ViewChild("newNamingContent") public newNamingContent: NgbModalModule;
+    @Input() public elt: any;
+    public newNaming: any = {};
+    public modalRef: NgbModalRef;
+    orgNamingTags: string[] = [];
+    //noinspection TypeScriptUnresolvedVariable
+    public options: Select2Options;
+    public isAllowed: boolean = false;
+
+    constructor(@Inject("Alert") private alert,
+                @Inject("isAllowedModel") public isAllowedModel,
+                @Inject("OrgHelpers") private orgHelpers,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal) {
+    }
+
     ngOnInit(): void {
         this.orgNamingTags = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.map(r => {
             return {"id": r, "text": r};
@@ -22,6 +38,7 @@ export class NamingComponent implements OnInit {
                 }
             }
         };
+        this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
         this.getCurrentTags();
     }
 
@@ -33,22 +50,6 @@ export class NamingComponent implements OnInit {
             });
         });
     }
-
-    @ViewChild("newNamingContent") public newNamingContent: NgbModalModule;
-    @Input() public elt: any;
-    public newNaming: any = {};
-    public modalRef: NgbModalRef;
-    orgNamingTags: string[] = [];
-    //noinspection TypeScriptUnresolvedVariable
-    public options: Select2Options;
-
-    constructor(@Inject("Alert") private alert,
-                @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("OrgHelpers") private orgHelpers,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
-    }
-
     openNewNamingModal() {
         this.modalRef = this.modalService.open(this.newNamingContent, {size: "lg"});
         this.modalRef.result.then(result => {
