@@ -154,6 +154,8 @@ export class NativeTableComponent implements OnInit {
 
         if (!firstQuestion || firstQuestion.question.datatype !== "Value List")
             throw el.label + " First Question Value List is not available.";
+
+        return firstQuestion;
     }
 
     theme: Array<any> = [
