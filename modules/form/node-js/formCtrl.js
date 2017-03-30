@@ -72,6 +72,7 @@ var getFormPlainXml = function (form, req, res) {
         res.setHeader("Content-Type", "application/xml");
         var exportForm = form.toObject();
         delete exportForm._id;
+        delete exportForm.history;
         exportForm.formElements.forEach(function (s) {
             s.formElements.forEach(function (q) {
                 delete q._id;

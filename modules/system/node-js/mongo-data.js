@@ -256,10 +256,10 @@ exports.formatElt = function (elt) {
 
 exports.userTotalSpace = function(Model, name, callback) {
     Model.aggregate(
-            {$match: {"attachments.uploadedBy.username": name}},
-    {$unwind: "$attachments"},
-    {$group: {_id: {uname: "$attachments.uploadedBy.username"}, totalSize: {$sum: "$attachments.filesize"}}},
-    {$sort: {totalSize: -1}}
+        {$match: {"attachments.uploadedBy.username": name}},
+        {$unwind: "$attachments"},
+        {$group: {_id: {uname: "$attachments.uploadedBy.username"}, totalSize: {$sum: "$attachments.filesize"}}},
+        {$sort: {totalSize: -1}}
     , function(err, res) {
         var result = 0;
         if (res.length > 0) {
