@@ -26,6 +26,7 @@ export class NamingComponent implements OnInit {
 
     getCurrentTags() {
         this.elt.naming.forEach(n => {
+            if (!n.tags) n.tags = [];
             n.currentTags = n.tags.map(t => {
                 return t.tag;
             });
@@ -69,7 +70,7 @@ export class NamingComponent implements OnInit {
         }
     }
 
-    removeNaming(index) {
+    removeNamingByIndex(index) {
         this.elt.properties.splice(index, 1);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Naming removed. Save to confirm.");

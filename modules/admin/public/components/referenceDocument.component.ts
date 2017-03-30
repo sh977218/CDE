@@ -41,7 +41,7 @@ export class ReferenceDocumentComponent {
         }
     }
 
-    removeReferenceDocument(index) {
+    removeReferenceDocumentByIndex(index) {
         this.elt.referenceDocuments.splice(index, 1);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "ReferenceDocument removed. Save to confirm.");

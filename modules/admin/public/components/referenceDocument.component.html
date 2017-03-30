@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
                 <div class="row">
-                    <span class="btn-default fa fa-trash-o" (click)="removeReferenceDocument(i);"
+                    <span class="btn-default fa fa-trash-o" (click)="removeReferenceDocumentByIndex(i);"
                           id="removeReferenceDocument-{{i}}" title="Remove reference document"></span>
                     <sortable-array [theArray]="elt.referenceDocuments" [sortableArray]="elt.referenceDocuments"
                                     [index]="i" (cb)="elt.unsaved = true"></sortable-array>
@@ -14,30 +14,35 @@
             <div class="col-md-11">
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">ID:</div>
-                    <div class="col-xs-10 ng-binding">{{rd.referenceDocumentId}}</div>
+                    <div class="col-xs-10 ng-binding" id="id_{{i}}">{{rd.referenceDocumentId}}</div>
                 </div>
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Title:</div>
-                    <div class="col-xs-10 ng-binding">{{rd.title}}</div>
+                    <div class="col-xs-10 ng-binding" id="title_{{i}}">{{rd.title}}</div>
                 </div>
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">URI:</div>
-                    <div class="col-xs-10 ng-binding">{{rd.uri}}</div>
+                    <div class="col-xs-10 ng-binding" id="uri_{{i}}">{{rd.uri}}</div>
                 </div>
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Provider Org:</div>
-                    <div class="col-xs-10 ng-binding">{{rd.providerOrg}}</div>
+                    <div class="col-xs-10 ng-binding" id="providerOrg_{{i}}">
+                        {{rd.providerOrg}}
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Language Code:</div>
-                    <div class="col-xs-10 ng-binding">{{rd.languageCode}}</div>
+                    <div class="col-xs-10 ng-binding" id="languageCode_{{i}}">
+                        {{rd.languageCode}}
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Document:</div>
-                    <div class="col-xs-10 ng-binding">{{rd.document}}</div>
+                    <div class="col-xs-10 ng-binding" id="document_{{i}}">{{rd.document}}</div>
                 </div>
             </div>
         </div>
+        <hr>
     </div>
     <button *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-small btn-default"
             id="openNewReferenceDocumentModalBtn" (click)="openNewReferenceDocumentModal();">
@@ -51,35 +56,41 @@
     <form role="form" #newReferenceDocumentForm="ngForm">
         <div class="modal-body" id="newReferenceDocumentModalBody">
             <div class="form-group">
-                <div class="col-xs-2 text-right text_label">ID:</div>
-                <div class="col-xs-10 ng-binding">{{newReferenceDocument.referenceDocumentId}}</div>
+                <label for="newId">ID:</label>
+                <input class="form-control" [(ngModel)]="newReferenceDocument.referenceDocumentId"
+                       id="newId" name="newId" Placeholder="ID"/>
             </div>
             <div class="form-group">
-                <div class="col-xs-2 text-right text_label">Title:</div>
-                <div class="col-xs-10 ng-binding">{{newReferenceDocument.title}}</div>
+                <label for="newTitle">Title:</label>
+                <input class="form-control" [(ngModel)]="newReferenceDocument.title"
+                       id="newTitle" name="newTitle" Placeholder="Title"/>
             </div>
             <div class="form-group">
-                <div class="col-xs-2 text-right text_label">URI:</div>
-                <div class="col-xs-10 ng-binding">{{newReferenceDocument.uri}}</div>
+                <label for="newUri">URI:</label>
+                <input class="form-control" id="newUri" name="newUri"
+                       [(ngModel)]="newReferenceDocument.uri" Placeholder="URI"/>
             </div>
             <div class="form-group">
-                <div class="col-xs-2 text-right text_label">Provider Org:</div>
-                <div class="col-xs-10 ng-binding">{{newReferenceDocument.providerOrg}}</div>
+                <label for="newProviderOrg">Provider Org:</label>
+                <input class="form-control" id="newProviderOrg" name="newProviderOrg"
+                       [(ngModel)]="newReferenceDocument.providerOrg" Placeholder="Provider Org"/>
             </div>
             <div class="form-group">
-                <div class="col-xs-2 text-right text_label">Language Code:</div>
-                <div class="col-xs-10 ng-binding">{{newReferenceDocument.languageCode}}</div>
+                <label for="newLanguageCode">Language Code:</label>
+                <input class="form-control" id="newLanguageCode" name="newLanguageCode"
+                       [(ngModel)]="newReferenceDocument.languageCode" Placeholder="Language Code"/>
             </div>
             <div class="form-group">
-                <div class="col-xs-2 text-right text_label">Document:</div>
-                <div class="col-xs-10 ng-binding">{{newReferenceDocument.document}}</div>
+                <label for="newDocument">Document:</label>
+                <input class="form-control" id="newDocument" name="newDocument"
+                       [(ngModel)]="newReferenceDocument.document" Placeholder="Document"/>
             </div>
         </div>
         <div class="modal-footer" id="newReferenceDocumentModalFooter">
             <button class="btn cancel" id="cancelNewReferenceDocumentBtn" type="button" (click)="c('Close click')">
                 Cancel
             </button>
-            <button class="btn btn-warning" id="createReferenceDocumentBtn" type="submit"
+            <button class="btn btn-warning" id="createNewReferenceDocumentBtn" type="submit"
                     [disabled]="!newReferenceDocumentForm.form.valid" (click)="addNewReferenceDocument();">Save
             </button>
         </div>

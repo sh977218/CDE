@@ -8,10 +8,9 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
     templateUrl: "./properties.component.html"
 })
 export class PropertiesComponent {
-
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: any;
-    orgPropertyKeys: any;
+    orgPropertyKeys: string[] = [];
     public newProperty: any = {};
     public modalRef: NgbModalRef;
 
@@ -44,7 +43,7 @@ export class PropertiesComponent {
         }
     }
 
-    removeProperty(index) {
+    removePropertyByIndex(index) {
         this.elt.properties.splice(index, 1);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property removed. Save to confirm.");

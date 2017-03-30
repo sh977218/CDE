@@ -6,7 +6,7 @@
             <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
                 <div class="row">
                     <div *ngIf="name.edit">Confirm Delete
-                    <span class="btn-default fa fa-check" (click)="removeNaming(i)"
+                    <span class="btn-default fa fa-check" (click)="removeNamingByIndex(i)"
                           id="confirmRemoveNaming-{{i}}" title="OK" href=""></span>
                         <span class="btn-default fa fa-times" (click)="name.edit = false" title="Cancel" href=""></span>
                     </div>
@@ -19,14 +19,14 @@
             <div class="col-md-11">
                 <div class="row">
                     <div  class="col-xs-2 text-right text_label">Name:</div>
-                    <div  class="col-xs-10 ng-binding" id="naming_designation_{{i}}">
+                    <div  class="col-xs-10 ng-binding" id="designation_{{i}}">
                         <inline-edit id="nameEdit" [(model)]="name.designation" (onOk)="saveNaming()"
                                      [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
                     </div>
                 </div>
                 <div class="row">
                     <div  class="col-xs-2 text-right text_label">Definition:</div>
-                    <div  class="col-xs-10 ng-binding" id="naming_definition_{{i}}">
+                    <div  class="col-xs-10 ng-binding" id="definition_{{i}}">
                         <inline-area-edit [(model)]="name.definition" (onOk)="saveNaming()"
                                           [defFormat]="name.definitionFormat"
                                           [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-area-edit>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="row">
                     <div  class="col-xs-2 text-right text_label">Tags:</div>
-                    <div  class="col-xs-10 ng-binding" id="naming_tags_{{i}}">
+                    <div  class="col-xs-10 ng-binding" id="tags_{{i}}">
                         <select2 [data]="orgNamingTags" [value]="name.currentTags" [options]="options"
                                  [disabled]="!isAllowedModel.isAllowed(elt)" [width]="500" style="min-width: 300px"
                                  (valueChanged)="changedTags(name,$event)">
@@ -57,18 +57,18 @@
     <form role="form" #newNamingForm="ngForm">
         <div class="modal-body" id="newNamingModalBody">
             <div class="form-group">
-                <label  for="newNamingDesignation">Name</label>
-                <input  class="form-control" [(ngModel)]="newNaming.designation" id="newNamingDesignation"
-                       name="newNamingDesignation" Placeholder="Name / Designation" required/>
+                <label for="newDesignation">Name</label>
+                <input class="form-control" id="newDesignation" name="newDesignation"
+                       [(ngModel)]="newNaming.designation" Placeholder="Name / Designation" required/>
             </div>
             <div class="form-group">
-                <label  for="newNamingDefinition">Definition</label>
-                    <textarea  class="form-control" [(ngModel)]="newNaming.definition" name="value"
-                              id="newNamingDefinition" Placeholder="Naming Definition" required></textarea>
+                <label for="newDefinition">Definition</label>
+                    <textarea class="form-control" id="newDefinition" name="newDefinition"
+                              [(ngModel)]="newNaming.definition" Placeholder="Naming Definition" required></textarea>
             </div>
             <div class="form-group">
-                <label  for="newNamingTags">Tags</label>
-                <div id="newNamingTags" name="newNamingTags">
+                <label for="newTags">Tags</label>
+                <div id="newTags" name="newTags">
                     <select2 [data]="orgNamingTags" [value]="newNaming.currentTags" [options]="options"
                              [width]="500" style="min-width: 300px" (valueChanged)="changedTags(name,$event)">
                     </select2>
@@ -83,7 +83,7 @@
                     type="button">Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newNamingForm.form.valid" id="createNamingBtn"
-                    name="createNamingBtn" type="submit" (click)="addNewNaming();">Save
+                    name="createNewNamingBtn" type="submit" (click)="addNewNaming();">Save
             </button>
         </div>
     </form>
