@@ -51,8 +51,8 @@
                     <textarea tabindex="0" class="form-control" [(ngModel)]="newProperty.value" name="value"
                               id="newPropertyValue" Placeholder="Property Value" required></textarea>
             </div>
-            <div *ngIf="!orgPropertyKeys.length || orgPropertyKeys.length ===0" class="alert-warning">
-                No valid property keys present, have an Org Admin go to Org Management > List Management to add one
+            <div class="alert alert-info">
+                Property key are managed in Org Management > List Management
             </div>
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">

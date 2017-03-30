@@ -15,6 +15,8 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
 import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
 import { PropertiesComponent } from "../../admin/public/components/properties.component";
 import { AdminModule } from "../../admin/public/admin.module";
+import { NamingComponent } from "../../admin/public/components/naming.component";
+import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
 
 @NgModule({
     imports: [
@@ -35,6 +37,8 @@ import { AdminModule } from "../../admin/public/admin.module";
         LinkedFormsComponent,
         IdentifiersComponent,
         PropertiesComponent,
+        NamingComponent,
+        ReferenceDocumentComponent,
         UserCommentsComponent,
         HomeComponent,
         LogAuditComponent,

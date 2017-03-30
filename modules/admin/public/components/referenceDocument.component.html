@@ -1,0 +1,91 @@
+<div id="referenceDocumentsDiv">
+    <h4 tabindex="0">ReferenceDocuments</h4>
+    <div tabindex="0" *ngIf="elt.referenceDocuments.length === 0">There are no ReferenceDocuments.</div>
+    <div *ngFor="let rd of elt.referenceDocuments;let i = index">
+        <div class="row">
+            <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
+                <div class="row">
+                    <span *ngIf="!rd.edit" class="btn-default fa fa-trash-o" (click)="removeReferenceDocument(i);"
+                          id="removeReferenceDocument-{{i}}" title="Remove reference document"></span>
+                    <sortable-array [theArray]="elt.referenceDocuments" [sortableArray]="elt.referenceDocuments"
+                                    [index]="i" (cb)="elt.unsaved = true"></sortable-array>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <div class="row">
+                    <div tabindex="0" class="col-xs-2 text-right text_label">ID:</div>
+                    <div tabindex="0" class="col-xs-10 ng-binding" id="">{{rd.referenceDocumentId}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-xs-2 text-right text_label">Title:</div>
+                    <div tabindex="0" class="col-xs-10 ng-binding" id="">{{rd.title}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-xs-2 text-right text_label">URI:</div>
+                    <div tabindex="0" class="col-xs-10 ng-binding" id="">{{rd.uri}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-xs-2 text-right text_label">Provider Org:</div>
+                    <div tabindex="0" class="col-xs-10 ng-binding" id="">{{rd.providerOrg}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-xs-2 text-right text_label">Language Code:</div>
+                    <div tabindex="0" class="col-xs-10 ng-binding" id="">{{rd.languageCode}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-xs-2 text-right text_label">Document:</div>
+                    <div tabindex="0" class="col-xs-10 ng-binding" id="">{{rd.document}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button *ngIf="isAllowedModel.isAllowed(elt)" id="openNewReferenceDocumentModalBtn"
+            class="btn btn-small btn-default" (click)="openNewReferenceDocumentModal();">
+        <i class="fa fa-plus"></i> Add ReferenceDocument
+    </button>
+</div>
+<template #newReferenceDocumentContent id="newReferenceDocumentModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="newReferenceDocumentModalHeader">
+        <h4 class="modal-title">Add ReferenceDocument</h4>
+    </div>
+    <form role="form" #newReferenceDocumentForm="ngForm">
+        <div class="modal-body" id="newReferenceDocumentModalBody">
+
+            <div class="form-group">
+                <div tabindex="0" class="col-xs-2 text-right text_label">ID:</div>
+                <div tabindex="0" class="col-xs-10 ng-binding" id="">{{newReferenceDocument.referenceDocumentId}}</div>
+            </div>
+            <
+            <div class="form-group">
+                <div tabindex="0" class="col-xs-2 text-right text_label">Title:</div>
+                <div tabindex="0" class="col-xs-10 ng-binding" id="">{{newReferenceDocument.title}}</div>
+            </div>
+            <div class="form-group">
+                <div tabindex="0" class="col-xs-2 text-right text_label">URI:</div>
+                <div tabindex="0" class="col-xs-10 ng-binding" id="">{{newReferenceDocument.uri}}</div>
+            </div>
+            <div class="form-group">
+                <div tabindex="0" class="col-xs-2 text-right text_label">Provider Org:</div>
+                <div tabindex="0" class="col-xs-10 ng-binding" id="">{{newReferenceDocument.providerOrg}}</div>
+            </div>
+            <div class="form-group">
+                <div tabindex="0" class="col-xs-2 text-right text_label">Language Code:</div>
+                <div tabindex="0" class="col-xs-10 ng-binding" id="">{{newReferenceDocument.languageCode}}</div>
+            </div>
+            <div class="form-group">
+                <div tabindex="0" class="col-xs-2 text-right text_label">Document:</div>
+                <div tabindex="0" class="col-xs-10 ng-binding" id="">{{newReferenceDocument.document}}</div>
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer" id="newReferenceDocumentModalFooter">
+            <button class="btn cancel" (click)="c('Close click')" id="cancelNewReferenceDocumentBtn" type="button">
+                Cancel
+            </button>
+            <button class="btn btn-warning" [disabled]="!newReferenceDocumentForm.form.valid"
+                    id="createReferenceDocumentBtn"
+                    type="submit" (click)="addNewReferenceDocument();">Save
+            </button>
+        </div>
+    </form>
+</template>

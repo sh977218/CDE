@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 'OrgHelpers', 'Alert', '$q',
-    function ($scope, $modal, OrgHelpers, Alert, $q) {
+angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 'OrgHelpers', 'Alert', '$q', 'isAllowedModel',
+    function ($scope, $modal, OrgHelpers, Alert, $q, isAllowedModel) {
 
         var tagsLoaded = $q.defer();
 
@@ -40,6 +40,10 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
         $scope.stageNewName = function (namePair) {
             $scope.stageElt($scope.elt);
             namePair.tags.editMode = true;
+        };
+
+        $scope.canEdit = function () {
+            isAllowedModel.isAllowed($scope.elt);
         };
 
         $scope.cancelSave = function (namePair) {

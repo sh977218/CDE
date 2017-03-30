@@ -418,6 +418,12 @@ angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downg
 import {PropertiesComponent} from "../../../admin/public/components/properties.component";
 angular.module('systemModule').directive('cdeAdminItemProperties', upgradeAdapter.downgradeNg2Component(PropertiesComponent));
 
+import {NamingComponent} from "../../../admin/public/components/naming.component";
+angular.module('systemModule').directive('cdeAdminItemNaming', upgradeAdapter.downgradeNg2Component(NamingComponent));
+
+import {ReferenceDocumentComponent} from "../../../admin/public/components/referenceDocument.component";
+angular.module('systemModule').directive('cdeAdminItemReferenceDocument', upgradeAdapter.downgradeNg2Component(ReferenceDocumentComponent));
+
 import {UserCommentsComponent} from "../components/userComments.component";
 angular.module('systemModule').directive('user-comments', upgradeAdapter.downgradeNg2Component(UserCommentsComponent));
 

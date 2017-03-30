@@ -85,7 +85,7 @@ public abstract class PropertyTest extends CommonTest {
         scrollToViewById("openNewPropertyModalBtn");
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
-        textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
+        textNotPresent("More", By.xpath("//*[@id='dd_prop_value_2']"));
     }
 
     public void truncatePlainText(String eltName) {
@@ -100,7 +100,7 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']//span[. = 'More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
-        textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
+        textNotPresent("More", By.xpath("//*[@id='dd_prop_value_2']"));
     }
 
     public void reorderPropertyTest(String eltName) {
