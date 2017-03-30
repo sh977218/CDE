@@ -65,7 +65,6 @@ export class RegistrationComponent implements OnInit {
         this.elt.$save(() => {
             this.childModal.hide()
         });
-        // this.http.post("/debytinyid/" + this.elt.tinyId, this.elt).subscribe(() => this.childModal.hide());
     }
 
 }
