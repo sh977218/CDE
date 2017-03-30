@@ -27,11 +27,11 @@ angular.module('formModule').controller('FormViewSectionCtrl', ['$scope',
         $scope.getRepeatNumber = function(section) {
             return parseInt(section.repeat);
         };
-        $scope.setRepeat = function() {
-            if ($scope.section.repeatOption === "F")
-                $scope.section.repeat = "First Question";
-            else if ($scope.section.repeatOption === "N")
-                $scope.section.repeat = ($scope.section.repeatNumber ? $scope.section.repeatNumber.toString() : "");
+        $scope.setRepeat = function(section) {
+            if (section.repeatOption === "F")
+                section.repeat = "First Question";
+            else if (section.repeatOption === "N")
+                section.repeat = (section.repeatNumber ? section.repeatNumber.toString() : "");
         };
         $scope.getRepeatLabel = function (section) {
             if (section.repeat == null)

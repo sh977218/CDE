@@ -38,18 +38,10 @@ export class NativeTableComponent implements OnInit {
 
     getRows() {
         this.tableForm.rows = [];
+        if (!this.formElement.repeat)
+            throw "Not a table";
         if (this.formElement.repeat[0] === "F") {
-            let elem = this.formElement;
-            while (this.firstQuestion == null) {
-                if (elem.elementType !== "question")
-                    elem = elem.formElements[0];
-                else
-                    this.firstQuestion = elem;
-            }
-
-            if (!this.firstQuestion || this.firstQuestion.question.datatype !== "Value List")
-                throw "First Question is not available.";
-
+            this.firstQuestion = NativeTableComponent.getFirstQuestion(this.formElement);
             this.firstQuestion.question.answers.forEach(a => {
                 this.tableForm.rows.push({label: this.nativeRenderService.getPvLabel(a)});
             });
@@ -76,7 +68,7 @@ export class NativeTableComponent implements OnInit {
         this.tableForm.s[level].q.push(section);
         let tcontent = this.getSectionLevel(level + 1);
         let retr = 0;
-        s.formElements.forEach(f =>  {
+        s.formElements && s.formElements.forEach(f =>  {
             let ret = this.renderFormElement(f, tcontent, level, retr, r, c, sectionStyle);
             retr = ret.retr;
             c = ret.c;
@@ -87,9 +79,24 @@ export class NativeTableComponent implements OnInit {
     }
     renderFormElement(f, tcontent, level, retr, r, c, sectionStyle) {
         if (f.elementType === "section" || f.elementType === "form") {
-            let ret = this.renderSection(f, level + 1);
-            c += ret.c;
-            retr = Math.max(retr, ret.r);
+            if (!f.repeat) {
+                let ret = this.renderSection(f, level + 1);
+                c += ret.c;
+                retr = Math.max(retr, ret.r);
+            } else if (f.repeat[0] === "F") {
+                NativeTableComponent.getFirstQuestion(f).question.answers.forEach(a => {
+                    let ret = this.renderSection(f, level + 1);
+                    c += ret.c;
+                    retr = Math.max(retr, ret.r);
+                });
+            } else {
+                let maxValue = parseInt(f.repeat);
+                for (let i = 1; i <= maxValue; i++) {
+                    let ret = this.renderSection(f, level + 1);
+                    c += ret.c;
+                    retr = Math.max(retr, ret.r);
+                }
+            }
         }
         else if (f.elementType === "question" && f !== this.firstQuestion) {
             c++;
@@ -130,6 +137,23 @@ export class NativeTableComponent implements OnInit {
         if (this.tableForm.s.length <= level)
             this.tableForm.s[level] = {q: []};
         return this.tableForm.s[level];
+    }
+    static getFirstQuestion(el): any {
+        let elem = el;
+        let firstQuestion = null;
+        while (true) {
+            if (elem.elementType !== "question") {
+                if (!elem.formElements && elem.formElements.length > 0)
+                    break;
+                elem = elem.formElements[0];
+            } else {
+                firstQuestion = elem;
+                break;
+            }
+        }
+
+        if (!firstQuestion || firstQuestion.question.datatype !== "Value List")
+            throw el.label + " First Question Value List is not available.";
     }
 
     theme: Array<any> = [
