@@ -9,8 +9,6 @@ import { Select2OptionData } from "ng2-select2";
     templateUrl: "./referenceDocument.component.html"
 })
 export class ReferenceDocumentComponent {
-
-
     @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: NgbModalModule;
     @Input() public elt: any;
     public newReferenceDocument: any = {};

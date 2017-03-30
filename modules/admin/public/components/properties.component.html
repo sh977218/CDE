@@ -3,8 +3,8 @@
     <div tabindex="0" *ngIf="elt.properties.length === 0">There are no properties.</div>
     <div *ngFor="let prop of elt.properties;let i = index">
         <div class="row">
-            <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
-                <div class="row">
+            <div class="col-md-1 text-right">
+                <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
                     <span *ngIf="prop.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removeProperty(i)"
                               id="confirmRemoveProperty-{{i}}" title="OK" href=""></span>
@@ -17,15 +17,17 @@
                 </div>
             </div>
             <div class="col-md-11">
-                <dl class="dl-horizontal">
-                    <dt tabindex="0">Key:</dt>
-                    <dd tabindex="0" id="dd_name_{{i}}">{{prop.key}}</dd>
-                    <dt tabindex="0">Value:</dt>
-                    <dd tabindex="0" id="dd_prop_value_{{i}}">
+                <div class="row">
+                    <div class="col-xs-2 text-right text_label">Key:</div>
+                    <div class="col-xs-10 ng-binding">{{prop.key}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2 text-right text_label">Value:</div>
+                    <div class="col-xs-10 ng-binding">
                         <inline-area-edit [(model)]="prop.value" (onOk)="saveProperty()" [defFormat]="prop.valueFormat"
                                           [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-area-edit>
-                    </dd>
-                </dl>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -42,14 +44,15 @@
         <div class="modal-body" id="newPropertyModalBody">
             <div class="form-group">
                 <label tabindex="0" for="newPropertyKey">Key</label>
-                <select [(ngModel)]="newProperty.key" id="newPropertyKey" name="key" class="form-control" required>
+                <select [(ngModel)]="newProperty.key" id="newPropertyKey" name="newPropertyKey" class="form-control"
+                        required>
                     <option *ngFor="let key of orgPropertyKeys;" value="{{key}}">{{key}}</option>
                 </select>
             </div>
             <div class="form-group">
                 <label tabindex="0" for="newPropertyValue">Value</label>
-                    <textarea tabindex="0" class="form-control" [(ngModel)]="newProperty.value" name="value"
-                              id="newPropertyValue" Placeholder="Property Value" required></textarea>
+                <textarea tabindex="0" class="form-control" [(ngModel)]="newProperty.value" name="newPropertyValue"
+                          id="newPropertyValue" Placeholder="Property Value" required></textarea>
             </div>
             <div class="alert alert-info">
                 Property key are managed in Org Management > List Management
