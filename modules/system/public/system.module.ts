@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { PaginationModule, ModalModule, TypeaheadModule } from "ng2-bootstrap/index";
 import { DataTableModule } from "angular2-datatable";
@@ -32,7 +33,7 @@ import { HomeComponent } from "./components/home/home.component";
         PlaceHoldEmptyPipe],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), TypeaheadModule.forRoot(),
-        PaginationModule.forRoot(), DataTableModule, Select2Module],
+        PaginationModule.forRoot(), DataTableModule, Select2Module, NgbModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

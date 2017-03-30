@@ -3,6 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { upgradeAdapter } from "../../../upgrade";
 import { ConceptsComponent } from "../components/concepts.component";
@@ -17,7 +18,7 @@ import { DatasetsComponent } from "../components/datasets/datasets.component";
         DatasetsComponent
         ],
     providers: [],
-    imports: [CommonModule, FormsModule, ModalModule.forRoot(), PaginationModule.forRoot()],
+    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
