@@ -13,7 +13,7 @@ var conceptSchema = new mongoose.Schema({
 var derivationRuleSchema = new mongoose.Schema(
     {
         name: String,
-        inputs: [String],
+        inputs: {type: [String], index: true},
         outputs: [String],
         ruleType: {type: String, enum: ['score', 'panel']},
         formula: {type: String, enum: ['sumAll', 'mean']}
@@ -29,7 +29,7 @@ var deJson = {
         name: String
     }
     , created: Date
-    , updated: Date
+    , updated: {type: Date, index: true}
     , imported: Date
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId
