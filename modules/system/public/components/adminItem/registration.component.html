@@ -42,9 +42,10 @@
 </fieldset>
 
 
-<div bsModal #childModal="bs-modal" class="modal" tabindex="-1" role="dialog"
-     aria-labelledby="updateRegStatus" aria-hidden="true" style="z-index: 1045">
-    <div class="modal-dialog modal-lg">
+<!--<div bsModal #childModal="bs-modal" class="modal" tabindex="-1" role="dialog"-->
+     <!--aria-labelledby="updateRegStatus" aria-hidden="true" style="z-index: 1045">-->
+    <!--<div class="modal-dialog modal-lg">-->
+<template #regStatusEdit id="newPropertyModal" let-c="close" let-d="dismiss">
         <div class="modal-content">
             <div class="modal-header" id="regStatusModalHeader">
                 <h4>Update Registration Status</h4>
@@ -104,7 +105,7 @@
 
                 </div>
                 <div class="modal-footer" id="regStatusModalFooter">
-                    <button class="btn cancel" (click)="childModal.hide()" id="cancelRegStatus"
+                    <button class="btn cancel" (click)="d()" id="cancelRegStatus"
                             type="button">Cancel</button>
                     <button class="btn btn-warning" (click)="ok()" [disabled]="!regForm.form.valid"
                             id="saveRegStatus" type="submit">Save
@@ -112,5 +113,6 @@
                 </div>
             </form>
         </div>
-    </div>
-</div>
+</template>
+    <!--</div>-->
+<!--</div>-->

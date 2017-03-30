@@ -1,20 +1,22 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import {ModalDirective} from "ng2-bootstrap/modal";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-registation",
-    templateUrl: "./registration.component.html"
+    templateUrl: "./registration.component.html",
+    providers: [NgbActiveModal]
 })
 
 export class RegistrationComponent implements OnInit {
-    @ViewChild("childModal") public childModal: ModalDirective;
+    @ViewChild("regStatusEdit") public regStatusEditModal: NgbModalModule;
     @Input() elt: any;
     regStatusShared: any = require("../../../shared/regStatusShared");
     helpMessage: string;
     newState: any = {};
+    public modalRef: NgbModalRef;
 
     validRegStatuses: string[] = ["Retired", "Incomplete", "Candidate" ];
 
@@ -22,7 +24,9 @@ export class RegistrationComponent implements OnInit {
                  private parserFormatter: NgbDateParserFormatter,
                  @Inject("Alert") private alert,
                  @Inject("isAllowedModel") private isAllowedModel,
-                 @Inject("userResource") private userService
+                 @Inject("userResource") private userService,
+                 public modalService: NgbModal,
+                 public activeModal: NgbActiveModal
     ) {}
 
     ngOnInit(): void {
@@ -48,7 +52,7 @@ export class RegistrationComponent implements OnInit {
                 this.validRegStatuses.reverse();
             });
 
-            this.childModal.show();
+            this.modalRef = this.modalService.open(this.regStatusEditModal, {size: "lg"});
         });
     }
 
@@ -63,7 +67,7 @@ export class RegistrationComponent implements OnInit {
         this.elt.registrationState.effectiveDate = this.parserFormatter.format(this.newState.effectiveDate);
         this.elt.registrationState.untilDate = this.parserFormatter.format(this.newState.untilDate);
         this.elt.$save(() => {
-            this.childModal.hide()
+            this.modalRef.close();
         });
     }
 
