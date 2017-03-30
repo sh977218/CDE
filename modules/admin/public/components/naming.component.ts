@@ -15,6 +15,7 @@ export class NamingComponent implements OnInit {
         });
         this.options = {
             multiple: true,
+            tags: true,
             language: {
                 noResults: () => {
                     return "No Tags found, Tags are managed in Org Management > List Management";
@@ -84,10 +85,11 @@ export class NamingComponent implements OnInit {
     }
 
     changedTags(name, data: {value: string[]}) {
+        if (!data.value) data.value = [];
         name.tags = data.value.map(d => {
             return {tag: d};
         });
-        this.saveNaming();
+        this.elt.unsaved = true;
     }
 
     saveNaming() {
