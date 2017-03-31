@@ -848,22 +848,6 @@ public class NlmCdeBaseTest {
         driver.navigate().back();
     }
 
-    protected void reorderIconTest(String tabName) {
-        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
-        String postfix = "']";
-        findElement(By.xpath(prefix + "moveDown-0" + postfix));
-        assertNoElt(By.xpath(prefix + "moveUp-0" + postfix));
-        assertNoElt(By.xpath(prefix + "moveTop-0" + postfix));
-
-        findElement(By.xpath(prefix + "moveDown-1" + postfix));
-        findElement(By.xpath(prefix + "moveUp-1" + postfix));
-        findElement(By.xpath(prefix + "moveTop-1" + postfix));
-
-        assertNoElt(By.xpath(prefix + "moveDown-2" + postfix));
-        findElement(By.xpath(prefix + "moveUp-2" + postfix));
-        findElement(By.xpath(prefix + "moveTop-2" + postfix));
-    }
-
     protected void loadDefaultSettings() {
         clickElement(By.id("searchSettings"));
         clickElement(By.id("loadDefaultSettings"));
@@ -880,7 +864,7 @@ public class NlmCdeBaseTest {
         String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-check')]";
         clickElement(By.xpath(designationEditIconXpath));
         findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
-        textPresent(newDesignation);
+        hangon(2);
         clickElement(By.xpath(designationConfirmBtnXpath));
         textNotPresent("Confirm");
     }
@@ -899,9 +883,31 @@ public class NlmCdeBaseTest {
         } else {
             findElement(By.xpath(definitionInputXpath)).sendKeys(newDefinition);
         }
-        textPresent(newDefinition);
+        hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
         textNotPresent("Confirm");
+    }
+
+    protected void switchDefinitionFormatByIndex(int index, String newDefinition, boolean html) {
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
+        String definitionInputXpath = "//*[@id='definition_" + index + "']//input";
+        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
+        String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
+        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(definitionEditIconXpath));
+        if (html) {
+            clickElement(By.xpath(richTextBtnXpath));
+            textPresent("Characters:");
+            if (newDefinition != null)
+                findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
+        } else {
+            if (newDefinition != null)
+                findElement(By.xpath(definitionInputXpath)).sendKeys(newDefinition);
+        }
+        hangon(2);
+        clickElement(By.xpath(definitionConfirmBtnXpath));
+        textNotPresent("Confirm");
+
     }
 
     protected void editTagByIndex(int index, String[] tags) {
@@ -928,7 +934,7 @@ public class NlmCdeBaseTest {
         } else {
             findElement(By.xpath(valueInputXpath)).sendKeys(newValue);
         }
-        textPresent(newValue);
+        hangon(2);
         clickElement(By.xpath(valueConfirmBtnXpath));
         textNotPresent("Confirm");
     }
@@ -938,9 +944,8 @@ public class NlmCdeBaseTest {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("createNewNamingBtn")));
         findElement(By.name("newDefinition")).sendKeys(definition);
-        textPresent(definition);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("createNewNamingBtn")));
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newTags']//input";
             for (String tag : tags) {
@@ -952,6 +957,19 @@ public class NlmCdeBaseTest {
         }
         clickElement(By.id("createNewNamingBtn"));
         modalGone();
+    }
+
+    protected void addNewProperty(String key, String value) {
+        clickElement(By.id("openNewPropertyModalBtn"));
+        textPresent("Property key are managed in Org Management > List Management");
+        new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("createNewPropertyBtn")));
+        findElement(By.name("newValue")).sendKeys(value);
+        hangon(2);
+        clickElement(By.id("createNewPropertyBtn"));
+        modalGone();
+        textPresent("Property Added");
+        closeAlert();
     }
 
 }

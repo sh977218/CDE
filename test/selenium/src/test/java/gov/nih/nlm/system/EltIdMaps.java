@@ -42,6 +42,7 @@ public class EltIdMaps {
         eltMap.put("Other Group Patient Identifier Number", "hvsUN03ToUz");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
         eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
+        eltMap.put("Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator", "FdhGNj4gd6e");
         eltMap.put("Patient Photograph Malignant Neoplasm Assessment Date", "UDUXvtj1RM2");
         eltMap.put("Patient Visual Change Chief Complaint Indicator", "q3bWgQN1wCq");
         eltMap.put("Pattern Transfer Retrieval Storage Data Research Activity Consortium or Network Or Professional Organization or Group Funding Mechanism FundingMechanismCode", "qPsdBFBSTRc");

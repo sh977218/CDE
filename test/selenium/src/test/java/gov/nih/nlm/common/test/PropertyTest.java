@@ -1,45 +1,26 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 
 public abstract class PropertyTest extends CommonTest {
 
     public void addRemoveProperty(String eltName, String status) {
+        String key0 = "propKey0";
+        String value0 = "MyValue0";
+        String key1 = "propKey1";
+        String value1 = "MyValue1";
+        String key2 = "propKey2";
+        String value2 = "MyValue2";
+
         mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, status);
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.id("openNewPropertyModalBtn"));
-        findElement(By.xpath("//option[.='propKey0']"));
-        new Select(findElement(By.id("newKey"))).selectByVisibleText("propKey0");
-        findElement(By.id("newValue")).sendKeys("MyValue0");
-        clickElement(By.id("createNewPropertyBtn"));
-        textPresent("Property Added");
-        closeAlert();
-        modalGone();
 
-        clickElement(By.id("properties_tab"));
-        clickElement(By.id("openNewPropertyModalBtn"));
-        findElement(By.xpath("//option[.='propKey1']"));
-        new Select(findElement(By.id("newKey"))).selectByVisibleText("propKey1");
-        findElement(By.id("newValue")).sendKeys("MyValue1");
-        clickElement(By.id("createNewPropertyBtn"));
-        textPresent("Property Added");
-        closeAlert();
-        modalGone();
+        addNewProperty(key0, value0);
+        addNewProperty(key1, value1);
+        addNewProperty(key2, value2);
 
-        clickElement(By.id("properties_tab"));
-        clickElement(By.id("openNewPropertyModalBtn"));
-        findElement(By.xpath("//option[.='propKey2']"));
-        new Select(findElement(By.id("newKey"))).selectByVisibleText("propKey2");
-        findElement(By.name("newValue")).sendKeys("MyValue2");
-        clickElement(By.id("createNewPropertyBtn"));
-        textPresent("Property Added");
-        closeAlert();
-        modalGone();
-
-        clickElement(By.id("properties_tab"));
         clickElement(By.id("removeProperty-1"));
         clickElement(By.id("confirmRemoveProperty-1"));
         textPresent("Property Removed");
@@ -48,12 +29,12 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, status);
 
         clickElement(By.id("properties_tab"));
-        textPresent("propKey0");
-        textPresent("propKey2");
-        textPresent("MyValue0");
-        textPresent("MyValue2");
-        textNotPresent("propKey1");
-        textNotPresent("MyValue1");
+        textPresent(key0);
+        textPresent(value0);
+        textNotPresent(key1);
+        textNotPresent(value1);
+        textPresent(key2);
+        textPresent(value2);
     }
 
     public void truncateRichText(String eltName) {
@@ -61,18 +42,18 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, null);
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]"));
+        clickElement(By.xpath("//*[@id='value_2']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='value_2']//button[contains(text(),'Rich Text')]"));
         hangon(1);
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='value_2']//button[contains(text(),'Confirm')]"));
 
         textPresent("Saved");
         closeAlert();
 
         scrollToViewById("openNewPropertyModalBtn");
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
+        clickElement(By.xpath("//*[@id='value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
-        textNotPresent("More", By.xpath("//*[@id='dd_prop_value_2']"));
+        textNotPresent("More", By.xpath("//*[@id='value_2']"));
     }
 
     public void truncatePlainText(String eltName) {
@@ -80,32 +61,27 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, null);
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='value_2']/d/i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='value_2']//button[contains(text(),'Plain Text')]"));
+        clickElement(By.xpath("//*[@id='value_2']//:button[contains(text(),'Confirm')]"));
 
         clickElement(By.id("properties_tab"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_2']//span[. = 'More']"));
+        clickElement(By.xpath("//*[@id='value_2']//span[. = 'More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
-        textNotPresent("More", By.xpath("//*[@id='dd_prop_value_2']"));
+        textNotPresent("More", By.xpath("//*[@id='value_2']"));
     }
 
     public void reorderPropertyTest(String eltName) {
         setLowStatusesVisible();
         mustBeLoggedInAs(testAdmin_username, password);
         goToEltByName(eltName, null);
-        String tabName = "propertiesDiv";
-        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
-        String postfix = "']";
-
         clickElement(By.id("properties_tab"));
-        textPresent("Add Property");
-        reorderIconTest(tabName);
-        clickElement(By.xpath(prefix + "moveDown-0" + postfix));
-        textPresent("pk1", By.xpath(prefix + "dd_name_1" + postfix));
-        clickElement(By.xpath(prefix + "moveUp-2" + postfix));
-        textPresent("pk3", By.xpath(prefix + "dd_name_1" + postfix));
-        clickElement(By.xpath(prefix + "moveTop-2" + postfix));
-        textPresent("pk1", By.xpath(prefix + "dd_name_0" + postfix));
+
+        clickElement(By.xpath("//*[@id='moveDown-0']"));
+        textPresent("pk1", By.xpath("//div//*[@id='key_1']"));
+        clickElement(By.xpath("//*[@id='moveUp-2']"));
+        textPresent("pk3", By.xpath("//div//*[@id='key_1']"));
+        clickElement(By.xpath("//*[@id='moveTop-2']"));
+        textPresent("pk1", By.xpath("//*[@id='key_0']"));
     }
 }

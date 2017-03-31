@@ -8,26 +8,18 @@ public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
 
     @Test
     public void changeDefinitionFormat() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        String cdeName = "Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator";
+        String definitionChange = "[def change: adding html characters][<b>bold</b>]";
 
-        String cdeName = "INSS";
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-
-        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-edit')]"));
-        findElement(By.xpath("//*[@id='definition_0']//textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
-        textPresent("[def change: adding html characters][<b>bold</b>]");
-        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
+        editDefinitionByIndex(0, definitionChange, false);
         newCdeVersion();
 
-        textPresent("<b>bold</b>");
         clickElement(By.id("naming_tab"));
-        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-edit')]"));
-        clickElement(By.xpath("//*[@id='definition_0']//button[contains(text(),'Rich Text')]"));
-        textPresent("Characters:");
-        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
+        switchDefinitionFormatByIndex(0, null, true);
         newCdeVersion();
-        textNotPresent("<b>bold</b>");
     }
 
 }

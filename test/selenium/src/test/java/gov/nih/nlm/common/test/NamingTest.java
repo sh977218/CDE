@@ -49,18 +49,13 @@ public abstract class NamingTest extends CommonTest {
         setLowStatusesVisible();
         mustBeLoggedInAs(testAdmin_username, password);
         goToEltByName(eltName, null);
-        String tabName = "namingDiv";
-        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
-        String postfix = "']";
-        clickElement(By.linkText("Naming"));
-        textPresent("Definition:");
-        reorderIconTest(tabName);
-        clickElement(By.xpath(prefix + "moveDown-0" + postfix));
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("cde for test cde reorder detail tabs"));
-        clickElement(By.xpath(prefix + "moveUp-2" + postfix));
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("cde for test cde reorder detail tabs 2"));
-        clickElement(By.xpath(prefix + "moveTop-2" + postfix));
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("cde for test cde reorder detail tabs"));
+        clickElement(By.id("naming_tab"));
+        clickElement(By.xpath("//div[@id='moveDown-0']"));
+        Assert.assertTrue(findElement(By.xpath("//div[@id='designation_1']")).getText().contains("cde for test cde reorder detail tabs"));
+        clickElement(By.xpath("//div[@id='moveUp-2']"));
+        Assert.assertTrue(findElement(By.xpath("//div[@id='designation_1']")).getText().contains("cde for test cde reorder detail tabs 2"));
+        clickElement(By.xpath("//div[@id='moveTop-2']"));
+        Assert.assertTrue(findElement(By.xpath("//div[@id='designation_0']")).getText().contains("cde for test cde reorder detail tabs"));
     }
 
 
