@@ -31,7 +31,8 @@ function pushToCategories(elt, categories) {
 }
 
 
-mongo_form.Form.find({"classification.stewardOrg.name": "PhenX", archived: null, "registrationState.registrationStatus": {$ne: "Qualified"}},
+mongo_form.Form.find({"classification.stewardOrg.name": "PhenX", archived: false,
+        "registrationState.registrationStatus": {$ne: "Qualified"}},
     (err, phenxForms) => {
      console.log("phenxForms: " + phenxForms.length);
 

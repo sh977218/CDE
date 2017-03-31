@@ -27,6 +27,15 @@ angular.module('systemModule').controller('MainCtrl',
                 return authShared.hasRole(userResource.user, "FormEditor");
             };
 
+            $scope.reloadUser = function () {
+                userResource.getRemoteUser();
+                userResource.getPromise().then(function () {
+                    $scope.user = userResource.user;
+                    $scope.myOrgs = userResource.userOrgs;
+                    $scope.checkMail();
+                });
+            };
+
             $scope.checkSystemAlert = function () {
                 $http.get('/systemAlert').then(function onSuccess(response) {
                     if (response.data.length > 0) {
@@ -57,7 +66,6 @@ angular.module('systemModule').controller('MainCtrl',
             $scope.isOrgAdmin = function () {
                 return authShared.isOrgAdmin(userResource.user);
             };
-
 
             $scope.isOrgAuthority = function() {
                 return authShared.hasRole(userResource.user, "OrgAuthority");
