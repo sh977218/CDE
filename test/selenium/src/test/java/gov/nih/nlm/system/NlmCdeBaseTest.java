@@ -914,16 +914,44 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void addNewName(String designation, String definition) {
+    protected void editPropertyValueByIndex(int index, String newValue, boolean html) {
+        String valueEditIconXpath = "//*[@id='value_" + index + "']//i[contains(@class,'fa fa-edit')]";
+        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[contains(text(),'Rich Text')]";
+        String valueInputXpath = "//*[@id='value_" + index + "']//input";
+        String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
+        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(valueEditIconXpath));
+        if (html) {
+            clickElement(By.xpath(richTextBtnXpath));
+            textPresent("Characters:");
+            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
+        } else {
+            findElement(By.xpath(valueInputXpath)).sendKeys(newValue);
+        }
+        textPresent(newValue);
+        clickElement(By.xpath(valueConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+
+    protected void addNewName(String designation, String definition, String[] tags) {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("createNewNamingBtn")));
         findElement(By.name("newDefinition")).sendKeys(definition);
         textPresent(definition);
+        if (tags != null) {
+            String tagsInputXpath = "//*[@id='newTags']//input";
+            for (String tag : tags) {
+                String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + tag + "']";
+                clickElement(By.xpath(tagsInputXpath));
+                clickElement(By.xpath(selectTagXpath));
+                textPresent(tag);
+            }
+        }
         clickElement(By.id("createNewNamingBtn"));
         modalGone();
-
     }
 
 }

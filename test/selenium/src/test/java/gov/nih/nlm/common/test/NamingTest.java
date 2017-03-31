@@ -15,7 +15,7 @@ public abstract class NamingTest extends CommonTest {
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
 
-        addNewName(newName, newDefinition);
+        addNewName(newName, newDefinition, null);
         newCdeVersion();
 
         clickElement(By.id("naming_tab"));

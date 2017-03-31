@@ -50,7 +50,6 @@ import "./system/public/js/controllers/ClassificationCtrl";
 import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
 import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
-import "./system/public/js/controllers/ReferenceDocumentCtrl";
 import "./system/public/js/controllers/CommentsCtrl";
 import "./system/public/js/controllers/RegistrationCtrl";
 import "./system/public/js/controllers/RegistrationModalCtrl";

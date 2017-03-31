@@ -57,11 +57,11 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         textPresent("Language Code:");
         reorderIconTest(tabName);
         clickElement(By.xpath(prefix + "moveDown-0" + postfix));
-        Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_1" + postfix)).getText().contains("rd1"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "id_1" + postfix)).getText().contains("rd1"));
         clickElement(By.xpath(prefix + "moveUp-2" + postfix));
-        Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_1" + postfix)).getText().contains("rd3"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "id_1" + postfix)).getText().contains("rd3"));
         clickElement(By.xpath(prefix + "moveTop-2" + postfix));
-        Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_0" + postfix)).getText().contains("rd1"));
+        Assert.assertTrue(findElement(By.xpath(prefix + "id_0" + postfix)).getText().contains("rd1"));
 
     }
 }

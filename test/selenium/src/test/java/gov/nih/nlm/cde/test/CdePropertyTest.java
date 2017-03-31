@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.common.test.PropertyTest;
+import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class CdePropertyTest extends PropertyTest {
@@ -18,8 +19,11 @@ public class CdePropertyTest extends PropertyTest {
 
     @Test
     public void richPropText() {
+        String cdeName = "Imaging diffusion sixth b value";
         mustBeLoggedInAs(ninds_username, password);
-        richText("Imaging diffusion sixth b value", null);
+        goToEltByName(cdeName, null);
+        clickElement(By.id("properties_tab"));
+        editPropertyValueByIndex(0, "Hello From Selenium", true);
     }
 
     @Test

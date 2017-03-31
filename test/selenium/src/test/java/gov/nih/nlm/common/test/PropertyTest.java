@@ -56,19 +56,6 @@ public abstract class PropertyTest extends CommonTest {
         textNotPresent("MyValue1");
     }
 
-    public void richText(String eltName, String status) {
-        goToEltByName(eltName, status);
-
-        clickElement(By.id("properties_tab"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[@uib-btn-radio=\"'html'\"]"));
-        findElement(By.xpath("//*[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
-        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(@class,'fa fa-check')]"));
-        closeAlert();
-        //following tests that we go back to properties tab without clicking it.
-        textPresent("Hello From Selenium");
-    }
-
     public void truncateRichText(String eltName) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);

@@ -17,34 +17,32 @@ public class FormNamingTest extends BaseFormTest {
 
     @Test
     public void formNaming() {
+        String formName = "Study Drug Compliance";
+        String newName = "This new form Name";
+        String newDefinition = "A lazy definition";
+        String newTag = "Great CTX";
         mustBeLoggedInAs(ninds_username, password);
-        goToFormByName("Study Drug Compliance");
+        goToFormByName(formName);
+
         clickElement(By.id("naming_tab"));
-        clickElement(By.id("addNamePair"));
-        textPresent("Tags are managed in Org Management > List Management");
-        findElement(By.name("designation")).sendKeys("This new form Name");
-        findElement(By.name("definition")).sendKeys("A lazy definition");
-        clickElement(By.xpath("//*[@id='newTags']//input"));
-        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/span[normalize-space(text())='Great CTX']"));
-        clickElement(By.id("createNamePair"));
-        modalGone();
+        addNewName(newName, newDefinition, new String[]{newTag});
         saveForm();
 
-        goToFormByName("Study Drug Compliance");
+        goToFormByName(formName);
         clickElement(By.id("naming_tab"));
-        textPresent("This new form Name");
-        textPresent("A lazy definition");
-        textPresent("Great CTX");
+        textPresent(newName);
+        textPresent(newDefinition);
+        textPresent(newTag);
 
         clickElement(By.id("removeNaming-1"));
         saveForm();
 
-        goToFormByName("Study Drug Compliance");
+        goToFormByName(formName);
         clickElement(By.id("naming_tab"));
-        textNotPresent("\"A lazy definition\"");
+        textNotPresent(newDefinition);
 
         mustBeLoggedOut();
-        goToFormByName("Study Drug Compliance");
+        goToFormByName(formName);
         clickElement(By.id("naming_tab"));
         for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
             Assert.assertFalse(elt.isDisplayed());

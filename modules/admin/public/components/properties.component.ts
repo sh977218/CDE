@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
@@ -7,7 +7,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
     providers: [NgbActiveModal],
     templateUrl: "./properties.component.html"
 })
-export class PropertiesComponent {
+export class PropertiesComponent implements OnInit {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: any;
     orgPropertyKeys: string[] = [];
@@ -21,12 +21,19 @@ export class PropertiesComponent {
                 public activeModal: NgbActiveModal) {
     }
 
-    openNewPropertyModal() {
+    ngOnInit(): void {
         this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
-        this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-        this.modalRef.result.then(result => {
-            this.newProperty = {};
-        });
+    }
+
+    openNewPropertyModal() {
+        if (this.orgPropertyKeys.length === 0) {
+            this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
+        } else {
+            this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
+            this.modalRef.result.then(result => {
+                this.newProperty = {};
+            });
+        }
     }
 
     addNewProperty() {
