@@ -1,0 +1,17 @@
+package gov.nih.nlm.form.test.properties.test;
+
+
+import gov.nih.nlm.common.test.CommentTest;
+
+public class FormCommentTest extends CommentTest {
+
+    @Override
+    public void goToEltByName(String name, String status) {
+        goToFormByName(name);
+    }
+
+    @Override
+    public void goToEltSearch() {
+        goToFormSearch();
+    }
+}

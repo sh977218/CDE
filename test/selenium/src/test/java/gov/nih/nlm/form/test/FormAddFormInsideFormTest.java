@@ -1,0 +1,46 @@
+package gov.nih.nlm.form.test.properties.test;
+
+import org.openqa.selenium.By;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import static com.jayway.restassured.RestAssured.get;
+
+public class FormAddFormInsideFormTest extends QuestionTest {
+    @Test
+    public void addFormInsideFormTest() {
+        String formName = "Study Drug Compliance";
+        mustBeLoggedInAs(ninds_username, password);
+        goToFormByName(formName);
+        clickElement(By.id("description_tab"));
+        textPresent("Show Question Search Area");
+        startAddingForms();
+        addFormToSection("Vessel Imaging Angiography", 0);
+        textPresent("Embedded Form: Vessel Imaging Angiography");
+        String newFormLabel = "new inner form label";
+        clickElement(By.xpath("//div[span/span[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']]//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+        clickElement(By.id("innerForm_label_edit_icon_Vessel Imaging Angiography"));
+        findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form/input")).clear();
+        findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form/input")).sendKeys(newFormLabel);
+        clickElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form//button[contains(text(),'Confirm')]"));
+        saveForm();
+
+        goToFormByName(formName);
+        textPresent(newFormLabel);
+        textPresent("Symptomology");
+
+        clickElement(By.id("button_lforms"));
+        switchTab(1);
+        textPresent(newFormLabel);
+        textPresent("Symptomology");
+        switchTabAndClose(0);
+
+        String odmResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=odm").asString();
+        Assert.assertEquals(odmResponse.contains(newFormLabel), true, "Actual: " + odmResponse);
+
+        String sdcResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=sdc").asString();
+        Assert.assertEquals(sdcResponse.contains(newFormLabel), true, "Actual: " + sdcResponse);
+        Assert.assertEquals(sdcResponse.contains("Symptomology"), true, "Actual: " + sdcResponse);
+    }
+
+}
