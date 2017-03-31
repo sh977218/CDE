@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.properties.test.export;
+package gov.nih.nlm.form.test.export;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;

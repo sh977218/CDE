@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.properties.test.merge;
+package gov.nih.nlm.form.test.merge;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;

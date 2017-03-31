@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.properties.test;
+package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.common.test.IdentifiersTest;
 import org.testng.annotations.Test;

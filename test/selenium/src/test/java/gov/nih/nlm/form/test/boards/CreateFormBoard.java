@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.properties.test.boards;
+package gov.nih.nlm.form.test.boards;
 
 import gov.nih.nlm.cde.test.boards.BoardTest;
 import org.openqa.selenium.By;

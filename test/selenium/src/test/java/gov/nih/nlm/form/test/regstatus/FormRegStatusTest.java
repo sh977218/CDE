@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.properties.test.regstatus;
+package gov.nih.nlm.form.test.regstatus;
 
 import gov.nih.nlm.common.test.RegStatusTest;
 import org.testng.annotations.Test;

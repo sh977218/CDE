@@ -1,6 +1,7 @@
-package gov.nih.nlm.form.test.properties.test.score;
+package gov.nih.nlm.form.test.score;
 
-import gov.nih.nlm.form.test.properties.test.BaseFormTest;
+
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 

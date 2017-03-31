@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.properties.test;
+package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;

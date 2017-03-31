@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.properties.test;
+package gov.nih.nlm.form.test;
 
 import junit.framework.Assert;
 import org.openqa.selenium.By;

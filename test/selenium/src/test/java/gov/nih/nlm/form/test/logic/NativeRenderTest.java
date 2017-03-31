@@ -1,8 +1,9 @@
-package gov.nih.nlm.form.test.properties.test.logic;
+package gov.nih.nlm.form.test.logic;
 
-import gov.nih.nlm.form.test.properties.test.BaseFormTest;
-import org.testng.Assert;
+
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class NativeRenderTest extends BaseFormTest {

@@ -1,10 +1,10 @@
-package gov.nih.nlm.form.test.properties.test.export;
+package gov.nih.nlm.form.test.export;
 
-import static com.jayway.restassured.RestAssured.get;
-
-import gov.nih.nlm.form.test.properties.test.BaseFormTest;
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static com.jayway.restassured.RestAssured.get;
 
 public class OdmExport extends BaseFormTest {
     @Test
