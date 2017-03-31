@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,21 +21,22 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
 
         clickElement(By.id("editStatus"));
         textPresent("Update Registration Status");
-        clickElement(By.id("effectiveDateDatepicker"));
-        textPresent("Today");
-        textPresent("Clear");
-        textPresent("Close");
-        clickElement(By.xpath("//button[contains(text(),'Today')]"));
-        clickElement(By.id("untilDateDatepicker"));
-        textPresent("Today");
-        textPresent("Clear");
-        textPresent("Close");
-        clickElement(By.xpath("//button[contains(text(),'Clear')]"));
+
+        clickElement(By.cssSelector("#effectiveDateDiv div div i"));
+        new Select(findElement(By.xpath("//div[@id='effectiveDateDiv']//select[1]"))).selectByVisibleText("Feb");
+        new Select(findElement(By.xpath("//div[@id='effectiveDateDiv']//select[2]"))).selectByVisibleText("2016");
+        clickElement(By.xpath("//div[. = '16']"));
+
+        clickElement(By.cssSelector("#untilDateDiv div div i"));
+        new Select(findElement(By.xpath("//div[@id='untilDateDiv']//select[1]"))).selectByVisibleText("Mar");
+        new Select(findElement(By.xpath("//div[@id='untilDateDiv']//select[2]"))).selectByVisibleText("2017");
+        clickElement(By.xpath("//div[. = '19']"));
+
         clickElement(By.id("saveRegStatus"));
+        textPresent("Saved");
         closeAlert();
-        String effectiveDate_string = findElement(By.id("effectiveDate")).getText();
-        Assert.assertEquals(today_string, effectiveDate_string);
-        effectiveDate_string = findElement(By.id("untilDate")).getText();
-        Assert.assertEquals(effectiveDate_string, "N/A");
+        
+        Assert.assertEquals("2/16/2016", findElement(By.id("effectiveDate")).getText());
+        Assert.assertEquals("3/19/2017", findElement(By.id("untilDate")).getText());
     }
 }

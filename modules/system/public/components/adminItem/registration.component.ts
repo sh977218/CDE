@@ -68,6 +68,7 @@ export class RegistrationComponent implements OnInit {
         this.elt.registrationState.untilDate = this.parserFormatter.format(this.newState.untilDate);
         this.elt.$save(() => {
             this.modalRef.close();
+            this.alert.addAlert("success", "Saved");
         });
     }
 
