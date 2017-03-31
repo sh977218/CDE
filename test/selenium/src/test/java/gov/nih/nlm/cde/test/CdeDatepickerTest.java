@@ -36,7 +36,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         textPresent("Saved");
         closeAlert();
         
-        Assert.assertEquals("2/16/2016", findElement(By.id("effectiveDate")).getText());
-        Assert.assertEquals("3/19/2017", findElement(By.id("untilDate")).getText());
+        Assert.assertEquals(findElement(By.id("effectiveDate")).getText(), "02/16/2016");
+        Assert.assertEquals(findElement(By.id("untilDate")).getText(), "03/19/2017");
     }
 }

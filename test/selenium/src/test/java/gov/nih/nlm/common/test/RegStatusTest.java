@@ -40,12 +40,11 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         textPresent("Qualified");
 
-
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         textPresent("Recorded elements are not visible by default");
-        findElement(By.name("effectiveDate")).sendKeys("15-September-2013");
-        findElement(By.name("untilDate")).sendKeys("31-October-2014");
+        findElement(By.name("effectiveDate")).sendKeys("09/15/2013");
+        findElement(By.name("untilDate")).sendKeys("10/31/2014");
         findElement(By.name("administrativeNote")).sendKeys("Admin Note 1");
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
         clickElement(By.id("saveRegStatus"));
@@ -59,8 +58,6 @@ public abstract class RegStatusTest extends CommonTest {
         }
         textPresent("Recorded");
 
-
-        textPresent("Recorded");
         textPresent("09/15/2013");
         textPresent("10/31/2014");
         textPresent("Admin Note 1");
