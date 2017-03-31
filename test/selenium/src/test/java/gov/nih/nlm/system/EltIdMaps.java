@@ -83,6 +83,7 @@ public class EltIdMaps {
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
         eltMap.put("Mean Value Test", "X17IaQ_NQ");
+        eltMap.put("Motor Evoked Potentials", "mkWON1SrFe");
         eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("Multi SubQuestion", "mk4r3nH77");
         eltMap.put("Neurological Assessment: TBI Symptoms and Signs", "mkqnEJHrtl");

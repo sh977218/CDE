@@ -63,9 +63,9 @@ export class PropertiesComponent implements OnInit {
     }
 
     saveProperty() {
-        this.elt.$save(function (newElt) {
-            this.alert.addAlert("success", "Saved");
+        this.elt.$save(newElt => {
             this.elt = newElt;
+            this.alert.addAlert("success", "Saved");
         });
     };
 

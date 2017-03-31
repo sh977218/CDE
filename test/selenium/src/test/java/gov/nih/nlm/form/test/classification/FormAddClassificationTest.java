@@ -1,7 +1,7 @@
 package gov.nih.nlm.form.test.classification;
 
 import gov.nih.nlm.cde.test.classification.ClassificationTest;
-import gov.nih.nlm.form.test.BaseFormTest;
+import gov.nih.nlm.form.test.properties.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 

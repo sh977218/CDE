@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
 
     @Test
-    public void changeDefinitionFormat() {
+    public void cdeChangeDefinitionFormat() {
         String cdeName = "Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator";
         String definitionChange = "[def change: adding html characters][<b>bold</b>]";
 

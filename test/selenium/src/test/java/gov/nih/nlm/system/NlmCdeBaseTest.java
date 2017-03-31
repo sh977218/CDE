@@ -871,7 +871,6 @@ public class NlmCdeBaseTest {
 
     protected void editDefinitionByIndex(int index, String newDefinition, boolean html) {
         String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
-        String definitionInputXpath = "//*[@id='definition_" + index + "']//input";
         String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
         String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
         String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-check')]";
@@ -879,10 +878,8 @@ public class NlmCdeBaseTest {
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
             textPresent("Characters:");
-            findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
-        } else {
-            findElement(By.xpath(definitionInputXpath)).sendKeys(newDefinition);
         }
+        findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
         hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
         textNotPresent("Confirm");
@@ -890,7 +887,6 @@ public class NlmCdeBaseTest {
 
     protected void switchDefinitionFormatByIndex(int index, String newDefinition, boolean html) {
         String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
-        String definitionInputXpath = "//*[@id='definition_" + index + "']//input";
         String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
         String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
         String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-check')]";
@@ -898,17 +894,33 @@ public class NlmCdeBaseTest {
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
             textPresent("Characters:");
-            if (newDefinition != null)
-                findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
-        } else {
-            if (newDefinition != null)
-                findElement(By.xpath(definitionInputXpath)).sendKeys(newDefinition);
         }
+        if (newDefinition != null)
+            findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
         hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
         textNotPresent("Confirm");
-
+        textPresent("Saved");
+        closeAlert();
     }
+
+    protected void switchValueFormatByIndex(int index, String newValue, boolean html) {
+        String valueEditIconXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-edit')]";
+        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[contains(text(),'Rich Text')]";
+        String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
+        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(valueEditIconXpath));
+        if (html) {
+            clickElement(By.xpath(richTextBtnXpath));
+            textPresent("Characters:");
+        }
+        if (newValue != null)
+            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
+        hangon(2);
+        clickElement(By.xpath(valueConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
 
     protected void editTagByIndex(int index, String[] tags) {
         String tagsInputXpath = "//*[@id='tags_" + index + "']//input";
@@ -923,17 +935,14 @@ public class NlmCdeBaseTest {
     protected void editPropertyValueByIndex(int index, String newValue, boolean html) {
         String valueEditIconXpath = "//*[@id='value_" + index + "']//i[contains(@class,'fa fa-edit')]";
         String richTextBtnXpath = "//*[@id='value_" + index + "']//button[contains(text(),'Rich Text')]";
-        String valueInputXpath = "//*[@id='value_" + index + "']//input";
         String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
         String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-check')]";
         clickElement(By.xpath(valueEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
             textPresent("Characters:");
-            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
-        } else {
-            findElement(By.xpath(valueInputXpath)).sendKeys(newValue);
         }
+        findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
         hangon(2);
         clickElement(By.xpath(valueConfirmBtnXpath));
         textNotPresent("Confirm");

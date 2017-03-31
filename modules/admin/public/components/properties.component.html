@@ -13,7 +13,7 @@
                     <span (click)="prop.edit = true" *ngIf="!prop.edit" class="btn-default fa fa-trash-o"
                           id="removeProperty-{{i}}" title="Remove" href=""></span>
                     <sortable-array [theArray]="elt.properties" [sortableArray]="elt.properties"
-                                    [index]="i" (cb)="elt.unsaved = true"></sortable-array>
+                                    [index]="i" (cb)="saveProperty();"></sortable-array>
                 </div>
             </div>
             <div class="col-md-11">

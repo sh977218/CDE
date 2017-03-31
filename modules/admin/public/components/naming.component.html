@@ -20,14 +20,14 @@
                 <div class="row">
                     <div  class="col-xs-2 text-right text_label">Name:</div>
                     <div  class="col-xs-10 ng-binding" id="designation_{{i}}">
-                        <inline-edit id="nameEdit" [(model)]="name.designation" (onOk)="saveNaming()"
+                        <inline-edit id="nameEdit" [(model)]="name.designation" (onOk)="elt.unsaved = true;"
                                      [isAllowed]="isAllowed"></inline-edit>
                     </div>
                 </div>
                 <div class="row">
                     <div  class="col-xs-2 text-right text_label">Definition:</div>
                     <div  class="col-xs-10 ng-binding" id="definition_{{i}}">
-                        <inline-area-edit [(model)]="name.definition" (onOk)="saveNaming()"
+                        <inline-area-edit [(model)]="name.definition" (onOk)="elt.unsaved = true;"
                                           [defFormat]="name.definitionFormat"
                                           [isAllowed]="isAllowed"></inline-area-edit>
                     </div>
