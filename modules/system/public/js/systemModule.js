@@ -422,3 +422,5 @@ angular.module('systemModule').directive('cdeUsersMgt', upgradeAdapter.downgrade
 import {IdentifiersComponent} from "../components/adminItem/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downgradeNg2Component(IdentifiersComponent));
 
+import {RegistrationComponent} from "../components/adminItem/registration.component";
+angular.module('systemModule').directive('cdeRegistation', upgradeAdapter.downgradeNg2Component(RegistrationComponent));
