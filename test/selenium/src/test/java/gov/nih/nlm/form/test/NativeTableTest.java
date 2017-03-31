@@ -15,15 +15,12 @@ public class NativeTableTest extends BaseFormTest {
         textPresent("Patient Family Member Order Name", By.xpath("//thead//th[@rowspan='3']"));
         textPresent("Condition", By.xpath("//thead//th[@colspan='3']"));
         scrollTo(400);
-        hangon(5);
-        System.out.println(driver.findElement(By.cssSelector("body")).getAttribute("innerHTML"));
-        findElement(By.xpath("//div[contains(@class,'native-table-cell')]/label/span[contains(@ng-reflect-text-content,'1st Grade')]"));
-        Assert.assertEquals(10, driver.findElements(By.xpath("//div[contains(@class,'native-table-cell')]/label/span[contains(@ng-reflect-text-content,'1st Grade')]")).size());
+        Assert.assertEquals(10, driver.findElements(By.xpath("//div[contains(@class,'native-table-cell')]/label/span[contains(text(),'1st Grade')]")).size());
         Assert.assertEquals(10, driver.findElements(By.xpath("//div[contains(@class,'native-table-cell')]/label[text()=' year']")).size());
         Assert.assertEquals(2, driver.findElements(By.xpath("//thead//th[@colspan='3']")).size());
-        Assert.assertEquals(2, driver.findElements(By.xpath("//thead//th[@ng-reflect-text-content='Education level']")).size());
+        Assert.assertEquals(2, driver.findElements(By.xpath("//thead//th[text()='Education level']")).size());
         scrollTo(800);
-        findElement(By.xpath("//div[@class='native-table-cell']/label[@ng-reflect-text-content='2.']"));
+        findElement(By.xpath("//div[@class='native-table-cell']/label[text()='2.']"));
 
         clickElement(By.id("description_tab"));
         textPresent("Repeats: 5 times", By.xpath("//div[@id='section_0']//span[contains(@class,'label-primary')]"));
@@ -34,6 +31,6 @@ public class NativeTableTest extends BaseFormTest {
         textPresent("Repeats: over First Question", By.xpath("//div[@id='section_0']//span[contains(@class,'label-primary')]"));
 
         clickElement(By.id("general_tab"));
-        findElement(By.xpath("//div[@class='native-table-cell']/label[@ng-reflect-text-content='Mother']"));
+        findElement(By.xpath("//div[@class='native-table-cell']/label[text()='Mother']"));
     }
 }

@@ -15,6 +15,7 @@ export class NativeTableComponent implements OnInit {
         q: [{type: "label", style: {}}]
     };
     entry: any;
+    rowNameCounter: number = 0;
 
     constructor(public nativeRenderService: NativeRenderService) {
     }
@@ -101,11 +102,17 @@ export class NativeTableComponent implements OnInit {
         else if (f.elementType === "question" && f !== this.firstQuestion) {
             c++;
             tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
+            let qName = f.questionId + "-i" + (++this.rowNameCounter).toString();
             this.tableForm.q.push({
                 type: NativeTableComponent.getQuestionType(f),
-                name: f.questionId,
+                name: qName,
                 question: f.question,
                 style: sectionStyle.answerStyle
+            });
+            this.tableForm.rows.forEach((r, i) => {
+                this.nativeRenderService.elt.formInput[qName + "-" + i];
+                if (f.question.uoms && f.question.uoms.length === 1)
+                    this.nativeRenderService.elt.formInput[qName + "-" + i + "_uom"] = f.question.uoms[0];
             });
             if ((!Array.isArray(f.question.answer) || this.tableForm.rows.length !== f.question.answer.length) && this.tableForm.q.slice(-1)[0].type === "list") {
                 f.question.answer = [];

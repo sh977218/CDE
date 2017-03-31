@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core";
 
 @Injectable()
-export class NativeRenderService1 {
-    readonly SHOW_IF: string = "Dynamic";
-}
-@Injectable()
 export class NativeRenderService {
     readonly SHOW_IF: string = "Dynamic";
     readonly FOLLOW_UP: string = "Follow-up";
