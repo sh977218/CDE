@@ -693,6 +693,7 @@ public class NlmCdeBaseTest {
         je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.id(id)));
         hangon(2);
     }
+
     protected void scrollToViewByXpath(String xpath) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.xpath(xpath)));
@@ -872,4 +873,57 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
     }
+
+    protected void editDesignationByIndex(int index, String newDesignation) {
+        String designationEditIconXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-edit')]";
+        String designationInputXpath = "//*[@id='designation_" + index + "']//input";
+        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(designationEditIconXpath));
+        findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
+        textPresent(newDesignation);
+        clickElement(By.xpath(designationConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+    protected void editDefinitionByIndex(int index, String newDefinition, boolean html) {
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
+        String definitionInputXpath = "//*[@id='definition_" + index + "']//input";
+        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
+        String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
+        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(definitionEditIconXpath));
+        if (html) {
+            clickElement(By.xpath(richTextBtnXpath));
+            textPresent("Characters:");
+            findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
+        } else {
+            findElement(By.xpath(definitionInputXpath)).sendKeys(newDefinition);
+        }
+        textPresent(newDefinition);
+        clickElement(By.xpath(definitionConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+    protected void editTagByIndex(int index, String[] tags) {
+        String tagsInputXpath = "//*[@id='tags_" + index + "']//input";
+        for (String tag : tags) {
+            String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + tag + "']";
+            clickElement(By.xpath(tagsInputXpath));
+            clickElement(By.xpath(selectTagXpath));
+            textPresent(tag);
+        }
+    }
+
+    protected void addNewName(String designation, String definition) {
+        clickElement(By.id("openNewNamingModalBtn"));
+        textPresent("Tags are managed in Org Management > List Management");
+        findElement(By.name("newDesignation")).sendKeys(designation);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("createNewNamingBtn")));
+        findElement(By.name("newDefinition")).sendKeys(definition);
+        textPresent(definition);
+        clickElement(By.id("createNewNamingBtn"));
+        modalGone();
+
+    }
+
 }

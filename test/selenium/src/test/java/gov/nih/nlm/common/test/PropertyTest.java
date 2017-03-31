@@ -12,9 +12,9 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.id("properties_tab"));
         clickElement(By.id("openNewPropertyModalBtn"));
         findElement(By.xpath("//option[.='propKey0']"));
-        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey0");
-        findElement(By.name("value")).sendKeys("MyValue0");
-        clickElement(By.id("createPropertyBtn"));
+        new Select(findElement(By.id("newKey"))).selectByVisibleText("propKey0");
+        findElement(By.id("newValue")).sendKeys("MyValue0");
+        clickElement(By.id("createNewPropertyBtn"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
@@ -22,9 +22,9 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.id("properties_tab"));
         clickElement(By.id("openNewPropertyModalBtn"));
         findElement(By.xpath("//option[.='propKey1']"));
-        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey1");
-        findElement(By.name("value")).sendKeys("MyValue1");
-        clickElement(By.id("createPropertyBtn"));
+        new Select(findElement(By.id("newKey"))).selectByVisibleText("propKey1");
+        findElement(By.id("newValue")).sendKeys("MyValue1");
+        clickElement(By.id("createNewPropertyBtn"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
@@ -32,9 +32,9 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.id("properties_tab"));
         clickElement(By.id("openNewPropertyModalBtn"));
         findElement(By.xpath("//option[.='propKey2']"));
-        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey2");
-        findElement(By.name("value")).sendKeys("MyValue2");
-        clickElement(By.id("createPropertyBtn"));
+        new Select(findElement(By.id("newKey"))).selectByVisibleText("propKey2");
+        findElement(By.name("newValue")).sendKeys("MyValue2");
+        clickElement(By.id("createNewPropertyBtn"));
         textPresent("Property Added");
         closeAlert();
         modalGone();

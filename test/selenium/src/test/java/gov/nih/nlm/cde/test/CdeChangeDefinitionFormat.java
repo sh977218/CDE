@@ -13,17 +13,19 @@ public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
         String cdeName = "INSS";
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-        clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
-        findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
-        clickElement(By.cssSelector("#dd_def_0 .fa-check"));
+
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-edit')]"));
+        findElement(By.xpath("//*[@id='definition_0']//textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
+        textPresent("[def change: adding html characters][<b>bold</b>]");
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
         newCdeVersion();
 
         textPresent("<b>bold</b>");
         clickElement(By.id("naming_tab"));
-        clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
-        clickElement(By.xpath("//div[@id='dd_def_0']//button[contains(text(),'Rich Text')]"));
-        hangon(2);
-        clickElement(By.xpath("//div[@id='dd_def_0']//button[@class='fa fa-check']"));
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath("//*[@id='definition_0']//button[contains(text(),'Rich Text')]"));
+        textPresent("Characters:");
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
         newCdeVersion();
         textNotPresent("<b>bold</b>");
     }
