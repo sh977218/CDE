@@ -4,7 +4,7 @@ const mongo_form = require('../modules/form/node-js/mongo-form'),
 
 let count = 0;
 
-mongo_form.Form.find({"classification.stewardOrg.name": "PhenX", archived: null,
+mongo_form.Form.find({"classification.stewardOrg.name": "PhenX", archived: false,
     "ids.source": "PhenX"}, (err, pForms) => {
 
     async.eachSeries(pForms, (pForm, oneDone) => {

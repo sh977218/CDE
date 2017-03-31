@@ -22,7 +22,8 @@ import { NativeTableComponent } from "./nativeRender/nativeTable.component";
         NativeQuestionComponent,
         NativeTableComponent
     ],
-    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot(), SortableModule.forRoot(), AlertModule.forRoot(), ProgressbarModule.forRoot()],
+    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot(),
+        SortableModule.forRoot(), AlertModule.forRoot(), ProgressbarModule.forRoot()],
 
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -1,10 +1,10 @@
 <!-- TODO odd controller -->
-<div class="row" ng-controller="PermissibleValuesCtrl">
+<div class="row" ng-controller="PermissibleValuesCtrl" ng-if="elt">
     <div class="col-md-6">
         <div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>
         <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
         <div ng-include="'/system/public/html/sources.html'"></div>
-        <div ng-include="'/system/public/html/status.html'"></div>
+        <cde-registation [elt]="elt"></cde-registation>
         <div class="" ng-if="elt" role="group" aria-label="More Info">
             <button type="button" class="btn btn-default" id="{{group.btnId}}" ng-repeat="group in groups"
                     ng-click="group.open()">
