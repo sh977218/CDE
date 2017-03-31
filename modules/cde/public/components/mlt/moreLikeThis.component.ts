@@ -3,7 +3,7 @@ import { Component, Inject, Input, ViewChild } from "@angular/core";
 
 @Component({
     selector: "cde-mlt",
-    templateUrl: "./moreLikeThis.component.html"
+    templateUrl: "moreLikeThis.component.html"
 })
 
 
