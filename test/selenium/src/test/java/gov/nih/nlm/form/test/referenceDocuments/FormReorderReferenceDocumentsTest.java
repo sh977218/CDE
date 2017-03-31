@@ -1,16 +1,16 @@
-package gov.nih.nlm.cde.test.referenceDocuments;
+package gov.nih.nlm.form.test.referenceDocuments;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class CdeReorderReferenceDocumentsTest extends NlmCdeBaseTest {
+public class FormReorderReferenceDocumentsTest extends NlmCdeBaseTest {
     @Test
-    public void cdeReorderReferenceDocuments() {
-        String cdeName = "cde for test cde reorder detail tabs";
+    public void formReorderReferenceDocuments() {
+        String formName = "form for test cde reorder detail tabs";
 
-        mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName(cdeName);
+        mustBeLoggedInAs(testAdmin_username, password);
+        goToFormByName(formName);
 
         clickElement(By.id("referenceDocument_tab"));
         clickElement(By.id("moveDown-0"));
