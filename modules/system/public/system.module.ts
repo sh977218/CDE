@@ -1,6 +1,7 @@
 import { upgradeAdapter } from "../../upgrade";
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { PaginationModule, ModalModule, TypeaheadModule } from "ng2-bootstrap/index";
 import { DataTableModule } from "angular2-datatable";
@@ -9,6 +10,7 @@ import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { UserCommentsComponent } from "./components/userComments.component";
+import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
@@ -27,7 +29,8 @@ import { ReferenceDocumentComponent } from "../../admin/public/components/refere
         PaginationModule.forRoot(),
         DataTableModule,
         Select2Module,
-        AdminModule
+        NgbModule,
+        AdminModule,
     ],
     declarations: [
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
@@ -42,6 +45,7 @@ import { ReferenceDocumentComponent } from "../../admin/public/components/refere
         UserCommentsComponent,
         HomeComponent,
         LogAuditComponent,
+        RegistrationComponent,
         UsersMgtComponent,
         PlaceHoldEmptyPipe],
     providers: [],

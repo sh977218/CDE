@@ -3,6 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { ConceptsComponent } from "../components/concepts.component";
 import { DerivationRulesComponent } from "../components/derivationRules.component";
@@ -15,6 +16,7 @@ import { AdminModule } from "../../../admin/public/admin.module";
         FormsModule,
         ModalModule.forRoot(),
         PaginationModule.forRoot(),
+        NgbModule,
         AdminModule
     ],
     declarations: [

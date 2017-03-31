@@ -114,11 +114,11 @@ exports.daoMap = {
         dao: mongo_form
     },
     "board": {
-        condition: {archived: null},
+        condition: {},
         dao: mongo_board
     },
     "storedQuery": {
-        condition: {archived: null},
+        condition: {},
         dao: mongo_storedQuery
     }
 };

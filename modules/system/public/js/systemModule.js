@@ -432,3 +432,6 @@ angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.down
 
 import {SkipLogicService} from "../../../core/public/skipLogic.service";
 angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
+
+import {RegistrationComponent} from "../components/adminItem/registration.component";
+angular.module('systemModule').directive('cdeRegistation', upgradeAdapter.downgradeNg2Component(RegistrationComponent));
