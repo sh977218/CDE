@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.referenceDocuments;
 
 import gov.nih.nlm.common.test.ReferenceDocumentTest;
 import org.testng.annotations.Test;
@@ -17,11 +17,6 @@ public class CdeRefDocumentTest extends ReferenceDocumentTest {
 
     protected void goToElt(String eltName) {
         goToCdeByName(eltName);
-    }
-
-    @Test (priority = 3)
-    public void cdeReferenceDocumentTest() {
-        referenceDocumentTest("Post traumatic amnesia verify type");
     }
 
     @Test

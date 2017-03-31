@@ -30,12 +30,12 @@ export class ReferenceDocumentComponent {
     addNewReferenceDocument() {
         this.elt.referenceDocuments.push(this.newReferenceDocument);
         if (this.elt.unsaved) {
-            this.alert.addAlert("info", "ReferenceDocument added. Save to confirm.");
+            this.alert.addAlert("info", "Reference Document added. Save to confirm.");
             this.modalRef.close();
         } else {
             this.elt.$save(newElt => {
                 this.elt = newElt;
-                this.alert.addAlert("success", "ReferenceDocument Added");
+                this.alert.addAlert("success", "Reference Document Added");
                 this.modalRef.close();
             });
         }
@@ -44,11 +44,11 @@ export class ReferenceDocumentComponent {
     removeReferenceDocumentByIndex(index) {
         this.elt.referenceDocuments.splice(index, 1);
         if (this.elt.unsaved) {
-            this.alert.addAlert("info", "ReferenceDocument removed. Save to confirm.");
+            this.alert.addAlert("info", "Reference Document removed. Save to confirm.");
         } else {
             this.elt.$save(newElt => {
                 this.elt = newElt;
-                this.alert.addAlert("success", "ReferenceDocument Removed");
+                this.alert.addAlert("success", "Reference Document Removed");
             });
         }
     }

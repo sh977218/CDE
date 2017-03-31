@@ -981,4 +981,20 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
+    protected void addNewReferenceDocument(String id, String title, String uri, String providerOrg, String languageCode, String document) {
+        clickElement(By.id("openNewReferenceDocumentModalBtn"));
+        findElement(By.name("newId")).sendKeys(id);
+        findElement(By.name("newTitle")).sendKeys(title);
+        findElement(By.name("newUri")).sendKeys(uri);
+        findElement(By.name("newProviderOrg")).sendKeys(providerOrg);
+        findElement(By.name("newLanguageCode")).sendKeys(languageCode);
+        findElement(By.name("newDocument")).sendKeys(document);
+        hangon(2);
+        clickElement(By.id("createNewReferenceDocumentBtn"));
+        modalGone();
+        textPresent("Reference Document Added");
+        closeAlert();
+    }
+
+
 }

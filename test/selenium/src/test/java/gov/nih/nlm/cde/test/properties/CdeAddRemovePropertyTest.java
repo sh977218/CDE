@@ -4,7 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class CdeAddRemovePropertiesTest extends NlmCdeBaseTest {
+public class CdeAddRemovePropertyTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeAddRemoveProperty() {
