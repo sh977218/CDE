@@ -45,7 +45,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
         goToCdeByName("Distance from Closest Margin Value");
 
-        clickElement(By.linkText("Properties"));
+        clickElement(By.id("properties_tab"));
         clickElement(By.id("AdminAddsPropertyKey"));
         clickElement(By.id("newPropertyKey"));
         textNotPresent("doYouSeeThis");

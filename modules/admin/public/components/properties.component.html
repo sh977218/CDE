@@ -24,7 +24,8 @@
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Value:</div>
                     <div class="col-xs-10 ng-binding" id="value_{{i}}">
-                        <inline-area-edit [(model)]="prop.value" (onOk)="saveProperty()" [defFormat]="prop.valueFormat"
+                        <inline-area-edit [(model)]="prop.value" (onOk)="saveProperty()"
+                                          [(defFormat)]="prop.valueFormat"
                                           [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-area-edit>
                     </div>
                 </div>

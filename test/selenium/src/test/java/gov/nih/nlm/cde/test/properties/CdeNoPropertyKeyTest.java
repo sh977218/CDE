@@ -1,15 +1,16 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.properties;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class NoPropertyKey extends NlmCdeBaseTest {
+public class CdeNoPropertyKeyTest extends NlmCdeBaseTest {
 
     @Test
-    public void noPropertyKey() {
+    public void cdeNoPropertyKey() {
+        String cdeName = "Neoadjuvant Therapy";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Neoadjuvant Therapy");
+        goToCdeByName(cdeName);
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("openNewPropertyModalBtn"));

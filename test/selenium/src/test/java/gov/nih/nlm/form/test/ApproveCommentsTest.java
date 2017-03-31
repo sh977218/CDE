@@ -1,5 +1,5 @@
 
-package gov.nih.nlm.form.test.properties.test;
+package gov.nih.nlm.form.test;
 
 import org.testng.annotations.Test;
 

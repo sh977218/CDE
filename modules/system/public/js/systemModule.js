@@ -127,6 +127,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             },
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
             controller: ["$scope", "$element", function ($scope, $element) {
+                $scope.setHtml = function (html) {
+                    $scope.defFormat = html ? 'html' : '';
+                };
                 $scope.clickEdit = function () {
                     $scope.inScope = {
                         value: $scope.model
