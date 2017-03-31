@@ -42,6 +42,9 @@ angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgrade
 import {DatasetsComponent} from "../components/datasets/datasets.component";
 angular.module('cdeModule').directive('cdeDatasets', upgradeAdapter.downgradeNg2Component(DatasetsComponent));
 
+import {MoreLikeThisComponent} from "../components/mlt/moreLikeThis.component";
+angular.module('cdeModule').directive('cdeMlt', upgradeAdapter.downgradeNg2Component(MoreLikeThisComponent));
+
 import {ConceptsComponent} from "../components/concepts.component";
 angular.module('cdeModule').directive('cdeConcepts', upgradeAdapter.downgradeNg2Component(ConceptsComponent));
 

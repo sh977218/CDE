@@ -167,27 +167,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     }
                 }).result.then(function () {}, function() {});
             }
-        }, {
-            btnId: 'cdeMoreLikeThisBtn',
-            title: 'More Like This',
-            open: function () {
-                $modal.open({
-                    size: 'lg',
-                    template: "<div ng-include=\"'/cde/public/html/cdeMoreLikeThisModal.html'\"/>",
-                    controller: ['$scope', 'elt', function ($scope, elt) {
-                        $http({method: "GET", url: "/moreLikeCde/" +elt.tinyId}).then(function onSuccess(response) {
-                            $scope.cdes = response.data.cdes;
-                        }).catch(function onError() {
-                            $log.error("Unable to retrieve MLT");
-                        });
-                    }],
-                    resolve: {
-                        elt: function () {
-                            return $scope.elt;
-                        }
-                    }
-                }).result.then(function () {}, function() {});
-            }
         }
     ];
     $scope.deferredEltLoaded = $q.defer();
