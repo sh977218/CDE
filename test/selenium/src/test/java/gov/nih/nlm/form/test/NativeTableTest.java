@@ -15,6 +15,9 @@ public class NativeTableTest extends BaseFormTest {
         textPresent("Patient Family Member Order Name", By.xpath("//thead//th[@rowspan='3']"));
         textPresent("Condition", By.xpath("//thead//th[@colspan='3']"));
         scrollTo(400);
+        hangon(5);
+        System.out.println(driver.findElement(By.cssSelector("body")).getAttribute("innerHTML"));
+        findElement(By.xpath("//div[contains(@class,'native-table-cell')]/label/span[contains(@ng-reflect-text-content,'1st Grade')]"));
         Assert.assertEquals(10, driver.findElements(By.xpath("//div[contains(@class,'native-table-cell')]/label/span[contains(@ng-reflect-text-content,'1st Grade')]")).size());
         Assert.assertEquals(10, driver.findElements(By.xpath("//div[contains(@class,'native-table-cell')]/label[text()=' year']")).size());
         Assert.assertEquals(2, driver.findElements(By.xpath("//thead//th[@colspan='3']")).size());

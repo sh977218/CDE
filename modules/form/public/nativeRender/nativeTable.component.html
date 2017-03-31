@@ -31,7 +31,9 @@
                 <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
                     <label style="display: block" *ngFor="let a of q.question.answers">
                         <input type="radio"
+                               [name]="q.name + '-' + ni"
                                [attr.name]="q.name + '-' + ni"
+                               [(ngModel)]="q.question.answer[ni]"
                                [value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/>
@@ -43,6 +45,7 @@
                 <div *ngIf="q.type === 'mlist'" class="checkbox native-table-cell native-table-list">
                     <label style="display: block" *ngFor="let a of q.question.answers">
                         <input type="checkbox"
+                               [name]="q.name + '-' + ni"
                                [attr.name]="q.name + '-' + ni"
                                [checked]="nativeRenderService.checkboxIsCheckedRepeat(q.question, a.permissibleValue, ni)"
                                (change)="nativeRenderService.checkboxOnChangeRepeat($event, q.question, a.permissibleValue, ni)"
@@ -56,6 +59,7 @@
                 <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                     <div class="input-group">
                         <input class="form-control native-table-box"
+                               [name]="q.name + '-' + ni"
                                [attr.name]="q.name + '-' + ni"
                                [(ngModel)]="q.question.answer[ni]"
                                ngbDatepicker #d1="ngbDatepicker"
@@ -68,6 +72,7 @@
                 <div *ngIf="q.type === 'number'" [ngClass]="{'input-group': q.question.uoms.length > 0}" class="native-table-cell" style="min-width: 100px;">
                     <input type="number"
                            class="form-control native-table-box"
+                           [name]="q.name + '-' + ni"
                            [attr.name]="q.name + '-' + ni"
                            [(ngModel)]="q.question.answer[ni]"
                            [attr.min]="q.question.datatypeNumber ? q.question.datatypeNumber.minValue : null"
@@ -79,15 +84,16 @@
                            [ngClass]="{'nativeRequiredBox': q.question.required}"
                            style="padding-left: 10px;display: block">
                         <input type="radio"
+                               [name]="q.name + '-' + ni + '_uom'"
                                [attr.name]="q.name + '-' + ni + '_uom'"
                                [value]="uom"
                                [required]="q.question.required"
-                               [disabled]="!q.question.editable"
-                        /> {{uom}}</label>
+                               [disabled]="!q.question.editable"/> {{uom}}</label>
                 </div>
                 <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;">
                     <input type="text"
                            class="form-control native-table-box"
+                           [name]="q.name + '-' + ni"
                            [attr.name]="q.name + '-' + ni"
                            [(ngModel)]="q.question.answer[ni]"
                            [required]="q.question.required"
@@ -97,11 +103,11 @@
                            [ngClass]="{'nativeRequiredBox': q.question.required}"
                            style="padding-left: 10px;display: block">
                         <input type="radio"
+                               [name]="q.name + '-' + ni + '_uom'"
                                [attr.name]="q.name + '-' + ni + '_uom'"
                                [value]="uom"
                                [required]="q.question.required"
-                               [disabled]="!q.question.editable"
-                        /> {{uom}}</label>
+                               [disabled]="!q.question.editable"/> {{uom}}</label>
                 </div>
             </td>
         </tr>
