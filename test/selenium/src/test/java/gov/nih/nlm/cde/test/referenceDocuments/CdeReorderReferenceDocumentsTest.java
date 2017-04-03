@@ -9,7 +9,7 @@ public class CdeReorderReferenceDocumentsTest extends NlmCdeBaseTest {
     public void cdeReorderReferenceDocuments() {
         String cdeName = "cde for test cde reorder detail tabs";
 
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
 
         clickElement(By.id("referenceDocument_tab"));

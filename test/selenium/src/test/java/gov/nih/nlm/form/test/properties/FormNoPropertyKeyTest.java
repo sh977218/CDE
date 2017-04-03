@@ -10,7 +10,7 @@ public class FormNoPropertyKeyTest extends NlmCdeBaseTest {
     public void formNoPropertyKey() {
         String formName = "Patient Health Questionnaire 2 item (PHQ-2) [Reported]";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName(formName);
+        goToFormByName(formName);
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("openNewPropertyModalBtn"));

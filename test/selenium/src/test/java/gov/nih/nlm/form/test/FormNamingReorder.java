@@ -12,11 +12,11 @@ public class FormNamingReorder extends NlmCdeBaseTest {
         goToFormByName("form for test cde reorder detail tabs");
         clickElement(By.id("naming_tab"));
         textPresent("Definition:");
-        clickElement(By.xpath("//div[@id='moveDown-0']"));
-        textPresent("form for test cde reorder detail tabs", By.xpath("//div[@id='designation_1']"));
-        clickElement(By.xpath("//div[@id='moveUp-2']"));
-        textPresent("form for test cde reorder detail tabs 3", By.xpath("//div[@id='designation_1']"));
-        clickElement(By.xpath("//div[@id='moveTop-2']"));
-        textPresent("form for test cde reorder detail tabs", By.xpath("//div[@id='designation_0']"));
+        clickElement(By.id("moveDown-0"));
+        textPresent("form for test cde reorder detail tabs", By.id("designation_1"));
+        clickElement(By.id("moveUp-2"));
+        textPresent("form for test cde reorder detail tabs 3", By.id("designation_1"));
+        clickElement(By.id("moveTop-2"));
+        textPresent("form for test cde reorder detail tabs", By.id("designation_0"));
     }
 }

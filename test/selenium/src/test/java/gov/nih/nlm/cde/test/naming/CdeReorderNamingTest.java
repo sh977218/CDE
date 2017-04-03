@@ -16,12 +16,12 @@ public class CdeReorderNamingTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-        clickElement(By.xpath("//div[@id='moveDown-0']"));
-        Assert.assertTrue(findElement(By.xpath("//div[@id='designation_1']")).getText().contains("cde for test cde reorder detail tabs"));
-        clickElement(By.xpath("//div[@id='moveUp-2']"));
-        Assert.assertTrue(findElement(By.xpath("//div[@id='designation_1']")).getText().contains("cde for test cde reorder detail tabs 2"));
-        clickElement(By.xpath("//div[@id='moveTop-2']"));
-        Assert.assertTrue(findElement(By.xpath("//div[@id='designation_0']")).getText().contains("cde for test cde reorder detail tabs"));
+        clickElement(By.id("moveDown-0"));
+        Assert.assertTrue(findElement(By.id("designation_1")).getText().contains("cde for test cde reorder detail tabs"));
+        clickElement(By.id("moveUp-2"));
+        Assert.assertTrue(findElement(By.id("designation_1")).getText().contains("cde for test cde reorder detail tabs 2"));
+        clickElement(By.id("moveTop-2"));
+        Assert.assertTrue(findElement(By.id("designation_0")).getText().contains("cde for test cde reorder detail tabs"));
     }
 
 }

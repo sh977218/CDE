@@ -8,7 +8,7 @@ public class CdeAddRemovePropertyTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeAddRemoveProperty() {
-        String cdeName = "Imaging diffusion sixth b value";
+        String cdeName = "Adrenal Gland Received Other Specify";
         String key0 = "propKey0";
         String value0 = "MyValue0";
         String key1 = "propKey1";

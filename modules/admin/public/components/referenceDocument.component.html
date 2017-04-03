@@ -3,12 +3,19 @@
     <div *ngIf="elt.referenceDocuments.length === 0">There are no ReferenceDocuments.</div>
     <div *ngFor="let rd of elt.referenceDocuments;let i = index">
         <div class="row">
-            <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
-                <div class="row">
-                    <span class="btn-default fa fa-trash-o" (click)="removeReferenceDocumentByIndex(i);"
-                          id="removeReferenceDocument-{{i}}" title="Remove reference document"></span>
+            <div class="col-md-1 text-right">
+                <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
+                    <span *ngIf="rd.edit">Confirm Delete
+                        <span class="btn-default fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
+                              id="confirmRremoveReferenceDocument-{{i}}" title="OK" href=""></span>
+                        <span class="btn-default fa fa-times" (click)="rd.edit = false"
+                              id="cancelRremoveReferenceDocument-{{i}}" title="Cancel" href=""></span>
+                    </span>
+                    <span (click)="rd.edit = true" *ngIf="!rd.edit" class="btn-default fa fa-trash-o"
+                          id="removeReferenceDocument-{{i}}" title="Remove" href=""></span>
                     <sortable-array [theArray]="elt.referenceDocuments" [sortableArray]="elt.referenceDocuments"
                                     [index]="i" (cb)="elt.unsaved = true"></sortable-array>
+
                 </div>
             </div>
             <div class="col-md-11">

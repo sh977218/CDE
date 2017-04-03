@@ -17,7 +17,7 @@ public class FormAddRemoveReferenceDocumentTest extends NlmCdeBaseTest {
         String document = "very very very long test document";
 
         mustBeLoggedInAs(promis_username, password);
-        goToCdeByName(formName);
+        goToFormByName(formName);
         clickElement(By.id("referenceDocument_tab"));
         addNewReferenceDocument(id, title, uri, providerOrg, languageCode, document);
 

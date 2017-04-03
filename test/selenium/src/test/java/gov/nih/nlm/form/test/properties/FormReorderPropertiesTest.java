@@ -13,11 +13,11 @@ public class FormReorderPropertiesTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("properties_tab"));
-        clickElement(By.xpath("//div[@id='moveDown-0']"));
+        clickElement(By.id("moveDown-0"));
         textPresent("pk1", By.id("key_1"));
-        clickElement(By.xpath("//div[@id='moveUp-2']"));
+        clickElement(By.id("moveUp-2"));
         textPresent("pk3", By.id("key_1"));
-        clickElement(By.xpath("//div[@id='moveTop-2']"));
+        clickElement(By.id("moveTop-2"));
         textPresent("pk1", By.id("key_0"));
     }
 
