@@ -59,17 +59,9 @@ export class NamingComponent implements OnInit {
 
     addNewNaming() {
         this.elt.naming.push(this.newNaming);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Naming added. Save to confirm.");
-            this.modalRef.close();
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.getCurrentTags();
-                this.alert.addAlert("success", "Naming Added");
-                this.modalRef.close();
-            });
-        }
+        this.modalRef.close();
+        this.elt.unsaved = true;
+        this.getCurrentTags();
     }
 
     removeNamingByIndex(index) {

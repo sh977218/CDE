@@ -15,11 +15,11 @@ public class CdeReorderPropertiesTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         clickElement(By.id("properties_tab"));
         clickElement(By.id("moveDown-0"));
-        Assert.assertTrue(findElement(By.id("key_1")).getText().contains("cde for test cde reorder detail tabs"));
+        Assert.assertTrue(findElement(By.id("key_1")).getText().contains("pk1"));
         clickElement(By.id("moveUp-2"));
-        Assert.assertTrue(findElement(By.id("key_1")).getText().contains("cde for test cde reorder detail tabs 2"));
+        Assert.assertTrue(findElement(By.id("key_1")).getText().contains("pk3"));
         clickElement(By.id("moveTop-2"));
-        Assert.assertTrue(findElement(By.id("key_0")).getText().contains("cde for test cde reorder detail tabs"));
+        Assert.assertTrue(findElement(By.id("key_0")).getText().contains("pk1"));
     }
 
 }
