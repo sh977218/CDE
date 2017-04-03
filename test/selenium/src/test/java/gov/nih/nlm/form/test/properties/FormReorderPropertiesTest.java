@@ -6,12 +6,12 @@ import org.testng.annotations.Test;
 
 public class FormReorderPropertiesTest extends NlmCdeBaseTest {
     @Test
-    public void cdeReorderPropertiesTest() {
-        String cdeName = "form for test cde reorder detail tabs";
+    public void formReorderPropertiesTest() {
+        String formName = "form for test cde reorder detail tabs";
 
         setLowStatusesVisible();
         mustBeLoggedInAs(testAdmin_username, password);
-        goToCdeByName(cdeName);
+        goToFormByName(formName);
         clickElement(By.id("properties_tab"));
         clickElement(By.id("moveDown-0"));
         textPresent("pk1", By.id("key_1"));
