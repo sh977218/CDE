@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('AuthCtrl',
-    ['$scope', 'Auth', '$window', '$http', 'LoginRedirect', '$location', 'Alert',
-    function($scope, Auth, $window, $http, LoginRedirect, $location, Alert)
+    ['$scope', 'Auth', '$http', 'LoginRedirect', '$location', 'Alert', 'userResource',
+    function($scope, Auth, $http, LoginRedirect, $location, Alert, userResource)
 {
 
     $scope.getCsrf = function () {
@@ -27,9 +27,10 @@ angular.module('systemModule').controller('AuthCtrl',
                 _csrf: $scope.csrf
             },
             function (res) {
+                $scope.reloadUser();
                 if (res === "OK") {
-                    if (LoginRedirect.getPreviousRoute()) $window.location.href = LoginRedirect.getPreviousRoute();
-                    else $window.location.href = "/";
+                    if (LoginRedirect.getPreviousRoute()) $location.url(LoginRedirect.getPreviousRoute());
+                    else $location.url("/");
                 } else {
                     Alert.addAlert("danger", res.data);
                     $scope.getCsrf();
@@ -56,7 +57,8 @@ angular.module('systemModule').controller('AuthCtrl',
 
     $scope.logout = function () {
         $http.post("/logout", {}).then(function() {
-            $window.location.href = "/login";
+            $scope.reloadUser();
+            $location.url("/login");
         });
     };
 

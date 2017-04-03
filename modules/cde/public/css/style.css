@@ -3,15 +3,27 @@
     display: block;
 }
 
-.nav, .navbar, .navbar-nav, .form-inline, .form-inline label {
-    display: initial;
+.nav, .navbar, .navbar-nav {
+    display: block;
+}
+
+.form-inline, .form-inline label {
+    display: inline-block;
+}
+
+.navbar {
+    padding: 0;
 }
 
 .dropdown-toggle::after {
     content: "";
-    display: initial;
+    display: block;
     border: none;
     margin: 0;
+}
+
+select.form-control:not([size]):not([multiple]) {
+    height: auto;
 }
 
 .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6,
@@ -63,7 +75,7 @@ body {
 }
 
 .padding0 {
-    padding: 0px !important;
+    padding: 0 !important;
 }
 .padding10 {
     padding: 10px;
@@ -126,7 +138,7 @@ body {
 }
 
 .margin0 {
-    magin: 0px !important;
+    margin: 0 !important;
 }
 .mb3 {
     margin-bottom: 3px;
@@ -403,9 +415,9 @@ dl.dl-horizontal dd {
 
 .question-search-area.ui-scrollpoint {
     max-height: 700px;
-    top: 0px;
+    top: 0;
     position: fixed !important;
-    right: 0px;
+    right: 0;
     z-index: 10;
 }
 
@@ -413,7 +425,7 @@ dl.dl-horizontal dd {
     max-height: 600px;
     top: auto;
     bottom: 250px;
-    right: 0px;
+    right: 0;
     z-index: 10;
 }
 
@@ -691,6 +703,8 @@ button#selectDefault {
     font-family: inherit !important;
     border-top-left-radius: 6px !important;
     border-top-right-radius: 6px !important;
+    font-size: 11px;
+    right: 20px !important;
 }
 
 #feedback-note-tmp {
@@ -1263,7 +1277,7 @@ div + .questionPlaceholder {
 }
 
 .commentHeader {
-    margin: 0px 0px 8px 0px;
+    margin: 0 0 8px 0;
     height: 38px;
     white-space: nowrap;
 }
@@ -1385,7 +1399,7 @@ input.ng-invalid {
     -webkit-animation: ellipsis steps(4, end) 1500ms infinite;
     animation: ellipsis steps(4, end) 1500ms infinite;
     content: "\2026"; /* ascii code for the ellipsis character */
-    width: 0px;
+    width: 0;
 }
 
 .discussWrench {
@@ -1516,10 +1530,6 @@ input.ng-invalid {
     padding-top: 0;
 }
 
-table.table > tbody > tr > td {
-    padding: 8px 8px 8px 0;
-}
-
 label.input-group-addon {
     background-color: transparent;
 }
@@ -1535,7 +1545,7 @@ label.input-group-addon {
 }
 
 .native-question-label {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .native-question-label:before {
