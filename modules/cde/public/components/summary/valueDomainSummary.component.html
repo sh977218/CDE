@@ -1,0 +1,18 @@
+<div *ngIf="elt.valueDomain.datatype === 'Value List'">
+    <div *ngIf="elt.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
+    <table *ngIf="elt.valueDomain.permissibleValues.length > 0" class="table cdeTable" summary="List of permissible values">
+        <tr>
+            <th id="value" class="col-xs-5">Value</th>
+            <th id="codeName" class="col-xs-5">Code Name</th>
+            <th id="code" class="col-xs-2">Code</th>
+        </tr>
+        <tr *ngFor="let pv of elt.valueDomain.permissibleValues | slice:0:4; let i = index">
+            <td headers="value" class="col-xs-5">{{pv.permissibleValue | slice:0:24}}</td>
+            <td headers="codeName" class="col-xs-5">{{pv.valueMeaningName | slice:0:24}}</td>
+            <td headers="code" class="col-xs-2">{{pv.valueMeaningCode | slice:0:7}}</td>
+        </tr>
+        <tr *ngIf="elt.valueDomain.permissibleValues.length > 5">
+            <td colspan="3"> ({{elt.valueDomain.nbOfPVs}} total) See full list in Detailed View</td>
+        </tr>
+    </table>
+</div>

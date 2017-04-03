@@ -7,6 +7,7 @@ import { SkipLogicService } from "./skipLogic.service";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
+import { upgradeAdapter } from "../../upgrade";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";

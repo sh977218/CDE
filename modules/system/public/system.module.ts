@@ -17,9 +17,9 @@ import { HomeComponent } from "./components/home/home.component";
 @NgModule({
     declarations: [
         upgradeAdapter.upgradeNg1Component("inlineEdit"),
-        upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
         upgradeAdapter.upgradeNg1Component("formSummaryList"),
+        upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         ProfileComponent,
         LinkedFormsComponent,
         IdentifiersComponent,

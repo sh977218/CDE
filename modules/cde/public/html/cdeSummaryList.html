@@ -14,10 +14,10 @@
 
         <div class="row">
             <div class="col-md-4 col-sm-12 col-xs-12">
-                <div ng-include="'/cde/public/html/cdeList/generalDetails.html'"></div>
+                <cde-cde-general-details [elt]="elt"></cde-cde-general-details>
             </div>
             <div class="col-md-5 col-sm-8 col-xs-12" >
-                <div ng-if="elt.valueDomain.datatype === 'Value List'" ng-include="'/cde/public/html/cdeList/valueDomain.html'"></div>
+                <cde-value-domain-summary [elt]="elt"></cde-value-domain-summary>
             </div>
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <img ng-repeat="attachment in elt.attachments | filter:{isDefault:true}"

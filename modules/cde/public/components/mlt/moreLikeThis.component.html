@@ -1,24 +1,46 @@
 <button type="button" class="btn btn-default" id="mltButton" (click)="open()">More Like This</button>
 
-<template #regStatusEdit id="mltModal" let-c="close" let-d="dismiss">
+<template #mltModal id="mltModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3 class="modal-title">More Like This</h3>
     </div>
     <div class="modal-body">
         <div class="overflowHidden">
-            <div ng-if="!cdes">
+            <div *ngIf="!cdes">
                 <h4 class="pt60 pb40 text-center">
                     <i class="fa fa-spinner fa-pulse"></i> Loading...
                 </h4>
             </div>
-            <div ng-if="cdes">
-                <div ng-if="cdes.length === 0"><h4>No similar elements to show.</h4></div>
-                <div id="mltAccordion" ng-include="'/cde/public/html/cdeAccordionList.html'"
-                     ng-init="ejsPage = 'mlt';"></div>
+            <div *ngIf="cdes">
+                <div *ngIf="cdes.length === 0"><h4>No similar elements to show.</h4></div>
+
+                <ngb-accordion>
+                    <ngb-panel *ngFor="let cde of cdes; let $index = index">
+                        <template ngbPanelTitle>
+                            <!--<span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>-->
+                            <a href class="nonLinkAnchor">
+                                <span role="link" [innerHtml]="cde.primaryNameCopy" id="acc_link_{{$index}}"
+                                  class="hand-cursor"></span>
+                            </a>
+                            <a href="/deview?tinyId={{cde.tinyId}}" target="_blank" class="nonLinkAnchor">
+                                <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{$index}}"></i>
+                            </a>
+                            <!--<span ng-repeat="i in includeInAccordion" ng-include="i"></span>-->
+                        </template>
+                        <template ngbPanelContent>
+
+                        </template>
+                    </ngb-panel>
+                </ngb-accordion>
+
+
+                <cde-accordion-list id="mltAccordionList" [cdes]="cdes" ejsPage="mlt"
+                   module="cdes" [includeInAccordion]="['/cde/public/html/accordion/pinAccordionActions.html',
+                    '/system/public/html/accordion/addToQuickBoardActions.html']"></cde-accordion-list>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-default" id="closeMoreLikeThisBtn" ng-click="dismiss();">Close</button>
+        <button class="btn btn-default" id="closeMoreLikeThisBtn" (click)="modalRef.dismiss()">Close</button>
     </div>
 </template>

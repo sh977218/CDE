@@ -51,3 +51,8 @@ angular.module('cdeModule').directive('cdeConcepts', upgradeAdapter.downgradeNg2
 import {DerivationRulesComponent} from "../components/derivationRules.component";
 angular.module('systemModule').directive('cdeDerivationRules', upgradeAdapter.downgradeNg2Component(DerivationRulesComponent));
 
+import {CdeGeneralDetailsComponent} from "../components/summary/cdeGeneralDetails.component";
+angular.module('systemModule').directive('cdeCdeGeneralDetails', upgradeAdapter.downgradeNg2Component(CdeGeneralDetailsComponent));
+
+import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
+angular.module('systemModule').directive('cdeValueDomainSummary', upgradeAdapter.downgradeNg2Component(ValueDomainSummaryComponent));

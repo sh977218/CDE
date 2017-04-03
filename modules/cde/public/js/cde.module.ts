@@ -10,6 +10,8 @@ import { ConceptsComponent } from "../components/concepts.component";
 import { DerivationRulesComponent } from "../components/derivationRules.component";
 import { DatasetsComponent } from "../components/datasets/datasets.component";
 import { MoreLikeThisComponent } from "../components/mlt/moreLikeThis.component";
+import { CdeGeneralDetailsComponent } from "../components/summary/cdeGeneralDetails.component";
+import { ValueDomainSummaryComponent } from "../components/summary/valueDomainSummary.component";
 
 @NgModule({
     declarations: [
@@ -17,10 +19,12 @@ import { MoreLikeThisComponent } from "../components/mlt/moreLikeThis.component"
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
-        MoreLikeThisComponent
+        MoreLikeThisComponent,
+        CdeGeneralDetailsComponent,
+        ValueDomainSummaryComponent
         ],
     providers: [],
-    imports: [CommonModule, FormsModule, NgbModule.forRoot(), ModalModule.forRoot(), PaginationModule.forRoot()],
+    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

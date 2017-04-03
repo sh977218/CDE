@@ -10,10 +10,12 @@ import { CoreModule } from "./core/public/core.module";
 import { CdeModule } from "./cde/public/js/cde.module";
 import { FormModule } from "./form/public/form.module";
 import { SystemModule } from "./system/public/system.module";
-
+import { upgradeAdapter } from "./upgrade";
 
 @NgModule({
-    declarations: [CdeAppComponent],
+    declarations: [
+        CdeAppComponent
+    ],
     providers: [],
     imports: [
         NgbModule.forRoot(),
