@@ -78,8 +78,6 @@ import "./system/public/js/controllers/SearchSettingsCtrl";
 import "./system/public/js/controllers/FeedbackBtnCtrl";
 import "./system/public/js/controllers/FeedbackIssueListCtrl";
 import "./system/public/js/controllers/OrgOverviewCtrl";
-import "./system/public/js/controllers/NewNamePairModalCtrl";
-import "./system/public/js/controllers/NamingCtrl";
 import "./system/public/js/controllers/MeshMappingMgtCtrl";
 import "./system/public/js/controllers/EmbedCtrl";
 import "./system/public/js/controllers/LatestCommentsCtrl";
