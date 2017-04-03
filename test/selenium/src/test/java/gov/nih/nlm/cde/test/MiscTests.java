@@ -91,9 +91,15 @@ public class MiscTests extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Intra-arterial Catheter Patient Not Administered Reason");
         clickElement(By.id("naming_tab"));
-        clickElement(By.cssSelector("#dd_def_0 i.fa-edit"));
-        findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys("[def change number 1]");
-        clickElement(By.cssSelector("#dd_def_0 .fa-check"));
+
+        String definitionEditIconXpath = "//*[@id='definition_0']//*[contains(@class,'fa-edit')]";
+        String richTextBtnXpath = "//*[@id='definition_0']//button[contains(text(),'Rich Text')]";
+        String definitionTextareaXpath = "//*[@id='definition_0']//textarea";
+        String definitionConfirmBtnXpath = "//*[@id='definition_0']//*[contains(@class,'fa-check')]";
+
+        clickElement(By.xpath(definitionEditIconXpath));
+        findElement(By.xpath(definitionTextareaXpath)).sendKeys("[def change number 1]");
+        clickElement(By.xpath(definitionConfirmBtnXpath));
 
         clickElement(By.linkText("CDEs"));
         shortWait.until(ExpectedConditions.alertIsPresent());

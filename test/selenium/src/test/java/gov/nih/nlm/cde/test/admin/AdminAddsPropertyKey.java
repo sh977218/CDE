@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
     @Test
-    public void addRemoveProp() {
+    public void adminAddRemovePropertyKey() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
@@ -24,7 +24,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         goToCdeByName("Distance from Closest Margin Value");
 
         clickElement(By.linkText("Properties"));
-        clickElement(By.id("addProperty"));
+        clickElement(By.id("AdminAddsPropertyKey"));
         clickElement(By.id("newPropertyKey"));
 
         try {
@@ -45,8 +45,8 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
         goToCdeByName("Distance from Closest Margin Value");
 
-        clickElement(By.linkText("Properties"));
-        clickElement(By.id("addProperty"));
+        clickElement(By.id("properties_tab"));
+        clickElement(By.id("AdminAddsPropertyKey"));
         clickElement(By.id("newPropertyKey"));
         textNotPresent("doYouSeeThis");
     }

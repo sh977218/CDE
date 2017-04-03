@@ -198,7 +198,7 @@ schemas.namingSchema = new mongoose.Schema({
         acceptability: String
     },
     tags: [new mongoose.Schema({
-        tag: String
+        tag: String,
     }, {_id: false})],
     source: {type: String}
 }, {_id: false});
