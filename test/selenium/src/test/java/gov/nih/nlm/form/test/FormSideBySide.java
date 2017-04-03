@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 

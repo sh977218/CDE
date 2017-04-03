@@ -8,17 +8,16 @@ public class EditCdeByTinyId extends NlmCdeBaseTest {
 
     @Test
     public void editCdeByTinyId() {
-        String nameChange = "[name change number 1]";
         mustBeLoggedInAs(ctepCurator_username, password);
         driver.get(baseUrl + "/deview?tinyId=xNugcDxoqKW");
         clickElement(By.id("naming_tab"));
-
-        editDesignationByIndex(0, nameChange);
+        clickElement(By.cssSelector("#dd_name_0 i.fa-edit"));
+        findElement(By.cssSelector("#dd_name_0 input")).sendKeys("[name change number 1]");
+        clickElement(By.cssSelector("#dd_name_0 .fa-check"));
         newCdeVersion("Change note for change number 1");
-
         driver.get(baseUrl + "/deview?tinyId=xNugcDxoqKW");
         textPresent("General Details");
-        textPresent(nameChange);
+        textPresent("[name change number 1]");
     }
 
 }

@@ -7,19 +7,25 @@ import org.testng.annotations.Test;
 public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
 
     @Test
-    public void cdeChangeDefinitionFormat() {
-        String cdeName = "Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator";
-        String definitionChange = "[def change: adding html characters][<b>bold</b>]";
-
+    public void changeDefinitionFormat() {
         mustBeLoggedInAs(ctepCurator_username, password);
+
+        String cdeName = "INSS";
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-        editDefinitionByIndex(0, definitionChange, false);
+        clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
+        findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
+        clickElement(By.cssSelector("#dd_def_0 .fa-check"));
         newCdeVersion();
 
+        textPresent("<b>bold</b>");
         clickElement(By.id("naming_tab"));
-        switchDefinitionFormatByIndex(0, null, true);
+        clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
+        clickElement(By.xpath("//div[@id='dd_def_0']//button[contains(text(),'Rich Text')]"));
+        hangon(2);
+        clickElement(By.xpath("//div[@id='dd_def_0']//button[@class='fa fa-check']"));
         newCdeVersion();
+        textNotPresent("<b>bold</b>");
     }
 
 }

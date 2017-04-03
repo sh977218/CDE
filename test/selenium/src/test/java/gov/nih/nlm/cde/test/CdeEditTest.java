@@ -17,8 +17,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeDefinitionChange = "[def change number 1]";
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-        editDesignationByIndex(0, cdeNameChange);
-        editDefinitionByIndex(0, cdeDefinitionChange, false);
+        clickElement(By.cssSelector("#dd_name_0 i.fa-edit"));
+        findElement(By.cssSelector("#dd_name_0 input")).sendKeys(cdeNameChange);
+        clickElement(By.cssSelector("#dd_name_0 .fa-check"));
+        clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
+        findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys(cdeDefinitionChange);
+        clickElement(By.cssSelector("#dd_def_0 .fa-check"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id = 'dd_uom']//i[contains(@class,'fa fa-edit')]"));
@@ -33,6 +37,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
         clickElement(By.id("pvs_tab"));
         textPresent("myUom");
+
 
         clickElement(By.id("ids_tab"));
         Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());

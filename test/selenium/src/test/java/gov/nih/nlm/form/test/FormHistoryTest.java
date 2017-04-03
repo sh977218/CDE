@@ -3,7 +3,6 @@ package gov.nih.nlm.form.test;
 import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
-
 import java.util.ArrayList;
 
 public class FormHistoryTest extends BaseFormTest {
@@ -21,7 +20,11 @@ public class FormHistoryTest extends BaseFormTest {
 
         clickElement(By.id("naming_tab"));
         textPresent("Form testing history");
-        editDefinitionByIndex(0, newFormDef, false);
+        clickElement(By.xpath("//*[@id='dd_def_0']//i"));
+        findElement(By.xpath("//*[@id='dd_def_0']//textarea")).clear();
+        findElement(By.xpath("//*[@id='dd_def_0']//textarea")).sendKeys(newFormDef);
+        clickElement(By.xpath("//*[@id='dd_def_0']//button[contains(text(),'Confirm')]"));
+        textPresent(newFormDef, By.id("dd_def_0"));
         saveForm();
 
         goToFormByName(formName);
@@ -30,11 +33,11 @@ public class FormHistoryTest extends BaseFormTest {
         textPresent("List of previous versions");
         Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
-        selectHistoryAndCompare(1, 2);
+        selectHistoryAndCompare(1,2);
         textPresent(newFormDef, By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='definition']"));
 
         clickElement(By.id("prior-1"));
-        ArrayList<String> wintabs = new ArrayList<String>(driver.getWindowHandles());
+        ArrayList<String> wintabs = new ArrayList<String> (driver.getWindowHandles());
         driver.switchTo().window(wintabs.get(1));
         textPresent("View current form");
         clickElement(By.id("viewCurrentEltLink"));

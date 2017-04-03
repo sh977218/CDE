@@ -1,5 +1,6 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.common.test.ViewTabTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 

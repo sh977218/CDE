@@ -6,8 +6,7 @@ import { MergeShareService } from "./mergeShare.service";
 
 @Injectable()
 export class MergeCdeService {
-    constructor(private http: Http,
-                private mergeShareService: MergeShareService,
+    constructor(private http: Http, private mergeShareService: MergeShareService,
                 @Inject("isAllowedModel") private isAllowedModel) {
     }
 
@@ -45,7 +44,6 @@ export class MergeCdeService {
                     if (fields.classifications)
                         this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
                     let ownCdeFrom = this.isAllowedModel.isAllowed(cdeFrom);
-                    //noinspection TypeScriptValidateTypes
                     this.http.post("/mergeCde", {
                         mergeFrom: cdeFrom,
                         mergeTo: cdeTo,

@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.testng.annotations.Test;
 
 public class SearchFormByQuestionNumTest extends NlmCdeBaseTest {

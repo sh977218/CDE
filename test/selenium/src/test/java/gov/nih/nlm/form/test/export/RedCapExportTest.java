@@ -1,12 +1,12 @@
 package gov.nih.nlm.form.test.export;
 
-
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class RedCapExportTest extends BaseFormTest {
 

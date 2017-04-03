@@ -16,4 +16,3 @@ upgradeAdapter.upgradeNg1Provider("AccountManagement");
 upgradeAdapter.upgradeNg1Provider("FormQuickBoard");
 upgradeAdapter.upgradeNg1Provider("PinModal");
 upgradeAdapter.upgradeNg1Provider("Elastic");
-upgradeAdapter.upgradeNg1Provider("OrgHelpers");

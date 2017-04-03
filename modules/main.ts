@@ -9,6 +9,5 @@ import { upgradeAdapter } from "./upgrade";
 
 import "./upgrade-imports";
 
-//noinspection TypeScriptValidateTypes
 platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/);
 upgradeAdapter.bootstrap(document.body, ["cdeAppModule"], {strictDi: true});

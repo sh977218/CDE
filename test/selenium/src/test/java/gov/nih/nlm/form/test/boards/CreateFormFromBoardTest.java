@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.boards;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import gov.nih.nlm.cde.test.boards.BoardTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
