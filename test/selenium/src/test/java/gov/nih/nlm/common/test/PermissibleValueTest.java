@@ -8,11 +8,11 @@ public abstract class PermissibleValueTest extends CommonTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToEltByName(eltName, null);
         clickElement(By.linkText("Permissible Values"));
-        clickElement(By.xpath("//div[@id='moveDown-0']"));
-        textPresent("pv1", By.xpath("//div[@id='pv-1']"));
-        clickElement(By.xpath("//div[@id='moveUp-2']"));
-        textPresent("pv3", By.xpath("//div[@id='pv-1']"));
-        clickElement(By.xpath("//div[@id='moveTop-1']"));
-        textPresent("pv3", By.xpath("//div[@id='pv-0']"));
+        clickElement(By.id("moveDown-0"));
+        textPresent("pv1", By.id("pv-1"));
+        clickElement(By.id("moveUp-2"));
+        textPresent("pv3", By.id("pv-1"));
+        clickElement(By.id("moveTop-1"));
+        textPresent("pv3", By.id("pv-0"));
     }
 }

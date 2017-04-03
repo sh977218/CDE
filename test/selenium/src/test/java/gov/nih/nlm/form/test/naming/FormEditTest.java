@@ -1,5 +1,6 @@
-package gov.nih.nlm.form.test;
+package gov.nih.nlm.form.test.naming;
 
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
