@@ -900,8 +900,6 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
         textNotPresent("Confirm");
-        textPresent("Saved");
-        closeAlert();
     }
 
     protected void switchValueFormatByIndex(int index, String newValue, boolean html) {
@@ -954,7 +952,6 @@ public class NlmCdeBaseTest {
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
         findElement(By.name("newDefinition")).sendKeys(definition);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("createNewNamingBtn")));
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newTags']//input";
             for (String tag : tags) {

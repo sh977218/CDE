@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
     @Test
-    public void addRemoveProp() {
+    public void adminAddRemovePropertyKey() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
