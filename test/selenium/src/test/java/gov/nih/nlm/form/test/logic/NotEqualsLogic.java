@@ -1,6 +1,7 @@
-package gov.nih.nlm.form.test.properties.test.logic;
+package gov.nih.nlm.form.test.logic;
 
 
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
