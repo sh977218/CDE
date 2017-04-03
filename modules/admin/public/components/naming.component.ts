@@ -73,16 +73,8 @@ export class NamingComponent implements OnInit {
     }
 
     removeNamingByIndex(index) {
-        this.elt.properties.splice(index, 1);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Naming removed. Save to confirm.");
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.getCurrentTags();
-                this.alert.addAlert("success", "Naming Removed");
-            });
-        }
+        this.elt.naming.splice(index, 1);
+        this.elt.unsaved = true;
     }
 
     changedTags(name, data: {value: string[]}) {
