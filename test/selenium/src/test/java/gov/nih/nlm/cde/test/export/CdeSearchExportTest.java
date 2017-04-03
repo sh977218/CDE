@@ -16,7 +16,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeSearchExport() {
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         loadDefaultSettings();
 
         goToCdeSearch();
