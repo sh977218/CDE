@@ -7,9 +7,9 @@
                 <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
                     <span *ngIf="rd.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
-                              id="confirmRremoveReferenceDocument-{{i}}" title="OK" href=""></span>
+                              id="confirmRemoveReferenceDocument-{{i}}" title="OK" href=""></span>
                         <span class="btn-default fa fa-times" (click)="rd.edit = false"
-                              id="cancelRremoveReferenceDocument-{{i}}" title="Cancel" href=""></span>
+                              id="cancelRemoveReferenceDocument-{{i}}" title="Cancel" href=""></span>
                     </span>
                     <span (click)="rd.edit = true" *ngIf="!rd.edit" class="btn-default fa fa-trash-o"
                           id="removeReferenceDocument-{{i}}" title="Remove" href=""></span>

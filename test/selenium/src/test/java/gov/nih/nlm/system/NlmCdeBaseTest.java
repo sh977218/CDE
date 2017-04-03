@@ -969,7 +969,6 @@ public class NlmCdeBaseTest {
         clickElement(By.id("openNewPropertyModalBtn"));
         textPresent("Property key are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("createNewPropertyBtn")));
         findElement(By.name("newValue")).sendKeys(value);
         hangon(2);
         clickElement(By.id("createNewPropertyBtn"));
