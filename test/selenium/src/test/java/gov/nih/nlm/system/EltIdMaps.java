@@ -16,6 +16,7 @@ public class EltIdMaps {
         eltMap.put("ConceptCDE", "mkBls_Z0M");
         eltMap.put("Common Toxicity Criteria Adverse Event Colitis Grade", "exWjxFqAU7r");
         eltMap.put("Common Toxicity Criteria Adverse Event Hypophosphatemia Grade", "75Y5R3FH5ar");
+        eltMap.put("cde for test cde reorder detail tabs", "7yl__aTQOe");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
         eltMap.put("ExportLatest", "XkZpBf60z");

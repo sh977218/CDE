@@ -20,8 +20,8 @@ public class AdminAddsTags extends NlmCdeBaseTest {
         closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
-        clickElement(By.linkText("Naming"));
-        clickElement(By.id("addNamePair"));
+        clickElement(By.id("naming_tab"));
+        clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
         clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/span[normalize-space(text())='canYouSeeThis']"));
@@ -37,8 +37,8 @@ public class AdminAddsTags extends NlmCdeBaseTest {
         closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
-        clickElement(By.linkText("Naming"));
-        clickElement(By.id("addNamePair"));
+        clickElement(By.id("naming_tab"));
+        clickElement(By.id("openNewNamingModalBtn"));
         clickElement(By.xpath("//*[@id='newTags']//input"));
         textNotPresent("canYouSeeThis");
     }

@@ -19,14 +19,14 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         assertNoElt(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']"));
 
         // Can't edit Value Type or add / remove pv
-        String prefix = "//div[@id='permissibleValueDiv']//div//*[@id='";
+        String prefix = "//*[@id='permissibleValueDiv']//*[@id='";
         String postfix = "']";
         clickElement(By.id("pvs_tab"));
         Assert.assertFalse(driver.findElements(By.xpath("//i[@id='editDatatype']")).get(0).isDisplayed());
         assertNoElt(By.xpath(prefix + "moveDown-0" + postfix));
         assertNoElt(By.xpath(prefix + "moveDown-1" + postfix));
         assertNoElt(By.xpath(prefix + "moveDown-2" + postfix));
-        Assert.assertFalse(driver.findElements(By.xpath("//td[@id='pv-1']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
+        Assert.assertFalse(driver.findElements(By.xpath("//*[@id='pv-1']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.id("addPv")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.id("updateOID")).get(0).isDisplayed());
 
