@@ -1,4 +1,5 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-linked-forms",
@@ -7,26 +8,27 @@ import { Component, Inject, Input, ViewChild } from "@angular/core";
 
 export class LinkedFormsComponent {
 
-    @ViewChild("childModal") public childModal: ModalDirective;
+    @ViewChild("linkedFormsContent") public linkedFormsContent: NgbModalModule;
     @Input() public elt: any;
     @Input() public eltType: string;
+    public modalRef: NgbModalRef;
 
     forms: [any];
 
-    constructor (@Inject("Elastic") private elastic) {};
+    constructor(@Inject("Elastic") private elastic,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal) {
+    };
 
-    open () {
+    openLinkedFormsModal() {
         let searchSettings = this.elastic.defaultSearchSettings;
         searchSettings.q = `"` + this.elt.tinyId + `"`;
-
         this.elastic.generalSearchQuery(this.elastic.buildElasticQuerySettings(searchSettings), "form", (err, result) => {
             if (err) return;
             this.forms = result.forms.filter(f => {
                  return f.tinyId !== this.elt.tinyId;
             });
-
-            this.childModal.show();
-
+            this.modalRef = this.modalService.open(this.linkedFormsContent, {size: "lg"});
         });
     }
 

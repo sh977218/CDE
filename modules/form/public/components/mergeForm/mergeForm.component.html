@@ -170,6 +170,7 @@
         </div>
     </div>
 </div>
+
 <template #questionTemplate let-item="item" let-index="index">
     <div class="boxed-div overflowHidden" title="{{item.value.isRetired?'CDE is Retired':''}}"
          [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
