@@ -26,11 +26,10 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
-
         String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='canYouSeeThis']";
         clickElement(By.xpath(selectTagXpath));
+        clickElement(By.id("cancelNewNamingBtn"));
 
-        clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));

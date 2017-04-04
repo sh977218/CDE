@@ -8,7 +8,7 @@ public class FormAddRemovePropertyTest extends NlmCdeBaseTest {
 
     @Test
     public void formAddRemoveProperty() {
-        String formName  = "Form Property Test";
+        String formName = "Form Property Test";
         String key0 = "propKey0";
         String value0 = "MyValue0";
         String key1 = "propKey1";
@@ -29,7 +29,7 @@ public class FormAddRemovePropertyTest extends NlmCdeBaseTest {
         textPresent("Property Removed");
         closeAlert();
 
-        goToCdeByName(formName);
+        goToFormByName(formName);
 
         clickElement(By.id("properties_tab"));
         textPresent(key0);

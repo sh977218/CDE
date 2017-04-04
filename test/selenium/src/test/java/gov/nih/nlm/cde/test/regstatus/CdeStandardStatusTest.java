@@ -10,7 +10,6 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         // CDE is Standard.
-        textPresent("Note: You may not edit this CDE because it is standard.");
 
         // Can't edit name, def or status
         assertNoElt(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']"));
