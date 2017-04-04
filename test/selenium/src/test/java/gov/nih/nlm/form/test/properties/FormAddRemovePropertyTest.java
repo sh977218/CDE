@@ -16,7 +16,7 @@ public class FormAddRemovePropertyTest extends NlmCdeBaseTest {
         String key2 = "propKey2";
         String value2 = "MyValue2";
 
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         clickElement(By.id("properties_tab"));
 

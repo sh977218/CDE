@@ -33,7 +33,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
             Assert.fail("Failed to find doYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
         }
 
-        clickElement(By.id("cancelCreate"));
+        clickElement(By.id("cancelNewPropertyBtn"));
 
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));

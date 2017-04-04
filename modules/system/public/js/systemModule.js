@@ -156,11 +156,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 };
                 $scope.confirm = function () {
                     if ($scope.isInvalidHtml($scope.inScope.value)) {
-                        if ($scope.onErr) {
-                            $scope.onErr();
-                        } else {
-                            alert('Error. Img src may only be a relative url starting with /data');
-                        }
+                        alert('Error. Img src may only be a relative url starting with /data');
                     } else {
                         $scope.model = $scope.inScope.value;
                         $scope.editMode = false;

@@ -5,10 +5,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
-public class AdminAddsTags extends NlmCdeBaseTest {
+public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
 
     @Test
-    public void addRemoveTags() {
+    public void adminAddRemoveTags() {
+        String cdeName = "Distance from Closest Margin Value";
+
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
@@ -19,12 +21,14 @@ public class AdminAddsTags extends NlmCdeBaseTest {
         textPresent("Org has been updated");
         closeAlert();
 
-        goToCdeByName("Distance from Closest Margin Value");
+        goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
-        clickElement(By.xpath("//*[contains(@class,'ui-select-choices-row ')]/span[normalize-space(text())='canYouSeeThis']"));
+
+        String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='canYouSeeThis']";
+        clickElement(By.xpath(selectTagXpath));
 
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));

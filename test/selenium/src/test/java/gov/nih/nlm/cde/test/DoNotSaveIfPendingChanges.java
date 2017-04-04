@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,7 +21,13 @@ public class DoNotSaveIfPendingChanges extends NlmCdeBaseTest {
         Assert.assertFalse(findElement(By.id("addClassification")).isEnabled());
 
         clickElement(By.id("properties_tab"));
-        addNewProperty("MyKey2","MyValue2");
+        clickElement(By.id("openNewPropertyModalBtn"));
+        textPresent("Property key are managed in Org Management > List Management");
+        new Select(findElement(By.id("newKey"))).selectByVisibleText("MyKey2");
+        findElement(By.name("newValue")).sendKeys("MyValue2");
+        hangon(2);
+        clickElement(By.id("createNewPropertyBtn"));
+        modalGone();
 
         clickElement(By.id("removeProperty-0"));
         clickElement(By.id("confirmRemoveProperty-0"));
