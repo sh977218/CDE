@@ -1,5 +1,6 @@
 import { Http } from "@angular/http";
-import { Component, DoCheck, Inject, Input, ViewChild, OnChanges,  } from "@angular/core";
+import { Component, DoCheck, Inject, Input, ViewChild, OnChanges, } from "@angular/core";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-derivation-rules",
@@ -8,8 +9,9 @@ import { Component, DoCheck, Inject, Input, ViewChild, OnChanges,  } from "@angu
 
 export class DerivationRulesComponent implements DoCheck, OnChanges {
 
-    @ViewChild("childModal") public childModal: ModalDirective;
+    @ViewChild("newScoreContent") public newScoreContent: NgbModalModule;
     @Input() public elt: any;
+    public modalRef: NgbModalRef;
 
     newDerivationRule: any;
     invalidCdeMessage: string;
@@ -17,8 +19,9 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
 
     constructor(private http: Http,
                 @Inject("QuickBoard") private quickBoard,
-                @Inject("isAllowedModel") private isAllowedModel) {
-
+                @Inject("isAllowedModel") private isAllowedModel,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal) {
         this.newDerivationRule = {
             ruleType: "score",
             formula: "sumAll",
@@ -26,13 +29,13 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         };
     }
 
-    ngOnChanges (changes) {
+    ngOnChanges(changes) {
         this.previousCdeId = this.elt._id;
         this.updateRules();
         this.findDerivationOutputs();
     }
 
-    ngDoCheck () {
+    ngDoCheck() {
         if (this.elt._id !== this.previousCdeId) {
             this.previousCdeId = this.elt._id;
             this.updateRules();
@@ -40,25 +43,25 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         }
     }
 
-    updateRules () {
+    updateRules() {
         if (this.elt.derivationRules) {
             this.elt.derivationRules.forEach((dr: any) => {
                 if (dr.inputs[0] !== null) {
                     this.http.post("/cdesByTinyIdList", dr.inputs)
-                    .subscribe(data => {
-                        dr.fullCdes = data.json();
-                    });
+                        .subscribe(data => {
+                            dr.fullCdes = data.json();
+                        });
                 }
             });
         }
     };
 
-    getViewCdes (dr) {
+    getViewCdes(dr) {
         if (!dr.fullCdes) return [];
         return dr.fullCdes.filter((item, index) => index < 8);
     }
 
-    findDerivationOutputs () {
+    findDerivationOutputs() {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
             this.http.get("/cde/derivationOutputs/" + this.elt.tinyId).subscribe(result => {
@@ -73,18 +76,17 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         }
     };
 
-    openNewScore () {
+    openNewScoreModal() {
         this.newDerivationRule = {
             name: "",
             ruleType: "score",
             formula: "sumAll",
             inputs: []
         };
-        this.childModal.show();
+        this.modalRef = this.modalService.open(this.newScoreContent, {size: "lg"});
     };
 
-    okCreate () {
-        this.childModal.hide();
+    addNewScore() {
         if (!this.elt.derivationRules) this.elt.derivationRules = [];
         this.quickBoard.elts.forEach((qbElt: any) => {
             this.newDerivationRule.inputs.push(qbElt.tinyId);
@@ -92,15 +94,16 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         this.elt.derivationRules.push(this.newDerivationRule);
         this.elt.unsaved = true;
         this.updateRules();
+        this.modalRef.close();
     };
 
 
-    removeDerivationRule (index) {
+    removeDerivationRule(index) {
         this.elt.derivationRules.splice(index, 1);
         this.elt.unsaved = true;
     };
 
-    canAddScore () {
+    canAddScore() {
         if (!this.isAllowedModel.isAllowed(this.elt)) return false;
         if (this.elt.derivationRules) {
             return this.elt.derivationRules.filter(derRule => derRule.ruleType === "score").length < 1;
@@ -109,7 +112,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         }
     };
 
-    someCdesInvalid () {
+    someCdesInvalid() {
         this.invalidCdeMessage = undefined;
         if (this.quickBoard.elts.length === 0) {
             this.invalidCdeMessage = "There are no CDEs in your Quick Board. Add some before you can create a rule.";

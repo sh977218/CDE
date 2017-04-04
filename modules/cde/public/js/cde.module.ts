@@ -16,7 +16,7 @@ import { DatasetsComponent } from "../components/datasets/datasets.component";
         DatasetsComponent
         ],
     providers: [],
-    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()],
+    imports: [CommonModule, FormsModule, NgbModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

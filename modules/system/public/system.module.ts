@@ -31,8 +31,7 @@ import { HomeComponent } from "./components/home/home.component";
         UsersMgtComponent,
         PlaceHoldEmptyPipe],
     providers: [],
-    imports: [CommonModule, FormsModule, ModalModule.forRoot(), TypeaheadModule.forRoot(),
-        PaginationModule.forRoot(), DataTableModule, Select2Module, NgbModule],
+    imports: [CommonModule, FormsModule, DataTableModule, Select2Module, NgbModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
