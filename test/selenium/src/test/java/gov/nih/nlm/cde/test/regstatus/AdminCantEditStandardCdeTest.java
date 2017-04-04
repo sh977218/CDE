@@ -2,10 +2,10 @@ package gov.nih.nlm.cde.test.regstatus;
 
 import org.testng.annotations.Test;
 
-public class AdminCantEditStandard extends CdeStandardStatusTest {
+public class AdminCantEditStandardCdeTest extends CdeStandardStatusTest {
 
     @Test
-    public void adminCantEditStandard() {
+    public void adminCantEditStandardCdeTest() {
         adminCantEditStandardCde("Patient Visual Change Chief Complaint Indicator");
     }
 
