@@ -18,7 +18,7 @@
             <i class="fa fa-trash-o" ng-click="editDtMode = false; reload({cdeId: elt._id});"></i>
         </span>
         <span ng-hide="editDtMode">
-            <i tabindex="0" title="Edit Value" role="link" ng-if="canCurate" class="fa fa-edit"
+            <i tabindex="0" title="Edit Value" role="link" ng-show="canCurate" class="fa fa-edit"
                ng-click="editDtMode = true" id="editDatatype"></i> {{elt.valueDomain.datatype | placeHoldEmpty}}
         </span>
         </dd>

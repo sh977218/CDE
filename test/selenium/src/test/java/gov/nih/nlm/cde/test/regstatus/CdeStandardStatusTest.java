@@ -20,7 +20,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         String prefix = "//*[@id='permissibleValueDiv']//*[@id='";
         String postfix = "']";
         clickElement(By.id("pvs_tab"));
-        Assert.assertEquals(driver.findElements(By.id("editDatatype")).size(), 0);
+        Assert.assertFalse(driver.findElements(By.id("editDatatype")).get(0).isDisplayed());
 
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 0);
