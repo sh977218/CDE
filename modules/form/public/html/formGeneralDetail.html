@@ -3,7 +3,7 @@
         <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
         <div ng-include="'/form/public/html/formSpecificDetails.html'"></div>
         <div ng-include="'/system/public/html/sources.html'"></div>
-        <div ng-include="'/system/public/html/status.html'"></div>
+        <cde-registation [elt]="elt"></cde-registation>
         <div class="btn-group" ng-if="elt" role="group" aria-label="More Info">
             <button type="button" class="btn btn-default" id="{{group.btnId}}" ng-repeat="group in groups"
                     ng-click="group.open()">
