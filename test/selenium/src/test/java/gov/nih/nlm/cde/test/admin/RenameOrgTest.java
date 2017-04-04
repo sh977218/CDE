@@ -29,27 +29,27 @@ public class RenameOrgTest extends NlmCdeBaseTest {
         addOrg(testOrg, null, null);
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//input")).sendKeys(testOrgRenamed);
         clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//input")).sendKeys(testOrgMailingAddress);
         clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//input")).sendKeys(testOrgEmailingAddress);
         clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//input")).sendKeys(testOrgPhoneNumber);
         clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//input")).sendKeys(testOrgUri);
         clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
@@ -61,23 +61,23 @@ public class RenameOrgTest extends NlmCdeBaseTest {
         textPresent(testOrgPhoneNumber);
         textPresent(testOrgUri);
 
-        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//input")).sendKeys(testOrgNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//button[text() = ' Discard']"));
 
-        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//input")).sendKeys(testOrgMailingAddressNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//button[text() = ' Discard']"));
 
-        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//input")).sendKeys(testOrgEmailingAddressNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//button[text() = ' Discard']"));
 
-        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//input")).sendKeys(testOrgPhoneNumberNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//button[text() = ' Discard']"));
 
-        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//input")).sendKeys(testOrgUriNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//button[text() = ' Discard']"));
 
