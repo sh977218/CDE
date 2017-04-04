@@ -7,6 +7,7 @@ import { Http, Response } from "@angular/http";
 })
 export class UserCommentsComponent implements OnInit {
     @Input() user: any;
+    pageSize: Number = 30;
     comments: any;
 
     constructor(private http: Http) {
@@ -18,6 +19,7 @@ export class UserCommentsComponent implements OnInit {
     }
 
     getComments(page) {
+        //noinspection TypeScriptValidateTypes
         this.http.get("/commentsFor/" + this.user.username + "/" + (page - 1) * 30 + "/30").map((res: Response) => res.json()).subscribe((data) => {
             this.comments.latestComments = data;
             let len = this.comments.latestComments.length;

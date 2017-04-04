@@ -16,6 +16,6 @@
         </tr>
         </tbody>
     </table>
-    <pagination [totalItems]="comments.totalItems" [(ngModel)]="comments.currentCommentsPage"
-                (pageChanged)="getComments($event.page)" itemsPerPage="30"></pagination>
+    <ngb-pagination [collectionSize]="comments.totalItems" (pageChange)="getComments($event.page)"
+                    [pageSize]="pageSize"></ngb-pagination>
 </div>
