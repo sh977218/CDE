@@ -1,6 +1,5 @@
 import { Http } from "@angular/http";
 import { Component, DoCheck, Inject, Input, ViewChild, OnChanges,  } from "@angular/core";
-import { ModalDirective } from "ng2-bootstrap/modal";
 
 @Component({
     selector: "cde-derivation-rules",

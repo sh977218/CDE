@@ -1,6 +1,5 @@
 import { Http } from "@angular/http";
 import { Component, Inject, ViewChild } from "@angular/core";
-import { ModalDirective } from "ng2-bootstrap/modal";
 import { Select2OptionData } from "ng2-select2";
 
 import "rxjs/add/operator/map";

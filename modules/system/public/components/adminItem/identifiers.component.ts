@@ -1,5 +1,4 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
-import { ModalDirective } from "ng2-bootstrap/modal";
 import "rxjs/add/operator/map";
 
 @Component({

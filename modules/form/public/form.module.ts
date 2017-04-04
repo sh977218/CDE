@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { PaginationModule, AlertModule, ModalModule, SortableModule, ProgressbarModule } from "ng2-bootstrap";
 
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";

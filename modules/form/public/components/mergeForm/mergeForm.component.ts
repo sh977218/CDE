@@ -1,5 +1,4 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import { ModalDirective, SortableComponent } from "ng2-bootstrap/index";
 import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../../core/public/mergeForm.service";
 import { MergeCdeService } from "../../../../core/public/mergeCde.service";

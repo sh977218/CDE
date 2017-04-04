@@ -1,5 +1,4 @@
 import { Component, Input, ViewChild } from "@angular/core";
-import { ModalDirective } from "ng2-bootstrap/modal";
 
 @Component({
     selector: "cde-datasets",
