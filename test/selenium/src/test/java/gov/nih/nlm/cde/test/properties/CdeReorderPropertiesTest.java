@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.properties;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeReorderPropertiesTest extends NlmCdeBaseTest {
@@ -15,11 +14,11 @@ public class CdeReorderPropertiesTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         clickElement(By.id("properties_tab"));
         clickElement(By.id("moveDown-0"));
-        Assert.assertTrue(findElement(By.id("key_1")).getText().contains("pk1"));
+        textPresent("pk1", By.id("key_1"));
         clickElement(By.id("moveUp-2"));
-        Assert.assertTrue(findElement(By.id("key_1")).getText().contains("pk3"));
+        textPresent("pk3", By.id("key_1"));
         clickElement(By.id("moveTop-2"));
-        Assert.assertTrue(findElement(By.id("key_0")).getText().contains("pk1"));
+        textPresent("pk1", By.id("key_0"));
     }
 
 }
