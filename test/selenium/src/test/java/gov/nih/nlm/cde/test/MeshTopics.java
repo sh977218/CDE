@@ -16,7 +16,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.xpath("//div[a/span/span[.='Disease']]//i[contains(@class, 'fa-link')]"));
         findElement(By.id("mesh.search")).clear();
         findElement(By.id("mesh.search")).sendKeys("NINDS");
-        textPresent("Neurological Disorders");
+        textPresent("National Institute of Neurological Disorders and Stroke");
         clickElement(By.id("addMeshDescButton"));
         clickElement(By.id("closeModal"));
         textPresent("Saved");
