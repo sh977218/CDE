@@ -35,6 +35,7 @@ export class MoreLikeThisComponent {
 
     }
 
+
     // $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
     //     "/system/public/html/accordion/addToQuickBoardActions.html"];
 

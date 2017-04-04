@@ -25,6 +25,10 @@
                             <a href="/deview?tinyId={{cde.tinyId}}" target="_blank" class="nonLinkAnchor">
                                 <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{$index}}"></i>
                             </a>
+                            <a href tabindex="0" class="nonLinkAnchor" (click)="PinModal.openPinModal(elt)">
+                                <i id="pinToBoard_{{eltIndex}}" class="fa fa-thumb-tack hand-cursor"
+                                   title="Attach to Board" role="link"> </i>
+                            </a>
                             <!--<span ng-repeat="i in includeInAccordion" ng-include="i"></span>-->
                         </template>
                         <template ngbPanelContent>

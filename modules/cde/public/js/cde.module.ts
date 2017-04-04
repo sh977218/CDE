@@ -12,6 +12,7 @@ import { DatasetsComponent } from "../components/datasets/datasets.component";
 import { MoreLikeThisComponent } from "../components/mlt/moreLikeThis.component";
 import { CdeGeneralDetailsComponent } from "../components/summary/cdeGeneralDetails.component";
 import { ValueDomainSummaryComponent } from "../components/summary/valueDomainSummary.component";
+import { CdeSummaryListComponent } from "../components/summary/cdeSummaryList.component";
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { ValueDomainSummaryComponent } from "../components/summary/valueDomainSu
         DatasetsComponent,
         MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
-        ValueDomainSummaryComponent
+        ValueDomainSummaryComponent,
+        CdeSummaryListComponent
         ],
     providers: [],
     imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()],

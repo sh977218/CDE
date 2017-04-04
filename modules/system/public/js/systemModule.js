@@ -264,6 +264,7 @@ angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeN
 
 angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
 angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
+
 angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {
     return {
         new: function (type) {

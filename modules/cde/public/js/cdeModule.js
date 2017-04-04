@@ -56,3 +56,6 @@ angular.module('systemModule').directive('cdeCdeGeneralDetails', upgradeAdapter.
 
 import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
 angular.module('systemModule').directive('cdeValueDomainSummary', upgradeAdapter.downgradeNg2Component(ValueDomainSummaryComponent));
+
+import {CdeSummaryListComponent} from "../components/summary/cdeSummaryList.component";
+angular.module('systemModule').directive('cdeCdeSummaryList', upgradeAdapter.downgradeNg2Component(CdeSummaryListComponent));

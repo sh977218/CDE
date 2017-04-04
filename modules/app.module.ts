@@ -10,7 +10,7 @@ import { CoreModule } from "./core/public/core.module";
 import { CdeModule } from "./cde/public/js/cde.module";
 import { FormModule } from "./form/public/form.module";
 import { SystemModule } from "./system/public/system.module";
-import { upgradeAdapter } from "./upgrade";
+import { BoardModule } from "./board/public/board.module";
 
 @NgModule({
     declarations: [
@@ -26,7 +26,8 @@ import { upgradeAdapter } from "./upgrade";
         CoreModule,
         CdeModule,
         FormModule,
-        SystemModule
+        SystemModule,
+        BoardModule
     ],
     bootstrap: [CdeAppComponent]
 })
