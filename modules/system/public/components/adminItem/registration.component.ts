@@ -25,8 +25,7 @@ export class RegistrationComponent implements OnInit {
                  @Inject("Alert") private alert,
                  @Inject("isAllowedModel") private isAllowedModel,
                  @Inject("userResource") private userService,
-                 public modalService: NgbModal,
-                 public activeModal: NgbActiveModal
+                 public modalService: NgbModal
     ) {}
 
     ngOnInit(): void {

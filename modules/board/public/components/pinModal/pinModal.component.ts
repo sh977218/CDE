@@ -11,14 +11,18 @@ import "rxjs/add/operator/map";
 
 export class PinModalComponent {
 
-    @ViewChild("pinModal") public pinModal: ModalDirective;
+    @ViewChild("pinModal") public pinModal: NgbModalModule;
 
+    public modalRef: NgbModalRef;
 
     constructor(
         @Inject("MyBoardsService") private myBoardsSvc,
+        public modalService: NgbModal
     ) {}
 
-
+    open () {
+        this.modalRef = this.modalService.open(this.pinModal, {size: "lg"});
+    }
 
 
 }
