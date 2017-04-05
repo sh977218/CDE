@@ -39,7 +39,7 @@ export class ProfileComponent {
                     this.reloadUser();
                     this.alert.addAlert("success", "Saved");
                 },
-                (err) => this.alert.addAlert("danger", "Error, unable to save")
+                err => this.alert.addAlert("danger", "Error, unable to save")
             );
     }
 

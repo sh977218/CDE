@@ -5,7 +5,6 @@ import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import { upgradeAdapter } from "../../../upgrade";
 import { ConceptsComponent } from "../components/concepts.component";
 import { DerivationRulesComponent } from "../components/derivationRules.component";
 import { DatasetsComponent } from "../components/datasets/datasets.component";
@@ -14,10 +13,19 @@ import { CdeGeneralDetailsComponent } from "../components/summary/cdeGeneralDeta
 import { ValueDomainSummaryComponent } from "../components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "../components/summary/cdeSummaryList.component";
 import { BoardModule } from "../../../board/public/board.module";
+import { AdminModule } from "../../../admin/public/admin.module";
 
 @NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        ModalModule.forRoot(),
+        PaginationModule.forRoot(),
+        NgbModule,
+        AdminModule,
+        BoardModule
+    ],
     declarations: [
-        upgradeAdapter.upgradeNg1Component("sortableArray"),
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
@@ -26,9 +34,6 @@ import { BoardModule } from "../../../board/public/board.module";
         ValueDomainSummaryComponent,
         CdeSummaryListComponent
         ],
-    providers: [],
-    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()
-        , BoardModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

@@ -27,9 +27,9 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         textPresent("Qualified");
         clickElement(By.id("naming_tab"));
-        clickElement(By.cssSelector("#dd_name_0 i.fa-edit"));
-        findElement(By.cssSelector("#dd_name_0 input")).sendKeys("[name change number 1]");
-        clickElement(By.cssSelector("#dd_name_0 .fa-check"));
+        clickElement(By.cssSelector("#designation_0 i.fa-edit"));
+        findElement(By.cssSelector("#designation_0 input")).sendKeys("[name change number 1]");
+        clickElement(By.cssSelector("#designation_0 .fa-check"));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
         clickElement(By.id("discardChanges"));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("discardChanges")));

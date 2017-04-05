@@ -8,13 +8,13 @@ public class OverrideVersionTest extends NlmCdeBaseTest {
 
     @Test
     public void overrideVersion() {
-        mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
+        String nameChange = "[name change number 1]";
+
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-        findElement(By.cssSelector("#dd_name_0 i.fa-edit")).click();
-        findElement(By.cssSelector("#dd_name_0 input")).sendKeys("[name change number 1]");
-        findElement(By.cssSelector("#dd_name_0 .fa-check")).click();
+        editDesignationByIndex(0, nameChange);
 
         clickElement(By.id("openSave"));
         textPresent("has already been used");
@@ -26,7 +26,7 @@ public class OverrideVersionTest extends NlmCdeBaseTest {
         modalGone();
 
         goToCdeByName(cdeName);
-        textPresent("[name change number 1]");
+        textPresent(nameChange);
     }
 
 }
