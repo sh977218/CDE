@@ -14,6 +14,8 @@
             <div *ngIf="cdes">
                 <div *ngIf="cdes.length === 0"><h4>No similar elements to show.</h4></div>
 
+                <cde-pin-modal #mltPinModal></cde-pin-modal>
+
                 <ngb-accordion>
                     <ngb-panel *ngFor="let cde of cdes; let $index = index">
                         <template ngbPanelTitle>
@@ -25,23 +27,40 @@
                             <a href="/deview?tinyId={{cde.tinyId}}" target="_blank" class="nonLinkAnchor">
                                 <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{$index}}"></i>
                             </a>
-                            <cde-pin-modal></cde-pin-modal>
-                            <a href tabindex="0" class="nonLinkAnchor" (click)="pinModal.open(elt)">
-                                <i id="pinToBoard_{{eltIndex}}" class="fa fa-thumb-tack hand-cursor"
+                            <a href tabindex="0" class="nonLinkAnchor" (click)="mltPinModal.open(cde)">
+                                <i id="pinToBoard_{{$index}}" class="fa fa-thumb-tack hand-cursor"
                                    title="Attach to Board" role="link"></i>
                             </a>
                             <!--<span ng-repeat="i in includeInAccordion" ng-include="i"></span>-->
                         </template>
                         <template ngbPanelContent>
-
+                            <div class="col-md-4 col-sm-12 col-xs-12">
+                                <cde-cde-general-details [elt]="cde"></cde-cde-general-details>
+                            </div>
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <cde-value-domain-summary [elt]="cde"></cde-value-domain-summary>
+                            </div>
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <table *ngIf="cde.ids.length > 0" class="table cdeTable" summary="Identifiers List">
+                                    <tr>
+                                        <th id="id" class="col-xs-6">Id</th>
+                                        <th id="version" class="col-xs-2">Vers.</th>
+                                        <th id="source" class="col-xs-4">Src.</th>
+                                    </tr>
+                                    <tr *ngFor="let id of elt.ids">
+                                        <td headers="id" class="col-xs-6">{{id.id}}</td>
+                                        <td headers="version" class="col-xs-2">{{id.version}}</td>
+                                        <td headers="source" class="col-xs-4">{{id.source}}</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </template>
                     </ngb-panel>
                 </ngb-accordion>
 
-
-                <cde-accordion-list id="mltAccordionList" [cdes]="cdes" ejsPage="mlt"
-                   module="cdes" [includeInAccordion]="['/cde/public/html/accordion/pinAccordionActions.html',
-                    '/system/public/html/accordion/addToQuickBoardActions.html']"></cde-accordion-list>
+                <!--<cde-accordion-list id="mltAccordionList" [cdes]="cdes" ejsPage="mlt"-->
+                   <!--module="cdes" [includeInAccordion]="['/cde/public/html/accordion/pinAccordionActions.html',-->
+                    <!--'/system/public/html/accordion/addToQuickBoardActions.html']"></cde-accordion-list>-->
             </div>
         </div>
     </div>

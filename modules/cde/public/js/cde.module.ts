@@ -13,6 +13,7 @@ import { MoreLikeThisComponent } from "../components/mlt/moreLikeThis.component"
 import { CdeGeneralDetailsComponent } from "../components/summary/cdeGeneralDetails.component";
 import { ValueDomainSummaryComponent } from "../components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "../components/summary/cdeSummaryList.component";
+import { BoardModule } from "../../../board/public/board.module";
 
 @NgModule({
     declarations: [
@@ -26,7 +27,8 @@ import { CdeSummaryListComponent } from "../components/summary/cdeSummaryList.co
         CdeSummaryListComponent
         ],
     providers: [],
-    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()],
+    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()
+        , BoardModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

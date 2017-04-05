@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 
@@ -27,21 +27,19 @@ export class MyBoardsService {
         suggestTags: []
     };
 
-    boards: any[] = [];
+    public boards: any[];
 
     public loadMyBoards() {
         this.http.post('/myBoards', this.filter).map(res => res.json()).subscribe(res => {
             if (res.hits) {
-                this.boards = res.hits.hits.map(function (h) {
+                this.boards = res.hits.hits.map(h => {
                     h._source._id = h._id;
                     return h._source;
                 });
                 this.filter.tags = res.aggregations.tagAgg.buckets;
                 this.filter.types = res.aggregations.typeAgg.buckets;
                 this.filter.shareStatus = res.aggregations.ssAgg.buckets;
-                this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(function (t) {
-                    return t.key;
-                });
+                this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
             }
         });
     };

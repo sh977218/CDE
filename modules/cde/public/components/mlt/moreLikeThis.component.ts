@@ -13,7 +13,7 @@ import { PinModalComponent } from "../../../../board/public/components/pinModal/
 export class MoreLikeThisComponent implements OnInit {
 
     @ViewChild("mltModal") public mltModal: NgbModalModule;
-    @ViewChild("pinModal") public pinModal: PinModalComponent;
+    @ViewChild("mltPinModal") public mltPinModal: PinModalComponent;
     @Input() elt: any;
 
     public modalRef: NgbModalRef;
@@ -21,6 +21,7 @@ export class MoreLikeThisComponent implements OnInit {
 
     constructor(private http: Http,
         @Inject("Alert") private alert,
+        @Inject("userResource") private userService,
         public modalService: NgbModal,
     ) {
 
