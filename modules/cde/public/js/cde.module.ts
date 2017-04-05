@@ -5,20 +5,26 @@ import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import { upgradeAdapter } from "../../../upgrade";
 import { ConceptsComponent } from "../components/concepts.component";
 import { DerivationRulesComponent } from "../components/derivationRules.component";
 import { DatasetsComponent } from "../components/datasets/datasets.component";
+import { AdminModule } from "../../../admin/public/admin.module";
 
 @NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        ModalModule.forRoot(),
+        PaginationModule.forRoot(),
+        NgbModule,
+        AdminModule
+    ],
     declarations: [
-        upgradeAdapter.upgradeNg1Component("sortableArray"),
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent
-        ],
+    ],
     providers: [],
-    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

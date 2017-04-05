@@ -1,5 +1,3 @@
-import {upgradeAdapter} from "../../../upgrade.ts";
-
 angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplates', 'boardTemplates']).config(
     ["$routeProvider", function($routeProvider)
 {
@@ -29,12 +27,14 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         ;
     }]);
 
-// Angular 2 upgraded
 angular.module('cdeModule').directive('cdeAccordionList', function () {
     return {
         scope: {cdes: '=', ejsPage: '=', module: '='},
         templateUrl: '/cde/public/html/cdeAccordionList.html'};
 });
+
+// Angular 2 downgrade
+import {upgradeAdapter} from "../../../upgrade.ts";
 
 import {LinkedFormsComponent} from "../../../system/public/components/linkedForms.component";
 angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgradeNg2Component(LinkedFormsComponent));
