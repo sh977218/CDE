@@ -10,6 +10,7 @@ import * as authShared from "../../../../shared/authorizationShared";
 
 @Component({
     selector: "cde-users-mgt",
+    providers: [NgbActiveModal],
     templateUrl: "./usersMgt.component.html"
 })
 

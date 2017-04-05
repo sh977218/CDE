@@ -3,6 +3,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
 
 @Component({
     selector: "cde-datasets",
+    providers: [NgbActiveModal],
     templateUrl: "./datasets.component.html"
 })
 

@@ -3,6 +3,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
 
 @Component({
     selector: "cde-linked-forms",
+    providers: [NgbActiveModal],
     templateUrl: "linkedForms.component.html"
 })
 

@@ -4,6 +4,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
 
 @Component({
     selector: "cde-derivation-rules",
+    providers: [NgbActiveModal],
     templateUrl: "./derivationRules.component.html"
 })
 

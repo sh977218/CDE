@@ -154,9 +154,9 @@
     <div class="modal-footer" id="mergeFormModalFooter">
         <div *ngIf="error" id="mergeFormErrorDiv" class="alert alert-danger">{{error}}</div>
 
-        <progressbar *ngIf="showProgressBar" [max]="maxNumberQuestions" [value]="numMergedQuestions">
-            <span style="color:white; white-space:nowrap;">{{numMergedQuestions}} / {{maxNumberQuestions}}</span>
-        </progressbar>
+        <ngb-progressbar *ngIf="showProgressBar" type="success" [value]="numMergedQuestions">{{numMergedQuestions}} /
+            {{maxNumberQuestions}}
+        </ngb-progressbar>
 
         <button class="btn cancel" id="cancelMergeFormBtn" (click)="c('Close click')" type="button">
             {{(doneMerge && info)?'Close':'Cancel'}}

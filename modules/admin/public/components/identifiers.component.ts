@@ -4,6 +4,7 @@ import { NgbModalModule, NgbModalRef, NgbActiveModal, NgbModal } from "@ng-boots
 
 @Component({
     selector: "cde-admin-item-ids",
+    providers: [NgbActiveModal],
     templateUrl: "./identifiers.component.html"
 })
 

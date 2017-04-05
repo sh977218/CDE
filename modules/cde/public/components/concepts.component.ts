@@ -3,6 +3,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
 
 @Component({
     selector: "cde-concepts",
+    providers: [NgbActiveModal],
     templateUrl: "./concepts.component.html"
 })
 

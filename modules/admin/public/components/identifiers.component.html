@@ -24,8 +24,8 @@
                         <span class="btn-default fa fa-times" (click)="id.edit = false"
                               id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
                     </span>
-                    <span class="btn-default fa fa-trash-o" id="removeIdentifier-{{i}}" (click)="id.edit = true"
-                          title="Remove" href=""></span>
+                    <span *ngIf="!id.edit" class="btn-default fa fa-trash-o" id="removeIdentifier-{{i}}"
+                          (click)="id.edit = true" title="Remove" href=""></span>
                 </div>
             </div>
             <div class="col-md-11">
