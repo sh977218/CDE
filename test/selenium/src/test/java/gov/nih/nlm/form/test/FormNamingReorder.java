@@ -10,17 +10,13 @@ public class FormNamingReorder extends NlmCdeBaseTest {
     public void formReorderNamingTest() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("form for test cde reorder detail tabs");
-        String tabName = "namingDiv";
-        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
-        String postfix = "']";
         clickElement(By.id("naming_tab"));
         textPresent("Definition:");
-        reorderIconTest(tabName);
-        clickElement(By.xpath(prefix + "moveDown-0" + postfix));
-        textPresent("form for test cde reorder detail tabs", By.xpath(prefix + "dd_name_1" + postfix));
-        clickElement(By.xpath(prefix + "moveUp-2" + postfix));
-        textPresent("form for test cde reorder detail tabs 3", By.xpath(prefix + "dd_name_1" + postfix));
-        clickElement(By.xpath(prefix + "moveTop-2" + postfix));
-        textPresent("form for test cde reorder detail tabs", By.xpath(prefix + "dd_name_0" + postfix));
+        clickElement(By.id("moveDown-0"));
+        textPresent("form for test cde reorder detail tabs", By.id("designation_1"));
+        clickElement(By.id("moveUp-2"));
+        textPresent("form for test cde reorder detail tabs 3", By.id("designation_1"));
+        clickElement(By.id("moveTop-2"));
+        textPresent("form for test cde reorder detail tabs", By.id("designation_0"));
     }
 }

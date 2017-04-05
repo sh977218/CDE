@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
     @Test
-    public void addRemoveProp() {
+    public void adminAddRemovePropertyKey() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
@@ -23,9 +23,9 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
         goToCdeByName("Distance from Closest Margin Value");
 
-        clickElement(By.linkText("Properties"));
-        clickElement(By.id("addProperty"));
-        clickElement(By.id("newPropertyKey"));
+        clickElement(By.id("properties_tab"));
+        clickElement(By.id("openNewPropertyModalBtn"));
+        clickElement(By.id("newKey"));
 
         try {
             findElement(By.xpath("//option[@value='doYouSeeThis']"));
@@ -33,7 +33,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
             Assert.fail("Failed to find doYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
         }
 
-        clickElement(By.id("cancelCreate"));
+        clickElement(By.id("cancelNewPropertyBtn"));
 
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
@@ -45,9 +45,9 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
         goToCdeByName("Distance from Closest Margin Value");
 
-        clickElement(By.linkText("Properties"));
-        clickElement(By.id("addProperty"));
-        clickElement(By.id("newPropertyKey"));
+        clickElement(By.id("properties_tab"));
+        clickElement(By.id("openNewPropertyModalBtn"));
+        clickElement(By.id("newKey"));
         textNotPresent("doYouSeeThis");
     }
 

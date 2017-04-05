@@ -16,6 +16,7 @@ public class EltIdMaps {
         eltMap.put("ConceptCDE", "mkBls_Z0M");
         eltMap.put("Common Toxicity Criteria Adverse Event Colitis Grade", "exWjxFqAU7r");
         eltMap.put("Common Toxicity Criteria Adverse Event Hypophosphatemia Grade", "75Y5R3FH5ar");
+        eltMap.put("cde for test cde reorder detail tabs", "7yl__aTQOe");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
         eltMap.put("ExportLatest", "XkZpBf60z");
@@ -42,6 +43,7 @@ public class EltIdMaps {
         eltMap.put("Other Group Patient Identifier Number", "hvsUN03ToUz");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
         eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
+        eltMap.put("Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator", "FdhGNj4gd6e");
         eltMap.put("Patient Photograph Malignant Neoplasm Assessment Date", "UDUXvtj1RM2");
         eltMap.put("Patient Visual Change Chief Complaint Indicator", "q3bWgQN1wCq");
         eltMap.put("Pattern Transfer Retrieval Storage Data Research Activity Consortium or Network Or Professional Organization or Group Funding Mechanism FundingMechanismCode", "qPsdBFBSTRc");
@@ -83,6 +85,7 @@ public class EltIdMaps {
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
         eltMap.put("Mean Value Test", "X17IaQ_NQ");
+        eltMap.put("Motor Evoked Potentials", "mkWON1SrFe");
         eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("Multi SubQuestion", "mk4r3nH77");
         eltMap.put("Neurological Assessment: TBI Symptoms and Signs", "mkqnEJHrtl");

@@ -36,16 +36,16 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.id("attachments_tab"));
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
         clickElement(By.id("properties_tab"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
-        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Rich Text')]"));
+        clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
         clickElement(By.xpath("//div[contains(@id,'taTextElement')]"));
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
         alert.sendKeys("www.google.com");
         alert.accept();
-        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Confirm')]"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert errorAlert = driver.switchTo().alert();
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
@@ -60,9 +60,9 @@ public class InlineEditTest extends BaseAttachmentTest {
         alert.sendKeys(url);
         alert.accept();
         System.out.println(findElement(By.cssSelector("[id^='taTextElement'] img")).getAttribute("src"));
-        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Confirm')]"));
         hangon(2);
         clickElement(By.id("properties_tab"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img")).getAttribute("src").contains("cde"));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='value_0']//img")).getAttribute("src").contains("cde"));
     }
 }
