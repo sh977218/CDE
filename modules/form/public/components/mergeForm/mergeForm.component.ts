@@ -2,16 +2,18 @@ import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../../core/public/mergeForm.service";
 import { MergeCdeService } from "../../../../core/public/mergeCde.service";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-merge-form",
     templateUrl: "./mergeForm.component.html"
 })
 export class MergeFormComponent implements OnInit {
-    @ViewChild("MergeFormModal") public mergeFormModal: ModalDirective;
+    @ViewChild("mergeFormContent") public mergeFormContent: NgbModalModule;
     @ViewChild("LeftSortableComponent") leftSortableComponent: SortableComponent;
     @Input() public left: any;
     @Input() public right: any;
+    public modalRef: NgbModalRef;
 
     public mergeFields: any = {
         naming: true,
@@ -45,7 +47,9 @@ export class MergeFormComponent implements OnInit {
                 private mergeFormService: MergeFormService,
                 private mergeCdeService: MergeCdeService,
                 @Inject("userResource") private userService,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                @Inject("isAllowedModel") private isAllowedModel,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal) {
     }
 
     selectAllFormMergerFields() {
@@ -92,6 +96,10 @@ export class MergeFormComponent implements OnInit {
 
     ngOnInit() {
         this.check();
+    }
+
+    openMergeFormModal(){
+        this.modalRef = this.modalService.open(this.mergeFormContent, {size: "lg"});
     }
 
     checkOneQuestion(question, i) {
