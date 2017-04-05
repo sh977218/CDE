@@ -14,15 +14,14 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         String cdeName = "Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2";
         String newStatus = "Recorded";
         String oldStatus = "Qualified";
+
+        String newName = "Alternative Name 1";
+        String newDefinition = "Alternative Definition 1";
         goToCdeByName(cdeName);
 
 
         clickElement(By.id("naming_tab"));
-        clickElement(By.id("addNamePair"));
-        findElement(By.xpath("//label[text()='Name']/following-sibling::input")).sendKeys("Alternative Name 1");
-        findElement(By.xpath("//label[text()='Definition']/following-sibling::textarea")).sendKeys("Alternative Definition 1");
-        clickElement(By.id("createNamePair"));
-        modalGone();
+        addNewName(newName, newDefinition, null);
 
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("addConcept"));
@@ -30,7 +29,6 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         findElement(By.xpath("//label[text()='Code ID']/following-sibling::input")).sendKeys("Code ID 1");
         clickElement(By.id("createConcept"));
         modalGone();
-
         newCdeVersion();
 
         clickElement(By.id("history_tab"));
@@ -69,6 +67,5 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         textPresent("Identifier 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='id']"));
         textPresent("Version 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='version']"));
     }
-
 
 }

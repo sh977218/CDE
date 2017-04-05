@@ -9,8 +9,16 @@ import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
 import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
+import { AdminModule } from "../../admin/public/admin.module";
 
 @NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        NgbModule,
+        SortableModule.forRoot(),
+        AdminModule
+    ],
     declarations: [
         MergeFormComponent,
         NativeRenderFullComponent,
@@ -19,8 +27,6 @@ import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component
         NativeSectionMatrixComponent,
         NativeQuestionComponent
     ],
-    imports: [CommonModule, FormsModule, NgbModule, SortableModule.forRoot()],
-
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormModule {

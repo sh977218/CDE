@@ -11,9 +11,10 @@ import { CdeModule } from "./cde/public/js/cde.module";
 import { FormModule } from "./form/public/form.module";
 import { SystemModule } from "./system/public/system.module";
 
-
 @NgModule({
-    declarations: [CdeAppComponent],
+    declarations: [
+        CdeAppComponent
+    ],
     providers: [],
     imports: [
         NgbModule.forRoot(),

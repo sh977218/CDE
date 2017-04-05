@@ -7,25 +7,19 @@ import org.testng.annotations.Test;
 public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
 
     @Test
-    public void changeDefinitionFormat() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+    public void cdeChangeDefinitionFormat() {
+        String cdeName = "Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator";
+        String definitionChange = "[def change: adding html characters][<b>bold</b>]";
 
-        String cdeName = "INSS";
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-        clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
-        findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
-        clickElement(By.cssSelector("#dd_def_0 .fa-check"));
+        editDefinitionByIndex(0, definitionChange, false);
         newCdeVersion();
 
-        textPresent("<b>bold</b>");
         clickElement(By.id("naming_tab"));
-        clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
-        clickElement(By.xpath("//div[@id='dd_def_0']//button[contains(text(),'Rich Text')]"));
-        hangon(2);
-        clickElement(By.xpath("//div[@id='dd_def_0']//button[@class='fa fa-check']"));
+        switchDefinitionFormatByIndex(0, null, true);
         newCdeVersion();
-        textNotPresent("<b>bold</b>");
     }
 
 }
