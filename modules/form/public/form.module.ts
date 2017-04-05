@@ -20,6 +20,10 @@ import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component
         NativeSectionMatrixComponent,
         NativeQuestionComponent
     ],
+    entryComponents: [
+        NativeRenderFullComponent,
+        NativeRenderComponent,
+    ],
     imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot(),
         SortableModule.forRoot(), AlertModule.forRoot(), ProgressbarModule.forRoot()],
 

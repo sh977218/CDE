@@ -13,10 +13,10 @@ export class ConceptsComponent {
     @Input( ) public elt: any;
 
     constructor(
-        @Inject("isAllowedModel") private isAllowedModel) {
+        @Inject("isAllowedModel") public isAllowedModel) {
     }
 
-    newConcept = {origin: "LOINC", type: "dec"};
+    newConcept: {name?: string, originId?: string, origin: string, type: string} = {origin: "LOINC", type: "dec"};
 
     conceptConfigurations = [
         {type: "dataElementConcept", details: {display: "Data Element Concept", path: "dataElementConcept.concepts.name"}},

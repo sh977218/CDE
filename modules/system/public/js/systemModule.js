@@ -1,8 +1,3 @@
-import {upgradeAdapter} from "../../../upgrade";
-import {ClassificationService} from "../../../core/public/classification.service";
-import {SkipLogicService} from "../../../core/public/skipLogic.service";
-import {UserCommentsComponent} from "../userComments.component";
-import {ProfileComponent} from "../components/profile.component";
 import * as authShared from "../../../system/shared/authorizationShared";
 
 
@@ -75,7 +70,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 typeaheadSource: '=',
                 linkSource: '@'
             },
-            templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
+            template: require('../html/systemTemplate/inlineEdit.html'),
             controller: ["$scope", function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
                 $scope.value = $scope.model;
@@ -187,7 +182,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 , index: '=index'
                 , cb: '&'
             },
-            templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
+            template: require('../html/systemTemplate/sortableArray.html'),
             controller: ["$scope", function ($scope) {
                 $scope.moveUp = function () {
                     $scope.theArray.splice($scope.index - 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
@@ -208,7 +203,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }])
-    .directive('user-comments', upgradeAdapter.downgradeNg2Component(UserCommentsComponent))
 ;
 
 angular.module('systemModule').filter('placeHoldEmpty', [function () {
@@ -260,10 +254,7 @@ angular.module('systemModule').filter('tagsToArray', [function () {
         }).join(', ');
     };
 }]);
-angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeNg2Component(ProfileComponent));
 
-angular.module('systemModule').factory('ClassificationUtil', upgradeAdapter.downgradeNg2Provider(ClassificationService));
-angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
 angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {
     return {
         new: function (type) {
@@ -405,22 +396,31 @@ angular.module('systemModule').run(["$rootScope", "$location", function ($rootSc
     });
 }]);
 
-import {upgradeAdapter} from "../../../upgrade.ts";
+import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
+
+import {ClassificationService} from "../../../core/public/classification.service";
+angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
+
+import {SkipLogicService} from "../../../core/public/skipLogic.service";
+angular.module('systemModule').factory('SkipLogicUtil', downgradeInjectable(SkipLogicService));
 
 import {HomeComponent} from "../components/home/home.component";
-angular.module('systemModule').directive('cdeHome', upgradeAdapter.downgradeNg2Component(HomeComponent));
+angular.module('systemModule').directive('cdeHome', downgradeComponent({component: HomeComponent, inputs: [], outputs: []}));
 
 import {ProfileComponent} from "../components/profile.component";
-angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeNg2Component(ProfileComponent));
+angular.module('systemModule').directive('cdeProfile', downgradeComponent({component: ProfileComponent, inputs: [], outputs: []}));
+
+import {UserCommentsComponent} from "../userComments.component";
+angular.module('systemModule').directive('user-comments', downgradeComponent({component: UserCommentsComponent, inputs: ['user'], outputs: []}));
 
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
-angular.module('systemModule').directive('cdeLogAudit', upgradeAdapter.downgradeNg2Component(LogAuditComponent));
+angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
 
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
-angular.module('systemModule').directive('cdeUsersMgt', upgradeAdapter.downgradeNg2Component(UsersMgtComponent));
+angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
 
 import {IdentifiersComponent} from "../components/adminItem/identifiers.component";
-angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downgradeNg2Component(IdentifiersComponent));
+angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({component: IdentifiersComponent, inputs: ['elt'], outputs: []}));
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";
-angular.module('systemModule').directive('cdeRegistation', upgradeAdapter.downgradeNg2Component(RegistrationComponent));
+angular.module('systemModule').directive('cdeRegistation', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));

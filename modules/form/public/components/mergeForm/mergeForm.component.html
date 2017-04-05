@@ -161,7 +161,7 @@
                     <span style="color:white; white-space:nowrap;">{{numMergedQuestions}} / {{maxNumberQuestions}}</span>
                 </progressbar>
                 <button class="btn cancel" (click)="mergeFormModal.ngOnDestroy()" id="cancelMergeFormBtn" type="button">
-                    {{(doneMerge && info)?'Close':'Cancel'}}
+                    {{(doneMerge)?'Close':'Cancel'}}
                 </button>
                 <button *ngIf="!doneMerge && !error" class="btn btn-warning" id="mergeFormBtn" (click)="doMerge()">
                     Merge

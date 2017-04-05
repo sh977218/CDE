@@ -5,8 +5,6 @@ import { Component, Inject, Input, ViewChild } from "@angular/core";
     selector: "cde-mlt",
     templateUrl: "./moreLikeThis.component.html"
 })
-
-
 export class MoreLikeThisComponent {
 
 }

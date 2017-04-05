@@ -1,4 +1,3 @@
-import {upgradeAdapter} from "../../../upgrade.ts";
 
 angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplates', 'boardTemplates']).config(
     ["$routeProvider", function($routeProvider)
@@ -33,18 +32,20 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
 angular.module('cdeModule').directive('cdeAccordionList', function () {
     return {
         scope: {cdes: '=', ejsPage: '=', module: '='},
-        templateUrl: '/cde/public/html/cdeAccordionList.html'};
+        template: require('../html/cdeAccordionList.html')};
 });
 
+import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
+
 import {LinkedFormsComponent} from "../../../system/public/components/linkedForms.component";
-angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgradeNg2Component(LinkedFormsComponent));
+angular.module('cdeModule').directive('cdeLinkedForms', downgradeComponent({component: LinkedFormsComponent, inputs: ['elt', 'eltType'], outputs: []}));
 
 import {DatasetsComponent} from "../components/datasets/datasets.component";
-angular.module('cdeModule').directive('cdeDatasets', upgradeAdapter.downgradeNg2Component(DatasetsComponent));
+angular.module('cdeModule').directive('cdeDatasets', downgradeComponent({component: DatasetsComponent, inputs: ['elt'], outputs: []}));
 
 import {ConceptsComponent} from "../components/concepts.component";
-angular.module('cdeModule').directive('cdeConcepts', upgradeAdapter.downgradeNg2Component(ConceptsComponent));
+angular.module('cdeModule').directive('cdeConcepts', downgradeComponent({component: ConceptsComponent, inputs: ['elt'], outputs: []}));
 
 import {DerivationRulesComponent} from "../components/derivationRules.component";
-angular.module('systemModule').directive('cdeDerivationRules', upgradeAdapter.downgradeNg2Component(DerivationRulesComponent));
+angular.module('cdeModule').directive('cdeDerivationRules', downgradeComponent({component: DerivationRulesComponent, inputs: ['elt'], outputs: []}));
 

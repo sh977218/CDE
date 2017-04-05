@@ -1,5 +1,5 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
@@ -23,7 +23,7 @@ export class RegistrationComponent implements OnInit {
     constructor (private http: Http,
                  private parserFormatter: NgbDateParserFormatter,
                  @Inject("Alert") private alert,
-                 @Inject("isAllowedModel") private isAllowedModel,
+                 @Inject("isAllowedModel") public isAllowedModel,
                  @Inject("userResource") private userService,
                  public modalService: NgbModal,
                  public activeModal: NgbActiveModal
@@ -37,16 +37,16 @@ export class RegistrationComponent implements OnInit {
 
         this.http.get("/comments/eltId/" + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
-                    return a.status !== 'resolved' && a.status !== 'deleted'
+                    return a.status !== "resolved" && a.status !== "deleted";
                 }).length > 0) {
-                this.alert.addAlert('info', "Info: There are unresolved comments. ")
+                this.alert.addAlert("info", "Info: There are unresolved comments. ");
             }
 
-            this.http.get('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
+            this.http.get("/org/" + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
                 if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
-                    this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
+                    this.validRegStatuses = this.validRegStatuses.concat(["Recorded", "Qualified"]);
                     if (this.userService.user.siteAdmin) {
-                        this.validRegStatuses = this.validRegStatuses.concat(['Standard', 'Preferred Standard']);
+                        this.validRegStatuses = this.validRegStatuses.concat(["Standard", "Preferred Standard"]);
                     }
                 }
                 this.validRegStatuses.reverse();

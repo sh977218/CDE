@@ -5,9 +5,13 @@ import { FormsModule } from "@angular/forms";
 import { PaginationModule, ModalModule, TypeaheadModule } from "ng2-bootstrap/index";
 import { DataTableModule } from "angular2-datatable";
 import { Select2Module } from "ng2-select2";
+
+import {
+    InlineEditDirective, CdeAccordionListDirective, FormAccordionListDirective,
+    FormSummaryListDirective
+} from "./upgrade-components";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
-import { upgradeAdapter } from "../../upgrade";
 import { UserCommentsComponent } from "./userComments.component";
 import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
@@ -16,12 +20,13 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
 
+
 @NgModule({
     declarations: [
-        upgradeAdapter.upgradeNg1Component("inlineEdit"),
-        upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
-        upgradeAdapter.upgradeNg1Component("formAccordionList"),
-        upgradeAdapter.upgradeNg1Component("formSummaryList"),
+        InlineEditDirective,
+        CdeAccordionListDirective,
+        FormAccordionListDirective,
+        FormSummaryListDirective,
         ProfileComponent,
         LinkedFormsComponent,
         IdentifiersComponent,
@@ -30,7 +35,17 @@ import { HomeComponent } from "./components/home/home.component";
         LogAuditComponent,
         RegistrationComponent,
         UsersMgtComponent,
-        PlaceHoldEmptyPipe],
+        PlaceHoldEmptyPipe
+    ],
+    entryComponents: [
+        ProfileComponent,
+        LinkedFormsComponent,
+        IdentifiersComponent,
+        HomeComponent,
+        LogAuditComponent,
+        RegistrationComponent,
+        UsersMgtComponent,
+    ],
     providers: [],
     imports: [CommonModule, FormsModule, ModalModule.forRoot(), TypeaheadModule.forRoot(),
         PaginationModule.forRoot(), DataTableModule, Select2Module, NgbModule],
