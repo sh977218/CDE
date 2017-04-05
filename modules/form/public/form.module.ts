@@ -10,6 +10,7 @@ import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
 import { AdminModule } from "../../admin/public/admin.module";
+import { SortableModule } from "ng2-bootstrap/index";
 
 @NgModule({
     imports: [

@@ -3,6 +3,7 @@ import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../../core/public/mergeForm.service";
 import { MergeCdeService } from "../../../../core/public/mergeCde.service";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { SortableComponent } from "ng2-bootstrap/index";
 
 @Component({
     selector: "cde-merge-form",
@@ -98,7 +99,7 @@ export class MergeFormComponent implements OnInit {
         this.check();
     }
 
-    openMergeFormModal(){
+    openMergeFormModal() {
         this.modalRef = this.modalService.open(this.mergeFormContent, {size: "lg"});
     }
 

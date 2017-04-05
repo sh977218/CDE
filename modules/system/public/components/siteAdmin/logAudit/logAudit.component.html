@@ -57,11 +57,9 @@
             </tbody>
         </table>
 
-        <!--<div id="logGridView" class="gridStyle" ng-grid="gridOptions"></div>-->
-        <!--<a class="btn btn-mini fa fa-external-link" ng-click="downloadCsv()" id="exportLink"> Export</a>-->
     </div>
     <div class="row">
-        <pagination [totalItems]="totalItems" [(ngModel)]="search.currentPage"
-                    [itemsPerPage]="itemsPerPage" [maxSize]="10" (pageChanged)="searchLogs()"></pagination>
+        <ngb-pagination [collectionSize]="totalItems" (pageChange)="searchLogs()"
+                        [pageSize]="itemsPerPage" [maxSize]="10"></ngb-pagination>
     </div>
 </div>
