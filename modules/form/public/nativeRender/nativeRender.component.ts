@@ -35,6 +35,9 @@ export class NativeRenderComponent implements OnInit {
         this.nativeRenderService.elt = this.elt;
         this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt.formElements)});
         this.nativeRenderService.setSelectedProfile(this.profile);
+
+        if (!this.nativeRenderService.elt.formInput)
+            this.nativeRenderService.elt.formInput = [];
     }
     getEndpointUrl() {
         return this.sanitizer.bypassSecurityTrustUrl(this.endpointUrl);

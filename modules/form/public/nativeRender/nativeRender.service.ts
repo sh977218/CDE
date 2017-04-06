@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core";
 
 @Injectable()
-export class NativeRenderService1 {
-    readonly SHOW_IF: string = "Dynamic";
-}
-@Injectable()
 export class NativeRenderService {
     readonly SHOW_IF: string = "Dynamic";
     readonly FOLLOW_UP: string = "Follow-up";
@@ -58,7 +54,8 @@ export class NativeRenderService {
                 displayValues: false,
                 displayType: this.FOLLOW_UP,
                 numberOfColumns: 4,
-                displayInvisible: false
+                displayInvisible: false,
+                repeatFormat: "#."
             };
         this.setNativeRenderType(this.profile.displayType);
     }
@@ -223,10 +220,50 @@ export class NativeRenderService {
         return skipLogicResult;
     }
 
+    getPvLabel(pv) {
+        return pv ? (pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue) : "";
+    }
+
+    getPvValue(pv) {
+        return (pv && pv.permissibleValue !== pv.valueMeaningName ? pv.permissibleValue : "");
+    }
+
+    checkboxOnChange($event: any, model: any, value: any) {
+        if (!Array.isArray(model.answer))
+            model.answer = [];
+        if ($event.target.checked)
+            model.answer.push(value);
+        else
+            model.answer.splice(model.answer.indexOf(value), 1);
+    }
+    checkboxIsChecked(model: any, value: any) {
+        if (!Array.isArray(model.answer))
+            model.answer = [];
+        return (model.answer.indexOf(value) !== -1);
+    }
+
+    checkboxOnChangeRepeat($event: any, model: any, value: any, i) {
+        NativeRenderService.checkboxModelExistsRepeat(model, i);
+        if ($event.target.checked)
+            model.answer[i].push(value);
+        else
+            model.answer[i].splice(model.answer.indexOf(value), 1);
+    }
+    checkboxIsCheckedRepeat(model: any, value: any, i) {
+        NativeRenderService.checkboxModelExistsRepeat(model, i);
+        return (model.answer[i].indexOf(value) !== -1);
+    }
+    static checkboxModelExistsRepeat(model: any, i) {
+        if (!Array.isArray(model.answer))
+            model.answer = [];
+        if (model.answer.length <= i || !Array.isArray(model.answer[i]))
+            model.answer[i] = [];
+    }
+
     static transformFormToInline(form) {
         let prevQ = [];
         let transformed = false;
-        let feSize = form.formElements.length;
+        let feSize = (form.formElements ? form.formElements.length : 0);
         for (let i = 0; i < feSize; i++) {
             let fe = form.formElements[i];
             let qs = NativeRenderService.getShowIfQ(fe, prevQ);
@@ -358,7 +395,7 @@ export class NativeRenderService {
     }
 
     static preprocessValueLists(formElements) {
-        formElements.forEach(function (fe) {
+        formElements && formElements.forEach(function (fe) {
             if (fe.elementType === "section" || fe.elementType === "form") {
                 NativeRenderService.preprocessValueLists(fe.formElements);
                 return;
@@ -393,7 +430,7 @@ export class NativeRenderService {
         }
 
         function flattenFormSection(formElements, section) {
-            formElements.forEach(function (fe) {
+            formElements && formElements.forEach(function (fe) {
                 flattenFormFe(fe, section.concat(fe.label));
             });
             flattenFormPushQuestions(section);

@@ -3,12 +3,14 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
+import { AdminModule } from "../../admin/public/admin.module";
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
 import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
+import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 import { AdminModule } from "../../admin/public/admin.module";
 import { SortableModule } from "ng2-bootstrap/index";
 
@@ -26,7 +28,8 @@ import { SortableModule } from "ng2-bootstrap/index";
         NativeRenderComponent,
         NativeSectionComponent,
         NativeSectionMatrixComponent,
-        NativeQuestionComponent
+        NativeQuestionComponent,
+        NativeTableComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

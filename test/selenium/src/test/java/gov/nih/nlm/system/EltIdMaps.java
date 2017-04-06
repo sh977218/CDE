@@ -80,6 +80,7 @@ public class EltIdMaps {
         eltMap.put("Form Cde Update Test", "X1ghWjntf");
         eltMap.put("Form History Test", "QkGEqKVNZ");
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
+        eltMap.put("Form Table Test", "713d9u1vX");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
