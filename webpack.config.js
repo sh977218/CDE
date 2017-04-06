@@ -21,7 +21,7 @@ module.exports = {
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {
                 test: /\.ts$/,
-                exclude: 'ingester/*',
+                exclude: [/bower_components/, /deploy/, /dist/, /ingester/, /modules\/components/, /modules\/static/, /scripts/, /test/],
                 use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
             },
             {test: /\.css$/, use: ['style-loader?insertAt=top', 'css-loader']},
