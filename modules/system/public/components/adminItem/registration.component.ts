@@ -23,7 +23,7 @@ export class RegistrationComponent implements OnInit {
     constructor(private http: Http,
                 private parserFormatter: NgbDateParserFormatter,
                 @Inject("Alert") private alert,
-                @Inject("isAllowedModel") private isAllowedModel,
+                @Inject("isAllowedModel") public isAllowedModel,
                 @Inject("userResource") private userService,
                 public modalService: NgbModal,
                 public activeModal: NgbActiveModal) {
