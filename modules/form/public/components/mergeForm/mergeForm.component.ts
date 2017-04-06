@@ -7,6 +7,7 @@ import { SortableComponent } from "ng2-bootstrap/index";
 
 @Component({
     selector: "cde-merge-form",
+    providers: [NgbActiveModal],
     templateUrl: "./mergeForm.component.html"
 })
 export class MergeFormComponent implements OnInit {
@@ -100,7 +101,7 @@ export class MergeFormComponent implements OnInit {
     }
 
     openMergeFormModal() {
-        this.modalRef = this.modalService.open(this.mergeFormContent, {size: "lg"});
+        this.modalRef = this.modalService.open(this.mergeFormContent, {windowClass: "hugeModal"});
     }
 
     checkOneQuestion(question, i) {

@@ -2,7 +2,7 @@
    id="openMergeFormModalBtn" (click)="openMergeFormModal()">Merge Form</a>
 
 
-<template #mergeFormContent id="mergeFormModal" let-c="close" let-d="dismiss">
+<template #mergeFormContent id="mergeFormModal" let-c="close" let-d="dismiss" class="hugeModal">
     <div class="modal-header" id="mergeFormModalHeader">
         <h4>Merge <a target=_blank href="formView?tinyId={{left.tinyId}}">
             {{left.naming[0].designation}}</a>
