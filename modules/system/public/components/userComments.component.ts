@@ -8,6 +8,7 @@ import { Http, Response } from "@angular/http";
 export class UserCommentsComponent implements OnInit {
     @Input() user: any;
     pageSize: Number = 30;
+    page: Number = 1;
     comments: any;
 
     constructor(private http: Http) {

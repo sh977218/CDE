@@ -1,8 +1,6 @@
 import { Http } from "@angular/http";
 import { Component, Inject, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
-
-//import moment = require("moment");
 import * as moment from "moment";
 
 @Component({
