@@ -1,29 +1,18 @@
-<div class="container-fluid">
-    <div class="row">
-        <form class="form-search">
-            <div class="form-group col-md-3">
-                <label for="ip">Remote Address</label>
-                <input name="ip" id="ip" type="text" ([ngModel])="search.remoteAddr" class="search-query form-control"
-                       placeholder="IP Address"/>
-            </div>
-            <div class="form-group col-md-3" >
-                <label for="fromDate">From Date</label>
-                <input class="form-control input-small" name="fromDate" id="fromDate" type="datetime"
-                        ([ngModel])="search.fromDate" />
-            </div>
-            <div class="form-group col-md-3" >
-                <label for="toDate">Until Date</label>
-                <input class="form-control input-small" name="toDate" id="toDate" type="datetime"
-                       [(ngModel)]="search.toDate" />
-            </div>
-            <div class="form-group col-md-3" >
-                <button id="search.submit" type="submit" (click)="searchLogs()" class="btn btn-default">Search</button>
-            </div>
+<div id="logAuditDiv">
+    <div class="col-xs-12">
+        <form role="form" class="form-inline">
+            <label class="sr-only" for="ip">Remote Address</label>
+            <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="ip" name="ip" type="text"
+                   [(ngModel)]="search.remoteAddr" placeholder="IP Address">
+            <label class="sr-only" for="fromDate">From Date</label>
+            <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="fromDate" name="formDate" type="datetime-local"
+                   [(ngModel)]="search.fromDate" placeholder="From Date">
+            <label class="sr-only" for="toDate">Until Date</label>
+            <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="toDate" name="toDate" type="datetime-local"
+                   [(ngModel)]="search.toDate" placeholder="Until Date">
+            <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs()">Submit</button>
         </form>
-    </div>
-    <div class="row">
         <table class="table table-striped" [mfData]="gridLogEvents" #mf="mfDataTable">
-            <thead>
             <tr>
                 <th style="width: 20%">
                     <mfDefaultSorter by="date">Date</mfDefaultSorter>
@@ -44,8 +33,6 @@
                     <mfDefaultSorter by="respTime">Resp. Time</mfDefaultSorter>
                 </th>
             </tr>
-            </thead>
-            <tbody>
             <tr *ngFor="let item of mf.data">
                 <td>{{item.date}}</td>
                 <td>{{item.ip}}</td>
@@ -54,12 +41,8 @@
                 <td>{{item.status}}</td>
                 <td>{{item.respTime}}</td>
             </tr>
-            </tbody>
         </table>
-
-    </div>
-    <div class="row">
-        <ngb-pagination [collectionSize]="totalItems" (pageChange)="searchLogs()"
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="search.currentPage" (pageChange)="searchLogs()"
                         [pageSize]="itemsPerPage" [maxSize]="10"></ngb-pagination>
     </div>
 </div>
