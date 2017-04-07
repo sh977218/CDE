@@ -1550,7 +1550,7 @@ label.input-group-addon {
     margin-bottom: 0;
 }
 
-.native-question-label:before {
+.native-question-label-number:before {
     counter-increment: section;
     content: counter(section) ". ";
 }
@@ -1579,6 +1579,10 @@ div.row .native-question-oneline-r {
     margin-bottom: 1px;
 }
 
+.native-value {
+    font-weight: bold;
+}
+
 .radio-inline,
 .wordwrap {
     word-wrap: break-word;
@@ -1595,6 +1599,22 @@ div.row .native-question-oneline-r {
     margin-bottom: 5px;
     word-wrap: break-word;
     overflow-wrap: break-word;
+}
+
+.form-horizontal .native-table-cell.radio,
+.form-horizontal .native-table-cell.checkbox,
+.form-horizontal .native-table-cell.radio-inline,
+.form-horizontal .native-table-cell.checkbox-inline {
+    padding-top: 0;
+}
+
+.native-table-cell {
+    height: auto;
+}
+
+.native-table-cell label {
+    font-weight: normal;
+    margin-bottom: 0;
 }
 
 @media print {

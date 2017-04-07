@@ -1,28 +1,5 @@
 angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '$timeout', '$http',
     function ($scope, $modal, $timeout, $http) {
-        $scope.cardinalityOptions =
-            [
-                {label: "Exactly 1", value: {min: 1, max: 1}},
-                {label: "1 or more", value: {min: 1, max: -1}},
-                {label: "0 or more", value: {min: 0, max: -1}},
-                {label: "0 or 1", value: {min: 0, max: 1}}
-            ];
-        $scope.getCardinalityLabel = function (question) {
-            var cardinality = question.cardinality;
-            if (cardinality === undefined || cardinality.min === undefined || cardinality.max === undefined)
-                return "";
-            return {
-                "0": {
-                    "1": "0 or 1",
-                    "-1": "0 or more"
-                },
-                "1": {
-                    "1": false,
-                    "-1": "1 or more"
-                }
-            }[cardinality.min][cardinality.max];
-        };
-
         $scope.getDatatypeLabel = function (question) {
             var datatype = question.question.datatype;
             if (datatype === 'Number') {
@@ -31,7 +8,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 return "(Date)";
             } else return "";
         };
-        
+
         $scope.addSectionTop = function () {
             if (!$scope.elt.formElements) {
                 $scope.elt.formElements = [];

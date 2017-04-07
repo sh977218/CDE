@@ -14,8 +14,8 @@ public class QuestionLayoutTest extends BaseFormTest {
         String sec2 = "second section";
 
         clickElement(By.id("description_tab"));
-        addSectionTop(sec1, "0 or more");
-        addSectionBottom(sec2, "0 or more");
+        addSectionTop(sec1, null);
+        addSectionBottom(sec2, null);
 
         textPresent(sec1);
         textPresent(sec2);
@@ -41,7 +41,7 @@ public class QuestionLayoutTest extends BaseFormTest {
         textPresent("There is no content yet.");
 
         String sec3 = "third section";
-        addSectionBottom(sec3, "0 or more");
+        addSectionBottom(sec3, null);
 
         textNotPresent("Show Filters");
         textNotPresent("results for");

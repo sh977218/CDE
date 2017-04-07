@@ -10,4 +10,38 @@ angular.module('formModule').controller('FormViewSectionCtrl', ['$scope',
                 }
             }
         };
+
+        $scope.repeatOptions = [
+            {label: "", value: ""},
+            {label: "Set Number of Times", value: "N"},
+            {label: "Over first question", value: "F"}
+        ];
+        $scope.getRepeatOption = function(section) {
+            if (!section.repeat)
+                return "";
+            if (section.repeat[0] === 'F')
+                return 'F';
+            else
+                return 'N';
+        };
+        $scope.getRepeatNumber = function(section) {
+            return parseInt(section.repeat);
+        };
+        $scope.setRepeat = function(section) {
+            if (section.repeatOption === "F")
+                section.repeat = "First Question";
+            else if (section.repeatOption === "N")
+                section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
+            else
+                section.repeat = undefined;
+        };
+        $scope.getRepeatLabel = function (section) {
+            if (!section.repeat)
+                return "";
+            if (section.repeat[0] === 'F')
+                return "over First Question";
+            return parseInt(section.repeat) + " times";
+        };
+        $scope.section.repeatOption = $scope.getRepeatOption($scope.section);
+        $scope.section.repeatNumber = $scope.getRepeatNumber($scope.section);
     }]);
