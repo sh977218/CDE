@@ -1,13 +1,9 @@
 package gov.nih.nlm.form.test.score;
 
-import gov.nih.nlm.form.test.BaseFormTest;
-import gov.nih.nlm.system.RecordVideo;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
-import org.testng.annotations.Test;
 
-import java.util.List;
+import gov.nih.nlm.form.test.BaseFormTest;
+import org.openqa.selenium.By;
+import org.testng.annotations.Test;
 
 public class FormTotalScoreTest extends BaseFormTest {
 

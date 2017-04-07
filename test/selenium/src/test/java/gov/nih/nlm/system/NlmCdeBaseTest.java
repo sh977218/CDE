@@ -693,6 +693,7 @@ public class NlmCdeBaseTest {
         je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.id(id)));
         hangon(2);
     }
+
     protected void scrollToViewByXpath(String xpath) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.xpath(xpath)));
@@ -847,22 +848,6 @@ public class NlmCdeBaseTest {
         driver.navigate().back();
     }
 
-    protected void reorderIconTest(String tabName) {
-        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
-        String postfix = "']";
-        findElement(By.xpath(prefix + "moveDown-0" + postfix));
-        assertNoElt(By.xpath(prefix + "moveUp-0" + postfix));
-        assertNoElt(By.xpath(prefix + "moveTop-0" + postfix));
-
-        findElement(By.xpath(prefix + "moveDown-1" + postfix));
-        findElement(By.xpath(prefix + "moveUp-1" + postfix));
-        findElement(By.xpath(prefix + "moveTop-1" + postfix));
-
-        assertNoElt(By.xpath(prefix + "moveDown-2" + postfix));
-        findElement(By.xpath(prefix + "moveUp-2" + postfix));
-        findElement(By.xpath(prefix + "moveTop-2" + postfix));
-    }
-
     protected void loadDefaultSettings() {
         clickElement(By.id("searchSettings"));
         clickElement(By.id("loadDefaultSettings"));
@@ -872,4 +857,141 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
     }
+
+    protected void editDesignationByIndex(int index, String newDesignation) {
+        String designationEditIconXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-edit')]";
+        String designationInputXpath = "//*[@id='designation_" + index + "']//input";
+        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(designationEditIconXpath));
+        findElement(By.xpath(designationInputXpath)).sendKeys(newDesignation);
+        hangon(2);
+        clickElement(By.xpath(designationConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+    protected void editDefinitionByIndex(int index, String newDefinition, boolean html) {
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
+        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
+        String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
+        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(definitionEditIconXpath));
+        if (html) {
+            clickElement(By.xpath(richTextBtnXpath));
+            textPresent("Characters:");
+        }
+        findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
+        hangon(2);
+        clickElement(By.xpath(definitionConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+    protected void switchDefinitionFormatByIndex(int index, String newDefinition, boolean html) {
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
+        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
+        String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
+        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(definitionEditIconXpath));
+        if (html) {
+            clickElement(By.xpath(richTextBtnXpath));
+            textPresent("Characters:");
+        }
+        if (newDefinition != null)
+            findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
+        hangon(2);
+        clickElement(By.xpath(definitionConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+    protected void switchValueFormatByIndex(int index, String newValue, boolean html) {
+        String valueEditIconXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-edit')]";
+        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[contains(text(),'Rich Text')]";
+        String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
+        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(valueEditIconXpath));
+        if (html) {
+            clickElement(By.xpath(richTextBtnXpath));
+            textPresent("Characters:");
+        }
+        if (newValue != null)
+            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
+        hangon(2);
+        clickElement(By.xpath(valueConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+
+    protected void editTagByIndex(int index, String[] tags) {
+        String tagsInputXpath = "//*[@id='tags_" + index + "']//input";
+        for (String tag : tags) {
+            String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + tag + "']";
+            clickElement(By.xpath(tagsInputXpath));
+            clickElement(By.xpath(selectTagXpath));
+            textPresent(tag);
+        }
+    }
+
+    protected void editPropertyValueByIndex(int index, String newValue, boolean html) {
+        String valueEditIconXpath = "//*[@id='value_" + index + "']//i[contains(@class,'fa fa-edit')]";
+        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[contains(text(),'Rich Text')]";
+        String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
+        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(valueEditIconXpath));
+        if (html) {
+            clickElement(By.xpath(richTextBtnXpath));
+            textPresent("Characters:");
+        }
+        if (newValue != null)
+            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
+        hangon(2);
+        clickElement(By.xpath(valueConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+
+    protected void addNewName(String designation, String definition, String[] tags) {
+        clickElement(By.id("openNewNamingModalBtn"));
+        textPresent("Tags are managed in Org Management > List Management");
+        findElement(By.name("newDesignation")).sendKeys(designation);
+        findElement(By.name("newDefinition")).sendKeys(definition);
+        if (tags != null) {
+            String tagsInputXpath = "//*[@id='newTags']//input";
+            for (String tag : tags) {
+                String selectTagXpath = "//span[contains(@class,'select2-results')]/ul//li[text()='" + tag + "']";
+                clickElement(By.xpath(tagsInputXpath));
+                clickElement(By.xpath(selectTagXpath));
+                textPresent(tag);
+            }
+        }
+        clickElement(By.id("createNewNamingBtn"));
+        modalGone();
+    }
+
+    protected void addNewProperty(String key, String value) {
+        clickElement(By.id("openNewPropertyModalBtn"));
+        textPresent("Property key are managed in Org Management > List Management");
+        new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
+        findElement(By.name("newValue")).sendKeys(value);
+        hangon(2);
+        clickElement(By.id("createNewPropertyBtn"));
+        modalGone();
+        textPresent("Property Added");
+        closeAlert();
+    }
+
+    protected void addNewReferenceDocument(String id, String title, String uri, String providerOrg, String languageCode, String document) {
+        clickElement(By.id("openNewReferenceDocumentModalBtn"));
+        findElement(By.name("newId")).sendKeys(id);
+        findElement(By.name("newTitle")).sendKeys(title);
+        findElement(By.name("newUri")).sendKeys(uri);
+        findElement(By.name("newProviderOrg")).sendKeys(providerOrg);
+        findElement(By.name("newLanguageCode")).sendKeys(languageCode);
+        findElement(By.name("newDocument")).sendKeys(document);
+        hangon(2);
+        clickElement(By.id("createNewReferenceDocumentBtn"));
+        modalGone();
+        textPresent("Reference Document Added");
+        closeAlert();
+    }
+
+
 }

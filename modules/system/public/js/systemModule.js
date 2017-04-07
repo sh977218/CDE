@@ -1,6 +1,5 @@
 import * as authShared from "../../../system/shared/authorizationShared";
 
-
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
@@ -33,7 +32,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'InboxCtrl',
             templateUrl: '/system/public/html/inbox.html'
         }).when('/orgComments', {
-            controller: ['$scope', function($scope) {
+            controller: ['$scope', function ($scope) {
                 $scope.commentsUrl = "/orgComments/";
             }],
             templateUrl: '/system/public/html/latestComments.html'
@@ -65,7 +64,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             scope: {
                 model: '=',
                 inputType: '=?',
-                isAllowed: '<',
+                isAllowed: '=',
                 onOk: '&',
                 typeaheadSource: '=',
                 linkSource: '@'
@@ -89,7 +88,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }])
-    .directive('inlineSelectEdit', ["$timeout", function($timeout) {
+    .directive('inlineSelectEdit', ["$timeout", function ($timeout) {
         return {
             restrict: 'AE',
             scope: {
@@ -120,13 +119,17 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             restrict: 'AE',
             scope: {
                 model: '=',
-                isAllowed: '&',
+                isAllowed: '=',
                 onOk: '&',
                 onErr: '&',
                 defFormat: '=',
                 inlineAreaVisibility: '='
             },
-            controller: ["$scope", "$element", "$attrs", function ($scope, $element, $attrs) {
+            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
+            controller: ["$scope", "$element", function ($scope, $element) {
+                $scope.setHtml = function (html) {
+                    $scope.defFormat = html ? 'html' : '';
+                };
                 $scope.clickEdit = function () {
                     $scope.inScope = {
                         value: $scope.model
@@ -153,14 +156,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 };
                 $scope.confirm = function () {
                     if ($scope.isInvalidHtml($scope.inScope.value)) {
-                        if ($attrs.onErr) {
-                            $scope.onErr({
-                                error: true,
-                                message: 'Error. Img src may only be a relative url starting with /data'
-                            });
-                        } else {
-                            alert('Error. Img src may only be a relative url starting with /data');
-                        }
+                        alert('Error. Img src may only be a relative url starting with /data');
                     } else {
                         $scope.model = $scope.inScope.value;
                         $scope.editMode = false;
@@ -170,8 +166,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 $scope.cancel = function () {
                     $scope.editMode = false;
                 };
-            }],
-            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html'
+            }]
         };
     }])
     .directive('sortableArray', [function () {
@@ -202,8 +197,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 };
             }]
         };
-    }])
-;
+    }]);
 
 angular.module('systemModule').filter('placeHoldEmpty', [function () {
     return function (input) {
@@ -265,7 +259,11 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
                             animation: false,
                             templateUrl: '/system/public/html/selectBoardModal.html',
                             controller: 'SelectBoardModalCtrl',
-                            resolve: {type: function () {return type;}}
+                            resolve: {
+                                type: function () {
+                                    return type;
+                                }
+                            }
                         }).result.then(function (selectedBoard) {
                             $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
                                 if (response.status === 200) {
@@ -275,12 +273,15 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
                             }, function (response) {
                                 Alert.addAlert("danger", response.data);
                             });
-                        }, function () {});
+                        }, function () {
+                        });
                     } else {
                         $modal.open({
                             animation: false,
                             templateUrl: '/system/public/html/ifYouLogInModal.html'
-                        }).result.then(function () {}, function() {});
+                        }).result.then(function () {
+                        }, function () {
+                        });
                     }
                 }
             };
@@ -382,7 +383,6 @@ angular.module('systemModule').config(["localStorageServiceProvider", function (
     localStorageServiceProvider.setPrefix('nlmcde');
 }]);
 
-
 angular.module('systemModule').run(["$rootScope", "$location", function ($rootScope, $location) {
     var dataLayer = window.dataLayer = window.dataLayer || [];
 
@@ -421,6 +421,15 @@ angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({comp
 
 import {IdentifiersComponent} from "../components/adminItem/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({component: IdentifiersComponent, inputs: ['elt'], outputs: []}));
+
+import {PropertiesComponent} from "../../../admin/public/components/properties.component";
+angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComponent({component: PropertiesComponent, inputs: ['elt'], outputs: []}));
+
+import {NamingComponent} from "../../../admin/public/components/naming.component";
+angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({component: NamingComponent, inputs: ['elt'], outputs: []}));
+
+import {ReferenceDocumentComponent} from "../../../admin/public/components/referenceDocument.component";
+angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({component: ReferenceDocumentComponent, inputs: ['elt'], outputs: []}));
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";
 angular.module('systemModule').directive('cdeRegistation', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));

@@ -3,22 +3,6 @@ import { UpgradeComponent } from "@angular/upgrade/static";
 
 /* tslint:disable */
 @Directive({
-    selector: "inline-edit"
-})
-export class InlineEditDirective extends UpgradeComponent {
-    @Input() model: any;
-    @Output() modelChange: EventEmitter<void>;
-    @Input() inputType: any;
-    @Input() isAllowed: any;
-    @Output() onOk: EventEmitter<void>;
-    @Input() typeaheadSource: any;
-    @Input() linkSource: any;
-    constructor(elementRef: ElementRef, injector: Injector) {
-        super("inlineEdit", elementRef, injector);
-    }
-}
-
-@Directive({
     selector: "cde-accordion-list"
 })
 export class CdeAccordionListDirective extends UpgradeComponent {

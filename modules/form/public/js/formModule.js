@@ -1,4 +1,3 @@
-
 angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'formTemplates']).config(
     ["$routeProvider", function($routeProvider)
 {
@@ -16,7 +15,6 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
         when('/formView', {controller: 'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
 }]);
 
-// Angular 2 upgraded
 angular.module('formModule').directive('formAccordionList', function () {
     return {
         scope: {forms: '=', ejsPage: '=', module: '='},

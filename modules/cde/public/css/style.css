@@ -824,9 +824,7 @@ button#selectDefault {
 }
 
 input:required:invalid, input:focus:invalid {
-    border-color: red;
-    -webkit-box-shadow: inset 0 1px 1px red;
-    box-shadow: inset 0 1px 1px red;
+    border-left: 5px solid #a94442
 }
 
 .ui-sortable-placeholder {
@@ -1372,7 +1370,7 @@ div + .questionPlaceholder {
 }
 
 input.ng-invalid {
-    border: 1px solid red !important;
+    border-left: 5px solid #a94442 !important;
 }
 
 .ng-valid[required], .ng-valid.required  {
@@ -1548,7 +1546,7 @@ label.input-group-addon {
     margin-bottom: 0;
 }
 
-.native-question-label:before {
+.native-question-label-number:before {
     counter-increment: section;
     content: counter(section) ". ";
 }
@@ -1577,6 +1575,10 @@ div.row .native-question-oneline-r {
     margin-bottom: 1px;
 }
 
+.native-value {
+    font-weight: bold;
+}
+
 .radio-inline,
 .wordwrap {
     word-wrap: break-word;
@@ -1593,6 +1595,22 @@ div.row .native-question-oneline-r {
     margin-bottom: 5px;
     word-wrap: break-word;
     overflow-wrap: break-word;
+}
+
+.form-horizontal .native-table-cell.radio,
+.form-horizontal .native-table-cell.checkbox,
+.form-horizontal .native-table-cell.radio-inline,
+.form-horizontal .native-table-cell.checkbox-inline {
+    padding-top: 0;
+}
+
+.native-table-cell {
+    height: auto;
+}
+
+.native-table-cell label {
+    font-weight: normal;
+    margin-bottom: 0;
 }
 
 @media print {

@@ -1,5 +1,7 @@
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from "@angular/core";
+import { ModuleWithProviders, NgModule } from "@angular/core";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
+import { Select2Module } from "ng2-select2";
+import { UpgradeModule } from "@angular/upgrade/static";
 
 import { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 import { ClassificationService } from "./classification.service";
@@ -7,7 +9,6 @@ import { SkipLogicService } from "./skipLogic.service";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
-import { UpgradeModule } from "@angular/upgrade/static";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
@@ -24,7 +25,10 @@ export function getPinModalFactory(i: any) { return i.get("PinModal"); }
 export function getElasticFactory(i: any) { return i.get("Elastic"); }
 
 @NgModule({
-    providers:    [
+    imports: [
+        Select2Module
+    ],
+    providers: [
         {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
         ClassificationService,
         MergeCdeService,
@@ -42,19 +46,10 @@ export function getElasticFactory(i: any) { return i.get("Elastic"); }
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
         {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
         {provide: "Elastic", useFactory: getElasticFactory, deps: ["$injector"]},
+    ],
+    exports: [
+        Select2Module
     ]
 })
 export class CoreModule {
-    constructor (@Optional() @SkipSelf() parentModule: CoreModule) {
-        if (parentModule) {
-            throw new Error(
-                "CoreModule is already loaded. Import it in the AppModule only.");
-        }
-    }
-    static forRoot(): ModuleWithProviders {
-        return {
-            ngModule: CoreModule,
-            providers: []
-        };
-    }
 }

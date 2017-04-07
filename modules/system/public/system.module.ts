@@ -6,30 +6,44 @@ import { PaginationModule, ModalModule, TypeaheadModule } from "ng2-bootstrap/in
 import { DataTableModule } from "angular2-datatable";
 import { Select2Module } from "ng2-select2";
 
-import {
-    InlineEditDirective, CdeAccordionListDirective, FormAccordionListDirective,
-    FormSummaryListDirective
-} from "./upgrade-components";
+import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListDirective } from "./upgrade-components";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
-import { UserCommentsComponent } from "./userComments.component";
-import { IdentifiersComponent } from "./components/adminItem/identifiers.component";
+import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
+import { UserCommentsComponent } from "./components/userComments.component";
 import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
+import { PropertiesComponent } from "../../admin/public/components/properties.component";
+import { AdminModule } from "../../admin/public/admin.module";
+import { NamingComponent } from "../../admin/public/components/naming.component";
+import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
 
 
 @NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        ModalModule.forRoot(),
+        TypeaheadModule.forRoot(),
+        PaginationModule.forRoot(),
+        DataTableModule,
+        Select2Module,
+        NgbModule,
+        AdminModule,
+    ],
     declarations: [
-        InlineEditDirective,
         CdeAccordionListDirective,
         FormAccordionListDirective,
         FormSummaryListDirective,
         ProfileComponent,
         LinkedFormsComponent,
         IdentifiersComponent,
+        PropertiesComponent,
+        NamingComponent,
+        ReferenceDocumentComponent,
         UserCommentsComponent,
         HomeComponent,
         LogAuditComponent,
@@ -47,8 +61,6 @@ import { HomeComponent } from "./components/home/home.component";
         UsersMgtComponent,
     ],
     providers: [],
-    imports: [CommonModule, FormsModule, ModalModule.forRoot(), TypeaheadModule.forRoot(),
-        PaginationModule.forRoot(), DataTableModule, Select2Module, NgbModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

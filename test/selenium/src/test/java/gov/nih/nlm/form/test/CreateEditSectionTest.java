@@ -15,8 +15,8 @@ public class CreateEditSectionTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
 
         addSectionTop("Section 1", null);
-        addSectionBottom("Section 2", "1 or more");
-        addSectionBottom("Section 3", "0 or more");
+        addSectionBottom("Section 2", "2");
+        addSectionBottom("Section 3", "F");
 
         saveForm();
 
@@ -28,9 +28,9 @@ public class CreateEditSectionTest extends BaseFormTest {
         Assert.assertEquals("Section 3", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]")).getText());
 
 
-        textNotPresent("Exactly 1", By.xpath("//*[@id='section_0']"));
-        textPresent("1 or more", By.xpath("//*[@id='section_1']"));
-        textPresent("0 or more", By.xpath("//*[@id='section_2']"));
+        textNotPresent("Repeats", By.xpath("//*[@id='section_0']"));
+        textPresent("Repeats: 2 times", By.xpath("//*[@id='section_1']"));
+        textPresent("Repeats: over First Question", By.xpath("//*[@id='section_2']"));
     }
 
 }

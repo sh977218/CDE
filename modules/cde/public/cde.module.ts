@@ -16,8 +16,7 @@ import { SortableArrayDirective } from "./upgrade-components";
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
-        MoreLikeThisComponent,
-        SortableArrayDirective
+        MoreLikeThisComponent
     ],
     entryComponents: [
         ConceptsComponent,

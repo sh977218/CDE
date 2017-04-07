@@ -67,8 +67,8 @@
                 <span ng-if="question.question.datatypeDate.format" class="label label-success formViewSummaryLabel">
                     Format: {{question.question.datatypeDate.format}}
                 </span>
-                <span ng-if="getCardinalityLabel(question)" class="label label-primary formViewSummaryLabel">
-                    Repeats: {{getCardinalityLabel(question)}} times
+                <span ng-if="getRepeatLabel(question)" class="label label-primary formViewSummaryLabel">
+                    Repeats: {{getRepeatLabel(question)}} times
                 </span>
                 <span ng-if="isScore(question)" class="label label-primary formViewSummaryLabel">
                     Score: <span ng-bind="question.question.scoreFormula"></span>
