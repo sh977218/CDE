@@ -11,24 +11,24 @@
             <div style="margin-left: 10px"> You don't have any boards</div>
         </div>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">
-            <div style="padding-left: 10px">
-                <!--<div ng-if="filter.tags.length > 0">-->
-                    <!--<h4>Tags</h4>-->
-                    <!--<label ng-repeat="tag in filter.tags" class="my-board-tag">-->
+            <div style="padding-left: 10px" *ngIf="myBoardsSvc.filter">
+                <div *ngIf="myBoardsSvc.filter.tags.length > 0">
+                    <h4>Tags</h4>
+                    <label *ngFor="let tag of myBoardsSvc.filter.tags" class="my-board-tag">
                         <!--<input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"-->
                                <!--checklist-change="loadMyBoards()" data-id="tag-{{tag.key}}">-->
-                        <!--<small>{{tag.key}} ({{tag.doc_count}})</small>-->
-                    <!--</label>-->
-                <!--</div>-->
-                <!--<div ng-if="filter.shareStatus.length > 0">-->
-                    <!--<h4>Share Status</h4>-->
-                    <!--<label ng-repeat="ss in filter.shareStatus" class="my-board-tag">-->
-                        <!--<input type="checkbox" data-checklist-model="filter.selectedShareStatus"-->
+                        <small>{{tag.key}} ({{tag.doc_count}})</small>
+                    </label>
+                </div>
+                <div *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
+                    <h4>Share Status</h4>
+                    <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="my-board-tag">
+                        <input type="checkbox" [(ngModel)]="ss.checked" (change)="loadMyBoards()">
                                <!--data-checklist-value="ss.key" data-id="status-{{ss.key}}"-->
                                <!--checklist-change="loadMyBoards()">-->
-                        <!--<small>{{ss.key}} ({{ss.doc_count}})</small>-->
-                    <!--</label>-->
-                <!--</div>-->
+                        <small>{{ss.key}} ({{ss.doc_count}})</small>
+                    </label>
+                </div>
             </div>
             <div class="row">
                 <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-md-6">
@@ -55,7 +55,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <!--<button class="btn btn-warning" ng-click="$dismiss()" id="cancelSelect">Cancel</button>-->
+        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
 </template>
 
@@ -75,6 +75,6 @@
         <div style="text-align: center"><a id="signUpLink" href="/login" class="btn btn-lg btn-info" (click)="c()">Sign up or Log In</a></div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning" (click)="c()" id="cancelSelect">Cancel</button>
+        <button class="btn btn-warning" (click)="c()" id="cancelSelect2">Cancel</button>
     </div>
 </template>

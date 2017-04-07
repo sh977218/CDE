@@ -31,6 +31,8 @@ export class MyBoardsService {
     public reloading: boolean = false;
 
     public loadMyBoards() {
+        this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked)
+            .map(a => a.key);
         this.http.post("/myBoards", this.filter).map(res => res.json()).subscribe(res => {
             if (res.hits) {
                 this.boards = res.hits.hits.map(h => {
@@ -48,7 +50,6 @@ export class MyBoardsService {
 
     public waitAndReload() {
         this.reloading = true;
-        // this.loadMyBoards();
         setTimeout(() => this.loadMyBoards(), 2000);
     }
 
