@@ -15,6 +15,6 @@ export class UserService {
         }
 
         //noinspection TypeScriptValidateTypes
-        return this.http.get("/searchUsers/" + term).map(response => <string[]> response.json()[0]);
+        return this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users);
     }
 }

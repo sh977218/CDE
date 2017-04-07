@@ -41,15 +41,17 @@ export class UsersMgtComponent {
                 private _service: UserService) {
     }
 
+    formatter = (result: any) => result.username;
+
     //noinspection TypeScriptValidateTypes
     searchTypeahead = (text$: Observable<string>) =>
         text$.debounceTime(300).distinctUntilChanged().switchMap(term =>
-            this._service.search(term).catch(() => {
+            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
+                .catch(() => {
                 //noinspection TypeScriptUnresolvedFunction
                 return Observable.of([]);
             })
         )
-
 
     searchUsers() {
         //noinspection TypeScriptValidateTypes
