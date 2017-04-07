@@ -12,7 +12,8 @@ import { SortableComponent } from "ng2-bootstrap/index";
 })
 export class MergeFormComponent implements OnInit {
     @ViewChild("mergeFormContent") public mergeFormContent: NgbModalModule;
-    @ViewChild("LeftSortableComponent") leftSortableComponent: SortableComponent;
+    @ViewChild("leftSortableComponent") leftSortableComponent: SortableComponent;
+    @ViewChild("questionTemplate") questionTemplate: any;
     @Input() public left: any;
     @Input() public right: any;
     public modalRef: NgbModalRef;
@@ -98,6 +99,11 @@ export class MergeFormComponent implements OnInit {
 
     ngOnInit() {
         this.check();
+    }
+
+    ngAfterViewInit() {
+        // After the view is initialized, this.userProfile will be available
+        console.log("a");
     }
 
     openMergeFormModal() {
