@@ -4,8 +4,9 @@
     </button>
 
     <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
-        <input class="form-control" id="searchUsersInput" name="searchUsers" type="text" placeholder="enter user name"
-               autocomplete="off" [(ngModel)]="search.username" [ngbTypeahead]="allUsernames" required>
+        <input class="form-control" id="searchUsersInput" name="searchUsersInput" type="text"
+               placeholder="enter user name" autocomplete="off" [(ngModel)]="search.username"
+               [ngbTypeahead]="searchTypeahead" required>
         <button type="submit" class="btn btn-success" id="searchUsersSubmit" (click)="searchUsers()">Search</button>
     </form>
 

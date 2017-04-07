@@ -4,9 +4,13 @@ import { Select2OptionData } from "ng2-select2";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 import "rxjs/add/operator/map";
+import "rxjs/add/operator/debounceTime";
+import "rxjs/add/operator/distinctUntilChanged";
 
 //noinspection TypeScriptCheckImport
 import * as authShared from "../../../../shared/authorizationShared";
+import { Observable } from "rxjs/Rx";
+import { UserService } from "../../../../../core/public/UserService";
 
 @Component({
     selector: "cde-users-mgt",
@@ -15,13 +19,11 @@ import * as authShared from "../../../../shared/authorizationShared";
 })
 
 export class UsersMgtComponent {
-
     @ViewChild("newUserContent") public newUserContent: NgbModalModule;
     public modalRef: NgbModalRef;
     search: any = {username: ""};
     newUsername: string;
     foundUsers: any[] = [];
-    allUsernames: string[] = [];
     //noinspection TypeScriptValidateTypes
     rolesEnum: Array<Select2OptionData> = authShared.rolesEnum.map(r => {
         return {"id": r, "text": r};
@@ -35,20 +37,25 @@ export class UsersMgtComponent {
                 @Inject("Alert") private Alert,
                 @Inject("AccountManagement") private AccountManagement,
                 public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
-        this.AccountManagement.getAllUsernames(
-            usernames => {
-                this.allUsernames = usernames.map(u => u.username);
-            });
+                public activeModal: NgbActiveModal,
+                private _service: UserService) {
     }
+
+    //noinspection TypeScriptValidateTypes
+    searchTypeahead = (text$: Observable<string>) =>
+        text$.debounceTime(300).distinctUntilChanged().switchMap(term =>
+            this._service.search(term).catch(() => {
+                //noinspection TypeScriptUnresolvedFunction
+                return Observable.of([]);
+            })
+        )
+
 
     searchUsers() {
         //noinspection TypeScriptValidateTypes
         this.http.get("/searchUsers/" + this.search.username).map(res => res.json()).subscribe(
             result => {
                 this.foundUsers = result.users;
-                // if (this.foundUsers.length === 1) this.user = this.foundUsers[0];
-                // else delete this.comments.latestComments;
             });
     }
 
@@ -75,8 +82,8 @@ export class UsersMgtComponent {
             });
     }
 
-    addNewUser(username) {
-        this.http.put("/user", {username: username}).subscribe(
+    addNewUser() {
+        this.http.put("/user", {username: this.newUsername}).subscribe(
             () => this.Alert.addAlert("success", "User created")
         );
         this.modalRef.close();

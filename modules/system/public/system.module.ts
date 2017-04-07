@@ -18,6 +18,8 @@ import { PropertiesComponent } from "../../admin/public/components/properties.co
 import { AdminModule } from "../../admin/public/admin.module";
 import { NamingComponent } from "../../admin/public/components/naming.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
+import { UserService } from "../../core/public/UserService";
+import { JsonpModule } from "@angular/http";
 
 @NgModule({
     imports: [
@@ -26,6 +28,7 @@ import { ReferenceDocumentComponent } from "../../admin/public/components/refere
         DataTableModule,
         Select2Module,
         NgbModule,
+        JsonpModule,
         AdminModule,
     ],
     declarations: [
@@ -44,7 +47,9 @@ import { ReferenceDocumentComponent } from "../../admin/public/components/refere
         RegistrationComponent,
         UsersMgtComponent,
         PlaceHoldEmptyPipe],
-    providers: [],
+    providers: [
+        UserService
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
