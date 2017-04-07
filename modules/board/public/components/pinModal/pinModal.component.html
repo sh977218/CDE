@@ -58,3 +58,23 @@
         <!--<button class="btn btn-warning" ng-click="$dismiss()" id="cancelSelect">Cancel</button>-->
     </div>
 </template>
+
+<template #ifYouLoginModal id="ifYouLoginModal" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Sign up for an account</h3>
+    </div>
+    <div class="modal-body">
+        With an account, you will be able to:
+        <ul>
+            <li>Create Boards and attach CDEs to them</li>
+            <li>Remember your preferences on all your devices</li>
+            <li>Comment on CDEs and Forms</li>
+            <li>Become a curator and create your own CDEs and Forms</li>
+        </ul>
+        <br>
+        <div style="text-align: center"><a id="signUpLink" href="/login" class="btn btn-lg btn-info" (click)="c()">Sign up or Log In</a></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="c()" id="cancelSelect">Cancel</button>
+    </div>
+</template>

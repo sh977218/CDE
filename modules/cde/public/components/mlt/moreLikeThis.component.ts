@@ -23,8 +23,7 @@ export class MoreLikeThisComponent {
         @Inject("Alert") private alert,
         public modalService: NgbModal,
         @Inject("QuickBoard") private quickBoard,
-    ) {
-    }
+    ) {}
 
     open () {
         this.http.get("/moreLikeCde/" + this.elt.tinyId).map(res => res.json()).subscribe(response => {
@@ -36,7 +35,7 @@ export class MoreLikeThisComponent {
         this.modalRef = this.modalService.open(this.mltModal, {size: "lg"});
     }
 
-    view (cde, event) {
+    static view (cde, event) {
         window.open("deview?tinyId=" + cde.tinyId);
     };
 

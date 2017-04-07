@@ -221,7 +221,7 @@ angular.module('resourcesSystem', ['ngResource'])
             , steps: []
         };
     }])
-    .factory('userResource', ["$http", "$q", function ($http, $q) {
+    .factory("userResource", ["$http", "$q", function ($http, $q) {
         var userResource = this;
         this.user = null;
 

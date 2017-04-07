@@ -1,4 +1,4 @@
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MyBoardsService } from "../../myBoards.service";
@@ -13,6 +13,7 @@ import { Http } from "@angular/http";
 export class PinModalComponent {
 
     @ViewChild("pinModal") public pinModal: NgbModalModule;
+    @ViewChild("ifYouLoginModal") public ifYouLoginModal: NgbModalModule;
 
     public modalRef: NgbModalRef;
     private elt: any;
@@ -22,14 +23,19 @@ export class PinModalComponent {
         private myBoardsSvc: MyBoardsService,
         public modalService: NgbModal,
         @Inject("Alert") private alert,
-        private http: Http
+        private http: Http,
+        @Inject("userResource") private userService
     ) {}
 
     open (elt, type) {
         this.elt = elt;
         this.type = type;
-        this.myBoardsSvc.loadMyBoards();
-        this.modalRef = this.modalService.open(this.pinModal, {size: "lg"});
+        if (this.userService.user && this.userService.user._id) {
+            this.myBoardsSvc.loadMyBoards();
+            this.modalRef = this.modalService.open(this.pinModal, {size: "lg"});
+        } else {
+            this.modalService.open(this.ifYouLoginModal, {});
+        }
     }
 
     selectBoard (board) {

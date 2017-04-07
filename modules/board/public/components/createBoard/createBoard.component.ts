@@ -1,5 +1,5 @@
 import { Http } from "@angular/http";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Component, Inject, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MyBoardsService } from "../../myBoards.service";
@@ -20,7 +20,7 @@ export class CreateBoardComponent {
 ) {}
 
     newBoard: any = {
-        type: 'cde'
+        type: "cde"
     };
 
     @ViewChild("createBoardModal") public createBoardModal: NgbModalModule;
