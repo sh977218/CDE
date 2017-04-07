@@ -1,0 +1,43 @@
+<button class="btn btn-small btn-default" value="add" (click)="openNewBoard()"
+    id="addBoard" style="margin-bottom: 10px;">
+        <i class="fa fa-plus"> </i> Add Board
+</button>
+
+<template #createBoardModal id="newBoardModal" let-d="dismiss">
+    <div class="modal-content">
+        <div class="modal-header" id="newBoardModalHeader">
+            <h4>Create New Board</h4>
+        </div>
+        <form name="form" role="form" #bForm="ngForm">
+            <div class="modal-body" id="newBoardModalBody">
+                <div class="form-group">
+                    <label for="new-board-type">Type of element the board will contain</label>
+                    <select id="new-board-type" class="form-control" name="type" [(ngModel)]="newBoard.type" required>
+                        <option value="cde">CDEs</option>
+                        <option value="form">Forms</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="new-board-name">Name</label>
+                    <input id="new-board-name" class="form-control" name="name" [(ngModel)]="newBoard.name"
+                           Placeholder="Board Name / Title" required/>
+                </div>
+                <div class="form-group">
+                    <label for="new-board-description">Description</label>
+                    <textarea id="new-board-description" class="form-control" name="description"
+                              [(ngModel)]="newBoard.description"
+                              placeholder="Optional Board Description"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer" id="newBoardModalFooter">
+                <button class="btn cancel" (click)="d()"
+                        id="cancelCreate" type="button">Cancel</button>
+                <button class="btn btn-warning" (click)="doCreateBoard()"
+                        [disabled]="!bForm.form.valid" id="createBoard"
+                        type="submit">Save
+                </button>
+            </div>
+        </form>
+
+    </div>
+</template>

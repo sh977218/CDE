@@ -33,7 +33,6 @@ import { ReferenceDocumentComponent } from "../../admin/public/components/refere
         AdminModule,
     ],
     declarations: [
-        upgradeAdapter.upgradeNg1Component("inlineEdit"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
         upgradeAdapter.upgradeNg1Component("formSummaryList"),
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),

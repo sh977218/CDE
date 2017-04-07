@@ -1,6 +1,6 @@
 import { Http } from "@angular/http";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { PinModalComponent } from "../../../../board/public/components/pinModal/pinModal.component";
 
@@ -10,7 +10,7 @@ import { PinModalComponent } from "../../../../board/public/components/pinModal/
     providers: [NgbActiveModal]
 })
 
-export class MoreLikeThisComponent implements OnInit {
+export class MoreLikeThisComponent {
 
     @ViewChild("mltModal") public mltModal: NgbModalModule;
     @ViewChild("mltPinModal") public mltPinModal: PinModalComponent;
@@ -21,10 +21,9 @@ export class MoreLikeThisComponent implements OnInit {
 
     constructor(private http: Http,
         @Inject("Alert") private alert,
-        @Inject("userResource") private userService,
         public modalService: NgbModal,
+        @Inject("QuickBoard") private quickBoard,
     ) {
-
     }
 
     open () {
@@ -37,23 +36,9 @@ export class MoreLikeThisComponent implements OnInit {
         this.modalRef = this.modalService.open(this.mltModal, {size: "lg"});
     }
 
-    ngOnInit() {
-        console.log("where are we ?");
-    }
-
-    ngAfterViewInit() {
-        console.log("is the view ready ?");
-    }
-
-
-    // $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
-    //     "/system/public/html/accordion/addToQuickBoardActions.html"];
-
-
-    // $scope.view = function(cde, event) {
-    //     $scope.interruptEvent(event);
-    //     $location.url("deview?tinyId=" + cde.tinyId);
-    // };
+    view (cde, event) {
+        window.open("deview?tinyId=" + cde.tinyId);
+    };
 
 
 }

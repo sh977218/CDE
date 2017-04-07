@@ -59,3 +59,6 @@ angular.module('systemModule').directive('cdeValueDomainSummary', upgradeAdapter
 
 import {CdeSummaryListComponent} from "../components/summary/cdeSummaryList.component";
 angular.module('systemModule').directive('cdeCdeSummaryList', upgradeAdapter.downgradeNg2Component(CdeSummaryListComponent));
+
+import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
+angular.module('systemModule').directive('cdeCreateBoard', upgradeAdapter.downgradeNg2Component(CreateBoardComponent));

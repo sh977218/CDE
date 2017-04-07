@@ -17,21 +17,21 @@
                 <cde-pin-modal #mltPinModal></cde-pin-modal>
 
                 <ngb-accordion>
-                    <ngb-panel *ngFor="let cde of cdes; let $index = index">
+                    <ngb-panel *ngFor="let cde of cdes; let i = index">
                         <template ngbPanelTitle>
-                            <!--<span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>-->
-                            <a href class="nonLinkAnchor">
-                                <span role="link" [innerHtml]="cde.primaryNameCopy" id="acc_link_{{$index}}"
-                                  class="hand-cursor"></span>
+                            <a href class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
+                            <a href="#" class="nonLinkAnchor">
+                                <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
+                                    (click)="$event.stopPropagation(); view(cde, $event)"></i>
                             </a>
-                            <a href="/deview?tinyId={{cde.tinyId}}" target="_blank" class="nonLinkAnchor">
-                                <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{$index}}"></i>
+                            <a href="#" class="nonLinkAnchor" (click)="$event.stopPropagation()">
+                                <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
+                                   title="Attach to Board" role="link" (click)="$event.stopPropagation(); mltPinModal.open(cde, 'cde')"></i>
                             </a>
-                            <a href tabindex="0" class="nonLinkAnchor" (click)="mltPinModal.open(cde)">
-                                <i id="pinToBoard_{{$index}}" class="fa fa-thumb-tack hand-cursor"
-                                   title="Attach to Board" role="link"></i>
-                            </a>
-                            <!--<span ng-repeat="i in includeInAccordion" ng-include="i"></span>-->
+                            <a href="#" tabindex="0" class="nonLinkAnchor" *ngIf="quickBoard.canAddElt(cde)"
+                               (click)="$event.stopPropagation(); quickBoard.add(cde)">
+                                <i class="fa fa-plus-square-o  hand-cursor" title="Add to Quick Board"
+                                   id="addToCompare_{{i}}" role="link"></i></a>
                         </template>
                         <template ngbPanelContent>
                             <div class="col-md-4 col-sm-12 col-xs-12">
