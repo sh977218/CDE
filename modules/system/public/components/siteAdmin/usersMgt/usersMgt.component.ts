@@ -10,7 +10,6 @@ import "rxjs/add/operator/distinctUntilChanged";
 //noinspection TypeScriptCheckImport
 import * as authShared from "../../../../shared/authorizationShared";
 import { Observable } from "rxjs/Rx";
-import { UserService } from "../../../../../core/public/UserService";
 
 @Component({
     selector: "cde-users-mgt",
@@ -37,25 +36,25 @@ export class UsersMgtComponent {
                 @Inject("Alert") private Alert,
                 @Inject("AccountManagement") private AccountManagement,
                 public modalService: NgbModal,
-                public activeModal: NgbActiveModal,
-                private _service: UserService) {
+                public activeModal: NgbActiveModal) {
     }
 
     formatter = (result: any) => result.username;
 
     //noinspection TypeScriptValidateTypes
     searchTypeahead = (text$: Observable<string>) =>
-        text$.debounceTime(300).distinctUntilChanged().switchMap(term =>
+        text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 ? [] :
             this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
                 .catch(() => {
-                //noinspection TypeScriptUnresolvedFunction
-                return Observable.of([]);
-            })
+                    //noinspection TypeScriptUnresolvedFunction
+                    return Observable.of([]);
+                })
         )
 
     searchUsers() {
+        let uname = this.search.username.username ? this.search.username.username : this.search.username;
         //noinspection TypeScriptValidateTypes
-        this.http.get("/searchUsers/" + this.search.username).map(res => res.json()).subscribe(
+        this.http.get("/searchUsers/" + uname).map(res => res.json()).subscribe(
             result => {
                 this.foundUsers = result.users;
             });

@@ -18,7 +18,6 @@ import { PropertiesComponent } from "../../admin/public/components/properties.co
 import { AdminModule } from "../../admin/public/admin.module";
 import { NamingComponent } from "../../admin/public/components/naming.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
-import { UserService } from "../../core/public/UserService";
 import { JsonpModule } from "@angular/http";
 
 @NgModule({
@@ -47,9 +46,7 @@ import { JsonpModule } from "@angular/http";
         RegistrationComponent,
         UsersMgtComponent,
         PlaceHoldEmptyPipe],
-    providers: [
-        UserService
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
