@@ -9,7 +9,6 @@ import { ConceptsComponent } from "./components/concepts.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
 import { DatasetsComponent } from "./components/datasets/datasets.component";
 import { MoreLikeThisComponent } from "./components/moreLikeThis.component";
-import { SortableArrayDirective } from "./upgrade-components";
 
 @NgModule({
     declarations: [

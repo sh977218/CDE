@@ -410,7 +410,7 @@ angular.module('systemModule').directive('cdeHome', downgradeComponent({componen
 import {ProfileComponent} from "../components/profile.component";
 angular.module('systemModule').directive('cdeProfile', downgradeComponent({component: ProfileComponent, inputs: [], outputs: []}));
 
-import {UserCommentsComponent} from "../userComments.component";
+import {UserCommentsComponent} from "../components/userComments.component";
 angular.module('systemModule').directive('user-comments', downgradeComponent({component: UserCommentsComponent, inputs: ['user'], outputs: []}));
 
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
@@ -419,7 +419,7 @@ angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({comp
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
 
-import {IdentifiersComponent} from "../components/adminItem/identifiers.component";
+import {IdentifiersComponent} from "../../../admin/public/components/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({component: IdentifiersComponent, inputs: ['elt'], outputs: []}));
 
 import {PropertiesComponent} from "../../../admin/public/components/properties.component";
