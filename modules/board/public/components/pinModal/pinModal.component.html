@@ -15,17 +15,14 @@
                 <div *ngIf="myBoardsSvc.filter.tags.length > 0">
                     <h4>Tags</h4>
                     <label *ngFor="let tag of myBoardsSvc.filter.tags" class="my-board-tag">
-                        <!--<input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"-->
-                               <!--checklist-change="loadMyBoards()" data-id="tag-{{tag.key}}">-->
+                        <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()">
                         <small>{{tag.key}} ({{tag.doc_count}})</small>
                     </label>
                 </div>
                 <div *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
                     <h4>Share Status</h4>
                     <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="my-board-tag">
-                        <input type="checkbox" [(ngModel)]="ss.checked" (change)="loadMyBoards()">
-                               <!--data-checklist-value="ss.key" data-id="status-{{ss.key}}"-->
-                               <!--checklist-change="loadMyBoards()">-->
+                        <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()">
                         <small>{{ss.key}} ({{ss.doc_count}})</small>
                     </label>
                 </div>
