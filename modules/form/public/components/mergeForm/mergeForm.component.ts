@@ -1,9 +1,10 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../../core/public/mergeForm.service";
 import { MergeCdeService } from "../../../../core/public/mergeCde.service";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { SortableComponent } from "ng2-bootstrap/index";
+import { CdeSortableComponent } from "./cdeSortable.component";
 
 @Component({
     selector: "cde-merge-form",
@@ -12,12 +13,11 @@ import { SortableComponent } from "ng2-bootstrap/index";
 })
 export class MergeFormComponent implements OnInit {
     @ViewChild("mergeFormContent") public mergeFormContent: NgbModalModule;
-    @ViewChild("leftSortableComponent") leftSortableComponent: SortableComponent;
+    @ViewChild("cdeSortableComponent") cdeSortableComponent: CdeSortableComponent;
     @ViewChild("questionTemplate") questionTemplate: any;
     @Input() public left: any;
     @Input() public right: any;
     public modalRef: NgbModalRef;
-
     public mergeFields: any = {
         naming: true,
         referenceDocuments: true,
@@ -97,13 +97,8 @@ export class MergeFormComponent implements OnInit {
         this.mergeFields.cde.classifications = false;
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.check();
-    }
-
-    ngAfterViewInit() {
-        // After the view is initialized, this.userProfile will be available
-        console.log("a");
     }
 
     openMergeFormModal() {
@@ -148,19 +143,6 @@ export class MergeFormComponent implements OnInit {
         });
     }
 
-    addItem(questions) {
-        questions.push({question: {cde: {tinyId: "", name: ""}}});
-        this.leftSortableComponent.writeValue(questions);
-        this.check();
-    }
-
-    removeItem(questions, index) {
-        if (index === undefined) index = -1;
-        questions.splice(index, 1);
-        this.leftSortableComponent.writeValue(questions);
-        this.check();
-    }
-
     public doMerge() {
         this.showProgressBar = true;
         this.maxNumberQuestions = this.right.questions.length;
@@ -183,7 +165,6 @@ export class MergeFormComponent implements OnInit {
                                 if (err) this.alert.addAlert("danger", "Can not save target form.");
                                 else {
                                     this.doneMerge = true;
-                                    this.leftSortableComponent.writeValue(this.left.questions);
                                     this.alert.addAlert("success", "Form merged");
                                     setTimeout(() => {
                                         this.showProgressBar = false;
@@ -199,7 +180,6 @@ export class MergeFormComponent implements OnInit {
                         if (err) this.alert.addAlert("danger", "Can not save target form.");
                         else {
                             this.doneMerge = true;
-                            this.leftSortableComponent.writeValue(this.left.questions);
                             this.alert.addAlert("success", "Form merged");
                             setTimeout(() => {
                                 this.showProgressBar = false;

@@ -122,16 +122,7 @@
                 <div class="row">
                     <div class="col-xs-12" *ngIf="mergeFields.questions">
                         <div class="col-xs-6" id="dropArea">
-                            <bs-sortable #leftSortableComponent [(ngModel)]="left.questions"
-                                         [itemTemplate]="questionTemplate" itemClass="sortable-item"
-                                         itemActiveClass="sortable-item-active" placeholderItem="Drag here"
-                                         placeholderClass="sortable-item" wrapperClass="sortable-wrapper"
-                                         (onChange)="check()">
-                            </bs-sortable>
-                            <button class="btn btn-default" id="addPlaceHolderToLeft"
-                                    (click)="addItem(left.questions)">
-                                <i class="fa fa-plus-square-o"></i> Add Placeholder
-                            </button>
+                            <cde-sortable [array]="left.questions" (checkSortable)="check()"></cde-sortable>
                         </div>
                         <div class="col-xs-6">
                             <div *ngFor="let rightQuestion of right.questions; let i = index"
@@ -164,24 +155,4 @@
             Merge
         </button>
     </div>
-
-    <template #questionTemplate let-item="item" let-index="index">
-        <div class="boxed-div overflowHidden" title="{{item.value.isRetired?'CDE is Retired':''}}"
-             [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
-             id="leftQuestion_{{index}}">
-            <div class="col-xs-3 Label noLeftRightPadding">CDE Name:
-                <div *ngIf="item.value.isRetired">Retired</div>
-                <div *ngIf="item.value.info && item.value.info.error">{{item.value.info.error}}</div>
-            </div>
-            <div class="col-xs-8 noLeftRightPadding mergeCdeName">
-                <a target="_blank" href="deview?tinyId={{item.value.question.cde.tinyId}}">
-                    {{item.value.question.cde.name}}
-                </a>
-            </div>
-            <div class="col-xs-1 noLeftRightPadding">
-            <span class="fa fa-trash right" id="removeLeftQuestion_{{index}}"
-                  (click)="removeItem(left.questions,index)"></span>
-            </div>
-        </div>
-    </template>
 </template>

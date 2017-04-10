@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
+import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
 import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
@@ -23,6 +24,7 @@ import { SortableModule } from "ng2-bootstrap/index";
     ],
     declarations: [
         MergeFormComponent,
+        CdeSortableComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
         NativeSectionComponent,
