@@ -17,7 +17,7 @@ export class CreateBoardComponent {
         public modalService: NgbModal,
         @Inject("Alert") private alert,
         private myBoardsSvc: MyBoardsService,
-) {}
+    ) {}
 
     newBoard: any = {
         type: "cde"
@@ -35,6 +35,7 @@ export class CreateBoardComponent {
         this.http.post("/board", this.newBoard).subscribe(() => {
             this.myBoardsSvc.waitAndReload();
             this.modalRef.close();
+            this.alert.addAlert("success", "Board created.");
         }, () => {
             this.alert.addAlert("danger", "There was an issue creating this board.");
         });
