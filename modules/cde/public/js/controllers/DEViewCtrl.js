@@ -534,18 +534,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
         },
         {
-            element: "#cdeDataSetBtn",
-            title: "Data Sets",
-            content: "This section lists all data sets this CDE has.",
-            placement: "top"
-        },
-        {
-            element: "#linkedFormsBtn",
-            title: "Forms",
-            placement: "top",
-            content: "If an element is used in a Form, it will be displayed here. "
-        },
-        {
             element: "#cdeLinkedBoardsBtn",
             title: "Boards",
             content: "If a CDE is used in a public board, the board will be shown in this section.",
@@ -555,6 +543,18 @@ angular.module('cdeModule').controller('DEViewCtrl',
             element: "#cdeMoreLikeThisBtn",
             title: "More Like This",
             content: "This section lists CDEs that are most similar to the CDE currently viewed.",
+            placement: "top"
+        },
+        {
+            element: "#linkedFormsBtn",
+            title: "Forms",
+            placement: "top",
+            content: "If an element is used in a Form, it will be displayed here. "
+        },
+        {
+            element: "#cdeDataSetBtn",
+            title: "Data Sets",
+            content: "This section lists all data sets this CDE has.",
             placement: "top"
         }
     ];

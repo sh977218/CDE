@@ -17,7 +17,7 @@ public class DoNotSaveIfPendingChanges extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#designation_0 i.fa-edit"));
         findElement(By.cssSelector("#designation_0 input")).sendKeys("[name change number 1]");
         clickElement(By.cssSelector("#designation_0 .fa-check"));
-        clickElement(By.linkText("Classification"));
+        clickElement(By.id("classification_tab"));
         Assert.assertFalse(findElement(By.id("addClassification")).isEnabled());
 
         clickElement(By.id("properties_tab"));
@@ -42,8 +42,8 @@ public class DoNotSaveIfPendingChanges extends NlmCdeBaseTest {
         textPresent("Identifier added. Save to confirm.");
         modalGone();
         closeAlert();
-        clickElement(By.id("removeId-1"));
-        clickElement(By.id("confirmRemoveId-1"));
+        clickElement(By.id("removeIdentifier-1"));
+        clickElement(By.id("confirmRemoveIdentifier-1"));
         textPresent("Identifier removed. Save to confirm.");
     }
 

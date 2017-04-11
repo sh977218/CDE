@@ -13,15 +13,15 @@ public class BrowseUsers extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Users"));
-        findElement(By.name("searchUsers")).sendKeys("cabig");
+        findElement(By.name("searchUsersInput")).sendKeys("cabig");
         clickElement(By.id("searchUsersSubmit"));
 
         Assert.assertEquals("cabigAdmin", findElement(By.id("user_username")).getText());
         Assert.assertEquals("caBIG", findElement(By.id("user_orgadmin")).getText());
         Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "No");
 
-        findElement(By.name("searchUsers")).clear();
-        findElement(By.name("searchUsers")).sendKeys("nlm");
+        findElement(By.name("searchUsersInput")).clear();
+        findElement(By.name("searchUsersInput")).sendKeys("nlm");
         clickElement(By.id("searchUsersSubmit"));
 
         textPresent("nlm", By.id("user_username"));

@@ -7,27 +7,25 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
     providers: [NgbActiveModal],
     templateUrl: "./derivationRules.component.html"
 })
-
 export class DerivationRulesComponent implements DoCheck, OnChanges {
 
     @ViewChild("newScoreContent") public newScoreContent: NgbModalModule;
     @Input() public elt: any;
     public modalRef: NgbModalRef;
 
-    newDerivationRule: any;
+    newDerivationRule: any = {
+        ruleType: "score",
+        formula: "sumAll",
+        inputs: []
+    };
     invalidCdeMessage: string;
     previousCdeId: string;
 
     constructor(private http: Http,
-                @Inject("QuickBoard") private quickBoard,
-                @Inject("isAllowedModel") private isAllowedModel,
                 public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
-        this.newDerivationRule = {
-            ruleType: "score",
-            formula: "sumAll",
-            inputs: []
-        };
+                public activeModal: NgbActiveModal,
+                @Inject("QuickBoard") private quickBoard,
+                @Inject("isAllowedModel") private isAllowedModel) {
     }
 
     ngOnChanges(changes) {

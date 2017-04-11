@@ -1,9 +1,6 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
-import java.util.List;
 
 public abstract class IdentifiersTest extends CommonTest {
 
@@ -31,16 +28,8 @@ public abstract class IdentifiersTest extends CommonTest {
         addId("MyOrigin3", "MyId3", "MyVersion3");
 
         //remove MyOrigin2
-        List<WebElement> ddElts = driver.findElements(By.xpath("//dd[starts-with(@id, 'dd_id_origin')]"));
-        for (int i = 0; i < ddElts.size(); i++) {
-            if (ddElts.get(i).getText().equals("MyOrigin2")) {
-                findElement(By.id("removeId-" + i)).click();
-                findElement(By.id("confirmRemoveId-" + i)).click();
-                textPresent("Identifier Removed");
-                closeAlert();
-                i = ddElts.size();
-            }
-        }
+        clickElement(By.id("removeIdentifier-2"));
+        clickElement(By.id("confirmRemoveProperty-2"));
 
         goToEltByName(eltName, status);
 
