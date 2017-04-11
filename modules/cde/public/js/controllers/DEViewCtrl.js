@@ -546,13 +546,13 @@ angular.module('cdeModule').controller('DEViewCtrl',
             placement: "top"
         },
         {
-            element: "#linkedFormsBtn",
+            element: "#openLinkedFormsModalBtn",
             title: "Forms",
             placement: "top",
             content: "If an element is used in a Form, it will be displayed here. "
         },
         {
-            element: "#cdeDataSetBtn",
+            element: "#openDataSetModalBtn",
             title: "Data Sets",
             content: "This section lists all data sets this CDE has.",
             placement: "top"

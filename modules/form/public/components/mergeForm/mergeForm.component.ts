@@ -106,7 +106,7 @@ export class MergeFormComponent implements OnInit {
             if (err)
                 return this.alert.addAlert("danger", err);
             else {
-                if (this.error.ownSourceForm) {
+                if (this.mergeFormService.error.ownSourceForm) {
                     this.left.changeNote = "Merge to tinyId " + this.right.tinyId;
                     if (this.isAllowedModel.isAllowed(this.left))
                         this.left.registrationState.registrationStatus = "Retired";

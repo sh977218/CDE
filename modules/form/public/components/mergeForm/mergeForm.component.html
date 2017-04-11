@@ -146,12 +146,13 @@
             {{mergeFormService.error.error}}
         </div>
 
-        <ngb-progressbar *ngIf="showProgressBar" type="success" [value]="numMergedQuestions">{{numMergedQuestions}} /
-            {{maxNumberQuestions}}
-        </ngb-progressbar>
-
+        <div style="width:100%">
+            <ngb-progressbar *ngIf="showProgressBar" type="success" [value]="numMergedQuestions">
+                {{numMergedQuestions}}/{{maxNumberQuestions}}
+            </ngb-progressbar>
+        </div>
         <button class="btn cancel" id="cancelMergeFormBtn" (click)="c('Close click')" type="button">
-            {{(doneMerge && info)?'Close':'Cancel'}}
+            {{doneMerge?'Close':'Cancel'}}
         </button>
         <button *ngIf="!doneMerge && !mergeFormService.error.error" class="btn btn-warning" id="mergeFormBtn"
                 (click)="doMerge()">

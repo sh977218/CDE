@@ -1738,5 +1738,5 @@ div.slider .ui-slider-handle {
 }
 
 .progress-bar .bg-success {
-    width: 100%;
+    width: 100% !important;
 }

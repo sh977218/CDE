@@ -29,7 +29,7 @@ public abstract class IdentifiersTest extends CommonTest {
 
         //remove MyOrigin2
         clickElement(By.id("removeIdentifier-2"));
-        clickElement(By.id("confirmRemoveProperty-2"));
+        clickElement(By.id("confirmRemoveIdentifier-2"));
 
         goToEltByName(eltName, status);
 
