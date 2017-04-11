@@ -1,4 +1,4 @@
-<a *ngIf="ownTargetForm && ownSourceForm" class='btn btn-small btn-default fa fa-clipboard mergeForm'
+<a class='btn btn-small btn-default fa fa-clipboard mergeForm'
    id="openMergeFormModalBtn" (click)="openMergeFormModal()">Merge Form</a>
 
 <template #mergeFormContent id="mergeFormModal" let-c="close" let-d="dismiss" class="hugeModal">
@@ -122,7 +122,7 @@
                 <div class="row">
                     <div class="col-xs-12" *ngIf="mergeFields.questions">
                         <div class="col-xs-6" id="dropArea">
-                            <cde-sortable [array]="left.questions" (checkSortable)="check()"></cde-sortable>
+                            <cde-sortable [left]="left" [right]="right" [mergeFields]="mergeFields"></cde-sortable>
                         </div>
                         <div class="col-xs-6">
                             <div *ngFor="let rightQuestion of right.questions; let i = index"
@@ -142,7 +142,9 @@
         </div>
     </div>
     <div class="modal-footer" id="mergeFormModalFooter">
-        <div *ngIf="error" id="mergeFormErrorDiv" class="alert alert-danger">{{error}}</div>
+        <div *ngIf="mergeFormService.error.error" id="mergeFormErrorDiv" class="alert alert-danger">
+            {{mergeFormService.error.error}}
+        </div>
 
         <ngb-progressbar *ngIf="showProgressBar" type="success" [value]="numMergedQuestions">{{numMergedQuestions}} /
             {{maxNumberQuestions}}
@@ -151,7 +153,8 @@
         <button class="btn cancel" id="cancelMergeFormBtn" (click)="c('Close click')" type="button">
             {{(doneMerge && info)?'Close':'Cancel'}}
         </button>
-        <button *ngIf="!doneMerge && !error" class="btn btn-warning" id="mergeFormBtn" (click)="doMerge()">
+        <button *ngIf="!doneMerge && !mergeFormService.error.error" class="btn btn-warning" id="mergeFormBtn"
+                (click)="doMerge()">
             Merge
         </button>
     </div>

@@ -1,32 +1,32 @@
-import { Component, Input, ViewChild, Host } from "@angular/core";
+import { Component, Input, ViewChild, Host, Output } from "@angular/core";
 import { SortableComponent } from "ng2-bootstrap/index";
-import { MergeFormComponent } from "./mergeForm.component";
+import { MergeFormService } from "../../../../core/public/mergeForm.service";
 
 @Component({
     selector: "cde-sortable",
     templateUrl: "./cdeSortable.component.html"
 })
 export class CdeSortableComponent {
-    @Input() public array: any;
-    @Input() public checkSortable: Function;
+    @Input() public left: any;
+    @Input() public right: any;
+    @Input() public mergeFields: any;
     @ViewChild("sortableComponent") sortableComponent: SortableComponent;
-    private mergeFormComponent;
 
-    constructor(@Host() mergeFormComponent: MergeFormComponent) {
-        this.mergeFormComponent = mergeFormComponent;
+    constructor(private mergeFormService: MergeFormService) {
     }
 
     addItem() {
-        this.array.push({question: {cde: {tinyId: "", name: ""}}});
-        this.sortableComponent.writeValue(this.array);
-        this.mergeFormComponent.checkSortable();
+        this.left.questions.push({question: {cde: {tinyId: "", name: ""}}});
+        this.sortableComponent.writeValue(this.left.questions);
+        this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
     }
 
     removeItem(index) {
         if (index === undefined) index = -1;
-        this.array.splice(index, 1);
-        this.sortableComponent.writeValue(this.array);
-        this.mergeFormComponent.checkSortable();
+        this.left.questions.splice(index, 1);
+        this.sortableComponent.writeValue(this.left.questions);
+        this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
+
     }
 
 }

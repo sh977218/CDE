@@ -6,9 +6,18 @@ import * as async from "async";
 
 @Injectable()
 export class MergeFormService {
+    public error: any = {
+        error: "",
+        ownTargetForm: false,
+        ownSourceForm: false
+    };
+
+
     constructor(private http: Http,
                 private mergeCdeService: MergeCdeService,
-                private mergeShareService: MergeShareService) {
+                private mergeShareService: MergeShareService,
+                @Inject("userResource") private userService,
+                @Inject("isAllowedModel") private isAllowedModel) {
     }
 
     public saveForm(form, cb) {
@@ -75,5 +84,26 @@ export class MergeFormService {
                 });
             }
         }
+    }
+
+    validateQuestions(left, right, selectedFields) {
+        this.error.error = "";
+        if (selectedFields.questions && left.questions.length > right.questions.length) {
+            this.error.error = "Form merge from has too many questions";
+            return this.error;
+        }
+        left.questions.forEach((leftQuestion, i) => {
+            let leftTinyId = leftQuestion.question.cde.tinyId;
+            leftQuestion.info = {};
+            right.questions.filter((rightQuestion, j) => {
+                let rightTinyId = rightQuestion.question.cde.tinyId;
+                if (leftTinyId === rightTinyId && i !== j) {
+                    leftQuestion.info.error = "Not align";
+                    this.error.error = "Form not align";
+                } else if (leftTinyId === rightTinyId && i === j) {
+                    leftQuestion.info.match = true;
+                }
+            });
+        });
     }
 }
