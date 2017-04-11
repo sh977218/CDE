@@ -58,13 +58,13 @@
                             <i class="fa fa-download"></i> Export<span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <li ng-if="user._id" ng-repeat="(key, value) in exporters">
+                            <li ng-if="user._id || module === 'cde'" ng-repeat="(key, value) in exporters">
                                 <a id="{{value.id}}" ng-click="exportSearchResults(key)" ng-bind="value.display"></a>
                             </li>
                             <li ng-if="displayValidation()">
                                 <a id="exportValidRule" ng-click="openValidRulesModal()">Validation Rules</a>
                             </li>
-                            <li ng-if="!user._id"><a href="/login">Please login to export forms.</a></li>
+                            <li ng-if="!user._id && module !== 'cde'"><a href="/login">Please login to export forms.</a></li>
                         </ul>
                     </li>
                 </ul>

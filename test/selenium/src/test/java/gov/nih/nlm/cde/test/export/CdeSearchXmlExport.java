@@ -15,7 +15,6 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
 
     @Test
     public void cdeSearchXmlExport() {
-        mustBeLoggedInAs(test_username, password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-CTEP"));
         textPresent("All Statuses");
