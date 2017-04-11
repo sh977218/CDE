@@ -55,14 +55,6 @@ export class NativeQuestionComponent {
             return index % 4 === 0;
     }
 
-    getLabel(pv) {
-        return pv ? (pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue) : "";
-    }
-
-    getValue(pv) {
-        return (pv && pv.permissibleValue !== pv.valueMeaningName ? pv.permissibleValue : "");
-    }
-
     hasLabel(question) {
         return question.label && !question.hideLabel;
     }
@@ -70,19 +62,5 @@ export class NativeQuestionComponent {
     isOneLiner(question, numSubQuestions) {
         return numSubQuestions && !this.hasLabel(question) && !question.instructions
             && question.elementType === "question" && question.question.datatype !== "Value List";
-    }
-
-    checkboxOnChange($event: any, model: any, value: any) {
-        if (!Array.isArray(model.answer))
-            model.answer = [];
-        if ($event.target.checked)
-            model.answer.push(value);
-        else
-            model.answer.splice(model.answer.indexOf(value), 1);
-    }
-    checkBoxIsChecked(model: any, value: any) {
-        if (!Array.isArray(model.answer))
-            model.answer = [];
-        return (model.answer.indexOf(value) !== -1);
     }
 }

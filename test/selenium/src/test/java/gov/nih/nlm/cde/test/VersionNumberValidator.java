@@ -11,13 +11,14 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
     public void versionNumberValidator() {
         mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Operating room total time";
+        String newName = "[name change number 2]";
         String validationError = "Version number cannot";
+
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-        findElement(By.cssSelector("#dd_name_0 i.fa-edit")).click();
-        findElement(By.cssSelector("#dd_name_0 input")).sendKeys("[name change number 2]");
-        findElement(By.cssSelector("#dd_name_0 .fa-check")).click();
-        findElement(By.id("openSave")).click();
+
+        editDesignationByIndex(0,newName);
+        clickElement(By.id("openSave"));
         hangon(1);
         textNotPresent(validationError);
         findElement(By.name("version")).sendKeys("/23");

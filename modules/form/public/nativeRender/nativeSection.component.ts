@@ -13,6 +13,14 @@ export class NativeSectionComponent {
     constructor(public nativeRenderService: NativeRenderService) {
     }
 
+    sectionType() {
+        if (this.formElement.repeat && this.formElement.repeat !== "1")
+            return "table";
+        if (this.nativeRenderService.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement))
+            return "matrix";
+        return "section";
+    }
+
     isSectionDisplayed(section) {
         return section.label ||
             section.formElements.some(function (elem) {

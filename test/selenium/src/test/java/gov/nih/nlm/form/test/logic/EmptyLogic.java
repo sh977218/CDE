@@ -28,7 +28,7 @@ public class EmptyLogic extends NlmCdeBaseTest {
 
         // Value Lists
         textPresent("Pulmonary function test not done reason");
-        findElement(By.xpath("//div[@id='Image Acquisition Event Yes No Not Done Indicator_2']//label[text()='No: C49487']")).click();
+        findElement(By.xpath("//div[@id='Image Acquisition Event Yes No Not Done Indicator_2']//label/span[text()='No: C49487']")).click();
         textNotPresent("Pulmonary function test not done reason");
 
         // Numbers

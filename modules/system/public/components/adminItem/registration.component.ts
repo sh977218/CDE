@@ -1,5 +1,5 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
@@ -12,41 +12,41 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 
 export class RegistrationComponent implements OnInit {
     @ViewChild("regStatusEdit") public regStatusEditModal: NgbModalModule;
-    @Input() elt: any;
+    @Input() public elt: any;
     regStatusShared: any = require("../../../shared/regStatusShared");
     helpMessage: string;
     newState: any = {};
     public modalRef: NgbModalRef;
 
-    validRegStatuses: string[] = ["Retired", "Incomplete", "Candidate" ];
+    validRegStatuses: string[] = ["Retired", "Incomplete", "Candidate"];
 
-    constructor (private http: Http,
-                 private parserFormatter: NgbDateParserFormatter,
-                 @Inject("Alert") private alert,
-                 @Inject("isAllowedModel") private isAllowedModel,
-                 @Inject("userResource") private userService,
-                 public modalService: NgbModal,
-                 public activeModal: NgbActiveModal
-    ) {}
+    constructor(private http: Http,
+                private parserFormatter: NgbDateParserFormatter,
+                @Inject("Alert") private alert,
+                @Inject("isAllowedModel") public isAllowedModel,
+                @Inject("userResource") private userService,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal) {
+    }
 
     ngOnInit(): void {
         this.newState = {registrationStatus: this.elt.registrationState.registrationStatus};
     }
 
-    openRegStatusUpdate () {
+    openRegStatusUpdate() {
 
         this.http.get("/comments/eltId/" + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
-                    return a.status !== 'resolved' && a.status !== 'deleted'
+                    return a.status !== "resolved" && a.status !== "deleted";
                 }).length > 0) {
-                this.alert.addAlert('info', "Info: There are unresolved comments. ")
+                this.alert.addAlert("info", "Info: There are unresolved comments. ");
             }
 
-            this.http.get('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
+            this.http.get("/org/" + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
                 if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
-                    this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
+                    this.validRegStatuses = this.validRegStatuses.concat(["Recorded", "Qualified"]);
                     if (this.userService.user.siteAdmin) {
-                        this.validRegStatuses = this.validRegStatuses.concat(['Standard', 'Preferred Standard']);
+                        this.validRegStatuses = this.validRegStatuses.concat(["Standard", "Preferred Standard"]);
                     }
                 }
                 this.validRegStatuses.reverse();
@@ -56,13 +56,13 @@ export class RegistrationComponent implements OnInit {
         });
     }
 
-    setHelpMessage (newValue) {
+    setHelpMessage(newValue) {
         this.regStatusShared.statusList.forEach((status) => {
             if (status.name === newValue) this.helpMessage = status.curHelp;
         });
     };
 
-    ok () {
+    ok() {
         this.elt.registrationState = this.newState;
         this.elt.registrationState.effectiveDate = this.parserFormatter.format(this.newState.effectiveDate);
         this.elt.registrationState.untilDate = this.parserFormatter.format(this.newState.untilDate);

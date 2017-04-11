@@ -1,8 +1,9 @@
 package gov.nih.nlm.form.test.logic;
 
+
 import gov.nih.nlm.form.test.BaseFormTest;
-import org.testng.Assert;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class NativeRenderTest extends BaseFormTest {
@@ -14,8 +15,8 @@ public class NativeRenderTest extends BaseFormTest {
         goToFormByName(formName);
 
         Assert.assertEquals(
-                findElement(By.xpath("//label[text()='Not specified']")).getLocation().y,
-                findElement(By.xpath("//label[text()='Not specified']/following-sibling::div//input")).getLocation().y,
+                findElement(By.xpath("//label/span[text()='Not specified']")).getLocation().y,
+                findElement(By.xpath("//label[span[text()='Not specified']]/following-sibling::div//input")).getLocation().y,
                 8
         );
     }

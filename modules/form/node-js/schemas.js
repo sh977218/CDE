@@ -46,16 +46,11 @@ var inFormSchema = {
     }
 };
 
-var cardinalitySchema = {
-    min: Number,
-    max: Number
-};
-
 var formElementTreeRoot = {
     elementType: {type: String, enum: ['section', 'question', 'form']}
     , label: String
     , instructions: sharedSchemas.instructionSchema
-    , cardinality: cardinalitySchema
+    , repeat: String
     , repeatsFor: String
     , showIfExpression: String
     , section: sectionSchema
@@ -75,7 +70,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         , label: String
         , hideLabel: {type: Boolean, default: false}
         , instructions: sharedSchemas.instructionSchema
-        , cardinality: cardinalitySchema
+        , repeat: String
         , repeatsFor: String
         , showIfExpression: String
         , section: sectionSchema
@@ -143,6 +138,7 @@ exports.formJson = {
         , displayType: {type: String, enum: ['Dynamic', 'Follow-up']}
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
+        , repeatFormat: {type: String, default: ''}
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
