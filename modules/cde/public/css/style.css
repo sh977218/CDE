@@ -1736,3 +1736,7 @@ div.slider .ui-slider-handle {
     max-width: 90% !important;
     width: 90% !important;
 }
+
+.progress-bar .bg-success {
+    width: 100%;
+}
