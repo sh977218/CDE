@@ -20,7 +20,7 @@ module.exports = {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {test: /\.ts$/, use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']},
-            {test: /\.css$/, use: ['style-loader?insertAt=top', 'css-loader']},
+            {test: /\.css$/, use: ['style-loader?insertAt=top', 'raw-loader']},
             {test: /\.html$/, use: ['raw-loader']}
         ]
     },
