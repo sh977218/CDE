@@ -4,7 +4,7 @@
   "scripts": {
     "build": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
     "start": "node app.js",
-    "dev": "rm modules/static/main.js.map modules/static/print.js.map modules/static/embed.js.map && node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js"
+    "dev": "rm -f modules/static/main.js.map modules/static/print.js.map modules/static/embed.js.map && node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js"
   },
   "engines": {
     "node": "0.12.x",
