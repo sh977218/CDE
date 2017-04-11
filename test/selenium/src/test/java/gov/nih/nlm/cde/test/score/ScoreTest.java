@@ -40,7 +40,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         clickElement(By.id("addNewScore"));
         textPresent("You are trying to add a CDE to itself. Please edit your Quick Board.");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
-        clickElement(By.id("cancelCreate"));
+        clickElement(By.id("cancelNewScoreBtn"));
     }
 
     @Test

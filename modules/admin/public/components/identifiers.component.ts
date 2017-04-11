@@ -15,7 +15,7 @@ export class IdentifiersComponent {
     @Input() public elt: any;
     public modalRef: NgbModalRef;
 
-    newIdentifier: any;
+    public newIdentifier: any = {};
 
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
@@ -27,6 +27,7 @@ export class IdentifiersComponent {
         this.modalRef = this.modalService.open(this.newIdentifierContent, {size: "lg"});
         this.modalRef.result.then(result => {
             this.newIdentifier = {};
+        }, () => {
         });
     }
 

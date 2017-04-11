@@ -55,10 +55,10 @@ public class CdeIdentifierTest extends IdentifiersTest {
         goToCdeByName("Ethnicity USA maternal category");
 
         clickElement(By.id("ids_tab"));
-        clickElement(By.id("addId"));
+        clickElement(By.id("openNewIdentifierModalBtn"));
         findElement(By.name("source")).sendKeys("LOINC");
         findElement(By.name("id")).sendKeys("59362-4");
-        clickElement(By.id("createId"));
+        clickElement(By.id("createNewIdentifierBtn"));
         textPresent("Identifier Added");
         closeAlert();
         findElement(By.linkText("59362-4"));

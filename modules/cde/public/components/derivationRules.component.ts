@@ -85,6 +85,15 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             inputs: []
         };
         this.modalRef = this.modalService.open(this.newScoreContent, {size: "lg"});
+        this.modalRef.result.then(result => {
+            this.newDerivationRule = {
+                name: "",
+                ruleType: "score",
+                formula: "sumAll",
+                inputs: []
+            };
+        }, () => {
+        });
     };
 
     addNewScore() {

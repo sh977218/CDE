@@ -24,10 +24,10 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         addNewName(newName, newDefinition, null);
 
         clickElement(By.id("concepts_tab"));
-        clickElement(By.id("addConcept"));
+        clickElement(By.id("openNewConceptModalBtn"));
         findElement(By.xpath("//label[text()='Code Name']/following-sibling::input")).sendKeys("Code Name 1");
         findElement(By.xpath("//label[text()='Code ID']/following-sibling::input")).sendKeys("Code ID 1");
-        clickElement(By.id("createConcept"));
+        clickElement(By.id("createNewConceptBtn"));
         modalGone();
         newCdeVersion();
 
@@ -53,11 +53,11 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         clickElement(By.id("ids_tab"));
         closeAlert();
-        clickElement(By.id("addId"));
+        clickElement(By.id("openNewIdentifierModalBtn"));
         findElement(By.xpath("//label[text()='Source']/following-sibling::input")).sendKeys("Origin 1");
         findElement(By.xpath("//label[text()='Identifier']/following-sibling::input")).sendKeys("Identifier 1");
         findElement(By.xpath("//label[text()='Version']/following-sibling::input")).sendKeys("Version 1");
-        clickElement(By.id("createId"));
+        clickElement(By.id("createNewIdentifierBtn"));
         modalGone();
         goToCdeByName(cdeName);
 

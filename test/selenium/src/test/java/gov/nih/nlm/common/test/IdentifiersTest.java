@@ -1,6 +1,5 @@
 package gov.nih.nlm.common.test;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -10,12 +9,12 @@ public abstract class IdentifiersTest extends CommonTest {
 
     protected void addId(String source, String id, String version) {
         clickElement(By.id("ids_tab"));
-        clickElement(By.id("addId"));
+        clickElement(By.id("openNewIdentifierModalBtn"));
         findElement(By.id("newSource")).sendKeys(source);
         findElement(By.id("newId")).sendKeys(id);
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
-        clickElement(By.id("createId"));
+        clickElement(By.id("createNewIdentifierBtn"));
         textPresent("Identifier Added");
         closeAlert();
         hangon(1);

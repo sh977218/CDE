@@ -54,6 +54,7 @@ export class NamingComponent implements OnInit {
         this.modalRef = this.modalService.open(this.newNamingContent, {size: "lg"});
         this.modalRef.result.then(result => {
             this.newNaming = {};
+        }, () => {
         });
     }
 
