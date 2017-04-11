@@ -25,6 +25,7 @@
     "useWebpackText": true
   },
   "exclude": [
+    "build",
     "bower_components",
     "deploy",
     "dist",
