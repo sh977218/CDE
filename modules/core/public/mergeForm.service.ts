@@ -16,7 +16,6 @@ export class MergeFormService {
     constructor(private http: Http,
                 private mergeCdeService: MergeCdeService,
                 private mergeShareService: MergeShareService,
-                @Inject("userResource") private userService,
                 @Inject("isAllowedModel") private isAllowedModel) {
     }
 
@@ -88,6 +87,8 @@ export class MergeFormService {
 
     validateQuestions(left, right, selectedFields) {
         this.error.error = "";
+        this.error.ownSourceForm.isAllowedModel.isAllowed(left);
+        this.error.ownTargetForm.isAllowedModel.isAllowed(right);
         if (selectedFields.questions && left.questions.length > right.questions.length) {
             this.error.error = "Form merge from has too many questions";
             return this.error;

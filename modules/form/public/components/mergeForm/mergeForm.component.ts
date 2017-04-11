@@ -37,7 +37,6 @@ export class MergeFormComponent implements OnInit {
     public maxNumberQuestions: any;
     public showProgressBar: boolean = false;
     public doneMerge: boolean = false;
-    public error: any;
 
     constructor(@Inject("Alert") private alert,
                 public mergeFormService: MergeFormService,

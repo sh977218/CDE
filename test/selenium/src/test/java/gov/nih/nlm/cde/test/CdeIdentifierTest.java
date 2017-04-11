@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class CdeIdentifierTest extends IdentifiersTest {
 
     @Test
-    public void addRemoveCdeId() {
+    public void cdeAddRemoveIdentifier() {
         addRemoveId("Prostatectomy Performed Date", null);
     }
 

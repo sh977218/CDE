@@ -1004,5 +1004,16 @@ public class NlmCdeBaseTest {
         clickElement(By.id("createNewConceptBtn"));
     }
 
+    protected void addNewIdentifier(String source, String id, String version) {
+        clickElement(By.id("openNewIdentifierModalBtn"));
+        findElement(By.id("newSource")).sendKeys(source);
+        findElement(By.id("newId")).sendKeys(id);
+        if (version != null)
+            findElement(By.name("version")).sendKeys(version);
+        clickElement(By.id("createNewIdentifierBtn"));
+        textPresent("Identifier Added");
+        closeAlert();
+    }
+
 
 }
