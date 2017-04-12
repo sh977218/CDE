@@ -55,6 +55,8 @@ import { ReferenceDocumentComponent } from "../../admin/public/components/refere
         ProfileComponent,
         LinkedFormsComponent,
         IdentifiersComponent,
+        NamingComponent,
+        ReferenceDocumentComponent,
         HomeComponent,
         LogAuditComponent,
         RegistrationComponent,
