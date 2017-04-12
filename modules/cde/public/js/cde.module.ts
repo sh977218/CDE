@@ -6,14 +6,14 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ConceptsComponent } from "../components/concepts.component";
 import { DerivationRulesComponent } from "../components/derivationRules.component";
 import { DatasetsComponent } from "../components/datasets/datasets.component";
-import { AdminModule } from "../../../admin/public/admin.module";
+import { AdminItemModule } from "../../../adminItem/public/adminItem.module";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
-        AdminModule
+        AdminItemModule
     ],
     declarations: [
         ConceptsComponent,

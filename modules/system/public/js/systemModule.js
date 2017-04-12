@@ -411,17 +411,20 @@ angular.module('systemModule').directive('cdeLogAudit', upgradeAdapter.downgrade
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', upgradeAdapter.downgradeNg2Component(UsersMgtComponent));
 
-import {IdentifiersComponent} from "../../../admin/public/components/identifiers.component";
+import {IdentifiersComponent} from "../../../adminItem/public/components/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', upgradeAdapter.downgradeNg2Component(IdentifiersComponent));
 
-import {PropertiesComponent} from "../../../admin/public/components/properties.component";
+import {PropertiesComponent} from "../../../adminItem/public/components/properties.component";
 angular.module('systemModule').directive('cdeAdminItemProperties', upgradeAdapter.downgradeNg2Component(PropertiesComponent));
 
-import {NamingComponent} from "../../../admin/public/components/naming.component";
+import {NamingComponent} from "../../../adminItem/public/components/naming.component";
 angular.module('systemModule').directive('cdeAdminItemNaming', upgradeAdapter.downgradeNg2Component(NamingComponent));
 
-import {ReferenceDocumentComponent} from "../../../admin/public/components/referenceDocument.component";
+import {ReferenceDocumentComponent} from "../../../adminItem/public/components/referenceDocument.component";
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', upgradeAdapter.downgradeNg2Component(ReferenceDocumentComponent));
+
+import {AttachmentsComponent} from "../../../adminItem/public/components/attachments/attachments.component";
+angular.module('systemModule').directive('cdeAdminItemAttachments', upgradeAdapter.downgradeNg2Component(AttachmentsComponent));
 
 import {UserCommentsComponent} from "../components/userComments.component";
 angular.module('systemModule').directive('user-comments', upgradeAdapter.downgradeNg2Component(UserCommentsComponent));

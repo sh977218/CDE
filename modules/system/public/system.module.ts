@@ -13,12 +13,12 @@ import { RegistrationComponent } from "./components/adminItem/registration.compo
 import { HomeComponent } from "./components/home/home.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
-import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
-import { PropertiesComponent } from "../../admin/public/components/properties.component";
-import { AdminModule } from "../../admin/public/admin.module";
-import { NamingComponent } from "../../admin/public/components/naming.component";
-import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
+import { IdentifiersComponent } from "../../adminItem/public/components/identifiers.component";
+import { PropertiesComponent } from "../../adminItem/public/components/properties.component";
+import { NamingComponent } from "../../adminItem/public/components/naming.component";
+import { ReferenceDocumentComponent } from "../../adminItem/public/components/referenceDocument.component";
 import { JsonpModule } from "@angular/http";
+import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 
 @NgModule({
     imports: [
@@ -28,7 +28,7 @@ import { JsonpModule } from "@angular/http";
         Select2Module,
         NgbModule,
         JsonpModule,
-        AdminModule,
+        AdminItemModule
     ],
     declarations: [
         upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
