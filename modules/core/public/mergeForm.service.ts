@@ -87,8 +87,8 @@ export class MergeFormService {
 
     validateQuestions(left, right, selectedFields) {
         this.error.error = "";
-        this.error.ownSourceForm.isAllowedModel.isAllowed(left);
-        this.error.ownTargetForm.isAllowedModel.isAllowed(right);
+        this.error.ownSourceForm = this.isAllowedModel.isAllowed(left);
+        this.error.ownTargetForm = this.isAllowedModel.isAllowed(right);
         if (selectedFields.questions && left.questions.length > right.questions.length) {
             this.error.error = "Form merge from has too many questions";
             return this.error;

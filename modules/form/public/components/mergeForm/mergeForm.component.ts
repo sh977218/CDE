@@ -8,7 +8,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
     providers: [NgbActiveModal],
     templateUrl: "./mergeForm.component.html"
 })
-export class MergeFormComponent implements OnInit {
+export class MergeFormComponent {
     @ViewChild("mergeFormContent") public mergeFormContent: NgbModalModule;
     @Input() public left: any;
     @Input() public right: any;
@@ -85,9 +85,6 @@ export class MergeFormComponent implements OnInit {
         this.mergeFields.cde.properties = false;
         this.mergeFields.cde.ids = false;
         this.mergeFields.cde.classifications = false;
-    }
-
-    ngOnInit(): void {
     }
 
     openMergeFormModal() {
