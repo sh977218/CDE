@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { upgradeAdapter } from "../../upgrade";
 import { CommonModule } from "@angular/common";
 import { Select2Module } from "ng2-select2";
 import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
@@ -8,24 +7,20 @@ import { PropertiesComponent } from "../../admin/public/components/properties.co
 import { NamingComponent } from "../../admin/public/components/naming.component";
 import { ClassificationComponent } from "../../admin/public/components/classification.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
-
-const InlineEditComponent = upgradeAdapter.upgradeNg1Component("inlineEdit");
-const InlineAreaEditComponent = upgradeAdapter.upgradeNg1Component("inlineAreaEdit");
-const SortableArrayComponent = upgradeAdapter.upgradeNg1Component("sortableArray");
+import { CommonModule } from "@angular/common";
+import { Select2Module } from "ng2-select2";
+import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        Select2Module,
-        InlineEditComponent,
-        InlineAreaEditComponent,
-        SortableArrayComponent,
+        Select2Module
     ],
     declarations: [
-        InlineEditComponent,
-        InlineAreaEditComponent,
-        SortableArrayComponent,
+        InlineEditDirective,
+        InlineAreaEditDirective,
+        SortableArrayDirective,
         IdentifiersComponent,
         PropertiesComponent,
         NamingComponent,
@@ -34,14 +29,9 @@ const SortableArrayComponent = upgradeAdapter.upgradeNg1Component("sortableArray
     ],
     providers: [],
     exports: [
-        InlineAreaEditComponent,
-        InlineEditComponent,
-        SortableArrayComponent,
-        IdentifiersComponent,
-        PropertiesComponent,
-        NamingComponent,
-        ClassificationComponent,
-        ReferenceDocumentComponent
+        InlineEditDirective,
+        InlineAreaEditDirective,
+        SortableArrayDirective
     ]
 })
 export class AdminModule {

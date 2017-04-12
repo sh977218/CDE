@@ -19,7 +19,7 @@
                     <dd id="dd_derRule_input_{{i}}">
                         <a *ngFor="let input of getViewCdes(derRule)"
                            href="/deview/?tinyId={{input.tinyId}}">
-                            {{input.naming[0].designation}} {{!i === elt.derivationRules.length -1?'- ':''}}
+                            {{input.naming[0].designation}} {{i === elt.derivationRules.length -1?'':'- '}}
                         </a>
                         <span *ngIf="derRule.fullCdes && derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
                     </dd>
