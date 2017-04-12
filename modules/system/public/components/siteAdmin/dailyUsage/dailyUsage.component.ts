@@ -25,7 +25,7 @@ export class DailyUsageComponent {
         this.http.get("/logUsageDailyReport").map(r => r.json()).subscribe(res => {
             this.dailyUsage = res;
             this.dailyUsage.forEach(record => {
-                // record.daysAgo = this.generateDaysAgo(record._id.year, record._id.month, record._id.dayOfMonth);
+                record.daysAgo = this.generateDaysAgo(record._id.year, record._id.month, record._id.dayOfMonth);
             });
             this.dailyUsage.sort((u1, u2) => u1.daysAgo - u2.daysAgo);
         });
@@ -40,13 +40,12 @@ export class DailyUsageComponent {
         });
     };
 
-    // use moment
-    // generateDaysAgo (year, month, day) {
-    //     let recordDate = new Date(year, month - 1, day, 0, 0, 0, 0);
-    //     let diffMs = new Date().getTime() - recordDate.getTime();
-    //     let diffDays = diffMs / (3600 * 24 * 1000);
-    //     diffDays = Math.floor(diffDays);
-    //     return diffDays;
-    // };
+    generateDaysAgo (year, month, day) {
+        let recordDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+        let diffMs = new Date().getTime() - recordDate.getTime();
+        let diffDays = diffMs / (3600 * 24 * 1000);
+        diffDays = Math.floor(diffDays);
+        return diffDays;
+    };
 
 }

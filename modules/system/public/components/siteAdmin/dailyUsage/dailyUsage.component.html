@@ -16,7 +16,7 @@
     <hr/>
     <div class="row" *ngFor="let entry of dailyUsage | slice:0:entryLimit">
         <div class="col-md-1">
-            <!--{{entry.daysAgo}}-->
+            {{entry.daysAgo}}
         </div>
         <div class="col-md-2">
             {{entry.latest | date : 'short'}}
