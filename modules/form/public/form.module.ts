@@ -35,6 +35,7 @@ import { NativeTableComponent } from "./nativeRender/nativeTable.component";
         NativeTableComponent
     ],
     entryComponents: [
+        MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
     ],
