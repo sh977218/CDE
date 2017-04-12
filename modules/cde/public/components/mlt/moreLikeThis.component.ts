@@ -22,7 +22,7 @@ export class MoreLikeThisComponent {
     constructor(private http: Http,
         @Inject("Alert") private alert,
         public modalService: NgbModal,
-        @Inject("QuickBoard") quickBoard,
+        @Inject("QuickBoard") public quickBoard,
     ) {}
 
     open () {
