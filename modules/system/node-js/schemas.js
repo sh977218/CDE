@@ -164,6 +164,7 @@ schemas.userSchema = new mongoose.Schema({
             , naming: Boolean
             , questionTexts: Boolean
             , permissibleValues: Boolean
+            , nbOfPVs: Boolean
             , uom: Boolean
             , stewardOrg: Boolean
             , usedBy: Boolean
