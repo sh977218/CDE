@@ -8,13 +8,15 @@ import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
 import { Select2Module } from "ng2-select2";
+import { JsonpModule } from "@angular/http";
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 export { SkipLogicService } from "./skipLogic.service";
 
 @NgModule({
     imports: [
-        Select2Module
+        Select2Module,
+        JsonpModule
     ],
     providers: [
         {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
@@ -25,7 +27,8 @@ export { SkipLogicService } from "./skipLogic.service";
         SkipLogicService
     ],
     exports: [
-        Select2Module
+        Select2Module,
+        JsonpModule
     ]
 })
 export class CoreModule {

@@ -1735,3 +1735,12 @@ div.slider .ui-slider-handle {
 .mergeCdeName {
     height: 50px;
 }
+
+.hugeModal > .modal-dialog {
+    max-width: 90% !important;
+    width: 90% !important;
+}
+
+.progress-bar .bg-success {
+    width: 100% !important;
+}

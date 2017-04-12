@@ -79,7 +79,7 @@ exports.init = function (app) {
 
     app.get('/serverStatuses', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            app_status.getStatus(function() {
+            app_status.getStatus(function () {
                 mongo_data_system.getClusterHostStatuses(function (err, statuses) {
                     res.send({esIndices: esInit.indices, statuses: statuses});
                 });
@@ -208,7 +208,7 @@ exports.init = function (app) {
                 });
             });
     });
-    
+
     app.post('/logout', function (req, res) {
         if (!req.session) {
             return res.status(403).end();
@@ -301,7 +301,7 @@ exports.init = function (app) {
             res.status(401).send();
         }
     });
-    
+
     app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send("Not logged in.");
@@ -342,14 +342,14 @@ exports.init = function (app) {
 
     app.put('/user', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            mongo_data_system.addUser(
-                {
+            mongo_data_system.addUser({
                     username: req.body.username,
                     password: "umls",
                     quota: 1024 * 1024 * 1024
                 },
-                function () {
-                    res.send();
+                function (err, newUser) {
+                    if (err) res.status(500).end()
+                    else res.send(newUser.username + " added.");
                 });
         } else {
             res.status(401).send("Not Authorized");
@@ -438,10 +438,10 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/user/avatar/:username', function(req, res) {
-       mongo_data_system.userByName(req.params.username, function(err, u) {
-            res.send(u && u.avatarUrl?u.avatarUrl:"");
-       });
+    app.get('/user/avatar/:username', function (req, res) {
+        mongo_data_system.userByName(req.params.username, function (err, u) {
+            res.send(u && u.avatarUrl ? u.avatarUrl : "");
+        });
     });
 
     app.post('/updateUserAvatar', function (req, res) {
@@ -457,7 +457,7 @@ exports.init = function (app) {
 
     app.post('/updateTesterStatus', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            mongo_data_system.User.findOne({_id: req.body._id}, function(err, u) {
+            mongo_data_system.User.findOne({_id: req.body._id}, function (err, u) {
                 u.tester = req.body.tester;
                 u.save(() => res.send());
             });
@@ -488,7 +488,7 @@ exports.init = function (app) {
             res.send(status);
         });
     });
-    
+
     app.delete('/classification/org', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
             return res.status(403).end();
@@ -727,7 +727,7 @@ exports.init = function (app) {
 
     app.post('/embed/', function (req, res) {
         if (authorization.isOrgAdmin(req, req.body.org)) {
-            mongo_data_system.embeds.save(req.body, function(err, embed) {
+            mongo_data_system.embeds.save(req.body, function (err, embed) {
                 if (err) res.status(500).send("There was an error saving this embed.");
                 else res.send(embed);
             });
@@ -737,12 +737,12 @@ exports.init = function (app) {
     });
 
     app.delete('/embed/:id', function (req, res) {
-        mongo_data_system.embeds.find({_id: req.params.id}, function(err, embeds) {
+        mongo_data_system.embeds.find({_id: req.params.id}, function (err, embeds) {
             if (err) return res.status(500).send();
             if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
             var embed = embeds[0];
             if (authorization.isOrgAdmin(req, embed.org)) {
-                mongo_data_system.embeds.delete(req.params.id, function(err) {
+                mongo_data_system.embeds.delete(req.params.id, function (err) {
                     if (err) res.status(500).send("There was an error removing this embed.");
                     else res.send();
                 });
@@ -754,7 +754,7 @@ exports.init = function (app) {
 
 
     app.get('/embed/:id', function (req, res) {
-        mongo_data_system.embeds.find({_id: req.params.id}, function(err, embeds) {
+        mongo_data_system.embeds.find({_id: req.params.id}, function (err, embeds) {
             if (err) return res.status(500).send();
             if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
             else res.send(embeds[0]);
@@ -762,8 +762,8 @@ exports.init = function (app) {
 
     });
 
-    app.get('/embeds/:org', function(req, res) {
-        mongo_data_system.embeds.find({org: req.params.org}, function(err, embeds) {
+    app.get('/embeds/:org', function (req, res) {
+        mongo_data_system.embeds.find({org: req.params.org}, function (err, embeds) {
             if (err) res.status(500).send();
             else res.send(embeds);
         });
@@ -833,32 +833,32 @@ exports.init = function (app) {
         res.send(loincUploadStatus);
     });
 
-    app.post('/disableRule', function(req, res){
+    app.post('/disableRule', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-        mongo_data_system.disableRule(req.body, function(err, org){
+        mongo_data_system.disableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
             else res.send(org);
         });
     });
 
-    app.post('/enableRule', function(req, res){
+    app.post('/enableRule', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-        mongo_data_system.enableRule(req.body, function(err, org){
+        mongo_data_system.enableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
             else res.send(org);
         });
     });
 
-    app.get('/meshClassification', function(req, res) {
+    app.get('/meshClassification', function (req, res) {
         if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        mongo_data_system.findMeshClassification({flatClassification: req.query.classification}, function(err, mm) {
+        mongo_data_system.findMeshClassification({flatClassification: req.query.classification}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm[0]);
         });
     });
 
-    app.get('/meshClassifications', function(req, res) {
-        mongo_data_system.findMeshClassification({}, function(err, mm) {
+    app.get('/meshClassifications', function (req, res) {
+        mongo_data_system.findMeshClassification({}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm);
         });
@@ -885,13 +885,13 @@ exports.init = function (app) {
 
     function flatTreesFromMeshDescriptorArray(descArr, cb) {
         var allTrees = new Set();
-        async.each(descArr, function(desc, oneDescDone) {
-            request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function(err, response, oneDescBody) {
-                async.each(oneDescBody.TreeNumberList.TreeNumber, function(treeNumber, tnDone) {
-                    request(config.mesh.baseUrl + "/api/tree/parents/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
+        async.each(descArr, function (desc, oneDescDone) {
+            request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function (err, response, oneDescBody) {
+                async.each(oneDescBody.TreeNumberList.TreeNumber, function (treeNumber, tnDone) {
+                    request(config.mesh.baseUrl + "/api/tree/parents/" + treeNumber.t, {json: true}, function (err, response, oneTreeBody) {
                         var flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
                         if (oneTreeBody && oneTreeBody.length > 0) {
-                            flatTree = flatTree +  ";" + oneTreeBody.map(function(a) {
+                            flatTree = flatTree + ";" + oneTreeBody.map(function (a) {
                                     return a.RecordName;
                                 }).join(";");
                         }
@@ -912,9 +912,9 @@ exports.init = function (app) {
         if (req.body._id) {
             var id = req.body._id;
             delete req.body._id;
-            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function(trees) {
+            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
-                mongo_data_system.MeshClassification.findOne({_id: id}, function(err, elt) {
+                mongo_data_system.MeshClassification.findOne({_id: id}, function (err, elt) {
                     elt.meshDescriptors = req.body.meshDescriptors;
                     elt.flatTrees = req.body.flatTrees;
                     elt.save(function (err, o) {
@@ -923,7 +923,7 @@ exports.init = function (app) {
                 });
             });
         } else {
-            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function(trees) {
+            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
                 new mongo_data_system.MeshClassification(req.body).save(function (err, obj) {
                     if (err) res.status(500).send();
@@ -945,11 +945,11 @@ exports.init = function (app) {
         res.send(elastic.meshSyncStatus);
     });
 
-   function syncWithMesh() {
-       mongo_data_system.findMeshClassification({}, function (err, allMappings) {
-           elastic.syncWithMesh(allMappings);
-       });
-   }
+    function syncWithMesh() {
+        mongo_data_system.findMeshClassification({}, function (err, allMappings) {
+            elastic.syncWithMesh(allMappings);
+        });
+    }
 
     new CronJob({
         cronTime: '00 00 4 * * *',
@@ -962,7 +962,7 @@ exports.init = function (app) {
     }).start();
 
     app.get('/comments/eltId/:eltId', function (req, res) {
-        mongo_data_system.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function(err, comments) {
+        mongo_data_system.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
             var result = comments.filter(c => c.status !== 'deleted');
             result.forEach(function (c) {
                 c.replies = c.replies.filter(r => r.status !== 'deleted');

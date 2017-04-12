@@ -31,6 +31,7 @@ export class PropertiesComponent implements OnInit {
             this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
             this.modalRef.result.then(() => {
                 this.newProperty = {};
+            }, () => {
             });
         }
     }
