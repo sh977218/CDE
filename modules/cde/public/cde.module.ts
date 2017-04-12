@@ -5,12 +5,21 @@ import { PaginationModule } from "ng2-bootstrap";
 import { ModalModule } from "ng2-bootstrap";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
+import { AdminModule } from "../../admin/public/admin.module";
 import { ConceptsComponent } from "./components/concepts.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
 import { DatasetsComponent } from "./components/datasets/datasets.component";
 import { MoreLikeThisComponent } from "./components/moreLikeThis.component";
 
 @NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        ModalModule.forRoot(),
+        PaginationModule.forRoot(),
+        NgbModule,
+        AdminModule
+    ],
     declarations: [
         ConceptsComponent,
         DerivationRulesComponent,
@@ -24,7 +33,6 @@ import { MoreLikeThisComponent } from "./components/moreLikeThis.component";
         MoreLikeThisComponent
     ],
     providers: [],
-    imports: [CommonModule, FormsModule, NgbModule, ModalModule.forRoot(), PaginationModule.forRoot()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
