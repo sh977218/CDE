@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild, Inject } from "@angular/core";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 @Component({
-    selector: "cde-classification",
+    selector: "cde-admin-item-classification",
     providers: [NgbActiveModal],
-    templateUrl: "classification.component"
+    templateUrl: "./classification.component.html"
 })
 export class ClassificationComponent {
     @ViewChild("newClassificationContent") public newClassificationContent: NgbModalModule;

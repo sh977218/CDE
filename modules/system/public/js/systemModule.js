@@ -421,7 +421,7 @@ import {NamingComponent} from "../../../admin/public/components/naming.component
 angular.module('systemModule').directive('cdeAdminItemNaming', upgradeAdapter.downgradeNg2Component(NamingComponent));
 
 import {ClassificationComponent} from "../../../admin/public/components/classification.component";
-angular.module('systemModule').directive('cdeClassification', upgradeAdapter.downgradeNg2Component(ClassificationComponent));
+angular.module('systemModule').directive('cdeAdminItemClassification', upgradeAdapter.downgradeNg2Component(ClassificationComponent));
 
 import {ReferenceDocumentComponent} from "../../../admin/public/components/referenceDocument.component";
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', upgradeAdapter.downgradeNg2Component(ReferenceDocumentComponent));

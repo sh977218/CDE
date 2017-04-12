@@ -13,12 +13,7 @@ import { RegistrationComponent } from "./components/adminItem/registration.compo
 import { HomeComponent } from "./components/home/home.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
-import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
-import { PropertiesComponent } from "../../admin/public/components/properties.component";
 import { AdminModule } from "../../admin/public/admin.module";
-import { NamingComponent } from "../../admin/public/components/naming.component";
-import { ClassificationComponent } from "../../admin/public/components/classification.component";
-import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
 import { JsonpModule } from "@angular/http";
 
 @NgModule({
@@ -37,11 +32,6 @@ import { JsonpModule } from "@angular/http";
         upgradeAdapter.upgradeNg1Component("formSummaryList"),
         ProfileComponent,
         LinkedFormsComponent,
-        IdentifiersComponent,
-        PropertiesComponent,
-        NamingComponent,
-        ClassificationComponent,
-        ReferenceDocumentComponent,
         UserCommentsComponent,
         HomeComponent,
         LogAuditComponent,
