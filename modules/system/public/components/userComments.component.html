@@ -1,21 +1,17 @@
 <div *ngIf="comments?.latestComments?.length > 0">
     <h3>Comments</h3>
     <table class="table table-border table-striped table-responsive">
-        <thead>
         <tr>
-        <th>Date</th>
-        <th>Text</th>
-        <th>Type</th>
+            <th>Date</th>
+            <th>Text</th>
+            <th>Type</th>
         </tr>
-        </thead>
-        <tbody>
         <tr *ngFor="let c of comments.latestComments">
             <td>{{c.created | date:'MM/dd/yyyy @h:mma'}}</td>
             <td>{{c.text}}</td>
             <td><a href="{{getEltLink(c)}}" target="_blank">{{c.element.eltType}}</a></td>
         </tr>
-        </tbody>
     </table>
-    <pagination [totalItems]="comments.totalItems" [(ngModel)]="comments.currentCommentsPage"
-                (pageChanged)="getComments($event.page)" itemsPerPage="30"></pagination>
+    <ngb-pagination [collectionSize]="comments.totalItems" (pageChange)="getComments()" [(page)]="page"
+                    [pageSize]="pageSize"></ngb-pagination>
 </div>

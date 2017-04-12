@@ -1,16 +1,14 @@
 <div>
-
-    <button class="btn btn-default" (click)="childModal.show()" id="createUser">
-        <i class="fa fa-plus-square-o"></i> Create User</button>
+    <button class="btn btn-default" (click)="openNewUserModal()" id="opeNewUserModalBtn">
+        <i class="fa fa-plus-square-o"></i> Create User
+    </button>
 
     <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
-        <input name="searchUsers" type="text" class="form-control" placeholder="enter user name"
-               [(ngModel)]="search.username" autocomplete="off"
-               [typeahead]="allUsernames"
-               typeaheadMinLength="3" required>
-        <button type="submit" class="btn btn-success" id="searchUsersSubmit" (click)="searchUsers()" ng-disabled="">
-            Search
-        </button>
+        <input class="form-control" id="searchUsersInput" name="searchUsersInput" type="text"
+               placeholder="enter user name" autocomplete="off" [(ngModel)]="search.username"
+               [ngbTypeahead]="searchTypeahead" [resultFormatter]="formatter"
+               [inputFormatter]="formatter" required>
+        <button type="submit" class="btn btn-success" id="searchUsersSubmit" (click)="searchUsers()">Search</button>
     </form>
 
     <div *ngFor="let u of foundUsers; let $index = index">
@@ -18,88 +16,75 @@
             <div class="col-md-2"><strong>Username:</strong></div>
             <div id="user_username" class="col-md-10">{{u.username}}</div>
         </div>
-
         <div class="row">
             <div class="col-md-2"><strong>Avatar:</strong></div>
             <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
-            <inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (onOk)="updateAvatar(u)" class="col-md-10" ></inline-edit>
+            <inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (onOk)="updateAvatar(u)"
+                         class="col-md-10"></inline-edit>
         </div>
-
         <div class="row">
             <div class="col-md-2"><strong>Last Login:</strong></div>
             <div class="col-md-10">{{u.lastLogin}}</div>
         </div>
-
         <div class="row">
             <div class="col-md-2"><strong>Org Curator:</strong></div>
             <div id="user_curator" class="col-md-10">{{u.orgCurator}}</div>
         </div>
-
         <div class="row">
             <div class="col-md-2"><strong>Org Admin: </strong></div>
             <div id="user_orgadmin" class="col-md-10">{{u.orgAdmin}}</div>
         </div>
-
         <div class="row">
             <div class="col-md-2"><strong>Site Admin: </strong></div>
             <div id="user_siteadmin" class="col-md-10" [innerHtml]="u.siteAdmin?'Yes':'No'"></div>
         </div>
-
         <div class="row">
             <div class="col-md-2"><strong><label for="user.tester">Early Feature User: </label></strong></div>
             <div class="col-md-10">
-                <input id="user.tester" [ngModel]="u.tester" type="checkbox" (ngModelChange)="updateTesterStatus(u, $event)">
+                <input id="user.tester" [ngModel]="u.tester" type="checkbox"
+                       (ngModelChange)="updateTesterStatus(u, $event)">
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-2"><strong>Roles: </strong></div>
             <div class="col-md-10" id="user_roles_{{$index}}">
-                <select2
-                        [data]="rolesEnum"
-                        [value]="u.roles"
-                        [options]="s2Options"
-                        [width]="500"
-                        style="min-width: 300px"
-                        (valueChanged)="updateRoles(u, $event)">
+                <select2 [data]="rolesEnum" [value]="u.roles" [options]="s2Options" [width]="500"
+                         style="min-width: 300px" (valueChanged)="updateRoles(u, $event)">
                 </select2>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-2"><strong>Known IPs</strong></div>
             <div class="col-md-10">{{u.knownIPs}}</div>
         </div>
-
         <cde-user-comments [user]="u"></cde-user-comments>
-
         <hr/>
     </div>
 </div>
 
-<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-     aria-labelledby="newUserModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg" >
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Add User</h4>
-            </div>
-            <div class="alert-info">Please ensure the username matches the UMLS username.</div>
-            <form name="form" role="form" #uForm="ngForm">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="newUsername">Name</label>
-                        <input class="form-control" [(ngModel)]="newUsername" id="newUsername" name="username"
-                               Placeholder="New Username" required/>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn cancel" (click)="childModal.hide()" id="cancelCreate" type="button">Cancel</button>
-                    <button class="btn btn-warning" (click)="newUser(newUsername)" [disabled]="!uForm.form.valid"
-                            id="createNewUser" type="submit">Save
-                    </button>
-                </div>
-            </form>
-        </div>
+
+<template #newUserContent id="newUserModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="newUserModalHeader">
+        <h4 class="modal-title">Add User</h4>
     </div>
-</div>
+    <form role="form" #newUserForm="ngForm">
+        <div class="modal-body" id="newUserModalBody">
+            <div class="alert alert-info">
+                Please ensure the username matches the UMLS username.
+            </div>
+            <div class="form-group">
+                <label for="newUsername">Name</label>
+                <input class="form-control" id="newUsername" name="username" Placeholder="New Username"
+                       [(ngModel)]="newUsername" required/>
+            </div>
+        </div>
+        <div class="modal-footer" id="newUserModalFooter">
+            <button class="btn cancel" (click)="c('Close click')" id="cancelNewUserBtn" type="button">
+                Cancel
+            </button>
+            <button class="btn btn-warning" [disabled]="!newUserForm.form.valid" id="createNewUserBtn"
+                    type="submit" (click)="addNewUser();">Save
+            </button>
+        </div>
+    </form>
+</template>

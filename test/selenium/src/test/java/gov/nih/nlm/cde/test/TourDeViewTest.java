@@ -34,10 +34,10 @@ public class TourDeViewTest extends TourTest {
         getNext("Validation Rules are used to validate CDE.");
         getNext("This section shows the where this CDE load from.");
         getNext("This section shows the status of the CDE, and optionally dates and/or administrative status.");
-        getNext("This section lists all data sets this CDE has.");
-        getNext("If an element is used in a Form, it will be displayed here.");
         getNext("If a CDE is used in a public board, the board will be shown in this section.");
         getNext("This section lists CDEs that are most similar to the CDE currently viewed.");
+        getNext("If an element is used in a Form, it will be displayed here.");
+        getNext("This section lists all data sets this CDE has.");
         clickElement(By.xpath("//button[@data-role='end']"));
     }
 }

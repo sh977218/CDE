@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard',
-    function ($scope, QuickBoard) {
+angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', 'isAllowedModel',
+    function ($scope, QuickBoard, isAllowedModel) {
         $scope.compareView = true;
         $scope.pvLimit = 30;
 
@@ -17,6 +17,8 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard',
         };
 
         $scope.canCurate = false;
+
+        $scope.canMergeForm = isAllowedModel.isAllowed($scope.eltsToCompare[0]) && isAllowedModel.isAllowed($scope.eltsToCompare[1]);
 
         function lowerCompare(item1, item2) {
             if (item1 === undefined && item2 === undefined) {
