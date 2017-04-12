@@ -7,8 +7,6 @@ import { PropertiesComponent } from "../../admin/public/components/properties.co
 import { NamingComponent } from "../../admin/public/components/naming.component";
 import { ClassificationComponent } from "../../admin/public/components/classification.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
-import { CommonModule } from "@angular/common";
-import { Select2Module } from "ng2-select2";
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 
 @NgModule({

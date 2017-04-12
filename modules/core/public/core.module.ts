@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { Select2Module } from "ng2-select2";
 import { UpgradeModule } from "@angular/upgrade/static";
 
 import { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
