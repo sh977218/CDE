@@ -8,6 +8,7 @@ var mongoose = require('mongoose')
     , schemas_system = require('../../system/node-js/schemas')
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
+    , moment = require('moment')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -133,10 +134,10 @@ exports.getLogs = function(inQuery, callback) {
     delete inQuery.toDate;
     var query = LogModel.find(inQuery);
     if (fromDate !== undefined) {
-        query.where("date").gte(fromDate);
+        query.where("date").gte(moment(fromDate));
     }
     if (toDate !== undefined) {
-        query.where("date").lte(toDate);
+        query.where("date").lte(moment(toDate));
     }
     LogModel.count({}, function(err, count) {
         query.sort("-date").limit(logSize).skip(skip).exec(function(err, logs) {
