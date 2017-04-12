@@ -1,19 +1,18 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import { ModalDirective, SortableComponent } from "ng2-bootstrap/index";
+import { Component, Inject, Input, ViewChild, OnInit, SimpleChanges } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../../core/public/mergeForm.service";
-import { MergeCdeService } from "../../../../core/public/mergeCde.service";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-merge-form",
+    providers: [NgbActiveModal],
     templateUrl: "./mergeForm.component.html"
 })
-export class MergeFormComponent implements OnInit {
-    @ViewChild("MergeFormModal") public mergeFormModal: ModalDirective;
-    @ViewChild("LeftSortableComponent") leftSortableComponent: SortableComponent;
+export class MergeFormComponent {
+    @ViewChild("mergeFormContent") public mergeFormContent: NgbModalModule;
     @Input() public left: any;
     @Input() public right: any;
-
+    public modalRef: NgbModalRef;
     public mergeFields: any = {
         naming: true,
         referenceDocuments: true,
@@ -38,15 +37,12 @@ export class MergeFormComponent implements OnInit {
     public maxNumberQuestions: any;
     public showProgressBar: boolean = false;
     public doneMerge: boolean = false;
-    public ownTargetForm: any;
-    public ownSourceForm: any;
-    public error: any = "";
 
     constructor(@Inject("Alert") private alert,
-                private mergeFormService: MergeFormService,
-                private mergeCdeService: MergeCdeService,
-                @Inject("userResource") private userService,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                public mergeFormService: MergeFormService,
+                @Inject("isAllowedModel") private isAllowedModel,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal) {
     }
 
     selectAllFormMergerFields() {
@@ -91,59 +87,9 @@ export class MergeFormComponent implements OnInit {
         this.mergeFields.cde.classifications = false;
     }
 
-    ngOnInit() {
-        this.check();
-    }
-
-    checkOneQuestion(question, i) {
-        if (!question.info) question.info = {};
-        this.right.questions.filter((rightQuestion, j) => {
-            let rightTinyId = rightQuestion.question.cde.tinyId;
-            if (question.cde.tinyId === rightTinyId && i !== j) {
-                question.info.error = "Not align";
-            } else if (question === rightTinyId && i === j) {
-                question.info.match = true;
-            }
-        });
-    }
-
-    check() {
-        this.error = "";
-        if (!this.userService.user._id) {
-            return this.error = "Log in to merge";
-        }
-        this.ownSourceForm = this.isAllowedModel.isAllowed(this.left);
-        this.ownTargetForm = this.isAllowedModel.isAllowed(this.right);
-        if (!this.ownTargetForm) return this.error = "You do not own target form";
-        if (this.mergeFields.questions && this.left.questions.length > this.right.questions.length) {
-            return this.error = "Form merge from has too many questions";
-        }
-        this.left.questions.forEach((leftQuestion, i) => {
-            let leftTinyId = leftQuestion.question.cde.tinyId;
-            leftQuestion.info = {};
-            this.right.questions.filter((rightQuestion, j) => {
-                let rightTinyId = rightQuestion.question.cde.tinyId;
-                if (leftTinyId === rightTinyId && i !== j) {
-                    leftQuestion.info.error = "Not align";
-                    this.error = "Form not align";
-                } else if (leftTinyId === rightTinyId && i === j) {
-                    leftQuestion.info.match = true;
-                }
-            });
-        });
-    }
-
-    addItem(questions) {
-        questions.push({question: {cde: {tinyId: "", name: ""}}});
-        this.leftSortableComponent.writeValue(questions);
-        this.check();
-    }
-
-    removeItem(questions, index) {
-        if (index === undefined) index = -1;
-        questions.splice(index, 1);
-        this.leftSortableComponent.writeValue(questions);
-        this.check();
+    openMergeFormModal() {
+        this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
+        this.modalRef = this.modalService.open(this.mergeFormContent, {windowClass: "hugeModal"});
     }
 
     public doMerge() {
@@ -156,7 +102,7 @@ export class MergeFormComponent implements OnInit {
             if (err)
                 return this.alert.addAlert("danger", err);
             else {
-                if (this.ownSourceForm) {
+                if (this.mergeFormService.error.ownSourceForm) {
                     this.left.changeNote = "Merge to tinyId " + this.right.tinyId;
                     if (this.isAllowedModel.isAllowed(this.left))
                         this.left.registrationState.registrationStatus = "Retired";
@@ -168,7 +114,6 @@ export class MergeFormComponent implements OnInit {
                                 if (err) this.alert.addAlert("danger", "Can not save target form.");
                                 else {
                                     this.doneMerge = true;
-                                    this.leftSortableComponent.writeValue(this.left.questions);
                                     this.alert.addAlert("success", "Form merged");
                                     setTimeout(() => {
                                         this.showProgressBar = false;
@@ -184,7 +129,6 @@ export class MergeFormComponent implements OnInit {
                         if (err) this.alert.addAlert("danger", "Can not save target form.");
                         else {
                             this.doneMerge = true;
-                            this.leftSortableComponent.writeValue(this.left.questions);
                             this.alert.addAlert("success", "Form merged");
                             setTimeout(() => {
                                 this.showProgressBar = false;

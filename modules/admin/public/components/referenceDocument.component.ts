@@ -24,6 +24,7 @@ export class ReferenceDocumentComponent {
         this.modalRef = this.modalService.open(this.newReferenceDocumentContent, {size: "lg"});
         this.modalRef.result.then(result => {
             this.newReferenceDocument = {};
+        }, () => {
         });
     }
 

@@ -150,8 +150,8 @@ exports.userById = function(id, callback) {
 exports.addUser = function(user, callback) {
     user.username = user.username.toLowerCase();
     var newUser = new User(user);
-    newUser.save(function() {
-        callback(newUser);
+    newUser.save(function (err, o) {
+        callback(err, o);
     });
 };
 
