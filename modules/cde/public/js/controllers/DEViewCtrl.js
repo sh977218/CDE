@@ -74,7 +74,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             }
         },
         classification: {
-            heading: "Classification", includes: ['/system/public/html/elementClassification.html'],
+            heading: "Classification", includes: ['/system/public/html/classification.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             }

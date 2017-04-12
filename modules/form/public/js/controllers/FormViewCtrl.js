@@ -69,7 +69,7 @@ angular.module('formModule').controller
         },
         classification: {
             heading: "Classification",
-            includes: ['/form/public/html/formClassification.html'],
+            includes: ['/system/public/html/classification.html'],
             select: function (thisTab) {
                 $scope.setCurrentTab(thisTab);
             }

@@ -18,6 +18,7 @@ import { IdentifiersComponent } from "../../admin/public/components/identifiers.
 import { PropertiesComponent } from "../../admin/public/components/properties.component";
 import { AdminModule } from "../../admin/public/admin.module";
 import { NamingComponent } from "../../admin/public/components/naming.component";
+import { ClassificationComponent } from "../../admin/public/components/classification.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
 
 @NgModule({
@@ -41,6 +42,7 @@ import { ReferenceDocumentComponent } from "../../admin/public/components/refere
         IdentifiersComponent,
         PropertiesComponent,
         NamingComponent,
+        ClassificationComponent,
         ReferenceDocumentComponent,
         UserCommentsComponent,
         HomeComponent,
