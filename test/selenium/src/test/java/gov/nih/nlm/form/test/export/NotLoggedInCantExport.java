@@ -13,6 +13,11 @@ public class NotLoggedInCantExport extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         textPresent("Please login to export forms");
 
+        findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
+        clickElement(By.id("search.submit"));
+        clickElement(By.id("export"));
+        textPresent("Please login to export forms");
+
         goToFormByName("McGill Quality of Life Questionnaire (MQOL)");
         clickElement(By.id("export"));
         textPresent("Please login to export forms");
