@@ -1,19 +1,22 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
-import { ModalDirective } from "ng2-bootstrap/modal";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-concepts",
+    providers: [NgbActiveModal],
     templateUrl: "./concepts.component.html"
 })
 
 
 export class ConceptsComponent {
 
-    @ViewChild("childModal") public childModal: ModalDirective;
+    @ViewChild("newConceptContent") public newConceptContent: NgbModalModule;
+    public modalRef: NgbModalRef;
     @Input( ) public elt: any;
 
-    constructor(
-        @Inject("isAllowedModel") public isAllowedModel) {
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal) {
     }
 
     newConcept: {name?: string, originId?: string, origin: string, type: string} = {origin: "LOINC", type: "dec"};
@@ -24,8 +27,8 @@ export class ConceptsComponent {
         {type: "property", details: {display: "Property", path: "property.concepts.name"}
     }];
 
-    openNewConcept () {
-        this.childModal.show();
+    openNewConceptModal() {
+        this.modalRef = this.modalService.open(this.newConceptContent, {size: "lg"});
         this.newConcept = {origin: "LOINC", type: "dec"};
     };
 
@@ -52,7 +55,7 @@ export class ConceptsComponent {
         window.location.href = "/cde/search?q=" + config.details.path + `:"` + concept + `"`;
     };
 
-    okCreate () {
+    addNewConcept() {
         if (!this.elt.dataElementConcept) this.elt.dataElementConcept = {};
         if (this.newConcept.type === "dec") {
             if (!this.elt.dataElementConcept.concepts) this.elt.dataElementConcept.concepts = [];
@@ -65,7 +68,7 @@ export class ConceptsComponent {
             this.elt.objectClass.concepts.push(this.newConcept);
         }
         this.elt.unsaved = true;
-        this.childModal.hide();
+        this.modalRef.close();
     };
 
 

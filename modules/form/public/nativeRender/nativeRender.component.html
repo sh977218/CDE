@@ -19,5 +19,5 @@
 </form>
 
 <uib-alert type="danger" *ngIf="nativeRenderService.hasErrors()">
-    <span [textContent]="nativeRenderService.gerErrors().join(' -- ')"></span>
+    <span [textContent]="nativeRenderService.getErrors().join(' -- ')"></span>
 </uib-alert>

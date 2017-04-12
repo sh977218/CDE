@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class EditConceptsTest extends NlmCdeBaseTest {
@@ -24,23 +23,9 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
 
         clickElement(By.id("concepts_tab"));
-
-        clickElement(By.id("addConcept"));
-        findElement(By.name("name")).sendKeys(newDataElementConceptName);
-        findElement(By.name("codeId")).sendKeys(newDataElementConceptId);
-        clickElement(By.id("createConcept"));
-
-        clickElement(By.id("addConcept"));
-        findElement(By.name("name")).sendKeys(newObjectClassConceptName);
-        findElement(By.name("codeId")).sendKeys(newObjectClassConceptId);
-        new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");
-        clickElement(By.id("createConcept"));
-
-        clickElement(By.id("addConcept"));
-        findElement(By.name("name")).sendKeys(newPropertyConceptName);
-        findElement(By.name("codeId")).sendKeys(newPropertyConceptId);
-        new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Property");
-        clickElement(By.id("createConcept"));
+        addNewConcept(newDataElementConceptName, newDataElementConceptId, null, null);
+        addNewConcept(newObjectClassConceptName, newObjectClassConceptId, null, "Class");
+        addNewConcept(newPropertyConceptName, newPropertyConceptId, null, "Property");
 
         newCdeVersion();
 

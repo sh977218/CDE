@@ -17,7 +17,7 @@ public class CdeScoreValidationErrorTest extends BaseFormTest {
         clickElement(By.id("addNewScore"));
         textPresent("There are no CDEs in your Quick Board. Add some before you can create a rule.");
         Assert.assertFalse(findElement(By.id("createDerivationRule")).isEnabled());
-        clickElement(By.id("cancelCreate"));
+        clickElement(By.id("cancelNewScoreBtn"));
     }
 
 }
