@@ -74,7 +74,7 @@ export class NativeRenderService {
     hasErrors() {
         return !!this.errors.length;
     }
-    gerErrors() {
+    getErrors() {
         return this.errors;
     }
 

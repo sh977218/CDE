@@ -19,7 +19,7 @@
                 Pending Merge Request
                 </span>
             </span>
-            <span ng-if="module === 'form' && user._id">
+            <span ng-if="module === 'form' && user._id && canMergeForm">
                 <cde-merge-form class="leftObj" [left]="eltsToCompare[0]" [right]="eltsToCompare[1]"></cde-merge-form>
             </span>
 
@@ -38,7 +38,7 @@
                 Pending Merge Request
                 </span>
             </span>
-            <span ng-if="module === 'form' && user._id">
+            <span ng-if="module === 'form' && user._id && canMergeForm">
                 <cde-merge-form class="rightObj" [left]="eltsToCompare[1]" [right]="eltsToCompare[0]"></cde-merge-form>
             </span>
 

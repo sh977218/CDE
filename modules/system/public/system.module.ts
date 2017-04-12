@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
-import { PaginationModule, ModalModule, TypeaheadModule } from "ng2-bootstrap/index";
 import { DataTableModule } from "angular2-datatable";
 import { Select2Module } from "ng2-select2";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
@@ -20,17 +19,16 @@ import { AdminModule } from "../../admin/public/admin.module";
 import { NamingComponent } from "../../admin/public/components/naming.component";
 import { ClassificationComponent } from "../../admin/public/components/classification.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
+import { JsonpModule } from "@angular/http";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        ModalModule.forRoot(),
-        TypeaheadModule.forRoot(),
-        PaginationModule.forRoot(),
         DataTableModule,
         Select2Module,
         NgbModule,
+        JsonpModule,
         AdminModule,
     ],
     declarations: [

@@ -2,40 +2,39 @@
     <h1 class="page-header">
         <label>User Profile</label>
     </h1>
-    
+
     <h3>General Info</h3>
     <div class="row">
         <div class="col-md-4">
             <table class="table table-user-information">
-                <tbody>
-                    <tr>
-                      <td>Username:</td>
-                      <td id="username">{{user.username}}</td>
-                    </tr>
-                    <tr>
-                      <td>Quota:</td>
-                      <td id="quota">{{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span></td>
-                    </tr>
-                    <tr>
-                      <td>E-mail:</td>
-                      <td id="user_email">
-                          <inline-edit id="emailEdit" [(model)]="user.email" [inputType]="'email'" [isAllowed]="true"
-                                       (onOk)="saveProfile()"></inline-edit>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Curator for:</td>
-                      <td id="curatorFor">{{orgCurator}}</td>
-                    </tr>
-                    <tr>
-                      <td>Admin for:</td>
-                      <td id="adminFor">{{orgAdmin}}</td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                </tbody>
+                <tr>
+                    <td>Username:</td>
+                    <td id="username">{{user.username}}</td>
+                </tr>
+                <tr>
+                    <td>Quota:</td>
+                    <td id="quota">{{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>E-mail:</td>
+                    <td id="user_email">
+                        <inline-edit id="emailEdit" [(model)]="user.email" [inputType]="'email'" [isAllowed]="true"
+                                     (onOk)="saveProfile()"></inline-edit>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Curator for:</td>
+                    <td id="curatorFor">{{orgCurator}}</td>
+                </tr>
+                <tr>
+                    <td>Admin for:</td>
+                    <td id="adminFor">{{orgAdmin}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
             </table>
         </div>
     </div>
@@ -43,17 +42,15 @@
     <div *ngIf="user.publishedForms.length > 0">
         <h3>Your Published Forms</h3>
         <table class="table table-striped">
-            <thead>
-                <tr><th>Link</th></tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let pf of user.publishedForms">
-                    <td>
-                        <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>
-                        <i class="fa fa-trash" alt="Remove" (click)="removePublishedForm(pf)"></i>
-                    </td>
-                </tr>
-            </tbody>
+            <tr>
+                <th>Link</th>
+            </tr>
+            <tr *ngFor="let pf of user.publishedForms">
+                <td>
+                    <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>
+                    <i class="fa fa-trash" alt="Remove" (click)="removePublishedForm(pf)"></i>
+                </td>
+            </tr>
         </table>
     </div>
 
