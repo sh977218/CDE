@@ -531,7 +531,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             placement: "top"
         },
         {
-            element: "#mltBtn",
+            element: "#mltButton",
             title: "More Like This",
             content: "This section lists CDEs that are most similar to the CDE currently viewed.",
             placement: "top"

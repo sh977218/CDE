@@ -36,8 +36,8 @@ export class CreateBoardComponent {
             this.myBoardsSvc.waitAndReload();
             this.modalRef.close();
             this.alert.addAlert("success", "Board created.");
-        }, () => {
-            this.alert.addAlert("danger", "There was an issue creating this board.");
+        }, (r) => {
+            this.alert.addAlert("danger", r.text());
         });
     }
 
