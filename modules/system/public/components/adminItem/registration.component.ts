@@ -5,7 +5,7 @@ import { Http } from "@angular/http";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-    selector: "cde-registation",
+    selector: "cde-registration",
     templateUrl: "./registration.component.html",
     providers: [NgbActiveModal]
 })
