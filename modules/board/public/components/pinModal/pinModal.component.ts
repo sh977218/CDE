@@ -16,11 +16,11 @@ export class PinModalComponent {
     @ViewChild("ifYouLoginModal") public ifYouLoginModal: NgbModalModule;
 
     public modalRef: NgbModalRef;
-    private elt: any;
-    private type: String;
+    elt: any;
+    type: String;
 
     constructor(
-        private myBoardsSvc: MyBoardsService,
+        public myBoardsSvc: MyBoardsService,
         public modalService: NgbModal,
         @Inject("Alert") private alert,
         private http: Http,

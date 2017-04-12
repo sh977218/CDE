@@ -1,5 +1,5 @@
 import { Http } from "@angular/http";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { PinModalComponent } from "../../../../board/public/components/pinModal/pinModal.component";
@@ -17,12 +17,12 @@ export class MoreLikeThisComponent {
     @Input() elt: any;
 
     public modalRef: NgbModalRef;
-    private cdes: any[];
+    cdes: any[];
 
     constructor(private http: Http,
         @Inject("Alert") private alert,
         public modalService: NgbModal,
-        @Inject("QuickBoard") private quickBoard,
+        @Inject("QuickBoard") quickBoard,
     ) {}
 
     open () {
