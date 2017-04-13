@@ -8,20 +8,15 @@ import { Select2Module } from "ng2-select2";
 import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListDirective } from "./upgrade-components";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
-import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
-import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
-import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { UserCommentsComponent } from "./components/userComments.component";
 import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
-import { PropertiesComponent } from "../../admin/public/components/properties.component";
+import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
+import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { AdminModule } from "../../admin/public/admin.module";
-import { NamingComponent } from "../../admin/public/components/naming.component";
-import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { JsonpModule } from "@angular/http";
-
 
 @NgModule({
     imports: [
@@ -39,10 +34,6 @@ import { JsonpModule } from "@angular/http";
         FormSummaryListDirective,
         ProfileComponent,
         LinkedFormsComponent,
-        IdentifiersComponent,
-        PropertiesComponent,
-        NamingComponent,
-        ReferenceDocumentComponent,
         UserCommentsComponent,
         HomeComponent,
         LogAuditComponent,
@@ -54,10 +45,6 @@ import { JsonpModule } from "@angular/http";
     entryComponents: [
         ProfileComponent,
         LinkedFormsComponent,
-        IdentifiersComponent,
-        PropertiesComponent,
-        NamingComponent,
-        ReferenceDocumentComponent,
         HomeComponent,
         LogAuditComponent,
         RegistrationComponent,

@@ -173,9 +173,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         return {
             restrict: 'AE',
             scope: {
-                theArray: "="
-                , index: '=index'
-                , cb: '&'
+                theArray: "=",
+                index: '=index',
+                cb: '&'
             },
             template: require('../html/systemTemplate/sortableArray.html'),
             controller: ["$scope", function ($scope) {
@@ -435,4 +435,5 @@ import {ReferenceDocumentComponent} from "../../../admin/public/components/refer
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({component: ReferenceDocumentComponent, inputs: ['elt'], outputs: []}));
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";
-angular.module('systemModule').directive('cdeRegistation', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
+angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
+

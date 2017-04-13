@@ -5,7 +5,7 @@ import { Http } from "@angular/http";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-    selector: "cde-registation",
+    selector: "cde-registration",
     templateUrl: "./registration.component.html",
     providers: [NgbActiveModal]
 })
@@ -34,6 +34,7 @@ export class RegistrationComponent implements OnInit {
 
     openRegStatusUpdate() {
 
+        //noinspection TypeScriptValidateTypes
         this.http.get("/comments/eltId/" + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
                     return a.status !== "resolved" && a.status !== "deleted";
@@ -41,6 +42,7 @@ export class RegistrationComponent implements OnInit {
                 this.alert.addAlert("info", "Info: There are unresolved comments. ");
             }
 
+            //noinspection TypeScriptValidateTypes
             this.http.get("/org/" + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
                 if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
                     this.validRegStatuses = this.validRegStatuses.concat(["Recorded", "Qualified"]);
