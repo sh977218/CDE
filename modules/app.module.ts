@@ -11,6 +11,7 @@ import { CoreModule } from "./core/public/core.module";
 import { CdeModule } from "./cde/public/cde.module";
 import { FormModule } from "./form/public/form.module";
 import { SystemModule } from "./system/public/system.module";
+import { BoardModule } from "./board/public/board.module";
 
 @NgModule({
     declarations: [
@@ -27,7 +28,8 @@ import { SystemModule } from "./system/public/system.module";
         CoreModule,
         CdeModule,
         FormModule,
-        SystemModule
+        SystemModule,
+        BoardModule
     ],
     bootstrap: [CdeAppComponent]
 })

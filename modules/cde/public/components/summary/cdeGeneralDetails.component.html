@@ -1,0 +1,21 @@
+<span [innerHtml]="elt.primaryDefinitionCopy"></span>
+<br><br>
+<table class="generalDetailsTable cdeTable cdeTable-noBorder table table-border" style="margin-bottom: 0px">
+    <tr *ngIf="elt.usedBy">
+        <th class="text-right">Used By: </th>
+        <td id="dd_usedBy">
+            <span *ngIf="elt.classification.length === 0">None</span>
+            <span *ngIf="elt.classification.length > 0">
+                <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <th class="text-right">Steward: </th>
+        <td>{{elt.stewardOrg.name}}</td>
+    </tr>
+    <tr *ngIf="elt.source">
+        <th class="text-right">Source: </th>
+        <td>{{elt.source}}</td>
+    </tr>
+</table>

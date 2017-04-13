@@ -20,14 +20,13 @@ export class RegistrationComponent implements OnInit {
 
     validRegStatuses: string[] = ["Retired", "Incomplete", "Candidate"];
 
-    constructor(private http: Http,
-                private parserFormatter: NgbDateParserFormatter,
-                @Inject("Alert") private alert,
-                @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("userResource") private userService,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
-    }
+    constructor (private http: Http,
+                 private parserFormatter: NgbDateParserFormatter,
+                 @Inject("Alert") private alert,
+                 @Inject("isAllowedModel") public isAllowedModel,
+                 @Inject("userResource") private userService,
+                 public modalService: NgbModal
+    ) {}
 
     ngOnInit(): void {
         this.newState = {registrationStatus: this.elt.registrationState.registrationStatus};
