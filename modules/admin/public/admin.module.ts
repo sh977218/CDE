@@ -25,11 +25,23 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         ClassificationComponent,
         ReferenceDocumentComponent
     ],
+    entryComponents: [
+        IdentifiersComponent,
+        PropertiesComponent,
+        NamingComponent,
+        ClassificationComponent,
+        ReferenceDocumentComponent
+    ],
     providers: [],
     exports: [
         InlineEditDirective,
         InlineAreaEditDirective,
-        SortableArrayDirective
+        SortableArrayDirective,
+        IdentifiersComponent,
+        PropertiesComponent,
+        NamingComponent,
+        ClassificationComponent,
+        ReferenceDocumentComponent
     ]
 })
 export class AdminModule {
