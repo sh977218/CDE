@@ -32,9 +32,9 @@ import { JsonpModule } from "@angular/http";
         AdminModule,
     ],
     declarations: [
-        upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         upgradeAdapter.upgradeNg1Component("formAccordionList"),
         upgradeAdapter.upgradeNg1Component("formSummaryList"),
+        upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
         ProfileComponent,
         LinkedFormsComponent,
         IdentifiersComponent,

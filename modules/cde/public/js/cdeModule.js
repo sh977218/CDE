@@ -42,9 +42,23 @@ angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgrade
 import {DatasetsComponent} from "../components/datasets/datasets.component";
 angular.module('cdeModule').directive('cdeDatasets', upgradeAdapter.downgradeNg2Component(DatasetsComponent));
 
+import {MoreLikeThisComponent} from "../components/mlt/moreLikeThis.component";
+angular.module('cdeModule').directive('cdeMlt', upgradeAdapter.downgradeNg2Component(MoreLikeThisComponent));
+
 import {ConceptsComponent} from "../components/concepts.component";
 angular.module('cdeModule').directive('cdeConcepts', upgradeAdapter.downgradeNg2Component(ConceptsComponent));
 
 import {DerivationRulesComponent} from "../components/derivationRules.component";
 angular.module('systemModule').directive('cdeDerivationRules', upgradeAdapter.downgradeNg2Component(DerivationRulesComponent));
 
+import {CdeGeneralDetailsComponent} from "../components/summary/cdeGeneralDetails.component";
+angular.module('systemModule').directive('cdeCdeGeneralDetails', upgradeAdapter.downgradeNg2Component(CdeGeneralDetailsComponent));
+
+import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
+angular.module('systemModule').directive('cdeValueDomainSummary', upgradeAdapter.downgradeNg2Component(ValueDomainSummaryComponent));
+
+import {CdeSummaryListComponent} from "../components/summary/cdeSummaryList.component";
+angular.module('systemModule').directive('cdeCdeSummaryList', upgradeAdapter.downgradeNg2Component(CdeSummaryListComponent));
+
+import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
+angular.module('systemModule').directive('cdeCreateBoard', upgradeAdapter.downgradeNg2Component(CreateBoardComponent));
