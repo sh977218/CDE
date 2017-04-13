@@ -6,9 +6,10 @@ import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-boots
     templateUrl: "./classification.component.html"
 })
 export class ClassificationComponent implements OnInit {
-    @ViewChild("newClassificationContent") public newClassificationContent: NgbModalModule;
+    @ViewChild("classificationContent") public classificationContent: NgbModalModule;
     @Input() public elt: any;
     public myOrgs: any;
+    public selectedOrg;
     public modalRef: NgbModalRef;
 
     constructor(public modalService: NgbModal,
@@ -22,11 +23,10 @@ export class ClassificationComponent implements OnInit {
     ngOnInit(): void {
         this.myOrgs = this.userService.userOrgs;
     }
-    
-    openClassificationModal() {
-        this.modalRef = this.modalService.open(this.newClassificationContent, {size: "lg"});
-        this.modalRef.result.then(result => {
 
+    openClassificationModal() {
+        this.modalRef = this.modalService.open(this.classificationContent);
+        this.modalRef.result.then(result => {
         });
     }
 

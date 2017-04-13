@@ -25,13 +25,15 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
-        MoreLikeThisComponent
+        MoreLikeThisComponent,
+        ValueDomainSummaryComponent
     ],
     entryComponents: [
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
-        MoreLikeThisComponent
+        MoreLikeThisComponent,
+        ValueDomainSummaryComponent
     ],
     providers: [
         DatasetsComponent,

@@ -1,0 +1,7 @@
+<li>
+    <a class="name hand-cursor first-level-classification" id="classification-{{element.name}}"
+       (title)=element.name>{{element.name}} </a>
+    <ul *ngFor="let ele of element.elements; let k = index" class="fa-ul">
+        <classification-tree-view [element]="ele"></classification-tree-view>
+    </ul>
+</li>

@@ -5,9 +5,10 @@ import { Select2Module } from "ng2-select2";
 import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
 import { PropertiesComponent } from "../../admin/public/components/properties.component";
 import { NamingComponent } from "../../admin/public/components/naming.component";
-import { ClassificationComponent } from "../../admin/public/components/classification.component";
+import { ClassificationComponent } from "./components/classification/classification.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
+import { ClassificationTreeViewComponent } from "./components/classification/classificationTreeView.component";
 
 @NgModule({
     imports: [
@@ -23,6 +24,7 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         PropertiesComponent,
         NamingComponent,
         ClassificationComponent,
+        ClassificationTreeViewComponent,
         ReferenceDocumentComponent
     ],
     entryComponents: [
@@ -30,6 +32,7 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         PropertiesComponent,
         NamingComponent,
         ClassificationComponent,
+        ReferenceDocumentComponent
     ],
     providers: [],
     exports: [
