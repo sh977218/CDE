@@ -9,7 +9,7 @@
     <span ng-if="!board.editMode" ng-repeat="tag in board.tags">
         <span class="label label-default"><i class="fa fa-hashtag"></i>{{tag}}</span>
     </span>
-    <ui-select multiple ng-show="board.editMode" sortable="true" ng-model="board.tags" theme="select2"
+    <ui-select multiple ng-show="board.editMode" ng-model="board.tags" theme="bootstrap"
                style="width: 100%">
         <ui-select-match placeholder="type or select a tag" allow-clear="true">
             {{$item}}

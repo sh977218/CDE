@@ -38,7 +38,7 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
-        textPresent("CODE_FOR...");
+        textPresent("CODE_FOR");
 
         clickElement(By.id("cde_gridView"));
 

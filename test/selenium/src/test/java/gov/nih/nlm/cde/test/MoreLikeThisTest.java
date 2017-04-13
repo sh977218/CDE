@@ -20,7 +20,7 @@ public class MoreLikeThisTest extends NlmCdeBaseTest {
     @Test(dataProvider = "moreLikeThisDP")
     public void moreLikeThis(String cdeSource, String[] cdeTargets) {
         goToCdeByName(cdeSource);
-        clickElement(By.id("cdeMoreLikeThisBtn"));
+        clickElement(By.id("mltButton"));
         for (String tCde : cdeTargets) {
             textPresent(tCde);
         }

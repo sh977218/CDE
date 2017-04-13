@@ -173,9 +173,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         return {
             restrict: 'AE',
             scope: {
-                theArray: "="
-                , index: '=index'
-                , cb: '&'
+                theArray: "=",
+                index: '=index',
+                cb: '&'
             },
             templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
             controller: ["$scope", function ($scope) {
@@ -408,6 +408,9 @@ angular.module('systemModule').directive('cdeProfile', upgradeAdapter.downgradeN
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
 angular.module('systemModule').directive('cdeLogAudit', upgradeAdapter.downgradeNg2Component(LogAuditComponent));
 
+import {DailyUsageComponent} from "../components/siteAdmin/dailyUsage/dailyUsage.component";
+angular.module('systemModule').directive('cdeDailyUsage', upgradeAdapter.downgradeNg2Component(DailyUsageComponent));
+
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', upgradeAdapter.downgradeNg2Component(UsersMgtComponent));
 
@@ -433,4 +436,4 @@ import {SkipLogicService} from "../../../core/public/skipLogic.service";
 angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";
-angular.module('systemModule').directive('cdeRegistation', upgradeAdapter.downgradeNg2Component(RegistrationComponent));
+angular.module('systemModule').directive('cdeRegistration', upgradeAdapter.downgradeNg2Component(RegistrationComponent));
