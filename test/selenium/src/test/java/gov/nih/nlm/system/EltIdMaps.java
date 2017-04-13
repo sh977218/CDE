@@ -108,6 +108,7 @@ public class EltIdMaps {
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
+        eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
