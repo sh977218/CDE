@@ -417,7 +417,7 @@ import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.compo
 angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
 
 import {DailyUsageComponent} from "../components/siteAdmin/dailyUsage/dailyUsage.component";
-angular.module('systemModule').directive('cdeDailyUsage', upgradeAdapter.downgradeNg2Component(DailyUsageComponent));
+angular.module('systemModule').directive('cdeDailyUsage', downgradeComponent({component: DailyUsageComponent, inputs: [], outputs: []}));
 
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
