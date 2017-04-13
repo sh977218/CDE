@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { upgradeAdapter } from "../../upgrade";
 import { CommonModule } from "@angular/common";
 import { Select2Module } from "ng2-select2";
@@ -36,7 +36,8 @@ const SortableArrayComponent = upgradeAdapter.upgradeNg1Component("sortableArray
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent
-    ]
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AdminModule {
 }

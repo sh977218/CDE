@@ -173,9 +173,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         return {
             restrict: 'AE',
             scope: {
-                theArray: "="
-                , index: '=index'
-                , cb: '&'
+                theArray: "=",
+                index: '=index',
+                cb: '&'
             },
             templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
             controller: ["$scope", function ($scope) {
@@ -436,4 +436,4 @@ import {SkipLogicService} from "../../../core/public/skipLogic.service";
 angular.module('systemModule').factory('SkipLogicUtil', upgradeAdapter.downgradeNg2Provider(SkipLogicService));
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";
-angular.module('systemModule').directive('cdeRegistation', upgradeAdapter.downgradeNg2Component(RegistrationComponent));
+angular.module('systemModule').directive('cdeRegistration', upgradeAdapter.downgradeNg2Component(RegistrationComponent));
