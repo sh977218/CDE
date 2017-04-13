@@ -11,6 +11,9 @@ import { CreateBoardComponent } from "./components/createBoard/createBoard.compo
         PinModalComponent,
         CreateBoardComponent
     ],
+    entryComponents: [
+        CreateBoardComponent
+    ],
     providers: [MyBoardsService],
     imports: [CommonModule, FormsModule, NgbModule],
     exports: [PinModalComponent],
