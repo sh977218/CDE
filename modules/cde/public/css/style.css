@@ -187,6 +187,10 @@ body {
     background-color: #b0e0e6;
 }
 
+ngb-accordion .card-header a:hover {
+    text-decoration: none;
+}
+
 .accordion-toggle:hover {
     text-decoration: none;
 }
