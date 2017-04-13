@@ -416,6 +416,9 @@ angular.module('systemModule').directive('user-comments', downgradeComponent({co
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
 angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
 
+import {DailyUsageComponent} from "../components/siteAdmin/dailyUsage/dailyUsage.component";
+angular.module('systemModule').directive('cdeDailyUsage', upgradeAdapter.downgradeNg2Component(DailyUsageComponent));
+
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
 

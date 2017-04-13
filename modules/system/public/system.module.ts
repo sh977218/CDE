@@ -17,7 +17,6 @@ import { HomeComponent } from "./components/home/home.component";
 import { AdminModule } from "../../admin/public/admin.module";
 import { JsonpModule } from "@angular/http";
 
-
 @NgModule({
     imports: [
         CommonModule,
