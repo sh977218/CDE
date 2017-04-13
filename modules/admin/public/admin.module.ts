@@ -1,5 +1,5 @@
-import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Select2Module } from "ng2-select2";
 import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
@@ -30,7 +30,6 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         PropertiesComponent,
         NamingComponent,
         ClassificationComponent,
-        ReferenceDocumentComponent
     ],
     providers: [],
     exports: [
@@ -42,7 +41,8 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         NamingComponent,
         ClassificationComponent,
         ReferenceDocumentComponent
-    ]
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AdminModule {
 }

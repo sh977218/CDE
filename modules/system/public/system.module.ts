@@ -15,6 +15,10 @@ import { UserCommentsComponent } from "./components/userComments.component";
 import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
 import { AdminModule } from "../../admin/public/admin.module";
+import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
+import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
+import { AdminModule } from "../../admin/public/admin.module";
+import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { JsonpModule } from "@angular/http";
 
 @NgModule({

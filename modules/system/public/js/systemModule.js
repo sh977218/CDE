@@ -173,9 +173,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         return {
             restrict: 'AE',
             scope: {
-                theArray: "="
-                , index: '=index'
-                , cb: '&'
+                theArray: "=",
+                index: '=index',
+                cb: '&'
             },
             template: require('../html/systemTemplate/sortableArray.html'),
             controller: ["$scope", function ($scope) {
