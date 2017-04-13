@@ -18,6 +18,7 @@ import { PropertiesComponent } from "../../admin/public/components/properties.co
 import { AdminModule } from "../../admin/public/admin.module";
 import { NamingComponent } from "../../admin/public/components/naming.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
+import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { JsonpModule } from "@angular/http";
 
 @NgModule({
@@ -45,6 +46,7 @@ import { JsonpModule } from "@angular/http";
         LogAuditComponent,
         RegistrationComponent,
         UsersMgtComponent,
+        DailyUsageComponent,
         PlaceHoldEmptyPipe],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
