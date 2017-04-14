@@ -18,12 +18,12 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
 angular.module('formModule').directive('formAccordionList', function () {
     return {
         scope: {forms: '=', ejsPage: '=', module: '='},
-        templateUrl: '/form/public/html/formAccordionList.html'}
+        template: require('../html/formAccordionList.html')}
 });
 angular.module('formModule').directive('formSummaryList', ["PinModal", function (PinModal) {
     return {
         scope: {forms: '=', ejsPage: '=', module: '=', includeInAccordion: "="},
-        templateUrl: '/form/public/html/formSummaryList.html',
+        template: require('../html/formSummaryList.html'),
         controller: ["$scope", "PinModal", "FormQuickBoard", function ($scope, PinModal, QuickBoard) {
             $scope.PinModal = PinModal.new("form");
             $scope.quickBoard = QuickBoard;
@@ -57,14 +57,13 @@ angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$pa
     };
 }]);
 
-// Angular 2 downgrade
-import {upgradeAdapter} from "../../../upgrade";
+import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
 import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
-angular.module('formModule').directive('cdeMergeForm', upgradeAdapter.downgradeNg2Component(MergeFormComponent));
+angular.module('formModule').directive('cdeMergeForm', downgradeComponent({component: MergeFormComponent, inputs: ['left', 'right'], outputs: []}));
 
 import {NativeRenderComponent} from "../nativeRender/nativeRender.component";
-angular.module('formModule').directive('cdeNativeRender', upgradeAdapter.downgradeNg2Component(NativeRenderComponent));
+angular.module('formModule').directive('cdeNativeRender', downgradeComponent({component: NativeRenderComponent, inputs: ['eltLoaded', 'elt', 'profile', 'submitForm'], outputs: []}));
 
 import {NativeRenderFullComponent} from "../nativeRender/nativeRenderFull.component";
-angular.module('formModule').directive('cdeNativeRenderFull', upgradeAdapter.downgradeNg2Component(NativeRenderFullComponent));
+angular.module('formModule').directive('cdeNativeRenderFull', downgradeComponent({component: NativeRenderFullComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));

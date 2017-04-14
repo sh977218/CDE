@@ -1,10 +1,11 @@
-import { upgradeAdapter } from "../../upgrade";
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { DataTableModule } from "angular2-datatable";
 import { Select2Module } from "ng2-select2";
+
+import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListDirective } from "./upgrade-components";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
@@ -28,9 +29,9 @@ import { JsonpModule } from "@angular/http";
         AdminModule,
     ],
     declarations: [
-        upgradeAdapter.upgradeNg1Component("formAccordionList"),
-        upgradeAdapter.upgradeNg1Component("formSummaryList"),
-        upgradeAdapter.upgradeNg1Component("cdeAccordionList"),
+        CdeAccordionListDirective,
+        FormAccordionListDirective,
+        FormSummaryListDirective,
         ProfileComponent,
         LinkedFormsComponent,
         UserCommentsComponent,
@@ -39,7 +40,16 @@ import { JsonpModule } from "@angular/http";
         RegistrationComponent,
         UsersMgtComponent,
         DailyUsageComponent,
-        PlaceHoldEmptyPipe],
+        PlaceHoldEmptyPipe
+    ],
+    entryComponents: [
+        ProfileComponent,
+        LinkedFormsComponent,
+        HomeComponent,
+        LogAuditComponent,
+        RegistrationComponent,
+        UsersMgtComponent,
+    ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

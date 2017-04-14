@@ -14,12 +14,12 @@ export class ConceptsComponent {
     public modalRef: NgbModalRef;
     @Input( ) public elt: any;
 
-    constructor(@Inject("isAllowedModel") private isAllowedModel,
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
                 public modalService: NgbModal,
                 public activeModal: NgbActiveModal) {
     }
 
-    newConcept = {origin: "LOINC", type: "dec"};
+    newConcept: {name?: string, originId?: string, origin: string, type: string} = {origin: "LOINC", type: "dec"};
 
     conceptConfigurations = [
         {type: "dataElementConcept", details: {display: "Data Element Concept", path: "dataElementConcept.concepts.name"}},
