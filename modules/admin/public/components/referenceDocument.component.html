@@ -13,8 +13,8 @@
                     </span>
                     <span (click)="rd.edit = true" *ngIf="!rd.edit" class="btn-default fa fa-trash-o"
                           id="removeReferenceDocument-{{i}}" title="Remove" href=""></span>
-                    <sortable-array [theArray]="elt.referenceDocuments" [sortableArray]="elt.referenceDocuments"
-                                    [index]="i" (cb)="elt.unsaved = true"></sortable-array>
+                    <sortable-array [theArray]="elt.referenceDocuments" [index]="i"
+                                    (cb)="elt.unsaved = true"></sortable-array>
 
                 </div>
             </div>
