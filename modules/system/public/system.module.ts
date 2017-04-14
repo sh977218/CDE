@@ -14,10 +14,9 @@ import { RegistrationComponent } from "./components/adminItem/registration.compo
 import { HomeComponent } from "./components/home/home.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
-import { AdminModule } from "../../adminItem/public/admin.module";
+import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { JsonpModule } from "@angular/http";
-import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 
 @NgModule({
     imports: [

@@ -3,10 +3,10 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
-import { IdentifiersComponent } from "../../adminItem/public/components/identifiers.component";
-import { PropertiesComponent } from "../../adminItem/public/components/properties.component";
-import { NamingComponent } from "../../adminItem/public/components/naming.component";
-import { ReferenceDocumentComponent } from "../../adminItem/public/components/referenceDocument.component";
+import { IdentifiersComponent } from "./components/identifiers.component";
+import { PropertiesComponent } from "./components/properties.component";
+import { NamingComponent } from "./components/naming.component";
+import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 
@@ -18,6 +18,7 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
     ],
     declarations: [
         AttachmentsComponent,
+        InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
@@ -30,6 +31,7 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,
+        AttachmentsComponent
     ],
     exports: [
         InlineEditDirective,
