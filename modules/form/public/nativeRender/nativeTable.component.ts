@@ -42,7 +42,7 @@ export class NativeTableComponent implements OnInit {
         if (!this.formElement.repeat)
             throw "Not a table";
         if (this.formElement.repeat[0] === "F") {
-            this.firstQuestion = NativeTableComponent.getFirstQuestion(this.formElement);
+            this.firstQuestion = NativeRenderService.getFirstQuestion(this.formElement);
             this.firstQuestion.question.answers.forEach(a => {
                 this.tableForm.rows.push({label: this.nativeRenderService.getPvLabel(a)});
             });
@@ -55,8 +55,8 @@ export class NativeTableComponent implements OnInit {
                 format = this.nativeRenderService.profile.repeatFormat;
             if (!format)
                 format = "";
-            for (let i = 1; i <= maxValue; i++) {
-                this.tableForm.rows.push({label: format.replace(/\#/, i.toString())});
+            for (let i = 0; i < maxValue; i++) {
+                this.tableForm.rows.push({label: format.replace(/\#/, (i + 1).toString())});
             }
         }
     }
@@ -85,14 +85,14 @@ export class NativeTableComponent implements OnInit {
                 c += ret.c;
                 retr = Math.max(retr, ret.r);
             } else if (f.repeat[0] === "F") {
-                NativeTableComponent.getFirstQuestion(f).question.answers.forEach((a, i) => {
+                NativeRenderService.getFirstQuestion(f).question.answers.forEach((a, i) => {
                     let ret = this.renderSection(f, level + 1, sectionName + "-" + (i + 1));
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 });
             } else {
                 let maxValue = parseInt(f.repeat);
-                for (let i = 1; i <= maxValue; i++) {
+                for (let i = 0; i < maxValue; i++) {
                     let ret = this.renderSection(f, level + 1, sectionName + "-" + i);
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
@@ -135,25 +135,6 @@ export class NativeTableComponent implements OnInit {
         if (this.tableForm.s.length <= level)
             this.tableForm.s[level] = {q: []};
         return this.tableForm.s[level];
-    }
-    static getFirstQuestion(el): any {
-        let elem = el;
-        let firstQuestion = null;
-        while (true) {
-            if (elem.elementType !== "question") {
-                if (!elem.formElements && elem.formElements.length > 0)
-                    break;
-                elem = elem.formElements[0];
-            } else {
-                firstQuestion = elem;
-                break;
-            }
-        }
-
-        if (!firstQuestion || firstQuestion.question.datatype !== "Value List")
-            throw el.label + " First Question Value List is not available.";
-
-        return firstQuestion;
     }
 
     theme: Array<any> = [
