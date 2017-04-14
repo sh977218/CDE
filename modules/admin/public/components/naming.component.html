@@ -30,7 +30,7 @@
                     <div class="col-xs-2 text-right text_label">Tags:</div>
                     <div class="col-xs-10 ng-binding" id="tags_{{i}}">
                         <select2 [data]="orgNamingTags" [value]="name.currentTags" [options]="options"
-                                 [disabled]="!isAllowedModel.isAllowed(elt)" [width]="500" style="min-width: 300px"
+                                 [disabled]="!isAllowedModel.isAllowed(elt)" width="100%"
                                  (valueChanged)="changedTags(name,$event)">
                         </select2>
                     </div>
@@ -64,7 +64,7 @@
                 <label for="newTags">Tags</label>
                 <div id="newTags" name="newTags">
                     <select2 [data]="orgNamingTags" [value]="newNaming.currentTags" [options]="options"
-                             [width]="500" style="min-width: 300px" (valueChanged)="changedTags(name,$event)">
+                             width="100%" (valueChanged)="changedTags(newNaming,$event)">
                     </select2>
                 </div>
             </div>

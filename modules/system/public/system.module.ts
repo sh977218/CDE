@@ -49,6 +49,7 @@ import { JsonpModule } from "@angular/http";
         LogAuditComponent,
         RegistrationComponent,
         UsersMgtComponent,
+        DailyUsageComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
