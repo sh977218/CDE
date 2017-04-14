@@ -431,11 +431,11 @@ angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComp
 import {NamingComponent} from "../../../admin/public/components/naming.component";
 angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({component: NamingComponent, inputs: ['elt'], outputs: []}));
 
-import {ClassificationComponent} from "../../../admin/public/components/classification/classification.component";
-angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({component: ClassificationComponent, inputs: ['elt'], outputs: []}));
-
 import {ReferenceDocumentComponent} from "../../../admin/public/components/referenceDocument.component";
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({component: ReferenceDocumentComponent, inputs: ['elt'], outputs: []}));
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
+
+import {ClassificationComponent} from "../../../admin/public/components/classification/classification.component";
+angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({component: ClassificationComponent, inputs: ['elt'], outputs: []}));

@@ -58,10 +58,7 @@ import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSumm
 angular.module('systemModule').directive('cdeValueDomainSummary', downgradeComponent({component: ValueDomainSummaryComponent, inputs: ['elt'], outputs: []}));
 
 import {CdeSummaryListComponent} from "../components/summary/cdeSummaryList.component";
-angular.module('systemModule').directive('cdeCdeSummaryList', downgradeComponent({component: CdeSummaryListComponent, inputs: ['elt'], outputs: []}));
-
-import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
-angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: ['elt'], outputs: []}));
+angular.module('systemModule').directive('cdeCdeSummaryList', downgradeComponent({component: CdeSummaryListComponent, inputs: ['cdes'], outputs: []}));
 
 import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
 angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));
