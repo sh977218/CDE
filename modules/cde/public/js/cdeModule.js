@@ -27,38 +27,38 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         ;
     }]);
 
+// Angular 2 upgraded
 angular.module('cdeModule').directive('cdeAccordionList', function () {
     return {
         scope: {cdes: '=', ejsPage: '=', module: '='},
-        templateUrl: '/cde/public/html/cdeAccordionList.html'};
+        template: require('../html/cdeAccordionList.html')};
 });
 
-// Angular 2 downgrade
-import {upgradeAdapter} from "../../../upgrade.ts";
+import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
 import {LinkedFormsComponent} from "../../../system/public/components/linkedForms.component";
-angular.module('cdeModule').directive('cdeLinkedForms', upgradeAdapter.downgradeNg2Component(LinkedFormsComponent));
+angular.module('cdeModule').directive('cdeLinkedForms', downgradeComponent({component: LinkedFormsComponent, inputs: ['elt', 'eltType'], outputs: []}));
 
 import {DatasetsComponent} from "../components/datasets/datasets.component";
-angular.module('cdeModule').directive('cdeDatasets', upgradeAdapter.downgradeNg2Component(DatasetsComponent));
+angular.module('cdeModule').directive('cdeDatasets', downgradeComponent({component: DatasetsComponent, inputs: ['elt'], outputs: []}));
 
 import {MoreLikeThisComponent} from "../components/mlt/moreLikeThis.component";
-angular.module('cdeModule').directive('cdeMlt', upgradeAdapter.downgradeNg2Component(MoreLikeThisComponent));
+angular.module('cdeModule').directive('cdeMlt', downgradeComponent({component: MoreLikeThisComponent, inputs: ['elt'], outputs: []}));
 
 import {ConceptsComponent} from "../components/concepts.component";
-angular.module('cdeModule').directive('cdeConcepts', upgradeAdapter.downgradeNg2Component(ConceptsComponent));
+angular.module('cdeModule').directive('cdeConcepts', downgradeComponent({component: ConceptsComponent, inputs: ['elt'], outputs: []}));
 
 import {DerivationRulesComponent} from "../components/derivationRules.component";
-angular.module('systemModule').directive('cdeDerivationRules', upgradeAdapter.downgradeNg2Component(DerivationRulesComponent));
+angular.module('cdeModule').directive('cdeDerivationRules', downgradeComponent({component: DerivationRulesComponent, inputs: ['elt'], outputs: []}));
 
 import {CdeGeneralDetailsComponent} from "../components/summary/cdeGeneralDetails.component";
-angular.module('systemModule').directive('cdeCdeGeneralDetails', upgradeAdapter.downgradeNg2Component(CdeGeneralDetailsComponent));
+angular.module('systemModule').directive('cdeCdeGeneralDetails', downgradeComponent({component: CdeGeneralDetailsComponent, inputs: ['elt'], outputs: []}));
 
 import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
-angular.module('systemModule').directive('cdeValueDomainSummary', upgradeAdapter.downgradeNg2Component(ValueDomainSummaryComponent));
+angular.module('systemModule').directive('cdeValueDomainSummary', downgradeComponent({component: ValueDomainSummaryComponent, inputs: ['elt'], outputs: []}));
 
 import {CdeSummaryListComponent} from "../components/summary/cdeSummaryList.component";
-angular.module('systemModule').directive('cdeCdeSummaryList', upgradeAdapter.downgradeNg2Component(CdeSummaryListComponent));
+angular.module('systemModule').directive('cdeCdeSummaryList', downgradeComponent({component: CdeSummaryListComponent, inputs: ['cdes'], outputs: []}));
 
 import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
-angular.module('systemModule').directive('cdeCreateBoard', upgradeAdapter.downgradeNg2Component(CreateBoardComponent));
+angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));

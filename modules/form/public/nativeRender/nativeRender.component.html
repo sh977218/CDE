@@ -18,6 +18,6 @@
            style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" [disabled]="formData.$invalid">
 </form>
 
-<uib-alert type="danger" *ngIf="nativeRenderService.hasErrors() > 0">
+<uib-alert type="danger" *ngIf="nativeRenderService.hasErrors()">
     <span [textContent]="nativeRenderService.getErrors().join(' -- ')"></span>
 </uib-alert>

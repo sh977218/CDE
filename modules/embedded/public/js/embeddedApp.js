@@ -1,3 +1,7 @@
+import { enableProdMode } from "@angular/core";
+if (PRODUCTION) {
+    enableProdMode();
+}
 import * as formShared from "../../../form/shared/formShared";
 import * as regStatusShared from "../../../system/shared/regStatusShared";
 
