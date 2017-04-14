@@ -64,7 +64,7 @@
                 <label for="newTags">Tags</label>
                 <div id="newTags" name="newTags">
                     <select2 [data]="orgNamingTags" [value]="newNaming.currentTags" [options]="options"
-                             width="100%" (valueChanged)="changedTags(newNaming,$event)">
+                             width="100%" (valueChanged)="changedTags(newNaming,$event,false)">
                     </select2>
                 </div>
             </div>
