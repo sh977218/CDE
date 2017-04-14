@@ -75,7 +75,6 @@ export class NamingComponent implements OnInit {
         name.tags = data.value.map(d => {
             return {tag: d};
         });
-        this.elt.unsaved = true;
     }
 
     saveNaming() {
