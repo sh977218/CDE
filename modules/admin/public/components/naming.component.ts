@@ -1,7 +1,6 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { Select2OptionData } from "ng2-select2";
 
 @Component({
     selector: "cde-admin-item-naming",

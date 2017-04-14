@@ -16,7 +16,6 @@ export class IdentifiersComponent {
     public modalRef: NgbModalRef;
 
     public newIdentifier: any = {};
-    
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
                 public modalService: NgbModal,

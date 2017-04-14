@@ -1,7 +1,20 @@
-<li>
-    <a class="name hand-cursor first-level-classification" id="classification-{{element.name}}"
-       (title)=element.name>{{element.name}} </a>
-    <ul *ngFor="let ele of element.elements; let k = index" class="fa-ul">
-        <classification-tree-view [element]="ele"></classification-tree-view>
-    </ul>
-</li>
+<ul class="fa-ul overflowHidden">
+    <div class="floatLeft" style="min-width: 10px; padding: 1px;">
+        <i *ngIf="element.elements && !element.expended && element.elements.length > 0"
+           class="fa fa-chevron-right" (click)="toggle(element)"></i>
+        <i *ngIf="element.expended" class="fa fa-chevron-down" (click)="toggle(element)"></i>
+    </div>
+
+    <h4 *ngIf="element.stewardOrg">{{element.stewardOrg.name}}
+        <hr/>
+    </h4>
+    <a *ngIf="element.name" id="classification-{{element.name}}">{{element.name}}</a>
+    <button class="btn btn-default btn-xs" type="button">
+        <i class="fa fa-plus"></i> Classify
+    </button>
+    <div *ngIf="element.expended">
+        <div *ngFor="let ele of element.elements;let j = index">
+            <classify-item-tree-view [element]="ele"></classify-item-tree-view>
+        </div>
+    </div>
+</ul>

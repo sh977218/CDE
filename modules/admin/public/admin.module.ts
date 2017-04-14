@@ -9,12 +9,16 @@ import { ReferenceDocumentComponent } from "../../admin/public/components/refere
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { ClassificationComponent } from "./components/classification/classification.component";
 import { ClassificationTreeViewComponent } from "./components/classification/classificationTreeView.component";
+import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { ClassifyItemTreeViewComponent } from "./components/classification/classifyItemTreeView.component";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        Select2Module
+        Select2Module,
+        NgbModule
     ],
     declarations: [
         InlineEditDirective,
@@ -25,7 +29,9 @@ import { ClassificationTreeViewComponent } from "./components/classification/cla
         NamingComponent,
         ReferenceDocumentComponent,
         ClassificationComponent,
-        ClassificationTreeViewComponent
+        ClassificationTreeViewComponent,
+        ClassifyItemTreeViewComponent,
+        ClassifyItemModalComponent
     ],
     entryComponents: [
         IdentifiersComponent,

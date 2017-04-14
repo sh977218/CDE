@@ -1,0 +1,34 @@
+<template #classifyItemContent id="newClassifyItemModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="newClassifyItemModalHeader">
+        <h4 class="modal-title">Classify This {{type | uppercase}}</h4>
+    </div>
+    <div class="modal-body" id="newClassifyItemModalBody">
+        <ngb-tabset>
+            <ngb-tab title="By ClassifyItem tree">
+                <template ngbTabContent>
+                    <hr>
+                    <select class="form-control" id="selectClassifyItemOrg" name="selectClassifyItemOrg"
+                            (change)="onChange($event.target.value)"> required>
+                        <option value="">Start by selecting an organization...</option>
+                        <option *ngFor="let myOrg of myOrgs;" value="{{myOrg}}">{{myOrg}}</option>
+                    </select>
+                    <div *ngFor="let orgClassification of orgClassifications; let i of index">
+                        <classify-item-tree-view [element]="orgClassification"></classify-item-tree-view>
+                    </div>
+                </template>
+            </ngb-tab>
+            <ngb-tab title="By recently added">
+                <template ngbTabContent>
+                    <hr>
+                </template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+    <div class="modal-footer" id="newClassifyItemModalFooter">
+        <button class="btn cancel" (click)="c('Close click')" id="cancelNewClassifyItemBtn"
+                name="cancelNewClassifyItemBtn" type="button">Cancel
+        </button>
+        <button class="btn btn-warning" id="createNewClassifyItemBtn" name="createNewClassifyItemBtn" type="submit">Save
+        </button>
+    </div>
+</template>

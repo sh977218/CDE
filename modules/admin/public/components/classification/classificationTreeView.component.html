@@ -1,14 +1,9 @@
-<ul class="fa-ul">
-    <h4 *ngIf="element.stewardOrg" id="{{classification.stewardOrg.name}}">
-        {{classification.stewardOrg.name}}
+<ul class="fa-ul overflowHidden">
+    <h4 *ngIf="element.stewardOrg">{{element.stewardOrg.name}}
         <hr/>
     </h4>
-    <a *ngIf="element.name" class="name hand-cursor first-level-classification" id="classification-{{element.name}}"
-       (title)=element.name>{{element.name}} </a>
-    <div *ngFor="let element of classification.elements;let j = index" class="boxed-div"
-         id="conceptSystem-{{classification.stewardOrg.name}}-{{element.name}}">
-        <ul *ngFor="let ele of element.elements; let k = index" class="fa-ul">
-            <classification-tree-view [element]="ele"></classification-tree-view>
-        </ul>
+    <a *ngIf="element.name" id="classification-{{element.name}}">{{element.name}}</a>
+    <div *ngFor="let ele of element.elements;let j = index">
+        <classification-tree-view [element]="ele"></classification-tree-view>
     </div>
 </ul>
