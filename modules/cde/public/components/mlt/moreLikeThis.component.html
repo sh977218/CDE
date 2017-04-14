@@ -1,0 +1,67 @@
+<button type="button" class="btn btn-default" id="mltButton" (click)="open()">More Like This</button>
+
+<template #mltModal id="mltModal" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3 class="modal-title">More Like This</h3>
+    </div>
+    <div class="modal-body">
+        <div class="overflowHidden">
+            <div *ngIf="!cdes">
+                <h4 class="pt60 pb40 text-center">
+                    <i class="fa fa-spinner fa-pulse"></i> Loading...
+                </h4>
+            </div>
+            <div *ngIf="cdes">
+                <div *ngIf="cdes.length === 0"><h4>No similar elements to show.</h4></div>
+
+                <cde-pin-modal #mltPinModal></cde-pin-modal>
+
+                <ngb-accordion id="mltAccordion">
+                    <ngb-panel *ngFor="let cde of cdes; let i = index">
+                        <template ngbPanelTitle>
+                            <a href class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
+                            <a href="#" class="nonLinkAnchor">
+                                <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
+                                    (click)="$event.stopPropagation(); view(cde, $event)"></i>
+                            </a>
+                            <a href="#" class="nonLinkAnchor" (click)="$event.stopPropagation()">
+                                <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
+                                   title="Attach to Board" role="link" (click)="$event.stopPropagation(); mltPinModal.open(cde, 'cde')"></i>
+                            </a>
+                            <a href="#" tabindex="0" class="nonLinkAnchor" *ngIf="quickBoard.canAddElt(cde)"
+                               (click)="$event.stopPropagation(); quickBoard.add(cde)">
+                                <i class="fa fa-plus-square-o  hand-cursor" title="Add to Quick Board"
+                                   id="addToCompare_{{i}}" role="link"></i></a>
+                        </template>
+                        <template ngbPanelContent>
+                            <div class="col-md-4 col-sm-12 col-xs-12">
+                                <cde-cde-general-details [elt]="cde"></cde-cde-general-details>
+                            </div>
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <cde-value-domain-summary [elt]="cde"></cde-value-domain-summary>
+                            </div>
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <table *ngIf="cde.ids.length > 0" class="table cdeTable" summary="Identifiers List">
+                                    <tr>
+                                        <th id="id" class="col-xs-6">Id</th>
+                                        <th id="version" class="col-xs-2">Vers.</th>
+                                        <th id="source" class="col-xs-4">Src.</th>
+                                    </tr>
+                                    <tr *ngFor="let id of elt.ids">
+                                        <td headers="id" class="col-xs-6">{{id.id}}</td>
+                                        <td headers="version" class="col-xs-2">{{id.version}}</td>
+                                        <td headers="source" class="col-xs-4">{{id.source}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </template>
+                    </ngb-panel>
+                </ngb-accordion>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" id="closeMoreLikeThisBtn" (click)="modalRef.dismiss()">Close</button>
+    </div>
+</template>

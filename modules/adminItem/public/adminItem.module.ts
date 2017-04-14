@@ -1,30 +1,46 @@
-import { NgModule } from "@angular/core";
-import { upgradeAdapter } from "../../upgrade";
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
+import { IdentifiersComponent } from "../../adminItem/public/components/identifiers.component";
+import { PropertiesComponent } from "../../adminItem/public/components/properties.component";
+import { NamingComponent } from "../../adminItem/public/components/naming.component";
+import { ReferenceDocumentComponent } from "../../adminItem/public/components/referenceDocument.component";
 
-const InlineEditComponent = upgradeAdapter.upgradeNg1Component("inlineEdit");
-const InlineAreaEditComponent = upgradeAdapter.upgradeNg1Component("inlineAreaEdit");
-const SortableArrayComponent = upgradeAdapter.upgradeNg1Component("sortableArray");
+import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 
 @NgModule({
     imports: [
         CommonModule,
+        FormsModule,
         Select2Module
     ],
     declarations: [
-        InlineEditComponent,
-        InlineAreaEditComponent,
-        SortableArrayComponent,
-        AttachmentsComponent
+        AttachmentsComponent,
+        InlineAreaEditDirective,
+        SortableArrayDirective,
+        IdentifiersComponent,
+        PropertiesComponent,
+        NamingComponent,
+        ReferenceDocumentComponent
     ],
-    providers: [],
+    entryComponents: [
+        IdentifiersComponent,
+        PropertiesComponent,
+        NamingComponent,
+        ReferenceDocumentComponent,
+    ],
     exports: [
-        InlineAreaEditComponent,
-        InlineEditComponent,
-        SortableArrayComponent
-    ]
+        InlineEditDirective,
+        InlineAreaEditDirective,
+        SortableArrayDirective,
+        IdentifiersComponent,
+        PropertiesComponent,
+        NamingComponent,
+        ReferenceDocumentComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AdminItemModule {
 }

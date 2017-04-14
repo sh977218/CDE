@@ -12,7 +12,7 @@ public class compareMeWithMltTest extends NlmCdeBaseTest {
         clickElement(By.id("addToQuickBoard"));
         textPresent("Added to QuickBoard");
         closeAlert();
-        clickElement(By.id("cdeMoreLikeThisBtn"));
+        clickElement(By.id("mltButton"));
         textPresent("Common Toxicity Criteria Adverse Event Platelet Count Grade");
         clickElement(By.id("addToCompare_0"));
         textPresent("Added to QuickBoard");

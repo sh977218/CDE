@@ -19,13 +19,24 @@
             </uib-accordion-heading>
             <div class="row">
                 <div class="col-md-4 col-sm-12 col-xs-12">
-                    <div ng-include="'/cde/public/html/cdeList/generalDetails.html'"></div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-xs-12" ng-if="elt.valueDomain.datatype === 'Value List'">
-                    <div ng-include="'/cde/public/html/cdeList/valueDomain.html'"></div>
+                    <cde-cde-general-details [elt]="elt"></cde-cde-general-details>
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
+                    <cde-value-domain-summary [elt]="elt"></cde-value-domain-summary>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <table ng-show="elt.ids.length > 0" class="table cdeTable" summary="Identifiers List">
+                        <tr>
+                            <th tabindex="0" id="id" class="col-xs-6">Id</th>
+                            <th tabindex="0" id="version" class="col-xs-2">Vers.</th>
+                            <th tabindex="0" id="source" class="col-xs-4">Src.</th>
+                        </tr>
+                        <tr ng-repeat="id in elt.ids">
+                            <td tabindex="0" ng-bind="id.id" headers="id" class="col-xs-6"></td>
+                            <td tabindex="0" ng-bind="id.version" headers="version" class="col-xs-2"></td>
+                            <td tabindex="0" ng-bind="id.source" headers="source" class="col-xs-4"></td>
+                        </tr>
+                    </table>
                     <img ng-repeat="attachment in elt.attachments | filter:{isDefault:true}"
                          alt="Image attached to the CDE"
                          ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>

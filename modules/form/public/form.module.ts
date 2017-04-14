@@ -32,6 +32,11 @@ import { SortableModule } from "ng2-bootstrap/index";
         NativeQuestionComponent,
         NativeTableComponent
     ],
+    entryComponents: [
+        MergeFormComponent,
+        NativeRenderFullComponent,
+        NativeRenderComponent,
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormModule {

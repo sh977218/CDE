@@ -17,8 +17,7 @@ export class PropertiesComponent implements OnInit {
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
                 @Inject("OrgHelpers") private orgHelpers,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
+                public modalService: NgbModal) {
     }
 
     ngOnInit(): void {
@@ -30,7 +29,7 @@ export class PropertiesComponent implements OnInit {
             this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
         } else {
             this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-            this.modalRef.result.then(result => {
+            this.modalRef.result.then(() => {
                 this.newProperty = {};
             }, () => {
             });
