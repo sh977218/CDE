@@ -23,16 +23,16 @@ import { ClassificationTreeViewComponent } from "./components/classification/cla
         IdentifiersComponent,
         PropertiesComponent,
         NamingComponent,
+        ReferenceDocumentComponent,
         ClassificationComponent,
-        ClassificationTreeViewComponent,
-        ReferenceDocumentComponent
+        ClassificationTreeViewComponent
     ],
     entryComponents: [
         IdentifiersComponent,
         PropertiesComponent,
         NamingComponent,
-        ClassificationComponent,
-        ReferenceDocumentComponent
+        ReferenceDocumentComponent,
+        ClassificationComponent
     ],
     exports: [
         InlineEditDirective,
@@ -41,8 +41,8 @@ import { ClassificationTreeViewComponent } from "./components/classification/cla
         IdentifiersComponent,
         PropertiesComponent,
         NamingComponent,
-        ClassificationComponent,
-        ReferenceDocumentComponent
+        ReferenceDocumentComponent,
+        ClassificationComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

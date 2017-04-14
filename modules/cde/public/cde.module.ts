@@ -26,7 +26,6 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
         DerivationRulesComponent,
         DatasetsComponent,
         MoreLikeThisComponent,
-        ValueDomainSummaryComponent,
         CdeGeneralDetailsComponent,
         ValueDomainSummaryComponent,
         CdeSummaryListComponent
@@ -35,15 +34,9 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
-        MoreLikeThisComponent,
-        ValueDomainSummaryComponent
+        MoreLikeThisComponent
     ],
     providers: [
-        DatasetsComponent,
-        MoreLikeThisComponent,
-        CdeGeneralDetailsComponent,
-        ValueDomainSummaryComponent,
-        CdeSummaryListComponent,
         CdeGeneralDetailsComponent,
         ValueDomainSummaryComponent
     ],
