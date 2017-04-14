@@ -34,9 +34,7 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
-        MoreLikeThisComponent
-    ],
-    providers: [
+        MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
         ValueDomainSummaryComponent
     ],
