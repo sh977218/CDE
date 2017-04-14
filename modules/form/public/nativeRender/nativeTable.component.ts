@@ -28,7 +28,7 @@ export class NativeTableComponent implements OnInit {
         this.entry = this.tableForm.s[0].q[0];
         this.getRows();
         this.sectionNumber = 0;
-        let ret = this.renderSection(this.formElement, 0);
+        let ret = this.renderSection(this.formElement, 0, "");
         this.setDepth(ret.r + 1);
 
         this.entry.cspan = 1;
@@ -61,7 +61,7 @@ export class NativeTableComponent implements OnInit {
         }
     }
 
-    renderSection(s, level, r = 1, c = 0) {
+    renderSection(s, level, sectionName, r = 1, c = 0) {
         let sectionStyle = this.getSectionStyle(this.sectionNumber++);
         let section = {header: true, cspan: c, label: s.label, style: sectionStyle.sectionStyle};
         if (level === 0)
@@ -70,7 +70,7 @@ export class NativeTableComponent implements OnInit {
         let tcontent = this.getSectionLevel(level + 1);
         let retr = 0;
         s.formElements && s.formElements.forEach(f =>  {
-            let ret = this.renderFormElement(f, tcontent, level, retr, r, c, sectionStyle);
+            let ret = this.renderFormElement(f, tcontent, level, retr, r, c, sectionStyle, sectionName);
             retr = ret.retr;
             c = ret.c;
         });
@@ -78,22 +78,22 @@ export class NativeTableComponent implements OnInit {
         section.cspan = c;
         return {r: r, c: c};
     }
-    renderFormElement(f, tcontent, level, retr, r, c, sectionStyle) {
+    renderFormElement(f, tcontent, level, retr, r, c, sectionStyle, sectionName) {
         if (f.elementType === "section" || f.elementType === "form") {
             if (!f.repeat) {
-                let ret = this.renderSection(f, level + 1);
+                let ret = this.renderSection(f, level + 1, sectionName);
                 c += ret.c;
                 retr = Math.max(retr, ret.r);
             } else if (f.repeat[0] === "F") {
-                NativeTableComponent.getFirstQuestion(f).question.answers.forEach(a => {
-                    let ret = this.renderSection(f, level + 1);
+                NativeTableComponent.getFirstQuestion(f).question.answers.forEach((a, i) => {
+                    let ret = this.renderSection(f, level + 1, sectionName + "-" + (i + 1));
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 });
             } else {
                 let maxValue = parseInt(f.repeat);
                 for (let i = 1; i <= maxValue; i++) {
-                    let ret = this.renderSection(f, level + 1);
+                    let ret = this.renderSection(f, level + 1, sectionName + "-" + i);
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 }
@@ -102,7 +102,7 @@ export class NativeTableComponent implements OnInit {
         else if (f.elementType === "question" && f !== this.firstQuestion) {
             c++;
             tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
-            let qName = f.questionId + "-i" + (++this.rowNameCounter).toString();
+            let qName = f.questionId + sectionName;
             this.tableForm.q.push({
                 type: NativeTableComponent.getQuestionType(f),
                 name: qName,
@@ -110,21 +110,12 @@ export class NativeTableComponent implements OnInit {
                 style: sectionStyle.answerStyle
             });
             this.tableForm.rows.forEach((r, i) => {
-                this.nativeRenderService.elt.formInput[qName + "-" + i];
                 if (f.question.uoms && f.question.uoms.length === 1)
-                    this.nativeRenderService.elt.formInput[qName + "-" + i + "_uom"] = f.question.uoms[0];
+                    this.nativeRenderService.elt.formInput[qName + "-" + (i + 1) + "_uom"] = f.question.uoms[0];
             });
-            if ((!Array.isArray(f.question.answer) || this.tableForm.rows.length !== f.question.answer.length) && this.tableForm.q.slice(-1)[0].type === "list") {
-                f.question.answer = [];
-                this.tableForm.rows.forEach(r => {
-                    f.question.answer.push({answer: ""});
-                });
-            } else
-                f.question.answer = Array(this.tableForm.rows.length);
-
             f.question.answers.forEach(a => {
                 a.subQuestions && a.subQuestions.forEach(sf => {
-                    let ret = this.renderFormElement(sf, tcontent, level, retr, r, c, sectionStyle);
+                    let ret = this.renderFormElement(sf, tcontent, level, retr, r, c, sectionStyle, sectionName);
                     retr = ret.retr;
                     c = ret.c;
                 });
