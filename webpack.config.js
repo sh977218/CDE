@@ -35,6 +35,9 @@ module.exports = {
                 entryModule: path.join(__dirname, 'modules', 'app.module') + '#CdeAppModule',
                 mainPath: 'modules/main-aot'
             }),
+            new webpack.DefinePlugin({
+                PRODUCTION: JSON.stringify(true),
+            }),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.optimize.UglifyJsPlugin({ // sourcemap
@@ -52,6 +55,9 @@ module.exports = {
                 /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
                 __dirname
             ),
+            new webpack.DefinePlugin({
+                PRODUCTION: JSON.stringify(false),
+            }),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
             new webpack.ProgressPlugin() // show progress in ConEmu window

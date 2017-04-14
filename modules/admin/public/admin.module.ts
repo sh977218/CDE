@@ -34,7 +34,6 @@ import { ClassificationTreeViewComponent } from "./components/classification/cla
         ClassificationComponent,
         ReferenceDocumentComponent
     ],
-    providers: [],
     exports: [
         InlineEditDirective,
         InlineAreaEditDirective,

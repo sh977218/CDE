@@ -62,3 +62,6 @@ angular.module('systemModule').directive('cdeCdeSummaryList', downgradeComponent
 
 import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
 angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: ['elt'], outputs: []}));
+
+import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
+angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));

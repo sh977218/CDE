@@ -1,3 +1,7 @@
+import { enableProdMode } from "@angular/core";
+if (PRODUCTION) {
+    enableProdMode();
+}
 import "core-js/client/shim";
 import "zone.js";
 import "../node_modules/zone.js/dist/long-stack-trace-zone.js";
