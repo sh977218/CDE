@@ -70,12 +70,13 @@ export class NamingComponent implements OnInit {
         this.elt.unsaved = true;
     }
 
-    changedTags(name, data: {value: string[]}) {
+    changedTags(name, data: {value: string[]}, needToSave = true) {
         if (!data.value) data.value = [];
         name.tags = data.value.map(d => {
             return {tag: d};
         });
-        this.elt.unsaved = true;
+        if (needToSave)
+            this.elt.unsaved = true;
     }
 
     saveNaming() {

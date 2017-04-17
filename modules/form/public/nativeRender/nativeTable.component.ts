@@ -148,7 +148,7 @@ export class NativeTableComponent implements OnInit {
     static getFirstQuestion(el): any {
         let elem = el;
         let firstQuestion = null;
-        while (true) {
+        while (elem) {
             if (elem.elementType !== "question") {
                 if (!elem.formElements && elem.formElements.length > 0)
                     break;
