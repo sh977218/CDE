@@ -12,13 +12,18 @@ import { ClassificationTreeViewComponent } from "./components/classification/cla
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ClassifyItemTreeViewComponent } from "./components/classification/classifyItemTreeView.component";
+import { LocalStorageModule } from "angular-2-local-storage/dist/index";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         Select2Module,
-        NgbModule
+        NgbModule,
+        LocalStorageModule.withConfig({
+            prefix: "nlmcde",
+            storageType: "localStorage"
+        })
     ],
     declarations: [
         InlineEditDirective,

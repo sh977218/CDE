@@ -3,32 +3,41 @@
         <h4 class="modal-title">Classify This {{type | uppercase}}</h4>
     </div>
     <div class="modal-body" id="newClassifyItemModalBody">
-        <ngb-tabset>
-            <ngb-tab title="By ClassifyItem tree">
+        <ngb-tabset (tabChange)="onChangeClassifyView($event)">
+            <ngb-tab id="treeViewTab" title="By ClassifyItem tree">
                 <template ngbTabContent>
                     <hr>
                     <select class="form-control" id="selectClassifyItemOrg" name="selectClassifyItemOrg"
-                            (change)="onChange($event.target.value)"> required>
+                            (change)="onChangeOrg($event.target.value)"> required>
                         <option value="">Start by selecting an organization...</option>
                         <option *ngFor="let myOrg of myOrgs;" value="{{myOrg}}">{{myOrg}}</option>
                     </select>
-                    <div *ngFor="let orgClassification of orgClassifications; let i of index">
-                        <classify-item-tree-view [element]="orgClassification"></classify-item-tree-view>
+                    <div class="smallSpace"></div>
+                    <div *ngFor="let orgClassificationTreeView of orgClassificationsTreeView; let i of index">
+                        <classify-item-tree-view [element]="orgClassificationTreeView"></classify-item-tree-view>
                     </div>
                 </template>
             </ngb-tab>
-            <ngb-tab title="By recently added">
+            <ngb-tab id="recentlyAddViewTab" title="By recently added">
                 <template ngbTabContent>
                     <hr>
+                    <p>Select from recently used classifications...</p>
+                    <div class="smallSpace"></div>
+                    <div *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; let i of index"
+                         class="breadcrumb ">
+                        {{orgClassificationRecentlyAddView.orgName}} /
+                        {{orgClassificationRecentlyAddView.categories.join(" / ")}}
+                        <button class="btn btn-default btn-xs" type="button">
+                            <i class="fa fa-plus"></i> Classify
+                        </button>
+                    </div>
                 </template>
             </ngb-tab>
         </ngb-tabset>
     </div>
     <div class="modal-footer" id="newClassifyItemModalFooter">
         <button class="btn cancel" (click)="c('Close click')" id="cancelNewClassifyItemBtn"
-                name="cancelNewClassifyItemBtn" type="button">Cancel
-        </button>
-        <button class="btn btn-warning" id="createNewClassifyItemBtn" name="createNewClassifyItemBtn" type="submit">Save
+                name="cancelNewClassifyItemBtn" type="button">Close
         </button>
     </div>
 </template>

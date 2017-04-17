@@ -2,7 +2,10 @@
     <h4 *ngIf="element.stewardOrg">{{element.stewardOrg.name}}
         <hr/>
     </h4>
-    <a *ngIf="element.name" id="classification-{{element.name}}">{{element.name}}</a>
+    <div *ngIf="element.name">
+        <a id="classification-{{element.name}}">{{element.name}}</a>
+        <a class="fa fa-trash-o hand-cursor" title="Remove"></a>
+    </div>
     <div *ngFor="let ele of element.elements;let j = index">
         <classification-tree-view [element]="ele"></classification-tree-view>
     </div>
