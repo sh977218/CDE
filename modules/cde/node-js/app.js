@@ -509,4 +509,25 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    function removeFromSchema(schema) {
+        Object.keys(schema).forEach(k => {
+            delete schema[k].regExp;
+            delete schema[k].setters;
+            delete schema[k].getters;
+            delete schema[k].options;
+            delete schema[k].validators;
+            delete schema[k]._index;
+            delete schema[k].caster;
+            if (schema[k].schema) {
+                removeFromSchema(schema.schema.paths);
+            }
+        });
+    }
+
+    app.get('/schema/cde', (req, res) => {
+        let schema = JSON.parse(JSON.stringify(mongo_cde.DataElement.schema.paths));
+        removeFromSchema(schema);
+        return res.send(schema);
+    });
+
 };
