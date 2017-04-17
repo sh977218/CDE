@@ -298,7 +298,7 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         if (CuratedItem.archived) {
             return false;
         }
-        if (userResource.user.siteAdmin) {
+        if (userResource.user && userResource.user.siteAdmin) {
             return true;
         } else {
             if (CuratedItem.registrationState.registrationStatus === "Standard" ||
