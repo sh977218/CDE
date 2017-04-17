@@ -24,7 +24,7 @@ export class NativeRenderComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.eltLoaded)
+        if (this.eltLoaded && this.eltLoaded.promise)
             this.eltLoaded.promise.then(() => {
                 this.load();
             });
