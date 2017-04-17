@@ -61,4 +61,10 @@ export class ClassifyItemModalComponent implements OnInit {
         }, () => {
         });
     }
+
+    classifyItemByRecentlyAdd(classificationRecentlyAdd) {
+        let newOrgClassificationsRecentlyAddView = this.orgClassificationsRecentlyAddView.filter(o => o === classificationRecentlyAdd);
+        newOrgClassificationsRecentlyAddView.unshift(classificationRecentlyAdd);
+        this.localStorageService.set("classificationHistory", newOrgClassificationsRecentlyAddView)
+    }
 }

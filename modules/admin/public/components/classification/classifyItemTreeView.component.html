@@ -4,17 +4,16 @@
            class="fa fa-chevron-right" (click)="toggle(element)"></i>
         <i *ngIf="element.expended" class="fa fa-chevron-down" (click)="toggle(element)"></i>
     </div>
-
     <h4 *ngIf="element.stewardOrg">{{element.stewardOrg.name}}
         <hr/>
     </h4>
     <a *ngIf="element.name" id="classification-{{element.name}}">{{element.name}}</a>
-    <button class="btn btn-default btn-xs" type="button">
+    <button class="btn btn-default btn-xs" type="button" (click)="classifyItemByTree(element)">
         <i class="fa fa-plus"></i> Classify
     </button>
     <div *ngIf="element.expended">
         <div *ngFor="let ele of element.elements;let j = index">
-            <classify-item-tree-view [element]="ele"></classify-item-tree-view>
+            <classify-item-tree-view [element]="ele" (itemClassified)="foo()"></classify-item-tree-view>
         </div>
     </div>
 </ul>

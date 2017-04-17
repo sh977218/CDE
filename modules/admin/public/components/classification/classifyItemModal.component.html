@@ -14,7 +14,7 @@
                     </select>
                     <div class="smallSpace"></div>
                     <div *ngFor="let orgClassificationTreeView of orgClassificationsTreeView; let i of index">
-                        <classify-item-tree-view [element]="orgClassificationTreeView"></classify-item-tree-view>
+                        <classify-item-tree-view [element]="orgClassificationTreeView" ></classify-item-tree-view>
                     </div>
                 </template>
             </ngb-tab>
@@ -27,7 +27,8 @@
                          class="breadcrumb ">
                         {{orgClassificationRecentlyAddView.orgName}} /
                         {{orgClassificationRecentlyAddView.categories.join(" / ")}}
-                        <button class="btn btn-default btn-xs" type="button">
+                        <button class="btn btn-default btn-xs" type="button"
+                                (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
                             <i class="fa fa-plus"></i> Classify
                         </button>
                     </div>
