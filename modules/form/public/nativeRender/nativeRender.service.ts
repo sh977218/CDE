@@ -435,7 +435,7 @@ export class NativeRenderService {
             if (repeats > 1)
                 repeatMapping.forEach(m => {
                     for (let i = 0; i < repeats; i++)
-                        repeatMappingNew.push(m + "-" + i);
+                        repeatMappingNew.push(m + i + "-");
                 });
             else
                 repeatMappingNew = repeatMapping;
@@ -458,7 +458,7 @@ export class NativeRenderService {
                 let q: any;
                 q = {
                     "question": fe.label,
-                    "name": fe.questionId + name,
+                    "name": name + fe.questionId,
                     "ids": fe.question.cde.ids,
                     "tinyId": fe.question.cde.tinyId
                 };

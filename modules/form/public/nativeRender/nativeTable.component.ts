@@ -86,14 +86,14 @@ export class NativeTableComponent implements OnInit {
                 retr = Math.max(retr, ret.r);
             } else if (f.repeat[0] === "F") {
                 NativeRenderService.getFirstQuestion(f).question.answers.forEach((a, i) => {
-                    let ret = this.renderSection(f, level + 1, sectionName + "-" + (i + 1));
+                    let ret = this.renderSection(f, level + 1, sectionName + i + "-");
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 });
             } else {
                 let maxValue = parseInt(f.repeat);
                 for (let i = 0; i < maxValue; i++) {
-                    let ret = this.renderSection(f, level + 1, sectionName + "-" + i);
+                    let ret = this.renderSection(f, level + 1, sectionName + i + "-");
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 }
@@ -102,16 +102,15 @@ export class NativeTableComponent implements OnInit {
         else if (f.elementType === "question" && f !== this.firstQuestion) {
             c++;
             tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
-            let qName = f.questionId + sectionName;
             this.tableForm.q.push({
                 type: NativeTableComponent.getQuestionType(f),
-                name: qName,
+                name: "-" + sectionName + f.questionId,
                 question: f.question,
                 style: sectionStyle.answerStyle
             });
             this.tableForm.rows.forEach((r, i) => {
                 if (f.question.uoms && f.question.uoms.length === 1)
-                    this.nativeRenderService.elt.formInput[qName + "-" + (i + 1) + "_uom"] = f.question.uoms[0];
+                    this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId + "_uom"] = f.question.uoms[0];
             });
             f.question.answers.forEach(a => {
                 a.subQuestions && a.subQuestions.forEach(sf => {
