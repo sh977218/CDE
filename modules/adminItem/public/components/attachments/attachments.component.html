@@ -7,9 +7,9 @@
                 <div *ngIf="!attachment.pendingApproval">
                     <a id="attachment_file_url_{{$index}}" class="viewAttachmentLink" href="/data/{{attachment.fileid}}"
                        target="_blank">{{attachment.filename}}</a>
-                    <!--<button class="btn btn-default btn-xs" (click)="copyUrl(attachment)"><i-->
-                            <!--class="fa fa-clipboard" id="copyUrl_{{$index}}"></i> Copy URL-->
-                    <!--</button>-->
+                    <button class="btn btn-default btn-xs" (click)="copyUrl(attachment)"><i
+                            class="fa fa-clipboard" id="copyUrl_{{$index}}"></i> Copy URL
+                    </button>
                 </div>
                 <div *ngIf="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be
                     dowloaded because it is pending approval.
@@ -23,31 +23,31 @@
                     Attachments smaller than 500k can be marked as default
                 </div>
                 <div *ngIf="attachment.filesize <= 512*1024">
-                    <!--<input type="checkbox" id="defaultCb" ([ngModel])="attachment.isDefault"-->
-                           <!--ng-change="setDefault($index)" [disabled]="!canCurate"/>-->
-                    <label for="defaultCb" id="defaultCbLabel">Should this image be displayed in search
-                        results?</label>
+                    <label id="defaultCbLabel">
+                        <input type="checkbox" id="defaultCb" [(ngModel)]="attachment.isDefault"
+                               (change)="setDefault($index)" [disabled]="!isAllowedModel.isAllowed(elt)"/>
+                        Should this image be displayed in search results?</label>
                 </div>
             </div>
         </div>
         <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
             <div class="col-xs-3 text-right text_label">Actions:</div>
-            <!--<div class="col-xs-9">-->
-                <!--<div ng-show="showDelete">-->
-                    <!--Confirm Delete-->
-                    <!--<i class="fa fa-check" ng-click="showDelete = false; removeAttachment($index)"-->
-                       <!--id="confirmRemove-{{$index}}"></i>-->
-                    <!--<i class="fa fa-times" ng-click="showDelete = false"></i>-->
-                <!--</div>-->
-                <!--<i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"-->
-                   <!--id="removeAttachment-{{$index}}"></i></dd>-->
-            <!--</div>-->
+            <div class="col-xs-9">
+                <div *ngIf="showDelete">
+                    Confirm Delete
+                    <i class="fa fa-check" (click)="showDelete = false; removeAttachment($index)"
+                       id="confirmRemove-{{$index}}"></i>
+                    <i class="fa fa-times" (click)="showDelete = false"></i>
+                </div>
+                <i (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
+                   id="removeAttachment-{{$index}}"></i></dd>
+            </div>
         </div>
         <div class="row">
             <div class="col-xs-3 text-right text_label">Size:</div>
             <div class="col-xs-3" id="dd_attach_size_{{$index}}">
-                <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:2}} MB</div>
-                <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:2}} kB</div>
+                <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}} MB</div>
+                <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB</div>
             </div>
         </div>
         <div class="row">
@@ -67,9 +67,6 @@
 
     <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
         <div class="col-xs-12">
-            <!--<div class="row">-->
-                <!--<div class="col-xs-12">{{message}}</div>-->
-            <!--</div>-->
             <div class="row">
                 <div class="col-xs-3 text-right text_label">
                     <label for="fileToUpload"><i class="fa fa-upload"></i>
@@ -94,14 +91,6 @@
                     <input type="button" (click)="uploadFiles()" id="doUploadButton" value="Upload"/>
                 </div>
             </div>
-            <!--<div class="row">-->
-                <!--<div class="col-xs-3 text-right" ng-show="progressVisible">-->
-                    <!--<div class="percent">{{progress}}%</div>-->
-                    <!--<div class="progress-bar">-->
-                        <!--<div class="uploaded" ng-style="{'width': progress+'%'}"></div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
         </div>
     </div>
 </div>

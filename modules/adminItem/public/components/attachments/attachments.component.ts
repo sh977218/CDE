@@ -15,6 +15,8 @@ export class AttachmentsComponent {
     @Input() public elt: any;
     @ViewChild("fileInput") inputEl: ElementRef;
 
+    showDelete: boolean = false;
+
     constructor(
         private http: Http,
         @Inject("isAllowedModel") public isAllowedModel,
@@ -28,46 +30,53 @@ export class AttachmentsComponent {
             for (let i = 0; i < files.length; i++) {
                 formData.append("uploadedFiles", files[i]);
             }
-            this.http.post("/attachments/" + this.elt.elementType + "/add", formData).subscribe(
-                r => this.Alert.addAlert("success", r.text()));
+            formData.append("id", this.elt._id);
+            this.http.post("/attachments/" + this.elt.elementType + "/add", formData).map(r => r.json()).subscribe(
+                r => {
+                    if (r.message) this.Alert.addAlert("info", r.text());
+                    else this.elt = r;
+                }
+            );
         }
     }
 
-//     $scope.setFiles = function (element) {
-//     $timeout(function () {
-//         $scope.$apply(function ($scope) {
-//             // Turn the FileList object into an Array
-//             $scope.files = [];
-//             for (var i = 0; i < element.files.length; i++) {
-//                 if (element.files[i].size > (5 * 1024 * 1024)) {
-//                     $scope.message = "Size is limited to 5Mb per attachment";
-//                 } else {
-//                     $scope.files.push(element.files[i]);
-//                 }
-//             }
-//             $scope.progressVisible = false;
-//         });
-//     }, 0);
-// };
+    setDefault (index) {
+        this.http.post("/attachments/" + this.elt.elementType + "/setDefault",
+            {
+                index: index
+                , state: this.elt.attachments[index].isDefault
+                , id: this.elt._id
+            }).map(r => r.json()).subscribe(res => {
+                this.elt = res;
+                this.Alert.addAlert("success", "Saved");
+        });
+    }
 
-    // copyUrl (attachment) {
-    //     let url = window.publicUrl + "/data/" + attachment.fileid;
-    //     let copyElement = document.createElement('input');
-    //     copyElement.setAttribute('type', 'text');
-    //     copyElement.setAttribute('value', url);
-    //     copyElement = document.body.appendChild(copyElement);
-    //     copyElement.select();
-    //     try {
-    //         if (!document.execCommand('copy')) throw 'Not allowed.';
-    //     } catch (e) {
-    //         copyElement.remove();
-    //         console.log("document.execCommand('copy'); is not supported");
-    //         prompt('Copy the text below. (ctrl c, enter)', url);
-    //     } finally {
-    //         if (typeof e == 'undefined') {
-    //             copyElement.remove();
-    //         }
-    //     }
-    // }
+    copyUrl (attachment) {
+        let url = (window as any).publicUrl + "/data/" + attachment.fileid;
+        let copyElement = document.createElement("input");
+        copyElement.setAttribute("type", "text");
+        copyElement.setAttribute("value", url);
+        document.body.appendChild(copyElement);
+        copyElement.select();
+        try {
+            if (!document.execCommand("copy")) throw "Not allowed.";
+            copyElement.remove();
+        } catch (e) {
+            copyElement.remove();
+            prompt("Copy the text below. (ctrl c, enter)", url);
+        }
+    }
+
+    removeAttachment (index) {
+        this.http.post("/attachments/" + this.elt.elementType + "/remove", {
+            index: index
+            , id: this.elt._id
+        }).map(r => r.json()).subscribe(res => {
+            this.elt = res;
+            this.Alert.addAlert("success", "Attachment Removed.");
+        });
+    }
+
 
 }
