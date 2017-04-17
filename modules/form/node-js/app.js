@@ -241,6 +241,10 @@ exports.init = function (app, daoManager) {
         }
     });
 
-
+    app.get('/schema/form', (req, res) => {
+        let schema = JSON.parse(JSON.stringify(mongo_form.Form.schema.paths));
+        adminItemSvc.removeFromSchema(schema);
+        return res.send(schema);
+    });
 
 };
