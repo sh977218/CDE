@@ -3,9 +3,7 @@ package gov.nih.nlm.cde.test;
 
 import com.jayway.restassured.http.ContentType;
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -62,7 +60,6 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void checkTicketInvalid() {
-
         // Test to make sure user isn't logged in
         String response = get(baseUrl + "/user/me").asString();
         Assert.assertEquals("Not logged in.", response);
@@ -87,32 +84,11 @@ public class MiscTests extends NlmCdeBaseTest {
     }
 
     @Test
-    public void leavePageWarning() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Intra-arterial Catheter Patient Not Administered Reason");
-        clickElement(By.id("naming_tab"));
+    public void checkSchemas () {
+        Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("{\"naming\":{\"schema\":{\"paths\":{\"designation\":{\"enumValues\":[],\"path\":\"designation\",\"instance\":\"String\"}"));
 
-        String definitionEditIconXpath = "//*[@id='definition_0']//*[contains(@class,'fa-edit')]";
-        String richTextBtnXpath = "//*[@id='definition_0']//button[contains(text(),'Rich Text')]";
-        String definitionTextareaXpath = "//*[@id='definition_0']//textarea";
-        String definitionConfirmBtnXpath = "//*[@id='definition_0']//*[contains(@class,'fa-check')]";
+        Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains(",\"naming\":{\"schema\":{\"paths\":{\"designation\":{\"enumValues\":[],\"path\":\"designation\",\"instance\":\"String\"}"));
 
-        clickElement(By.xpath(definitionEditIconXpath));
-        findElement(By.xpath(definitionTextareaXpath)).sendKeys("[def change number 1]");
-        clickElement(By.xpath(definitionConfirmBtnXpath));
-
-        clickElement(By.linkText("CDEs"));
-        shortWait.until(ExpectedConditions.alertIsPresent());
-        Alert alert = driver.switchTo().alert();
-        Assert.assertTrue(alert.getText().contains("are you sure you want to leave"));
-        alert.dismiss();
-
-        clickElement(By.linkText("CDEs"));
-        shortWait.until(ExpectedConditions.alertIsPresent());
-        alert = driver.switchTo().alert();
-        Assert.assertTrue(alert.getText().contains("are you sure you want to leave"));
-        alert.accept();
-        textPresent("Browse by Classification");
     }
 
 }

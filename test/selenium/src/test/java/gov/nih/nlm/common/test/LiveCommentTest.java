@@ -14,7 +14,7 @@ public class LiveCommentTest extends CdeCommentTest {
             hangon(2);
             findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
         }
-        hangon(1);
+        hangon(2);
         scrollToViewById("replyBtn_" + i);
         clickElement(By.id("replyBtn_" + i));
     }
