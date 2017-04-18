@@ -420,7 +420,8 @@ export class NativeRenderService {
 
     static flattenForm(elt) {
         let last_id = 0;
-        return flattenFormSection(elt, [], "");
+        let startSection = (elt.formElements && (elt.formElements.length > 1 || elt.formElements.length === 0) ? elt : elt.formElements[0]);
+        return flattenFormSection(startSection, [startSection.label], "");
 
         function createId() {
             return "q" + ++last_id;
@@ -433,8 +434,8 @@ export class NativeRenderService {
                 repeatSection.push({
                     "section": sectionHeading[sectionHeading.length - 1],
                     "questions": fe.formElements.reduce(
-                        (acc, fe) => acc.concat(
-                            flattenFormFe(fe, sectionHeading.concat(fe.label), sectionName + (repeats > 1 ? i + "-" : ""))
+                        (acc, feIter) => acc.concat(
+                            flattenFormFe(feIter, sectionHeading.concat(feIter.label), sectionName + (repeats > 1 ? i + "-" : ""))
                         ), []
                     )
                 });
