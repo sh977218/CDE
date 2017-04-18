@@ -476,7 +476,7 @@ export class NativeRenderService {
     static getFirstQuestion(fe): any {
         let elem = fe;
         let firstQuestion = null;
-        while (true) {
+        while (elem) {
             if (elem.elementType !== "question") {
                 if (!elem.formElements && elem.formElements.length > 0)
                     break;
