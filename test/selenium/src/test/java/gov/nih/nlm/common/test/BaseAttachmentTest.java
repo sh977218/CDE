@@ -20,7 +20,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
         findElement(By.id("fileToUpload")).sendKeys("T:\\CDE\\data\\" + name);
-        clickElement(By.id("doUploadButton"));
+//        clickElement(By.id("doUploadButton"));
 
         textPresent(name);
     }

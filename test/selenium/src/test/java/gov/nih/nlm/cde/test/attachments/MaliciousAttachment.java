@@ -16,7 +16,7 @@ public class MaliciousAttachment  extends BaseAttachmentTest {
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
         findElement(By.id("fileToUpload")).sendKeys("T:\\CDE\\data\\fakeVirus.txt");
-        clickElement(By.id("doUploadButton"));
+//        clickElement(By.id("doUploadButton"));
         try {
             textPresent("The file probably contains a virus");
         } catch (Exception e) {
