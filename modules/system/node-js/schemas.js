@@ -139,9 +139,8 @@ schemas.orgJson = orgJson;
 
 schemas.orgSchema = new mongoose.Schema(orgJson);
 
-
 schemas.userSchema = new mongoose.Schema({
-    username: String
+    username: {type: String, unique: true}
     , email: String
     , password: String
     , lastLogin: Date
