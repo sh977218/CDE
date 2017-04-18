@@ -85,9 +85,9 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void checkSchemas () {
-        Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("{\"naming\":{\"schema\":{\"paths\":{\"designation\":{\"enumValues\":[],\"path\":\"designation\",\"instance\":\"String\"}"));
+        Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("{\"title\":\"DataElement\",\"type\":\"object\",\"properties\":{\"naming\":{\"type\":\"array\",\"items\":{\"title\":\"itemOf_naming\",\"type\":\"object\",\"properties\":{\"designation\""));
 
-        Assert.assertTrue(get(baseUrl + "/schema/form").asString().contains(",\"naming\":{\"schema\":{\"paths\":{\"designation\":{\"enumValues\":[],\"path\":\"designation\",\"instance\":\"String\"}"));
+        Assert.assertTrue(get(baseUrl + "/schema/form").asString().contains("\"naming\":{\"type\":\"array\",\"items\":{\"title\":\"itemOf_naming\",\"type\":\"object\",\"properties\":{\"designation\":{\"type\":\"string\"}"));
 
     }
 

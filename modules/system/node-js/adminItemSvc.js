@@ -695,24 +695,3 @@ exports.hideProprietaryIds = function (elt) {
         });
     }
 };
-
-exports.removeFromSchema = function (schema) {
-    Object.keys(schema).forEach(k => {
-        delete schema[k].regExp;
-        delete schema[k].setters;
-        delete schema[k].getters;
-        delete schema[k].options;
-        delete schema[k].validators;
-        delete schema[k]._index;
-        delete schema[k].caster;
-        if (schema[k].schema) {
-            // remove all excepts paths
-            Object.keys(schema[k].schema).forEach(subK => {
-                if (subK !== "paths") delete schema[k].schema[subK];
-            });
-            exports.removeFromSchema(schema[k].schema.paths);
-        }
-    });
-};
-
-

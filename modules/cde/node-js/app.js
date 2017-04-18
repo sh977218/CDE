@@ -23,7 +23,6 @@ var cdesvc = require('./cdesvc')
     , exportShared = require('../../system/shared/exportShared')
     , js2xml = require('js2xmlparser')
     , usersrvc = require('../../system/node-js/usersrvc')
-
     ;
 
 exports.init = function (app, daoManager) {
@@ -509,10 +508,6 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/schema/cde', (req, res) => {
-        let schema = JSON.parse(JSON.stringify(mongo_cde.DataElement.schema.paths));
-        adminItemSvc.removeFromSchema(schema);
-        return res.send(schema);
-    });
+    app.get('/schema/cde', (req, res) => res.send(mongo_cde.DataElement.jsonSchema()));
 
 };
