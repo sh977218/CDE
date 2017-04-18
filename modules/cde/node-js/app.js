@@ -489,7 +489,7 @@ exports.init = function (app, daoManager) {
             res.status(401).send();
             return;
         }
-        classificationNode_system.eltClassification(req.query, classificationShared.actions.delete, mongo_cde, function (err) {
+        classificationNode_system.eltClassification(req.body, classificationShared.actions.delete, mongo_cde, function (err) {
             if (!err) {
                 res.end();
                 mongo_data_system.addToClassifAudit({

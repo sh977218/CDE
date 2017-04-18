@@ -91,6 +91,7 @@ var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formJson = {
     tinyId: {type: String, index: true}
+    , elementType: {type: String, default: 'form'}
     , naming: [sharedSchemas.namingSchema]
     , stewardOrg: {
         name: String

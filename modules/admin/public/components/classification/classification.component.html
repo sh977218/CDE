@@ -6,8 +6,20 @@
     </button>
     <div id="classificationBody">
         <div *ngFor="let classification of elt.classification;let i = index" class="floatLeft boxed-div">
-            <classification-tree-view [element]="classification"></classification-tree-view>
+            <ul class="fa-ul overflowHidden">
+                <h4>{{classification.stewardOrg.name}}</h4>
+                <hr/>
+                <tree-root [nodes]="classification.elements" [options]="options">
+                    <template #loadingTemplate>Loading, please hold....</template>
+                    <template #treeNodeTemplate let-node="node" let-index="index">
+                        <span>{{ node.data.name }}</span>
+                        <i class="fa fa-trash-o hand-cursor" title="Remove"
+                           (click)="deleteClassificationModal.open(node,classification.stewardOrg.name)"></i>
+                    </template>
+                </tree-root>
+            </ul>
         </div>
     </div>
 </div>
 <cde-classify-item-modal #classifyItemModal [elt]="elt"></cde-classify-item-modal>
+<cde-delete-classification-modal #deleteClassificationModal [elt]="elt"></cde-delete-classification-modal>

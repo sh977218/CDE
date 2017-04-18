@@ -41,7 +41,7 @@ exports.eltClassification = function (body, action, dao, cb) {
 
     };
 
-    var  findElements = function(err, elt) {
+    var findElements = function(err, elt) {
         if (!elt) return;
         var steward = classificationShared.findSteward(elt, body.orgName);
         if (!steward) {

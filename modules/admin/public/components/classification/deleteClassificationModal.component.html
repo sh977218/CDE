@@ -1,0 +1,16 @@
+<template #deleteClassificationContent id="deleteClassificationModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="deleteClassificationModalHeader">
+        <h4 class="modal-title">Remove Classification</h4>
+    </div>
+    <div class="modal-body" id="deleteClassificationModalBody">
+        You are about to delete <b>{{classificationString}}</b> classification. Are you sure?
+    </div>
+    <div class="modal-footer" id="deleteClassificationModalFooter">
+        <button class="btn cancel" (click)="c('Close click')" id="cancelDeleteClassificationBtn"
+                name="cancelDeleteClassificationBtn" type="button">Cancel
+        </button>
+        <button class="btn cancel" (click)="deleteClassification()" id="confirmDeleteClassificationBtn"
+                name="confirmDeleteClassificationBtn" type="button">OK
+        </button>
+    </div>
+</template>

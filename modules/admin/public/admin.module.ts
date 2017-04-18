@@ -13,6 +13,8 @@ import { ClassifyItemModalComponent } from "./components/classification/classify
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ClassifyItemTreeViewComponent } from "./components/classification/classifyItemTreeView.component";
 import { LocalStorageModule } from "angular-2-local-storage/dist/index";
+import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import { DeleteClassificationModalComponent } from "./components/classification/deleteClassificationModal.component";
 
 @NgModule({
     imports: [
@@ -23,7 +25,8 @@ import { LocalStorageModule } from "angular-2-local-storage/dist/index";
         LocalStorageModule.withConfig({
             prefix: "nlmcde",
             storageType: "localStorage"
-        })
+        }),
+        TreeModule
     ],
     declarations: [
         InlineEditDirective,
@@ -36,7 +39,8 @@ import { LocalStorageModule } from "angular-2-local-storage/dist/index";
         ClassificationComponent,
         ClassificationTreeViewComponent,
         ClassifyItemTreeViewComponent,
-        ClassifyItemModalComponent
+        ClassifyItemModalComponent,
+        DeleteClassificationModalComponent
     ],
     entryComponents: [
         IdentifiersComponent,

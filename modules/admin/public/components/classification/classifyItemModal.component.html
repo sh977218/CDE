@@ -8,16 +8,21 @@
                 <template ngbTabContent>
                     <hr>
                     <select class="form-control" id="selectClassifyItemOrg" name="selectClassifyItemOrg"
-                            (change)="onChangeOrg($event.target.value)"> required>
+                            (change)="onChangeOrg($event.target.value)" required>
                         <option value="">Start by selecting an organization...</option>
                         <option *ngFor="let myOrg of myOrgs;" value="{{myOrg}}">{{myOrg}}</option>
                     </select>
                     <div class="smallSpace"></div>
                     <div *ngIf="orgClassificationsTreeView">
-                        <div *ngFor="let orgClassificationTreeView of orgClassificationsTreeView.classifications; let i of index">
-                            <classify-item-tree-view [element]="orgClassificationTreeView" [previousPath]="[]"
-                                                     [currentPath]="orgClassificationsTreeView.name"></classify-item-tree-view>
-                        </div>
+                        <tree-root [nodes]="orgClassificationsTreeView.classifications" [options]="options">
+                            <template #treeNodeTemplate let-node="node" let-index="index">
+                                <span>{{ node.data.name }}</span>
+                                <button class="btn btn-default btn-xs" type="button"
+                                        (click)="classifyItemByTree(node)">
+                                    <i class="fa fa-plus"></i> Classify
+                                </button>
+                            </template>
+                        </tree-root>
                     </div>
                 </template>
             </ngb-tab>
