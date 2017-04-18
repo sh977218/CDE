@@ -420,73 +420,55 @@ export class NativeRenderService {
 
     static flattenForm(elt) {
         let last_id = 0;
-        let result = [];
-        let questions = [];
-        flattenFormSection(elt, [], [""]);
-        return result;
+        return flattenFormSection(elt, [], "");
 
         function createId() {
             return "q" + ++last_id;
         }
 
-        function repeatMap(repeatMapping, repeats) {
-            let repeatMappingNew: Array<string> = [];
-
-            if (repeats > 1)
-                repeatMapping.forEach(m => {
-                    for (let i = 0; i < repeats; i++)
-                        repeatMappingNew.push(m + i + "-");
+        function flattenFormSection(fe, sectionHeading, sectionName) {
+            let repeats = NativeRenderService.getRepeatNumber(fe);
+            let repeatSection = [];
+            for (let i = 0; i < repeats; i++)
+                repeatSection.push({
+                    "section": sectionHeading[sectionHeading.length - 1],
+                    "questions": fe.formElements.reduce(
+                        (acc, fe) => acc.concat(
+                            flattenFormFe(fe, sectionHeading.concat(fe.label), sectionName + (repeats > 1 ? i + "-" : ""))
+                        ), []
+                    )
                 });
-            else
-                repeatMappingNew = repeatMapping;
-
-            return repeatMappingNew;
+            return repeatSection;
         }
 
-        function flattenFormSection(fe, sectionHeading, repeatMapping) {
+        function flattenFormQuestion(fe, sectionHeading, sectionName) {
+            let questions = [];
+            if (!fe.questionId)
+                fe.questionId = createId();
             let repeats = NativeRenderService.getRepeatNumber(fe);
-            fe && fe.formElements && fe.formElements.forEach(function (fe) {
-                flattenFormFe(fe, sectionHeading.concat(fe.label), repeatMap(repeatMapping, repeats));
-            });
-            flattenFormPushQuestions(sectionHeading);
-        }
-
-        function flattenFormQuestion(fe, sectionHeading, repeatMapping) {
-            fe.questionId = createId();
-            let repeats = NativeRenderService.getRepeatNumber(fe);
-            repeatMap(repeatMapping, repeats).forEach(name => {
-                let q: any;
-                q = {
+            for (let i = 0; i < repeats; i++) {
+                let q: any = {
                     "question": fe.label,
-                    "name": name + fe.questionId,
+                    "name": sectionName + (repeats > 1 ? i + "-" : "") + fe.questionId,
                     "ids": fe.question.cde.ids,
                     "tinyId": fe.question.cde.tinyId
                 };
                 if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
                 questions.push(q);
-            });
+            }
             fe.question.answers && fe.question.answers.forEach(function (a) {
                 a.subQuestions && a.subQuestions.forEach(function (sq) {
-                    flattenFormFe(sq, sectionHeading, repeatMapping);
+                    questions = questions.concat(flattenFormFe(sq, sectionHeading, sectionName));
                 });
             });
+            return questions;
         }
 
-        function flattenFormFe(fe, sectionHeading, repeatMapping) {
-            if (fe.elementType === "question") {
-                flattenFormQuestion(fe, sectionHeading, repeatMapping);
-            }
-            if (fe.elementType === "section" || fe.elementType === "form") {
-                flattenFormPushQuestions(sectionHeading);
-                flattenFormSection(fe, sectionHeading, repeatMapping);
-            }
-        }
-
-        function flattenFormPushQuestions(sectionHeading) {
-            if (questions.length) {
-                result.push({"section": sectionHeading[sectionHeading.length - 1], "questions": questions});
-                questions = [];
-            }
+        function flattenFormFe(fe, sectionHeading, sectionName) {
+            if (fe.elementType === "question")
+                return flattenFormQuestion(fe, sectionHeading, sectionName);
+            if (fe.elementType === "section" || fe.elementType === "form")
+                return flattenFormSection(fe, sectionHeading, sectionName);
         }
     }
 

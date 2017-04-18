@@ -27,6 +27,11 @@
                 [style.borderWidth]="q.style.borderWidth">
                 <div *ngIf="q.type === 'label'" class="native-table-cell" style="text-align: center">
                     <label [textContent]="n.label"></label>
+                    <input type="hidden"
+                           [name]="ni + q.name"
+                           [attr.name]="ni + q.name"
+                           [value]="nativeRenderService.elt.formInput[ni + q.name]"
+                           [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"/>
                 </div>
                 <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
                     <label style="display: block" *ngFor="let a of q.question.answers">

@@ -43,11 +43,13 @@ export class NativeTableComponent implements OnInit {
             throw "Not a table";
         if (this.formElement.repeat[0] === "F") {
             this.firstQuestion = NativeRenderService.getFirstQuestion(this.formElement);
-            this.firstQuestion.question.answers.forEach(a => {
+            this.firstQuestion.question.answers.forEach((a, i) => {
                 this.tableForm.rows.push({label: this.nativeRenderService.getPvLabel(a)});
+                this.nativeRenderService.elt.formInput[i + "-" + this.firstQuestion.questionId] = a.permissibleValue;
             });
-
             this.entry.label = this.firstQuestion.label;
+            this.tableForm.q[0].name = "-" + this.firstQuestion.questionId;
+            this.tableForm.q[0].question = this.firstQuestion.question;
         } else {
             let maxValue = parseInt(this.formElement.repeat);
             let format = "#.";
@@ -108,10 +110,10 @@ export class NativeTableComponent implements OnInit {
                 question: f.question,
                 style: sectionStyle.answerStyle
             });
-            this.tableForm.rows.forEach((r, i) => {
-                if (f.question.uoms && f.question.uoms.length === 1)
+            if (f.question.uoms && f.question.uoms.length === 1)
+                this.tableForm.rows.forEach((r, i) => {
                     this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId + "_uom"] = f.question.uoms[0];
-            });
+                });
             f.question.answers.forEach(a => {
                 a.subQuestions && a.subQuestions.forEach(sf => {
                     let ret = this.renderFormElement(sf, tcontent, level, retr, r, c, sectionStyle, sectionName);
