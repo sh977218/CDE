@@ -13,8 +13,11 @@
                         <option *ngFor="let myOrg of myOrgs;" value="{{myOrg}}">{{myOrg}}</option>
                     </select>
                     <div class="smallSpace"></div>
-                    <div *ngFor="let orgClassificationTreeView of orgClassificationsTreeView; let i of index">
-                        <classify-item-tree-view [element]="orgClassificationTreeView" ></classify-item-tree-view>
+                    <div *ngIf="orgClassificationsTreeView">
+                        <div *ngFor="let orgClassificationTreeView of orgClassificationsTreeView.classifications; let i of index">
+                            <classify-item-tree-view [element]="orgClassificationTreeView" [previousPath]="[]"
+                                                     [currentPath]="orgClassificationsTreeView.name"></classify-item-tree-view>
+                        </div>
                     </div>
                 </template>
             </ngb-tab>

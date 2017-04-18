@@ -13,7 +13,8 @@
     </button>
     <div *ngIf="element.expended">
         <div *ngFor="let ele of element.elements;let j = index">
-            <classify-item-tree-view [element]="ele" (itemClassified)="foo()"></classify-item-tree-view>
+            <classify-item-tree-view [element]="ele" [previousPath]="previousPath"
+                                     [currentPath]="ele.name"></classify-item-tree-view>
         </div>
     </div>
 </ul>

@@ -40,9 +40,9 @@ export class ClassifyItemModalComponent implements OnInit {
         //noinspection TypeScriptValidateTypes
             this.http.get("/org/" + value).map(res => res.json()).subscribe(
                 (res) => {
-                    this.orgClassificationsTreeView = res.classifications;
+                    this.orgClassificationsTreeView = res;
                 }, () => {
-                    this.orgClassificationsTreeView = [];
+                    this.orgClassificationsTreeView = {};
                 });
         else this.orgClassificationsTreeView = [];
     }

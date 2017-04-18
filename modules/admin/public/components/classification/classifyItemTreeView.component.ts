@@ -6,24 +6,18 @@ import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 })
 export class ClassifyItemTreeViewComponent implements OnInit {
     @Input() public element: any;
-    @Input() public newClassification: any = [];
-    @Output() itemClassified = new EventEmitter<any>();
+    @Input() public currentPath: any;
+    @Input() public previousPath: any;
 
     toggle(e) {
         e.expended = !e.expended;
     }
 
     ngOnInit(): void {
-        if (!this.newClassification || this.newClassification.length === 0)
-            this.newClassification = [];
+        this.previousPath.push(this.currentPath);
     }
 
     classifyItemByTree(classificationTree) {
-        if (this.newClassification.length !== 1) {
-            this.newClassification.push(classificationTree.name);
-            this.itemClassified.emit(this.newClassification);
-        }
-        //this.classifyItem(this.newClassification);
     }
 
 
