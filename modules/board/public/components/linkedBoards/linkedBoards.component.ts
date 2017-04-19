@@ -1,0 +1,36 @@
+import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { Http } from "@angular/http";
+
+@Component({
+    selector: "cde-linked-boards",
+    providers: [NgbActiveModal],
+    templateUrl: "linkedBoards.component.html"
+})
+
+export class LinkedBoardsComponent {
+
+    @ViewChild("linkedBoardsContent") public linkedBoardsContent: NgbModalModule;
+    @Input() public elt: any;
+    public modalRef: NgbModalRef;
+    boards: any[];
+
+    constructor(private http: Http,
+                @Inject("Alert") private alert,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal) {
+    };
+
+    openLinkedBoardsModal() {
+        this.http.get("/deBoards/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
+            if (response.error) {
+                this.boards = [];
+                this.alert.addAlert("danger", "Error retrieving boards.");
+            } else {
+                this.boards = response;
+                this.modalRef = this.modalService.open(this.linkedBoardsContent, {size: "lg"});
+            }
+        });
+    }
+
+}

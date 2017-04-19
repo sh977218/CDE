@@ -439,3 +439,6 @@ angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgr
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
+
+import {LinkedBoardsComponent} from "../../../board/public/components/linkedBoards/linkedBoards.component";
+angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({component: LinkedBoardsComponent, inputs: ['elt'], outputs: []}));
