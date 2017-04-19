@@ -12,8 +12,9 @@ import { Observable } from "rxjs/Rx";
 
 export class OrgAdminComponent {
 
-    constructor(private http: Http) {
-    }
+    newOrgAdmin: any = {};
+
+    constructor(private http: Http) {}
 
     searchTypeahead = (text$: Observable<string>) =>
         text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 ? [] :

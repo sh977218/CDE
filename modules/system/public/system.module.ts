@@ -16,8 +16,8 @@ import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.comp
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { AdminModule } from "../../admin/public/admin.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
-import { JsonpModule } from "@angular/http";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
+import { JsonpModule } from "@angular/http";
 
 @NgModule({
     imports: [
@@ -27,8 +27,7 @@ import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.comp
         Select2Module,
         NgbModule,
         JsonpModule,
-        AdminModule,
-        OrgAdminComponent,
+        AdminModule
     ],
     declarations: [
         CdeAccordionListDirective,
@@ -42,6 +41,7 @@ import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.comp
         RegistrationComponent,
         UsersMgtComponent,
         DailyUsageComponent,
+        OrgAdminComponent,
         PlaceHoldEmptyPipe
     ],
     entryComponents: [

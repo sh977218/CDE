@@ -2,7 +2,7 @@
     Make
     <div class="form-group">
         <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
-               placeholder="enter user name" [(ngModel)]="orgAdmin.username"
+               placeholder="enter user name" [(ngModel)]="newOrgAdmin.username"
                [ngbTypeahead]="searchTypeahead"
                typeahead-min-length="3" [resultFormatter]="formatter" [inputFormatter]="formatter"  required>
 
@@ -15,9 +15,8 @@
             <!--<option value="">select organization</option>-->
         <!--</select>-->
     </div>
-    <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" (click)="addOrgAdmin()"
+    <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" (click)="addOrgAdmin()">Make Admin</button>
             <!--[disabled]="newOrgAdminForm.newOrgAdminUsername.valid || newOrgAdminForm.newOrgAdminOrgName.$invalid"-->
-    >Make Admin</button>
 </form>
 <table class="table table-border table-responsive">
     <tr>
