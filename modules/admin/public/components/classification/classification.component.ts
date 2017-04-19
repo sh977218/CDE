@@ -6,6 +6,7 @@ import { DeleteClassificationModalComponent } from "./deleteClassificationModal.
 import { TreeComponent } from "angular-tree-component/dist/components/tree.component";
 
 import * as classificationShared from "../../../../../modules/system/shared/classificationShared.js"
+import * as authorizationShared from "../../../../../modules/system/shared/authorizationShared.js"
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -21,7 +22,7 @@ const actionMapping: IActionMapping = {
     providers: [NgbActiveModal],
     templateUrl: "./classification.component.html"
 })
-export class ClassificationComponent {
+export class ClassificationComponent implements OnInit {
     @ViewChild("classifyItemModal") public classifyItemModal: ClassifyItemModalComponent;
     @ViewChild("deleteClassificationModal") public deleteClassificationModal: DeleteClassificationModalComponent;
     @ViewChildren("treeRoot") treeRootComponents: QueryList<TreeComponent>;
@@ -36,12 +37,18 @@ export class ClassificationComponent {
         isExpandedField: "elements",
         actionMapping: actionMapping
     };
+    public isOrgCurator;
 
     constructor(public modalService: NgbModal,
                 public activeModal: NgbActiveModal,
                 @Inject("Alert") private alert,
                 @Inject("userResource") private userService,
                 @Inject("isAllowedModel") public isAllowedModel) {
+    }
+
+    ngOnInit(): void {
+        this.isOrgCurator = authorizationShared.isOrgCurator(this.userService.user);
+        this.myOrgs = this.userService.userOrgs ? this.userService.userOrgs : [];
     }
 
     openClassifyItemModal() {
