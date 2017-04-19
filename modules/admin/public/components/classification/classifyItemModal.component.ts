@@ -1,14 +1,13 @@
-import { Component, Inject, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, Inject, Input, ViewChild, Output, EventEmitter } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
-import { LocalStorageService } from "angular-2-local-storage/dist/index";
+import { LocalStorageService } from "angular-2-local-storage/dist";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
 const actionMapping: IActionMapping = {
     mouse: {
-        click: () => {
-        }
+        click: () => {}
     }
 };
 @Component({
@@ -16,17 +15,17 @@ const actionMapping: IActionMapping = {
     templateUrl: "classifyItemModal.component.html",
     providers: [NgbActiveModal]
 })
-export class ClassifyItemModalComponent implements OnInit {
+export class ClassifyItemModalComponent {
 
     @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
     public modalRef: NgbModalRef;
     @Input() elt: any;
     @Output() close = new EventEmitter();
-    myOrgs: any;
+
     selectedOrg: any;
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView: any;
-    type: any;
+
     options = {
         childrenField: "elements",
         displayField: "name",
@@ -39,14 +38,7 @@ export class ClassifyItemModalComponent implements OnInit {
                 public modalService: NgbModal,
                 private localStorageService: LocalStorageService,
                 @Inject("Alert") private alert,
-                @Inject("userResource") private userService,
-                @Inject("OrgHelpers") private orgHelpers) {
-    }
-
-    ngOnInit(): void {
-        this.myOrgs = this.userService.userOrgs;
-        this.type = this.elt.formElement ? "form" : "CDE";
-    }
+                @Inject("userResource") public userService) {}
 
     onChangeOrg(value) {
         if (value) {
@@ -72,7 +64,7 @@ export class ClassifyItemModalComponent implements OnInit {
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
         let newOrgClassificationsRecentlyAddView = this.orgClassificationsRecentlyAddView.filter(o => o === classificationRecentlyAdd);
         newOrgClassificationsRecentlyAddView.unshift(classificationRecentlyAdd);
-        this.localStorageService.set("classificationHistory", newOrgClassificationsRecentlyAddView)
+        this.localStorageService.set("classificationHistory", newOrgClassificationsRecentlyAddView);
     }
 
     classifyItemByTree(treeNode) {
@@ -91,13 +83,11 @@ export class ClassifyItemModalComponent implements OnInit {
         };
         //noinspection TypeScriptValidateTypes
         this.http.post("/classification/" + this.elt.elementType, postBody).map(res => res.json()).subscribe(
-            (res) => {
+            () => {
                 this.close.emit({
                     org: this.selectedOrg,
                     selectClassifications: classificationArray
                 });
-            }, (err) => {
-                this.alert.addAlert("danger", err);
-            });
+            }, err => this.alert.addAlert("danger", err));
     }
 }

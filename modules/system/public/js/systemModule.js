@@ -342,6 +342,12 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         }
     };
 
+    isAllowedModel.isOrgCurator = function () {
+        userResource.getPromise().then(function () {
+            authorizationShared.isOrgCurator(userResource.user);
+        });
+    };
+
     return isAllowedModel;
 }]);
 
