@@ -421,28 +421,49 @@ export class NativeRenderService {
     static flattenForm(elt) {
         let last_id = 0;
         let startSection = (elt.formElements && (elt.formElements.length > 1 || elt.formElements.length === 0) ? elt : elt.formElements[0]);
-        return flattenFormSection(startSection, [startSection.label], "");
+        return flattenFormSection(startSection, [startSection.label], "", "");
 
         function createId() {
             return "q" + ++last_id;
         }
 
-        function flattenFormSection(fe, sectionHeading, sectionName) {
+        function flattenFormSection(fe, sectionHeading, sectionName, repeatNum) {
             let repeats = NativeRenderService.getRepeatNumber(fe);
             let repeatSection = [];
-            for (let i = 0; i < repeats; i++)
-                repeatSection.push({
-                    "section": sectionHeading[sectionHeading.length - 1],
-                    "questions": fe.formElements.reduce(
-                        (acc, feIter) => acc.concat(
-                            flattenFormFe(feIter, sectionHeading.concat(feIter.label), sectionName + (repeats > 1 ? i + "-" : ""))
-                        ), []
-                    )
+            let childSections = [];
+            let questions = [];
+            let output: any;
+            for (let i = 0; i < repeats; i++) {
+                if (repeats > 1)
+                    repeatNum = " #" + i;
+                fe.formElements.forEach( feIter => {
+                    output = flattenFormFe(feIter, sectionHeading.concat(feIter.label), sectionName + (repeats > 1 ? i + "-" : ""), repeatNum);
+
+                    if (output.length !== 0) {
+                        if (typeof output[0].section !== "undefined" && typeof output[0].questions !== "undefined")
+                            childSections = childSections.concat(output);
+                        else
+                            questions = questions.concat(output);
+                    }
                 });
+
+                if (questions.length) {
+                    repeatSection.push({
+                        "section": sectionHeading[sectionHeading.length - 1] + repeatNum,
+                        "questions": questions
+
+                    });
+                    questions = [];
+                }
+                if (childSections.length) {
+                    repeatSection = repeatSection.concat(childSections);
+                    childSections = [];
+                }
+            }
             return repeatSection;
         }
 
-        function flattenFormQuestion(fe, sectionHeading, sectionName) {
+        function flattenFormQuestion(fe, sectionHeading, sectionName, repeatNum) {
             let questions = [];
             if (!fe.questionId)
                 fe.questionId = createId();
@@ -459,17 +480,17 @@ export class NativeRenderService {
             }
             fe.question.answers && fe.question.answers.forEach(function (a) {
                 a.subQuestions && a.subQuestions.forEach(function (sq) {
-                    questions = questions.concat(flattenFormFe(sq, sectionHeading, sectionName));
+                    questions = questions.concat(flattenFormFe(sq, sectionHeading, sectionName, repeatNum));
                 });
             });
             return questions;
         }
 
-        function flattenFormFe(fe, sectionHeading, sectionName) {
+        function flattenFormFe(fe, sectionHeading, sectionName, repeatNum) {
             if (fe.elementType === "question")
-                return flattenFormQuestion(fe, sectionHeading, sectionName);
+                return flattenFormQuestion(fe, sectionHeading, sectionName, repeatNum);
             if (fe.elementType === "section" || fe.elementType === "form")
-                return flattenFormSection(fe, sectionHeading, sectionName);
+                return flattenFormSection(fe, sectionHeading, sectionName, repeatNum);
         }
     }
 
