@@ -17,6 +17,7 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
 import { AdminModule } from "../../admin/public/admin.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { JsonpModule } from "@angular/http";
+import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 
 @NgModule({
     imports: [
@@ -27,6 +28,7 @@ import { JsonpModule } from "@angular/http";
         NgbModule,
         JsonpModule,
         AdminModule,
+        OrgAdminComponent,
     ],
     declarations: [
         CdeAccordionListDirective,
@@ -49,7 +51,8 @@ import { JsonpModule } from "@angular/http";
         LogAuditComponent,
         RegistrationComponent,
         UsersMgtComponent,
-        DailyUsageComponent
+        DailyUsageComponent,
+        OrgAdminComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
