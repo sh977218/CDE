@@ -119,35 +119,6 @@ angular.module('formModule').controller
         }
     };
 
-    $scope.groups = [{
-        btnId: 'cdeLinkedBoardsBtn',
-        title: 'Linked Boards',
-        open: function () {
-            $modal.open({
-                templateUrl: '/system/public/html/linkedBoards.html',
-                controller: ['$scope', 'tinyId', function ($scope, tinyId) {
-                    $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
-                        "/system/public/html/accordion/addToQuickBoardActions.html"];
-                    $http.get("/formBoards/" + tinyId).then(function (response) {
-                        if (response.error) {
-                            $log.error(response.error);
-                            $scope.boards = [];
-                        } else {
-                            $scope.boards = response.data;
-                        }
-                    });
-                }],
-                resolve: {
-                    tinyId: function () {
-                        return $scope.elt.tinyId;
-                    }
-                }
-            }).result.then(function () {
-            }, function () {
-            });
-        }
-    }];
-
     $scope.setToAddCdeMode = function () {
         $scope.addMode = $scope.addMode === 'cde' ? undefined : 'cde';
     };
