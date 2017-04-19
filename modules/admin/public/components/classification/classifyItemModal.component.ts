@@ -1,9 +1,10 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
 import { LocalStorageService } from "angular-2-local-storage/dist/index";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
+import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
 const actionMapping: IActionMapping = {
     mouse: {
         click: () => {
@@ -18,9 +19,9 @@ const actionMapping: IActionMapping = {
 export class ClassifyItemModalComponent implements OnInit {
 
     @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
-
     public modalRef: NgbModalRef;
     @Input() elt: any;
+    @Output() close = new EventEmitter();
     myOrgs: any;
     selectedOrg: any;
     orgClassificationsTreeView: any;
@@ -32,6 +33,7 @@ export class ClassifyItemModalComponent implements OnInit {
         isExpandedField: "expanded",
         actionMapping: actionMapping
     };
+    treeNode: TreeNode;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -67,13 +69,6 @@ export class ClassifyItemModalComponent implements OnInit {
         }
     }
 
-    open() {
-        this.modalRef = this.modalService.open(this.classifyItemContent, {size: "lg"});
-        this.modalRef.result.then(() => {
-        }, () => {
-        });
-    }
-
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
         let newOrgClassificationsRecentlyAddView = this.orgClassificationsRecentlyAddView.filter(o => o === classificationRecentlyAdd);
         newOrgClassificationsRecentlyAddView.unshift(classificationRecentlyAdd);
@@ -81,6 +76,7 @@ export class ClassifyItemModalComponent implements OnInit {
     }
 
     classifyItemByTree(treeNode) {
+        this.treeNode = treeNode;
         let classificationArray = [treeNode.data.name];
         let _treeNode = treeNode;
         while (_treeNode.parent) {
@@ -96,7 +92,10 @@ export class ClassifyItemModalComponent implements OnInit {
         //noinspection TypeScriptValidateTypes
         this.http.post("/classification/" + this.elt.elementType, postBody).map(res => res.json()).subscribe(
             (res) => {
-                this.alert.addAlert("success", "Item Classified.");
+                this.close.emit({
+                    org: this.selectedOrg,
+                    selectClassifications: classificationArray
+                });
             }, (err) => {
                 this.alert.addAlert("danger", err);
             });

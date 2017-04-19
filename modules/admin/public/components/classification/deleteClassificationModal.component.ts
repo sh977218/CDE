@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, Injectable, Inject } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
 import { Http, RequestOptions } from "@angular/http";
+import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
 
 @Component({
     selector: "cde-delete-classification-modal",
@@ -15,7 +16,7 @@ export class DeleteClassificationModalComponent {
     public modalRef: NgbModalRef;
     public classificationString: any;
     public orgName: any;
-    public node: any;
+    public node: TreeNode;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -27,9 +28,13 @@ export class DeleteClassificationModalComponent {
         this.classificationString = node.data.name;
         this.orgName = orgName;
         this.modalRef = this.modalService.open(this.deleteClassificationModal, {size: "lg"});
-        this.modalRef.result.then(() => {
-            
-        }, () => {
+        this.modalRef.result.then(result => {
+            let parentNode = node.parent;
+            parentNode.data.elements = parentNode.data.elements.filter(o => o.name != node.data.name);
+            parentNode.treeModel.update();
+            this.alert.addAlert("success", "Classification removed.");
+        }, (reason) => {
+            this.alert.addAlert("danger", reason);
         });
     }
 
@@ -49,13 +54,10 @@ export class DeleteClassificationModalComponent {
         //noinspection TypeScriptValidateTypes
         this.http.delete("/classification/" + this.elt.elementType,
             new RequestOptions({body: deleteBody, method: 3})).subscribe(
-            () => {
-                this.alert.addAlert("success", "Classification removed.");
-                this.modalRef.close();
+            (res) => {
+                this.modalRef.close("success");
             }, (err) => {
-                this.alert.addAlert("danger", err);
-                this.modalRef.close();
+                this.modalRef.dismiss(err);
             });
-
     }
 }

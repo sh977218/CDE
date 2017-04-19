@@ -1,8 +1,11 @@
-import { Component, Input, ViewChild, Inject, OnInit } from "@angular/core";
+import { Component, Input, ViewChild, Inject, OnInit, ViewChildren, QueryList } from "@angular/core";
 import { NgbModalRef, NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ClassifyItemModalComponent } from "./classifyItemModal.component";
-import { IActionMapping, TREE_ACTIONS } from "angular-tree-component/dist/models/tree-options.model";
+import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { DeleteClassificationModalComponent } from "./deleteClassificationModal.component";
+import { TreeComponent } from "angular-tree-component/dist/components/tree.component";
+
+import * as classificationShared from "../../../../../modules/system/shared/classificationShared.js"
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -21,6 +24,7 @@ const actionMapping: IActionMapping = {
 export class ClassificationComponent {
     @ViewChild("classifyItemModal") public classifyItemModal: ClassifyItemModalComponent;
     @ViewChild("deleteClassificationModal") public deleteClassificationModal: DeleteClassificationModalComponent;
+    @ViewChildren("treeRoot") treeRootComponents: QueryList<TreeComponent>;
     @Input() public elt: any;
     public myOrgs: any;
     public selectedOrg;
@@ -40,5 +44,13 @@ export class ClassificationComponent {
                 @Inject("isAllowedModel") public isAllowedModel) {
     }
 
+    openClassifyItemModal() {
+        this.modalRef = this.modalService.open(this.classifyItemModal.classifyItemContent, {size: "lg"});
+    }
+
+    closeModal(e) {
+        classificationShared.classifyItem(this.elt, e.org, e.selectClassifications);
+        this.alert.addAlert("success", "Item Classified.");
+    }
 
 }
