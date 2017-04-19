@@ -428,9 +428,19 @@ export class NativeRenderService {
         }
 
         function flattenFormSection(fe, sectionHeading, sectionName, repeatNum) {
+            function addSection(repeatSection, questions) {
+                if (questions.length) {
+                    repeatSection.push({
+                        "section": sectionHeading[sectionHeading.length - 1] + repeatNum,
+                        "questions": questions
+
+                    });
+                    questions = [];
+                }
+                return questions;
+            }
             let repeats = NativeRenderService.getRepeatNumber(fe);
             let repeatSection = [];
-            let childSections = [];
             let questions = [];
             let output: any;
             for (let i = 0; i < repeats; i++) {
@@ -440,25 +450,14 @@ export class NativeRenderService {
                     output = flattenFormFe(feIter, sectionHeading.concat(feIter.label), sectionName + (repeats > 1 ? i + "-" : ""), repeatNum);
 
                     if (output.length !== 0) {
-                        if (typeof output[0].section !== "undefined" && typeof output[0].questions !== "undefined")
-                            childSections = childSections.concat(output);
-                        else
+                        if (typeof output[0].section !== "undefined" && typeof output[0].questions !== "undefined") {
+                            questions = addSection(repeatSection, questions);
+                            repeatSection = repeatSection.concat(output);
+                        } else
                             questions = questions.concat(output);
                     }
                 });
-
-                if (questions.length) {
-                    repeatSection.push({
-                        "section": sectionHeading[sectionHeading.length - 1] + repeatNum,
-                        "questions": questions
-
-                    });
-                    questions = [];
-                }
-                if (childSections.length) {
-                    repeatSection = repeatSection.concat(childSections);
-                    childSections = [];
-                }
+                questions = addSection(repeatSection, questions);
             }
             return repeatSection;
         }
