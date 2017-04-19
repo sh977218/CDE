@@ -6,11 +6,7 @@
         <div ng-include="'/system/public/html/sources.html'"></div>
         <cde-registration [elt]="elt"></cde-registration>
         <div class="" ng-if="elt" role="group" aria-label="More Info">
-            <button type="button" class="btn btn-default" id="{{group.btnId}}" ng-repeat="group in groups"
-                    ng-click="group.open()">
-                {{group.title}}
-            </button>
-
+            <cde-linked-boards [elt]="elt"></cde-linked-boards>
             <cde-mlt [elt]="elt"></cde-mlt>
             <cde-linked-forms [elt]="elt" [elt-type]="'cde'"></cde-linked-forms>
             <cde-datasets [elt]="elt"></cde-datasets>
