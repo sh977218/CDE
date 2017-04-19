@@ -485,7 +485,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
         },
         {
-            element: "#cdeLinkedBoardsBtn",
+            element: "#openLinkedBoardsModalBtn",
             title: "Boards",
             content: "If a CDE is used in a public board, the board will be shown in this section.",
             placement: "top"
