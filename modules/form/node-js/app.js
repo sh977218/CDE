@@ -57,7 +57,7 @@ exports.init = function (app, daoManager) {
     app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
     app.get('/formByTinyIdAndVersion/:id/:version', exportShared.nocacheMiddleware, formCtrl.formByTinyIdVersion);
-
+    
     app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send("You must be logged in to do that");

@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild, Output, EventEmitter } from "@angular/core";
+import { Component, Inject, Input, ViewChild, Output, EventEmitter, OnInit } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
@@ -7,7 +7,8 @@ import { IActionMapping } from "angular-tree-component/dist/models/tree-options.
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
 const actionMapping: IActionMapping = {
     mouse: {
-        click: () => {}
+        click: () => {
+        }
     }
 };
 @Component({
@@ -16,16 +17,14 @@ const actionMapping: IActionMapping = {
     providers: [NgbActiveModal]
 })
 export class ClassifyItemModalComponent {
-
     @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
-    public modalRef: NgbModalRef;
     @Input() elt: any;
-    @Output() close = new EventEmitter();
 
+    public modalRef: NgbModalRef;
     selectedOrg: any;
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView: any;
-
+    myOrgs: any;
     options = {
         childrenField: "elements",
         displayField: "name",
@@ -38,7 +37,8 @@ export class ClassifyItemModalComponent {
                 public modalService: NgbModal,
                 private localStorageService: LocalStorageService,
                 @Inject("Alert") private alert,
-                @Inject("userResource") public userService) {}
+                @Inject("userResource") public userService) {
+    }
 
     onChangeOrg(value) {
         if (value) {
@@ -57,7 +57,7 @@ export class ClassifyItemModalComponent {
         if (event.nextId === "recentlyAddViewTab") {
             this.orgClassificationsRecentlyAddView = this.localStorageService.get("classificationHistory");
         } else {
-            this.orgClassificationsRecentlyAddView = [];
+            this.orgClassificationsTreeView = null;
         }
     }
 
@@ -84,10 +84,7 @@ export class ClassifyItemModalComponent {
         //noinspection TypeScriptValidateTypes
         this.http.post("/classification/" + this.elt.elementType, postBody).map(res => res.json()).subscribe(
             () => {
-                this.close.emit({
-                    org: this.selectedOrg,
-                    selectClassifications: classificationArray
-                });
+                this.alert.addAlert("success", "Item classified.");
             }, err => this.alert.addAlert("danger", err));
     }
 }

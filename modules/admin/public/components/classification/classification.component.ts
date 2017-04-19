@@ -4,7 +4,8 @@ import { ClassifyItemModalComponent } from "./classifyItemModal.component";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { DeleteClassificationModalComponent } from "./deleteClassificationModal.component";
 
-import * as classificationShared from "../../../../../modules/system/shared/classificationShared.js";
+import { Http } from "@angular/http";
+import { map } from "rxjs/operator/map";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -28,14 +29,14 @@ export class ClassificationComponent {
     public modalRef: NgbModalRef;
 
     public options = {
-        idField: "name",
         childrenField: "elements",
         displayField: "name",
         isExpandedField: "elements",
         actionMapping: actionMapping
     };
 
-    constructor(public modalService: NgbModal,
+    constructor(public http: Http,
+                public modalService: NgbModal,
                 public activeModal: NgbActiveModal,
                 @Inject("Alert") private alert,
                 @Inject("userResource") public userService,
@@ -43,12 +44,52 @@ export class ClassificationComponent {
     }
 
     openClassifyItemModal() {
+        this.classifyItemModal.myOrgs = this.userService.userOrgs;
+        this.classifyItemModal.orgClassificationsTreeView = null;
+        this.classifyItemModal.orgClassificationsRecentlyAddView = null;
         this.modalRef = this.modalService.open(this.classifyItemModal.classifyItemContent, {size: "lg"});
+        this.modalRef.result.then(() => {
+            let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
+            //noinspection TypeScriptValidateTypes
+            this.http.get(url).map(res => res.json()).subscribe((res)=> {
+                this.elt = res;
+            }, (err) => {
+                if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
+            });
+        }, () => {
+            let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
+            //noinspection TypeScriptValidateTypes
+            this.http.get(url).map(res => res.json()).subscribe((res)=> {
+                this.elt = res;
+            }, (err) => {
+                if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
+            });
+        })
     }
 
-    closeModal(e) {
-        classificationShared.classifyItem(this.elt, e.org, e.selectClassifications);
-        this.alert.addAlert("success", "Item Classified.");
+    openDeleteClassificationModal(node, orgName) {
+        this.deleteClassificationModal.node = node;
+        this.deleteClassificationModal.classificationString = node.data.name;
+        this.deleteClassificationModal.orgName = orgName;
+        this.modalRef = this.modalService.open(this.deleteClassificationModal.deleteClassificationModal, {size: "lg"});
+        this.modalRef.result.then(result => {
+            let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
+            //noinspection TypeScriptValidateTypes
+            this.http.get(url).map(res => res.json()).subscribe((res)=> {
+                this.elt = res;
+            }, (err) => {
+                if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
+            });
+            this.alert.addAlert("success", "Classification removed.");
+        }, (reason) => {
+            let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
+            //noinspection TypeScriptValidateTypes
+            this.http.get(url).map(res => res.json()).subscribe((res)=> {
+                this.elt = res;
+            }, (err) => {
+                if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
+            });
+        });
     }
 
 }

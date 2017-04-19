@@ -6,22 +6,23 @@
     </button>
     <div id="classificationBody">
         <div *ngFor="let classification of elt.classification;let i = index" class="floatLeft boxed-div">
-            <ul class="fa-ul overflowHidden">
-                <h4>{{classification.stewardOrg.name}}</h4>
-                <hr/>
-                <tree-root #treeRoot [nodes]="classification.elements"
-                           [options]="options" id="{{classification.stewardOrg.name}}">
+            <h4>{{classification.stewardOrg.name}}</h4>
+            <hr/>
+            <div *ngFor="let element of classification.elements " class="floatLeft boxed-div">
+                <a class="name hand-cursor first-level-classification">{{element.name}}</a>
+                <i class="fa fa-trash-o hand-cursor" title="Remove"
+                   (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)"></i>
+                <tree-root #treeRoot [nodes]="element.elements" [options]="options">
                     <template #loadingTemplate>Loading, please hold....</template>
                     <template #treeNodeTemplate let-node="node" let-index="index">
-                        <span>{{ node.data.name }}</span>
-                        <i *ngIf="userService.myOrgs?.indexOf(classification.stewardOrg.name) > 0"
-                           class="fa fa-trash-o hand-cursor" title="Remove"
-                           (click)="deleteClassificationModal.open(node,classification.stewardOrg.name)"></i>
+                        <a>{{ node.data.name }}</a>
+                        <i class="fa fa-trash-o hand-cursor" title="Remove"
+                           (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)"></i>
                     </template>
                 </tree-root>
-            </ul>
+            </div>
         </div>
     </div>
 </div>
-<cde-classify-item-modal #classifyItemModal [elt]="elt" (close)="closeModal($event)"></cde-classify-item-modal>
+<cde-classify-item-modal #classifyItemModal [elt]="elt"></cde-classify-item-modal>
 <cde-delete-classification-modal #deleteClassificationModal [elt]="elt"></cde-delete-classification-modal>

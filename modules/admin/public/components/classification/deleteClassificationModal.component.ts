@@ -13,7 +13,6 @@ export class DeleteClassificationModalComponent {
 
     @ViewChild("deleteClassificationContent") public deleteClassificationModal: DeleteClassificationModalComponent;
     @Input() elt: any;
-    public modalRef: NgbModalRef;
     public classificationString: any;
     public orgName: any;
     public node: TreeNode;
@@ -21,21 +20,6 @@ export class DeleteClassificationModalComponent {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 @Inject("Alert") private alert) {
-    }
-
-    open(node, orgName) {
-        this.node = node;
-        this.classificationString = node.data.name;
-        this.orgName = orgName;
-        this.modalRef = this.modalService.open(this.deleteClassificationModal, {size: "lg"});
-        this.modalRef.result.then(result => {
-            let parentNode = node.parent;
-            parentNode.data.elements = parentNode.data.elements.filter(o => o.name != node.data.name);
-            parentNode.treeModel.update();
-            this.alert.addAlert("success", "Classification removed.");
-        }, (reason) => {
-            this.alert.addAlert("danger", reason);
-        });
     }
 
     deleteClassification() {
@@ -54,10 +38,8 @@ export class DeleteClassificationModalComponent {
         //noinspection TypeScriptValidateTypes
         this.http.delete("/classification/" + this.elt.elementType,
             new RequestOptions({body: deleteBody, method: 3})).subscribe(
-            (res) => {
-                this.modalRef.close("success");
-            }, (err) => {
-                this.modalRef.dismiss(err);
+            () => {}, (err) => {
+                this.alert.addAlert("danger", err);
             });
     }
 }
