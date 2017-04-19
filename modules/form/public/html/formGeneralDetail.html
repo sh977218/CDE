@@ -4,13 +4,8 @@
         <div ng-include="'/form/public/html/formSpecificDetails.html'"></div>
         <div ng-include="'/system/public/html/sources.html'"></div>
         <cde-registration [elt]="elt"></cde-registration>
-        <div class="btn-group" ng-if="elt" role="group" aria-label="More Info">
-            <button type="button" class="btn btn-default" id="{{group.btnId}}" ng-repeat="group in groups"
-                    ng-click="group.open()">
-                {{group.title}}
-            </button>
-        </div>
 
+        <cde-linked-boards [elt]="elt"></cde-linked-boards>
         <cde-linked-forms [elt]="elt" [elt-type]="'form'"></cde-linked-forms>
 
     </div>
