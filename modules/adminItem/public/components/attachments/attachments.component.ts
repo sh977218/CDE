@@ -16,11 +16,12 @@ export class AttachmentsComponent {
     @ViewChild("fileInput") inputEl: ElementRef;
 
     showDelete: boolean = false;
+    fileLoc: String;
 
     constructor(
         private http: Http,
         @Inject("isAllowedModel") public isAllowedModel,
-        @Inject("Alert") private Alert,
+        @Inject("Alert") private alert,
     ) {}
 
     upload (event) {
@@ -33,10 +34,14 @@ export class AttachmentsComponent {
             formData.append("id", this.elt._id);
             this.http.post("/attachments/" + this.elt.elementType + "/add", formData).map(r => r.json()).subscribe(
                 r => {
-                    if (r.message) this.Alert.addAlert("info", r.text());
-                    else this.elt = r;
+                    if (r.message) this.alert.addAlert("info", r.text());
+                    else {
+                        this.elt = r;
+                        this.alert.addAlert("success", "Attachment added.");
+                    }
                 }
             );
+            this.fileLoc = "";
         }
     }
 
@@ -48,7 +53,7 @@ export class AttachmentsComponent {
                 , id: this.elt._id
             }).map(r => r.json()).subscribe(res => {
                 this.elt = res;
-                this.Alert.addAlert("success", "Saved");
+                this.alert.addAlert("success", "Saved");
         });
     }
 
@@ -74,7 +79,7 @@ export class AttachmentsComponent {
             , id: this.elt._id
         }).map(r => r.json()).subscribe(res => {
             this.elt = res;
-            this.Alert.addAlert("success", "Attachment Removed.");
+            this.alert.addAlert("success", "Attachment Removed.");
         });
     }
 

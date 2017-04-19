@@ -73,7 +73,7 @@
                         Upload more files</label>
                 </div>
                 <div class="col-xs-9">
-                    <input type="file" style="display: none" id="fileToUpload" (change)="upload($event)"/>
+                    <input type="file" style="display: none" id="fileToUpload" [(ngModel)]="fileLoc" (change)="upload($event)"/>
                 </div>
             </div>
             <div class="row" *ngIf="files && files.length > 0">
