@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild, ElementRef } from "@angular/core";
+import { Component, Inject, Input, ViewChild, ElementRef, ChangeDetectorRef } from "@angular/core";
 import { Http } from "@angular/http";
 
 
@@ -16,12 +16,12 @@ export class AttachmentsComponent {
     @ViewChild("fileInput") inputEl: ElementRef;
 
     showDelete: boolean = false;
-    fileLoc: String;
 
     constructor(
         private http: Http,
+        private ref: ChangeDetectorRef,
         @Inject("isAllowedModel") public isAllowedModel,
-        @Inject("Alert") private alert,
+        @Inject("Alert") private alert
     ) {}
 
     upload (event) {
@@ -38,10 +38,10 @@ export class AttachmentsComponent {
                     else {
                         this.elt = r;
                         this.alert.addAlert("success", "Attachment added.");
+                        this.ref.detectChanges();
                     }
                 }
             );
-            this.fileLoc = "";
         }
     }
 
@@ -54,6 +54,7 @@ export class AttachmentsComponent {
             }).map(r => r.json()).subscribe(res => {
                 this.elt = res;
                 this.alert.addAlert("success", "Saved");
+                this.ref.detectChanges();
         });
     }
 
@@ -80,6 +81,7 @@ export class AttachmentsComponent {
         }).map(r => r.json()).subscribe(res => {
             this.elt = res;
             this.alert.addAlert("success", "Attachment Removed.");
+            this.ref.detectChanges();
         });
     }
 
