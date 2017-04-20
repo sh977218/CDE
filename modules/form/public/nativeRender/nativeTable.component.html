@@ -27,13 +27,18 @@
                 [style.borderWidth]="q.style.borderWidth">
                 <div *ngIf="q.type === 'label'" class="native-table-cell" style="text-align: center">
                     <label [textContent]="n.label"></label>
+                    <input type="hidden"
+                           [name]="ni + q.name"
+                           [attr.name]="ni + q.name"
+                           [value]="nativeRenderService.elt.formInput[ni + q.name]"
+                           [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"/>
                 </div>
                 <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
                     <label style="display: block" *ngFor="let a of q.question.answers">
                         <input type="radio"
-                               [name]="q.name + '-' + ni"
-                               [attr.name]="q.name + '-' + ni"
-                               [(ngModel)]="nativeRenderService.elt.formInput[q.name + '-' + ni]"
+                               [name]="ni + q.name"
+                               [attr.name]="ni + q.name"
+                               [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"
                                [value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/>
@@ -45,10 +50,10 @@
                 <div *ngIf="q.type === 'mlist'" class="checkbox native-table-cell native-table-list">
                     <label style="display: block" *ngFor="let a of q.question.answers">
                         <input type="checkbox"
-                               [name]="q.name + '-' + ni"
-                               [attr.name]="q.name + '-' + ni"
-                               [checked]="nativeRenderService.checkboxIsChecked(nativeRenderService.elt.formInput[q.name + '-' + ni], a.permissibleValue, ni)"
-                               (change)="nativeRenderService.checkboxOnChange($event, nativeRenderService.elt.formInput[q.name + '-' + ni], a.permissibleValue, ni)"
+                               [name]="ni + q.name"
+                               [attr.name]="ni + q.name"
+                               [checked]="nativeRenderService.checkboxIsChecked(nativeRenderService.elt.formInput[ni + q.name], a.permissibleValue, ni)"
+                               (change)="nativeRenderService.checkboxOnChange($event, nativeRenderService.elt.formInput[ni + q.name], a.permissibleValue, ni)"
                                [value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/>
@@ -60,9 +65,9 @@
                 <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                     <div class="input-group">
                         <input class="form-control native-table-box"
-                               [name]="q.name + '-' + ni"
-                               [attr.name]="q.name + '-' + ni"
-                               [(ngModel)]="nativeRenderService.elt.formInput[q.name + '-' + ni]"
+                               [name]="ni + q.name"
+                               [attr.name]="ni + q.name"
+                               [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"
                                ngbDatepicker #d1="ngbDatepicker"
                                [required]="q.question.required" [disabled]="!q.question.editable">
                         <div class="input-group-addon" (click)="d1.toggle()" >
@@ -73,9 +78,9 @@
                 <div *ngIf="q.type === 'number'" [ngClass]="{'input-group': q.question.uoms.length > 0}" class="native-table-cell" style="min-width: 100px;">
                     <input type="number"
                            class="form-control native-table-box"
-                           [name]="q.name + '-' + ni"
-                           [attr.name]="q.name + '-' + ni"
-                           [(ngModel)]="nativeRenderService.elt.formInput[q.name + '-' + ni]"
+                           [name]="ni + q.name"
+                           [attr.name]="ni + q.name"
+                           [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"
                            [attr.min]="q.question.datatypeNumber ? q.question.datatypeNumber.minValue : null"
                            [attr.max]="q.question.datatypeNumber ? q.question.datatypeNumber.maxValue : null"
                            [required]="q.question.required"
@@ -85,9 +90,9 @@
                            [ngClass]="{'nativeRequiredBox': q.question.required}"
                            style="padding-left: 10px;display: block">
                         <input type="radio"
-                               [name]="q.name + '-' + ni + '_uom'"
-                               [attr.name]="q.name + '-' + ni + '_uom'"
-                               [(ngModel)]="nativeRenderService.elt.formInput[q.name + '-' + ni + '_uom']"
+                               [name]="ni + q.name + '_uom'"
+                               [attr.name]="ni + q.name + '_uom'"
+                               [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name + '_uom']"
                                [value]="uom"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/> {{uom}}</label>
@@ -95,9 +100,9 @@
                 <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;">
                     <input type="text"
                            class="form-control native-table-box"
-                           [name]="q.name + '-' + ni"
-                           [attr.name]="q.name + '-' + ni"
-                           [(ngModel)]="nativeRenderService.elt.formInput[q.name + '-' + ni + '_uom']"
+                           [name]="ni + q.name"
+                           [attr.name]="ni + q.name"
+                           [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"
                            [required]="q.question.required"
                            [disabled]="!q.question.editable"/>
                     <div *ngIf="q.question.uoms.length > 0">Units of Measure:</div>
@@ -105,9 +110,9 @@
                            [ngClass]="{'nativeRequiredBox': q.question.required}"
                            style="padding-left: 10px;display: block">
                         <input type="radio"
-                               [name]="q.name + '-' + ni + '_uom'"
-                               [attr.name]="q.name + '-' + ni + '_uom'"
-                               [(ngModel)]="nativeRenderService.elt.formInput[q.name + '-' + ni + '_uom']"
+                               [name]="ni + q.name + '_uom'"
+                               [attr.name]="ni + q.name + '_uom'"
+                               [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name + '_uom']"
                                [value]="uom"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/> {{uom}}</label>
