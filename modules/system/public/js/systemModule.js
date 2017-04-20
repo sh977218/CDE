@@ -346,6 +346,10 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         return authShared.isOrgCurator(userResource.user);
     };
 
+    isAllowedModel.isCuratorFor = function (orgName) {
+        return authShared.isCuratorOf(userResource.user, orgName);
+    };
+
     return isAllowedModel;
 }]);
 

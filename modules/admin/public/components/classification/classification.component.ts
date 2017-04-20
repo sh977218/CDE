@@ -64,7 +64,7 @@ export class ClassificationComponent {
             }, (err) => {
                 if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
             });
-        })
+        });
     }
 
     openDeleteClassificationModal(node, orgName) {
@@ -75,16 +75,15 @@ export class ClassificationComponent {
         this.modalRef.result.then(result => {
             let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
             //noinspection TypeScriptValidateTypes
-            this.http.get(url).map(res => res.json()).subscribe((res)=> {
+            this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
-            }, (err) => {
+            }, err => {
                 if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
             });
-            this.alert.addAlert("success", "Classification removed.");
-        }, (reason) => {
+        }, reason => {
             let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
             //noinspection TypeScriptValidateTypes
-            this.http.get(url).map(res => res.json()).subscribe((res)=> {
+            this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
             }, (err) => {
                 if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
