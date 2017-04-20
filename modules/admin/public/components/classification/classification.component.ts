@@ -1,11 +1,8 @@
-import { Component, Input, ViewChild, Inject, ViewChildren, QueryList } from "@angular/core";
-import { NgbModalRef, NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { ClassifyItemModalComponent } from "./classifyItemModal.component";
+import { Component, Input, ViewChild, Inject } from "@angular/core";
+import { Http, RequestOptions } from "@angular/http";
+import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
-import { DeleteClassificationModalComponent } from "./deleteClassificationModal.component";
-
-import { Http } from "@angular/http";
-import { map } from "rxjs/operator/map";
+import { ClassifyItemModalComponent } from "./classifyItemModal.component";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -22,15 +19,19 @@ const actionMapping: IActionMapping = {
     templateUrl: "./classification.component.html"
 })
 export class ClassificationComponent {
-
     @ViewChild("classifyItemModal") public classifyItemModal: ClassifyItemModalComponent;
-    @ViewChild("deleteClassificationModal") public deleteClassificationModal: DeleteClassificationModalComponent;
+    @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
     @Input() public elt: any;
     public modalRef: NgbModalRef;
+
+    public deleteClassificationString: any;
+    public deleteOrgName: any;
+    public deleteClassificationArray: any;
 
     public options = {
         childrenField: "elements",
         displayField: "name",
+        idField: "name",
         isExpandedField: "elements",
         actionMapping: actionMapping
     };
@@ -43,52 +44,73 @@ export class ClassificationComponent {
                 @Inject("isAllowedModel") public isAllowedModel) {
     }
 
+    searchByClassification(node, orgName) {
+        let classificationArray = [node.data.name];
+        let _treeNode = node;
+        while (_treeNode.parent) {
+            _treeNode = _treeNode.parent;
+            if (!_treeNode.data.virtual)
+                classificationArray.unshift(_treeNode.data.name);
+        }
+        return "/" + this.elt.elementType + "/search?selectedOrg=" + encodeURIComponent(orgName) +
+            "&classification=" + encodeURIComponent(classificationArray.join(";"));
+
+    };
+
     openClassifyItemModal() {
-        this.classifyItemModal.myOrgs = this.userService.userOrgs;
-        this.classifyItemModal.orgClassificationsTreeView = null;
-        this.classifyItemModal.orgClassificationsRecentlyAddView = null;
-        this.modalRef = this.modalService.open(this.classifyItemModal.classifyItemContent, {size: "lg"});
-        this.modalRef.result.then(() => {
-            let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
-            //noinspection TypeScriptValidateTypes
-            this.http.get(url).map(res => res.json()).subscribe((res)=> {
-                this.elt = res;
-            }, (err) => {
-                if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
-            });
-        }, () => {
-            let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
-            //noinspection TypeScriptValidateTypes
-            this.http.get(url).map(res => res.json()).subscribe((res)=> {
-                this.elt = res;
-            }, (err) => {
-                if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
-            });
-        });
+        this.classifyItemModal.openModal();
     }
 
     openDeleteClassificationModal(node, orgName) {
-        this.deleteClassificationModal.node = node;
-        this.deleteClassificationModal.classificationString = node.data.name;
-        this.deleteClassificationModal.orgName = orgName;
-        this.modalRef = this.modalService.open(this.deleteClassificationModal.deleteClassificationModal, {size: "lg"});
+        this.deleteClassificationString = node.data.name;
+        this.deleteClassificationArray = [node.data.name];
+        this.deleteOrgName = orgName;
+        let _treeNode = node;
+        while (_treeNode.parent) {
+            _treeNode = _treeNode.parent;
+            if (!_treeNode.data.virtual)
+                this.deleteClassificationArray.unshift(_treeNode.data.name);
+        }
+        this.modalRef = this.modalService.open(this.deleteClassificationContent);
         this.modalRef.result.then(result => {
-            let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
-            //noinspection TypeScriptValidateTypes
-            this.http.get(url).map(res => res.json()).subscribe(res => {
-                this.elt = res;
-            }, err => {
-                if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
-            });
+            this.reloadElt(() => {
+                if (result === "success")
+                    this.alert.addAlert("success", "Classification removed.");
+            })
         }, reason => {
-            let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
-            //noinspection TypeScriptValidateTypes
-            this.http.get(url).map(res => res.json()).subscribe(res => {
-                this.elt = res;
-            }, (err) => {
-                if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
-            });
         });
+    }
+
+    deleteClassification() {
+        let deleteBody = {
+            categories: this.deleteClassificationArray,
+            cdeId: this.elt._id,
+            orgName: this.deleteOrgName
+        };
+        this.http.delete("/classification/" + this.elt.elementType,
+            new RequestOptions({body: deleteBody, method: 3})).subscribe(
+            () => {
+                this.modalRef.close("success");
+            },
+            err => {
+                this.modalRef.close("error");
+            });
+    }
+
+    reloadElt(cb) {
+        let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
+        //noinspection TypeScriptValidateTypes
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+            this.elt = res;
+            if (cb) cb();
+        }, err => {
+            if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
+            if (cb) cb();
+        });
+    }
+
+    updateThisElt(event) {
+        this.elt = event;
     }
 
 }

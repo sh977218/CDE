@@ -7,12 +7,11 @@ import { PropertiesComponent } from "../../admin/public/components/properties.co
 import { NamingComponent } from "../../admin/public/components/naming.component";
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
-import { ClassificationComponent } from "./components/classification/classification.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageModule } from "angular-2-local-storage/dist/index";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
-import { DeleteClassificationModalComponent } from "./components/classification/deleteClassificationModal.component";
+import { ClassificationComponent } from "./components/classification/classification.component";
 
 @NgModule({
     imports: [
@@ -36,7 +35,6 @@ import { DeleteClassificationModalComponent } from "./components/classification/
         ReferenceDocumentComponent,
         ClassificationComponent,
         ClassifyItemModalComponent,
-        DeleteClassificationModalComponent
     ],
     entryComponents: [
         IdentifiersComponent,
