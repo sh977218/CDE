@@ -111,7 +111,7 @@ export class NativeTableComponent implements OnInit {
                 style: sectionStyle.answerStyle
             });
             this.tableForm.rows.forEach((r, i) => {
-                this.nativeRenderService.elt.formInput[qName + "-" + i] = {answer: ""};
+                this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId] = {answer: ""};
             });
             if (f.question.uoms && f.question.uoms.length === 1)
                 this.tableForm.rows.forEach((r, i) => {
