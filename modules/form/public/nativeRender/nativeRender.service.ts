@@ -229,35 +229,20 @@ export class NativeRenderService {
     }
 
     checkboxOnChange($event: any, model: any, value: any) {
-        if (!Array.isArray(model.answer))
-            model.answer = [];
+        model = NativeRenderService.checkboxNullCheck(model);
         if ($event.target.checked)
             model.answer.push(value);
         else
             model.answer.splice(model.answer.indexOf(value), 1);
     }
     checkboxIsChecked(model: any, value: any) {
-        if (!Array.isArray(model.answer))
-            model.answer = [];
+        model = NativeRenderService.checkboxNullCheck(model);
         return (model.answer.indexOf(value) !== -1);
     }
-
-    checkboxOnChangeRepeat($event: any, model: any, value: any, i) {
-        NativeRenderService.checkboxModelExistsRepeat(model, i);
-        if ($event.target.checked)
-            model.answer[i].push(value);
-        else
-            model.answer[i].splice(model.answer.indexOf(value), 1);
-    }
-    checkboxIsCheckedRepeat(model: any, value: any, i) {
-        NativeRenderService.checkboxModelExistsRepeat(model, i);
-        return (model.answer[i].indexOf(value) !== -1);
-    }
-    static checkboxModelExistsRepeat(model: any, i) {
+    static checkboxNullCheck(model: any) {
         if (!Array.isArray(model.answer))
             model.answer = [];
-        if (model.answer.length <= i || !Array.isArray(model.answer[i]))
-            model.answer[i] = [];
+        return model;
     }
 
     static transformFormToInline(form) {

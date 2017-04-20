@@ -52,8 +52,9 @@
                         <input type="checkbox"
                                [name]="ni + q.name"
                                [attr.name]="ni + q.name"
-                               [checked]="nativeRenderService.checkboxIsCheckedRepeat(nativeRenderService.elt.formInput[ni + q.name], a.permissibleValue, ni)"
-                               (change)="nativeRenderService.checkboxOnChangeRepeat($event, nativeRenderService.elt.formInput[ni + q.name], a.permissibleValue, ni)"
+                               [checked]="nativeRenderService.checkboxIsChecked(nativeRenderService.elt.formInput[ni + q.name], a.permissibleValue, ni)"
+                               (change)="nativeRenderService.checkboxOnChange($event, nativeRenderService.elt.formInput[ni + q.name], a.permissibleValue, ni)"
+                               [value]="a.permissibleValue"
                                [required]="q.question.required"
                                [disabled]="!q.question.editable"/>
                         <span [textContent]="nativeRenderService.getPvLabel(a)"></span>
