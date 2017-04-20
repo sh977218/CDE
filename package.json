@@ -66,7 +66,7 @@
     "xml2js": "0.4.17",
     "xmlbuilder": "2.6.2",
     "xsd-schema-validator": "0.5.0",
-    "angular-2-local-storage": "1.0.1",
+    "angular2-localstorage": "0.4.0",
     "angular-tree-component": "3.3.0"
   },
   "devDependencies": {

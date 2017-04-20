@@ -51,6 +51,8 @@ export class ClassifyItemModalComponent {
             this.reloadElt(() => {
                 if (result === "success")
                     this.alert.addAlert("success", "Classification added.");
+                if (result === "exists")
+                    this.alert.addAlert("warning", "Classification already exists.");
             });
         }, reason => {
         });
@@ -77,10 +79,25 @@ export class ClassifyItemModalComponent {
         }
     }
 
+    updateClassificationLocalStorage(item) {
+        let recentlyClassification = this.localStorageService.get("classificationHistory");
+        if (Array.isArray(recentlyClassification)) {
+            recentlyClassification = recentlyClassification.filter(o=>JSON.stringify(o) !== JSON.stringify(item));
+            recentlyClassification.unshift(item);
+            this.localStorageService.set("classificationHistory", recentlyClassification);
+        }
+    }
+
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
-        let newOrgClassificationsRecentlyAddView = this.orgClassificationsRecentlyAddView.filter(o => o === classificationRecentlyAdd);
-        newOrgClassificationsRecentlyAddView.unshift(classificationRecentlyAdd);
-        this.localStorageService.set("classificationHistory", newOrgClassificationsRecentlyAddView);
+        //noinspection TypeScriptValidateTypes
+        this.http.post("/classification/" + this.elt.elementType, classificationRecentlyAdd).map(res => res.json()).subscribe(
+            () => {
+                this.updateClassificationLocalStorage(classificationRecentlyAdd);
+                this.modalRef.close("success")
+            }, err => {
+                this.alert.addAlert("danger", err);
+                this.modalRef.close("error");
+            });
     }
 
     classifyItemByTree(treeNode) {
@@ -99,7 +116,14 @@ export class ClassifyItemModalComponent {
         };
         //noinspection TypeScriptValidateTypes
         this.http.post("/classification/" + this.elt.elementType, postBody).map(res => res.json()).subscribe(
-            () => this.modalRef.close("success"), err => {
+            (res) => {
+                if (res.code === 403 && res.msg === "Classification Already Exists") {
+                    this.modalRef.close("exists");
+                } else {
+                    this.updateClassificationLocalStorage(postBody);
+                    this.modalRef.close("success")
+                }
+            }, err => {
                 this.alert.addAlert("danger", err);
                 this.modalRef.close("error");
             });
