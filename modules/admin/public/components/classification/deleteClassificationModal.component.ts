@@ -38,7 +38,10 @@ export class DeleteClassificationModalComponent {
         //noinspection TypeScriptValidateTypes
         this.http.delete("/classification/" + this.elt.elementType,
             new RequestOptions({body: deleteBody, method: 3})).subscribe(
-            () => {}, (err) => {
+            () => {
+                this.alert.addAlert("success", "Classification removed.");
+            },
+            err => {
                 this.alert.addAlert("danger", err);
             });
     }

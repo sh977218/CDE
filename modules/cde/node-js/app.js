@@ -485,7 +485,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.delete('/classification/cde', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
             res.status(401).send();
             return;
         }

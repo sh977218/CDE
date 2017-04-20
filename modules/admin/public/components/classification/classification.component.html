@@ -17,6 +17,7 @@
                     <template #treeNodeTemplate let-node="node" let-index="index">
                         <a>{{ node.data.name }}</a>
                         <i class="fa fa-trash-o hand-cursor" title="Remove"
+                           *ngIf="isAllowedModel.isCuratorFor(classification.stewardOrg.name)"
                            (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)"></i>
                     </template>
                 </tree-root>

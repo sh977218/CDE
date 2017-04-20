@@ -25,6 +25,7 @@ export class ClassifyItemModalComponent {
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView: any;
     myOrgs: any;
+
     options = {
         childrenField: "elements",
         displayField: "name",
