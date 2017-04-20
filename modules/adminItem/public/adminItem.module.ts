@@ -2,10 +2,11 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
-import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
-import { PropertiesComponent } from "../../admin/public/components/properties.component";
-import { NamingComponent } from "../../admin/public/components/naming.component";
-import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
+import { AttachmentsComponent } from "./components/attachments/attachments.component";
+import { IdentifiersComponent } from "./components/identifiers.component";
+import { PropertiesComponent } from "./components/properties.component";
+import { NamingComponent } from "./components/naming.component";
+import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -26,6 +27,7 @@ import { ClassificationComponent } from "./components/classification/classificat
         TreeModule
     ],
     declarations: [
+        AttachmentsComponent,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
@@ -41,6 +43,7 @@ import { ClassificationComponent } from "./components/classification/classificat
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,
+        AttachmentsComponent
         ClassificationComponent
     ],
     exports: [
@@ -55,5 +58,5 @@ import { ClassificationComponent } from "./components/classification/classificat
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AdminModule {
+export class AdminItemModule {
 }
