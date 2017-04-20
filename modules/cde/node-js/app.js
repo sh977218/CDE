@@ -508,6 +508,18 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/schema/cde', (req, res) => res.send(mongo_cde.DataElement.jsonSchema()));
+
+    let uniqueM = require('mongoose').constructor();
+    require('mongoose-schema-jsonschema')(uniqueM);
+
+    app.get('/schema/cde', (req, res) => {
+        res.send(jsonSchema(mongo_cde.DataElement));
+    });
+
+    app.get('/schema/cde2', (req, res) => {
+        res.send((JSON.stringify(mongo_cde.DataElement.schema)));
+    });
+
+    app.get('/schema/cde3', (req, res) => res.send(mongo_cde.DataElement.jsonSchema()));
 
 };

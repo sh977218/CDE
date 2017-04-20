@@ -109,7 +109,16 @@ var deJson = {
 };
 
 schemas.deJson = deJson;
-schemas.dataElementSchema = new mongoose.Schema(deJson);
+schemas.dataElementSchema = new mongoose.Schema(deJson, {
+    toJSON: {
+        transform: function (doc, ret, options) {
+            ret._links = {
+                describedBy: {
+                    href: '/meta/schemas/example'
+                }
+            };
+        }
+    }});
 
 
 schemas.dataElementSchema.set('collection', 'dataelements');

@@ -3,7 +3,7 @@ const mongoose = require('mongoose'),
 
 var establishedConns = {};
 
-require('mongoose-schema-jsonschema')(mongoose);
+// require('mongoose-schema-jsonschema')(mongoose);
 
 exports.establishConnection = function(dbConfig) {
     var uri = "mongodb://" + dbConfig.username + ":" + dbConfig.password + "@" +
