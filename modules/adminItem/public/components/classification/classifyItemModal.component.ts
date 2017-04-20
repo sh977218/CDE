@@ -51,7 +51,7 @@ export class ClassifyItemModalComponent {
             this.reloadElt(() => {
                 if (result === "success")
                     this.alert.addAlert("success", "Classification added.");
-            })
+            });
         }, reason => {
         });
     }

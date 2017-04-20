@@ -67,7 +67,7 @@
     "xmlbuilder": "2.6.2",
     "xsd-schema-validator": "0.5.0",
     "angular-2-local-storage": "1.0.1",
-    "angular-tree-component": "3.2.0"
+    "angular-tree-component": "3.3.0"
   },
   "devDependencies": {
     "@angular/common": "2.4.10",

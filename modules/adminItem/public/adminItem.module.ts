@@ -43,7 +43,7 @@ import { ClassificationComponent } from "./components/classification/classificat
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,
-        AttachmentsComponent
+        AttachmentsComponent,
         ClassificationComponent
     ],
     exports: [

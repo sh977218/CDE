@@ -31,7 +31,7 @@ export class ClassificationComponent {
     public options = {
         childrenField: "elements",
         displayField: "name",
-        idField: "name",
+        useVirtualScroll: false,
         isExpandedField: "elements",
         actionMapping: actionMapping
     };
@@ -76,7 +76,7 @@ export class ClassificationComponent {
             this.reloadElt(() => {
                 if (result === "success")
                     this.alert.addAlert("success", "Classification removed.");
-            })
+            });
         }, reason => {
         });
     }
