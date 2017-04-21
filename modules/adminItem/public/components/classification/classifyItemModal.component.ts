@@ -80,12 +80,11 @@ export class ClassifyItemModalComponent {
     }
 
     updateClassificationLocalStorage(item) {
-        let recentlyClassification = this.localStorageService.get("classificationHistory");
-        if (Array.isArray(recentlyClassification)) {
-            recentlyClassification = recentlyClassification.filter(o=>JSON.stringify(o) !== JSON.stringify(item));
-            recentlyClassification.unshift(item);
-            this.localStorageService.set("classificationHistory", recentlyClassification);
-        }
+        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
+        if (!recentlyClassification) recentlyClassification = [];
+        recentlyClassification = recentlyClassification.filter(o=>JSON.stringify(o) !== JSON.stringify(item));
+        recentlyClassification.unshift(item);
+        this.localStorageService.set("classificationHistory", recentlyClassification);
     }
 
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
