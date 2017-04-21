@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild, Output, EventEmitter } from "@angular/core";
+import { Component, Inject, Input, ViewChild, Output, EventEmitter, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -11,20 +11,18 @@ const actionMapping: IActionMapping = {
         }
     }
 };
-const urlMap = {
-    "cde": "/addCdeClassification/",
-    "form": "/addFormClassification/"
-};
+
 @Component({
-    selector: "cde-classify-item-modal",
-    templateUrl: "classifyItemModal.component.html",
+    selector: "cde-classify-cdes-modal",
+    templateUrl: "classifyCdesModal.component.html",
     providers: [NgbActiveModal]
 })
-export class ClassifyItemModalComponent {
-    @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
+export class ClassifyCdesModalComponent implements OnInit {
+
+    @ViewChild("classifyCdesContent") public classifyCdesContent: NgbModalModule;
     @Input() elt: any;
     @Output() updateElt = new EventEmitter();
-
+    allCdeId = [];
     public modalRef: NgbModalRef;
     selectedOrg: any;
     orgClassificationsTreeView: any;
@@ -46,8 +44,25 @@ export class ClassifyItemModalComponent {
                 @Inject("userResource") public userService) {
     }
 
-    openItemModal() {
-        this.modalRef = this.modalService.open(this.classifyItemContent, {size: "lg"});
+    ngOnInit(): void {
+        this.getChildren(this.elt.formElements, this.allCdeId);
+    }
+
+    getChildren(formElements, ids) {
+        if (formElements.elementType === "section" || formElements.elementType === "form") {
+            formElements.formElements.forEach(function (e) {
+                this.getChildren(e, ids);
+            });
+        } else if (formElements.elementType === "question") {
+            ids.push({
+                id: formElements.question.cde.tinyId,
+                version: formElements.question.cde.version
+            });
+        }
+    }
+
+    openCdesModal() {
+        this.modalRef = this.modalService.open(this.classifyCdesContent, {size: "lg"});
         this.myOrgs = this.userService.userOrgs;
         this.orgClassificationsTreeView = null;
         this.orgClassificationsRecentlyAddView = null;
@@ -99,6 +114,15 @@ export class ClassifyItemModalComponent {
         this.doClassifyPost(classificationRecentlyAdd);
     }
 
+    doClassifyPost(post) {
+        post["elements"] = this.allCdeId;
+        this.http.post("/classification/bulk/tinyid", post).subscribe(res => {
+            console.log(res);
+        }, err => {
+            console.log(err);
+        })
+    }
+
     classifyItemByTree(treeNode) {
         this.treeNode = treeNode;
         let classificationArray = [treeNode.data.name];
@@ -114,17 +138,6 @@ export class ClassifyItemModalComponent {
             orgName: this.selectedOrg
         };
         this.doClassifyPost(postBody);
-    }
-
-    doClassifyPost(postBody) {
-        this.http.post(urlMap[this.elt.elementType], postBody).subscribe(
-            () => {
-                this.updateClassificationLocalStorage(postBody);
-                this.modalRef.close("success")
-            }, err => {
-                this.alert.addAlert("danger", err._body);
-                this.modalRef.close("error");
-            });
     }
 
     reloadElt(cb) {

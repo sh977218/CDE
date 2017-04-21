@@ -3,6 +3,7 @@ import { Http, RequestOptions } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { ClassifyItemModalComponent } from "./classifyItemModal.component";
+import { ClassifyCdesModalComponent } from "../../../../form/public/components/classifyCdesModal.component";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -25,6 +26,7 @@ const urlMap = {
 })
 export class ClassificationComponent {
     @ViewChild("classifyItemModal") public classifyItemModal: ClassifyItemModalComponent;
+    @ViewChild("classifyCdesModal") public classifyCdesModal: ClassifyCdesModalComponent;
     @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
     @Input() public elt: any;
     public modalRef: NgbModalRef;
@@ -63,7 +65,11 @@ export class ClassificationComponent {
     };
 
     openClassifyItemModal() {
-        this.classifyItemModal.openModal();
+        this.classifyItemModal.openItemModal();
+    }
+
+    openClassifyCdesModal() {
+        this.classifyCdesModal.openCdesModal();
     }
 
     openDeleteClassificationModal(node, orgName) {

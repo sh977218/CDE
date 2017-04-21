@@ -1,0 +1,52 @@
+<template #classifyCdesContent id="newClassifyCdesModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="newClassifyCdesModalHeader">
+        <h4 class="modal-title">Classify This {{elt.elementType | uppercase}}</h4>
+    </div>
+    <div class="modal-body" id="newClassifyCdesModalBody">
+        <ngb-tabset (tabChange)="onChangeClassifyView($event)">
+            <ngb-tab id="treeViewTab" title="By ClassifyItem tree">
+                <template ngbTabContent>
+                    <hr>
+                    <select class="form-control" id="selectClassifyItemOrg" name="selectClassifyItemOrg"
+                            (change)="onChangeOrg($event.target.value)" required>
+                        <option value="">Start by selecting an organization...</option>
+                        <option *ngFor="let myOrg of myOrgs" value="{{myOrg}}">{{myOrg}}</option>
+                    </select>
+                    <div class="smallSpace"></div>
+                    <div *ngIf="orgClassificationsTreeView">
+                        <tree-root [nodes]="orgClassificationsTreeView.classifications" [options]="options">
+                            <template #treeNodeTemplate let-node="node" let-index="index">
+                                <span>{{ node.data.name }}</span>
+                                <button class="btn btn-default btn-xs" type="button"
+                                        (click)="classifyItemByTree(node)">
+                                    <i class="fa fa-plus"></i> Classify
+                                </button>
+                            </template>
+                        </tree-root>
+                    </div>
+                </template>
+            </ngb-tab>
+            <ngb-tab id="recentlyAddViewTab" title="By recently added">
+                <template ngbTabContent>
+                    <hr>
+                    <p>Select from recently used classifications...</p>
+                    <div class="smallSpace"></div>
+                    <div *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; let i of index"
+                         class="breadcrumb ">
+                        {{orgClassificationRecentlyAddView.orgName}} /
+                        {{orgClassificationRecentlyAddView.categories.join(" / ")}}
+                        <button class="btn btn-default btn-xs" type="button"
+                                (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
+                            <i class="fa fa-plus"></i> Classify
+                        </button>
+                    </div>
+                </template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+    <div class="modal-footer" id="newClassifyCdesModalFooter">
+        <button class="btn cancel" (click)="c('Close click')" id="cancelNewClassifyCdesBtn"
+                name="cancelNewClassifyCdesBtn" type="button">Close
+        </button>
+    </div>
+</template>
