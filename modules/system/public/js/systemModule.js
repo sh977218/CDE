@@ -241,6 +241,7 @@ angular.module('systemModule').filter('bytes', [function () {
     };
 }]);
 
+//ported
 angular.module('systemModule').filter('tagsToArray', [function () {
     return function (input) {
         return input.map(function (m) {

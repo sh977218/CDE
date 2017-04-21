@@ -1,15 +1,1 @@
-<br/>
-<div class="row" ng-if="currentTab === 'description'">
-    <div ng-class="{'col-xs-5 noRightPadding':addMode,'col-xs-12':!addMode}" class="formSectionArea">
-        <div ng-include="'/form/public/html/sections.html'" ng-controller="SectionCtrl"></div>
-    </div>
-    <div ui-scrollpoint="25" class="question-search-area pd55" ng-class="{'col-xs-7 hidden-sm noLeftPadding':addMode}"
-         ng-if=" addMode && elt.formElements.length > 0" ng-controller="ListCtrl">
-        <div ng-if="addMode ==='cde'" class="panel-group" id="accordion_cde" ng-controller="DEListCtrl">
-            <div ng-include="selectedMainAreaMode.url" ng-controller="FormDEListCtrl"></div>
-        </div>
-        <div ng-if="addMode ==='form'" class="panel-group" id="accordion_form" ng-controller="FormListCtrl">
-            <div ng-include="selectedMainAreaMode.url" ng-controller="FormFormListCtrl"></div>
-        </div>
-    </div>
-</div>
+<cde-form-description [elt]="elt" [inScoreCdes]="inScoreCdes"></cde-form-description>

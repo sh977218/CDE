@@ -8,6 +8,8 @@ import { NamingComponent } from "../../admin/public/components/naming.component"
 import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
 
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
+import { ArrayListPipe } from "./arrayList.pipe";
+import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 
 @NgModule({
     imports: [
@@ -16,10 +18,12 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         Select2Module
     ],
     declarations: [
+        ArrayListPipe,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
+        PlaceHoldEmptyPipe,
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent
@@ -31,10 +35,12 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         ReferenceDocumentComponent,
     ],
     exports: [
+        ArrayListPipe,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
+        PlaceHoldEmptyPipe,
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent

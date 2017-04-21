@@ -1,0 +1,252 @@
+<div class="row mt-1" *ngIf="elt">
+    <div [ngClass]="{'col-xs-5 noRightPadding':addMode,'col-xs-12':!addMode}" class="formSectionArea">
+        <button id="addSectionTop" (click)="addSectionTop()" class="btn btn-default" *ngIf="canCurate">
+            <i class="fa fa-plus"></i> Add Section
+        </button>
+        <button id="startAddingQuestions" *ngIf="canCurate && elt.formElements.length > 0"
+                (click)="setToAddCdeMode()" class="btn btn-default hidden-xs hidden-sm">
+            <span [hidden]="addMode==='cde'"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
+            <span [hidden]="addMode!=='cde'"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+        </button>
+        <button id="startAddingForms" *ngIf="canCurate && elt.formElements.length > 0"
+                (click)="setToAddFormMode()" class="btn btn-default hidden-xs hidden-sm">
+            <span [hidden]="addMode==='form'"><i class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
+            <span [hidden]="addMode!=='form'"><i class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
+        </button>
+        <div *ngIf="canCurate && elt.formElements.length > 0" class="visible-xs visible-sm">
+            <div class="alert alert-danger" role="alert">
+                To add questions to this form, enlarge your browser window or use a larger device.
+            </div>
+        </div>
+        <div *ngIf="elt.formElements.length === 0">
+            <i class="fa fa-exclamation-triangle"></i>
+            <span *ngIf="elt.noRenderAllowed">
+                Rendering is disabled for this form.
+            </span>
+            <span *ngIf="!elt.noRenderAllowed">
+                There is no content yet.
+            </span>
+        </div>
+        <tree-root [nodes]="elt.formElements" [options]="treeOptions">
+            <template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                <div class="tree-node tree-node-level-{{ node.level }}"
+                     [class]="node.getClass()"
+                     [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
+                     [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
+                     [class.tree-node-leaf]="node.isLeaf"
+                     [class.tree-node-active]="node.isActive"
+                     [class.tree-node-focused]="node.isFocused">
+                    <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index" [node]="node.parent"></tree-node-drop-slot>
+                    <div class="node-wrapper mt-1"
+                         [style.padding-left]="node.getNodePadding()"
+                         style="border: 1px #ddd solid; background-color: #f5f5f5">
+                        <div class="node-content-wrapper w-100"
+                             (click)="node.mouseAction('click', $event)"
+                             (dblclick)="node.mouseAction('dblClick', $event)"
+                             (contextmenu)="node.mouseAction('contextMenu', $event)"
+                             (treeDrop)="node.onDrop($event)"
+                             [treeAllowDrop]="node.allowDrop"
+                             [treeDrag]="node"
+                             [treeDragEnabled]="node.allowDrag()">
+                            <tree-node-content [node]="node" [index]="index" [template]="templates.treeNodeTemplate">
+                                <template #treeNodeTemplate let-node="node" let-index="index">
+                                    <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"></i>
+                                    <span>{{ node.data.label }}</span>
+                                    <button hidden (click)="go($event)"><i ng-if="!section.edit" class="fa fa-pencil"></i>Edit</button>
+                                    <span class="right" style="font-size: 16px">
+                                        <i ng-if="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section" (click)="section.edit = true"></i>
+                                        <i class="fa fa-trash-o hand-cursor" title="Remove Section" (click)="removeElt(parent, $index)"></i>
+                                    </span>
+                                    <cde-form-description-question></cde-form-description-question>
+                                </template>
+                            </tree-node-content>
+                        </div>
+                    </div>
+                    <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
+                    <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>
+                </div>
+            </template>
+        </tree-root>
+    </div>
+    <button id="addSectionBottom" (click)="addSectionBottom()" class="btn btn-default" *ngIf="canCurate">
+        <i class="fa fa-plus"></i> Add Section
+    </button>
+    <div class="question-search-area pd55" [ngClass]="{'col-xs-7 hidden-sm noLeftPadding':addMode}"
+         *ngIf="addMode && elt.formElements.length > 0">
+        <cde-search-cde [hidden]="addMode!=='cde'" class="panel-group" id="accordion_cde"></cde-search-cde>
+        <cde-search-form [hidden]="addMode!=='form'" class="panel-group" id="accordion_form"></cde-search-form>
+    </div>
+</div>
+
+<template>
+    <div class="modal-header">
+        <h3 tabindex="0">Select a question label from a CDE Name</h3>
+    </div>
+
+    <div class="modal-body">
+        <div *ngIf="cde === null"><i class="fa fa-spinner fa-pulse"></i> Loading...</div>
+        <div *ngIf="cde === 'error'">There is an issue retrieving this Data Element.</div>
+        <div class="uib-alert alert-warning" *ngIf="updateSkipLogic">
+            Some show if rules reference this label. They will be updated.
+        </div>
+
+        <div *ngFor="let naming of cde.naming" class="row" id="q_select_name_{{$index}}">
+            <div class="col-md-3">
+                <button class="btn btn-default" (click)="okSelect(naming)"><i class="fa fa-check"></i> Select</button>
+            </div>
+            <div class="col-md-9">
+                <dl class="dl-horizontal">
+                    <dt tabindex="0">Name:</dt>
+                    <dd tabindex="0">{{naming.designation}}</dd>
+                    <dt tabindex="0">Definition:</dt>
+                    <dd tabindex="0">{{naming.definition | cdePlaceholder}}</dd>
+                    <dt tabindex="0">Tags:</dt>
+                    <dd tabindex="0">{{naming.tags | cdeArrayList}}</dd>
+                </dl>
+            </div>
+            <hr/>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-default" (click)="okSelect()"><i class="fa fa-stop"></i> No Label</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="$dismiss()" id="cancelSelect">Cancel</button>
+    </div>
+</template>
+
+<template>
+    <div class="modal-header">
+        <h3>Confirm Changes:</h3>
+    </div>
+    <div style="margin-top: 10px">
+        <i *ngIf="reloading" class="fa fa-spinner fa-spin"></i>
+        <div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
+                <div class="col-sm-8" id="mdd_question_title">
+                    <span [ngClass]="{mark: bLabel}">{{newQuestion.label | cdePlaceholder}}</span>
+                    <span *ngIf="bLabel" class="red">( was {{ currentQuestion.label }} )</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Datatype:</div>
+                <div class="col-sm-8" id="mdd_datatype">
+                    <span [ngClass]="{mark: bDatatype}">{{newQuestion.question.datatype | cdePlaceholder }}</span>
+                    <span *ngIf="bDatatype" class="red">( was {{currentQuestion.question.datatype}} )</span>
+                </div>
+            </div>
+            <div *ngIf="newQuestion.question.datatype ==='Number'">
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
+                    <div class="col-sm-8" id="mdd_minimal">
+                    <span [ngClass]="{mark: bNumberMin}">
+                        {{newQuestion.question.datatypeNumber.minValue | cdePlaceholder }}</span>
+                        <span *ngIf="bNumberMin" class="red">
+                        ( was {{ currentQuestion.question.datatypeNumber.minValue }} )</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
+                    <div class="col-sm-8" id="mdd_maximal">
+                    <span [ngClass]="{mark: bNumberMax}">
+                        {{newQuestion.question.datatypeNumber.maxValue | cdePlaceholder }}</span>
+                        <span *ngIf="bNumberMax" class="red">
+                        ( was {{ currentQuestion.question.datatypeNumber.maxValue }} )</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="newQuestion.question.datatype === 'Value List'">
+                <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>
+                <div class="col-sm-8" id="mdd_question_multi">
+                    <input type="checkbox" [ngModel]="newQuestion.question.multiselect" [ngClass]="{mark: bMulti}" disabled/>
+                    <span *ngIf="bMulti" class="red">
+                        ( was <input type="checkbox" [ngModel]="currentQuestion.question.multiselect" disabled/> )
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Units of Measures:</div>
+                <div class="col-sm-8" id="mdd_q_uoms">
+                    <span [ngClass]="{mark: bUom}" *ngIf="newQuestion.question.uoms.length > 0">
+                        <span *ngFor="let uom of newQuestion.question.uoms; let i = index">
+                              <span id="mq_uom_list_{{i}}" [textContent]="newQuestion.question.uoms[i]"></span>
+                        </span>
+                    </span>
+                    <span [ngClass]="{mark: bUom}" *ngIf="newQuestion.question.uoms.length <= 0">N/A</span>
+                    <span *ngIf="bUom" class="red">
+                        ( was
+                        <span *ngIf="currentQuestion.question.uoms.length > 0">
+                            <span *ngFor="let uom of currentQuestion.question.uoms; let i = index">
+                                <span id="mq_old_uom_list_{{i}}" [textContent]="currentQuestion.question.uoms[i]"></span>
+                            </span>
+                        </span>
+                        <span *ngIf="currentQuestion.question.uoms.length <= 0">N/A</span>
+                        )
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
+                <div class="col-sm-8" id="mdd_q_defaultAnswer">
+                    <span [ngClass]="{mark: bDefault}" *ngIf="newQuestion.question.datatype === 'Value List'">
+                        <select [ngModel]="newQuestion.question.defaultAnswer" id="mq_default_answer" disabled>
+                            <option *ngFor="let pv of newQuestion.question.answers" [value]="pv.valueMeaningName"
+                                    [textContent]="pv.permissibleValue"></option>
+                        </select>
+                    </span>
+                    <span [ngClass]="{mark: bDefault}" *ngIf="newQuestion.question.datatype !== 'Value List'">
+                        <label id="mq_defaultAnswer_text" [textContent]="newQuestion.question.defaultAnswer"></label>
+                    </span>
+                    <span *ngIf="bDefault" class="red">
+                        ( was
+                            <span *ngIf="currentQuestion.question.datatype === 'Value List'">
+                                <select [ngModel]="currentQuestion.question.defaultAnswer" id="mq_old_default_answer" disabled>
+                                    <option *ngFor="let pv of currentQuestion.question.answers"
+                                            [value]="pv.valueMeaningName" [textContent]="pv.permissibleValue"></option>
+                                </select>
+                            </span>
+                        <span *ngIf="currentQuestion.question.datatype !== 'Value List'"
+                               id="mq_old_defaultAnswer_text" [textContent]="currentQuestion.question.defaultAnswer"></span>
+                        )
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
+                <div class="col-sm-8" id="mdd_d_cde">
+                    <a [ngClass]="{mark: bCde}" href="/deview?tinyId={{newQuestion.question.cde.tinyId}}&version={{newQuestion.question.cde.version}}"
+                       target="_blank"><i class="fa fa-eye"></i>
+                        <span id="mdd_question_cde_name">{{newQuestion.question.cde.name}}</span>
+                    </a>
+                    <span *ngIf="bCde" class="red">( was
+                    <a style="color: red" href="/deview?tinyId={{currentQuestion.question.cde.tinyId}}&version={{currentQuestion.question.cde.version}}"
+                       target="_blank"><i class="fa fa-eye"></i>
+                        <span id="mdd_old_question_cde_name">{{currentQuestion.question.cde.name}}</span>
+                    </a> )
+                </span>
+                </div>
+            </div>
+            <div class="row answerList" *ngIf="newQuestion.question.datatype === 'Value List'">
+                <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
+                <div class="col-sm-8" id="mdd_d_answers">
+                    <div [ngClass]="{mark: bValuelist}" *ngFor="let pv of newQuestion.question.answers"
+                         [textContent]="pv.valueMeaningName"></div>
+                    <span *ngIf="bValuelist" class="red">( was
+                        <div class="mark" *ngFor="let pv of currentQuestion.question.answers"
+                             [textContent]="pv.valueMeaningName"></div> )
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="$close()" id="okSelect">OK</button>
+        <button class="btn btn-warning" (click)="$dismiss()" id="cancelSelect">Cancel</button>
+    </div>
+</template>
