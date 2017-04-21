@@ -532,9 +532,9 @@ exports.commentsForUser = function (req, res) {
 
 exports.allComments = function (req, res) {
     if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-    mongo_data_system.Comment.find({status: {"$ne": "deleted"}}).skip(req.params.from)
-        .limit(req.params.size).sort({created: -1}).exec(function(err, results) {
-        if (err) return res.status(500).send("Unable to retrieve comments");
+    mongo_data_system.Comment.find({status: {"$ne": "deleted"}}).skip(Number.parseInt(req.params.from))
+        .limit(Number.parseInt(req.params.size)).sort({created: -1}).exec(function(err, results) {
+        if (err) return res.status(400).send("Unable to retrieve comments. Incorrect numbers?");
         return res.send(results);
     });
 };

@@ -1,38 +1,37 @@
-<form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
+<form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
     Make
     <div class="form-group">
         <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
-               placeholder="enter user name" [(ngModel)]="newOrgAdmin.username"
+               placeholder="enter user name" [(ngModel)]="newAdmin.username"
                [ngbTypeahead]="searchTypeahead"
                typeahead-min-length="3" [resultFormatter]="formatter" [inputFormatter]="formatter"  required>
 
     </div>
     an administrator for
     <div class="form-group">
-        <!--<select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"-->
-                <!--ng-model="admin.orgName"-->
-                <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in orgs" required>-->
-            <!--<option value="">select organization</option>-->
-        <!--</select>-->
+        <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
+                [(ngModel)]="newAdmin.orgName" required>
+            <option value="" disabled>select organization</option>
+            <option *ngFor="let myOrgAdmin of orgAdmins" [value]="myOrgAdmin.name">{{myOrgAdmin.name}}</option>
+        </select>
     </div>
-    <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" (click)="addOrgAdmin()">Make Admin</button>
-            <!--[disabled]="newOrgAdminForm.newOrgAdminUsername.valid || newOrgAdminForm.newOrgAdminOrgName.$invalid"-->
+    <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" (click)="addOrgAdmin()"
+            [disabled]="!adminForm.form.valid">Make Admin</button>
 </form>
 <table class="table table-border table-responsive">
     <tr>
         <th>Organization Name:</th>
         <th>Admins for this Organization:</th>
     </tr>
-    <tr *ngFor="let orgAdmin of getOrgAdmins; let admIndex = index ">
-        <!--| orderBy:'name'-->
+    <tr *ngFor="let orgAdmin of orgAdmins; let admIndex = index">
         <td id="existingOrgAdminOrgName-{{orgAdmin.name}}">
             {{orgAdmin.name}}
         </td>
         <td>
-            <div *ngFor="user in getOrgAdmins.users">
-                <span id="existingOrgAdminUsername-{{admIndex}}-{{$index}}">{{user.username}}
-                </span> <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(orgAdmin.name, user._id)"
-                           id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+            <div *ngFor="let user of orgAdmin.users; let uIndex = index">
+                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}">{{user.username}}
+                </span> <i class="fa fa-trash-o hand-cursor" (click)="removeOrgAdmin(orgAdmin.name, user._id)"
+                           id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}" title="Remove"></i>
             </div>
         </td>
     </tr>

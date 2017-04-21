@@ -15,11 +15,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $scope.transferStewardObj.to = '';
     }
 
-    function resetOrgAdminForm() {
-        $scope.orgAdmin.username = "";
-        $scope.admin = {};
-    }
-    
     function resetOrgCuratorForm() {
         $scope.orgCurator.username = "";
         $scope.curator = {};
@@ -53,26 +48,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         });
     };
     $scope.getOrgs(); 
-    
-    // Retrieve all orgs and users who are admins of each org
-    $scope.getOrgAdmins = function() {
-        $http.get("/orgAdmins").then(function(response) {
-            $scope.orgAdmins = response.data.orgs;
-        }).catch(function onError() {
-        });
-    };
-    $scope.getOrgAdmins(); 
-    
-    // Retrieve orgs user is admin of
-    $scope.getMyOrgAdmins = function() {
-        $http.get("/myOrgsAdmins").then(function(response) {
-            $scope.myOrgAdmins = response.data.orgs;
-            if ($scope.myOrgAdmins && $scope.myOrgAdmins.length > 0)
-                $scope.admin.orgName = $scope.myOrgAdmins[0].name;
-        }, function () {});
-    };
-    $scope.getMyOrgAdmins();
-    
+
     // Retrieve orgs user is curator of
     $scope.getOrgCurators = function() {
         $http.get("/orgCurators").then(function(response) {
@@ -102,47 +78,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                   $scope.siteAdmins = $scope.getSiteAdmins();
             }, function (){
                Alert.addAlert("danger", "There was an issue adding this administrator.");
-            }
-        );
-    };
-    
-    $scope.addOrgAdmin = function() {
-        AccountManagement.addOrgAdmin({
-            username: $scope.orgAdmin.username
-            , org: $scope.admin.orgName
-            },
-            function(res) {
-                  Alert.addAlert("success", res);
-                  $scope.getOrgAdmins();
-                  $scope.getMyOrgAdmins();
-            }, function () {
-                Alert.addAlert("danger", "There was an issue adding this administrator.");
-            }
-        );
-        resetOrgAdminForm();
-    };
-
-    $scope.removeOrgAdmin = function(orgName, userId) {
-        if (userResource.user._id === userId) {
-            var answer = confirm("Please confirm that you want to remove yourself from the list of admins. You will be redirected to the home page. ");
-            if (!answer) {
-                return;
-            }            
-        }
-        AccountManagement.removeOrgAdmin({
-            orgName: orgName
-            , userId: userId
-            },
-            function (res) {
-                Alert.addAlert("success", res);
-                $scope.getOrgAdmins();
-                $scope.getMyOrgAdmins();
-                
-                if (userResource.user._id === userId) {
-                    $location.url("/");
-                }
-            }, function () {
-                Alert.alert("An error occured.");
             }
         );
     };
