@@ -342,6 +342,14 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         }
     };
 
+    isAllowedModel.hasRole = function (role) {
+        return authShared.hasRole(userResource.user, role);
+    };
+
+    isAllowedModel.isSiteAdmin = function (role) {
+        return authShared.isSiteAdmin(userResource.user);
+    };
+
     return isAllowedModel;
 }]);
 

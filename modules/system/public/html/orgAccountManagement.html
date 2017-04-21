@@ -1,45 +1,47 @@
 <div class="container">
     <uib-tabset class="pt20">
         <uib-tab heading="Organizations Admins">
-            <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
-                Make
-                <div class="form-group">
-                    <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
-                           placeholder="enter user name" ng-model="orgAdmin.username"
-                           uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
-                           typeahead-min-length="3" required>
-                </div>
-                an administrator for
-                <div class="form-group">
-                    <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
-                            ng-model="admin.orgName"
-                            ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
-                        <option value="">select organization</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()"
-                        ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid">
-                    Make Admin
-                </button>
-            </form>
-            <table class="table table-border table-responsive">
-                <tr>
-                    <th>Organization Name:</th>
-                    <th>Admins for this Organization:</th>
-                </tr>
-                <tr ng-repeat="myOrgAdmin in myOrgAdmins | orderBy:'name'">
-                    <td id="existingOrgAdminOrgName-{{myOrgAdmin.name}}">
-                        {{myOrgAdmin.name}}
-                    </td>
-                    <td>
-                        <div ng-repeat="user in myOrgAdmin.users">
-                            <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span>
-                            <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(myOrgAdmin.name, user._id)"
-                               id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+            <cde-org-admin></cde-org-admin>
+
+            <!--<form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>-->
+                <!--Make-->
+                <!--<div class="form-group">-->
+                    <!--<input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"-->
+                           <!--placeholder="enter user name" ng-model="orgAdmin.username"-->
+                           <!--uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"-->
+                           <!--typeahead-min-length="3" required>-->
+                <!--</div>-->
+                <!--an administrator for-->
+                <!--<div class="form-group">-->
+                    <!--<select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"-->
+                            <!--ng-model="admin.orgName"-->
+                            <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>-->
+                        <!--<option value="">select organization</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()"-->
+                        <!--ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid">-->
+                    <!--Make Admin-->
+                <!--</button>-->
+            <!--</form>-->
+            <!--<table class="table table-border table-responsive">-->
+                <!--<tr>-->
+                    <!--<th>Organization Name:</th>-->
+                    <!--<th>Admins for this Organization:</th>-->
+                <!--</tr>-->
+                <!--<tr ng-repeat="myOrgAdmin in myOrgAdmins | orderBy:'name'">-->
+                    <!--<td id="existingOrgAdminOrgName-{{myOrgAdmin.name}}">-->
+                        <!--{{myOrgAdmin.name}}-->
+                    <!--</td>-->
+                    <!--<td>-->
+                        <!--<div ng-repeat="user in myOrgAdmin.users">-->
+                            <!--<span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span>-->
+                            <!--<i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(myOrgAdmin.name, user._id)"-->
+                               <!--id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>-->
+                        <!--</div>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            <!--</table>-->
         </uib-tab>
         <uib-tab heading="Organizations Curators">
             <form class="form-inline pt40 pb40" role="form" id="newOrgCuratorForm" name="newOrgCuratorForm" novalidate>
