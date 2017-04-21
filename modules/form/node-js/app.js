@@ -57,7 +57,7 @@ exports.init = function (app, daoManager) {
     app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
     app.get('/formByTinyIdAndVersion/:id/:version', exportShared.nocacheMiddleware, formCtrl.formByTinyIdVersion);
-    
+
     app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send("You must be logged in to do that");
@@ -83,7 +83,9 @@ exports.init = function (app, daoManager) {
                 return res.status(500).send();
             } else {
                 res.setHeader("Content-Type", "application/xml");
-                sdc.formToSDC(form, null, function (txt) {res.send(txt);});
+                sdc.formToSDC(form, null, function (txt) {
+                    res.send(txt);
+                });
             }
         });
     });
@@ -156,39 +158,34 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.post('/classification/form', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.status(401).send();
-            return;
-        }
-        classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_form, function (err) {
-            if (!err) {
-                res.send({code: 200, msg: "Classification Added"});
-                mongo_data_system.addToClassifAudit({
-                    date: new Date(),
-                    user: {
-                        username: req.user.username
-                    },
-                    elements: [{
-                        _id: req.body.cdeId
-                    }],
-                    action: "add",
-                    path: [req.body.orgName].concat(req.body.categories)
-                });
-            } else {
-                res.send({code: 403, msg: "Classification Already Exists"});
-            }
-
+    app.post('/addFormClassification/', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
+        let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
+        if (invalidateRequest) return res.status(400).send(invalidateRequest);
+        classificationNode_system.addClassification(req.body, mongo_form, function (err, result) {
+            if (err) return res.status(500).send(err);
+            if (result === "Classification Already Exists") return res.status(409).send(result);
+            else res.send(result);
+            mongo_data_system.addToClassifAudit({
+                date: new Date(),
+                user: {
+                    username: req.user.username
+                },
+                elements: [{
+                    _id: req.body.eltId
+                }],
+                action: "delete",
+                path: [req.body.orgName].concat(req.body.categories)
+            });
+            
         });
     });
 
-    app.delete('/classification/form', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.status(401).send();
-            return;
-        }
-        classificationNode_system.eltClassification(req.query, classificationShared.actions.delete, mongo_form, function (err) {
-            if (!err) {
+    app.post("/removeFormClassification/", function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send();
+        else classificationNode_system.removeClassification(req.body.body, mongo_form, function (err) {
+            if (err) return res.status(202).send({error: {message: "Classification does not exists."}});
+            else {
                 res.end();
                 mongo_data_system.addToClassifAudit({
                     date: new Date(),
@@ -196,16 +193,14 @@ exports.init = function (app, daoManager) {
                         username: req.user.username
                     },
                     elements: [{
-                        _id: req.query.cdeId
+                        _id: req.body.eltId
                     }],
                     action: "delete",
-                    path: [req.query.orgName].concat(req.query.categories)
+                    path: [req.body.orgName].concat(req.body.categories)
                 });
-            } else {
-                res.status(202).send({error: {message: "Classification does not exists."}});
             }
         });
-    });
+    })
 
     // This is for tests only
     app.post('/sendMockFormData', function (req, res) {
@@ -220,7 +215,7 @@ exports.init = function (app, daoManager) {
                 res.send("<html><body>Form Submitted</body></html>");
             else if (config.publicUrl.indexOf('localhost') === -1) {
                 dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
-                    if (!err && req.body.formUrl.indexOf(result + "/data") === 0 )
+                    if (!err && req.body.formUrl.indexOf(result + "/data") === 0)
                         res.send("<html><body>Form Submitted</body></html>");
                     else
                         res.status(401).send("<html><body>Not the right input</body></html>");
@@ -228,10 +223,10 @@ exports.init = function (app, daoManager) {
             } else {
                 let ifaces = os.networkInterfaces();
                 if (Object.keys(ifaces).some(ifname => {
-                    return ifaces[ifname].filter(iface => {
-                        return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
-                    }).length > 0;
-                }))
+                        return ifaces[ifname].filter(iface => {
+                                return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
+                            }).length > 0;
+                    }))
                     res.send("<html><body>Form Submitted</body></html>");
                 else
                     res.status(401).send("<html><body>Not the right input</body></html>");
@@ -240,7 +235,6 @@ exports.init = function (app, daoManager) {
             res.status(401).send("<html><body>Not the right input</body></html>");
         }
     });
-
 
 
 };

@@ -13,6 +13,11 @@ const actionMapping: IActionMapping = {
     }
 };
 
+const urlMap = {
+    "cde": "/removeCdeClassification/",
+    "form": "/removeFormClassification/"
+};
+
 @Component({
     selector: "cde-admin-item-classification",
     providers: [NgbActiveModal],
@@ -84,11 +89,10 @@ export class ClassificationComponent {
     deleteClassification() {
         let deleteBody = {
             categories: this.deleteClassificationArray,
-            cdeId: this.elt._id,
+            eltId: this.elt._id,
             orgName: this.deleteOrgName
         };
-        this.http.delete("/classification/" + this.elt.elementType,
-            new RequestOptions({body: deleteBody, method: 3})).subscribe(
+        this.http.post(urlMap[this.elt.elementType], deleteBody).subscribe(
             () => {
                 this.modalRef.close("success");
             },

@@ -11,6 +11,10 @@ const actionMapping: IActionMapping = {
         }
     }
 };
+const urlMap = {
+    "cde": "/addCdeClassification/",
+    "form": "/addFormClassification/"
+};
 @Component({
     selector: "cde-classify-item-modal",
     templateUrl: "classifyItemModal.component.html",
@@ -82,19 +86,23 @@ export class ClassifyItemModalComponent {
     updateClassificationLocalStorage(item) {
         let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
         if (!recentlyClassification) recentlyClassification = [];
-        recentlyClassification = recentlyClassification.filter(o=>JSON.stringify(o) !== JSON.stringify(item));
+        recentlyClassification = recentlyClassification.filter(o=> {
+            if (o.cdeId) o.eltId = o.cdeId;
+            return JSON.stringify(o) !== JSON.stringify(item)
+        });
         recentlyClassification.unshift(item);
         this.localStorageService.set("classificationHistory", recentlyClassification);
     }
 
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
+        classificationRecentlyAdd.eltId = this.elt._id;
         //noinspection TypeScriptValidateTypes
-        this.http.post("/classification/" + this.elt.elementType, classificationRecentlyAdd).map(res => res.json()).subscribe(
+        this.http.post(urlMap[this.elt.elementType], classificationRecentlyAdd).subscribe(
             () => {
                 this.updateClassificationLocalStorage(classificationRecentlyAdd);
                 this.modalRef.close("success")
             }, err => {
-                this.alert.addAlert("danger", err);
+                this.alert.addAlert("danger", err._body);
                 this.modalRef.close("error");
             });
     }
@@ -110,20 +118,16 @@ export class ClassifyItemModalComponent {
         }
         let postBody = {
             categories: classificationArray,
-            cdeId: this.elt._id,
+            eltId: this.elt._id,
             orgName: this.selectedOrg
         };
         //noinspection TypeScriptValidateTypes
-        this.http.post("/classification/" + this.elt.elementType, postBody).map(res => res.json()).subscribe(
-            (res) => {
-                if (res.code === 403 && res.msg === "Classification Already Exists") {
-                    this.modalRef.close("exists");
-                } else {
-                    this.updateClassificationLocalStorage(postBody);
-                    this.modalRef.close("success")
-                }
+        this.http.post(urlMap[this.elt.elementType], postBody).subscribe(
+            () => {
+                this.updateClassificationLocalStorage(postBody);
+                this.modalRef.close("success")
             }, err => {
-                this.alert.addAlert("danger", err);
+                this.alert.addAlert("danger", err._body);
                 this.modalRef.close("error");
             });
     }
