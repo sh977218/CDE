@@ -11,7 +11,7 @@ import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
 import { NativeTableComponent } from "./nativeRender/nativeTable.component";
-import { AdminModule } from "../../admin/public/admin.module";
+import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { SortableModule } from "ng2-bootstrap/index";
 
 @NgModule({
@@ -20,7 +20,7 @@ import { SortableModule } from "ng2-bootstrap/index";
         FormsModule,
         NgbModule,
         SortableModule.forRoot(),
-        AdminModule
+        AdminItemModule
     ],
     declarations: [
         MergeFormComponent,

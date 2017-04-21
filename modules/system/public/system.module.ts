@@ -14,7 +14,7 @@ import { RegistrationComponent } from "./components/adminItem/registration.compo
 import { HomeComponent } from "./components/home/home.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
-import { AdminModule } from "../../admin/public/admin.module";
+import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { JsonpModule } from "@angular/http";
@@ -27,7 +27,7 @@ import { JsonpModule } from "@angular/http";
         Select2Module,
         NgbModule,
         JsonpModule,
-        AdminModule
+        AdminItemModule
     ],
     declarations: [
         CdeAccordionListDirective,

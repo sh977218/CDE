@@ -90,7 +90,8 @@ currentLevel.push(new mongoose.Schema({}, {strict: false}));
 var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formJson = {
-    tinyId: {type: String, index: true}
+    elementType: {type: String, default: 'form'}
+    , tinyId: {type: String, index: true}
     , naming: [sharedSchemas.namingSchema]
     , stewardOrg: {
         name: String
@@ -135,7 +136,7 @@ exports.formJson = {
         , displayValues: {type: Boolean}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
-        , displayType: {type: String, enum: ['Dynamic', 'Follow-up']}
+        , displayType: {type: String, enum: ['Dynamic', 'Follow-up'], default: 'Dynamic'}
         , numberOfColumns: {type: Number, min: 1, max: 6}
         , displayInvisible: {type: Boolean}
         , repeatFormat: {type: String, default: ''}

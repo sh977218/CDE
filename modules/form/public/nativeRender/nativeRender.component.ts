@@ -24,7 +24,7 @@ export class NativeRenderComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.eltLoaded)
+        if (this.eltLoaded && this.eltLoaded.promise)
             this.eltLoaded.promise.then(() => {
                 this.load();
             });
@@ -33,7 +33,7 @@ export class NativeRenderComponent implements OnInit {
     }
     private load() {
         this.nativeRenderService.elt = this.elt;
-        this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt.formElements)});
+        this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         this.nativeRenderService.setSelectedProfile(this.profile);
 
         if (!this.nativeRenderService.elt.formInput)

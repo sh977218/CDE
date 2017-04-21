@@ -229,35 +229,20 @@ export class NativeRenderService {
     }
 
     checkboxOnChange($event: any, model: any, value: any) {
-        if (!Array.isArray(model.answer))
-            model.answer = [];
+        model = NativeRenderService.checkboxNullCheck(model);
         if ($event.target.checked)
             model.answer.push(value);
         else
             model.answer.splice(model.answer.indexOf(value), 1);
     }
     checkboxIsChecked(model: any, value: any) {
-        if (!Array.isArray(model.answer))
-            model.answer = [];
+        model = NativeRenderService.checkboxNullCheck(model);
         return (model.answer.indexOf(value) !== -1);
     }
-
-    checkboxOnChangeRepeat($event: any, model: any, value: any, i) {
-        NativeRenderService.checkboxModelExistsRepeat(model, i);
-        if ($event.target.checked)
-            model.answer[i].push(value);
-        else
-            model.answer[i].splice(model.answer.indexOf(value), 1);
-    }
-    checkboxIsCheckedRepeat(model: any, value: any, i) {
-        NativeRenderService.checkboxModelExistsRepeat(model, i);
-        return (model.answer[i].indexOf(value) !== -1);
-    }
-    static checkboxModelExistsRepeat(model: any, i) {
+    static checkboxNullCheck(model: any) {
         if (!Array.isArray(model.answer))
             model.answer = [];
-        if (model.answer.length <= i || !Array.isArray(model.answer[i]))
-            model.answer[i] = [];
+        return model;
     }
 
     static transformFormToInline(form) {
@@ -418,57 +403,113 @@ export class NativeRenderService {
         return !!e.subQuestions;
     }
 
-    static flattenForm(formElements) {
+    static flattenForm(elt) {
         let last_id = 0;
-        let result = [];
-        let questions = [];
-        flattenFormSection(formElements, []);
-        return result;
+        let startSection = (elt.formElements && (elt.formElements.length > 1 || elt.formElements.length === 0) ? elt : elt.formElements[0]);
+        return flattenFormSection(startSection, [startSection.label], "", "");
 
         function createId() {
             return "q" + ++last_id;
         }
 
-        function flattenFormSection(formElements, section) {
-            formElements && formElements.forEach(function (fe) {
-                flattenFormFe(fe, section.concat(fe.label));
-            });
-            flattenFormPushQuestions(section);
+        function flattenFormSection(fe, sectionHeading, sectionName, repeatNum) {
+            function addSection(repeatSection, questions) {
+                if (questions.length) {
+                    repeatSection.push({
+                        "section": sectionHeading[sectionHeading.length - 1] + repeatNum,
+                        "questions": questions
+
+                    });
+                    questions = [];
+                }
+                return questions;
+            }
+            let repeats = NativeRenderService.getRepeatNumber(fe);
+            let repeatSection = [];
+            let questions = [];
+            let output: any;
+            for (let i = 0; i < repeats; i++) {
+                if (repeats > 1)
+                    repeatNum = " #" + i;
+                fe.formElements.forEach( feIter => {
+                    output = flattenFormFe(feIter, sectionHeading.concat(feIter.label), sectionName + (repeats > 1 ? i + "-" : ""), repeatNum);
+
+                    if (output.length !== 0) {
+                        if (typeof output[0].section !== "undefined" && typeof output[0].questions !== "undefined") {
+                            questions = addSection(repeatSection, questions);
+                            repeatSection = repeatSection.concat(output);
+                        } else
+                            questions = questions.concat(output);
+                    }
+                });
+                questions = addSection(repeatSection, questions);
+            }
+            return repeatSection;
         }
 
-        function flattenFormQuestion(fe, section) {
-            fe.questionId = createId();
-            let q: any;
-            q = {
-                "question": fe.label,
-                "name": fe.questionId,
-                "ids": fe.question.cde.ids,
-                "tinyId": fe.question.cde.tinyId
-            };
-            if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
-            questions.push(q);
+        function flattenFormQuestion(fe, sectionHeading, sectionName, repeatNum) {
+            let questions = [];
+            if (!fe.questionId)
+                fe.questionId = createId();
+            let repeats = NativeRenderService.getRepeatNumber(fe);
+            for (let i = 0; i < repeats; i++) {
+                let q: any = {
+                    "question": fe.label,
+                    "name": sectionName + (repeats > 1 ? i + "-" : "") + fe.questionId,
+                    "ids": fe.question.cde.ids,
+                    "tinyId": fe.question.cde.tinyId
+                };
+                if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
+                questions.push(q);
+            }
             fe.question.answers && fe.question.answers.forEach(function (a) {
                 a.subQuestions && a.subQuestions.forEach(function (sq) {
-                    flattenFormFe(sq, section);
+                    questions = questions.concat(flattenFormFe(sq, sectionHeading, sectionName, repeatNum));
                 });
             });
+            return questions;
         }
 
-        function flattenFormFe(fe, section) {
-            if (fe.elementType === "question") {
-                flattenFormQuestion(fe, section);
-            }
-            if (fe.elementType === "section" || fe.elementType === "form") {
-                flattenFormPushQuestions(section);
-                flattenFormSection(fe.formElements, section);
+        function flattenFormFe(fe, sectionHeading, sectionName, repeatNum) {
+            if (fe.elementType === "question")
+                return flattenFormQuestion(fe, sectionHeading, sectionName, repeatNum);
+            if (fe.elementType === "section" || fe.elementType === "form")
+                return flattenFormSection(fe, sectionHeading, sectionName, repeatNum);
+        }
+    }
+
+    static getFirstQuestion(fe): any {
+        let elem = fe;
+        let firstQuestion = null;
+        while (elem) {
+            if (elem.elementType !== "question") {
+                if (!elem.formElements && elem.formElements.length > 0)
+                    break;
+                elem = elem.formElements[0];
+            } else {
+                firstQuestion = elem;
+                break;
             }
         }
 
-        function flattenFormPushQuestions(section) {
-            if (questions.length) {
-                result.push({"section": section[section.length - 1], "questions": questions});
-                questions = [];
+        if (!firstQuestion || firstQuestion.question.datatype !== "Value List")
+            throw fe.label + " First Question Value List is not available.";
+
+        return firstQuestion;
+    }
+
+    static getRepeatNumber(fe) {
+        if (fe.repeat) {
+            if (fe.repeat[0] === "F") {
+                let firstQ = NativeRenderService.getFirstQuestion(fe);
+                if (firstQ && firstQ.question.answers)
+                    return firstQ.question.answers.length;
+                return 0;
+            } else {
+                let maxValue = parseInt(fe.repeat);
+                return (maxValue >= 0 ? maxValue : 10);
             }
         }
+        return 1;
     }
 }
