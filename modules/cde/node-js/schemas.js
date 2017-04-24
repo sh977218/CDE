@@ -13,25 +13,25 @@ var conceptSchema = new mongoose.Schema({
 var derivationRuleSchema = new mongoose.Schema(
     {
         name: String,
-        inputs: {type: [String], index: true},
-        outputs: [String],
+        inputs: {type: [String], index: true, description: "List of inputs to the rule"},
+        outputs: {type: [String], description: "list of outputs for the rule. "},
         ruleType: {type: String, enum: ['score', 'panel']},
         formula: {type: String, enum: ['sumAll', 'mean']}
     }, {_id: true}
 );
 
 var deJson = {
-    elementType: {type: String, default: 'cde'}
-    , naming: [sharedSchemas.namingSchema]
-    , source: String
-    , sources: [sharedSchemas.sourceSchema]
-    , origin: String
+    elementType: {type: String, default: 'cde', description: "This value is always 'cde'"}
+    , naming: {type: [sharedSchemas.namingSchema], description: "Anything used to describe this CDE in spoken language goes here"}
+    , source: {type: String, description: "This field is replaced with sources"}
+    , sources: {type: [sharedSchemas.sourceSchema], decription: "If the CDE was imported from one or more systems, we would call the system a source"}
+    , origin: {type: String, description: "The origin, see examples of origin"}
     , stewardOrg: {
-        name: String
+        name: {type: String, description: "The steward may be able to modify the CDE"}
     }
     , created: Date
     , updated: {type: Date, index: true}
-    , imported: Date
+    , imported: {type: Date, description: "If imported from a source, whether or not updated"}
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
@@ -40,7 +40,7 @@ var deJson = {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , tinyId: {type: String, index: true}
+    , tinyId: {type: String, index: true, description: "This ID is the same for all versions of the CDE."}
     , version: String
     , dataElementConcept: {
         concepts: [conceptSchema]
@@ -59,50 +59,48 @@ var deJson = {
         , identifiers: [sharedSchemas.idSchema]
         , ids: [sharedSchemas.idSchema]
         , definition: String
-        , uom: String
+        , uom: {type: String, description: "Unit of Measure"}
         , vsacOid: String
-        , datatype: String
+        , datatype: {type: String, description: "Can be 'Value List' or any other datatype. If Value List, then another datatype is described."}
         , datatypeText: {
-            minLength: Number
-            , maxLength: Number
-            , regex: String
-            , rule: String
+            minLength: {type: Number, description: "To indicate limits on length"}
+            , maxLength: {type: Number, description: "To indicate limits on length"}
+            , regex: {type: String, description: "To indicate a regular expression that someone may want to match on"}
+            , rule: {type: String, description: "Any rule may go here"}
         }
         , datatypeNumber: {
             minValue: Number
             , maxValue: Number
-            , precision: Number
+            , precision: {type: Number, description: "Any precision for this number. Typically an integer for a float"}
         }
         , datatypeDate: {
-            format: String
+            format: {type: String, description: "Any date format that someone may want to enforce"}
         }
         , datatypeTime: {
-            format: String
+            format: {type: String, description: "Any format that someone may want to enforce"}
         }
         , datatypeExternallyDefined: {
-            link: String
+            link: {type: String, description: "a link to en external source. Typically a URL"}
             , description: String
-            , descriptionFormat: String
+            , descriptionFormat: {type: String, description: "if 'html', then parse with HTML"}
         }
         , datatypeValueList: {
-            datatype: String
+            datatype: {type: String, description: "Any datatype for a value list, typically string or number"}
         }
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
     , history: [mongoose.Schema.Types.ObjectId]
-    , changeNote: String
-    , lastMigrationScript: String
+    , changeNote: {type: String, description: "Used for help with changes"}
+    , lastMigrationScript: {type: String, description: "Not typically used, but may be present. Can be ignored"}
     , registrationState: sharedSchemas.registrationStateSchema
     , classification: [sharedSchemas.classificationSchema]
     , properties: [sharedSchemas.propertySchema]
     , ids: [sharedSchemas.idSchema]
     , dataSets: [sharedSchemas.dataSetSchema]
-    , mappingSpecifications: [
-        {content: String, spec_type: String, script: String, _id: false}
-    ]
+    , mappingSpecifications: {type: [{content: String, spec_type: String, script: String, _id: false}], descrtion: "Deprecated"}
     , comments: [sharedSchemas.commentSchema]
-    , archived: {type: Boolean, default: false, index: true}
-    , forkOf: String
+    , archived: {type: Boolean, default: false, index: true, description: "false for previous versions of CDEs"}
+    , forkOf: {type: String, description: "May point to a tinyID if the CDE is a fork"}
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]

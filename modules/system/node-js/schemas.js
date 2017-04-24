@@ -30,13 +30,13 @@ schemas.permissibleValueSchema = new mongoose.Schema({
 
 schemas.sourceSchema = new mongoose.Schema({
     sourceName: String,
-    created: Date,
-    updated: Date,
-    registrationStatus: String,
-    datatype: String,
+    created: {type: Date, description: "May reflect the date at which a record was created in a source"},
+    updated: {type: Date, description: "May reflect the date at which a record was updated in a source"},
+    registrationStatus: {type: String, description: "May contain the source's registration status"},
+    datatype: {type: String, description: "May contain the source datatype"},
     copyright: {
-        value: String,
-        valueFormat: String
+        value: {type: String, description: "Content of a copyright statement"},
+        valueFormat: {type: String, description: "If 'html', interpret as HTML"}
     }
 }, {_id: false});
 
