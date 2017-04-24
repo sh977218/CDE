@@ -152,7 +152,7 @@ exports.removeAttachment = function (req, res, dao) {
         if (err) {
             return res.send(err);
         }
-        var fileid = elt.attachments[req.body.index].fileid;
+        let fileid = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
 
         elt.save(function (err) {

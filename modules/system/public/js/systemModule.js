@@ -422,16 +422,19 @@ angular.module('systemModule').directive('cdeDailyUsage', downgradeComponent({co
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
 
-import {IdentifiersComponent} from "../../../admin/public/components/identifiers.component";
+import {IdentifiersComponent} from "../../../adminItem/public/components/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({component: IdentifiersComponent, inputs: ['elt'], outputs: []}));
 
-import {PropertiesComponent} from "../../../admin/public/components/properties.component";
+import {AttachmentsComponent} from "../../../adminItem/public/components/attachments/attachments.component";
+angular.module('systemModule').directive('cdeAdminItemAttachments', downgradeComponent({component: AttachmentsComponent, inputs: ['elt'], outputs: []}));
+
+import {PropertiesComponent} from "../../../adminItem/public/components/properties.component";
 angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComponent({component: PropertiesComponent, inputs: ['elt'], outputs: []}));
 
-import {NamingComponent} from "../../../admin/public/components/naming.component";
+import {NamingComponent} from "../../../adminItem/public/components/naming.component";
 angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({component: NamingComponent, inputs: ['elt'], outputs: []}));
 
-import {ReferenceDocumentComponent} from "../../../admin/public/components/referenceDocument.component";
+import {ReferenceDocumentComponent} from "../../../adminItem/public/components/referenceDocument.component";
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({component: ReferenceDocumentComponent, inputs: ['elt'], outputs: []}));
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";

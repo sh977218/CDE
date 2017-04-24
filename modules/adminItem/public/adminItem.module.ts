@@ -2,10 +2,11 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
-import { IdentifiersComponent } from "../../admin/public/components/identifiers.component";
-import { PropertiesComponent } from "../../admin/public/components/properties.component";
-import { NamingComponent } from "../../admin/public/components/naming.component";
-import { ReferenceDocumentComponent } from "../../admin/public/components/referenceDocument.component";
+import { AttachmentsComponent } from "./components/attachments/attachments.component";
+import { IdentifiersComponent } from "./components/identifiers.component";
+import { PropertiesComponent } from "./components/properties.component";
+import { NamingComponent } from "./components/naming.component";
+import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 
@@ -16,6 +17,7 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         Select2Module
     ],
     declarations: [
+        AttachmentsComponent,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
@@ -29,6 +31,7 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,
+        AttachmentsComponent
     ],
     exports: [
         InlineEditDirective,
@@ -41,5 +44,5 @@ import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } 
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AdminModule {
+export class AdminItemModule {
 }
