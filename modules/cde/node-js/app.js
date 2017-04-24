@@ -509,8 +509,8 @@ exports.init = function (app, daoManager) {
     });
 
 
-    let uniqueM = require('mongoose').constructor();
-    require('mongoose-schema-jsonschema')(uniqueM);
+    // let uniqueM = require('mongoose').constructor();
+    require('mongoose-schema-jsonschema')(require('mongoose'));
 
     app.get('/schema/cde', (req, res) => {
         res.send(jsonSchema(mongo_cde.DataElement));
