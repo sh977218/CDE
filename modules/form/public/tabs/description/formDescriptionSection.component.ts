@@ -1,26 +1,48 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 
 @Component({
     selector: "cde-form-description-section",
     templateUrl: "formDescriptionSection.component.html"
 })
-export class FormDescriptionSectionComponent {
-    @Input() parent: any;
-    @Input() section: any;
+export class FormDescriptionSectionComponent implements OnInit {
+    @Input() node: any;
     @Input() preId: string;
     @Input() canCurate: boolean;
     @Input() inScoreCdes: any;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
+    @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
+    @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
+
+    parent: any;
+    section: any;
     repeatOptions = [
         {label: "", value: ""},
         {label: "Set Number of Times", value: "N"},
         {label: "Over first question", value: "F"}
     ];
 
-    constructor() {
+    constructor() {}
+
+    ngOnInit() {
+        this.section = this.node.data;
+        this.parent = this.node.parent.data;
         this.section.repeatOption = this.getRepeatOption(this.section);
         this.section.repeatNumber = this.getRepeatNumber(this.section);
+        if (!this.section.instructions)
+            this.section.instructions = {};
+        if (!this.section.skipLogic)
+            this.section.skipLogic = {};
+    }
+
+    getTemplate() {
+        return (this.section.elementType === "section" ? this.formDescriptionSectionTmpl : this.formDescriptionFormTmpl);
+    }
+
+    removeNode(node) {
+        node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
+        node.treeModel.update();
+        this.stageElt.emit();
     }
 
     getRepeatOption(section) {

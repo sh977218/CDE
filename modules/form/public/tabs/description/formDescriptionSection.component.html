@@ -1,138 +1,55 @@
-<div class="section_view">
-    <div>
-        <div class="questionSectionTitle" (click)="section.updatedSkipLogic = false">
-            <span *ngIf="canCurate" class="ib" style="vertical-align: top">
-                <i class="fa fa-arrows fa-lg question-move-handle"></i>
-                <i *ngIf="section.skipLogic.condition.length > 0" class="fa fa-cog"
-                   [ngClass]="{'fa-spin': section.updatedSkipLogic}"
-                   title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
-            </span>
+<div class="questionSectionTitle" (click)="section.updatedSkipLogic = false">
+    <span *ngIf="canCurate" class="ib" style="vertical-align: top">
+        <i class="fa fa-arrows fa-lg question-move-handle"></i>
+        <i *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'section'" class="fa fa-cog"
+           [ngClass]="{'fa-spin': section.updatedSkipLogic}"
+           title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
+        <i *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'form'" class="fa fa-cog"
+           [ngClass]="{'fa-spin': section.updatedSkipLogic}"
+           title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
+    </span>
 
-            <inline-edit class="section_title ib" style="margin-left: 5px; width: 62%"
-                         [(model)]="section.label" [isAllowed]="canCurate && section.edit" (onOk)="stageElt()"></inline-edit>
+    <inline-edit *ngIf="section.elementType === 'section'"
+                 class="section_title ib" style="margin-left: 5px; width: 62%"
+                 [(model)]="section.label" [isAllowed]="canCurate && section.edit"
+                 (onOk)="stageElt.emit()"></inline-edit>
+    <span *ngIf="section.elementType === 'form'"
+          class="section_title ib" style="margin-left: 5px; width: 62%">
+        Embedded Form:
+        <inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"
+                     [isAllowed]="canCurate && section.edit" (onOk)="stageElt.emit()">{{section.label}}</inline-edit>
+    </span>
 
-            <span *ngIf="canCurate" class="pull-right editIconDiv">
-                <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
-                   (click)="section.edit = true"></i>
-                <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
-                   (click)="section.edit = false"></i>
-                <i class="fa fa-trash-o hand-cursor" title="Remove Section" (click)="removeElt(parent, $index)"></i>
-            </span>
-        </div>
-
-        <div *ngIf="!(canCurate && section.edit)">
-            <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
-                  class="label label-primary formViewSummaryLabel">
-                Repeats: {{getRepeatLabel(section)}}
-            </span>
-            <span *ngIf="section.skipLogic.condition" class="label label-warning formViewSummaryLabel">
-                Show if: {{section.skipLogic.condition}}
-            </span>
-            <div *ngIf="section.instructions.value" class="questionInstruction">
-                <span class="questionSectionLabel">Instructions:</span>
-                <span [textContent]="section.instructions.value"></span>
-            </div>
-        </div>
-
-        <div *ngIf="canCurate && section.edit">
-            <div class="section_instruction">
-                <span class="questionSectionLabel">Instructions:</span>
-                <inline-area-edit [inlineAreaVisibility]="inlineAreaEditVisibility"
-                                  [(model)]="section.instructions.value" [defFormat]="section.instructions.valueFormat"
-                                  [isAllowed]="canCurate && section.edit" (onOk)="stageElt()"></inline-area-edit>
-            </div>
-            <div class="questionSectionLabel section_cardinality">Repeats:
-                <select class="form-control" [(ngModel)]="section.repeatOption" (change)="setRepeat(section);stageElt()">
-                    <option *ngFor="let item of repeatOptions" [value]="item.value" [textContent]="item.label"></option>
-                </select>
-            </div>
-            <div *ngIf="section.repeatOption === 'N'"
-                 class="questionSectionLabel section_cardinality">Repeat Maximum Times:
-                <input type="number" class="form-control" [(ngModel)]="section.repeatNumber" (change)="setRepeat(section);stageElt()"/>
-            </div>
-            <div class="questionSectionLabel">Show if:
-                <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic.skipLogicError}">
-                    <input [disabled]="!(parent.formElements.length > 1 && canCurate && section.edit)"
-                           type="text" [(ngModel)]="section.skipLogic.condition"
-                           class="form-control skipLogicCondition" ng-trim="false"
-                           (change)="validateSkipLogic(section.skipLogic,parent.formElements)"
-                           uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section, $parent.$index) | filter:tokens.unmatched"
-                           typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
-                           typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
-                           typeahead-append-to-body="true"/>
-                    <span [textContent]="section.skipLogic.skipLogicError"></span>
-                </span>
-            </div>
-        </div>
-    </div>
-    <div style="background-color: white">
-        <div *ngFor="let formElement of section.formElements; sectionIndex = index">
-            <cde-form-description-question *ngIf="formElement.elementType === 'question'"
-                                           id="question_{{preId}}_{{sectionIndex}}"
-                                           [parent]="section" [question]="formElement"></cde-form-description-question>
-            <cde-form-description-section *ngIf="formElement.elementType === 'section'" id="section_{{preId}}"
-                                          [parent]="section" [section]="formElement"
-                                          [preId]="preId + '_'+ sectionIndex"></cde-form-description-section>
-            <cde-form-description-section *ngIf="formElement.elementType === 'form'" id="inform_{{preId}}"
-                                          [parent]="section" [section]="formElement"
-                                          [preId]="preId + '_'+ sectionIndex"></cde-form-description-section>
-        </div>
-        <div *ngIf="canCurate && section.formElements.length === 0 && elt.formElements.length > 0">
-            <i class='fa fa-exclamation-triangle'></i>To add questions, search for and drag them here.
-            <button id="startAddingQuestions_section_{{sectionIndex}}"
-                    (click)="setToAddCdeMode()" class="btn btn-default hidden-sm">
-                <span [hidden]="addMode === 'cde'"><i
-                        class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
-                <span [hidden]="addMode !== 'cde'"><i
-                        class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
-            </button>
-            <button id="startAddingQuestions_form_{{sectionIndex}}"
-                    (click)="setToAddFormMode()" class="btn btn-default hidden-sm">
-                <span [hidden]="addMode === 'form'"><i
-                        class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
-                <span [hidden]="addMode !== 'form'"><i
-                        class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
-            </button>
-        </div>
-    </div>
+    <span *ngIf="canCurate" class="pull-right editIconDiv">
+        <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section" (click)="section.edit = true"></i>
+        <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section" (click)="section.edit = false"></i>
+        <i *ngIf="!section.confirmDelete" (click)="section.confirmDelete = true"
+           class="fa fa-trash-o hand-cursor" title="Remove Section"></i>
+        <span *ngIf="section.confirmDelete" class="badge">Confirm Delete
+            <span class="btn-default fa fa-check panel-badge-btn" (click)="removeNode(node)"
+                  id="confirmRemoveProperty-{{i}}" title="Delete" href=""></span>
+            <span class="btn-default fa fa-times panel-badge-btn" (click)="section.confirmDelete = false"
+                  id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
+        </span>
+    </span>
 </div>
 
-<template #formDescriptionForm>
-    <div class="form_view">
+<template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: section, canCurate: canCurate }"></template>
+
+<template #formDescriptionSectionTmpl let-canCurate>
+    <div class="section_view">
         <div>
-            <div class="questionSectionTitle" (click)="section.updatedSkipLogic = false">
-            <span *ngIf="canCurate" class="ib" style="vertical-align: top">
-                <i class="fa fa-arrows question-move-handle"></i>
-                <i *ngIf="section.skipLogic.condition.length > 0" class="fa fa-cog"
-                   [ngClass]="{'fa-spin': section.updatedSkipLogic}"
-                   title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
-            </span>
-                <span class="section_title ib" style="margin-left: 5px; width: 62%">
-                Embedded Form:
-                <inline-edit id="innerForm_label_edit_icon_{{formElement.label}}" [(model)]="formElement.label"
-                             [isAllowed]="canCurate && section.edit" (onOk)="stageElt()">{{formElement.label}}</inline-edit>
-            </span>
-                <span *ngIf="canCurate" class="pull-right editIconDiv">
-                <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
-                   (click)="section.edit = true"></i>
-                <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
-                   (click)="section.edit = false"></i>
-                <i class="fa fa-trash-o hand-cursor" title="Remove Section" (click)="removeElt(parent, $index)"></i>
-            </span>
-            </div>
-
-
             <div *ngIf="!(canCurate && section.edit)">
-            <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
-                  class="label label-primary formViewSummaryLabel">
-                Repeats: {{getRepeatLabel(section)}}
-            </span>
-                <span *ngIf="section.skipLogic.condition" class="label label-warning formViewSummaryLabel">
-                Show if: {{section.skipLogic.condition}}
-            </span>
-                <div *ngIf="section.instructions.value" class="questionInstruction">
+                <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
+                      class="label label-primary formViewSummaryLabel">
+                    Repeats: {{getRepeatLabel(section)}}
+                </span>
+                <span *ngIf="section.skipLogic?.condition" class="label label-warning formViewSummaryLabel">
+                    Show if: {{section.skipLogic.condition}}
+                </span>
+                <div *ngIf="section.instructions?.value" class="questionInstruction">
                     <span class="questionSectionLabel">Instructions:</span>
-                    <span [textContent]="formElement.instructions.value"></span>
+                    <span [textContent]="section.instructions.value"></span>
                 </div>
             </div>
 
@@ -140,22 +57,96 @@
                 <div class="section_instruction">
                     <span class="questionSectionLabel">Instructions:</span>
                     <inline-area-edit [inlineAreaVisibility]="inlineAreaEditVisibility"
-                                      [(model)]="formElement.instructions.value"
-                                      [defFormat]="formElement.instructions.valueFormat"
-                                      [isAllowed]="canCurate && section.edit"
-                                      (onOk)="stageElt()"></inline-area-edit>
+                                      [(model)]="section.instructions.value"
+                                      [defFormat]="section.instructions.valueFormat"
+                                      [isAllowed]="canCurate && section.edit" (onOk)="stageElt.emit()"></inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
-                    <select class="form-control" [(ngModel)]="section.repeatOption" (change)="setRepeat(section);stageElt()"
-                            ng-options="item.value as item.label for item in repeatOptions">
+                    <select class="form-control" [(ngModel)]="section.repeatOption"
+                            (change)="setRepeat(section);stageElt.emit()">
+                        <option *ngFor="let item of repeatOptions" [value]="item.value"
+                                [textContent]="item.label"></option>
                     </select>
                 </div>
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
-                    <input type="number" class="form-control" [(ngModel)]="section.repeatNumber" (change)="setRepeat(section);stageElt()"/>
+                    <input type="number" class="form-control" [(ngModel)]="section.repeatNumber"
+                           (change)="setRepeat(section);stageElt.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
-                    <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic.skipLogicError}">
+                    <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
+                        <input [disabled]="!(parent.formElements.length > 1 && canCurate && section.edit)"
+                               type="text" [(ngModel)]="section.skipLogic.condition"
+                               class="form-control skipLogicCondition" ng-trim="false"
+                               (change)="validateSkipLogic(section.skipLogic,parent.formElements)"
+                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section, $parent.$index) | filter:tokens.unmatched"
+                               typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
+                               typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
+                               typeahead-append-to-body="true"/>
+                        <span [textContent]="section.skipLogic?.skipLogicError"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div *ngIf="canCurate && section.formElements.length === 0" class="mt-1">
+                <i class='fa fa-exclamation-triangle'></i>To add questions, search for and drag them here.
+                <button id="startAddingQuestions_section_{{sectionIndex}}"
+                        (click)="setToAddCdeMode()" class="btn btn-default hidden-sm">
+                    <span [hidden]="addMode === 'cde'">
+                        <i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
+                    <span [hidden]="addMode !== 'cde'">
+                        <i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+                </button>
+                <button id="startAddingQuestions_form_{{sectionIndex}}"
+                        (click)="setToAddFormMode()" class="btn btn-default hidden-sm">
+                    <span [hidden]="addMode === 'form'">
+                        <i class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
+                    <span [hidden]="addMode !== 'form'">
+                        <i class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template #formDescriptionFormTmpl>
+    <div class="form_view">
+        <div>
+            <div *ngIf="!(canCurate && section.edit)">
+            <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
+                  class="label label-primary formViewSummaryLabel">
+                Repeats: {{getRepeatLabel(section)}}
+            </span>
+                <span *ngIf="section.skipLogic?.condition" class="label label-warning formViewSummaryLabel">
+                Show if: {{section.skipLogic.condition}}
+            </span>
+                <div *ngIf="section.instructions?.value" class="questionInstruction">
+                    <span class="questionSectionLabel">Instructions:</span>
+                    <span [textContent]="section.instructions.value"></span>
+                </div>
+            </div>
+
+            <div *ngIf="canCurate && section.edit">
+                <div class="section_instruction">
+                    <span class="questionSectionLabel">Instructions:</span>
+                    <inline-area-edit [inlineAreaVisibility]="inlineAreaEditVisibility"
+                                      [(model)]="section.instructions.value"
+                                      [defFormat]="section.instructions.valueFormat"
+                                      [isAllowed]="canCurate && section.edit"
+                                      (onOk)="stageElt.emit()"></inline-area-edit>
+                </div>
+                <div class="questionSectionLabel section_cardinality">Repeats:
+                    <select class="form-control" [(ngModel)]="section.repeatOption" (change)="setRepeat(section);stageElt.emit()">
+                        <option *ngFor="let item of repeatOptions" [value]="item.label" [textContent]="item?.value"></option>
+                    </select>
+                </div>
+                <div *ngIf="section.repeatOption === 'N'"
+                     class="questionSectionLabel section_cardinality">Repeat Maximum Times:
+                    <input type="number" class="form-control" [(ngModel)]="section.repeatNumber" (change)="setRepeat(section);stageElt.emit()"/>
+                </div>
+                <div class="questionSectionLabel">Show if:
+                    <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
                     <input [disabled]="!(parent.formElements.length > 1 && canCurate && section.edit)"
                            type="text" [(ngModel)]="section.skipLogic.condition"
                            class="form-control skipLogicCondition" ng-trim="false"
@@ -164,15 +155,15 @@
                            typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
                            typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
                            typeahead-append-to-body="true"/>
-                    <span [textContent]="section.skipLogic.skipLogicError"></span>
+                    <span [textContent]="section.skipLogic?.skipLogicError"></span>
                 </span>
                 </div>
             </div>
         </div>
-        <div style="background-color: white">
+        <div>
             <span class="questionSectionLabel">Form:</span>
-            <a href="formView?tinyId={{formElement.inForm.form.tinyId}}"
-               target="_blank"><i class="fa fa-eye"></i> {{formElement.inForm.form.name}}</a>
+            <a href="formView?tinyId={{section.inForm.form.tinyId}}"
+               target="_blank"><i class="fa fa-eye"></i> {{section.inForm.form.name}}</a>
         </div>
     </div>
 </template>

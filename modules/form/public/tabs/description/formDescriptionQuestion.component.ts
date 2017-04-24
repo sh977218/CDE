@@ -1,16 +1,24 @@
-import { Component, Inject, Input } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 @Component({
     selector: "cde-form-description-question",
     templateUrl: "formDescriptionQuestion.component.html"
 })
-export class FormDescriptionQuestionComponent {
-    @Input() parent: any;
-    @Input() question: any;
+export class FormDescriptionQuestionComponent implements OnInit {
+    @Input() node: any;
     @Input() canCurate: boolean;
     @Input() inScoreCdes: any;
+    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
+
+    question: any;
+    parent: any;
 
     constructor() {}
+
+    ngOnInit() {
+        this.question = this.node.data;
+        this.parent = this.node.parent.data;
+    }
 
     getDatatypeLabel(question) {
         let datatype = question.question.datatype;
@@ -21,4 +29,13 @@ export class FormDescriptionQuestionComponent {
         } else return "";
     }
 
+    isScore(formElt) {
+        return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
+    }
+
+    removeNode(node) {
+        node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
+        node.treeModel.update();
+        this.stageElt.emit();
+    }
 }

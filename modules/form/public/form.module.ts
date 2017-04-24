@@ -17,6 +17,7 @@ import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
 import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
+import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
 
 @NgModule({
@@ -33,6 +34,7 @@ import { FormDescriptionSectionComponent } from "./tabs/description/formDescript
         CdeSortableComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
+        FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,

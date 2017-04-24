@@ -1,18 +1,20 @@
-<div class="row mt-1" *ngIf="elt">
+<div class="row" *ngIf="elt">
     <div [ngClass]="{'col-xs-5 noRightPadding':addMode,'col-xs-12':!addMode}" class="formSectionArea">
-        <button id="addSectionTop" (click)="addSectionTop()" class="btn btn-default" *ngIf="canCurate">
-            <i class="fa fa-plus"></i> Add Section
-        </button>
-        <button id="startAddingQuestions" *ngIf="canCurate && elt.formElements.length > 0"
-                (click)="setToAddCdeMode()" class="btn btn-default hidden-xs hidden-sm">
-            <span [hidden]="addMode==='cde'"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
-            <span [hidden]="addMode!=='cde'"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
-        </button>
-        <button id="startAddingForms" *ngIf="canCurate && elt.formElements.length > 0"
-                (click)="setToAddFormMode()" class="btn btn-default hidden-xs hidden-sm">
-            <span [hidden]="addMode==='form'"><i class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
-            <span [hidden]="addMode!=='form'"><i class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
-        </button>
+        <div class="my-2">
+            <button id="addSectionTop" (click)="addSectionTop()" class="btn btn-default" *ngIf="canCurate">
+                <i class="fa fa-plus"></i> Add Section
+            </button>
+            <button id="startAddingQuestions" *ngIf="canCurate && elt.formElements.length > 0"
+                    (click)="setToAddCdeMode()" class="btn btn-default hidden-xs hidden-sm">
+                <span [hidden]="addMode==='cde'"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
+                <span [hidden]="addMode!=='cde'"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+            </button>
+            <button id="startAddingForms" *ngIf="canCurate && elt.formElements.length > 0"
+                    (click)="setToAddFormMode()" class="btn btn-default hidden-xs hidden-sm">
+                <span [hidden]="addMode==='form'"><i class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
+                <span [hidden]="addMode!=='form'"><i class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
+            </button>
+        </div>
         <div *ngIf="canCurate && elt.formElements.length > 0" class="visible-xs visible-sm">
             <div class="alert alert-danger" role="alert">
                 To add questions to this form, enlarge your browser window or use a larger device.
@@ -37,32 +39,46 @@
                      [class.tree-node-active]="node.isActive"
                      [class.tree-node-focused]="node.isFocused">
                     <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index" [node]="node.parent"></tree-node-drop-slot>
-                    <div class="node-wrapper mt-1"
-                         [style.padding-left]="node.getNodePadding()"
-                         style="border: 1px #ddd solid; background-color: #f5f5f5">
-                        <div class="node-content-wrapper w-100"
-                             (click)="node.mouseAction('click', $event)"
-                             (dblclick)="node.mouseAction('dblClick', $event)"
-                             (contextmenu)="node.mouseAction('contextMenu', $event)"
-                             (treeDrop)="node.onDrop($event)"
-                             [treeAllowDrop]="node.allowDrop"
-                             [treeDrag]="node"
-                             [treeDragEnabled]="node.allowDrag()">
-                            <tree-node-content [node]="node" [index]="index" [template]="templates.treeNodeTemplate">
-                                <template #treeNodeTemplate let-node="node" let-index="index">
-                                    <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"></i>
-                                    <span>{{ node.data.label }}</span>
-                                    <button hidden (click)="go($event)"><i ng-if="!section.edit" class="fa fa-pencil"></i>Edit</button>
-                                    <span class="right" style="font-size: 16px">
-                                        <i ng-if="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section" (click)="section.edit = true"></i>
-                                        <i class="fa fa-trash-o hand-cursor" title="Remove Section" (click)="removeElt(parent, $index)"></i>
-                                    </span>
-                                    <cde-form-description-question></cde-form-description-question>
-                                </template>
-                            </tree-node-content>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+                                <div class="node-content-wrapper w-100"
+                                     (click)="node.mouseAction('click', $event)"
+                                     (dblclick)="node.mouseAction('dblClick', $event)"
+                                     (contextmenu)="node.mouseAction('contextMenu', $event)"
+                                     (treeDrop)="node.onDrop($event)"
+                                     [treeAllowDrop]="node.allowDrop"
+                                     [treeDrag]="node"
+                                     [treeDragEnabled]="node.allowDrag()">
+                                    <tree-node-content [node]="node" [index]="index"
+                                                       [template]="templates.treeNodeTemplate">
+                                        <template #treeNodeTemplate let-node="node" let-index="index">
+                                            <cde-form-description-section
+                                                    *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
+                                                    [id]="(node.data.elementType === 'section' ? 'section_' + preId : 'inform_'+ preId)"
+                                                    [node]="node"
+                                                    [canCurate]="canCurate"
+                                                    [preId]="preId + '_'+ sectionIndex" [inScoreCdes]="inScoreCdes"
+                                                    (stageElt)="stageElt.emit()"></cde-form-description-section>
+                                            <cde-form-description-question *ngIf="node.data.elementType === 'question'"
+                                                                           id="question_{{preId}}_{{sectionIndex}}"
+                                                                           [canCurate]="canCurate"
+                                                                           [node]="node"
+                                                                           (stageElt)="stageElt.emit()"></cde-form-description-question>
+                                        </template>
+                                    </tree-node-content>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
+                            <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
+                                                                  id="question_{{preId}}_{{sectionIndex}}"
+                                                                  [canCurate]="canCurate"
+                                                                  [node]="node"
+                                                                  (stageElt)="stageElt.emit()"></cde-form-description-question-detail>
                         </div>
                     </div>
-                    <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                     <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>
                 </div>
             </template>
@@ -146,18 +162,18 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
                     <div class="col-sm-8" id="mdd_minimal">
                     <span [ngClass]="{mark: bNumberMin}">
-                        {{newQuestion.question.datatypeNumber.minValue | cdePlaceholder }}</span>
+                        {{newQuestion.question?.datatypeNumber?.minValue | cdePlaceholder }}</span>
                         <span *ngIf="bNumberMin" class="red">
-                        ( was {{ currentQuestion.question.datatypeNumber.minValue }} )</span>
+                        ( was {{ currentQuestion.question?.datatypeNumber?.minValue }} )</span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
                     <div class="col-sm-8" id="mdd_maximal">
                     <span [ngClass]="{mark: bNumberMax}">
-                        {{newQuestion.question.datatypeNumber.maxValue | cdePlaceholder }}</span>
+                        {{newQuestion.question?.datatypeNumber.maxValue | cdePlaceholder }}</span>
                         <span *ngIf="bNumberMax" class="red">
-                        ( was {{ currentQuestion.question.datatypeNumber.maxValue }} )</span>
+                        ( was {{ currentQuestion.question?.datatypeNumber?.maxValue }} )</span>
                     </div>
                 </div>
             </div>

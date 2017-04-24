@@ -3,7 +3,13 @@ import { Http, Response } from "@angular/http";
 
 @Component({
     selector: "cde-form-description",
-    templateUrl: "formDescription.component.html"
+    templateUrl: "formDescription.component.html",
+    styles: [
+        ":host >>> .panel {margin-bottom: 1px}",
+        ":host >>> .tree-children {padding-left: 0}",
+        ":host >>> .node-drop-slot {height: 10px; margin-bottom: 1px}",
+        ":host >>> .panel-badge-btn {color: white; background-color: #333}"
+    ]
 })
 export class FormDescriptionComponent implements OnInit {
     @Input() elt: any;
@@ -18,6 +24,7 @@ export class FormDescriptionComponent implements OnInit {
         allowDrop: (element, {parent, index}) => true,
         childrenField: "formElements",
         displayField: "label",
+        dropSlotHeight: 3,
         isExpandedField: "id"
     };
     id = 0;
@@ -28,7 +35,6 @@ export class FormDescriptionComponent implements OnInit {
     ngOnInit() {
         this.canCurate = this.isAllowedModel.isAllowed(this.elt);
     }
-
 
     //
     // addSectionTop() {
@@ -293,10 +299,6 @@ export class FormDescriptionComponent implements OnInit {
     //     }, 0);
     // }
     //
-    // canAddUom(question) {
-    //     return this.canCurate && (!question.question.uoms || question.question.uoms.indexOf("Please specify") < 0);
-    // };
-    //
     // addUom(question) {
     //     if (!question.question.uoms) question.question.uoms = [];
     //     question.question.uoms.push("Please specify");
@@ -320,10 +322,6 @@ export class FormDescriptionComponent implements OnInit {
     // moveElt(index, inc) {
     //     this.elt.formElements.splice(index + inc, 0, this.elt.formElements.splice(index, 1)[0]);
     //     this.stageElt.emit();
-    // };
-    //
-    // isScore(formElt) {
-    //     return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
     // };
     //
     // updateCdeVersion(question) {
