@@ -32,6 +32,8 @@ export class OrgAdminComponent implements OnInit {
                 })
         )
 
+    formatter = (result: any) => result.username;
+
     setOrgs (r)  {
         this.orgAdmins = r.orgs;
         if (this.orgAdmins && this.orgAdmins.length === 1) this.newAdmin.orgName = this.orgAdmins[0].name;
