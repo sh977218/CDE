@@ -47,7 +47,16 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             if (cb) cb();
         });
     };
-    $scope.getOrgs(); 
+    $scope.getOrgs();
+
+    $scope.getMyOrgAdmins = function() {
+        $http.get("/myOrgsAdmins").then(function(response) {
+            $scope.myOrgAdmins = response.data.orgs;
+            if ($scope.myOrgAdmins && $scope.myOrgAdmins.length > 0)
+                $scope.admin.orgName = $scope.myOrgAdmins[0].name;
+        }, function () {});
+    };
+    $scope.getMyOrgAdmins();
 
     // Retrieve orgs user is curator of
     $scope.getOrgCurators = function() {
