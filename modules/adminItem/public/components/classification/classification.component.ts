@@ -3,7 +3,7 @@ import { Http, RequestOptions } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { ClassifyItemModalComponent } from "./classifyItemModal.component";
-import { ClassifyCdesModalComponent } from "../../../../form/public/components/classifyCdesModal.component";
+import { ClassifyCdesModalComponent } from "./classifyCdesModal.component";
 
 const actionMapping: IActionMapping = {
     mouse: {

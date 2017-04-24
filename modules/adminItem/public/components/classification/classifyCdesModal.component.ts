@@ -1,7 +1,7 @@
 import { Component, Inject, Input, ViewChild, Output, EventEmitter, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, NgbProgressbar } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
@@ -20,6 +20,7 @@ const actionMapping: IActionMapping = {
 export class ClassifyCdesModalComponent implements OnInit {
 
     @ViewChild("classifyCdesContent") public classifyCdesContent: NgbModalModule;
+    @ViewChild("classifyCdeBar") public classifyCdeBar: NgbProgressbar;
     @Input() elt: any;
     @Output() updateElt = new EventEmitter();
     allCdeId = [];
@@ -28,6 +29,9 @@ export class ClassifyCdesModalComponent implements OnInit {
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView: any;
     myOrgs: any;
+    showProgressBar = false;
+    numberProcessed;
+    numberTotal;
 
     options = {
         childrenField: "elements",
@@ -49,16 +53,17 @@ export class ClassifyCdesModalComponent implements OnInit {
     }
 
     getChildren(formElements, ids) {
-        if (formElements.elementType === "section" || formElements.elementType === "form") {
-            formElements.formElements.forEach(function (e) {
-                this.getChildren(e, ids);
+        if (formElements)
+            formElements.forEach(formElement => {
+                if (formElement.elementType === "section" || formElement.elementType === "form") {
+                    this.getChildren(formElement.formElements, ids);
+                } else if (formElement.elementType === "question") {
+                    ids.push({
+                        id: formElement.question.cde.tinyId,
+                        version: formElement.question.cde.version
+                    });
+                }
             });
-        } else if (formElements.elementType === "question") {
-            ids.push({
-                id: formElements.question.cde.tinyId,
-                version: formElements.question.cde.version
-            });
-        }
     }
 
     openCdesModal() {
@@ -116,11 +121,36 @@ export class ClassifyCdesModalComponent implements OnInit {
 
     doClassifyPost(post) {
         post["elements"] = this.allCdeId;
-        this.http.post("/classification/bulk/tinyid", post).subscribe(res => {
-            console.log(res);
-        }, err => {
-            console.log(err);
-        })
+        //noinspection TypeScriptValidateTypes
+        this.http.post("/classification/bulk/tinyId", post)
+            .subscribe(res => {
+                if (res["_body"] === "Done") this.alert.addAlert("success", "finished");
+                else if (res["_body"] === "Processing") {
+                    var fn = setInterval(() => {
+                        //noinspection TypeScriptValidateTypes
+                        this.http.get("/bulkClassifyCdeStatus/" + this.elt._id).map(res => res.json())
+                            .subscribe(
+                                res => {
+                                    this.showProgressBar = true;
+                                    this.numberProcessed = res.numberProcessed;
+                                    this.numberTotal = res.numberTotal;
+                                    if (this.numberProcessed >= this.numberTotal) {
+                                        this.http.get("/resetBulkClassifyCdesStatus/" + this.elt._id)
+                                            .subscribe(res=> {
+                                                clearInterval(fn);
+                                            }, err=> {
+                                                this.alert.addAlert("danger", err);
+                                            });
+                                    }
+                                },
+                                err => {
+                                    this.alert.addAlert("danger", err);
+                                });
+                    }, 5000);
+                }
+            }, err => {
+                this.alert.addAlert("danger", err);
+            })
     }
 
     classifyItemByTree(treeNode) {

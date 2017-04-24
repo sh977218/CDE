@@ -66,7 +66,7 @@ export class ClassifyItemModalComponent {
         if (value) {
             //noinspection TypeScriptValidateTypes
             this.http.get("/org/" + value).map(res => res.json()).subscribe(
-                (res) => {
+                res => {
                     this.selectedOrg = value;
                     this.orgClassificationsTreeView = res;
                 }, () => {

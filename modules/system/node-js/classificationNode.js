@@ -43,7 +43,7 @@ exports.eltClassification = function (body, action, dao, cb) {
     };
 
     var findElements = function (err, elt) {
-        if (!elt) return;
+        if (!elt) return cb("can not elt");
         var steward = classificationShared.findSteward(elt, body.orgName);
         if (!steward) {
             mongo_data_system.orgByName(body.orgName, function (stewardOrg) {

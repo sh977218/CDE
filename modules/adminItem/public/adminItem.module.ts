@@ -13,6 +13,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageModule } from "angular-2-local-storage/dist/index";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { ClassificationComponent } from "./components/classification/classification.component";
+import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ import { ClassificationComponent } from "./components/classification/classificat
         ReferenceDocumentComponent,
         ClassificationComponent,
         ClassifyItemModalComponent,
+        ClassifyCdesModalComponent
     ],
     entryComponents: [
         IdentifiersComponent,

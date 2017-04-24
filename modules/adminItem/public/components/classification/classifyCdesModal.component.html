@@ -45,6 +45,11 @@
         </ngb-tabset>
     </div>
     <div class="modal-footer" id="newClassifyCdesModalFooter">
+        <div style="width:100%">
+            <ngb-progressbar #classifyCdeBar *ngIf="showProgressBar" type="success" [value]="numberProcessed">
+                {{numberProcessed}}/{{numberTotal}}
+            </ngb-progressbar>
+        </div>
         <button class="btn cancel" (click)="c('Close click')" id="cancelNewClassifyCdesBtn"
                 name="cancelNewClassifyCdesBtn" type="button">Close
         </button>

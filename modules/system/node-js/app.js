@@ -1,6 +1,5 @@
 var passport = require('passport')
     , mongo_data_system = require('./mongo-data')
-    , mongo_cde = require('../../cde/node-js/mongo-cde')
     , config = require('./parseConfig')
     , dbLogger = require('./dbLogger.js')
     , logging = require('./logging.js')
@@ -537,42 +536,43 @@ exports.init = function (app) {
     });
 
     // TODO this works only for CDEs. Forms TODO later.
-    app.post('/classification/bulk/tinyid', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.classification.orgName)) {
-            res.status(403).send("Not Authorized");
-            return;
+    app.post('/classification/bulk/tinyId', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(403).send("Not Authorized");
+        if (!req.body.orgName || !req.body.categories) return res.status(400).send("Bad Request");
+        let elements = req.body.elements;
+        if (elements.length <= 50)
+            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, function (err) {
+                if (err) res.status(500).send(err);
+                else res.send("Done");
+            });
+        else {
+            res.send("Processing");
+            adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
         }
-        var action = function (elt, actionCallback) {
-            var classifReq = {
-                orgName: req.body.classification.orgName
-                , categories: req.body.classification.categories
-                , tinyId: elt.id || elt
-                , version: elt.version || null
-            };
-            classificationNode.eltClassification(classifReq, classificationShared.actions.create, mongo_cde, actionCallback);
-        };
-        adminItemSvc.bulkAction(req.body.elements, action, function () {
-            var elts = req.body.elements.map(function (e) {
-                return e.id;
-            });
-            adminItemSvc.bulkAction(elts, action, function (err) {
-                if (!err) {
-                    res.send();
-                    mongo_data_system.addToClassifAudit({
-                        date: new Date()
-                        , user: {
-                            username: req.user.username
-                        }
-                        , elements: req.body.elements.map(function (e) {
-                            return {tinyId: e.id};
-                        })
-                        , action: "add"
-                        , path: [req.body.classification.orgName].concat(req.body.classification.categories)
-                    });
-                }
-                else res.status(202).send({error: {message: err}});
-            });
+        mongo_data_system.addToClassifAudit({
+            date: new Date(),
+            user: {
+                username: req.user.username
+            },
+            elements: elements,
+            action: "add",
+            path: [req.body.orgName].concat(req.body.categories)
         });
+    });
+
+    app.get("/bulkClassifyCdeStatus/:eltId", function (req, res) {
+        let formId = req.param("eltId");
+        if (!formId) return res.status(400).send("Bad Request");
+        let result = adminItemSvc.bulkClassifyCdesStatus[req.user.username + req.params.eltId];
+        if (result) res.send(result);
+        else res.send({});
+    });
+
+    app.get("/resetBulkClassifyCdesStatus/:eltId", function (req, res) {
+        let formId = req.param("eltId");
+        if (!formId) return res.status(400).send("Bad Request");
+        adminItemSvc.resetBulkClassifyCdesStatus(req.user.username + req.param("eltId"));
+        res.end();
     });
 
     app.get('/getAllUsernames', function (req, res) {
