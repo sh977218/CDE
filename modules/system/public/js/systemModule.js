@@ -342,6 +342,14 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         }
     };
 
+    isAllowedModel.hasRole = function (role) {
+        return authShared.hasRole(userResource.user, role);
+    };
+
+    isAllowedModel.isSiteAdmin = function (role) {
+        return authShared.isSiteAdmin(userResource.user);
+    };
+
     return isAllowedModel;
 }]);
 
@@ -415,6 +423,9 @@ angular.module('systemModule').directive('user-comments', downgradeComponent({co
 
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
 angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
+
+import {OrgAdminComponent} from "../components/siteAdmin/orgAdmin/orgAdmin.component";
+angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({component: OrgAdminComponent, inputs: [], outputs: []}));
 
 import {DailyUsageComponent} from "../components/siteAdmin/dailyUsage/dailyUsage.component";
 angular.module('systemModule').directive('cdeDailyUsage', downgradeComponent({component: DailyUsageComponent, inputs: [], outputs: []}));

@@ -112,22 +112,8 @@ angular.module('resourcesSystem', ['ngResource'])
                     error(response.data)
                 });
             }
-            , addOrgAdmin: function (user, success, error) {
-                $http.post('/addOrgAdmin', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
             , addOrgCurator: function (user, success, error) {
                 $http.post('/addOrgCurator', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , removeOrgAdmin: function (data, success, error) {
-                $http.post('/removeOrgAdmin', data).then(function onSuccess(response) {
                     success(response.data)
                 }, function onError(response) {
                     error(response.data)

@@ -1,0 +1,38 @@
+<form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
+    Make
+    <div class="form-group">
+        <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
+               placeholder="enter user name" [(ngModel)]="newAdmin.username"
+               [ngbTypeahead]="searchTypeahead"
+               [resultFormatter]="formatter" [inputFormatter]="formatter"  required>
+
+    </div>
+    an administrator for
+    <div class="form-group">
+        <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
+                [(ngModel)]="newAdmin.orgName" required>
+            <option value="" disabled>select organization</option>
+            <option *ngFor="let myOrgAdmin of orgAdmins" [value]="myOrgAdmin.name">{{myOrgAdmin.name}}</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" (click)="addOrgAdmin()"
+            [disabled]="!adminForm.form.valid">Make Admin</button>
+</form>
+<table class="table table-border table-responsive">
+    <tr>
+        <th>Organization Name:</th>
+        <th>Admins for this Organization:</th>
+    </tr>
+    <tr *ngFor="let orgAdmin of orgAdmins; let admIndex = index">
+        <td id="existingOrgAdminOrgName-{{orgAdmin.name}}">
+            {{orgAdmin.name}}
+        </td>
+        <td>
+            <div *ngFor="let user of orgAdmin.users; let uIndex = index">
+                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}">{{user.username}}
+                </span> <i class="fa fa-trash-o hand-cursor" (click)="removeOrgAdmin(orgAdmin.name, user._id)"
+                           id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}" title="Remove"></i>
+            </div>
+        </td>
+    </tr>
+</table>
