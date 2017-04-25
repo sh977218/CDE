@@ -16,6 +16,7 @@ import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.comp
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
+import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { JsonpModule } from "@angular/http";
 
 @NgModule({
@@ -40,6 +41,7 @@ import { JsonpModule } from "@angular/http";
         RegistrationComponent,
         UsersMgtComponent,
         DailyUsageComponent,
+        OrgAdminComponent,
         PlaceHoldEmptyPipe
     ],
     entryComponents: [
@@ -49,7 +51,8 @@ import { JsonpModule } from "@angular/http";
         LogAuditComponent,
         RegistrationComponent,
         UsersMgtComponent,
-        DailyUsageComponent
+        DailyUsageComponent,
+        OrgAdminComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
