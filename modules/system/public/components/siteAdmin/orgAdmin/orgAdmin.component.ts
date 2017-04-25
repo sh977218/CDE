@@ -24,7 +24,7 @@ export class OrgAdminComponent implements OnInit {
     }
 
     searchTypeahead = (text$: Observable<string>) =>
-        text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 ? [] :
+        text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 || !this.isAllowedModel.hasRole("OrgAuthority") ? [] :
             this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
                 .catch(() => {
                     //noinspection TypeScriptUnresolvedFunction
@@ -40,7 +40,7 @@ export class OrgAdminComponent implements OnInit {
     }
 
     getAdmins () {
-        if (this.isAllowedModel.isSiteAdmin()) {
+        if (this.isAllowedModel.hasRole("OrgAuthority")) {
             return this.http.get("/orgAdmins").map(r => r.json()).subscribe(r => this.setOrgs(r));
         } else {
             return this.http.get("/myOrgsAdmins").map(r => r.json()).subscribe(r => this.setOrgs(r));
