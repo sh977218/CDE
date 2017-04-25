@@ -17,21 +17,20 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
     String oldClassification = "OldClassification";
     String newClassification = "NewClassification";
 
-    private void addOldClassifTo(String cdeName) {
+    private void addOldClassificationTo(String cdeName) {
         goToCdeByName(cdeName);
         clickElement(By.id("classification_tab"));
         textNotPresent(newClassification);
-        findElement(By.id("addClassification")).click();
-        textPresent("by recently added");
-        findElement(By.id("selectClassificationOrg")).click();
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        clickElement(By.id("selectClassificationOrg"));
         textPresent("org / or Org");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         textPresent(oldClassification);
         textPresent(newClassification);
-        findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
+        clickElement(By.xpath("//*[@id='addClassification-OldClassification']/button"));
         closeAlert();
-        findElement(By.id("closeModal")).click();
-        textNotPresent("by recently added");
+        textNotPresent("By recently added");
     }
 
     @Test
@@ -41,7 +40,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent("Clinical Trial Mgmt Systems");
         new Select(findElement(By.id("orgToManage"))).selectByVisibleText("org / or Org");
         textPresent("org / or Org", By.id("classMgt"));
-        findElement(By.id("addClassification")).click();
+        clickElement(By.id("addClassification"));
         textPresent("Add Classification Under");
         findElement(By.id("addNewCatName")).sendKeys(oldClassification);
         clickElement(By.id("addNewCatButton"));
@@ -55,8 +54,8 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent(oldClassification);
         textPresent(newClassification);
 
-        addOldClassifTo("Gastrointestinal therapy water flush status");
-        addOldClassifTo("Gastrointestinal therapy feed tube other text");
+        addOldClassificationTo("Gastrointestinal therapy water flush status");
+        addOldClassificationTo("Gastrointestinal therapy feed tube other text");
 
         gotoClassificationMgt();
         textPresent("COPPA");
@@ -65,10 +64,10 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent(newClassification);
         findElement(By.xpath("//*[@id='classification-OldClassification-div']/div/div/span/a[@title='Reclassify']")).click();
         textPresent("Classify CDEs in Bulk");
-        findElement(By.id("selectClassificationOrg")).click();
+        clickElement(By.id("selectClassificationOrg"));
         textPresent("NINDS");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        findElement(By.xpath("//*[@id='addClassification-NewClassification']/button")).click();
+        clickElement(By.xpath("//*[@id='addClassification-NewClassification']/button"));
         clickElement(By.id("closeModal"));
 
 
@@ -82,11 +81,11 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent(newClassification);
         textPresent(oldClassification);
 
-        findElement(By.id("username_link")).click();
+        clickElement(By.id("username_link"));
         textPresent("Site Management");
-        findElement(By.linkText("Audit")).click();
+        clickElement(By.linkText("Audit"));
         textPresent("Remote Address");
-        findElement(By.linkText("Classification Audit Log")).click();
+        clickElement(By.linkText("Classification Audit Log"));
         textPresent("2 elements org / or Org > NewClassification");
     }
 
