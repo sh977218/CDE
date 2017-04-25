@@ -30,14 +30,8 @@ exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
 };
 
-exports.idExists = function (id, callback) {
-    Form.count({_id: id}).count().then(function (result) {
-        callback(result === 0);
-    });
-};
-
 exports.getStream = function (condition) {
-    return Form.find(condition).sort({_id: -1}).stream();
+    return Form.find(condition).sort({_id: -1}).cursor();
 };
 
 exports.count = function (condition, callback) {

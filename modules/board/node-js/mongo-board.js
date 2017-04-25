@@ -28,7 +28,7 @@ exports.getPrimaryName = function (elt) {
 };
 
 exports.getStream = function (condition) {
-    return PinningBoard.find(condition).sort({_id: -1}).stream();
+    return PinningBoard.find(condition).sort({_id: -1}).cursor();
 };
 
 exports.count = function (condition, callback) {

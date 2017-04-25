@@ -58,7 +58,7 @@ exports.exists = function (condition, callback) {
 };
 
 exports.getStream = function (condition) {
-    return DataElement.find(condition).sort({_id: -1}).stream();
+    return DataElement.find(condition).sort({_id: -1}).cursor();
 };
 
 exports.userTotalSpace = function (name, callback) {
