@@ -360,8 +360,8 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
 
     isAllowedModel.hideWorkingGroups = function (stewardClassifications) {
         let workingGroup = orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user);
-        let siteAdmin = userResource.user && userResource.user.siteAdmin;
-        let result = !workingGroup || siteAdmin ? true : false;
+        let siteAdmin = authShared.isSiteAdmin(userResource.user);
+        let result = !workingGroup || siteAdmin;
         return result;
     };
     return isAllowedModel;
