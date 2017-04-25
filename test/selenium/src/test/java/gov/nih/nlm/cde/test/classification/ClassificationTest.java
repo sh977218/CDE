@@ -17,7 +17,7 @@ public class ClassificationTest extends BaseClassificationTest {
 	public void addClassification() {
 		mustBeLoggedInAs("classMgtUser", "pass");
 		goToCdeByName("Surgical Procedure Other Anatomic Site Performed Indicator");
-		findElement(By.linkText("Classification")).click();
+		clickElement(By.id("classification_tab"));
 		addClassificationMethod(new String[] { "NINDS", "Disease",
 				"Myasthenia Gravis", "Classification", "Supplemental" });
 		checkRecentlyUsedClassifications(new String[] { "NINDS", "Disease",
@@ -63,7 +63,7 @@ public class ClassificationTest extends BaseClassificationTest {
 				By.id("classification-" + selector));
 		deleteClassification("classification-" + selector);
 		driver.navigate().refresh();
-		findElement(By.linkText("Classification")).click();
+		clickElement(By.id("classification_tab"));
 		Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-" + selector + "']"));
 	}
 

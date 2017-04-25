@@ -259,7 +259,7 @@ exports.init = function (app) {
             res.send(result);
         });
     });
-
+    
     app.get('/usernamesByIp/:ip', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             return mongo_data_system.usernamesByIp(req.params.ip, function (result) {

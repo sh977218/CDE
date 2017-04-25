@@ -19,7 +19,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
 
     private void addOldClassifTo(String cdeName) {
         goToCdeByName(cdeName);
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         textNotPresent(newClassification);
         findElement(By.id("addClassification")).click();
         textPresent("by recently added");
@@ -73,12 +73,12 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
 
 
         goToCdeByName("Gastrointestinal therapy water flush status");
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         textPresent(newClassification);
         textPresent(oldClassification);
 
         goToCdeByName("Gastrointestinal therapy feed tube other text");
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         textPresent(newClassification);
         textPresent(oldClassification);
 
@@ -109,7 +109,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         // Check icons don't appear on CDE detail page
         String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
         goToCdeByName(cdeName);
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         icons = driver.findElements(By.xpath("//i[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.isEmpty());
     }

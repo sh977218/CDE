@@ -18,7 +18,7 @@ public class DoNotSaveIfPendingChanges extends NlmCdeBaseTest {
         findElement(By.cssSelector("#designation_0 input")).sendKeys("[name change number 1]");
         clickElement(By.cssSelector("#designation_0 .fa-check"));
         clickElement(By.id("classification_tab"));
-        Assert.assertFalse(findElement(By.id("addClassification")).isEnabled());
+        Assert.assertFalse(findElement(By.id("openClassificationModalBtn")).isEnabled());
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("openNewPropertyModalBtn"));

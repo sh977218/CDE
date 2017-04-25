@@ -290,7 +290,7 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
 }]);
 
 
-angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
+angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
     var isAllowedModel = {};
 
     isAllowedModel.isAllowed = function (CuratedItem) {
@@ -350,6 +350,12 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         return authShared.isCuratorOf(userResource.user, orgName);
     };
 
+    isAllowedModel.hideWorkingGroups = function (stewardClassifications) {
+        let workingGroup = orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user);
+        let siteAdmin = userResource.user && userResource.user.siteAdmin;
+        let result = !workingGroup || siteAdmin ? true : false;
+        return result;
+    };
     return isAllowedModel;
 }]);
 

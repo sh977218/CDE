@@ -7,7 +7,8 @@ import org.testng.Assert;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
-        clickElement(By.cssSelector("[id^=addClassification]"));
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
         addClassificationMethodDo(categories);
     }
 
@@ -17,24 +18,18 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     private void addClassificationMethodDo(String[] categories) {
-        try {
-            new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        } catch (Exception ignored) {
-        }
-
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
-
+        String expanderStr = "";
         for (int i = 1; i < categories.length - 1; i++) {
-            clickElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link"));
+            if (i == categories.length)
+                expanderStr = expanderStr + categories[i];
+            else
+                expanderStr = expanderStr + "," + categories[i];
+            clickElement(By.id("//*[@id='" + expanderStr + "-expander']"));
         }
-        clickElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button"));
-        try {
-            closeAlert();
-        } catch (Exception ignored) {
-        }
+        clickElement(By.id(categories[0] + expanderStr + "-classifyBtn"));
 
-        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
-        hangon(3);
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
             selector += categories[i];

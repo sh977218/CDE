@@ -32,6 +32,7 @@ export class ClassifyItemModalComponent {
     myOrgs: any;
 
     options = {
+        idField: "name",
         childrenField: "elements",
         displayField: "name",
         isExpandedField: "expanded",
@@ -65,13 +66,14 @@ export class ClassifyItemModalComponent {
     onChangeOrg(value) {
         if (value) {
             //noinspection TypeScriptValidateTypes
-            this.http.get("/org/" + value).map(res => res.json()).subscribe(
-                res => {
-                    this.selectedOrg = value;
-                    this.orgClassificationsTreeView = res;
-                }, () => {
-                    this.orgClassificationsTreeView = {};
-                });
+            this.http.get("/org/" + encodeURIComponent(value)).map(res => res.json())
+                .subscribe(
+                    res => {
+                        this.selectedOrg = value;
+                        this.orgClassificationsTreeView = res;
+                    }, () => {
+                        this.orgClassificationsTreeView = {};
+                    });
         } else this.orgClassificationsTreeView = [];
     }
 

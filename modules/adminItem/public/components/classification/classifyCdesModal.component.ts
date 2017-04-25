@@ -85,13 +85,14 @@ export class ClassifyCdesModalComponent implements OnInit {
     onChangeOrg(value) {
         if (value) {
             //noinspection TypeScriptValidateTypes
-            this.http.get("/org/" + value).map(res => res.json()).subscribe(
-                (res) => {
-                    this.selectedOrg = value;
-                    this.orgClassificationsTreeView = res;
-                }, () => {
-                    this.orgClassificationsTreeView = {};
-                });
+            this.http.get("/org/" + encodeURIComponent(value)).map(res => res.json())
+                .subscribe(
+                    res => {
+                        this.selectedOrg = value;
+                        this.orgClassificationsTreeView = res;
+                    }, () => {
+                        this.orgClassificationsTreeView = {};
+                    });
         } else this.orgClassificationsTreeView = [];
     }
 
@@ -137,6 +138,7 @@ export class ClassifyCdesModalComponent implements OnInit {
                                     if (this.numberProcessed >= this.numberTotal) {
                                         this.http.get("/resetBulkClassifyCdesStatus/" + this.elt._id)
                                             .subscribe(res=> {
+                                                //noinspection TypeScriptUnresolvedFunction
                                                 clearInterval(fn);
                                             }, err=> {
                                                 this.alert.addAlert("danger", err);

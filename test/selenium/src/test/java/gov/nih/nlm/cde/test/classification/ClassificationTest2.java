@@ -15,7 +15,7 @@ public class ClassificationTest2 extends BaseClassificationTest {
     public void navigateThroughClassiftree() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("McGill Quality of Life Questionnaire (MQOL) - two day total life quality score");
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         findElement(By.id("addClassification")).click(); 
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("NINDS");
         textPresent("Domain", By.id("addClassificationModalBody"));
@@ -38,7 +38,7 @@ public class ClassificationTest2 extends BaseClassificationTest {
     public void checkDuplicatesClassification() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         textNotPresent( "Disease" ) ;
         addClassificationMethod(new String[]{"NINDS","Disease"});
         textPresent( "Disease" ) ;
