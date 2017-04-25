@@ -10,9 +10,6 @@ exports.type = "form";
 exports.name = "forms";
 
 var conn = connHelper.establishConnection(config.database.appData);
-var Form = conn.model('Form', schemas.formSchema);
-
-exports.Form = Form;
 
 schemas.formSchema.pre('save', function (next) {
     var self = this;
@@ -23,6 +20,9 @@ schemas.formSchema.pre('save', function (next) {
     }
     next();
 });
+
+var Form = conn.model('Form', schemas.formSchema);
+exports.Form = Form;
 
 exports.elastic = elastic;
 
