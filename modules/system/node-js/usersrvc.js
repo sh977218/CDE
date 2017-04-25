@@ -129,28 +129,24 @@ exports.orgCurators = function(req, res) {
 
 exports.orgAdmins = function(req, res) {
     if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-    mongo_data.managedOrgs(function(managedOrgs) {
-        var result = {"orgs": []};
-        mongo_data.orgAdmins(function(err, users) {
-            for (var i in managedOrgs) {
-                var usersList = [];
-                for (var j in users) {
-                    if (users[j].orgAdmin.indexOf(managedOrgs[i].name) > -1) {
-                        usersList.push({
-                            "username": users[j].username,
-                            "_id": users[j]._id
+
+    let result = {"orgs": []};
+    mongo_data.managedOrgs(managedOrgs => {
+        mongo_data.orgAdmins((err, users) => {
+            managedOrgs.forEach(mo => {
+                let newOrg = {"name": mo.name, "users": []};
+                result.orgs.push(newOrg);
+                // var usersList = [];
+                users.forEach(u => {
+                    if (u.orgAdmin.indexOf(mo.name) > -1) {
+                        newOrg.users.push({
+                            "username": u.username,
+                            "_id": u._id
                         });
                     }
-                }
-                if (usersList.length > 0) {
-                    result.orgs.push({
-                        "name": managedOrgs[i].name,
-                        "users": usersList
-                    });
-                }
-            }
-
-           res.send(result); 
+                });
+            });
+            res.send(result);
         });
     });
 };

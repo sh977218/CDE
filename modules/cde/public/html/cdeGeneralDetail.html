@@ -6,9 +6,9 @@
         <div ng-include="'/system/public/html/sources.html'"></div>
         <cde-registration [elt]="elt"></cde-registration>
         <div class="" ng-if="elt" role="group" aria-label="More Info">
-            <cde-linked-boards [elt]="elt"></cde-linked-boards>
-            <cde-mlt [elt]="elt"></cde-mlt>
             <cde-linked-forms [elt]="elt" [elt-type]="'cde'"></cde-linked-forms>
+            <cde-mlt [elt]="elt"></cde-mlt>
+            <cde-linked-boards [elt]="elt"></cde-linked-boards>
             <cde-datasets [elt]="elt"></cde-datasets>
         </div>
     </div>

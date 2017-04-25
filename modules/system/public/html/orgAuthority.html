@@ -1,45 +1,10 @@
 <div class="container">
-    <uib-tabset class="pt40 pb40">
+    <uib-tabset class="pt40 pb40" active="active">
 
         <div uib-tab heading="Org Admins">
-            <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
-                Make
-                <div class="form-group">
-                    <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
-                           placeholder="enter user name" ng-model="orgAdmin.username"
-                           uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
-                           typeahead-min-length="3" required>
-                </div>
-                an administrator for
-                <div class="form-group">
-                    <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
-                            ng-model="admin.orgName"
-                            ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in orgs" required>
-                        <option value="">select organization</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()"
-                        ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid"
-                >Make Admin</button>
-            </form>
-            <table class="table table-border table-responsive">
-                <tr>
-                    <th>Organization Name:</th>
-                    <th>Admins for this Organization:</th>
-                </tr>
-                <tr ng-repeat="orgAdmin in orgAdmins | orderBy:'name'">
-                    <td id="existingOrgAdminOrgName-{{orgAdmin.name}}">
-                        {{orgAdmin.name}}
-                    </td>
-                    <td>
-                        <div ng-repeat="user in orgAdmin.users">
-                                    <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}
-                                    </span> <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(orgAdmin.name, user._id)"
-                                               id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+            <div ng-if="active === 0">
+                <cde-org-admin></cde-org-admin>
+            </div>
         </div>
 
         <div uib-tab heading="Organizations" select="orgsActive=true">
