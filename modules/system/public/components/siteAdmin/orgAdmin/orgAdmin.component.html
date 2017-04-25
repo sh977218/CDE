@@ -4,7 +4,7 @@
         <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
                placeholder="enter user name" [(ngModel)]="newAdmin.username"
                [ngbTypeahead]="searchTypeahead"
-               typeahead-min-length="3" [resultFormatter]="formatter" [inputFormatter]="formatter"  required>
+               [resultFormatter]="formatter" [inputFormatter]="formatter"  required>
 
     </div>
     an administrator for
