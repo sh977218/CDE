@@ -227,8 +227,8 @@ schemas.registrationStateSchema = {
     , untilDate: Date
     , administrativeNote: String
     , unresolvedIssue: String
-    , administrativeStatus: String
-    , replacedBy: {tinyId: String}
+    , administrativeStatus: {type: String, description: "A free text status"}
+    , replacedBy: {tinyId: {type: String, description: "If this element is replaced by another."}}
 };
 
 schemas.instructionSchema = {value: String, valueFormat: String};

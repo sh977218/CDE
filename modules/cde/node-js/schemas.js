@@ -6,8 +6,8 @@ var schemas = {};
 
 var conceptSchema = new mongoose.Schema({
     name: String,
-    origin: String,
-    originId: String
+    origin: {type: String, description: "Where the concept may find its source"},
+    originId: {type: String, description: "The ID of the concept in its source"}
 }, {_id: false});
 
 var derivationRuleSchema = new mongoose.Schema(
@@ -93,17 +93,17 @@ var deJson = {
     , changeNote: {type: String, description: "Used for help with changes"}
     , lastMigrationScript: {type: String, description: "Not typically used, but may be present. Can be ignored"}
     , registrationState: sharedSchemas.registrationStateSchema
-    , classification: [sharedSchemas.classificationSchema]
-    , properties: [sharedSchemas.propertySchema]
-    , ids: [sharedSchemas.idSchema]
-    , dataSets: [sharedSchemas.dataSetSchema]
-    , mappingSpecifications: {type: [{content: String, spec_type: String, script: String, _id: false}], descrtion: "Deprecated"}
+    , classification: {type: [sharedSchemas.classificationSchema], description: "How is this element used."}
+    , properties: {type: [sharedSchemas.propertySchema], description: "All properties of this element that do not fit anywhere else."}
+    , ids: {type: [sharedSchemas.idSchema], description: "All IDs this element is known by"}
+    , dataSets: {type: [sharedSchemas.dataSetSchema], description: "A list of datasets that use this CDE"}
+    , mappingSpecifications: {type: [{content: String, spec_type: String, script: String, _id: false}], descrition: "Deprecated"}
     , comments: [sharedSchemas.commentSchema]
     , archived: {type: Boolean, default: false, index: true, description: "false for previous versions of CDEs"}
     , forkOf: {type: String, description: "May point to a tinyID if the CDE is a fork"}
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
-    , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
+    , referenceDocuments: {type: [sharedSchemas.referenceDocumentSchema], description: "Reference Documents. Typically links to external documents"}
     , derivationRules: [derivationRuleSchema]
 };
 
