@@ -88,9 +88,9 @@ export class ClassifyItemModalComponent {
     updateClassificationLocalStorage(item) {
         let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
         if (!recentlyClassification) recentlyClassification = [];
-        recentlyClassification = recentlyClassification.filter(o=> {
+        recentlyClassification = recentlyClassification.filter(o => {
             if (o.cdeId) o.eltId = o.cdeId;
-            return JSON.stringify(o) !== JSON.stringify(item)
+            return JSON.stringify(o) !== JSON.stringify(item);
         });
         recentlyClassification.unshift(item);
         this.localStorageService.set("classificationHistory", recentlyClassification);
@@ -122,7 +122,7 @@ export class ClassifyItemModalComponent {
         this.http.post(urlMap[this.elt.elementType], postBody).subscribe(
             () => {
                 this.updateClassificationLocalStorage(postBody);
-                this.modalRef.close("success")
+                this.modalRef.close("success");
             }, err => {
                 this.alert.addAlert("danger", err._body);
                 this.modalRef.close("error");

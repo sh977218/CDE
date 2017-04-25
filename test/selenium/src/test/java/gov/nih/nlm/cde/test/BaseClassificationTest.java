@@ -20,15 +20,18 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     private void addClassificationMethodDo(String[] categories) {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
+        System.out.println("categories: " + categories.toString());
         String expanderStr = "";
         for (int i = 1; i < categories.length - 1; i++) {
-            if (i == categories.length)
+            if (i == categories.length - 1)
                 expanderStr = expanderStr + categories[i];
             else
                 expanderStr = expanderStr + "," + categories[i];
+            System.out.println("i: " + i);
+            System.out.println("expanderStr: " + expanderStr);
             clickElement(By.id("//*[@id='" + expanderStr + "-expander']"));
         }
-        clickElement(By.id(categories[0] + expanderStr + "-classifyBtn"));
+        clickElement(By.id(categories[1] + expanderStr + "-classifyBtn"));
 
         String selector = "";
         for (int i = 1; i < categories.length; i++) {

@@ -23,8 +23,7 @@ public class OrgWithSpecialNames extends BaseClassificationTest {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         textPresent("Sub / Classification");
         clickElement(By.xpath("//button[@id='Sub / Classification-classifyBtn']"));
-        textPresent("Classification Added");
-        modalGone();
+        textPresent("Classification added.");
     }
 
 }

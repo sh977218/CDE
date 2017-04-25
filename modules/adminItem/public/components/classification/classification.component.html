@@ -10,12 +10,12 @@
     </button>
     <div id="classificationBody">
         <div *ngFor="let classification of elt.classification;let i = index">
-            <div *ngIf="!isAllowedModel.hideWorkingGroups(classification)" class="floatLeft boxed-div">
+            <div *ngIf="isAllowedModel.showWorkingGroups(classification)" class="floatLeft boxed-div">
                 <h4>{{classification.stewardOrg.name}}</h4>
                 <hr/>
                 <tree-root #treeRoot [nodes]="classification.elements" [options]="options">
                     <template #treeNodeTemplate let-node="node" let-index="index">
-                        <a href="{{searchByClassification(node,classification.stewardOrg.name)}}" id="{{node.path}}">
+                        <a href="{{searchByClassification(node,classification.stewardOrg.name)}}" [id]="node.path">
                             {{ node.data.name }}</a>
                         <i class="fa fa-trash-o hand-cursor" title="Remove"
                            *ngIf="isAllowedModel.isCuratorFor(classification.stewardOrg.name)"

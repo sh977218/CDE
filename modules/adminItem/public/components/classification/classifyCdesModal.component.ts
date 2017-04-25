@@ -107,9 +107,9 @@ export class ClassifyCdesModalComponent implements OnInit {
     updateClassificationLocalStorage(item) {
         let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
         if (!recentlyClassification) recentlyClassification = [];
-        recentlyClassification = recentlyClassification.filter(o=> {
+        recentlyClassification = recentlyClassification.filter(o => {
             if (o.cdeId) o.eltId = o.cdeId;
-            return JSON.stringify(o) !== JSON.stringify(item)
+            return JSON.stringify(o) !== JSON.stringify(item);
         });
         recentlyClassification.unshift(item);
         this.localStorageService.set("classificationHistory", recentlyClassification);
@@ -127,7 +127,7 @@ export class ClassifyCdesModalComponent implements OnInit {
             .subscribe(res => {
                 if (res["_body"] === "Done") this.alert.addAlert("success", "finished");
                 else if (res["_body"] === "Processing") {
-                    var fn = setInterval(() => {
+                    let fn = setInterval(() => {
                         //noinspection TypeScriptValidateTypes
                         this.http.get("/bulkClassifyCdeStatus/" + this.elt._id).map(res => res.json())
                             .subscribe(
@@ -137,10 +137,10 @@ export class ClassifyCdesModalComponent implements OnInit {
                                     this.numberTotal = res.numberTotal;
                                     if (this.numberProcessed >= this.numberTotal) {
                                         this.http.get("/resetBulkClassifyCdesStatus/" + this.elt._id)
-                                            .subscribe(res=> {
+                                            .subscribe(res => {
                                                 //noinspection TypeScriptUnresolvedFunction
                                                 clearInterval(fn);
-                                            }, err=> {
+                                            }, err => {
                                                 this.alert.addAlert("danger", err);
                                             });
                                     }
@@ -152,7 +152,7 @@ export class ClassifyCdesModalComponent implements OnInit {
                 }
             }, err => {
                 this.alert.addAlert("danger", err);
-            })
+            });
     }
 
     classifyItemByTree(treeNode) {
