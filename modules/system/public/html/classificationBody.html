@@ -2,7 +2,7 @@
     <div ng-repeat="stewardClassifications in classificationToFilter()"
          ng-hide="hideWorkingGroups(stewardClassifications)" class="pull-left boxed-div"
          id="stewardClassificationGroup-{{stewardClassifications.stewardOrg.name}}">
-        <h4 tabindex="0" id="{{stewardClassifications.stewardOrg.name}}">{{stewardClassifications.stewardOrg.name}}</h4>
+        <h4  id="{{stewardClassifications.stewardOrg.name}}">{{stewardClassifications.stewardOrg.name}}</h4>
         <hr/>
         <div class="pull-left boxed-div"
              ng-repeat="elt in stewardClassifications.elements"

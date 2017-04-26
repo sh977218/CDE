@@ -1,8 +1,8 @@
 <div ng-controller="PermissibleValuesCtrl" id="permissibleValueDiv">
-    <h3 tabindex="0">Values Allowed</h3>
+    <h3 >Values Allowed</h3>
     <dl class="dl-horizontal">
-        <dt tabindex="0">Value Type:</dt>
-        <dd tabindex="0" id="dd_valueType">
+        <dt >Value Type:</dt>
+        <dd  id="dd_valueType">
         <span ng-show="editDtMode">
             <select id="valueTypeSelect" ng-model="elt.valueDomain.datatype" ng-change="validateAndStageElt(elt);">
                 <option value="">None Selected</option>
@@ -18,21 +18,21 @@
             <i class="fa fa-trash-o" ng-click="editDtMode = false; reload({cdeId: elt._id});"></i>
         </span>
         <span ng-hide="editDtMode">
-            <i tabindex="0" title="Edit Value" role="link" ng-show="canCurate" class="fa fa-edit"
+            <i  title="Edit Value" role="link" ng-show="canCurate" class="fa fa-edit"
                ng-click="editDtMode = true" id="editDatatype"></i> {{elt.valueDomain.datatype | placeHoldEmpty}}
         </span>
         </dd>
     <span ng-show="elt.valueDomain.definition">
-        <dt tabindex="0">Instructions:</dt>
-        <dd tabindex="0" id="dd_vd_def">{{elt.valueDomain.definition}}</dd>
+        <dt >Instructions:</dt>
+        <dd  id="dd_vd_def">{{elt.valueDomain.definition}}</dd>
     </span>
-        <dt tabindex="0">Unit of Measure:</dt>
-        <dd tabindex="0" id="dd_uom">
+        <dt >Unit of Measure:</dt>
+        <dd  id="dd_uom">
             <div inline-edit id="uomEdit" model="elt.valueDomain.uom" is-allowed="canCurate"
                  on-ok="stageElt(elt)"></div>
         </dd>
-        <dt tabindex="0">Ids:</dt>
-        <dd tabindex="0">
+        <dt >Ids:</dt>
+        <dd >
             <div ng-repeat="id in elt.valueDomain.ids">{{id.source}}: {{id.id}}<span ng-if="id.version">, version: </span>{{id.version}}</div>
         </dd>
     </dl>
