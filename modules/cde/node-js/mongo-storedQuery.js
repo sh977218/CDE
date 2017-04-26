@@ -7,8 +7,6 @@ exports.type = "storedQuery";
 exports.name = "storedQueries";
 
 var conn = connHelper.establishConnection(config.database.log);
-var StoredQueryModel = conn.model('StoredQuery', schemas_system.storedQuerySchema);
-exports.StoredQueryModel = StoredQueryModel;
 
 schemas_system.storedQuerySchema.pre('save', function (next) {
     var self = this;
@@ -27,6 +25,9 @@ schemas_system.storedQuerySchema.pre('remove', function (next) {
     elastic.storedQueryDelete(self);
     next();
 });
+
+var StoredQueryModel = conn.model('StoredQuery', schemas_system.storedQuerySchema);
+exports.StoredQueryModel = StoredQueryModel;
 
 exports.getStream = function (condition) {
     return StoredQueryModel.find(condition).sort({_id: -1}).cursor();
