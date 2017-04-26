@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-
 import com.jayway.restassured.http.ContentType;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.Alert;
@@ -93,7 +92,6 @@ public class MiscTests extends NlmCdeBaseTest {
         clickElement(By.id("naming_tab"));
 
         String definitionEditIconXpath = "//*[@id='definition_0']//*[contains(@class,'fa-edit')]";
-        String richTextBtnXpath = "//*[@id='definition_0']//button[contains(text(),'Rich Text')]";
         String definitionTextareaXpath = "//*[@id='definition_0']//textarea";
         String definitionConfirmBtnXpath = "//*[@id='definition_0']//*[contains(@class,'fa-check')]";
 
