@@ -99,7 +99,7 @@ var deJson = {
     , dataSets: {type: [sharedSchemas.dataSetSchema], description: "A list of datasets that use this CDE"}
     , mappingSpecifications: {type: [{content: String, spec_type: String, script: String, _id: false}], descrition: "Deprecated"}
     , comments: [sharedSchemas.commentSchema]
-    , archived: {type: Boolean, default: false, index: true, description: "false for previous versions of CDEs"}
+    , archived: {type: Boolean, default: false, index: true, description: "Indication of historical record. True for previous versions."}
     , forkOf: {type: String, description: "May point to a tinyID if the CDE is a fork"}
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
