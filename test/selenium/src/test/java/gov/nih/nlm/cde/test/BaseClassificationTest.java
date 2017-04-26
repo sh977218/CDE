@@ -9,8 +9,7 @@ import java.util.Arrays;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
-        clickElement(By.id("openClassificationModalBtn"));
-        textPresent("By recently added");
+        clickElement(By.cssSelector("[id^=addClassification]"));
         addClassificationMethodDo(categories);
     }
 
@@ -20,21 +19,24 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     private void addClassificationMethodDo(String[] categories) {
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        textPresent(categories[1]);
-        System.out.println("categories: " + Arrays.toString(categories));
-        String expanderStr = "";
-        for (int i = 1; i < categories.length - 1; i++) {
-            if (i == categories.length - 1)
-                expanderStr = expanderStr + categories[i];
-            else
-                expanderStr = expanderStr + "," + categories[i];
-            System.out.println("i: " + i);
-            System.out.println("expanderStr: " + expanderStr);
-            clickElement(By.id("//*[@id='" + expanderStr + "-expander']"));
+        try {
+            new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        } catch (Exception ignored) {
         }
-        clickElement(By.id(categories[1] + expanderStr + "-classifyBtn"));
 
+        textPresent(categories[1]);
+
+        for (int i = 1; i < categories.length - 1; i++) {
+            clickElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link"));
+        }
+        clickElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button"));
+        try {
+            closeAlert();
+        } catch (Exception ignored) {
+        }
+
+        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
+        hangon(3);
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
             selector += categories[i];
@@ -42,8 +44,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        Assert.assertEquals(findElement(By.id(selector)).getText(),
-                categories[categories.length - 1]);
+        Assert.assertTrue(findElement(By.cssSelector("[id='classification-" + selector + "'] .name"))
+                .getText().equals(categories[categories.length - 1]));
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
@@ -117,5 +119,38 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Audit"));
         clickElement(By.linkText("Classification Audit Log"));
         clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
+    }
+
+
+
+    public void _addClassificationMethod(String[] categories) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        _addClassificationMethodDo(categories);
+    }
+
+    private void _addClassificationMethodDo(String[] categories) {
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        textPresent(categories[1]);
+        System.out.println("categories: " + Arrays.toString(categories));
+        String expanderStr = "";
+        for (int i = 1; i < categories.length - 1; i++) {
+            expanderStr = expanderStr + categories[i];
+            System.out.println("i: " + i);
+            System.out.println("expanderStr: " + expanderStr);
+            clickElement(By.id(expanderStr + "-expander"));
+            expanderStr += ",";
+        }
+        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+
+        String selector = "";
+        for (int i = 1; i < categories.length; i++) {
+            selector += categories[i];
+            if (i < categories.length - 1) {
+                selector += ",";
+            }
+        }
+        Assert.assertEquals(findElement(By.id(selector)).getText(),
+                categories[categories.length - 1]);
     }
 }

@@ -12,7 +12,7 @@ public class WorkingGroupClassifInvisible extends BaseClassificationTest {
         goToCdeByName("Specimen Block Received Count");
 
         clickElement(By.id("classification_tab"));
-        new ClassificationTest().addClassificationMethod(new String[]{"WG-TEST", "WG Classification", "WG Sub Classif"});
+        new ClassificationTest()._addClassificationMethod(new String[]{"WG-TEST", "WG Classification", "WG Sub Classif"});
         textPresent("WG Sub Classification");
         logout();
         goToCdeByName("Specimen Block Received Count");
