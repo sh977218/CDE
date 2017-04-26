@@ -236,5 +236,6 @@ exports.init = function (app, daoManager) {
         }
     });
 
+    app.get('/schema/form', (req, res) => res.send(mongo_form.Form.jsonSchema()));
 
 };

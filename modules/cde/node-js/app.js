@@ -526,4 +526,8 @@ exports.init = function (app, daoManager) {
         });
     })
 
+    require('mongoose-schema-jsonschema')(require('mongoose'));
+
+    app.get('/schema/cde', (req, res) => res.send(mongo_cde.DataElement.jsonSchema()));
+
 };

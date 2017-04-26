@@ -688,6 +688,21 @@ exports.bulkAction = function (ids, action, cb) {
     );
 };
 
+exports.hideProprietaryIds = function (elt) {
+    if (elt && elt.ids) {
+        var blackList = [
+            "LOINC"
+        ];
+        elt.ids.forEach(function (id) {
+            if (blackList.indexOf(id.source) > -1) {
+                id.id = "Login to see value.";
+                id.source = "(" + id.source + ")";
+            }
+        });
+    }
+};
+
+
 exports.bulkClassifyCdesStatus = {};
 exports.bulkClassifyCdes = function (user, eltId, elements, body, cb) {
     if (!exports.bulkClassifyCdesStatus[user.username + eltId]) {
@@ -714,18 +729,4 @@ exports.bulkClassifyCdes = function (user, eltId, elements, body, cb) {
 
 exports.resetBulkClassifyCdesStatus = function (statusObjId) {
     delete exports.bulkClassifyCdesStatus[statusObjId];
-};
-
-exports.hideProprietaryIds = function (elt) {
-    if (elt && elt.ids) {
-        var blackList = [
-            "LOINC"
-        ];
-        elt.ids.forEach(function (id) {
-            if (blackList.indexOf(id.source) > -1) {
-                id.id = "Login to see value.";
-                id.source = "(" + id.source + ")";
-            }
-        });
-    }
 };
