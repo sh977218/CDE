@@ -5,6 +5,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
+import java.util.Arrays;
+
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
         clickElement(By.id("openClassificationModalBtn"));
@@ -20,7 +22,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     private void addClassificationMethodDo(String[] categories) {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
-        System.out.println("categories: " + categories.toString());
+        System.out.println("categories: " + Arrays.toString(categories));
         String expanderStr = "";
         for (int i = 1; i < categories.length - 1; i++) {
             if (i == categories.length - 1)
@@ -40,8 +42,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-" + selector + "'] .name"))
-                .getText().equals(categories[categories.length - 1]));
+        Assert.assertEquals(findElement(By.id(selector)).getText(),
+                categories[categories.length - 1]);
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
