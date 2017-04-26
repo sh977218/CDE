@@ -1,7 +1,6 @@
 import { Http } from "@angular/http";
-import { Component, Inject } from "@angular/core";
+import { Component } from "@angular/core";
 import "rxjs/add/operator/map";
-
 
 @Component({
     selector: "cde-daily-usage",

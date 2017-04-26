@@ -7,9 +7,6 @@ exports.type = "board";
 exports.name = "boards";
 
 var conn = connHelper.establishConnection(config.database.appData);
-var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
-
-exports.PinningBoard = PinningBoard;
 
 schemas.pinningBoardSchema.pre('save', function (next) {
     this.updatedDate = Date.now();
@@ -23,13 +20,15 @@ schemas.pinningBoardSchema.pre('remove', function (next) {
     next();
 });
 
+var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
+exports.PinningBoard = PinningBoard;
+
 exports.getPrimaryName = function (elt) {
     return elt.name;
 };
 
-
 exports.getStream = function (condition) {
-    return PinningBoard.find(condition).sort({_id: -1}).stream();
+    return PinningBoard.find(condition).sort({_id: -1}).cursor();
 };
 
 exports.count = function (condition, callback) {
