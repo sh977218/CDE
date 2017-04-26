@@ -10,9 +10,6 @@ exports.type = "form";
 exports.name = "forms";
 
 var conn = connHelper.establishConnection(config.database.appData);
-var Form = conn.model('Form', schemas.formSchema);
-
-exports.Form = Form;
 
 schemas.formSchema.pre('save', function (next) {
     var self = this;
@@ -24,20 +21,17 @@ schemas.formSchema.pre('save', function (next) {
     next();
 });
 
+var Form = conn.model('Form', schemas.formSchema);
+exports.Form = Form;
+
 exports.elastic = elastic;
 
 exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
 };
 
-exports.idExists = function (id, callback) {
-    Form.count({_id: id}).count().then(function (result) {
-        callback(result === 0);
-    });
-};
-
 exports.getStream = function (condition) {
-    return Form.find(condition).sort({_id: -1}).stream();
+    return Form.find(condition).sort({_id: -1}).cursor();
 };
 
 exports.count = function (condition, callback) {
