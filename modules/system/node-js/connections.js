@@ -1,7 +1,9 @@
-var mongoose = require('mongoose'),
-    config = require('config');
+const mongoose = require('mongoose'),
+      config = require('config');
 
 var establishedConns = {};
+
+// require('mongoose-schema-jsonschema')(mongoose);
 
 exports.establishConnection = function(dbConfig) {
     var uri = "mongodb://" + dbConfig.username + ":" + dbConfig.password + "@" +
