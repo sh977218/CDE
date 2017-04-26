@@ -36,6 +36,7 @@ export class ClassificationComponent {
     public deleteClassificationArray: any;
 
     public options = {
+        idField: "name",
         childrenField: "elements",
         displayField: "name",
         useVirtualScroll: false,
