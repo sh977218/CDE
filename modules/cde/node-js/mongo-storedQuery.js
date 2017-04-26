@@ -30,7 +30,7 @@ var StoredQueryModel = conn.model('StoredQuery', schemas_system.storedQuerySchem
 exports.StoredQueryModel = StoredQueryModel;
 
 exports.getStream = function (condition) {
-    return StoredQueryModel.find(condition).sort({_id: -1}).stream();
+    return StoredQueryModel.find(condition).sort({_id: -1}).cursor();
 };
 exports.count = function (condition, callback) {
     StoredQueryModel.count(condition).exec(function (err, count) {
