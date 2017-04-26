@@ -103,7 +103,7 @@ var deJson = {
     , forkOf: {type: String, description: "May point to a tinyID if the CDE is a fork"}
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
-    , referenceDocuments: {type: [sharedSchemas.referenceDocumentSchema], description: "Reference Documents. Typically links to external documents"}
+    , referenceDocuments: {type: [sharedSchemas.referenceDocumentSchema], description: "Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record."}
     , derivationRules: [derivationRuleSchema]
 };
 
