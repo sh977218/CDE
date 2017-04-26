@@ -23,7 +23,6 @@ var cdesvc = require('./cdesvc')
     , exportShared = require('../../system/shared/exportShared')
     , js2xml = require('js2xmlparser')
     , usersrvc = require('../../system/node-js/usersrvc')
-
     ;
 
 exports.init = function (app, daoManager) {
@@ -508,5 +507,9 @@ exports.init = function (app, daoManager) {
             }
         });
     });
+
+    require('mongoose-schema-jsonschema')(require('mongoose'));
+
+    app.get('/schema/cde', (req, res) => res.send(mongo_cde.DataElement.jsonSchema()));
 
 };
