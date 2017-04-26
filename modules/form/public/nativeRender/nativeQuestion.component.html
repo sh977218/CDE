@@ -66,7 +66,7 @@
                 <div *ngSwitchCase="'Date'">
                     <div class="input-group">
                         <input class="form-control" [name]="formElement.questionId" [attr.name]="formElement.questionId"
-                               [(ngModel)]="formElement.question.answer" ngbDatepicker #d1="ngbDatepicker"
+                               [(ngModel)]="formElement.question.answer" ngbDatepicker #d1="ngbDatepicker" [title]="formElement.question.answer"
                                [required]="formElement.question.required" [disabled]="!formElement.question.editable">
                         <div class="input-group-addon" (click)="d1.toggle()" >
                             <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -78,7 +78,7 @@
                 <div *ngSwitchCase="'Number'">
                     <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">
                         <input type="number" class="form-control" [name]="formElement.questionId" [attr.name]="formElement.questionId"
-                               [(ngModel)]="formElement.question.answer"
+                               [(ngModel)]="formElement.question.answer"[title]="formElement.question.answer"
                                [attr.min]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.minValue : null"
                                [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                [required]="formElement.question.required" [disabled]="!formElement.question.editable"/>
@@ -97,7 +97,7 @@
                 <div *ngSwitchDefault>
                     <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">
                         <input type="text" class="form-control" [name]="formElement.questionId" [attr.name]="formElement.questionId"
-                               [(ngModel)]="formElement.question.answer"
+                               [(ngModel)]="formElement.question.answer"[title]="formElement.question.answer"
                                [required]="formElement.question.required" [disabled]="!formElement.question.editable"/>
                         <label *ngFor="let uom of formElement.question.uoms"
                                [ngClass]="{'nativeRequiredBox': formElement.question.required}"
