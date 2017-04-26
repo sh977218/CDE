@@ -6,15 +6,15 @@ var schemas = {};
 
 var conceptSchema = new mongoose.Schema({
     name: String,
-    origin: {type: String, description: "Where the concept may find its source"},
-    originId: {type: String, description: "The ID of the concept in its source"}
+    origin: {type: String, description: "Source of concept"},
+    originId: {type: String, description: "Identifier of concept from source"}
 }, {_id: false});
 
 var derivationRuleSchema = new mongoose.Schema(
     {
         name: String,
-        inputs: {type: [String], index: true, description: "List of inputs to the rule"},
-        outputs: {type: [String], description: "list of outputs for the rule. "},
+        inputs: {type: [String], index: true, description: "Information operated on by rule"},
+        outputs: {type: [String], description: "Information produced by rule"},
         ruleType: {type: String, enum: ['score', 'panel']},
         formula: {type: String, enum: ['sumAll', 'mean']}
     }, {_id: true}
@@ -22,16 +22,16 @@ var derivationRuleSchema = new mongoose.Schema(
 
 var deJson = {
     elementType: {type: String, default: 'cde', description: "This value is always 'cde'"}
-    , naming: {type: [sharedSchemas.namingSchema], description: "Anything used to describe this CDE in spoken language goes here"}
+    , naming: {type: [sharedSchemas.namingSchema], description: "Any string used by which CDE is known, addressed or referred to"}
     , source: {type: String, description: "This field is replaced with sources"}
-    , sources: {type: [sharedSchemas.sourceSchema], decription: "If the CDE was imported from one or more systems, we would call the system a source"}
-    , origin: {type: String, description: "The origin, see examples of origin"}
+    , sources: {type: [sharedSchemas.sourceSchema], decription: "Name of system from which CDE was imported or obtained from"}
+    , origin: {type: String, description: "Name of system where CDE is derived"}
     , stewardOrg: {
-        name: {type: String, description: "The steward may be able to modify the CDE"}
+        name: {type: String, description: "Name of organization or entity responsible for supervising content and administration of CDE"}
     }
     , created: Date
     , updated: {type: Date, index: true}
-    , imported: {type: Date, description: "If imported from a source, whether or not updated"}
+    , imported: {type: Date, description: "Date last imported from source"}
     , createdBy: {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
@@ -40,7 +40,7 @@ var deJson = {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
-    , tinyId: {type: String, index: true, description: "This ID is the same for all versions of the CDE."}
+    , tinyId: {type: String, index: true, description: "Internal CDE identifier"}
     , version: String
     , dataElementConcept: {
         concepts: [conceptSchema]
@@ -61,7 +61,7 @@ var deJson = {
         , definition: String
         , uom: {type: String, description: "Unit of Measure"}
         , vsacOid: String
-        , datatype: {type: String, description: "Can be 'Value List' or any other datatype. If Value List, then another datatype is described."}
+        , datatype: {type: String, description: "Expected type of data"}
         , datatypeText: {
             minLength: {type: Number, description: "To indicate limits on length"}
             , maxLength: {type: Number, description: "To indicate limits on length"}
@@ -90,12 +90,12 @@ var deJson = {
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
     , history: [mongoose.Schema.Types.ObjectId]
-    , changeNote: {type: String, description: "Used for help with changes"}
-    , lastMigrationScript: {type: String, description: "Not typically used, but may be present. Can be ignored"}
+    , changeNote: {type: String, description: "Description of last modification"}
+    , lastMigrationScript: {type: String, description: "Internal use only"}
     , registrationState: sharedSchemas.registrationStateSchema
-    , classification: {type: [sharedSchemas.classificationSchema], description: "How is this element used."}
-    , properties: {type: [sharedSchemas.propertySchema], description: "All properties of this element that do not fit anywhere else."}
-    , ids: {type: [sharedSchemas.idSchema], description: "All IDs this element is known by"}
+    , classification: {type: [sharedSchemas.classificationSchema], description: "Organization or categorization by Steward Organization"}
+    , properties: {type: [sharedSchemas.propertySchema], description: "Attribute not otherwise documented by structured CDE record"}
+    , ids: {type: [sharedSchemas.idSchema], description: "Identifier used to establish or indicate what CDE is within a specific context"}
     , dataSets: {type: [sharedSchemas.dataSetSchema], description: "A list of datasets that use this CDE"}
     , mappingSpecifications: {type: [{content: String, spec_type: String, script: String, _id: false}], descrition: "Deprecated"}
     , comments: [sharedSchemas.commentSchema]
