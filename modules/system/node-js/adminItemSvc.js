@@ -682,7 +682,7 @@ exports.bulkAction = function (ids, action, cb) {
     );
 };
 
-exports.hideProprietaryIds = function(elt) {
+exports.hideProprietaryIds = function (elt) {
     if (elt && elt.ids) {
         var blackList = [
             "LOINC"
