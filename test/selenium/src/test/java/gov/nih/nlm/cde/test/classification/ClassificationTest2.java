@@ -23,10 +23,10 @@ public class ClassificationTest2 extends BaseClassificationTest {
         textNotPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
         clickElement(By.id("Disease-expander"));
         textPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
-        textPresent("Domain", By.id("addClassificationModalBody"));
-        textPresent("Population", By.id("addClassificationModalBody"));
+        textPresent("Domain", By.id("newClassifyItemModalBody"));
+        textPresent("Population", By.id("newClassifyItemModalBody"));
         clickElement(By.id("Disease-expander"));
-        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));
+        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
         clickElement(By.xpath("//button[text() = 'Close']"));
         modalGone();
     }

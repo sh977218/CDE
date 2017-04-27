@@ -54,7 +54,7 @@ public class ClassificationTest extends BaseClassificationTest {
 
     private void removeClassificationMethod(String[] categories) {
         String selector = "";
-        for (int i = 1; i <= categories.length; i++) {
+        for (int i = 1; i < categories.length; i++) {
             selector += categories[i];
             if (i < categories.length - 1)
                 selector += ",";
@@ -87,8 +87,8 @@ public class ClassificationTest extends BaseClassificationTest {
     @Test
     public void classificationLink() {
         goToCdeByName("Spectroscopy water signal removal filter text");
-        clickElement(By.linkText("Classification"));
-        clickElement(By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"));
+        clickElement(By.id("classification_tab"));
+        clickElement(By.id("Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics"));
         showSearchFilters();
         textPresent("Classification");
         textPresent("NINDS (12");

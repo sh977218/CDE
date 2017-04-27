@@ -52,9 +52,9 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         clickElement(By.id("openClassificationModalBtn"));
         clickElement(By.id("recentlyAddViewTab"));
         for (String category : categories) {
-            textPresent(category, By.id("addClassificationModalBody"));
+            textPresent(category, By.id("newClassifyItemModalBody"));
         }
-        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
         modalGone();
     }
 

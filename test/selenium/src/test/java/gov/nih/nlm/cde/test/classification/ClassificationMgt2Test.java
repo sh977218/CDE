@@ -23,14 +23,11 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textNotPresent(newClassification);
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
-        clickElement(By.id("selectClassificationOrg"));
-        textPresent("org / or Org");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         textPresent(oldClassification);
         textPresent(newClassification);
-        clickElement(By.xpath("//*[@id='addClassification-OldClassification']/button"));
+        clickElement(By.id("OldClassification-classifyBtn"));
         closeAlert();
-        textNotPresent("By recently added");
     }
 
     @Test

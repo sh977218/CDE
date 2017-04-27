@@ -12,7 +12,6 @@ public class ClassifyFormCdes extends BaseClassificationTest {
 
         goToFormByName("History Data Source and Reliability");
         clickElement(By.id("classification_tab"));
-        clickElement(By.id("openClassifyCdesModalBtn"));
         _classifyCdesMethod(new String[]{"CTEP", "ABTC", "ABTC 0904"});
 
         // Verify
