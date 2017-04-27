@@ -7,9 +7,16 @@ let count = 0;
 
 mongo_form.Form.find({"classification.stewardOrg.name": "NCI", archived: false}, (err, pForms) => {
 
-    async.eachSeries(pForms, (pForm, oneDone) => {
-        console.log(count++);
-        oneDone();
+    async.eachSeries(pForms, (pForm, oneFormDone) => {
+
+        async.eacheries(pForms.formElements, (section, oneSectionDone) => {
+           async.eachSeries(section.formElements, (question, oneQuestionDone) => {
+
+           }, () => oneSectionDone());
+        }, () => {
+            console.log(++count);
+            oneDone();
+        });
     }, () => {
         console.log("all done");
         process.exit(0);
