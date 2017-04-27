@@ -35,7 +35,7 @@
                                            [value]="pv.permissibleValue"
                                            [required]="formElement.question.required"
                                            [disabled]="!formElement.question.editable"/>
-                                    {{nativeRenderService.getPvLabel(pv)}}
+                                    <span [textContent]="nativeRenderService.getPvLabel(pv)"></span>
                                     <span class="native-value" *ngIf="nativeRenderService.profile.displayValues"
                                           [textContent]="nativeRenderService.getPvValue(pv)"></span>
                                 </label>
