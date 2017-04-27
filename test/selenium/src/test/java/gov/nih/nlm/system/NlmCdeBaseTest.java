@@ -118,7 +118,9 @@ public class NlmCdeBaseTest {
         System.out.println("Starting " + m.getName() + " in Fork: " + (int) (Math.random() * 1000));
     }
 
-    private void setDriver() {
+    private void setDriver(String b) {
+        if (b == null) b = browser;
+
         hangon(new Random().nextInt(10));
         String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
         if (isWindows()) {
@@ -130,9 +132,9 @@ public class NlmCdeBaseTest {
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
         DesiredCapabilities caps;
-        if ("firefox".equals(browser)) {
+        if ("firefox".equals(b)) {
             caps = DesiredCapabilities.firefox();
-        } else if ("chrome".equals(browser)) {
+        } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
@@ -140,7 +142,7 @@ public class NlmCdeBaseTest {
             options.setExperimentalOption("prefs", prefs);
             caps = DesiredCapabilities.chrome();
             caps.setCapability(ChromeOptions.CAPABILITY, options);
-        } else if ("ie".equals(browser)) {
+        } else if ("ie".equals(b)) {
             caps = DesiredCapabilities.internetExplorer();
         } else {
             caps = DesiredCapabilities.chrome();
@@ -150,7 +152,7 @@ public class NlmCdeBaseTest {
         loggingPreferences.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
 
-        caps.setBrowserName(browser);
+        caps.setBrowserName(b);
         baseUrl = System.getProperty("testUrl");
         String hubUrl = System.getProperty("hubUrl");
 
@@ -182,7 +184,12 @@ public class NlmCdeBaseTest {
     public void setUp(Method m) {
         filePerms = new HashSet();
         countElasticElements(m);
-        setDriver();
+
+        if (m.getAnnotation(SelectBrowser.class) != null) {
+            setDriver("ie");
+        } else {
+            setDriver(null);
+        }
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
