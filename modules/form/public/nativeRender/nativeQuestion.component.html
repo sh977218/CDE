@@ -1,9 +1,15 @@
 <div [hidden]="formElement.question.invisible && !nativeRenderService.profile.displayInvisible">
     <fieldset>
-        <legend [hidden]="!hasLabel(formElement)" class="native-question-label"
+        <legend class="native-question-label"></legend>
+        <label *ngIf="formElement.question.datatype !== 'Value List'"
+               [hidden]="!hasLabel(formElement)" class="native-question-label"
+               attr.for="{{formElement.label}}_{{index}}_box"
                 [ngClass]="{'native-question-label-number': !numSubQuestions && nativeRenderService.profile.displayNumbering}">
-            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}
-        </legend>
+            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</label>
+        <div *ngIf="formElement.question.datatype === 'Value List'"
+               [hidden]="!hasLabel(formElement)" class="native-question-label"
+               [ngClass]="{'native-question-label-number': !numSubQuestions && nativeRenderService.profile.displayNumbering}">
+            <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</div>
         <div *ngIf="nativeRenderService.profile.displayInstructions && formElement?.instructions?.value"
              class="native-instructions">
             <span *ngIf="formElement.instructions.valueFormat === 'html'"
@@ -68,11 +74,11 @@
                                 </div>
                             </div>
                         </div>
-                        <!--<div [textContent]="nativeRenderService.form.$$element[0][formElement.questionId][0].validationMessage"></div>-->
                     </div>
                     <div *ngSwitchCase="'Date'">
                         <div class="input-group">
                             <input class="form-control" [name]="formElement.questionId"
+                                   attr.id="{{formElement.label}}_{{index}}_box"
                                    [attr.name]="formElement.questionId"
                                    [(ngModel)]="formElement.question.answer" ngbDatepicker #d1="ngbDatepicker"
                                    [title]="formElement.question.answer"
@@ -82,12 +88,11 @@
                                 <i class="fa fa-calendar" aria-hidden="true"></i>
                             </div>
                         </div>
-                        <!--<ngb-datepicker [(ngModel)]="formElement.question.answer"></ngb-datepicker>-->
-                        <!--<div [textContent]="nativeRenderService.form.$$element[0][formElement.questionId].validationMessage"></div>`;-->
                     </div>
                     <div *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">
                             <input type="number" class="form-control" [name]="formElement.questionId"
+                                   attr.id="{{formElement.label}}_{{index}}_box"
                                    [attr.name]="formElement.questionId"
                                    [(ngModel)]="formElement.question.answer" [title]="formElement.question.answer"
                                    [attr.min]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.minValue : null"
@@ -105,11 +110,11 @@
                                        [required]="formElement.question.required"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>
-                        <!--<div [textContent]="nativeRenderService.form.$$element[0][formElement.questionId].validationMessage"></div>-->
                     </div>
                     <div *ngSwitchDefault>
                         <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">
                             <input type="text" class="form-control" [name]="formElement.questionId"
+                                   attr.id="{{formElement.label}}_{{index}}_box"
                                    [attr.name]="formElement.questionId"
                                    [(ngModel)]="formElement.question.answer" [title]="formElement.question.answer"
                                    [required]="formElement.question.required"
