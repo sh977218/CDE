@@ -5,7 +5,6 @@ db.forms.remove({});
 db.pinningBoards.remove({});
 db.messages.remove({});
 db.sessions.remove({});
-db.articles.remove({});
 db.fs.files.remove({});
 db.fs.chunks.remove({});
 db.comments.remove({});
@@ -127,6 +126,3 @@ users.forEach(function(u) {
 });
 
 db.users.insert({username: 'oldUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: [], searchSettings: oldSettings});
-
-db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this.", archived: false});
-db.articles.insert({key: "testEdits", body: "Testing edits", archived: false});

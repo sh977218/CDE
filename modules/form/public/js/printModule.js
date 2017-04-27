@@ -1,7 +1,7 @@
 import * as authShared from "../../../system/shared/authorizationShared";
 import * as formShared from "../../../form/shared/formShared";
 
-angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
+angular.module("printModule", ['systemModule', 'cdeModule', 'formModule'])
 
 .controller('PrintCtrl',
         ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'Alert',

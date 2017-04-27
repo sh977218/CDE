@@ -24,9 +24,6 @@ import "./form/public/js/formModule";
 import "./form/public/js/resources";
 import "./form/public/js/angularTemplates";
 
-import "./article/public/js/articleConfig";
-import "./article/public/js/angularTemplates";
-
 import "./system/shared/classificationShared";
 import "./system/shared/regStatusShared";
 import "./system/shared/authorizationShared";

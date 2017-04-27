@@ -11,7 +11,7 @@ var config = require('../../system/node-js/parseConfig')
     , CronJob = require('cron').CronJob
     , elastic = require('./elastic')
     , deValidator = require('../shared/deValidator')
-    ;
+;
 
 exports.type = "cde";
 exports.name = "CDEs";
