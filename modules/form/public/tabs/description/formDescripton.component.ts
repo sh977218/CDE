@@ -14,8 +14,9 @@ import { Http, Response } from "@angular/http";
 export class FormDescriptionComponent implements OnInit {
     @Input() elt: any;
     @Input() inScoreCdes: any;
-    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
+    @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() setToNoneAddMode: EventEmitter<void> = new EventEmitter<void>();
+    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     canCurate = false;
 
@@ -224,23 +225,6 @@ export class FormDescriptionComponent implements OnInit {
     //     }
     // };
     //
-    // openNameSelect(question, section) {
-    //     $modal.open({
-    //         animation: false,
-    //         resolve: {
-    //             question: function () {
-    //                 return question;
-    //             },
-    //             section: function () {
-    //                 return section;
-    //             }
-    //         }
-    //     }).result.then(function () {
-    //         this.stageElt.emit();
-    //     }, function () {
-    //     });
-    // }
-    //
     // aaaaaaaaaaaaaselectQuestionNameModal(question, section) {
     //     var cde = question.question.cde;
     //     var url = "/debytinyid/" + cde.tinyId;
@@ -289,21 +273,6 @@ export class FormDescriptionComponent implements OnInit {
     //         $modalInstance.close();
     //     }
     // }
-    //
-    // checkUom(question, index) {
-    //     setTimeout(() => {
-    //         if (question.question.uoms[index] === "") {
-    //             question.question.uoms.splice(index, 1);
-    //             this.stageElt.emit();
-    //         }
-    //     }, 0);
-    // }
-    //
-    // addUom(question) {
-    //     if (!question.question.uoms) question.question.uoms = [];
-    //     question.question.uoms.push("Please specify");
-    //     this.stageElt.emit();
-    // };
     //
     // removeElt(form, index) {
     //     form.formElements.splice(index, 1);
@@ -396,5 +365,11 @@ export class FormDescriptionComponent implements OnInit {
     //             bMulti = bValuelist = true;
     //         }
     //     }
+    // }
+    // updateSkipLogic (section) {
+    //     if (!section.skipLogic)
+    //         return;
+    //     section.skipLogic.condition = "'" + section.skipLogic.condition1 + "'='" + section.skipLogic.condition3 + "'";
+    //     this.stageElt.emit();
     // }
 }

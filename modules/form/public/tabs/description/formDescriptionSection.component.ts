@@ -1,14 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { SkipLogicService } from "../../skipLogic.service";
+import { Observable } from "rxjs/Observable";
 
 @Component({
     selector: "cde-form-description-section",
     templateUrl: "formDescriptionSection.component.html"
 })
 export class FormDescriptionSectionComponent implements OnInit {
-    @Input() node: any;
-    @Input() preId: string;
     @Input() canCurate: boolean;
     @Input() inScoreCdes: any;
+    @Input() node: any;
+    @Input() preId: string;
+    @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
@@ -22,7 +25,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Over first question", value: "F"}
     ];
 
-    constructor() {}
+    constructor(public skipLogicService: SkipLogicService) {}
 
     ngOnInit() {
         this.section = this.node.data;
@@ -33,10 +36,6 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.section.instructions = {};
         if (!this.section.skipLogic)
             this.section.skipLogic = {};
-    }
-
-    getTemplate() {
-        return (this.section.elementType === "section" ? this.formDescriptionSectionTmpl : this.formDescriptionFormTmpl);
     }
 
     removeNode(node) {
@@ -58,6 +57,15 @@ export class FormDescriptionSectionComponent implements OnInit {
         return parseInt(section.repeat);
     }
 
+    getSkipLogicOptions = (text$: Observable<string>) =>
+        text$.debounceTime(300).distinctUntilChanged().map(term =>
+            this.skipLogicService.getCurrentOptions(term, this.parent.formElements, this.section, this.parent.formElements.indexOf(this.section))
+        );
+
+    getTemplate() {
+        return (this.section.elementType === "section" ? this.formDescriptionSectionTmpl : this.formDescriptionFormTmpl);
+    }
+
     setRepeat(section) {
         if (section.repeatOption === "F")
             section.repeat = "First Question";
@@ -75,4 +83,10 @@ export class FormDescriptionSectionComponent implements OnInit {
         return parseInt(section.repeat) + " times";
     }
 
+    validateSkipLogic(skipLogic, previousQuestions, item) {
+        if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
+            this.stageElt.emit();
+        else
+            this.isFormValid.emit(false);
+    }
 }

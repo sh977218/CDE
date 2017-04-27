@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
 import { DomSanitizer } from "@angular/platform-browser";
+import { SkipLogicService } from "../skipLogic.service";
 
 @Component({
     selector: "cde-native-render",
@@ -18,6 +19,7 @@ export class NativeRenderComponent implements OnInit {
     mapping: any;
 
     constructor(private sanitizer: DomSanitizer,
+                public skipLogicService: SkipLogicService,
                 public nativeRenderService: NativeRenderService) {
         this.formUrl = window.location.href;
         this.endpointUrl = (<any>window).endpointUrl;

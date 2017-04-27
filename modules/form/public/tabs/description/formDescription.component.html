@@ -59,7 +59,8 @@
                                                     [node]="node"
                                                     [canCurate]="canCurate"
                                                     [preId]="preId + '_'+ sectionIndex" [inScoreCdes]="inScoreCdes"
-                                                    (stageElt)="stageElt.emit()"></cde-form-description-section>
+                                                    (stageElt)="stageElt.emit()"
+                                                    (isFormValid)="isFormValid.emit($event)"></cde-form-description-section>
                                             <cde-form-description-question *ngIf="node.data.elementType === 'question'"
                                                                            id="question_{{preId}}_{{sectionIndex}}"
                                                                            [canCurate]="canCurate"
@@ -76,6 +77,7 @@
                                                                   id="question_{{preId}}_{{sectionIndex}}"
                                                                   [canCurate]="canCurate"
                                                                   [node]="node"
+                                                                  (isFormValid)="isFormValid.emit($event)"
                                                                   (stageElt)="stageElt.emit()"></cde-form-description-question-detail>
                         </div>
                     </div>

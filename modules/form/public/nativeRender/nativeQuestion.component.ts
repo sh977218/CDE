@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, Output, ViewChild, ViewContainerRef } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { SkipLogicService } from "../skipLogic.service";
+import { FormRenderService } from "../formRender.service";
 
 @Component({
     selector: "cde-native-question",
@@ -12,10 +14,9 @@ export class NativeQuestionComponent {
     @Input() parentValue: any;
     @Input() index: any;
 
-    // generatedHtml: SafeHtml = "";  // template: `<div #rendered_question></div>`
-    // @ViewChild("rendered_question", {read: ViewContainerRef}) templateRef: ViewContainerRef;
-
     constructor(private sanitizer: DomSanitizer,
+                public formRenderService: FormRenderService,
+                public skipLogicService: SkipLogicService,
                 public nativeRenderService: NativeRenderService) {
     }
 

@@ -3,12 +3,17 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
+import { Select2Module } from "ng2-select2";
 import { SortableModule } from "ng2-bootstrap/index";
 
 import { AdminModule } from "../../admin/public/admin.module";
 
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
+import { FilterPipe } from "./filter.pipe";
 import { FormDescriptionComponent } from "./tabs/description/formDescripton.component";
+import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
+import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
+import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
@@ -16,26 +21,28 @@ import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
 import { NativeTableComponent } from "./nativeRender/nativeTable.component";
-import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
-import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
-import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
+
+import { FormRenderService } from "./formRender.service";
+import { SkipLogicService } from "./skipLogic.service";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        Select2Module,
         SortableModule.forRoot(),
         TreeModule,
+        // internal
         AdminModule
     ],
     declarations: [
-        MergeFormComponent,
         CdeSortableComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
+        MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
         NativeSectionComponent,
@@ -48,6 +55,10 @@ import { FormDescriptionSectionComponent } from "./tabs/description/formDescript
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
+    ],
+    providers: [
+        FormRenderService,
+        SkipLogicService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
