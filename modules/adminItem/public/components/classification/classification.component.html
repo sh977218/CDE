@@ -5,7 +5,7 @@
         <i class="fa fa-folder-open-o"> </i> Classify this {{ elt.elementType | uppercase}}
     </button>
     <button *ngIf="isAllowedModel.isOrgCurator() && elt.elementType === 'form' && elt.formElements.length > 0"
-            class="btn btn-default" id="classifyAllCdes" (click)="openClassifyCdesModal()">
+            class="btn btn-default" id="openClassifyCdesModalBtn" (click)="openClassifyCdesModal()">
         <i class="fa fa-indent"></i> Classify Cdes
     </button>
     <div id="classificationBody">
@@ -17,7 +17,7 @@
                     <template #treeNodeTemplate let-node="node" let-index="index">
                         <a href="{{searchByClassification(node,classification.stewardOrg.name)}}" [id]="node.path">
                             {{ node.data.name }}</a>
-                        <i class="fa fa-trash-o hand-cursor" title="Remove"
+                        <i class="fa fa-trash-o hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"
                            *ngIf="isAllowedModel.isCuratorFor(classification.stewardOrg.name)"
                            (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)"></i>
                     </template>

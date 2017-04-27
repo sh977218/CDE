@@ -1,10 +1,10 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class ClassifyFormCdes extends NlmCdeBaseTest {
+public class ClassifyFormCdes extends BaseClassificationTest {
 
     @Test
     public void classifyFormCdes() {
@@ -12,9 +12,8 @@ public class ClassifyFormCdes extends NlmCdeBaseTest {
 
         goToFormByName("History Data Source and Reliability");
         clickElement(By.id("classification_tab"));
-        clickElement(By.id("classifyAllCdes"));
-        clickElement(By.cssSelector("[id='addClassification-ABTC'] span.fake-link"));
-        clickElement(By.cssSelector("[id='addClassification-ABTC 0904'] button"));
+        clickElement(By.id("openClassifyCdesModalBtn"));
+        _classifyCdesMethod(new String[]{"CTEP", "ABTC", "ABTC 0904"});
 
         // Verify
         goToCdeByName("Data source");

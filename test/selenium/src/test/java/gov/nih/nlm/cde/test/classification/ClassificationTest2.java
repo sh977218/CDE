@@ -10,42 +10,40 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class ClassificationTest2 extends BaseClassificationTest {
-    
+
     @Test
-    public void navigateThroughClassiftree() {
+    public void navigateThroughClassificationTree() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("McGill Quality of Life Questionnaire (MQOL) - two day total life quality score");
         clickElement(By.id("classification_tab"));
-        findElement(By.id("addClassification")).click(); 
+        clickElement(By.id("openClassificationModalBtn"));
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("NINDS");
+        textPresent("Domain", By.id("newClassifyItemModalBody"));
+        textPresent("Population", By.id("newClassifyItemModalBody"));
+        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
+        clickElement(By.id("Disease-expander"));
+        textPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
         textPresent("Domain", By.id("addClassificationModalBody"));
         textPresent("Population", By.id("addClassificationModalBody"));
+        clickElement(By.id("Disease-expander"));
         textNotPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));
-        findElement(By.cssSelector("[id='addClassification-Disease'] span.fake-link")).click();
-        textPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));
-        textNotPresent("Domain", By.id("addClassificationModalBody"));
-        textNotPresent("Population", By.id("addClassificationModalBody"));
-        findElement(By.id("resetTree")).click();
-        textPresent("Domain", By.id("addClassificationModalBody"));
-        textPresent("Population", By.id("addClassificationModalBody"));
-        textNotPresent("Amyotrophic Lateral Sclerosis", By.id("addClassificationModalBody"));
-        findElement(By.xpath("//button[text() = 'Close']")).click();
+        clickElement(By.xpath("//button[text() = 'Close']"));
         modalGone();
     }
 
-        
+
     @Test
     public void checkDuplicatesClassification() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0");
         clickElement(By.id("classification_tab"));
-        textNotPresent( "Disease" ) ;
-        addClassificationMethod(new String[]{"NINDS","Disease"});
-        textPresent( "Disease" ) ;
-        addClassificationMethod(new String[]{"NINDS","Disease"});
-        List<WebElement> linkList = driver.findElements(By.cssSelector("li[id$='Disease']"));
+        textNotPresent("Disease");
+        _addClassificationMethod(new String[]{"NINDS", "Disease"});
+        textPresent("Disease");
+        _addClassificationMethod(new String[]{"NINDS", "Disease"});
+        List<WebElement> linkList = driver.findElements(By.id("Disease"));
         Assert.assertTrue(linkList.size() == 1);
     }
-    
-    
+
+
 }

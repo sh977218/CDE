@@ -121,7 +121,11 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
     }
 
-
+    public void _classifyCdesMethod(String[] categories){
+        clickElement(By.id("openClassifyCdesModalBtn"));
+        textPresent("By recently added");
+        _addClassificationMethodDo(categories);
+    }
 
     public void _addClassificationMethod(String[] categories) {
         clickElement(By.id("openClassificationModalBtn"));
