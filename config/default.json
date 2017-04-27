@@ -107,7 +107,6 @@
       "loincRender": true,
       "loincRenderUrl": "https://lforms.nlm.nih.gov/preview/nlmcde/"
     },
-    "article": true,
     "cde": {
       "attachments": true,
       "comments": true,

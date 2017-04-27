@@ -79,7 +79,6 @@ ingester/ninds/ingesters/src/main/resources/
 ingester/ninds/ingesters/src/test/
 ingester/src/
 migration/
-modules/article/public/js/bkup/
 modules/cde/public/assets/fonts/
 modules/cde/public/assets/img/robot.png
 modules/cde/public/js/bkup/

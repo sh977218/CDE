@@ -1,6 +1,6 @@
 import * as authShared from "../../../system/shared/authorizationShared";
 
-angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule']);
+angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
