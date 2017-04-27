@@ -154,7 +154,6 @@ app.use("/system/public", express.static(path.join(__dirname, '/modules/system/p
 app.use("/board/public", express.static(path.join(__dirname, '/modules/board/public')));
 
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
-app.use("/article/public", express.static(path.join(__dirname, '/modules/article/public')));
 app.use("/static", express.static(path.join(__dirname, '/modules/static'))); // TODO: temporary until gulp stops packaging vendor.js, then use /dist
 
 app.use("/embedded/public",
@@ -209,9 +208,6 @@ try {
 
     var formModule = require(path.join(__dirname, './modules/form/node-js/app.js'));
     formModule.init(app, daoManager);
-
-    var articleModule = require(path.join(__dirname, './modules/article/node-js/app.js'));
-    articleModule.init(app);
 
     var boardModule = require(path.join(__dirname, './modules/board/node-js/app.js'));
     boardModule.init(app, daoManager);
