@@ -125,7 +125,10 @@ export class ClassifyCdesModalComponent implements OnInit {
         //noinspection TypeScriptValidateTypes
         this.http.post("/classification/bulk/tinyId", post)
             .subscribe(res => {
-                if (res["_body"] === "Done") this.alert.addAlert("success", "finished");
+                if (res["_body"] === "Done") {
+                    this.modalRef.close("success");
+                    this.alert.addAlert("success", "finished");
+                }
                 else if (res["_body"] === "Processing") {
                     let fn = setInterval(() => {
                         //noinspection TypeScriptValidateTypes
@@ -140,6 +143,7 @@ export class ClassifyCdesModalComponent implements OnInit {
                                             .subscribe(res => {
                                                 //noinspection TypeScriptUnresolvedFunction
                                                 clearInterval(fn);
+                                                this.modalRef.close("success");
                                             }, err => {
                                                 this.alert.addAlert("danger", err);
                                             });
@@ -147,6 +151,7 @@ export class ClassifyCdesModalComponent implements OnInit {
                                 },
                                 err => {
                                     this.alert.addAlert("danger", err);
+                                    this.modalRef.close("error");
                                 });
                     }, 5000);
                 }
