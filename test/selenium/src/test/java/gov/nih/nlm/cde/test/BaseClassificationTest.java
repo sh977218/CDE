@@ -126,18 +126,21 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         textPresent("By recently added");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);
-        System.out.println("categories: " + Arrays.toString(categories));
         String expanderStr = "";
         for (int i = 1; i < categories.length - 1; i++) {
             expanderStr = expanderStr + categories[i];
-            System.out.println("i: " + i);
-            System.out.println("expanderStr: " + expanderStr);
             clickElement(By.id(expanderStr + "-expander"));
             expanderStr += ",";
         }
         clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+        closeAlert();
     }
 
+    public void _addExistsClassificationMethod(String[] categories) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        _addExistClassificationMethodDo(categories);
+    }
     public void _addClassificationMethod(String[] categories) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
@@ -151,8 +154,6 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         String expanderStr = "";
         for (int i = 1; i < categories.length - 1; i++) {
             expanderStr = expanderStr + categories[i];
-            System.out.println("i: " + i);
-            System.out.println("expanderStr: " + expanderStr);
             clickElement(By.id(expanderStr + "-expander"));
             expanderStr += ",";
         }
@@ -167,5 +168,19 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         }
         Assert.assertEquals(findElement(By.id(selector)).getText(),
                 categories[categories.length - 1]);
+        closeAlert();
+    }
+    private void _addExistClassificationMethodDo(String[] categories) {
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        textPresent(categories[1]);
+        String expanderStr = "";
+        for (int i = 1; i < categories.length - 1; i++) {
+            expanderStr = expanderStr + categories[i];
+            clickElement(By.id(expanderStr + "-expander"));
+            expanderStr += ",";
+        }
+        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+        textPresent("Classification Already Exists");
+        closeAlert();
     }
 }

@@ -22,17 +22,14 @@ public class ClassificationTest extends BaseClassificationTest {
         _addClassificationMethod(new String[]{"NINDS", "Domain",
                 "Treatment/Intervention Data", "Therapies"});
 
-        _addClassificationMethod(new String[]{"NINDS", "Disease"});
-        textPresent("Classification Already Exists");
-        _addClassificationMethod(new String[]{"NINDS", "Disease",
+        _addExistsClassificationMethod(new String[]{"NINDS", "Disease"});
+        _addExistsClassificationMethod(new String[]{"NINDS", "Disease",
                 "Myasthenia Gravis"});
-        textPresent("Classification Already Exists");
-        _addClassificationMethod(new String[]{"NINDS", "Disease",
+        _addExistsClassificationMethod(new String[]{"NINDS", "Disease",
                 "Myasthenia Gravis", "Classification"});
-        textPresent("Classification Already Exists");
-        _addClassificationMethod(new String[]{"NINDS", "Disease",
+        _addExistsClassificationMethod(new String[]{"NINDS", "Disease",
                 "Myasthenia Gravis", "Classification", "Supplemental"});
-        textPresent("Classification Already Exists");
+
 
         openClassificationAudit("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
         textPresent("classMgtUser");
@@ -84,7 +81,7 @@ public class ClassificationTest extends BaseClassificationTest {
         clickElement(By.id("Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics"));
         showSearchFilters();
         textPresent("Classification");
-        textPresent(" NINDS (114)");
+        textPresent("NINDS (114)");
         textPresent("Imaging Diagnostics");
     }
 
