@@ -7,7 +7,7 @@
             <ngb-tab id="treeViewTab" title="By Classification tree">
                 <template ngbTabContent>
                     <hr>
-                    <select class="form-control" id="selectClassifyItemOrg" name="selectClassifyItemOrg"
+                    <select class="form-control" id="selectClassificationOrg" name="selectClassificationOrg"
                             (change)="onChangeOrg($event.target.value)" required>
                         <option value="">Start by selecting an organization...</option>
                         <option *ngFor="let myOrg of myOrgs" value="{{myOrg}}">{{myOrg}}</option>

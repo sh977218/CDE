@@ -34,6 +34,7 @@ export class ClassifyCdesModalComponent implements OnInit {
     numberTotal;
 
     options = {
+        idField: "name",
         childrenField: "elements",
         displayField: "name",
         isExpandedField: "expanded",

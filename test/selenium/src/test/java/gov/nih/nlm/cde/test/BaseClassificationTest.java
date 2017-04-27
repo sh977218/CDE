@@ -121,7 +121,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
     }
 
-    public void _classifyCdesMethod(String[] categories){
+    public void _classifyCdesMethod(String[] categories) {
         clickElement(By.id("openClassifyCdesModalBtn"));
         textPresent("By recently added");
         _addClassificationMethodDo(categories);
@@ -154,7 +154,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        Assert.assertEquals(findElement(By.id(selector)).getText(),
+        Assert.assertEquals(findElement(By.id(selector + "-classifyBtn")).getText(),
                 categories[categories.length - 1]);
     }
 }
