@@ -186,7 +186,7 @@ public class NlmCdeBaseTest {
         countElasticElements(m);
 
         if (m.getAnnotation(SelectBrowser.class) != null) {
-            setDriver("ie");
+            setDriver("internet explorer");
         } else {
             setDriver(null);
         }
