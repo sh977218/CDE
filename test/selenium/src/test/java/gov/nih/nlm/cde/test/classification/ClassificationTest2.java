@@ -27,7 +27,7 @@ public class ClassificationTest2 extends BaseClassificationTest {
         textPresent("Population", By.id("newClassifyItemModalBody"));
         clickElement(By.id("Disease-expander"));
         textNotPresent("Amyotrophic Lateral Sclerosis", By.id("newClassifyItemModalBody"));
-        clickElement(By.xpath("//button[text() = 'Close']"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
         modalGone();
     }
 

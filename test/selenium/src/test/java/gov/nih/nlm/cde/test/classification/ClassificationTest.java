@@ -2,12 +2,8 @@ package gov.nih.nlm.cde.test.classification;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.List;
 
 import static com.jayway.restassured.RestAssured.get;
 
@@ -25,19 +21,18 @@ public class ClassificationTest extends BaseClassificationTest {
         hangon(1);
         _addClassificationMethod(new String[]{"NINDS", "Domain",
                 "Treatment/Intervention Data", "Therapies"});
-        clickElement(By.id("addClassification"));
-        List<WebElement> priorClassifs = driver.findElements(By
-                .xpath("//div[ol]"));
-        for (WebElement prior : priorClassifs) {
-            if (prior.getText().contains("Myasthenia Gravis")
-                    && prior.getText().contains("Supplemental")) {
-                prior.findElement(By.tagName("button")).click();
-                textPresent("Classification Already Exists");
-                closeAlert();
-            }
-        }
-        clickElement(By.xpath("//button[text() = 'Close']"));
-        modalGone();
+
+        _addClassificationMethod(new String[]{"NINDS", "Disease"});
+        textPresent("Classification Already Exists");
+        _addClassificationMethod(new String[]{"NINDS", "Disease",
+                "Myasthenia Gravis"});
+        textPresent("Classification Already Exists");
+        _addClassificationMethod(new String[]{"NINDS", "Disease",
+                "Myasthenia Gravis", "Classification"});
+        textPresent("Classification Already Exists");
+        _addClassificationMethod(new String[]{"NINDS", "Disease",
+                "Myasthenia Gravis", "Classification", "Supplemental"});
+        textPresent("Classification Already Exists");
 
         openClassificationAudit("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
         textPresent("classMgtUser");
@@ -54,7 +49,7 @@ public class ClassificationTest extends BaseClassificationTest {
 
     private void removeClassificationMethod(String[] categories) {
         String selector = "";
-        for (int i = 1; i < categories.length; i++) {
+        for (int i = 0; i < categories.length; i++) {
             selector += categories[i];
             if (i < categories.length - 1)
                 selector += ",";
@@ -73,10 +68,8 @@ public class ClassificationTest extends BaseClassificationTest {
         clickElement(By.id("classification_tab"));
         findElement(By.id("Domain,Assessments and Examinations,Imaging Diagnostics"));
         removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});
-        wait.until(ExpectedConditions.not(ExpectedConditions.
-                presenceOfAllElementsLocatedBy(By.id(
-                        "classification-Domain,Assessments and Examinations,Imaging Diagnostics"))));
-        findElement(By.id("classification-Assessments and Examinations"));
+
+        findElement(By.id("Domain,Assessments and Examinations"));
         removeClassificationMethod(new String[]{"Disease", "Myasthenia Gravis"});
         textNotPresent("Myasthenia Gravis");
         openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
@@ -91,7 +84,7 @@ public class ClassificationTest extends BaseClassificationTest {
         clickElement(By.id("Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics"));
         showSearchFilters();
         textPresent("Classification");
-        textPresent("NINDS (12");
+        textPresent(" NINDS (114)");
         textPresent("Imaging Diagnostics");
     }
 

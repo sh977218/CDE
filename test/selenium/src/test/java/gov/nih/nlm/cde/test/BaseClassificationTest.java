@@ -124,7 +124,18 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     public void _classifyCdesMethod(String[] categories) {
         clickElement(By.id("openClassifyCdesModalBtn"));
         textPresent("By recently added");
-        _addClassificationMethodDo(categories);
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        textPresent(categories[1]);
+        System.out.println("categories: " + Arrays.toString(categories));
+        String expanderStr = "";
+        for (int i = 1; i < categories.length - 1; i++) {
+            expanderStr = expanderStr + categories[i];
+            System.out.println("i: " + i);
+            System.out.println("expanderStr: " + expanderStr);
+            clickElement(By.id(expanderStr + "-expander"));
+            expanderStr += ",";
+        }
+        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
     }
 
     public void _addClassificationMethod(String[] categories) {
@@ -154,7 +165,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        Assert.assertEquals(findElement(By.id(selector + "-classifyBtn")).getText(),
+        Assert.assertEquals(findElement(By.id(selector)).getText(),
                 categories[categories.length - 1]);
     }
 }
