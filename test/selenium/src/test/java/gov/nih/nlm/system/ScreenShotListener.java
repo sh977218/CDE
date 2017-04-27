@@ -49,7 +49,10 @@ public class ScreenShotListener extends TestListenerAdapter {
 
     public void onTestSuccess(ITestResult itr) {
         String methodName = itr.getName();
-        saveLogs(methodName, null);
+        try {
+            saveLogs(methodName, null);
+        } catch (Exception e) {
+        }
     }
 
     private void saveLogs(String methodName, String extraText) {
