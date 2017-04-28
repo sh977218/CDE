@@ -89,7 +89,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values Wider");
         hangon(1);
         Assert.assertEquals(findElement(By.xpath("//*[*[text()='I was irritated more than people knew']]//*/span[text()='Never']")).getLocation().y,
-                findElement(By.xpath("//*[label[*()='I was irritated more than people knew']]//*/span[text()='Always']")).getLocation().y
+                findElement(By.xpath("//*[*[text()='I was irritated more than people knew']]//*/span[text()='Always']")).getLocation().y
         );
         clickElement(By.id("displayProfiles_tab"));
 
