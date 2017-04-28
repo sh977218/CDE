@@ -12,6 +12,7 @@ import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
+import { PermissibleValueComponent } from "./components/permissbleValue.component";
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
         DatasetsComponent,
         MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
-        ValueDomainSummaryComponent
+        ValueDomainSummaryComponent,
+        PermissibleValueComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
