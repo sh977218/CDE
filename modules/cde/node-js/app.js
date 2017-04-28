@@ -498,7 +498,7 @@ exports.init = function (app, daoManager) {
                 elements: [{
                     _id: req.body.eltId
                 }],
-                action: "delete",
+                action: "add",
                 path: [req.body.orgName].concat(req.body.categories)
             });
 
@@ -524,7 +524,7 @@ exports.init = function (app, daoManager) {
                 path: [req.body.orgName].concat(req.body.categories)
             });
         });
-    })
+    });
 
     require('mongoose-schema-jsonschema')(require('mongoose'));
 
