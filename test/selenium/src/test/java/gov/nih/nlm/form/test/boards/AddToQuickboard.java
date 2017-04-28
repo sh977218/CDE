@@ -9,6 +9,7 @@ public class AddToQuickboard extends BoardTest {
 
     @Test
     public void addToQuickBoard() {
+        mustBeLoggedInAs(formboarduser, password);
         goToBoard("TestQuickboard");
         textPresent("Quick Board (0)");
         clickElement(By.id("addToCompare_0"));
