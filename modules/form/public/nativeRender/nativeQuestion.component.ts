@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, ViewChild, ViewContainerRef } from "@
 import { NativeRenderService } from "./nativeRender.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { SkipLogicService } from "../skipLogic.service";
-import { FormRenderService } from "../formRender.service";
+import { FormService } from "../form.service";
 
 @Component({
     selector: "cde-native-question",
@@ -15,7 +15,7 @@ export class NativeQuestionComponent {
     @Input() index: any;
 
     constructor(private sanitizer: DomSanitizer,
-                public formRenderService: FormRenderService,
+                public formService: FormService,
                 public skipLogicService: SkipLogicService,
                 public nativeRenderService: NativeRenderService) {
     }

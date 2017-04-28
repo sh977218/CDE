@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { FormRenderService } from "./formRender.service";
+import { FormService } from "./form.service";
 
 @Injectable()
 export class SkipLogicService {
     preSkipLogicSelect = "";
 
-    constructor(private formRender: FormRenderService) {}
+    constructor(private formService: FormService) {}
 
     evaluateSkipLogic(condition, formElements, question, elt, errors = []) {
         if (!condition) return true;
@@ -27,10 +27,10 @@ export class SkipLogicService {
         }
         let operator = operatorArr[0];
         let expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
-        let realAnswerArr = this.formRender.getQuestions(formElements, questionLabel);
+        let realAnswerArr = this.formService.getQuestions(formElements, questionLabel);
         let realAnswerObj = realAnswerArr[0];
         let realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ?
-            this.formRender.score(realAnswerObj, elt) : realAnswerObj.question.answer) : undefined;
+            this.formService.score(realAnswerObj, elt) : realAnswerObj.question.answer) : undefined;
         if (realAnswer === undefined || realAnswer === null ||
             (typeof realAnswer === "number" && isNaN(realAnswer))) realAnswer = "";
         if (expectedAnswer === "" && operator === "=") {

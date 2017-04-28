@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { SkipLogicService } from "../../skipLogic.service";
-import { Observable } from "rxjs/Observable";
+import { Http, Response } from "@angular/http";
+import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
+import { Observable } from "rxjs/Observable";
+
+import { SkipLogicService } from "../../skipLogic.service";
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -14,11 +17,10 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
+    @ViewChild("formDescriptionNameSelectTmpl") formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild("formDescriptionQuestionTmpl") formDescriptionQuestionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionQuestionEditTmpl") formDescriptionQuestionEditTmpl: TemplateRef<any>;
 
-    question: any;
-    parent: any;
     answersOptions: any = {
         allowClear: true,
         multiple: true,
@@ -33,6 +35,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             }
         }
     };
+    answersSelected: Array<string>;
+    nameSelectModal: any = {};
+    nameSelectModalRef: NgbModalRef;
+    question: any;
+    parent: any;
     uomOptions: any = {
         multiple: true,
         tags: true,
@@ -42,9 +49,45 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             }
         }
     };
-    answersSelected: Array<string>;
 
-    constructor(public skipLogicService: SkipLogicService) {}
+    constructor(private http: Http,
+                public modalService: NgbModal,
+                public skipLogicService: SkipLogicService) {
+        this.nameSelectModal.checkAndUpdateLabel = (section, doUpdate = false, selectedNaming = false) => {
+            section.formElements.forEach((fe) => {
+                if (fe.skipLogic && fe.skipLogic.condition) {
+                    let updateSkipLogic = false;
+                    let tokens = this.skipLogicService.tokenSplitter(fe.skipLogic.condition);
+                    tokens.forEach((token, i) => {
+                        if (i % 2 === 0 && token === this.nameSelectModal.question.label) {
+                            this.nameSelectModal.updateSkipLogic = true;
+                            updateSkipLogic = true;
+                            if (doUpdate && selectedNaming)
+                                tokens[i] = '"' + selectedNaming + '"';
+                        } else if (i % 2 === 0 && token !== this.nameSelectModal.question.label)
+                            tokens[i] = '"' + tokens[i] + '"';
+                    });
+                    if (doUpdate && updateSkipLogic) {
+                        fe.skipLogic.condition = tokens.join('');
+                        fe.updatedSkipLogic = true;
+                    }
+                }
+            });
+        };
+
+        this.nameSelectModal.okSelect = (naming = null) => {
+            if (!naming) {
+                this.nameSelectModal.question.label = "";
+                this.nameSelectModal.question.hideLabel = true;
+            }
+            else {
+                this.nameSelectModal.checkAndUpdateLabel(this.nameSelectModal.section, true, naming.designation);
+                this.nameSelectModal.question.label = naming.designation;
+                this.nameSelectModal.question.hideLabel = false;
+            }
+            this.nameSelectModalRef.close();
+        };
+    }
 
     ngOnInit() {
         this.question = this.node.data;
@@ -74,12 +117,12 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    getRepeatLabel(section) {
-        if (!section.repeat)
+    getRepeatLabel(fe) {
+        if (!fe.repeat)
             return "";
-        if (section.repeat[0] === "F")
+        if (fe.repeat[0] === "F")
             return "over First Question";
-        return parseInt(section.repeat) + " times";
+        return parseInt(fe.repeat) + " times";
     }
 
     getSkipLogicOptions = (text$: Observable<string>) =>
@@ -110,20 +153,24 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     openNameSelect(question, section) {
-        // $modal.open({
-        //     animation: false,
-        //     resolve: {
-        //         question: function () {
-        //             return question;
-        //         },
-        //         section: function () {
-        //             return section;
-        //         }
-        //     }
-        // }).result.then(function () {
-        //     this.stageElt.emit();
-        // }, function () {
-        // });
+        this.nameSelectModal.section = section;
+        this.nameSelectModal.question = question;
+        this.nameSelectModal.cde = question.question.cde;
+        let url = "/debytinyid/" + this.nameSelectModal.cde.tinyId;
+        if (this.nameSelectModal.cde.version) url += "/" + this.nameSelectModal.cde.version;
+        this.http.get(url).map((res: Response) => res.json())
+            .subscribe((response) => {
+                this.nameSelectModal.cde = response;
+            }, () => {
+                this.nameSelectModal.cde = "error";
+            });
+        this.nameSelectModal.checkAndUpdateLabel(section);
+
+        this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
+        this.nameSelectModalRef.result.then(result => {
+            this.stageElt.emit();
+        }, () => {
+        });
     }
 
     removeNode(node) {

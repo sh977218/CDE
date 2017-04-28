@@ -8,7 +8,7 @@
     </div>
 
     <div attr.id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
-        <div *ngIf="formElement.question.isScore">Score: <span [textContent]="formRenderService.score(formElement)"></span></div>
+        <div *ngIf="formElement.question.isScore">Score: <span [textContent]="formService.score(formElement)"></span></div>
         <div *ngIf="!formElement.question.isScore">
             <div [ngSwitch]="formElement.question.datatype">
                 <div *ngSwitchCase="'Value List'">

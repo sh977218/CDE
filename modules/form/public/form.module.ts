@@ -22,7 +22,7 @@ import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
 import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 
-import { FormRenderService } from "./formRender.service";
+import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
 
 @NgModule({
@@ -57,7 +57,7 @@ import { SkipLogicService } from "./skipLogic.service";
         NativeRenderComponent,
     ],
     providers: [
-        FormRenderService,
+        FormService,
         SkipLogicService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

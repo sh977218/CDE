@@ -36,7 +36,7 @@
 
 <template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: section, canCurate: canCurate }"></template>
 
-<template #formDescriptionSectionTmpl let-canCurate>
+<template #formDescriptionSectionTmpl>
     <div class="section_view">
         <div>
             <div *ngIf="!(canCurate && section.edit)">
