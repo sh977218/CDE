@@ -200,7 +200,7 @@ exports.init = function (app, daoManager) {
                 });
             }
         });
-    })
+    });
 
     // This is for tests only
     app.post('/sendMockFormData', function (req, res) {

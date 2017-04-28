@@ -100,6 +100,7 @@ exports.addClassification = function (body, dao, cb) {
             steward = classificationShared.findSteward(elt, body.orgName);
         }
         classificationShared.addCategory(steward.object, body.categories, function (result) {
+            elt.updated = new Date();
             elt.markModified("classification");
             elt.save(function (err) {
                 if (err) cb(err);
@@ -120,6 +121,7 @@ exports.removeClassification = function (body, dao, cb) {
         if (!elt) return cb("Can not find elt with _id: " + body.eltId);
         let steward = classificationShared.findSteward(elt, body.orgName);
         classificationShared.removeCategory(steward.object, body.categories, function (result) {
+            elt.updated = new Date();
             elt.markModified("classification");
             elt.save(function (err) {
                 if (err) cb(err);
