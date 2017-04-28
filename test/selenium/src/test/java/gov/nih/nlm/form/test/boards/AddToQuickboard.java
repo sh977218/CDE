@@ -9,14 +9,13 @@ public class AddToQuickboard extends BoardTest {
 
     @Test
     public void addToQuickBoard() {
-        mustBeLoggedInAs(testAdmin_username, password);
-        goToBoard("Form Board");
+        goToBoard("TestQuickboard");
         textPresent("Quick Board (0)");
         clickElement(By.id("addToCompare_0"));
         textPresent("Quick Board (1)");
         clickElement(By.id("menu_qb_link"));
         clickElement(By.id("qb_form_tab"));
-        clickElement(By.linkText("cdeCompare1"));
+        clickElement(By.linkText("Walking Speed"));
     }
 
 }
