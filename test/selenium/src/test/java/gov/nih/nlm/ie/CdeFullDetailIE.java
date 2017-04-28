@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.ie;
+package gov.nih.nlm.ie;
 
 import gov.nih.nlm.cde.test.search.CdeSearchTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
