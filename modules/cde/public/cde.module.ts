@@ -29,7 +29,8 @@ import { PermissibleValueComponent } from "./components/permissbleValue.componen
         MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
         ValueDomainSummaryComponent,
-        CdeSummaryListComponent
+        CdeSummaryListComponent,
+        PermissibleValueComponent
     ],
     entryComponents: [
         ConceptsComponent,

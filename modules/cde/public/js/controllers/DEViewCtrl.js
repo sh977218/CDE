@@ -59,7 +59,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             }
         },
         pvs: {
-            heading: "Permissible Values", includes: ['/cde/public/html/permissbleValue.html'],
+            heading: "Permissible Values", includes: ['/cde/public/html/permissibleValue.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             }

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -7,5 +7,11 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
     templateUrl: "./permissibleValue.component.html"
 })
 export class PermissibleValueComponent {
+    @Input() public elt: any;
+    public valueTypes = ["Value List", "Text", "Date", "Number", "Externally Defined"];
+    public edit = true;
 
+    saveEditable(event) {
+
+    }
 }

@@ -17,17 +17,17 @@ public class CDEUtility {
 
     public void checkDataQuality(MongoOperations mongoOperation, String url) {
         List dataTypeList = mongoOperation.getCollection("ninds").distinct("cdes.dataType");
-        if (dataTypeList.size() > Consts.maxDatatypeSize) {
+        if (dataTypeList.size() > Constants.MAX_DATATYPE_SIZE) {
             System.out.println("data type is not good. size: " + dataTypeList.size() + " url:" + url);
             System.exit(1);
         }
         List inputRestrictionsList = mongoOperation.getCollection("ninds").distinct("cdes.inputRestrictions");
-        if (inputRestrictionsList.size() > Consts.maxInputRestrictionsSize) {
+        if (inputRestrictionsList.size() > Constants.MAX_INPUT_RESTRICTIONS_SIZE) {
             System.out.println("inputRestrictionsList is not good. size: " + inputRestrictionsList.size() + " url:" + url);
             System.exit(1);
         }
         List distinctDiseaseNameList = mongoOperation.getCollection("ninds").distinct("diseaseName");
-        if (distinctDiseaseNameList.size() > Consts.diseaseNum) {
+        if (distinctDiseaseNameList.size() > Constants.DISEASE_NUM) {
             System.out.println("distinct diseaseName is not good. size: " + distinctDiseaseNameList.size() + " url:" + url);
             System.exit(1);
         }
@@ -101,7 +101,7 @@ public class CDEUtility {
             for (int j = 0; j < headers.size(); j++) {
                 String text = tds.get(j).getText().replace("\"", " ").trim();
                 try {
-                    String cdeField = Consts.fieldPropertyMap.get(headers.get(j));
+                    String cdeField = Constants.FIELD_PROPERTY_MAP.get(headers.get(j));
                     Field field = cde.getClass().getDeclaredField(cdeField);
                     field.set(cde, text);
                 } catch (Exception e) {
