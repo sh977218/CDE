@@ -366,7 +366,7 @@ public class NlmCdeBaseTest {
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
     }
 
-    private void searchEltAny(String name, String type) {
+    protected void searchEltAny(String name, String type) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
