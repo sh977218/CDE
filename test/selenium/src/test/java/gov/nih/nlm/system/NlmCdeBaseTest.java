@@ -71,7 +71,6 @@ public class NlmCdeBaseTest {
     protected static String formboarduser = "formboarduser";
     protected static String pinUser = "pinuser";
     protected static String unpinUser = "unpinuser";
-    protected static String docEditor = "docEditor";
     protected static String classificationMgtUser_username = "classMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
     protected static String anonymousCommentUser2_username = "CommentUser2";
@@ -98,10 +97,11 @@ public class NlmCdeBaseTest {
     private ScheduledExecutorService videoExec;
 
     private int videoRate = 300;
-    private int totalCdes = 11700;
-    private int totalForms = 815;
 
     private void countElasticElements(Method m) {
+        int totalCdes = 11700;
+        int totalForms = 815;
+
         int nbOfCde = 0, nbOfForms = 0, waitTimeCdes = 0, waitTimeForms = 0;
         for (int i = 0; i < 15 && nbOfCde < totalCdes; i++) {
             hangon(waitTimeCdes);
@@ -366,7 +366,7 @@ public class NlmCdeBaseTest {
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
     }
 
-    protected void searchEltAny(String name, String type) {
+    private void searchEltAny(String name, String type) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
@@ -436,7 +436,7 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
 
-    public void waitForDownload(String fileName) {
+    protected void waitForDownload(String fileName) {
         for (int i = 0; i < 30; i++) {
             try {
                 String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/" + fileName)));
@@ -470,7 +470,7 @@ public class NlmCdeBaseTest {
         } catch (WebDriverException e) {
             JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
             // IE does not support scrollY
-            Object yCoordinate = javascriptExecutor.executeScript("var top = typeof window.scrollY === \"undefined” ? window.pageYOffset : window.scrollY;");
+            Object yCoordinate = javascriptExecutor.executeScript("var top = typeof window.scrollY === 'undefined' ? window.pageYOffset : window.scrollY;");
             Integer value;
             if (yCoordinate instanceof Double) {
                 value = ((Double) yCoordinate).intValue();
