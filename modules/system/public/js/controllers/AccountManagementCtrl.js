@@ -159,16 +159,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $scope.updateOrg(org);
     };
 
-    $scope.addOrgProperty = function(org) {
-        $modal.open({
-            animation: false,
-            templateUrl: '/system/public/html/addValueModal.html',
-            controller: function () {}
-        }).result.then(function (newValue) {
-            org.propertyKeys.push(newValue);
-            $scope.updateOrg(org);
-        }, function () {});
-    };
     $scope.addOrgTags = function(org) {
         $modal.open({
             animation: false,

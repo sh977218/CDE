@@ -1,0 +1,32 @@
+<table class="table table-border table-responsive">
+    <tr>
+        <th>Organization Name:</th>
+        <th>Properties:</th>
+        <th>Tags:</th>
+    </tr>
+    <tr *ngFor="let o of orgs | orderBy:'name'">
+        <td id="orgListName-{{o.name}}">
+            {{o.name}}
+        </td>
+        <td>
+            <span ng-repeat="p in o.propertyKeys">
+                <span class="label label-default"><i class="fa fa-times" title="Remove"
+                                     ng-click="removePropertyFromOrg(p, o)"></i> {{p}}</span>
+            </span>
+            <span>
+                <i class="fa fa-plus-square-o" ng-click="addOrgProperty(o)"
+                   id="add_org_props_{{o.name}}"></i>
+            </span>
+        </td>
+        <td>
+                        <span ng-if="!nameTags.editMode" ng-repeat="p in o.nameTags">
+                            <span class="label label-default"><i class="fa fa-times" title="Remove"
+                                                                 ng-click="removeTagsFromOrg(p, o)"></i> {{p}}</span>
+                        </span>
+            <span>
+                            <i class="fa fa-plus-square-o" ng-click="addOrgTags(o)" id="add_org_context_{{o.name}}"></i>
+                        </span>
+        </td>
+
+    </tr>
+</table>

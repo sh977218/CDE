@@ -424,6 +424,9 @@ angular.module('systemModule').directive('user-comments', downgradeComponent({co
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
 angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
 
+import {ListManagementComponent} from "../components/siteAdmin/listManagement/listManagement.component";
+angular.module('systemModule').directive('cdeListManagement', downgradeComponent({component: ListManagementComponent, inputs: [], outputs: []}));
+
 import {OrgAdminComponent} from "../components/siteAdmin/orgAdmin/orgAdmin.component";
 angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({component: OrgAdminComponent, inputs: [], outputs: []}));
 
