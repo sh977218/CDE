@@ -12,7 +12,7 @@ public class ChangePvIE extends NlmCdeBaseTest {
     @Test
     @SelectBrowser
     public void changePvIE() {
-        parentTest.changePermissibleValue();
+        parentTest.changePermissibleValue("Brain swelling indicator");
     }
 
 }
