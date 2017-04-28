@@ -43,6 +43,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     $scope.accordionListStyle = "";
                     if (response.data.board) {
                         $scope.board = response.data.board;
+                        if ($scope.board.type === "form") { $scope.quickBoard = $scope.formQuickBoard; }
                         var elts = $scope[$scope.board.type + 's'] = [];
                         $scope.module = $scope.board.type;
                         $scope.setViewTypes($scope.module);
