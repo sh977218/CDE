@@ -468,13 +468,9 @@ public class NlmCdeBaseTest {
             closeAlert();
             findElement(by).click();
         } catch (WebDriverException e) {
-/*
-            WebElement element = findElement(by);
-            JavascriptExecutor executor = (JavascriptExecutor)driver;
-            executor.executeScript("arguments[0].click()", element);
-*/
             JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
-            Object yCoordinate = javascriptExecutor.executeScript("return window.scrollY;");
+            // IE does not support scrollY
+            Object yCoordinate = javascriptExecutor.executeScript("var top = typeof window.scrollY === \"undefined” ? window.pageYOffset : window.scrollY;");
             Integer value;
             if (yCoordinate instanceof Double) {
                 value = ((Double) yCoordinate).intValue();
