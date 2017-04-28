@@ -1,7 +1,6 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { Select2OptionData } from "ng2-select2";
 
 @Component({
     selector: "cde-admin-item-naming",
@@ -21,8 +20,7 @@ export class NamingComponent implements OnInit {
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
                 @Inject("OrgHelpers") private orgHelpers,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
+                public modalService: NgbModal) {
     }
 
     ngOnInit(): void {
@@ -52,10 +50,7 @@ export class NamingComponent implements OnInit {
     }
     openNewNamingModal() {
         this.modalRef = this.modalService.open(this.newNamingContent, {size: "lg"});
-        this.modalRef.result.then(result => {
-            this.newNaming = {};
-        }, () => {
-        });
+        this.modalRef.result.then(() => this.newNaming = {});
     }
 
     addNewNaming() {

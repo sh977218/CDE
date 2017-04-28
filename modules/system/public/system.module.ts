@@ -18,6 +18,7 @@ import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { JsonpModule } from "@angular/http";
+import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 
 @NgModule({
     imports: [
@@ -42,6 +43,7 @@ import { JsonpModule } from "@angular/http";
         UsersMgtComponent,
         DailyUsageComponent,
         OrgAdminComponent,
+        ListManagementComponent,
         PlaceHoldEmptyPipe
     ],
     entryComponents: [
@@ -52,6 +54,7 @@ import { JsonpModule } from "@angular/http";
         RegistrationComponent,
         UsersMgtComponent,
         DailyUsageComponent,
+        ListManagementComponent,
         OrgAdminComponent
     ],
     providers: [],

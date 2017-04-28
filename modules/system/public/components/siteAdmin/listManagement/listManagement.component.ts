@@ -10,45 +10,48 @@ import "rxjs/add/operator/map";
 export class ListManagementComponent implements OnInit {
 
     orgs: [any];
+    allPropertyKeys: String[] = [];
+    allTags: String[] = [];
+    public options: Select2Options;
 
     constructor(
         private http: Http,
         @Inject("Alert") private Alert,
-        @Inject("userResource") private userService,
-    ) {
-    }
+        @Inject("OrgHelpers") private orgHelpers
+    ) {}
 
     ngOnInit () {
+        this.getOrgs();
+        this.options = {
+            multiple: true,
+            tags: true,
+            allowClear: true
+        };
+    }
+
+    getOrgs () {
         this.http.get("/managedOrgs").map(r => r.json()).subscribe(response => {
             this.orgs = response.orgs;
-            // $scope.orgNames = $scope.orgs.map(function(o) {return o.name;});
-            // $scope.orgs.forEach(function (o) {
-            //     if (o.propertyKeys) {
-            //         allPropertyKeys = allPropertyKeys.concat(o.propertyKeys);
-            //     }
-            //     if (o.nameTags) {
-            //         allTags = allTags.concat(o.nameTags);
-            //     }
-            // });
-            // allPropertyKeys = allPropertyKeys.filter(function(item, pos, self) {
-            //     return self.indexOf(item) === pos;
-            // });
-            // allTags = allTags.filter(function(item, pos, self) {
-            //     return self.indexOf(item) === pos;
-            // });
+            this.orgs.forEach(o => {
+                if (o.propertyKeys) this.allPropertyKeys = this.allPropertyKeys.concat(o.propertyKeys);
+                if (o.nameTags) this.allTags = this.allTags.concat(o.nameTags);
+            });
+            this.orgs.sort((a, b) => a.name - b.name);
+            this.allPropertyKeys = this.allPropertyKeys.filter((item, pos, self) => self.indexOf(item) === pos);
+            this.allTags = this.allTags.filter((item, pos, self) => self.indexOf(item) === pos);
         });
     }
 
+    tagsChanged(o, data: {value: string[]}) {
+        if (!data.value) data.value = [];
+        o.nameTags = data.value;
+        this.saveOrg(o);
+    }
 
-    $scope.addOrgProperty = function(org) {
-        $modal.open({
-            animation: false,
-            templateUrl: '/system/public/html/addValueModal.html',
-            controller: function () {}
-        }).result.then(function (newValue) {
-            org.propertyKeys.push(newValue);
-            $scope.updateOrg(org);
-        }, function () {});
-    };
+    saveOrg (org) {
+        this.http.post("/updateOrg", org).subscribe(() => {
+            this.orgHelpers.getOrgsDetailedInfoAPI(() => this.Alert.addAlert("success", "Org Updated"));
+        }, response => this.Alert.addAlert("danger", "Error. Unable to save."));
+    }
 
 }

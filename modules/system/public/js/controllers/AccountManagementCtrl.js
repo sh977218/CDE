@@ -146,30 +146,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         );
     };
 
-    $scope.removePropertyFromOrg = function(p, org) {
-        org.propertyKeys = org.propertyKeys.filter(function (k) {
-            return k !== p;
-        });
-        $scope.updateOrg(org);
-    };
-    $scope.removeTagsFromOrg = function(c, org) {
-        org.nameTags = org.nameTags.filter(function (k) {
-            return k !== c;
-        });
-        $scope.updateOrg(org);
-    };
-
-    $scope.addOrgTags = function(org) {
-        $modal.open({
-            animation: false,
-            templateUrl: '/system/public/html/addValueModal.html',
-            controller: function () {}
-        }).result.then(function (newValue) {
-            org.nameTags.push(newValue);
-            $scope.updateOrg(org);
-        }, function () {});
-    };
-
     $scope.updateOrg = function (org) {
         $timeout(function(){
             AccountManagement.updateOrg(org,
