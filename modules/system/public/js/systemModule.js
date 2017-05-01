@@ -290,7 +290,7 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
 }]);
 
 
-angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
+angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
     var isAllowedModel = {};
 
     isAllowedModel.isAllowed = function (CuratedItem) {
@@ -342,6 +342,14 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         }
     };
 
+    isAllowedModel.isOrgCurator = function () {
+        return authShared.isOrgCurator(userResource.user);
+    };
+
+    isAllowedModel.isCuratorFor = function (orgName) {
+        return authShared.isCuratorOf(userResource.user, orgName);
+    };
+
     isAllowedModel.hasRole = function (role) {
         return authShared.hasRole(userResource.user, role);
     };
@@ -350,6 +358,10 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         return authShared.isSiteAdmin(userResource.user);
     };
 
+    isAllowedModel.showWorkingGroups = function (stewardClassifications) {
+        return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user)
+            || authShared.isSiteAdmin(userResource.user);
+    };
     return isAllowedModel;
 }]);
 
@@ -453,3 +465,6 @@ angular.module('systemModule').directive('cdeRegistration', downgradeComponent({
 
 import {LinkedBoardsComponent} from "../../../board/public/components/linkedBoards/linkedBoards.component";
 angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({component: LinkedBoardsComponent, inputs: ['elt'], outputs: []}));
+
+import {ClassificationComponent} from "../../../adminItem/public/components/classification/classification.component";
+angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({component: ClassificationComponent, inputs: ['elt'], outputs: []}));

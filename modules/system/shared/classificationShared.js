@@ -34,6 +34,22 @@ exports.modifyCategory = function (tree, fields, action, cb) {
     }
 };
 
+exports.removeCategory = function (tree, fields, cb) {
+    var classification = this;
+    var lastLevel = classification.fetchLevel(tree, fields);
+    for (var i = 0; i < lastLevel.elements.length; i++) {
+        if (lastLevel.elements[i] === null) {
+            lastLevel.elements.splice(i, 1);
+            i = i - 1;
+        }
+        if (lastLevel.elements[i].name === fields[fields.length - 1]) {
+            lastLevel.elements.splice(i, 1);
+            return cb("success removed.");
+        }
+    }
+    return cb("Did not find match classifications.")
+};
+
 exports.classifyItem = function (item, orgName, classifPath) {
     var steward = exports.findSteward(item, orgName);
     if (!steward) {
@@ -54,7 +70,7 @@ exports.addCategory = function (tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLevel(tree, fields);
     if (classification.isDuplicate(lastLevel.elements, fields[fields.length - 1])) {
-        if (cb) return cb({error: {message: "Classification Already Exists"}});
+        if (cb) return cb("Classification Already Exists");
     } else {
         lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
         if (cb) return cb();

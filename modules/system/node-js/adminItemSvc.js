@@ -11,6 +11,9 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , streamifier = require('streamifier')
     , ioServer = require("./ioServer")
     , usersrvc = require('./usersrvc')
+    , classificationNode = require('./classificationNode')
+    , classificationShared = require('../shared/classificationShared.js')
+    , mongo_cde = require('../../cde/node-js/mongo-cde')
     ;
 
 exports.save = function (req, res, dao, cb) {
@@ -21,13 +24,11 @@ exports.save = function (req, res, dao, cb) {
                 res.send("Missing Steward");
             } else {
                 if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
-                    req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 &&
-                    !req.user.siteAdmin) {
+                    req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !req.user.siteAdmin) {
                     res.status(403).send("not authorized");
                 } else if (elt.registrationState && elt.registrationState.registrationStatus) {
                     if ((elt.registrationState.registrationStatus === "Standard" ||
-                        elt.registrationState.registrationStatus === " Preferred Standard") &&
-                        !req.user.siteAdmin) {
+                        elt.registrationState.registrationStatus === " Preferred Standard") && !req.user.siteAdmin) {
                         return res.status(403).send("Not authorized");
                     }
                     return dao.create(elt, req.user, function (err, savedItem) {
@@ -45,19 +46,16 @@ exports.save = function (req, res, dao, cb) {
                     return res.send("Element is archived.");
                 }
                 if (req.user.orgCurator.indexOf(item.stewardOrg.name) < 0 &&
-                    req.user.orgAdmin.indexOf(item.stewardOrg.name) < 0 &&
-                    !req.user.siteAdmin) {
+                    req.user.orgAdmin.indexOf(item.stewardOrg.name) < 0 && !req.user.siteAdmin) {
                     res.status(403).send("Not authorized");
                 } else {
                     if ((item.registrationState.registrationStatus === "Standard" ||
-                        item.registrationState.registrationStatus === "Preferred Standard") &&
-                        !req.user.siteAdmin) {
+                        item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
                         res.status(403).send("This record is already standard.");
                     } else {
                         if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
                             (item.registrationState.registrationStatus === "Standard" ||
-                            item.registrationState.registrationStatus === "Preferred Standard") &&
-                            !req.user.siteAdmin
+                            item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
                         ) {
                             res.status(403).send("Not authorized");
                         } else {
@@ -207,33 +205,40 @@ setInterval(function () {
         'board': config.publicUrl + '/board/'
     };
 
-    mongo_data_system.Comment.find({replies: {$elemMatch: {created: {$gte: d}, status: "active"}}}, function (err, comments) {
+    mongo_data_system.Comment.find({
+        replies: {
+            $elemMatch: {
+                created: {$gte: d},
+                status: "active"
+            }
+        }
+    }, function (err, comments) {
         var emails = {};
 
         comments.forEach(function (comment) {
-                var usernamesForThisComment = [];
-                var allComments = [];
-                allComments.push(comment);
-                if (comment.replies && comment.replies.length > 0) {
-                    allComments = allComments.concat(comment.get('replies'));
-                    allComments.pop();
-                }
-                allComments.forEach(function(commentOrReply) {
-                    if (commentOrReply.status === 'active' &&
-                        usernamesForThisComment.indexOf(commentOrReply.username) === -1) {
+            var usernamesForThisComment = [];
+            var allComments = [];
+            allComments.push(comment);
+            if (comment.replies && comment.replies.length > 0) {
+                allComments = allComments.concat(comment.get('replies'));
+                allComments.pop();
+            }
+            allComments.forEach(function (commentOrReply) {
+                if (commentOrReply.status === 'active' &&
+                    usernamesForThisComment.indexOf(commentOrReply.username) === -1) {
 
-                        if (!emails[commentOrReply.username]) emails[commentOrReply.username] = [];
-                        usernamesForThisComment.push(commentOrReply.username);
-                        var message = 'Somebody replied to one of your comments. See the comment here: ' +
-                            urlMap[comment.element.eltType] + comment.element.eltId;
-                        if (emails[commentOrReply.username].indexOf(message) === -1) {
-                            emails[commentOrReply.username].push(message);
-                        }
+                    if (!emails[commentOrReply.username]) emails[commentOrReply.username] = [];
+                    usernamesForThisComment.push(commentOrReply.username);
+                    var message = 'Somebody replied to one of your comments. See the comment here: ' +
+                        urlMap[comment.element.eltType] + comment.element.eltId;
+                    if (emails[commentOrReply.username].indexOf(message) === -1) {
+                        emails[commentOrReply.username].push(message);
                     }
-                });
+                }
             });
+        });
 
-        Object.keys(emails).forEach(function(username) {
+        Object.keys(emails).forEach(function (username) {
             mongo_data_system.userByName(username, function (err, u) {
                 if (u && u.email && u.email.length > 0) {
                     email.emailUsers({
@@ -286,7 +291,7 @@ exports.addComment = function (req, res, dao) {
                     };
                     exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
-               comment.save(function (err) {
+                comment.save(function (err) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot add comment.", {
                             origin: "system.adminItemSvc.addComment",
@@ -300,7 +305,7 @@ exports.addComment = function (req, res, dao) {
                         res.send({message: message});
                     }
 
-               });
+                });
             }
         });
     } else {
@@ -358,7 +363,7 @@ exports.replyToComment = function (req, res) {
                                 element: {
                                     eltType: comment.element.eltType,
                                     eltId: comment.element.eltId,
-                                    name:  req.body.eltName
+                                    name: req.body.eltName
                                 }
                                 , comment: {
                                     commentId: comment._id,
@@ -491,7 +496,7 @@ exports.declineComment = function (req, res) {
                 res.status(401).send();
             }
         } else {
-            comment.remove(function(err) {
+            comment.remove(function (err) {
                 if (err) res.status(500).send();
                 return res.send("Comment declined");
             })
@@ -547,31 +552,37 @@ exports.orgComments = function (req, res) {
     mongo_data_system.Comment.aggregate(
         [
             {$match: {'status': {$ne: 'deleted'}}},
-            {$lookup: {
-                from: 'dataelements',
-                localField: 'element.eltId',
-                foreignField: 'tinyId',
-                as: 'embeddedCde'
-            }},
-            {$lookup: {
-                from: 'forms',
-                localField: 'element.eltId',
-                foreignField: 'tinyId',
-                as: 'embeddedForm'
-            }},
-            {$match: {
-                $or: [
-                    {'embeddedCde.stewardOrg.name': {$in: myOrgs}},
-                    {'embeddedForm.stewardOrg.name': {$in: myOrgs}},
-                    {'embeddedCde.classification.stewardOrg.name': {$in: myOrgs}},
-                    {'embeddedForm.classification.stewardOrg.name': {$in: myOrgs}}
-                ]
-            }},
+            {
+                $lookup: {
+                    from: 'dataelements',
+                    localField: 'element.eltId',
+                    foreignField: 'tinyId',
+                    as: 'embeddedCde'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'forms',
+                    localField: 'element.eltId',
+                    foreignField: 'tinyId',
+                    as: 'embeddedForm'
+                }
+            },
+            {
+                $match: {
+                    $or: [
+                        {'embeddedCde.stewardOrg.name': {$in: myOrgs}},
+                        {'embeddedForm.stewardOrg.name': {$in: myOrgs}},
+                        {'embeddedCde.classification.stewardOrg.name': {$in: myOrgs}},
+                        {'embeddedForm.classification.stewardOrg.name': {$in: myOrgs}}
+                    ]
+                }
+            },
             {$sort: {created: -1}},
             {$skip: parseInt(req.params.from)},
             {$limit: parseInt(req.params.size)}
         ]
-    ).exec(function(err, results) {
+    ).exec(function (err, results) {
         if (err) {
             console.log(err);
             return res.status(500).send("Unable to retrieve comments");
@@ -596,20 +607,17 @@ exports.acceptFork = function (req, res, dao) {
                         return res.send("Not a fork");
                     }
                     if (req.user.orgCurator.indexOf(orig.stewardOrg.name) < 0 &&
-                        req.user.orgAdmin.indexOf(orig.stewardOrg.name) < 0 &&
-                        !req.user.siteAdmin) {
+                        req.user.orgAdmin.indexOf(orig.stewardOrg.name) < 0 && !req.user.siteAdmin) {
                         res.status(403).send("not authorized");
                     } else {
                         if ((orig.registrationState.registrationStatus === "Standard" ||
-                            orig.registrationState.registrationStatus === "Preferred Standard") &&
-                            !req.user.siteAdmin) {
+                            orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
                             res.send("This record is already standard.");
                         } else {
                             if ((orig.registrationState.registrationStatus !== "Standard" &&
                                 orig.registrationState.registrationStatus !== " Preferred Standard") &&
                                 (orig.registrationState.registrationStatus === "Standard" ||
-                                orig.registrationState.registrationStatus === "Preferred Standard") &&
-                                !req.user.siteAdmin
+                                orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
                             ) {
                                 res.status(403).send("not authorized");
                             } else {
@@ -637,8 +645,7 @@ exports.fork = function (req, res, dao) {
                     return res.send("Element is archived.");
                 }
                 if (req.user.orgCurator.length < 0 &&
-                    req.user.orgAdmin.length < 0 &&
-                    !req.user.siteAdmin) {
+                    req.user.orgAdmin.length < 0 && !req.user.siteAdmin) {
                     res.status(403).send("not authorized");
                 } else {
                     item.stewardOrg.name = req.body.org;
@@ -668,15 +675,14 @@ exports.forkRoot = function (req, res, dao) {
 exports.bulkAction = function (ids, action, cb) {
     var eltsTotal = ids.length;
     var eltsProcessed = 0;
-    async.each(ids,
-        function (id, cb) {
+    async.each(ids, function (id, doneOne) {
             action(id, function () {
                 eltsProcessed++;
-                cb();
+                doneOne(null, eltsProcessed);
             });
         },
         function () {
-            if (eltsTotal === eltsProcessed) cb();
+            if (eltsTotal === eltsProcessed) cb(null);
             else cb("Task not performed completely!");
         }
     );
@@ -687,11 +693,40 @@ exports.hideProprietaryIds = function (elt) {
         var blackList = [
             "LOINC"
         ];
-        elt.ids.forEach(function(id) {
+        elt.ids.forEach(function (id) {
             if (blackList.indexOf(id.source) > -1) {
                 id.id = "Login to see value.";
                 id.source = "(" + id.source + ")";
             }
         });
     }
+};
+
+
+exports.bulkClassifyCdesStatus = {};
+exports.bulkClassifyCdes = function (user, eltId, elements, body, cb) {
+    if (!exports.bulkClassifyCdesStatus[user.username + eltId]) {
+        exports.bulkClassifyCdesStatus[user.username + eltId] = {
+            numberProcessed: 0,
+            numberTotal: elements.length
+        }
+    }
+    async.forEachSeries(elements, function (element, doneOneElement) {
+        let classifReq = {
+            orgName: body.orgName,
+            categories: body.categories,
+            tinyId: element.id,
+            version: element.version
+        };
+        classificationNode.eltClassification(classifReq, classificationShared.actions.create, mongo_cde, function (err) {
+            exports.bulkClassifyCdesStatus[user.username + eltId].numberProcessed++;
+            doneOneElement();
+        });
+    }, function doneAllElement(errs) {
+        if (cb) cb(errs);
+    })
+};
+
+exports.resetBulkClassifyCdesStatus = function (statusObjId) {
+    delete exports.bulkClassifyCdesStatus[statusObjId];
 };
