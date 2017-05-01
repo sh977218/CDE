@@ -8,7 +8,7 @@
             <a ng-href="/deview/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy" id="linkToElt_{{$index}}"></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
             <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
-            <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
+            <small  class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
                 <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
         </h4>
 

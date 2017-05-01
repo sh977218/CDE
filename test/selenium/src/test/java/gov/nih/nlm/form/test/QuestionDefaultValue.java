@@ -25,7 +25,7 @@ public class QuestionDefaultValue extends BaseFormTest {
 
         goToFormByName("History Data Source and Reliability");
         // this find ensures option Brother is selected.
-        findElement(By.xpath("//div[label[text()='From whom/ what were the medical history data obtained']]//label[contains(.,'Brother')]"))
+        findElement(By.xpath("//*[*[text()='From whom/ what were the medical history data obtained']]//*[contains(.,'Brother')]"))
                 .findElement(By.cssSelector("input:checked"));
 
         clickElement(By.id("description_tab"));
