@@ -20,7 +20,7 @@ angular.module('classification', ['ngResource'])
     return {
         classifyTinyidList: function(list, newClassif, cb) {
             var data = {classification: newClassif, elements: list};
-            $http.post('/classification/bulk/tinyid', data).then(function onSuccess(response) {
+            $http.post('/classification/bulk/tinyId', data).then(function onSuccess(response) {
                 cb(response.data)
             }, function () {});
         }

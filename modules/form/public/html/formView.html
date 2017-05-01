@@ -75,12 +75,12 @@
                 <i class="fa fa-cogs"></i> Pin CDEs
             </button>
 
-            <button class="btn btn-small btn-default" role="button" tabindex="0" ng-if="user._id && user.orgAdmin.length > 0"
+            <button class="btn btn-small btn-default" role="button"  ng-if="user._id && user.orgAdmin.length > 0"
                     ng-click="copyElt()" title="Copy Form" id="copyFormBtn">
                 <i class="fa fa-clone"></i> Copy
             </button>
 
-            <button class="btn btn-small btn-default" role="button" tabindex="0" ng-controller="HasCommentsCtrl"
+            <button class="btn btn-small btn-default" role="button"  ng-controller="HasCommentsCtrl"
                     ng-click="switchCommentMode()" title="Discuss Form" id="discussBtn">
                 <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
             </button>

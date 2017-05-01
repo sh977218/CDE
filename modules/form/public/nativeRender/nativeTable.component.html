@@ -65,7 +65,7 @@
                 <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                     <div class="input-group">
                         <input class="form-control native-table-box"
-                               [name]="ni + q.name"
+                               [name]="ni + q.name" [title]="ni + q.name"
                                [attr.name]="ni + q.name"
                                [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"
                                ngbDatepicker #d1="ngbDatepicker"
@@ -78,7 +78,7 @@
                 <div *ngIf="q.type === 'number'" [ngClass]="{'input-group': q.question.uoms.length > 0}" class="native-table-cell" style="min-width: 100px;">
                     <input type="number"
                            class="form-control native-table-box"
-                           [name]="ni + q.name"
+                           [name]="ni + q.name"[title]="ni + q.name"
                            [attr.name]="ni + q.name"
                            [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"
                            [attr.min]="q.question.datatypeNumber ? q.question.datatypeNumber.minValue : null"
@@ -100,7 +100,7 @@
                 <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;">
                     <input type="text"
                            class="form-control native-table-box"
-                           [name]="ni + q.name"
+                           [name]="ni + q.name"[title]="ni + q.name"
                            [attr.name]="ni + q.name"
                            [(ngModel)]="nativeRenderService.elt.formInput[ni + q.name]"
                            [required]="q.question.required"

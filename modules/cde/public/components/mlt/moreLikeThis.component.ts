@@ -20,12 +20,13 @@ export class MoreLikeThisComponent {
     cdes: any[];
 
     constructor(private http: Http,
-        @Inject("Alert") private alert,
-        public modalService: NgbModal,
-        @Inject("QuickBoard") public quickBoard,
-    ) {}
+                @Inject("Alert") private alert,
+                public modalService: NgbModal,
+                @Inject("QuickBoard") public quickBoard) {
+    }
 
     open () {
+        //noinspection TypeScriptValidateTypes
         this.http.get("/moreLikeCde/" + this.elt.tinyId).map(res => res.json()).subscribe(response => {
             this.cdes = response.cdes;
         }, () => {

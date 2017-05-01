@@ -2,40 +2,40 @@
     <table class="gridListView table table-condensed table-striped table-bordered" ng-class="accordionListStyle">
         <thead>
         <tr>
-            <th ng-if="searchViewSettings.tableViewFields.name" tabindex="0" class="name">Name</th>
-            <th ng-if="searchViewSettings.tableViewFields.naming" tabindex="0" class="naming">Other Names</th>
-            <th ng-if="searchViewSettings.tableViewFields.stewardOrg" tabindex="0" class="stewardOrg">Steward</th>
-            <th ng-if="searchViewSettings.tableViewFields.usedBy" tabindex="0" class="usedBy">Used by</th>
-            <th ng-if="searchViewSettings.tableViewFields.registrationStatus" tabindex="0" class="registrationStatus">Registration Status</th>
-            <th ng-if="searchViewSettings.tableViewFields.administrativeStatus" tabindex="0" class="administrativeStatus">Admin Status</th>
-            <th ng-if="searchViewSettings.tableViewFields.ids" tabindex="0" class="ids">Identifiers</th>
-            <th ng-if="searchViewSettings.tableViewFields.numQuestions" tabindex="0" class="numQuestions">Questions</th>
-            <th ng-if="searchViewSettings.tableViewFields.source" tabindex="0" class="source">Source</th>
+            <th ng-if="searchViewSettings.tableViewFields.name"  class="name">Name</th>
+            <th ng-if="searchViewSettings.tableViewFields.naming"  class="naming">Other Names</th>
+            <th ng-if="searchViewSettings.tableViewFields.stewardOrg"  class="stewardOrg">Steward</th>
+            <th ng-if="searchViewSettings.tableViewFields.usedBy"  class="usedBy">Used by</th>
+            <th ng-if="searchViewSettings.tableViewFields.registrationStatus"  class="registrationStatus">Registration Status</th>
+            <th ng-if="searchViewSettings.tableViewFields.administrativeStatus"  class="administrativeStatus">Admin Status</th>
+            <th ng-if="searchViewSettings.tableViewFields.ids"  class="ids">Identifiers</th>
+            <th ng-if="searchViewSettings.tableViewFields.numQuestions"  class="numQuestions">Questions</th>
+            <th ng-if="searchViewSettings.tableViewFields.source"  class="source">Source</th>
             <th ng-if="searchViewSettings.tableViewFields.tinyId" class="tinyId">NLM ID</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="c in forms">
-            <td ng-if="searchViewSettings.tableViewFields.name" tabindex="0" class="name">
+            <td ng-if="searchViewSettings.tableViewFields.name"  class="name">
                 <a href="/formView?tinyId={{c.tinyId}}">
                     {{c.naming[0].designation}}
                 </a>
             </td>
-            <td ng-if="searchViewSettings.tableViewFields.naming" tabindex="0" class="naming">
+            <td ng-if="searchViewSettings.tableViewFields.naming"  class="naming">
                 <ul>
                     <li ng-repeat="name in c.naming | limitTo: maxLines" ng-show="name.designation">{{name.designation |
                         limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
                     <li class="lastItem" ng-show="c.naming.length > maxLines">...</li>
                 </ul>
             </td>
-            <td ng-if="searchViewSettings.tableViewFields.stewardOrg" tabindex="0" class="stewardOrg">{{c.stewardOrg.name}}</td>
-            <td ng-if="searchViewSettings.tableViewFields.usedBy" tabindex="0" class="usedBy multiline-ellipsis">
+            <td ng-if="searchViewSettings.tableViewFields.stewardOrg"  class="stewardOrg">{{c.stewardOrg.name}}</td>
+            <td ng-if="searchViewSettings.tableViewFields.usedBy"  class="usedBy multiline-ellipsis">
                 <span ng-repeat="org in c.usedBy | limitTo: maxLines ">{{$index>0?", ":""}}{{org}}</span><span
                         ng-show="c.usedBy.length > maxLines">, ...</span>
             </td>
-            <td ng-if="searchViewSettings.tableViewFields.registrationStatus" tabindex="0" class="registrationStatus">{{c.registrationState.registrationStatus}}</td>
-            <td ng-if="searchViewSettings.tableViewFields.administrativeStatus" tabindex="0" class="administrativeStatus">{{c.registrationState.administrativeStatus}}</td>
-            <td ng-if="searchViewSettings.tableViewFields.ids" tabindex="0" class="ids">
+            <td ng-if="searchViewSettings.tableViewFields.registrationStatus"  class="registrationStatus">{{c.registrationState.registrationStatus}}</td>
+            <td ng-if="searchViewSettings.tableViewFields.administrativeStatus"  class="administrativeStatus">{{c.registrationState.administrativeStatus}}</td>
+            <td ng-if="searchViewSettings.tableViewFields.ids"  class="ids">
                 <ul>
                     <li ng-repeat="id in c.ids | limitTo: maxLines">
                         {{id.source}}: <strong>{{id.id}}</strong> <span ng-show="id.version">v{{id.version}}</span>
@@ -43,7 +43,7 @@
                     <li class="lastItem" ng-show="c.ids.length > maxLines">...</li>
                 </ul>
             </td>
-            <td ng-if="searchViewSettings.tableViewFields.numQuestions" tabindex="0" class="numQuestions">{{c.numQuestions}}</td>
+            <td ng-if="searchViewSettings.tableViewFields.numQuestions"  class="numQuestions">{{c.numQuestions}}</td>
             <td ng-if="searchViewSettings.tableViewFields.source" class="source">
                 {{c.source}}
             </td>
