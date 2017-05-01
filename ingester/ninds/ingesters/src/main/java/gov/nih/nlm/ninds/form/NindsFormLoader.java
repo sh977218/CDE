@@ -158,7 +158,7 @@ public class NindsFormLoader implements Runnable {
         List<WebElement> tds = tr.findElements(By.xpath("td"));
         for (int column = 0; column < tds.size(); column++) {
             WebElement td = tds.get(column);
-            String text = td.getText();
+            String text = td.getText().trim();
             if (column == 0) {
                 hangon(5);
                 List<WebElement> aList = td.findElements(By.cssSelector("a"));

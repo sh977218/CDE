@@ -32,6 +32,7 @@ public class MyForm {
     static {
         diseaseNameSet.add("Amyotrophic Lateral Sclerosis");
         diseaseNameSet.add("Congenital Muscular Dystrophy");
+        diseaseNameSet.add("Cerebral Palsy");
         diseaseNameSet.add("Duchenne/Becker Muscular Dystrophy");
         diseaseNameSet.add("Epilepsy");
         diseaseNameSet.add("Facioscapulohumeral muscular dystrophy (FSHD)");
