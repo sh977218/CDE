@@ -35,10 +35,10 @@ public class ScreenShotListener extends TestListenerAdapter {
         }
         try {
             saveLogs(methodName, "URL when failed: " + driver.getCurrentUrl());
-            driver.get(NlmCdeBaseTest.baseUrl);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        driver.get(NlmCdeBaseTest.baseUrl);
         try {
             System.out.println("Alert TEXT: " + driver.switchTo().alert().getText());
         } catch(Exception e) {
