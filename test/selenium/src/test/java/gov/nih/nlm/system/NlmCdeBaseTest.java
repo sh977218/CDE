@@ -470,7 +470,7 @@ public class NlmCdeBaseTest {
         } catch (WebDriverException e) {
             JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
             // IE does not support scrollY
-            Object yCoordinate = javascriptExecutor.executeScript("var top = typeof window.scrollY === 'undefined' ? window.pageYOffset : window.scrollY;");
+            Object yCoordinate = javascriptExecutor.executeScript("return typeof window.scrollY === 'undefined' ? window.pageYOffset : window.scrollY;");
             Integer value;
             if (yCoordinate instanceof Double) {
                 value = ((Double) yCoordinate).intValue();
