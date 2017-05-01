@@ -1,54 +1,53 @@
-<div class="question_view">
-    <div class="overflowHidden" [ngClass]="{'bg-warning': question.question.cde.outdated}">
-        <div *ngIf="canCurate" class="ib left">
-            <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"></i>
-            <i *ngIf="question.skipLogic?.condition?.length > 0" class="fa fa-cog updatedSkipLogicIcon"
-               [ngClass]="{'fa-spin': question.updatedSkipLogic}"
-               title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
-        </div>
-        <div *ngIf="question.question.isScore" class="ib left">
-            <strong>Score: </strong>
-        </div>
-        <div class="ib left questionLabel" title="{{question.label}}" style="margin-left: 5px">
+<div class="question_view" [ngClass]="{'bg-warning': question.question.cde.outdated}">
+    <div *ngIf="canCurate" class="ib left">
+        <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"></i>
+        <i *ngIf="question.skipLogic?.condition?.length > 0" class="fa fa-cog updatedSkipLogicIcon"
+           [ngClass]="{'fa-spin': question.updatedSkipLogic}"
+           title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
+    </div>
+    <div *ngIf="question.question.isScore" class="ib left">
+        <strong>Score: </strong>
+    </div>
+    <div class="ib left questionLabel" title="{{question.label}}" style="margin-left: 5px">
             <span *ngIf="question.hideLabel">
                 <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
-                <s [textContent]="question.question.cde.name"></s>
+                <span [textContent]="question.question.cde.name"></span>
             </span>
-            <span *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</span>
-            <small *ngIf="inScoreCdes && inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
-                (part of score)
-            </small>
-        </div>
-        <div class="ib left">
-            <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
-        </div>
-        <div *ngIf="question.question.cde.outdated" class="ib left error-block"> (Outdated)
-            <button class="btn btn-default btn-xs updateQuestionBtn"
-                    (click)="openUpdateCdeVersion(question);">
-                Update
-            </button>
-        </div>
-        <div class="ib left">
-            <a target="_blank" title="{{question.question.cde.name}}"
-               href="/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
-                <i class="fa fa-eye"></i> View CDE
-            </a>
-        </div>
-        <div class="ib left">{{getDatatypeLabel(question)}}</div>
-        <div *ngIf="canCurate" class="ib pull-right editIconDiv" style="font-size: 16px">
-            <i *ngIf="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
-               (click)="question.edit = true"></i>
-            <i *ngIf="question.edit" class="fa fa-check hand-cursor" title="save edit question"
-               (click)="question.edit = false;"></i>
-            <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
-               class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
-            <span *ngIf="question.confirmDelete" class="badge">Confirm Delete
-                <span class="btn-default fa fa-check panel-badge-btn" (click)="removeNode(node)"
+        <span *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</span>
+        <small *ngIf="inScoreCdes && inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
+            (part of score)
+        </small>
+    </div>
+    <div class="ib left">
+        <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
+    </div>
+    <div *ngIf="question.question.cde.outdated" class="ib left error-block"> (Outdated)
+        <button class="btn btn-default btn-xs updateQuestionBtn"
+                (click)="openUpdateCdeVersion(question);">
+            Update
+        </button>
+    </div>
+    <div class="ib left">
+        <a target="_blank" title="{{question.question.cde.name}}"
+           href="/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
+            <i class="fa fa-eye"></i> View CDE
+        </a>
+    </div>
+    <div class="ib left">{{getDatatypeLabel(question)}}</div>
+    <div *ngIf="canCurate" class="ib pull-right editIconDiv" style="font-size: 16px">
+        <i *ngIf="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
+           (click)="question.edit = true"></i>
+        <i *ngIf="question.edit" class="fa fa-check hand-cursor" title="save edit question"
+           (click)="question.edit = false;"></i>
+        <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
+           class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
+        <span *ngIf="question.confirmDelete" class="badge">Confirm Delete
+                <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
                       id="confirmRemoveProperty-{{i}}" title="Delete" href=""></span>
-                <span class="btn-default fa fa-times panel-badge-btn" (click)="question.confirmDelete = false"
+                <span class="btn-default fa fa-times panel-badge-btn hand-cursor"
+                      (click)="question.confirmDelete = false"
                       id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
             </span>
-        </div>
     </div>
 </div>
 

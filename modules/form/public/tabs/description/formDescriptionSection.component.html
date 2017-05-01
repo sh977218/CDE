@@ -26,9 +26,9 @@
         <i *ngIf="!section.confirmDelete" (click)="section.confirmDelete = true"
            class="fa fa-trash-o hand-cursor" title="Remove Section"></i>
         <span *ngIf="section.confirmDelete" class="badge">Confirm Delete
-            <span class="btn-default fa fa-check panel-badge-btn" (click)="removeNode(node)"
+            <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
                   id="confirmRemoveProperty-{{i}}" title="Delete" href=""></span>
-            <span class="btn-default fa fa-times panel-badge-btn" (click)="section.confirmDelete = false"
+            <span class="btn-default fa fa-times panel-badge-btn hand-cursor" (click)="section.confirmDelete = false"
                   id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
         </span>
     </span>
@@ -88,20 +88,14 @@
         </div>
         <div>
             <div *ngIf="canCurate && section.formElements.length === 0" class="mt-1">
-                <i class='fa fa-exclamation-triangle'></i>To add questions, search for and drag them here.
+                <i class='fa fa-exclamation-triangle'></i>To add questions, drag them here.
                 <button id="startAddingQuestions_section_{{sectionIndex}}"
-                        (click)="setToAddCdeMode()" class="btn btn-default hidden-sm">
-                    <span [hidden]="addMode === 'cde'">
-                        <i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
-                    <span [hidden]="addMode !== 'cde'">
-                        <i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+                        (click)="setToAddCdeMode()" class="btn btn-default">
+                    <i class="fa fa-cube"></i> Add Question
                 </button>
                 <button id="startAddingQuestions_form_{{sectionIndex}}"
-                        (click)="setToAddFormMode()" class="btn btn-default hidden-sm">
-                    <span [hidden]="addMode === 'form'">
-                        <i class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
-                    <span [hidden]="addMode !== 'form'">
-                        <i class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
+                        (click)="setToAddFormMode()" class="btn btn-default">
+                    <i class="fa fa-cubes"></i> Add Form
                 </button>
             </div>
         </div>
@@ -112,13 +106,13 @@
     <div class="form_view">
         <div>
             <div *ngIf="!(canCurate && section.edit)">
-            <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
-                  class="label label-primary formViewSummaryLabel">
-                Repeats: {{getRepeatLabel(section)}}
-            </span>
+                <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
+                      class="label label-primary formViewSummaryLabel">
+                    Repeats: {{getRepeatLabel(section)}}
+                </span>
                 <span *ngIf="section.skipLogic?.condition" class="label label-warning formViewSummaryLabel">
-                Show if: {{section.skipLogic.condition}}
-            </span>
+                    Show if: {{section.skipLogic.condition}}
+                </span>
                 <div *ngIf="section.instructions?.value" class="questionInstruction">
                     <span class="questionSectionLabel">Instructions:</span>
                     <span [textContent]="section.instructions.value"></span>

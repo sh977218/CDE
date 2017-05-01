@@ -404,10 +404,6 @@ dl.dl-horizontal dd {
     padding: 10px;
 }
 
-.formSectionArea {
-    min-height: 700px;
-}
-
 .question-search-area {
     max-height: 800px;
     overflow-y: scroll;
@@ -1037,8 +1033,15 @@ div + .questionPlaceholder {
     font-size: small;
 }
 
-.formViewSummaryLabel {
+.formDescriptionTool,
+.btn.formDescriptionTool {
+    cursor: move;
+}
+
+.label.formViewSummaryLabel {
     margin-right: 5px;
+    white-space: normal;
+    display: inline-flex
 }
 
 .text_label {

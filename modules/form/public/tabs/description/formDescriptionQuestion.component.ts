@@ -29,6 +29,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
     ngOnInit() {
         this.question = this.node.data;
         this.parent = this.node.parent.data;
+        if (this.canCurate && FormService.isSubForm(this.node))
+            this.canCurate = false;
     }
 
     getDatatypeLabel(question) {

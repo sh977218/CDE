@@ -146,7 +146,7 @@ export class FormService {
         }
     }
 
-    convertFormToSection(form) {
+    static convertFormToSection(form) {
         if (form.formElements)
             return {
                 elementType: "form",
@@ -164,5 +164,13 @@ export class FormService {
             };
         else
             return {};
+    }
+
+    static isSubForm(node) {
+        let n = node;
+        while (n.data.elementType !== "form" && n.parent) {
+            n = n.parent;
+        }
+        return n.data.elementType === "form";
     }
 }

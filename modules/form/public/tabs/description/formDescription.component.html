@@ -1,24 +1,18 @@
 <div class="row" *ngIf="elt">
-    <div [ngClass]="{'col-xs-5 noRightPadding':addMode,'col-xs-12':!addMode}" class="formSectionArea">
-        <div class="my-2">
-            <button id="addSectionTop" (click)="addSectionTop()" class="btn btn-default" *ngIf="canCurate">
-                <i class="fa fa-plus"></i> Add Section
+    <div class="col-xs-12">
+        <div class="bottomToolbox">
+            <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
+            <button id="addSectionTop" (click)="addSection(addTop)" class="btn btn-default formDescriptionTool" *ngIf="canCurate" [treeDrag]="{data: getNewSection()}" [treeDragEnabled]="true">
+                <i class="fa fa-plus"></i> Section
             </button>
             <button id="startAddingQuestions" *ngIf="canCurate && elt.formElements.length > 0"
-                    (click)="setToAddCdeMode()" class="btn btn-default hidden-xs hidden-sm">
-                <span [hidden]="addMode==='cde'"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
-                <span [hidden]="addMode!=='cde'"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+                    (click)="setToAddCdeMode()" class="btn btn-default formDescriptionTool">
+                <i class="fa fa-cube"></i> Question
             </button>
             <button id="startAddingForms" *ngIf="canCurate && elt.formElements.length > 0"
-                    (click)="setToAddFormMode()" class="btn btn-default hidden-xs hidden-sm">
-                <span [hidden]="addMode==='form'"><i class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
-                <span [hidden]="addMode!=='form'"><i class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
+                    (click)="setToAddFormMode()" class="btn btn-default formDescriptionTool">
+                <i class="fa fa-cubes"></i> Form
             </button>
-        </div>
-        <div *ngIf="canCurate && elt.formElements.length > 0" class="visible-xs visible-sm">
-            <div class="alert alert-danger" role="alert">
-                To add questions to this form, enlarge your browser window or use a larger device.
-            </div>
         </div>
         <div *ngIf="elt.formElements.length === 0">
             <i class="fa fa-exclamation-triangle"></i>
@@ -30,7 +24,7 @@
             </span>
         </div>
         <ng-container *ngFor="let eltIter of [elt]">
-            <tree-root [nodes]="eltIter.formElements" [options]="treeOptions">
+            <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
                 <template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
                     <div class="tree-node tree-node-level-{{ node.level }}"
                          [class]="node.getClass()"
@@ -44,7 +38,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                                    <div class="node-content-wrapper w-100"
+                                    <div class="node-content-wrapper w-100 formDescriptionTool"
                                          (click)="node.mouseAction('click', $event)"
                                          (dblclick)="node.mouseAction('dblClick', $event)"
                                          (contextmenu)="node.mouseAction('contextMenu', $event)"
@@ -89,13 +83,23 @@
                 </template>
             </tree-root>
         </ng-container>
+        <div class="my-2">
+            <button id="addSectionBottom" (click)="addSection(addBottom)" class="btn btn-default formDescriptionTool" *ngIf="canCurate">
+                <i class="fa fa-plus"></i> Add Section
+            </button>
+            <button id="startAddingQuestionsBottom" *ngIf="canCurate && elt.formElements.length > 0"
+                    (click)="setToAddCdeMode()" class="btn btn-default formDescriptionTool">
+                <i class="fa fa-cube"></i> Add Question
+            </button>
+            <button id="startAddingFormsBottom" *ngIf="canCurate && elt.formElements.length > 0"
+                    (click)="setToAddFormMode()" class="btn btn-default formDescriptionTool">
+                <i class="fa fa-cubes"></i> Add Form
+            </button>
+        </div>
     </div>
-    <button id="addSectionBottom" (click)="addSectionBottom()" class="btn btn-default" *ngIf="canCurate">
-        <i class="fa fa-plus"></i> Add Section
-    </button>
-    <div class="question-search-area pd55" [ngClass]="{'col-xs-7 hidden-sm noLeftPadding':addMode}"
-         *ngIf="addMode && elt.formElements.length > 0">
-        <cde-search-cde [hidden]="addMode!=='cde'" class="panel-group" id="accordion_cde"></cde-search-cde>
-        <cde-search-form [hidden]="addMode!=='form'" class="panel-group" id="accordion_form"></cde-search-form>
-    </div>
+    <!--<div class="question-search-area pd55"-->
+         <!--*ngIf="addMode && elt.formElements.length > 0">-->
+        <!--<cde-search-cde [hidden]="addMode!=='cde'" class="panel-group" id="accordion_cde"></cde-search-cde>-->
+        <!--<cde-search-form [hidden]="addMode!=='form'" class="panel-group" id="accordion_form"></cde-search-form>-->
+    <!--</div>-->
 </div>

@@ -148,8 +148,7 @@ export class SkipLogicService {
         if (optionsFiltered.length > 0)
             options = optionsFiltered;
 
-        let existing = tokens.join(" ");
-        return options.map(o => existing + " " + o);
+        return options;
     }
 
     tokenSplitter(str) {
@@ -240,8 +239,12 @@ export class SkipLogicService {
     }
 
     validateSkipLogic(skipLogic, previousQuestions, event) {
-        if (event && event.item)
-            skipLogic.condition = event.item;
+        if (event) {
+            if (event.item)
+                skipLogic.condition = this.preSkipLogicSelect + event.item;
+            else
+                skipLogic.condition = event;
+        }
 
         let logic = skipLogic.condition.trim();
         let tokens = this.tokenSplitter(logic);

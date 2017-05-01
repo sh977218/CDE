@@ -36,7 +36,7 @@
             Disabled
         </span>
         <span *ngIf="question.skipLogic?.condition?.length > 0 && parent"
-              class="label label-warning formViewSummaryLabel" style="white-space: normal; display: inline-flex">
+              class="label label-warning formViewSummaryLabel">
             Show if: {{question.skipLogic.condition}}
         </span>
     </div>
@@ -108,11 +108,11 @@
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Show if:</div>
         <div class="col-sm-10 col-xs-12 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
             <input type="text" title="Show if"
-                   [(ngModel)]="question.skipLogic.condition"
+                   [ngModel]="question.skipLogic.condition"
+                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event)"
                    class="form-control skipLogicCondition"
-                   (change)="validateSkipLogic(question.skipLogic, parent.formElements)"
                    [ngbTypeahead]="getSkipLogicOptions"
-                   (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event)"/>
+                   (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault()"/>
             <span [textContent]="question.skipLogic?.validationError"></span>
         </div>
     </div>

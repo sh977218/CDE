@@ -1,5 +1,8 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
+import { TreeComponent } from "angular-tree-component";
+
+import { FormService } from "../../form.service";
 
 @Component({
     selector: "cde-form-description",
@@ -19,6 +22,26 @@ import { Http, Response } from "@angular/http";
             color: white;
             background-color: #333
         }
+        .bottomToolbox {
+            color: #9d9d9d;
+            background-color: #222;
+            position: fixed;
+            padding: 5px;
+            padding-left: 20px;
+            top: 50px;
+            border-bottom-left-radius: 50px;
+            right: 0;
+            z-index: 1029;
+            -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            background-clip: padding-box;
+        }
+        .bottomToolbox .btn {
+            margin-left: 0;
+            padding: 5px;
+            touch-action: auto;
+        }
     `]
 })
 export class FormDescriptionComponent implements OnInit {
@@ -28,17 +51,38 @@ export class FormDescriptionComponent implements OnInit {
     @Output() setToNoneAddMode: EventEmitter<void> = new EventEmitter<void>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
-    canCurate = false;
+    @ViewChild(TreeComponent) private tree: TreeComponent;
 
+    addBottom = function(elems, elem) { return elems.push(elem); };
+    addTop = function(elems, elem) { return elems.unshift(elem); };
+    addIndex = function (elems, elem, i) { return elems.splice(i, 0, elem); };
+    canCurate = false;
     treeOptions = {
-        allowDrag: true,
-        allowDrop: (element, {parent, index}) => true,
+        allowDrag: (element) => {
+            return !FormService.isSubForm(element) || element.data.elementType === "form" && !FormService.isSubForm(element.parent);
+        },
+        allowDrop: (element, {parent, index}) => {
+            return parent.data.elementType === "section" && !FormService.isSubForm(parent);
+        },
+        actionMapping: {
+            mouse: {
+                drop: (tree, node, $event, {from, to}) => {
+                    if (from.data) {
+                        this.addIndex(to.parent.data.formElements, from.data, to.index);
+                        this.tree.treeModel.update();
+                    }
+                    if (from.ref) {
+                        from.ref.open();
+                        this.tree.treeModel.update();
+                    }
+                }
+            }
+        },
         childrenField: "formElements",
         displayField: "label",
         dropSlotHeight: 3,
         isExpandedField: "id"
     };
-    id = 0;
 
     constructor(private http: Http,
                 @Inject("isAllowedModel") public isAllowedModel) {}
@@ -46,35 +90,30 @@ export class FormDescriptionComponent implements OnInit {
     ngOnInit() {
         this.canCurate = this.isAllowedModel.isAllowed(this.elt);
     }
-    addSectionTop() {
+
+    addSection(location) {
         if (!this.elt.formElements) {
             this.elt.formElements = [];
         }
-
-        this.elt.formElements.unshift({
+        location(this.elt.formElements, {
             label: "New Section",
-            cardinality: {min: 1, max: 1},
             section: {},
             skipLogic: {condition: ''},
             formElements: [],
             elementType: "section"
         });
+        this.tree.treeModel.update();
         this.stageElt.emit();
     }
 
-    addSectionBottom(po) {
-        if (!this.elt.formElements) {
-            this.elt.formElements = [];
-        }
-        this.elt.formElements.push({
+    getNewSection() {
+        return {
             label: "New Section",
-            cardinality: {min: 1, max: 1},
             section: {},
             skipLogic: {condition: ''},
             formElements: [],
             elementType: "section"
-        });
-        this.stageElt.emit();
+        };
     }
 
     // sortableOptionsSections = {

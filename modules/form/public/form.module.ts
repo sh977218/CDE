@@ -4,12 +4,11 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
-import { SortableModule } from "ng2-bootstrap/index";
+import { SortableModule } from "ng2-bootstrap";
 
 import { AdminModule } from "../../admin/public/admin.module";
 
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
-import { FilterPipe } from "./filter.pipe";
 import { FormDescriptionComponent } from "./tabs/description/formDescripton.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
 import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";

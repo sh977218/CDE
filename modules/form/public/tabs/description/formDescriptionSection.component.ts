@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { SkipLogicService } from "../../skipLogic.service";
 import { Observable } from "rxjs/Observable";
+
+import { FormService } from "../../form.service";
+import { SkipLogicService } from "../../skipLogic.service";
 
 @Component({
     selector: "cde-form-description-section",
@@ -36,6 +38,15 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.section.instructions = {};
         if (!this.section.skipLogic)
             this.section.skipLogic = {};
+        if (this.canCurate) {
+            if (this.node.data.elementType === "form") {
+                if (FormService.isSubForm(this.node.parent))
+                    this.canCurate = false;
+            } else {
+                if (FormService.isSubForm(this.node))
+                    this.canCurate = false;
+            }
+        }
     }
 
     removeNode(node) {
