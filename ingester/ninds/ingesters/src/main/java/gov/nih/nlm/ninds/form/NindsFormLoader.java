@@ -211,9 +211,7 @@ public class NindsFormLoader implements Runnable {
         int cdesTotalPage = Integer.valueOf(cdesTotalPageStr);
         if (cdesTotalPage > 1) {
             for (int j = 1; j < cdesTotalPage; j++) {
-                if (j == 5) {
-                    refreshSession();
-                }
+                //if (j == 5) refreshSession();
                 findElement(By.xpath("//*[ @id=\"viewer_ctl01_ctl01_ctl05_ctl00\"]/tbody/tr/td/input")).click();
                 String temp = "Page " + (j + 1) + " of " + cdesTotalPage;
                 textPresent(temp);

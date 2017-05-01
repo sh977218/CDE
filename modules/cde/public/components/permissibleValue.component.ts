@@ -8,8 +8,15 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class PermissibleValueComponent {
     @Input() public elt: any;
-    public valueTypes = ["Value List", "Text", "Date", "Number", "Externally Defined"];
+    public valueTypes = [
+        {value: "Value List", text: "Value List"},
+        {value: "Text", text: "Text"},
+        {
+            value: "Date",
+            text: "Date"
+        }, {value: "Number", text: "Number"}, {value: "Externally Defined", text: "Externally Defined"}];
     public edit = true;
+    public value;
 
     saveEditable(event) {
 

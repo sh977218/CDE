@@ -4,10 +4,14 @@
         <dl class="dl-horizontal">
             <dt>Value Type:</dt>
             <dd>
-                <select required>
-                    <option value="">None Selected</option>
-                    <option *ngFor="let valueType of valueTypes" value="{{valueType}}">{{valueType}}</option>
-                </select>
+                <inline-editor type="select" [(ngModel)]="edit" (onSave)="saveEditable($event)"
+                               [options]="valueTypes" value="value"></inline-editor>
+                <!--
+                                <select required>
+                                    <option value="">None Selected</option>
+                                    <option *ngFor="let valueType of valueTypes" value="{{valueType}}">{{valueType}}</option>
+                                </select>
+                -->
             </dd>
             <dt>Unit of Measure:</dt>
             <dd></dd>

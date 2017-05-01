@@ -12,7 +12,7 @@ import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
-import { PermissibleValueComponent } from "./components/permissbleValue.component";
+import { PermissibleValueComponent } from "./components/permissibleValue.component";
 
 @NgModule({
     imports: [
