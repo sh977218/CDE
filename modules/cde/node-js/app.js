@@ -10,7 +10,6 @@ var cdesvc = require('./cdesvc')
     , vsac = require('./vsac-io')
     , config = require('../../system/node-js/parseConfig')
     , elastic = require('./elastic')
-    , logging = require('../../system/node-js/logging.js')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , path = require('path')
     , express = require('express')
@@ -483,28 +482,47 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.delete('/classification/cde', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.status(401).send();
-            return;
-        }
-        classificationNode_system.eltClassification(req.query, classificationShared.actions.delete, mongo_cde, function (err) {
-            if (!err) {
-                res.end();
-                mongo_data_system.addToClassifAudit({
-                    date: new Date(),
-                    user: {
-                        username: req.user.username
-                    },
-                    elements: [{
-                        _id: req.query.cdeId
-                    }],
-                    action: "delete",
-                    path: [req.query.orgName].concat(req.query.categories)
-                });
-            } else {
-                res.status(202).send({error: {message: "Classification does not exists."}});
-            }
+    app.post('/addCdeClassification/', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
+        let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
+        if (invalidateRequest) return res.status(400).send(invalidateRequest);
+        classificationNode_system.addClassification(req.body, mongo_cde, function (err, result) {
+            if (err) return res.status(500).send(err);
+            if (result === "Classification Already Exists") return res.status(409).send(result);
+            else res.send(result);
+            mongo_data_system.addToClassifAudit({
+                date: new Date(),
+                user: {
+                    username: req.user.username
+                },
+                elements: [{
+                    _id: req.body.eltId
+                }],
+                action: "add",
+                path: [req.body.orgName].concat(req.body.categories)
+            });
+
+        });
+    });
+    app.post("/removeCdeClassification/", function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
+        let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
+        if (invalidateRequest) return res.status(400).send(invalidateRequest);
+        classificationNode_system.removeClassification(req.body, mongo_cde, function (err, result) {
+            if (err) return res.status(500).send(err);
+            if (result === "Did not find match classifications.") return res.status(409).send(result);
+            else res.send(result);
+            mongo_data_system.addToClassifAudit({
+                date: new Date(),
+                user: {
+                    username: req.user.username
+                },
+                elements: [{
+                    _id: req.body.eltId
+                }],
+                action: "delete",
+                path: [req.body.orgName].concat(req.body.categories)
+            });
         });
     });
 

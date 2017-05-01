@@ -669,6 +669,10 @@ public class NlmCdeBaseTest {
         return !(driver.findElements(By.cssSelector(selector)).size() > 0);
     }
 
+    protected boolean checkElementDoesNotExistByLocator(By locator) {
+        return !(driver.findElements(locator).size() > 0);
+    }
+
     protected void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
         String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y) + ");";

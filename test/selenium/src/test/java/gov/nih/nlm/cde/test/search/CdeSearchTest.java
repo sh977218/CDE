@@ -2,12 +2,8 @@ package gov.nih.nlm.cde.test.search;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CdeSearchTest extends NlmCdeBaseTest {
 
@@ -27,26 +23,14 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("history_tab"));
         textPresent("This Data Element has no history");
         clickElement(By.id("classification_tab"));
-        WebElement csDl = findElement(By.id("repeatCs"));
-        List<WebElement> csElements = csDl.findElements(By.cssSelector("#repeatCs ul li"));
-        Assert.assertEquals(csElements.size(), 7);
-        List<String> assertList = new ArrayList<String>();
-        assertList.add("GO Trial");
-        assertList.add("GO New CDEs");
-        assertList.add("C3D");
-        assertList.add("caBIG");
 
-        hangon(5);
+        textPresent("GO Trial", By.id("GO Trial"));
+        textPresent("GO Trial", By.id("GO Trial,GO Trial"));
+        textPresent("GO New CDEs", By.id("GO Trial,GO New CDEs"));
+        textPresent("CCR Implementation", By.id("CCR Implementation"));
+        textPresent("caBIG", By.id("C3D Domain,caBIG"));
 
-        List<String> actualList = new ArrayList<String>();
-        for (WebElement csElt : csElements) {
-            actualList.add(csElt.getText());
-        }
-        for (String a : assertList) {
-            Assert.assertTrue(actualList.contains(a));
-        }
-
-        clickElement(By.linkText("Identifiers"));
+        clickElement(By.id("ids_tab"));
         textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
 

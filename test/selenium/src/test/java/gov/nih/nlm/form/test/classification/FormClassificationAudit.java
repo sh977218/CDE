@@ -11,7 +11,7 @@ public class FormClassificationAudit extends BaseClassificationTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Functional Imaging");
         clickElement(By.id("classification_tab"));
-        addClassificationMethod(new String[] {"TEST", "Eligibility Criteria"});
+        _addClassificationMethod(new String[] {"TEST", "Eligibility Criteria"});
         openClassificationAudit("TEST > Eligibility Criteria");
         clickElement(By.linkText("Functional Imaging"));
         switchTab(1);
