@@ -5,6 +5,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
+import java.util.Arrays;
+
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
         clickElement(By.cssSelector("[id^=addClassification]"));
@@ -47,12 +49,12 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
-        clickElement(By.id("addClassification"));
-        clickElement(By.id("addClass.byRecentlyAdded"));
+        clickElement(By.id("openClassificationModalBtn"));
+        clickElement(By.id("recentlyAddViewTab"));
         for (String category : categories) {
-            textPresent(category, By.id("addClassificationModalBody"));
+            textPresent(category, By.id("newClassifyItemModalBody"));
         }
-        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
         modalGone();
     }
 
@@ -117,5 +119,68 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Audit"));
         clickElement(By.linkText("Classification Audit Log"));
         clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
+    }
+
+    public void _classifyCdesMethod(String[] categories) {
+        clickElement(By.id("openClassifyCdesModalBtn"));
+        textPresent("By recently added");
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        textPresent(categories[1]);
+        String expanderStr = "";
+        for (int i = 1; i < categories.length - 1; i++) {
+            expanderStr = expanderStr + categories[i];
+            clickElement(By.id(expanderStr + "-expander"));
+            expanderStr += ",";
+        }
+        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+        closeAlert();
+    }
+
+    public void _addExistsClassificationMethod(String[] categories) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        _addExistClassificationMethodDo(categories);
+    }
+    public void _addClassificationMethod(String[] categories) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        _addClassificationMethodDo(categories);
+    }
+
+    private void _addClassificationMethodDo(String[] categories) {
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        textPresent(categories[1]);
+        System.out.println("categories: " + Arrays.toString(categories));
+        String expanderStr = "";
+        for (int i = 1; i < categories.length - 1; i++) {
+            expanderStr = expanderStr + categories[i];
+            clickElement(By.id(expanderStr + "-expander"));
+            expanderStr += ",";
+        }
+        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+
+        String selector = "";
+        for (int i = 1; i < categories.length; i++) {
+            selector += categories[i];
+            if (i < categories.length - 1) {
+                selector += ",";
+            }
+        }
+        Assert.assertEquals(findElement(By.id(selector)).getText(),
+                categories[categories.length - 1]);
+        closeAlert();
+    }
+    private void _addExistClassificationMethodDo(String[] categories) {
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
+        textPresent(categories[1]);
+        String expanderStr = "";
+        for (int i = 1; i < categories.length - 1; i++) {
+            expanderStr = expanderStr + categories[i];
+            clickElement(By.id(expanderStr + "-expander"));
+            expanderStr += ",";
+        }
+        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+        textPresent("Classification Already Exists");
+        closeAlert();
     }
 }
