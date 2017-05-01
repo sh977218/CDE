@@ -1,6 +1,6 @@
 <table class="table table-border table-responsive">
     <tr>
-        <th>Organization Nameyyyy:</th>
+        <th>Organization Name:</th>
         <th>Properties:</th>
         <th>Tags:</th>
     </tr>
@@ -9,12 +9,12 @@
             {{o.name}}
         </td>
         <td>
-            <select2 [data]="allPropertyKeys" [value]="o.propertyKeys" [options]="options"
-                     width="100%" (valueChanged)="changed(o)">
+            <select2 [data]="allPropertyKeys" [value]="o.currentPropertyKeys" [options]="options"
+                     width="100%" (valueChanged)="propsChanged(o, $event)">
             </select2>
         </td>
         <td>
-            <select2 [data]="allTags" [value]="o.nameTags" [options]="options"
+            <select2 [data]="allTags" [value]="o.currentTags" [options]="options"
                      width="100%" (valueChanged)="tagsChanged(o, $event)">
             </select2>
         </td>
