@@ -9,7 +9,7 @@ public final class Constants {
     public static final Map<String, String> DISEASE_MAP;
     public static final Map<String, String> FIELD_PROPERTY_MAP;
     public static final int DISEASE_NUM;
-    public static final int MAX_DATATYPE_SIZE = 4;
+    public static final int MAX_DATATYPE_SIZE = 5;
     public static final int MAX_INPUT_RESTRICTIONS_SIZE = 3;
     public static final int TOTAL_PAGE = 31;
     public static final int TOTAL_RECORD = 3037;

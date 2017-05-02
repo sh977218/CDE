@@ -64,5 +64,5 @@ import {CreateBoardComponent} from "../../../board/public/components/createBoard
 angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));
 
 import {PermissibleValueComponent} from "../components/permissibleValue.component";
-angular.module('cdeModule').directive('cdePermissibleValue', downgradeComponent({component: PermissibleValueComponent, inputs: [], outputs: []
+angular.module('cdeModule').directive('cdePermissibleValue', downgradeComponent({component: PermissibleValueComponent, inputs: ['elt'], outputs: []
 }));

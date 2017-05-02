@@ -14,12 +14,14 @@ import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetai
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
+import { DataTableModule } from "angular2-datatable/index";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        DataTableModule,
         InlineEditorModule,
         AdminItemModule,
         BoardModule

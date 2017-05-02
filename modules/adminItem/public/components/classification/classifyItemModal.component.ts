@@ -76,7 +76,6 @@ export class ClassifyItemModalComponent {
                     });
         } else this.orgClassificationsTreeView = [];
     }
-    
     onChangeClassifyView(event) {
         if (event.nextId === "recentlyAddViewTab") {
             this.orgClassificationsRecentlyAddView = this.localStorageService.get("classificationHistory");

@@ -9,26 +9,30 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CDEUtility {
     public CDEUtility() {
     }
 
-    public void checkDataQuality(MongoOperations mongoOperation, String url) {
+    public void checkDataQuality(MongoOperations mongoOperation) {
         List dataTypeList = mongoOperation.getCollection("ninds").distinct("cdes.dataType");
         if (dataTypeList.size() > Constants.MAX_DATATYPE_SIZE) {
-            System.out.println("data type is not good. size: " + dataTypeList.size() + " url:" + url);
+            System.out.println("data type is not good. size: " + dataTypeList.size());
+            System.out.println(Arrays.toString(dataTypeList.toArray()));
             System.exit(1);
         }
         List inputRestrictionsList = mongoOperation.getCollection("ninds").distinct("cdes.inputRestrictions");
         if (inputRestrictionsList.size() > Constants.MAX_INPUT_RESTRICTIONS_SIZE) {
-            System.out.println("inputRestrictionsList is not good. size: " + inputRestrictionsList.size() + " url:" + url);
+            System.out.println("inputRestrictionsList is not good. size: " + inputRestrictionsList.size());
+            System.out.println(Arrays.toString(inputRestrictionsList.toArray()));
             System.exit(1);
         }
         List distinctDiseaseNameList = mongoOperation.getCollection("ninds").distinct("diseaseName");
         if (distinctDiseaseNameList.size() > Constants.DISEASE_NUM) {
-            System.out.println("distinct diseaseName is not good. size: " + distinctDiseaseNameList.size() + " url:" + url);
+            System.out.println("distinct diseaseName is not good. size: ");
+            System.out.println(Arrays.toString(distinctDiseaseNameList.toArray()));
             System.exit(1);
         }
         Query searchNoDiseaseExistFormQuery = new Query(Criteria.where("diseaseName").exists(false));

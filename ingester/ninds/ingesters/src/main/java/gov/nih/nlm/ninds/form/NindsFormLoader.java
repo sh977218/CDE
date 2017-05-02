@@ -55,7 +55,7 @@ public class NindsFormLoader implements Runnable {
         long startTime = System.currentTimeMillis();
         goToNindsSiteAndGoToPageOf(page);
         findAndSaveToForms(page);
-        cdeUtility.checkDataQuality(mongoOperation, "");
+        cdeUtility.checkDataQuality(mongoOperation);
         long endTime = System.currentTimeMillis();
         long totalTimeInMillis = endTime - startTime;
         long totalTimeInSeconds = totalTimeInMillis / 1000;
