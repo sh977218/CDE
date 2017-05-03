@@ -21,7 +21,12 @@ const TYPE_VALUE_MAP = {
     selector: "cde-permissible-value",
     providers: [NgbActiveModal],
     templateUrl: "./permissibleValue.component.html",
-    styles: [`a[_ngcontent-kng-20] { border-bottom: 0px;  line-height: 0;}`]
+    styles: [`
+        :host >>> a { 
+            border-bottom: 0px;
+            line-height: 0;
+         }
+    `]
 })
 export class PermissibleValueComponent implements OnInit {
     @Input() public elt: any;
@@ -33,7 +38,8 @@ export class PermissibleValueComponent implements OnInit {
         {value: 5, text: "Externally Defined"}
     ];
     public edit = true;
-    public value = 0;
+    public valueType = 0;
+    public uom;
 
     public columns = [
         {prop: "permissibleValue"},
@@ -43,7 +49,8 @@ export class PermissibleValueComponent implements OnInit {
     ];
 
     ngOnInit(): void {
-        this.value = TYPE_VALUE_MAP[this.elt.valueDomain.datatype];
+        this.valueType = TYPE_VALUE_MAP[this.elt.valueDomain.datatype];
+        this.uom = this.elt.valueDomain.uom;
     }
 
     constructor(@Inject("isAllowedModel") public isAllowedModel) {
