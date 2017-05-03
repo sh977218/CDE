@@ -3,13 +3,17 @@
     <div class="col-xs-12">
         <div class="col-xs-2 text-right text_label">Value Type:</div>
         <div class="col-xs-10">
+<!--
             <inline-editor type="select" [(ngModel)]="valueType" disabled="!isAllowedModel.isAllowed(elt)"
                            (onSave)="saveEditable($event)" [options]="valueTypeOptions"
                            ngDefaultControl></inline-editor>
+-->
         </div>
         <div class="col-xs-2 text-right text_label">Unit of Measure:</div>
         <div class="col-xs-10">
+<!--
             <inline-editor type="text" [(ngModel)]="uom" ngDefaultControl></inline-editor>
+-->
         </div>
         <div class="col-xs-2 text-right text_label">Ids:</div>
         <div class="col-xs-10">
@@ -42,9 +46,7 @@
                 <td></td>
             </tr>
         </table>
-        <!--
-                <ngx-datatable [rows]="elt.valueDomain.permissibleValues" [columns]="columns"></ngx-datatable>
-        -->
+        <ngx-datatable [rows]="elt.valueDomain.permissibleValues" [columns]="columns"></ngx-datatable>
     </div>
     <div>
         <button class="btn btn-small btn-default" role="button" title="Add Permissible Value">

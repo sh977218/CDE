@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { InlineEditorModule } from "ng2-inline-editor";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { BoardModule } from "../../board/public/board.module";
@@ -15,6 +14,7 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
 import { DataTableModule } from "angular2-datatable/index";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable/release/datatable.module";
 
 @NgModule({
     imports: [
@@ -22,7 +22,7 @@ import { DataTableModule } from "angular2-datatable/index";
         FormsModule,
         NgbModule,
         DataTableModule,
-        InlineEditorModule,
+        NgxDatatableModule,
         AdminItemModule,
         BoardModule
     ],
