@@ -9,7 +9,7 @@
     <i class="fa fa-plus-square-o"></i> Add Placeholder
 </button>
 
-<template #questionTemplate let-item="item" let-index="index">
+<ng-template #questionTemplate let-item="item" let-index="index">
     <div class="boxed-div overflowHidden" title="{{item.value.isRetired?'CDE is Retired':''}}"
          [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
          id="leftQuestion_{{index}}">
@@ -27,4 +27,4 @@
                   (click)="removeItem(index)"></span>
         </div>
     </div>
-</template>
+</ng-template>

@@ -12,9 +12,12 @@
                    [(ngModel)]="search.toDate" placeholder="Until Date">
             <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs()">Submit</button>
         </form>
+        <ng2-smart-table [settings]="settings" [source]="gridLogEvents"></ng2-smart-table>
+<!--
         <div>
             <ngx-datatable  [rows]="gridLogEvents" [columns]="columns"></ngx-datatable>
         </div>
+-->
         <ngb-pagination [collectionSize]="totalItems" [(page)]="search.currentPage" (pageChange)="searchLogs()"
                         [pageSize]="itemsPerPage" [maxSize]="10"></ngb-pagination>
     </div>

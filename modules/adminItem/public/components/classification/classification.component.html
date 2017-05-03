@@ -15,14 +15,14 @@
                 <h4>{{classification.stewardOrg.name}}</h4>
                 <hr/>
                 <tree-root #treeRoot [nodes]="classification.elements" [options]="options">
-                    <template #treeNodeTemplate let-node="node" let-index="index">
+                    <ng-template #treeNodeTemplate let-node="node" let-index="index">
                         <a href="{{searchByClassification(node,classification.stewardOrg.name)}}" [id]="node.path">
                             {{ node.data.name }}</a>
                         <i class="fa fa-trash-o hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"
                            *ngIf="isAllowedModel.isCuratorFor(classification.stewardOrg.name)"
                            (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)"></i>
-                    </template>
-                    <template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                    </ng-template>
+                    <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
                         <div [class.tree-node-expanded]="true" [ngClass]="{'floatLeft boxed-div':node.level===1}">
                             <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
                                 <tree-node-content [node]="node" [index]="index"
@@ -31,7 +31,7 @@
                             </div>
                             <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                         </div>
-                    </template>
+                    </ng-template>
                 </tree-root>
             </div>
         </div>
@@ -40,7 +40,7 @@
 <cde-classify-item-modal #classifyItemModal [elt]="elt" (updateElt)="updateThisElt($event)"></cde-classify-item-modal>
 <cde-classify-cdes-modal #classifyCdesModal [elt]="elt" (updateElt)="updateThisElt($event)"></cde-classify-cdes-modal>
 
-<template #deleteClassificationContent id="deleteClassificationModal" let-c="close" let-d="dismiss">
+<ng-template #deleteClassificationContent id="deleteClassificationModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="deleteClassificationModalHeader">
         <h4 class="modal-title">Remove Classification</h4>
     </div>
@@ -55,4 +55,4 @@
                 name="confirmDeleteClassificationBtn" type="button">OK
         </button>
     </div>
-</template>
+</ng-template>

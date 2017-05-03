@@ -1,6 +1,6 @@
 <button type="button" class="btn btn-default" id="openDataSetModalBtn" (click)="openDatasetsModal()">Data Set</button>
 
-<template #datasetsContent id="datasetsModal" let-c="close" let-d="dismiss">
+<ng-template #datasetsContent id="datasetsModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="datasetsModalHeader">
         <h4 class="modal-title">Data Set</h4>
     </div>
@@ -42,4 +42,4 @@
             </button>
         </div>
     </form>
-</template>
+</ng-template>

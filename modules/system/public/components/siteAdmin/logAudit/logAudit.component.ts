@@ -19,6 +19,18 @@ export class LogAuditComponent implements OnInit {
     public columns = [{prop: "date"}, {prop: "ip"}, {prop: "url"}, {prop: "method"},
         {prop: "status"}, {prop: "respTime"}];
 
+    public settings = {
+        columns: {
+            date: {title: "Date"},
+            ip: {title: "IP"},
+            url: {title: "URL"},
+            method: {title: "Method"},
+            status: {title: "Status"},
+            respTime: {title: "Resp. time"}
+        }
+    };
+
+
     constructor(private http: Http,
                 @Inject("Alert") private Alert) {
     }
