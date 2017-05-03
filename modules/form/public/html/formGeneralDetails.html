@@ -1,4 +1,4 @@
-<h4 tabindex="0">General Details</h4>
+<h4 >General Details</h4>
 <div class="row">
     <div class="col-sm-5 questionSectionLabel text-right">Name:</div>
     <div class="col-sm-7" inline-edit id="nameEdit" model="elt.naming[0].designation" is-allowed="false"
@@ -15,7 +15,7 @@
     <div class="col-sm-5 questionSectionLabel text-right">Copyrighted:</div>
     <div class="col-sm-7">
         <input type="checkbox" ng-model="elt.isCopyrighted" ng-disabled="!canCurate" id="isCopyrighted"
-               ng-click="stageElt()"/>
+               ng-click="stageElt()" title="copyrighted"/>
         <div ng-show="elt.isCopyrighted">
             Statement:
             <div inline-edit id="formCopyrightText" model="elt.copyright.text" is-allowed="canCurate"
@@ -32,7 +32,7 @@
     <div class="col-sm-5 questionSectionLabel text-right">Disallow Rendering:</div>
     <div class="col-sm-7">
         <input type="checkbox" ng-model="elt.noRenderAllowed" ng-disabled="!canCurate"
-               id="disallowRendering" ng-click="stageElt()"/>
+               id="disallowRendering" ng-click="stageElt()" title="disallow rendering"/>
     </div>
 </div>
 <div class="row">

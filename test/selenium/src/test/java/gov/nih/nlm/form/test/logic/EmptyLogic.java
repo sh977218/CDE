@@ -11,10 +11,10 @@ public class EmptyLogic extends NlmCdeBaseTest {
     public void emptyLogic() {
         goToFormByName("Empty Logic");
 
-        textPresent("If empty:", By.xpath("//div[label[text()='Birth date']]"));
-        textPresent("If none:", By.xpath("//div[label[text()='Image Acquisition Event Yes No Not Done Indicator']]"));
-        textPresent("If empty:", By.xpath("//div[label[text()='Head injury prior number']]"));
-        textPresent("If empty:", By.xpath("//div[label[text()='Noncompliant Reason Text']]"));
+        textPresent("If empty:", By.xpath("//*[*[text()='Birth date']]"));
+        textPresent("If none:", By.xpath("//*[*[text()='Image Acquisition Event Yes No Not Done Indicator']]"));
+        textPresent("If empty:", By.xpath("//*[*[text()='Head injury prior number']]"));
+        textPresent("If empty:", By.xpath("//*[*[text()='Noncompliant Reason Text']]"));
 
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
 
