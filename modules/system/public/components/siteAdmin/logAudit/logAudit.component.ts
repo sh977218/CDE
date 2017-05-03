@@ -16,6 +16,8 @@ export class LogAuditComponent implements OnInit {
     table: any;
     totalItems: number;
     itemsPerPage: number;
+    public columns = [{prop: "date"}, {prop: "ip"}, {prop: "url"}, {prop: "method"},
+        {prop: "status"}, {prop: "respTime"}];
 
     constructor(private http: Http,
                 @Inject("Alert") private Alert) {
