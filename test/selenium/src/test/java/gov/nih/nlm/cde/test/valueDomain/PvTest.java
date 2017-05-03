@@ -23,8 +23,7 @@ public class PvTest extends NlmCdeBaseTest {
         newCdeVersion("Changed PV");
 
         textPresent("added to pv");
-
-
+        
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("Absent added to pv", By.xpath("//*[@id='historyCompareLeft_Data Type Value List_0_0']"));
