@@ -46,20 +46,20 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         ReferenceDocumentComponent
     ],
     entryComponents: [
-        ArrayListPipe,
         AttachmentsComponent,
         ClassificationComponent,
         IdentifiersComponent,
         NamingComponent,
-        PlaceHoldEmptyPipe,
         PropertiesComponent,
         ReferenceDocumentComponent
     ],
     exports: [
+        ArrayListPipe,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
+        PlaceHoldEmptyPipe,
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,

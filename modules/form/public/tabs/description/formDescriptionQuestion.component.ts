@@ -119,10 +119,12 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         return modal;
                     })();
 
+                    let self = this;
+
                     this.modalService.open(this.updateCdeVersionTmpl).result.then(function () {
                         question.question = newQuestion.question;
                         question.label = newQuestion.label;
-                        this.stageElt.emit();
+                        self.stageElt.emit();
                     });
                 });
             });

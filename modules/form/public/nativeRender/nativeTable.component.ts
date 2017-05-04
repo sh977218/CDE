@@ -110,9 +110,11 @@ export class NativeTableComponent implements OnInit {
                 question: f.question,
                 style: sectionStyle.answerStyle
             });
-            this.tableForm.rows.forEach((r, i) => {
-                this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId] = {answer: ""};
-            });
+            if (f.question.datatype === "Value List" && f.question.multiselect === true)
+                this.tableForm.rows.forEach((r, i) => {
+                    this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId] = [];
+                    this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId].answer = this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId];
+                });
             if (f.question.uoms && f.question.uoms.length === 1)
                 this.tableForm.rows.forEach((r, i) => {
                     this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId + "_uom"] = f.question.uoms[0];
