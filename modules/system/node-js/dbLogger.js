@@ -125,24 +125,26 @@ exports.logClientError = function(req, callback) {
 };
 
 exports.getLogs = function(inQuery, callback) {
-    var logSize = 500;
-    var skip = inQuery.currentPage * logSize;
+    let logSize = 500;
+    let skip = inQuery.currentPage * logSize;
     delete inQuery.currentPage;
-    var fromDate = inQuery.fromDate;
+    let fromDate = inQuery.fromDate;
     delete inQuery.fromDate;
-    var toDate = inQuery.toDate;
+    let toDate = inQuery.toDate;
     delete inQuery.toDate;
-    var query = LogModel.find(inQuery);
-    if (fromDate !== undefined) {
-        query.where("date").gte(moment(fromDate));
-    }
-    if (toDate !== undefined) {
-        query.where("date").lte(moment(toDate));
-    }
+    let query = LogModel.find(inQuery);
+    if (fromDate !== undefined) query.where("date").gte(moment(fromDate));
+    if (toDate !== undefined) query.where("date").lte(moment(toDate));
+    let sortBy = "date";
+    let sortDir = -1;
+    if (inQuery.sortBy) sortBy = inQuery.sortBy;
+    if (inQuery.sortDir) sortDir = inQuery.sortDir;
     LogModel.count({}, function(err, count) {
-        query.sort("-date").limit(logSize).skip(skip).exec(function(err, logs) {
+        let sort = {};
+        sort[sortBy] = sortDir;
+        query.sort(sort).limit(logSize).skip(skip).exec(function (err, logs) {
             callback(err, {count: count, itemsPerPage: logSize, logs: logs});  
-        });        
+        });
     });
 };
 

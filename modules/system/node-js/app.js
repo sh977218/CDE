@@ -230,17 +230,12 @@ exports.init = function (app) {
         passport.authenticate('oauth2', {scope: 'personaldata'}));
 
     app.post('/logs', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getLogs(req.body.query, function (err, result) {
-                if (err) {
-                    res.send({error: err});
-                } else {
-                    res.send(result);
-                }
+        if (req.isAuthenticated() && req.user.siteAdmin) 
+            return dbLogger.getLogs(req.body.query, function (err, result) {
+                if (err) return res.send({error: err});
+                res.send(result);
             });
-        } else {
-            res.status(401).send();
-        }
+        res.status(401).send();
     });
 
     app.get('/logUsageDailyReport', function (req, res) {

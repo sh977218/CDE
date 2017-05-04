@@ -12,12 +12,21 @@
                    [(ngModel)]="search.toDate" placeholder="Until Date">
             <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs()">Submit</button>
         </form>
-        <ng2-smart-table [settings]="settings" [source]="gridLogEvents"></ng2-smart-table>
-<!--
-        <div>
-            <ngx-datatable  [rows]="gridLogEvents" [columns]="columns"></ngx-datatable>
-        </div>
--->
+        <table class="table table-striped table-bordered table-condensed table-responsive">
+            <tr>
+                <th *ngFor="let property of propertiesArray" (click)="sort(property)">
+                    {{sortMap[property].title}} <i [ngClass]="sortMap[property].class"></i>
+                </th>
+            </tr>
+            <tr *ngFor="let log of gridLogEvents">
+                <td>{{log.date}}</td>
+                <td>{{log.ip}}</td>
+                <td>{{log.url}}</td>
+                <td>{{log.method}}</td>
+                <td>{{log.status}}</td>
+                <td>{{log.respTime}}</td>
+            </tr>
+        </table>
         <ngb-pagination [collectionSize]="totalItems" [(page)]="search.currentPage" (pageChange)="searchLogs()"
                         [pageSize]="itemsPerPage" [maxSize]="10"></ngb-pagination>
     </div>

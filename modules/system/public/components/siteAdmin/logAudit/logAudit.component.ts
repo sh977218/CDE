@@ -5,7 +5,12 @@ import * as moment from "moment";
 
 @Component({
     selector: "cde-log-audit",
-    templateUrl: "./logAudit.component.html"
+    templateUrl: "./logAudit.component.html",
+    styles: [`
+        :host >>> .fa.fa-fw.fa-sort{
+            color:lightgrey;
+        }
+    `]
 })
 
 export class LogAuditComponent implements OnInit {
@@ -13,47 +18,89 @@ export class LogAuditComponent implements OnInit {
     search: any = {
         currentPage: 0
     };
-    table: any;
     totalItems: number;
     itemsPerPage: number;
-    public columns = [{prop: "date"}, {prop: "ip"}, {prop: "url"}, {prop: "method"},
-        {prop: "status"}, {prop: "respTime"}];
 
-    public settings = {
-        columns: {
-            date: {title: "Date"},
-            ip: {title: "IP"},
-            url: {title: "URL"},
-            method: {title: "Method"},
-            status: {title: "Status"},
-            respTime: {title: "Resp. time"}
+    propertiesArray = ["date", "ip", "url", "method", "status", "respTime"];
+
+    public sortMap = {
+        date: {
+            title: "Date",
+            sort: {
+                sortBy: "date",
+                sortDir: 1
+            },
+            class: "fa fa-fw fa-sort"
+        },
+        ip: {
+            title: "IP",
+            sort: {
+                sortBy: "ip",
+                sortDir: 0
+            },
+            class: "fa fa-fw fa-sort"
+        },
+        url: {
+            title: "URL", sort: {
+                sortBy: "url",
+                sortDir: 0
+            },
+            class: "fa fa-fw fa-sort-desc"
+        },
+        method: {
+            title: "Method",
+            sort: {
+                sortBy: "method",
+                sortDir: 0
+            },
+            class: "fa fa-fw fa-sort-asc"
+        }
+        ,
+        status: {
+            title: "Status",
+            sort: {
+                sortBy: "status",
+                sortDir: 0
+            },
+
+            class: "fa fa-fw fa-sort"
+        }
+        ,
+        respTime: {
+            title: "Resp. Time",
+            sort: {
+                sortBy: "respTime",
+                sortDir: 0
+            },
+            class: "fa fa-fw fa-sort"
         }
     };
-
 
     constructor(private http: Http,
                 @Inject("Alert") private Alert) {
     }
 
-    ngOnInit(): void {
-        this.searchLogs();
+    sort(p) {
+        this.searchLogs(sort);
     }
 
-    searchLogs() {
+    ngOnInit(): void {
+        this.searchLogs(null);
+    }
+
+    searchLogs(sort) {
         this.gridLogEvents = [];
         let fromDate, toDate;
-        if (this.search.fromDate) {
-            fromDate = moment(this.search.fromDate + moment().format("Z")).toISOString();
-        }
-        if (this.search.toDate) {
-            toDate = moment(this.search.toDate + moment().format("Z")).toISOString();
-        }
-        //noinspection TypeScriptValidateTypes
-        this.http.post("/logs", {
+        if (this.search.fromDate) fromDate = moment(this.search.fromDate + moment().format("Z")).toISOString();
+        if (this.search.toDate) toDate = moment(this.search.toDate + moment().format("Z")).toISOString();
+        let inQuery = {
             query: this.search,
             fromDate: fromDate,
             toDate: toDate
-        }).map(res => res.json()).subscribe(
+        };
+        if (sort) inQuery["sort"] = sort;
+        //noinspection TypeScriptValidateTypes
+        this.http.post("/logs", inQuery).map(res => res.json()).subscribe(
             res => {
                 this.totalItems = res.count;
                 this.itemsPerPage = res.itemsPerPage;
