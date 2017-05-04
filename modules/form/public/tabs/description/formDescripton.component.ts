@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
-import { TreeComponent } from "angular-tree-component";
+import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 
 import { FormService } from "../../form.service";
 
@@ -9,20 +9,24 @@ import { FormService } from "../../form.service";
     templateUrl: "formDescription.component.html",
     styles: [`
         :host >>> .panel {
-            margin-bottom: 1px
+            margin-bottom: 1px;
         }
         :host >>> .tree-children {
-            padding-left: 0
+            padding-left: 0;
         }
         :host >>> .node-drop-slot {
             height: 10px;
-            margin-bottom: 1px
+            margin-bottom: 1px;
         }
         :host >>> .panel-badge-btn {
             color: white;
-            background-color: #333
+            background-color: #333;
         }
-        .bottomToolbox {
+        .node-content-wrapper:hover {
+            background-color: transparent;
+            box-shadow: none;
+        }
+        .descriptionToolbox {
             color: #9d9d9d;
             background-color: #222;
             position: fixed;
@@ -37,7 +41,7 @@ import { FormService } from "../../form.service";
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             background-clip: padding-box;
         }
-        .bottomToolbox .btn {
+        .descriptionToolbox .btn {
             margin-left: 0;
             padding: 5px;
             touch-action: auto;
@@ -50,11 +54,8 @@ export class FormDescriptionComponent implements OnInit {
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() setToNoneAddMode: EventEmitter<void> = new EventEmitter<void>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
+    @ViewChild(TreeComponent) public tree: TreeComponent;
 
-    @ViewChild(TreeComponent) private tree: TreeComponent;
-
-    addBottom = function(elems, elem) { return elems.push(elem); };
-    addTop = function(elems, elem) { return elems.unshift(elem); };
     addIndex = function (elems, elem, i) { return elems.splice(i, 0, elem); };
     canCurate = false;
     treeOptions = {
@@ -62,19 +63,22 @@ export class FormDescriptionComponent implements OnInit {
             return !FormService.isSubForm(element) || element.data.elementType === "form" && !FormService.isSubForm(element.parent);
         },
         allowDrop: (element, {parent, index}) => {
-            return parent.data.elementType === "section" && !FormService.isSubForm(parent);
+            return element !== parent && (!element || element.data.elementType !== "question" || parent.data.elementType === "section") && !FormService.isSubForm(parent);
         },
         actionMapping: {
             mouse: {
                 drop: (tree, node, $event, {from, to}) => {
-                    if (from.data) {
+                    if (from.insert) {
                         this.addIndex(to.parent.data.formElements, from.data, to.index);
-                        this.tree.treeModel.update();
+                        tree.update();
                     }
-                    if (from.ref) {
+                    else if (from.ref) {
                         from.ref.open();
-                        this.tree.treeModel.update();
+                        tree.update();
                     }
+                    else
+                        TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+                    tree.expandAll();
                 }
             }
         },
@@ -91,25 +95,9 @@ export class FormDescriptionComponent implements OnInit {
         this.canCurate = this.isAllowedModel.isAllowed(this.elt);
     }
 
-    addSection(location) {
-        if (!this.elt.formElements) {
-            this.elt.formElements = [];
-        }
-        location(this.elt.formElements, {
-            label: "New Section",
-            section: {},
-            skipLogic: {condition: ''},
-            formElements: [],
-            elementType: "section"
-        });
-        this.tree.treeModel.update();
-        this.stageElt.emit();
-    }
-
     getNewSection() {
         return {
             label: "New Section",
-            section: {},
             skipLogic: {condition: ''},
             formElements: [],
             elementType: "section"

@@ -1,6 +1,8 @@
 <div class="question_view" [ngClass]="{'bg-warning': question.question.cde.outdated}">
     <div *ngIf="canCurate" class="ib left">
-        <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"></i>
+        <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
+           [treeDrag]="node"
+           [treeDragEnabled]="node.allowDrag()"></i>
         <i *ngIf="question.skipLogic?.condition?.length > 0" class="fa fa-cog updatedSkipLogicIcon"
            [ngClass]="{'fa-spin': question.updatedSkipLogic}"
            title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>

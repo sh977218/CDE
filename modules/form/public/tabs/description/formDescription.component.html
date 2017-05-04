@@ -1,17 +1,18 @@
 <div class="row" *ngIf="elt">
     <div class="col-xs-12">
-        <div class="bottomToolbox">
+        <div class="descriptionToolbox">
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
-            <button id="addSectionTop" (click)="addSection(addTop)" class="btn btn-default formDescriptionTool"
-                    *ngIf="canCurate" [treeDrag]="{data: getNewSection()}" [treeDragEnabled]="true">
+            <button id="addSectionTop" class="btn btn-default formDescriptionTool"
+                    *ngIf="canCurate" [treeDrag]="{insert: 'section', data: getNewSection()}" [treeDragEnabled]="true">
                 <i class="fa fa-plus"></i> Section
             </button>
             <button id="startAddingQuestions" *ngIf="canCurate && elt.formElements.length > 0"
-                    (click)="setToAddCdeMode()" class="btn btn-default formDescriptionTool">
-                <i class="fa fa-cube"></i> Question
+                    class="btn btn-default formDescriptionTool">
+                <i class="fa fa-cube"></i>
+                <span style="margin-bottom: 5px">Question</span>
             </button>
             <button id="startAddingForms" *ngIf="canCurate && elt.formElements.length > 0"
-                    (click)="setToAddFormMode()" class="btn btn-default formDescriptionTool">
+                    class="btn btn-default formDescriptionTool">
                 <i class="fa fa-cubes"></i> Form
             </button>
         </div>
@@ -39,14 +40,12 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                                    <div class="node-content-wrapper w-100 formDescriptionTool"
+                                    <div class="node-content-wrapper w-100"
                                          (click)="node.mouseAction('click', $event)"
                                          (dblclick)="node.mouseAction('dblClick', $event)"
                                          (contextmenu)="node.mouseAction('contextMenu', $event)"
                                          (treeDrop)="node.onDrop($event)"
-                                         [treeAllowDrop]="node.allowDrop"
-                                         [treeDrag]="node"
-                                         [treeDragEnabled]="node.allowDrag()">
+                                         [treeAllowDrop]="node.allowDrop">
                                         <tree-node-content [node]="node" [index]="index"
                                                            [template]="templates.treeNodeTemplate">
                                             <template #treeNodeTemplate let-node="node" let-index="index">
@@ -84,20 +83,6 @@
                 </template>
             </tree-root>
         </ng-container>
-        <div class="my-2">
-            <button id="addSectionBottom" (click)="addSection(addBottom)" class="btn btn-default formDescriptionTool"
-                    *ngIf="canCurate" [treeDrag]="{data: getNewSection()}" [treeDragEnabled]="true">
-                <i class="fa fa-plus"></i> Add Section
-            </button>
-            <button id="startAddingQuestionsBottom" *ngIf="canCurate && elt.formElements.length > 0"
-                    (click)="setToAddCdeMode()" class="btn btn-default formDescriptionTool">
-                <i class="fa fa-cube"></i> Add Question
-            </button>
-            <button id="startAddingFormsBottom" *ngIf="canCurate && elt.formElements.length > 0"
-                    (click)="setToAddFormMode()" class="btn btn-default formDescriptionTool">
-                <i class="fa fa-cubes"></i> Add Form
-            </button>
-        </div>
     </div>
     <!--<div class="question-search-area pd55"-->
          <!--*ngIf="addMode && elt.formElements.length > 0">-->
