@@ -3,7 +3,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
-import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListDirective } from "./upgrade-components";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
@@ -23,7 +22,6 @@ import { JsonpModule } from "@angular/http";
     imports: [
         CommonModule,
         FormsModule,
-        Ng2SmartTableModule,
         Select2Module,
         NgbModule,
         JsonpModule,
