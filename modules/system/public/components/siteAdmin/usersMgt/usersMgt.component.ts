@@ -1,7 +1,7 @@
 import { Http } from "@angular/http";
 import { Component, Inject, ViewChild } from "@angular/core";
 import { Select2OptionData } from "ng2-select2";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
@@ -85,7 +85,8 @@ export class UsersMgtComponent {
 
     addNewUser() {
         this.http.put("/user", {username: this.newUsername}).subscribe(
-            () => this.Alert.addAlert("success", "User created")
+            () => this.Alert.addAlert("success", "User created"),
+            () => this.Alert.addAlert("danger", "Cannot create user. Does it already exist?")
         );
         this.modalRef.close();
     }

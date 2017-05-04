@@ -69,11 +69,11 @@ module.exports = {
     },
     devtool: prod ? '#source-map' : '#eval-source-map',
     watch: !prod,
-    watchOptions: {
+    watchOptions: prod ? undefined : {
         aggregateTimeout: 1000,
         ignored: /node_modules/
     },
-    devServer: {
+    devServer: prod ? undefined : {
         contentBase: __dirname,
         colors: true,
         hot: true,

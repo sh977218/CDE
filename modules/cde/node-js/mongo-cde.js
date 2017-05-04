@@ -11,21 +11,19 @@ var config = require('../../system/node-js/parseConfig')
     , CronJob = require('cron').CronJob
     , elastic = require('./elastic')
     , deValidator = require('../shared/deValidator')
-    ;
+;
 
 exports.type = "cde";
 exports.name = "CDEs";
 
 var conn = connHelper.establishConnection(config.database.appData);
 
-var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 exports.DataElement = DataElement;
 exports.User = User;
 
 var mongo_data = this;
-exports.DataElement = DataElement;
 
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
@@ -43,6 +41,10 @@ schemas.dataElementSchema.pre('save', function (next) {
     }
 });
 
+var DataElement = conn.model('DataElement', schemas.dataElementSchema);
+exports.DataElement = DataElement;
+
+
 exports.elastic = elastic;
 
 exports.getPrimaryName = function (elt) {
@@ -56,7 +58,7 @@ exports.exists = function (condition, callback) {
 };
 
 exports.getStream = function (condition) {
-    return DataElement.find(condition).sort({_id: -1}).stream();
+    return DataElement.find(condition).sort({_id: -1}).cursor();
 };
 
 exports.userTotalSpace = function (name, callback) {

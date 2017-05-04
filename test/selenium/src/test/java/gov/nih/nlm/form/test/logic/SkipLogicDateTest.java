@@ -43,11 +43,11 @@ public class SkipLogicDateTest extends BaseFormTest {
 
         goToFormByName(formName);
         textPresent("If 10/11/2016:",
-                By.xpath("//div[label[text()='Indicate date of reference scan']]//div[label[text()='Macula volume (OD)']]//span[text()='If 10/11/2016: ']"));
+                By.xpath("//*[*[text()='Indicate date of reference scan']]//*[*[text()='Macula volume (OD)']]//span[text()='If 10/11/2016: ']"));
         textPresent("If more than 10/11/2016:",
-                By.xpath("//div[label[text()='Indicate date of reference scan']]//div[label[text()='Macula volume (OS)']]//span[text()='If more than 10/11/2016: ']"));
+                By.xpath("//*[*[text()='Indicate date of reference scan']]//*[*[text()='Macula volume (OS)']]//span[text()='If more than 10/11/2016: ']"));
         textPresent("If less than 10/11/2016:",
-                By.xpath("//div[label[text()='Indicate date of reference scan']]//div[label[text()='Laterality Type']]//span[text()='If less than 10/11/2016: ']"));
+                By.xpath("//*[*[text()='Indicate date of reference scan']]//*[*[text()='Laterality Type']]//span[text()='If less than 10/11/2016: ']"));
         findElement(By.id("Macula volume (OS)_1"));
         textPresent("left eye");
 

@@ -1,11 +1,7 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.test.classification.ClassificationTest;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.List;
 
 public class WorkingGroupClassifInvisible extends BaseClassificationTest {
 
@@ -15,7 +11,7 @@ public class WorkingGroupClassifInvisible extends BaseClassificationTest {
         goToCdeByName("Specimen Block Received Count");
 
         clickElement(By.id("classification_tab"));
-        new ClassificationTest().addClassificationMethod(new String[]{"WG-TEST", "WG Classif", "WG Sub Classif"});
+        _addClassificationMethod(new String[]{"WG-TEST", "WG Classif", "WG Sub Classif"});
         textPresent("WG Sub Classif");
         logout();
         goToCdeByName("Specimen Block Received Count");

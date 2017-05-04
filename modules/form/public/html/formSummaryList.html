@@ -11,7 +11,7 @@
                id="linkToElt_{{$index}}" ng-click='$dismiss()'></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
             <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
-            <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
+            <small  class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
                 <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
         </h4>
 
@@ -19,10 +19,10 @@
             <div class="col-md-6">
                 <b>{{elt.numQuestions}} Questions</b> - <span ng-bind-html="elt.primaryDefinitionCopy"></span>
                 <dl class="dl-horizontal" style="margin: 5px 0 10px 0 ">
-                    <dt tabindex="0">Steward:</dt>
-                    <dd tabindex="0" ng-bind-html="elt.stewardOrg.name"></dd>
-                    <dt tabindex="0" ng-show="elt.classification.length > 0">Used By:</dt>
-                    <dd tabindex="0" ng-show="elt.classification.length > 0" id="dd_usedBy">
+                    <dt >Steward:</dt>
+                    <dd  ng-bind-html="elt.stewardOrg.name"></dd>
+                    <dt  ng-show="elt.classification.length > 0">Used By:</dt>
+                    <dd  ng-show="elt.classification.length > 0" id="dd_usedBy">
                         <span ng-switch="elt.classification.length > 0">
                             <span ng-switch-when="false">None</span>
                             <span ng-switch-default>

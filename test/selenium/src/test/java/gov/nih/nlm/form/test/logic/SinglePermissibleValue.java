@@ -18,10 +18,10 @@ public class SinglePermissibleValue extends BaseFormTest {
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Female Patient Screening");
         textNotPresent("Breast Carcinoma Estrogen Receptor Status");
-        findElement(By.xpath("//div[label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
+        findElement(By.xpath("//*[*[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
                 "subscale T score']]//input")).sendKeys("200");
         textPresent("Patient Gender Category");
-        clickElement(By.xpath("//div[label[text()='Patient Gender Category']]//label/span[text()='Female Gender']"));
+        clickElement(By.xpath("//*[*[text()='Patient Gender Category']]//*/span[text()='Female Gender']"));
         textPresent("Female Patient Screening");
     }
 

@@ -14,8 +14,8 @@ public class MultiSubQuestion extends BaseFormTest {
         goToFormByName(formName);
 
         textPresent("Yes",
-                By.xpath("//div[label[text()='Was genetic testing performed?']]//div[label[text()='Test Name']]" +
-                        "//div[label[text()='Was participant fasting prior to sample collection?']]"));
+                By.xpath("//*[*[text()='Was genetic testing performed?']]//*[*[text()='Test Name']]" +
+                        "//*[*[text()='Was participant fasting prior to sample collection?']]"));
     }
 
 }

@@ -37,7 +37,7 @@
                         </span>
                         <a href="" id="viewBoard_{{board.name}}" (click)="selectBoard(board)">{{board.name}}</a>
                         </h5>
-                        <div tabindex="0"><span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span>
+                        <div ><span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span>
                             {{board.type==='form'?(board.pins.length && board.pins.length >
                             0?'Forms':'Form'):(board.pins.length && board.pins.length > 0?'CDEs':'CDE')}}
                         </div>

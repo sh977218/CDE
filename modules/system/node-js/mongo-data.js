@@ -160,7 +160,7 @@ exports.siteadmins = function(callback) {
 };
 
 exports.orgAdmins = function(callback) {
-    User.find({orgAdmin: {$not: {$size: 0}}}).exec(callback);
+    User.find({orgAdmin: {$not: {$size: 0}}}, callback);
 };
 
 exports.orgCurators = function(orgs, callback) {

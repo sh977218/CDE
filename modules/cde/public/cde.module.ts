@@ -3,7 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import { AdminModule } from "../../admin/public/admin.module";
+import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { BoardModule } from "../../board/public/board.module";
 import { ConceptsComponent } from "./components/concepts.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
@@ -18,7 +18,7 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
         CommonModule,
         FormsModule,
         NgbModule,
-        AdminModule,
+        AdminItemModule,
         BoardModule
     ],
     declarations: [

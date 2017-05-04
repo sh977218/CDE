@@ -6,7 +6,7 @@ import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
 import { SortableModule } from "ng2-bootstrap";
 
-import { AdminModule } from "../../admin/public/admin.module";
+import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
 import { FormDescriptionComponent } from "./tabs/description/formDescripton.component";
@@ -33,7 +33,7 @@ import { SkipLogicService } from "./skipLogic.service";
         SortableModule.forRoot(),
         TreeModule,
         // internal
-        AdminModule
+        AdminItemModule
     ],
     declarations: [
         CdeSortableComponent,

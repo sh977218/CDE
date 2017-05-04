@@ -5,14 +5,17 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PinModalComponent } from "./components/pinModal/pinModal.component";
 import { MyBoardsService } from "./myBoards.service";
 import { CreateBoardComponent } from "./components/createBoard/createBoard.component";
+import { LinkedBoardsComponent } from "./components/linkedBoards/linkedBoards.component";
 
 @NgModule({
     declarations: [
         PinModalComponent,
-        CreateBoardComponent
+        CreateBoardComponent,
+        LinkedBoardsComponent
     ],
     entryComponents: [
-        CreateBoardComponent
+        CreateBoardComponent,
+        LinkedBoardsComponent
     ],
     providers: [MyBoardsService],
     imports: [CommonModule, FormsModule, NgbModule],

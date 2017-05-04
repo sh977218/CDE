@@ -1,6 +1,6 @@
 import * as authShared from "../../../system/shared/authorizationShared";
 
-angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule']);
+angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
@@ -291,7 +291,7 @@ angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal",
 }]);
 
 
-angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
+angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
     var isAllowedModel = {};
 
     isAllowedModel.isAllowed = function (CuratedItem) {
@@ -343,6 +343,26 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", functi
         }
     };
 
+    isAllowedModel.isOrgCurator = function () {
+        return authShared.isOrgCurator(userResource.user);
+    };
+
+    isAllowedModel.isCuratorFor = function (orgName) {
+        return authShared.isCuratorOf(userResource.user, orgName);
+    };
+
+    isAllowedModel.hasRole = function (role) {
+        return authShared.hasRole(userResource.user, role);
+    };
+
+    isAllowedModel.isSiteAdmin = function (role) {
+        return authShared.isSiteAdmin(userResource.user);
+    };
+
+    isAllowedModel.showWorkingGroups = function (stewardClassifications) {
+        return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user)
+            || authShared.isSiteAdmin(userResource.user);
+    };
     return isAllowedModel;
 }]);
 
@@ -414,24 +434,35 @@ angular.module('systemModule').directive('user-comments', downgradeComponent({co
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
 angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
 
+import {OrgAdminComponent} from "../components/siteAdmin/orgAdmin/orgAdmin.component";
+angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({component: OrgAdminComponent, inputs: [], outputs: []}));
+
 import {DailyUsageComponent} from "../components/siteAdmin/dailyUsage/dailyUsage.component";
 angular.module('systemModule').directive('cdeDailyUsage', downgradeComponent({component: DailyUsageComponent, inputs: [], outputs: []}));
 
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
 
-import {IdentifiersComponent} from "../../../admin/public/components/identifiers.component";
+import {IdentifiersComponent} from "../../../adminItem/public/components/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({component: IdentifiersComponent, inputs: ['elt'], outputs: []}));
 
-import {PropertiesComponent} from "../../../admin/public/components/properties.component";
+import {AttachmentsComponent} from "../../../adminItem/public/components/attachments/attachments.component";
+angular.module('systemModule').directive('cdeAdminItemAttachments', downgradeComponent({component: AttachmentsComponent, inputs: ['elt'], outputs: []}));
+
+import {PropertiesComponent} from "../../../adminItem/public/components/properties.component";
 angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComponent({component: PropertiesComponent, inputs: ['elt'], outputs: []}));
 
-import {NamingComponent} from "../../../admin/public/components/naming.component";
+import {NamingComponent} from "../../../adminItem/public/components/naming.component";
 angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({component: NamingComponent, inputs: ['elt'], outputs: []}));
 
-import {ReferenceDocumentComponent} from "../../../admin/public/components/referenceDocument.component";
+import {ReferenceDocumentComponent} from "../../../adminItem/public/components/referenceDocument.component";
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({component: ReferenceDocumentComponent, inputs: ['elt'], outputs: []}));
 
 import {RegistrationComponent} from "../components/adminItem/registration.component";
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
 
+import {LinkedBoardsComponent} from "../../../board/public/components/linkedBoards/linkedBoards.component";
+angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({component: LinkedBoardsComponent, inputs: ['elt'], outputs: []}));
+
+import {ClassificationComponent} from "../../../adminItem/public/components/classification/classification.component";
+angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({component: ClassificationComponent, inputs: ['elt'], outputs: []}));

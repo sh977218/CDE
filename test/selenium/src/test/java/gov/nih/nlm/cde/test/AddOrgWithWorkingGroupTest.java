@@ -1,13 +1,12 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.test.classification.ClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
 
-    @Test(priority = -1)
+    @Test
     public void addOrgWithWorkingGroupOf() {
         // Create working group
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -57,8 +56,8 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         clickElement(By.id("saveRegStatus"));
         closeAlert();
 
-        clickElement(By.linkText("Classification"));
-        new ClassificationTest().addClassificationMethod(new String[]{orgWG, classification, subClassification});
+        clickElement(By.id("classification_tab"));
+        _addClassificationMethod(new String[]{orgWG, classification, subClassification});
         waitForESUpdate();
 
         // Make sure ctepCurator user can see it

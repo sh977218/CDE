@@ -5,7 +5,6 @@ db.forms.remove({});
 db.pinningBoards.remove({});
 db.messages.remove({});
 db.sessions.remove({});
-db.articles.remove({});
 db.fs.files.remove({});
 db.fs.chunks.remove({});
 db.comments.remove({});
@@ -42,7 +41,7 @@ var users = [
         username: 'nlm',
         password: 'nlm',
         siteAdmin: true,
-        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org", "TEST", "PhenX", "NLM", "NIDA"],
+        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org", "TEST", "PhenX", "NLM", "NIDA", "NHLBI"],
         viewHistory: [],
         email: "admin@email.com"
     }
@@ -127,6 +126,3 @@ users.forEach(function(u) {
 });
 
 db.users.insert({username: 'oldUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: [], searchSettings: oldSettings});
-
-db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this.", archived: false});
-db.articles.insert({key: "testEdits", body: "Testing edits", archived: false});

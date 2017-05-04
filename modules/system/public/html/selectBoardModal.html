@@ -41,7 +41,7 @@
                         <a href="" id="viewBoard_{{board.name}}" ng-click="$close(board)"
                            ng-bind="board.name"></a>
                     </h5>
-                    <div tabindex="0"><span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span> {{board.type==='form'?(board.pins.length && board.pins.length > 0?'Forms':'Form'):(board.pins.length && board.pins.length > 0?'CDEs':'CDE')}}</div>
+                    <div ><span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span> {{board.type==='form'?(board.pins.length && board.pins.length > 0?'Forms':'Form'):(board.pins.length && board.pins.length > 0?'CDEs':'CDE')}}</div>
                     <div id="board_tag_{{$index}}" class="myBoardTags">
                         <span ng-repeat="tag in board.tags">
                             <span class="label label-default"><i class="fa fa-hashtag"></i>{{tag}}</span>

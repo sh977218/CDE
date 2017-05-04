@@ -30,13 +30,13 @@ schemas.permissibleValueSchema = new mongoose.Schema({
 
 schemas.sourceSchema = new mongoose.Schema({
     sourceName: String,
-    created: Date,
-    updated: Date,
-    registrationStatus: String,
-    datatype: String,
+    created: {type: Date, description: "Date created in source"},
+    updated: {type: Date, description: "Date updated in source"},
+    registrationStatus: {type: String, description: "Relative standing of official record status in steward's workflow"},
+    datatype: {type: String, description: "May contain the source datatype"},
     copyright: {
-        value: String,
-        valueFormat: String
+        value: {type: String, description: "Content of a copyright statement or terms of use"},
+        valueFormat: {type: String, description: "If 'html', interpret as HTML"}
     }
 }, {_id: false});
 
@@ -139,9 +139,8 @@ schemas.orgJson = orgJson;
 
 schemas.orgSchema = new mongoose.Schema(orgJson);
 
-
 schemas.userSchema = new mongoose.Schema({
-    username: String
+    username: {type: String, unique: true}
     , email: String
     , password: String
     , lastLogin: Date
@@ -228,8 +227,8 @@ schemas.registrationStateSchema = {
     , untilDate: Date
     , administrativeNote: String
     , unresolvedIssue: String
-    , administrativeStatus: String
-    , replacedBy: {tinyId: String}
+    , administrativeStatus: {type: String, description: "Relative standing of CDE as it relates to steward's administrative workflow"}
+    , replacedBy: {tinyId: {type: String, description: "tinyId of replacement CDE"}}
 };
 
 schemas.instructionSchema = {value: String, valueFormat: String};

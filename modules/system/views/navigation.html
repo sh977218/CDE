@@ -54,9 +54,6 @@
                        aria-label="Help">Help<span class="caret"></span></a>
                     <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu_help">
                         <li><a href="/home">About</a></li>
-                        <% if (config.modules.article) { %>
-                        <li><a href="/help/index">User Guide</a></li>
-                        <% } %>
                         <li ng-controller="TakeATourCtrl"><a href="" ng-click="restartTour()">Take a tour</a></li>
                         <li ng-if="user._id && user.siteAdmin"><a href="/stats">Statistics</a></li>
                     </ul>
@@ -104,9 +101,9 @@
                         </li>
                     </ul>
                 </li>
-                <li><a href="/searchSettings">
-                    <i id="searchSettings" ng-click="openSearchSettingsModal()"
-                       class="fa fa-cog navbar-inverse text-muted userIcon"></i></a></li>
+                <li><a href="/searchSettings" title="open search setting">
+                    <i class="fa fa-cog navbar-inverse text-muted userIcon" id="searchSettings"
+                       ng-click="openSearchSettingsModal()"></i></a></li>
             </ul>
         </div>
     </div>

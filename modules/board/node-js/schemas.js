@@ -12,6 +12,7 @@ var pinSchema = new mongoose.Schema({
 }, {_id: false});
 
 schemas.pinningBoardSchema = new mongoose.Schema({
+    elementType: {default: 'board', type: String},
     name: String,
     description: String,
     type: {type: String, default: 'cde', enum: ['cde', 'form']},
