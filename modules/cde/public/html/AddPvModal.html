@@ -1,33 +1,33 @@
 <div class="modal-header">
-    <h4 tabindex="0">Add Permissible Value</h4>
+    <h4 >Add Permissible Value</h4>
 </div>
 <form name="form" role="form">
     <div class="modal-body">
         <div class="form-group">
-            <label tabindex="0" for="permissibleValueInput">Value</label>
-            <input tabindex="0" class="form-control" ng-model="newPv.permissibleValue"
+            <label  for="permissibleValueInput">Value</label>
+            <input  class="form-control" ng-model="newPv.permissibleValue"
                    id="permissibleValueInput"
                    name="permissibleValue" Placeholder="Permissible Value" required/>
         </div>
         <div class="form-group">
-            <label tabindex="0" for="valueMeaningNameInput">Code Name</label>
-            <input tabindex="0" class="form-control" ng-model="newPv.valueMeaningName"
+            <label  for="valueMeaningNameInput">Code Name</label>
+            <input  class="form-control" ng-model="newPv.valueMeaningName"
                       id="valueMeaningNameInput" ng-change="lookupUmls()"
                       Placeholder="Code Name"/>
         </div>
         <div class="form-group">
-            <label tabindex="0" for="valueMeaningCodeInput">Code</label>
-            <input tabindex="0" class="form-control" ng-model="newPv.valueMeaningCode" id="valueMeaningCodeInput"
+            <label  for="valueMeaningCodeInput">Code</label>
+            <input  class="form-control" ng-model="newPv.valueMeaningCode" id="valueMeaningCodeInput"
                       Placeholder="Code"/>
         </div>
         <div class="form-group">
-            <label tabindex="0" for="valueMeaningDescInput">Description</label>
-            <textarea tabindex="0" class="form-control" ng-model="newPv.valueMeaningDefinition"
+            <label  for="valueMeaningDescInput">Description</label>
+            <textarea  class="form-control" ng-model="newPv.valueMeaningDefinition"
                   id="valueMeaningDescInput" Placeholder="Description"/>
         </div>
         <div class="form-group">
-            <label tabindex="0" for="codeSystemInput">Code System</label>
-            <input tabindex="0" class="form-control" ng-model="newPv.codeSystemName" id="codeSystemInput"
+            <label  for="codeSystemInput">Code System</label>
+            <input  class="form-control" ng-model="newPv.codeSystemName" id="codeSystemInput"
                    Placeholder="Code System" ng-required="newPv.valueMeaningCode.length > 0"/>
         </div>
         <div ng-if="umlsTerms.length > 0">

@@ -1,4 +1,4 @@
-<h2 [textContent]="elt?.naming && elt.naming[0]?.designation"></h2>
+<h1 [textContent]="elt?.naming && elt.naming[0]?.designation"></h1>
 
 <form *ngIf="!endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal">
     <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF

@@ -51,17 +51,17 @@ public class EditSkipLogic extends BaseFormTest {
 
         goToFormByName(formName);
         textPresent("How often did you have to push yourself to get things done because of your fatigue?",
-                By.xpath("//div[label[text()='To what degree did your fatigue interfere with your physical functioning?']]" +
-                        "//label[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
+                By.xpath("//*[*[text()='To what degree did your fatigue interfere with your physical functioning?']]" +
+                        "//*[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
 
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.xpath("//div[@id='How much were you bothered by your fatigue on average?_0']//label/span[text()='Not at all']"));
-        clickElement(By.xpath("//div[@id='To what degree did your fatigue interfere with your physical functioning?_1']" +
-                "//label/span[text()='A little bit']"));
+        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*/span[text()='Not at all']"));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']" +
+                "//*/span[text()='A little bit']"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.xpath("//div[@id='To what degree did your fatigue interfere with your physical functioning?_1']" +
-                "//label/span[text()='Not at all']"));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']" +
+                "//*/span[text()='Not at all']"));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 
