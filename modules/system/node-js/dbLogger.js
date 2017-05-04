@@ -47,9 +47,9 @@ function sqEsUpdate(elt) {
     }
 }
 
-exports.storeQuery = function(settings, callback) {
+exports.storeQuery = function (settings, callback) {
     var storedQuery = {
-        searchTerm: settings.searchTerm?settings.searchTerm:""
+        searchTerm: settings.searchTerm ? settings.searchTerm : ""
         , date: new Date()
         , regStatuses: settings.selectedStatuses
         , selectedElements1: settings.selectedElements.slice(0)
@@ -64,17 +64,17 @@ exports.storeQuery = function(settings, callback) {
 
     if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === "")) {
         StoredQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-            function(err, theOne) {
+            function (err, theOne) {
                 if (theOne) {
                     StoredQueryModel.findOneAndUpdate(
-                            {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-                            storedQuery,
-                            function (err, newObject) {
-                                sqEsUpdate(newObject);
-                                if (err) console.log(err);
-                                if (callback) callback(err);
-                            }
-                        );
+                        {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
+                        storedQuery,
+                        function (err, newObject) {
+                            sqEsUpdate(newObject);
+                            if (err) console.log(err);
+                            if (callback) callback(err);
+                        }
+                    );
                 } else {
                     new StoredQueryModel(storedQuery).save(callback);
                 }
@@ -85,30 +85,30 @@ exports.storeQuery = function(settings, callback) {
     }
 };
 
-exports.log = function(message, callback) {
+exports.log = function (message, callback) {
     if (isNaN(message.responseTime)) {
         delete message.responseTime;
     }
     if (message.httpStatus !== "304") {
         var logEvent = new LogModel(message);
-        logEvent.save(function(err) {
-            if (err) console.log ("ERROR: " + err);
-            callback(err); 
+        logEvent.save(function (err) {
+            if (err) console.log("ERROR: " + err);
+            callback(err);
         });
     }
 };
 
-exports.logError = function(message, callback) {
+exports.logError = function (message, callback) {
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
-    logEvent.save(function(err) {
-        if (err) console.log ("ERROR: ");
+    logEvent.save(function (err) {
+        if (err) console.log("ERROR: ");
         if (callback) callback(err);
     });
 };
 
-exports.logClientError = function(req, callback) {
-    var getRealIp = function(req) {
+exports.logClientError = function (req, callback) {
+    var getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
@@ -118,37 +118,35 @@ exports.logClientError = function(req, callback) {
     exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
     var logEvent = new ClientErrorModel(exc);
-    logEvent.save(function(err) {
-        if (err) console.log ("ERROR: " + err);
+    logEvent.save(function (err) {
+        if (err) console.log("ERROR: " + err);
         callback(err);
     });
 };
 
-exports.getLogs = function(inQuery, callback) {
-    let logSize = 500;
-    let skip = inQuery.currentPage * logSize;
-    delete inQuery.currentPage;
-    let fromDate = inQuery.fromDate;
-    delete inQuery.fromDate;
-    let toDate = inQuery.toDate;
-    delete inQuery.toDate;
-    let query = LogModel.find(inQuery);
-    if (fromDate !== undefined) query.where("date").gte(moment(fromDate));
-    if (toDate !== undefined) query.where("date").lte(moment(toDate));
-    let sortBy = "date";
-    let sortDir = -1;
-    if (inQuery.sortBy) sortBy = inQuery.sortBy;
-    if (inQuery.sortDir) sortDir = inQuery.sortDir;
-    LogModel.count({}, function(err, count) {
-        let sort = {};
-        sort[sortBy] = sortDir;
-        query.sort(sort).limit(logSize).skip(skip).exec(function (err, logs) {
-            callback(err, {count: count, itemsPerPage: logSize, logs: logs});  
+exports.getLogs = function (body, callback) {
+    let sort = {"date": "desc"};
+    if (body.sort) sort = body.sort;
+    let currentPage = 1;
+    if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
+    let itemsPerPage = 500;
+    if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
+    let skip = (currentPage - 1) * itemsPerPage;
+    let query = {};
+    if (body.ip) query = {ip: body.ipAddress};
+    let modal = LogModel.find();
+    if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
+    if (body.toDate) modal.where("date").lte(moment(body.toDate));
+    LogModel.count({}, function (err, count) {
+        modal.sort(sort).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
+            let result = {itemsPerPage: itemsPerPage, logs: logs, sort: sort};
+            if (!body.totalItems) result.totalItems = count;
+            callback(err, result);
         });
     });
 };
 
-exports.getServerErrors = function(params, callback) {
+exports.getServerErrors = function (params, callback) {
     if (!params.limit) params.limit = 20;
     if (!params.skip) params.skip = 0;
     var filter = {};
@@ -156,70 +154,83 @@ exports.getServerErrors = function(params, callback) {
         filter.origin = {$nin: params.excludeOrigin};
     }
     LogErrorModel
-            .find(filter)
-            .sort('-date')
-            .skip(params.skip)
-            .limit(params.limit)
-            .exec(function(err, logs){
-        callback(err, logs);
-    });
+        .find(filter)
+        .sort('-date')
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec(function (err, logs) {
+            callback(err, logs);
+        });
 };
 
-exports.getClientErrors = function(params, callback) {
+exports.getClientErrors = function (params, callback) {
     ClientErrorModel
-            .find()
-            .sort('-date')
-            .skip(params.skip)
-            .limit(params.limit)
-            .exec(function(err, logs){
-        callback(err, logs);
-    });
+        .find()
+        .sort('-date')
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec(function (err, logs) {
+            callback(err, logs);
+        });
 };
 
-exports.getFeedbackIssues = function(params, callback) {
+exports.getFeedbackIssues = function (params, callback) {
     FeedbackModel
         .find()
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
-        .exec(function(err, logs){
+        .exec(function (err, logs) {
             callback(err, logs);
         });
 };
 
-exports.usageByDay = function(callback) {
+exports.usageByDay = function (callback) {
     var d = new Date();
     d.setDate(d.getDate() - 3);
     //noinspection JSDuplicatedDeclaration
     LogModel.aggregate(
         {$match: {date: {$exists: true}, date: {$gte: d}}} // jshint ignore:line
-        , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}, latest: {$max: "$date"}}}
+        , {
+            $group: {
+                _id: {
+                    ip: "$remoteAddr",
+                    year: {$year: "$date"},
+                    month: {$month: "$date"},
+                    dayOfMonth: {$dayOfMonth: "$date"}
+                }, number: {$sum: 1}, latest: {$max: "$date"}
+            }
+        }
         , function (err, result) {
-            if (err || !result) logging.errorLogger.error("Error: Cannot retrieve logs", {origin: "system.dblogger.usageByDay", stack: new Error().stack, details: "err "+err});
+            if (err || !result) logging.errorLogger.error("Error: Cannot retrieve logs", {
+                origin: "system.dblogger.usageByDay",
+                stack: new Error().stack,
+                details: "err " + err
+            });
             callback(result);
         }
     );
 };
 
-exports.saveFeedback = function(req, cb) {
+exports.saveFeedback = function (req, cb) {
     var report = JSON.parse(req.body.feedback);
     var issue = new FeedbackModel({
-        user: {username: req.user?req.user.username:null}
+        user: {username: req.user ? req.user.username : null}
         , rawHtml: report.html
         , reportedUrl: report.url
         , userMessage: report.note
         , screenshot: {content: report.img}
         , browser: report.browser.userAgent
     });
-    issue.save(function(err){
+    issue.save(function (err) {
         if (cb) cb(err);
     });
     var emailContent = {
         subject: "Issue reported by a user"
         , body: report.note
     };
-    mongo_data_system.siteadmins(function(err, users) {
-        email.emailUsers(emailContent, users, function() {
+    mongo_data_system.siteadmins(function (err, users) {
+        email.emailUsers(emailContent, users, function () {
         });
     });
 };

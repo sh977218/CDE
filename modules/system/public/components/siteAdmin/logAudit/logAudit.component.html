@@ -3,20 +3,22 @@
         <form role="form" class="form-inline">
             <label class="sr-only" for="ip">Remote Address</label>
             <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="ip" name="ip" type="text"
-                   [(ngModel)]="search.remoteAddr" placeholder="IP Address">
+                   [(ngModel)]="ipAddress" placeholder="IP Address">
             <label class="sr-only" for="fromDate">From Date</label>
             <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="fromDate" name="formDate" type="datetime-local"
-                   [(ngModel)]="search.fromDate" placeholder="From Date">
+                   [(ngModel)]="fromDate" placeholder="From Date">
             <label class="sr-only" for="toDate">Until Date</label>
             <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="toDate" name="toDate" type="datetime-local"
-                   [(ngModel)]="search.toDate" placeholder="Until Date">
+                   [(ngModel)]="toDate" placeholder="Until Date">
             <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs()">Submit</button>
         </form>
         <table class="table table-striped table-bordered table-condensed table-responsive">
             <tr>
-                <th *ngFor="let property of propertiesArray" (click)="sort(property)">
-                    {{sortMap[property].title}} <i [ngClass]="sortMap[property].class"></i>
-                </th>
+                <ng-container *ngFor="let property of propertiesArray">
+                    <th (click)="sort(property)">{{sortMap[property].title}}
+                        <i [ngClass]="sortMap[property].class"></i>
+                    </th>
+                </ng-container>
             </tr>
             <tr *ngFor="let log of gridLogEvents">
                 <td>{{log.date}}</td>
@@ -27,7 +29,7 @@
                 <td>{{log.respTime}}</td>
             </tr>
         </table>
-        <ngb-pagination [collectionSize]="totalItems" [(page)]="search.currentPage" (pageChange)="searchLogs()"
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="currentPage" (pageChange)="searchLogs()"
                         [pageSize]="itemsPerPage" [maxSize]="10"></ngb-pagination>
     </div>
 </div>
