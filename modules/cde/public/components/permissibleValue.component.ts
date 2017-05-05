@@ -1,85 +1,105 @@
-import { Component, Inject, Input, OnInit } from "@angular/core";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-
-const VALUE_TYPE_MAP = {
-    0: "",
-    1: "Value List",
-    2: "Text",
-    3: "Date",
-    4: "Number",
-    5: "Externally Defined"
-};
-const TYPE_VALUE_MAP = {
-    "Value List": 1,
-    "Text": 2,
-    "Date": 3,
-    "Number": 4,
-    "Externally Defined": 5
-};
+import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 const SOURCE = {
-    NCI: {displayAs: "NCI Thesaurus", termType: "PT", selected: false},
-    UMLS: {displayAs: "UMLS", termType: "PT", selected: false},
-    LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: true},
-    SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: true}
+    "NCI Thesaurus": {termType: "PT", selected: false},
+    "UMLS": {termType: "PT", selected: false},
+    "LOINC": {termType: "LA", selected: false, disabled: true},
+    "SNOMEDCT US": {termType: "PT", selected: false, disabled: true}
 };
-
-const SOURCE_ARRAY = ["NCI", "UMLS", "LNC", "SNOMEDCT_US"];
 
 @Component({
     selector: "cde-permissible-value",
     providers: [NgbActiveModal],
     templateUrl: "./permissibleValue.component.html",
     styles: [`
-        :host >>> #permissibleValueDiv a { 
+        :host > > > #permissibleValueDiv a {
             border-bottom: 0px;
             line-height: 0;
-         }
+        }
     `]
 })
 export class PermissibleValueComponent implements OnInit {
+    @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
+    public modalRef: NgbModalRef;
     @Input() public elt: any;
-    public valueTypeOptions = [
-        {value: 1, text: "Value List"},
-        {value: 2, text: "Text"},
-        {value: 3, text: "Date"},
-        {value: 4, text: "Number"},
-        {value: 5, text: "Externally Defined"}
-    ];
-    public edit = true;
-    public valueType = 0;
-    public uom;
-    public containsKnownSystem: boolean = false;
 
+    public valueTypeOptions = {
+        data: [
+            {field: "Value List"},
+            {field: "Text"},
+            {field: "Date"},
+            {field: "Number"},
+            {field: "Externally Defined"}
+        ],
+        value: "field",
+        text: "field"
+    };
+
+    public dataTypeOptions = {
+        data: [
+            {field: "Text"},
+            {field: "Date"},
+            {field: "Number"},
+            {field: "File"}
+        ],
+        value: "field",
+        text: "field"
+    };
+    public edit = true;
+    public containsKnownSystem: boolean = false;
+    umlsTerms = [];
     public columns = [
         {prop: "permissibleValue"},
         {prop: "valueMeaningName"},
         {prop: "valueMeaningCode"},
         {prop: "codeSystemName"}
     ];
+    newPermissibleValue = {};
+    SOURCE_ARRAY = ["NCI Thesaurus", "UMLS", "LOINC", "SNOMEDCT US"];
+
+    constructor(public modalService: NgbModal,
+                @Inject("isAllowedModel") public isAllowedModel) {
+    }
 
     ngOnInit(): void {
-        this.valueType = TYPE_VALUE_MAP[this.elt.valueDomain.datatype];
-        this.uom = this.elt.valueDomain.uom;
-    }
-
-    constructor(@Inject("isAllowedModel") public isAllowedModel) {
-    }
-
-    saveEditable(value) {
-
-        this.elt.valueDomain.datatype = VALUE_TYPE_MAP[value];
-    }
-
-
-    initSrcOptions() {
-        this.containsKnownSystem = false;
-        for (var i = 0; i < this.elt.valueDomain.permissibleValues.length; i++) {
-            if (SOURCE[this.elt.valueDomain.permissibleValues[i].codeSystemName] ||
-                this.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
-                this.containsKnownSystem = true;
-                i = this.elt.valueDomain.permissibleValues.length;
-            }
+        if (this.elt.valueDomain.datatype === 'Value List' && !this.elt.valueDomain.datatypeValueList) {
+            this.elt.valueDomain.datatypeValueList = {};
         }
+        if (this.elt.valueDomain.datatype === 'Externally Defined' && !this.elt.valueDomain.datatypeExternallyDefined) {
+            this.elt.valueDomain.datatypeExternallyDefined = {};
+        }
+        this.containsKnownSystem = this.elt.valueDomain.permissibleValues.filter(pv => {
+                return this.SOURCE_ARRAY.indexOf(pv.codeSystemName) >= 0;
+            }).length > 0;
+    }
+
+    openNewPermissibleValueModal() {
+        this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
+        this.modalRef.result.then(result => {
+            this.newPermissibleValue = {};
+        }, () => {
+        });
+    }
+
+
+    saveValueType(value) {
+        this.elt.valueDomain.datatype = value;
+    }
+
+    saveDataType(value) {
+        this.elt.valueDomain.datatypeValueList.datatype = value;
+    }
+
+    lookupUmls = function () {
+        this.http.get("/searchUmls?searchTerm=" + this.newPermissibleValue.valueMeaningName).map(res => res.json())
+            .subscribe(res => {
+                if (res.result && res.result.results)
+                    this.umlsTerms = res.result.results;
+            })
+    };
+
+    addNewPermissibleValue() {
+
     }
 }
