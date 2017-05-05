@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 
 import { FormService } from "../../form.service";
@@ -52,9 +53,11 @@ export class FormDescriptionComponent implements OnInit {
     @Input() elt: any;
     @Input() inScoreCdes: any;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() setToNoneAddMode: EventEmitter<void> = new EventEmitter<void>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
+
     @ViewChild(TreeComponent) public tree: TreeComponent;
+    @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
+    @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
 
     addIndex = function (elems, elem, i) { return elems.splice(i, 0, elem); };
     canCurate = false;
@@ -89,10 +92,23 @@ export class FormDescriptionComponent implements OnInit {
     };
 
     constructor(private http: Http,
+                public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel) {}
 
     ngOnInit() {
         this.canCurate = this.isAllowedModel.isAllowed(this.elt);
+        this.addIds(this.elt.formElements, "");
+    }
+
+    addIds(fes, preId) {
+        fes.forEach((fe, i) => {
+            let newPreId = preId + "_" + i;
+            if (fe.elementType === "section" || fe.elementType === "form") {
+                fe.descriptionId = (fe.elementType === "section" ? "section" + newPreId : "inform" + newPreId);
+                this.addIds(fe.formElements, newPreId);
+            } else if (fe.elementType === "question")
+                fe.descriptionId = "question" + newPreId;
+        });
     }
 
     getNewSection() {
@@ -102,6 +118,20 @@ export class FormDescriptionComponent implements OnInit {
             formElements: [],
             elementType: "section"
         };
+    }
+
+    openFormSearch() {
+        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(result => {
+            this.stageElt.emit();
+        }, () => {
+        });
+    }
+
+    openQuestionSearch() {
+        this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(result => {
+            this.stageElt.emit();
+        }, () => {
+        });
     }
 
     // sortableOptionsSections = {

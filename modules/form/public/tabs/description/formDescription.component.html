@@ -1,18 +1,20 @@
 <div class="row" *ngIf="elt">
     <div class="col-xs-12">
-        <div class="descriptionToolbox">
+        <div class="descriptionToolbox" *ngIf="canCurate">
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
             <button id="addSectionTop" class="btn btn-default formDescriptionTool"
-                    *ngIf="canCurate" [treeDrag]="{insert: 'section', data: getNewSection()}" [treeDragEnabled]="true">
+                    [treeDrag]="{insert: 'section', data: getNewSection()}" [treeDragEnabled]="true">
                 <i class="fa fa-plus"></i> Section
             </button>
-            <button id="startAddingQuestions" *ngIf="canCurate && elt.formElements.length > 0"
-                    class="btn btn-default formDescriptionTool">
+            <button id="startAddingQuestions" class="btn btn-default formDescriptionTool"
+                    *ngIf="elt.formElements.length > 0"
+                    [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true">
                 <i class="fa fa-cube"></i>
                 <span style="margin-bottom: 5px">Question</span>
             </button>
-            <button id="startAddingForms" *ngIf="canCurate && elt.formElements.length > 0"
-                    class="btn btn-default formDescriptionTool">
+            <button id="startAddingForms" class="btn btn-default formDescriptionTool"
+                    *ngIf="elt.formElements.length > 0"
+                    [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true">
                 <i class="fa fa-cubes"></i> Form
             </button>
         </div>
@@ -28,7 +30,7 @@
         <ng-container *ngFor="let eltIter of [elt]">
             <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
                 <template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
-                    <div class="tree-node tree-node-level-{{ node.level }}"
+                    <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.descriptionId"
                          [class]="node.getClass()"
                          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
                          [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
@@ -51,15 +53,13 @@
                                             <template #treeNodeTemplate let-node="node" let-index="index">
                                                 <cde-form-description-section
                                                         *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                        [id]="(node.data.elementType === 'section' ? 'section_' + preId : 'inform_'+ preId)"
-                                                        [node]="node"
                                                         [canCurate]="canCurate"
-                                                        [preId]="preId + '_'+ sectionIndex" [inScoreCdes]="inScoreCdes"
-                                                        (stageElt)="stageElt.emit()"
-                                                        (isFormValid)="isFormValid.emit($event)"></cde-form-description-section>
+                                                        [node]="node"
+                                                        [inScoreCdes]="inScoreCdes"
+                                                        (isFormValid)="isFormValid.emit($event)"
+                                                        (stageElt)="stageElt.emit()"></cde-form-description-section>
                                                 <cde-form-description-question
                                                         *ngIf="node.data.elementType === 'question'"
-                                                        id="question_{{preId}}_{{sectionIndex}}"
                                                         [canCurate]="canCurate"
                                                         [node]="node"
                                                         (stageElt)="stageElt.emit()"></cde-form-description-question>
@@ -71,7 +71,6 @@
                             <div class="panel-body">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
-                                                                      id="question_{{preId}}_{{sectionIndex}}"
                                                                       [canCurate]="canCurate"
                                                                       [node]="node"
                                                                       (isFormValid)="isFormValid.emit($event)"
@@ -84,9 +83,28 @@
             </tree-root>
         </ng-container>
     </div>
-    <!--<div class="question-search-area pd55"-->
-         <!--*ngIf="addMode && elt.formElements.length > 0">-->
-        <!--<cde-search-cde [hidden]="addMode!=='cde'" class="panel-group" id="accordion_cde"></cde-search-cde>-->
-        <!--<cde-search-form [hidden]="addMode!=='form'" class="panel-group" id="accordion_form"></cde-search-form>-->
-    <!--</div>-->
 </div>
+
+<template #formSearchTmpl let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>title</h3>
+    </div>
+    <div class="modal-body">
+        <div ng-include="../../"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="d()" id="cancelSelectF">Cancel</button>
+    </div>
+</template>
+
+<template #questionSearchTmpl let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>title</h3>
+    </div>
+    <div class="modal-body">
+        <div ng-include="../../"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="d()" id="cancelSelectQ">Cancel</button>
+    </div>
+</template>

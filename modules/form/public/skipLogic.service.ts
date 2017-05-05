@@ -239,12 +239,10 @@ export class SkipLogicService {
     }
 
     validateSkipLogic(skipLogic, previousQuestions, event) {
-        if (event) {
-            if (event.item)
-                skipLogic.condition = this.preSkipLogicSelect + event.item;
-            else
-                skipLogic.condition = event;
-        }
+        if (event && event.item)
+            skipLogic.condition = this.preSkipLogicSelect + event.item;
+        else
+            skipLogic.condition = event;
 
         let logic = skipLogic.condition.trim();
         let tokens = this.tokenSplitter(logic);

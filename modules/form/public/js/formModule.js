@@ -60,7 +60,7 @@ angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$pa
 import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
 import {FormDescriptionComponent} from "../tabs/description/formDescripton.component";
-angular.module('formModule').directive('cdeFormDescription', downgradeComponent({component: FormDescriptionComponent, inputs: ['elt', 'inScoreCdes'], outputs: ['isFormValid', 'setToNoneAddMode', 'stageElt']}));
+angular.module('formModule').directive('cdeFormDescription', downgradeComponent({component: FormDescriptionComponent, inputs: ['elt', 'inScoreCdes'], outputs: ['isFormValid', 'stageElt']}));
 
 import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
 angular.module('formModule').directive('cdeMergeForm', downgradeComponent({component: MergeFormComponent, inputs: ['left', 'right'], outputs: []}));

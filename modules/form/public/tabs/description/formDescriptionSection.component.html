@@ -78,9 +78,10 @@
                 <div class="questionSectionLabel">Show if:
                     <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
                         <input [disabled]="!(parent.formElements.length > 1 && canCurate && section.edit)"
-                               type="text" title="Show If" [(ngModel)]="section.skipLogic.condition"
+                               type="text" title="Show If"
+                               [ngModel]="section.skipLogic.condition"
+                               (ngModelChange)="validateSkipLogic(section.skipLogic, parent.formElements, $event)"
                                class="form-control skipLogicCondition"
-                               (change)="validateSkipLogic(section.skipLogic,parent.formElements)"
                                [ngbTypeahead]="getSkipLogicOptions"
                                (selectItem)="validateSkipLogic(section.skipLogic, parent.formElements, $event)"/>
                         <span [textContent]="section.skipLogic?.validationError"></span>
@@ -145,9 +146,10 @@
                 <div class="questionSectionLabel">Show if:
                     <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
                     <input [disabled]="!(parent.formElements.length > 1 && canCurate && section.edit)"
-                           type="text" title="Show If" [(ngModel)]="section.skipLogic.condition"
+                           type="text" title="Show If"
+                           [ngModel]="section.skipLogic.condition"
+                           (ngModelChange)="validateSkipLogic(section.skipLogic, parent.formElements, $event)"
                            class="form-control skipLogicCondition"
-                           (change)="validateSkipLogic(section.skipLogic,parent.formElements)"
                            [ngbTypeahead]="getSkipLogicOptions"
                            (selectItem)="validateSkipLogic(section.skipLogic, parent.formElements, $event)"/>
                     <span [textContent]="section.skipLogic?.validationError"></span>
