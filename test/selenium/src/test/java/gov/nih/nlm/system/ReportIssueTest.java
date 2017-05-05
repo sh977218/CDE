@@ -14,6 +14,7 @@ public class ReportIssueTest extends NlmCdeBaseTest {
         findElement(By.id("feedback-welcome-next")).click();
         findElement(By.id("feedback-highlighter-next")).click();
         findElement(By.id("feedback-submit")).click();
+        textPresent("issue was successfully submitted");
         findElement(By.cssSelector(".feedback-close-btn")).click();
         hangon(1);
 
