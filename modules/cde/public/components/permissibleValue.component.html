@@ -61,4 +61,54 @@
     </div>
 </div>
 
-<template></template>
+<ng-template #newPermissibleValueContent id="newPermissibleValueModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="newPermissibleValueModalHeader">
+        <h4 class="modal-title">Add Naming</h4>
+    </div>
+    <form role="form" #newPermissibleValueForm="ngForm">
+        <div class="modal-body" id="newPermissibleValueModalBody">
+            <div class="form-group">
+                <label for="permissibleValueInput">Value</label>
+                <input class="form-control" ngModel="newPv.permissibleValue" id="permissibleValueInput"
+                       name="permissibleValue" Placeholder="Permissible Value" required/>
+            </div>
+            <div class="form-group">
+                <label for="valueMeaningNameInput">Code Name</label>
+                <input class="form-control" ngModel="newPv.valueMeaningName" id="valueMeaningNameInput"
+                       ng-change="lookupUmls()"
+                       Placeholder="Code Name"/>
+            </div>
+            <div class="form-group">
+                <label for="valueMeaningCodeInput">Code</label>
+                <input class="form-control" ngModel="newPv.valueMeaningCode" id="valueMeaningCodeInput"
+                       Placeholder="Code"/>
+            </div>
+            <div class="form-group">
+                <label for="valueMeaningDescInput">Description</label>
+                <textarea class="form-control" ngModel="newPv.valueMeaningDefinition" id="valueMeaningDescInput"
+                          Placeholder="Description"/>
+            </div>
+            <div class="form-group">
+                <label for="codeSystemInput">Code System</label>
+                <input class="form-control" ngModel="newPv.codeSystemName" id="codeSystemInput"
+                       Placeholder="Code System" (required)="newPv.valueMeaningCode.length > 0"/>
+            </div>
+            <div ng-if="umlsTerms.length > 0">
+                <h4>Choices from UMLS: </h4>
+                <div *ngFor="let term of umlsTerms | limitTo 10">
+                    <a (click)="selectFromUmls($index)" href="#">{{term.ui}} : {{term.name}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" id="newPermissibleValueModalFooter">
+            <button class="btn cancel" (click)="c('Close click')" id="cancelNewPermissibleValueBtn"
+                    name="cancelNewPermissibleValueBtn"
+                    type="button">Cancel
+            </button>
+            <button class="btn btn-warning" [disabled]="!newPermissibleValueForm.form.valid"
+                    id="createnewPermissibleValueBtn"
+                    name="createnewPermissibleValueBtn" type="submit" (click)="addnewPermissibleValue();">Save
+            </button>
+        </div>
+    </form>
+</ng-template>
