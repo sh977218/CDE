@@ -2,7 +2,6 @@ package gov.nih.nlm.system;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
@@ -13,6 +12,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.Sleeper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -532,7 +532,11 @@ public class NlmCdeBaseTest {
     }
 
     public void hangon(double i) {
-        Sleeper.sleepTight((long) (i * 1000));
+        try {
+            Thread.sleep((long) (i * 1000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean classPresent(String text, By by) {

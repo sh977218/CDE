@@ -12,12 +12,13 @@ repositories {
 }
 
 dependencies {
-    def seleniumVersion = "2.42.0"
+    def seleniumVersion = "3.4.0"
     testCompile group: 'org.testng', name: 'testng', version: '6.8'
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-ie-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
+    testCompile group: 'commons-io', name: 'commons-io', version: "2.5"
 
     testCompile "com.jayway.restassured:rest-assured:2.3.2"
     testCompile "net.lingala.zip4j:zip4j:1.3.2"
@@ -29,7 +30,7 @@ tasks.withType(Test) {
     systemProperty 'timeout', System.getProperty('timeout', timeout)
     systemProperty 'browser', project.hasProperty('browser') ? browser : "chrome";
     systemProperty 'seleniumDownloadFolder',  System.getProperty('downloadFolder', downloadFolder);
-    systemProperty 'chromeDownloadFolder',  System.getProperty('chromeDownloadFolder', chromeDownloadFolder);
+//    systemProperty 'chromeDownloadFolder',  System.getProperty('chromeDownloadFolder', chromeDownloadFolder);
     systemProperty 'tempFolder', project.hasProperty('tempFolder') ? tempFolder : "/tmp/";
 }
 
