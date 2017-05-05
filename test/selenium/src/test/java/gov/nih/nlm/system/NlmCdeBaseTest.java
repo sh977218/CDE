@@ -229,8 +229,12 @@ public class NlmCdeBaseTest {
             videoExec.shutdown();
             hangon(1);
         }
-        if (driver.getWindowHandles().size() > 1)
-            System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+        try {
+            if (driver.getWindowHandles().size() > 1)
+                System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+        } catch (Exception e) {
+
+        }
         driver.quit();
     }
 

@@ -72,7 +72,7 @@ public class MergeTest extends NlmCdeBaseTest {
         hangon(2);
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
         clickElement(By.id("confirmNewVersion"));
-        hangon(5);
+        textPresent("CDEs successfully merged");
         clickElement(By.id("naming_tab"));
         textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
         clickElement(By.id("classification_tab"));
@@ -91,6 +91,8 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("Colitis note");
 
         goToCdeByName("Common Toxicity Criteria Adverse Event Colitis Grade");
+
+        textPresent("Warning: this data element is retired");
 
         clickElement(By.id("history_tab"));
         textPresent("Merged to tinyId 75Y5R3FH5ar");
