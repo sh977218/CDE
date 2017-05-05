@@ -82,7 +82,8 @@ export class LogAuditComponent {
         else return;
     }
 
-    searchLogs(sort, cb) {
+    searchLogs(sort = null, cb = ()=> {
+    }) {
         let postBody = {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,

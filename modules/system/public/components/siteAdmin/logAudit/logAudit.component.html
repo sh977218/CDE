@@ -10,7 +10,7 @@
             <label class="sr-only" for="toDate">Until Date</label>
             <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="toDate" name="toDate" type="datetime-local"
                    [(ngModel)]="toDate" placeholder="Until Date">
-            <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs(null,null)">Submit</button>
+            <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs()">Submit</button>
         </form>
         <table class="table table-striped table-bordered table-condensed table-responsive">
             <tr>
@@ -29,7 +29,7 @@
                 <td>{{log.respTime}}</td>
             </tr>
         </table>
-        <ngb-pagination [collectionSize]="totalItems" [(page)]="currentPage" (pageChange)="searchLogs(null,null)"
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="currentPage" (pageChange)="searchLogs()"
                         [pageSize]="itemsPerPage" [maxSize]="10"></ngb-pagination>
     </div>
 </div>
