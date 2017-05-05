@@ -1,7 +1,7 @@
 <a class='btn btn-small btn-default fa fa-clipboard mergeForm'
    id="openMergeFormModalBtn" (click)="openMergeFormModal()">Merge Form</a>
 
-<template #mergeFormContent id="mergeFormModal" let-c="close" let-d="dismiss" class="hugeModal">
+<ng-template #mergeFormContent id="mergeFormModal" let-c="close" let-d="dismiss" class="hugeModal">
     <div class="modal-header" id="mergeFormModalHeader">
         <h4>Merge <a target=_blank href="formView?tinyId={{left.tinyId}}">
             {{left.naming[0].designation}}</a>
@@ -159,4 +159,4 @@
             Merge
         </button>
     </div>
-</template>
+</ng-template>
