@@ -1,6 +1,6 @@
 <button type="button" class="btn btn-default" id="mltButton" (click)="open()">More Like This</button>
 
-<template #mltModal id="mltModal" let-c="close" let-d="dismiss">
+<ng-template #mltModal id="mltModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3 class="modal-title">More Like This</h3>
     </div>
@@ -18,7 +18,7 @@
 
                 <ngb-accordion id="mltAccordion">
                     <ngb-panel *ngFor="let cde of cdes; let i = index">
-                        <template ngbPanelTitle>
+                        <ng-template ngbPanelTitle>
                             <a href class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
                             <a href="#" class="nonLinkAnchor">
                                 <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
@@ -32,8 +32,8 @@
                                (click)="$event.stopPropagation(); quickBoard.add(cde)">
                                 <i class="fa fa-plus-square-o  hand-cursor" title="Add to Quick Board"
                                    id="addToCompare_{{i}}" role="link"></i></a>
-                        </template>
-                        <template ngbPanelContent>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
                             <div class="col-md-4 col-sm-12 col-xs-12">
                                 <cde-cde-general-details [elt]="cde"></cde-cde-general-details>
                             </div>
@@ -54,7 +54,7 @@
                                     </tr>
                                 </table>
                             </div>
-                        </template>
+                        </ng-template>
                     </ngb-panel>
                 </ngb-accordion>
 
@@ -64,4 +64,4 @@
     <div class="modal-footer">
         <button class="btn btn-default" id="closeMoreLikeThisBtn" (click)="modalRef.dismiss()">Close</button>
     </div>
-</template>
+</ng-template>
