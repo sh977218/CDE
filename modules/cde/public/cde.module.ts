@@ -14,7 +14,6 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
 import { DataTableModule } from "angular2-datatable/index";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable/release/datatable.module";
 
 @NgModule({
     imports: [
@@ -22,7 +21,6 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable/release/datatable.mo
         FormsModule,
         NgbModule,
         DataTableModule,
-        NgxDatatableModule,
         AdminItemModule,
         BoardModule
     ],
