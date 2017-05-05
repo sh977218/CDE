@@ -1,7 +1,7 @@
 <button type="button" class="btn btn-default" id="openLinkedBoardsModalBtn"
         (click)="openLinkedBoardsModal()">Linked Boards</button>
 
-<template #linkedBoardsContent id="linkedFormsModal" let-c="close" let-d="dismiss">
+<ng-template #linkedBoardsContent id="linkedFormsModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3 class="modal-title">Linked Boards</h3>
     </div>
@@ -33,4 +33,4 @@
     <div class="modal-footer">
         <button class="btn btn-default" id="closeLinkedBoardBtn" (click)="d()">Close</button>
     </div>
-</template>
+</ng-template>

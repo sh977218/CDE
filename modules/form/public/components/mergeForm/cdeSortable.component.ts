@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, Host, Output } from "@angular/core";
-import { SortableComponent } from "ng2-bootstrap/index";
+import { SortableComponent } from "ngx-bootstrap/index";
 import { MergeFormService } from "../../../../core/public/mergeForm.service";
 
 @Component({

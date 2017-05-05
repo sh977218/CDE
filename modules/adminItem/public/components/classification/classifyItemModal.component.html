@@ -1,11 +1,11 @@
-<template #classifyItemContent id="newClassifyItemModal" let-c="close" let-d="dismiss">
+<ng-template #classifyItemContent id="newClassifyItemModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="newClassifyItemModalHeader">
         <h4 class="modal-title">Classify This {{elt.elementType | uppercase}}</h4>
     </div>
     <div class="modal-body" id="newClassifyItemModalBody">
         <ngb-tabset (tabChange)="onChangeClassifyView($event)">
             <ngb-tab id="treeViewTab" title="By Classification tree">
-                <template ngbTabContent>
+                <ng-template ngbTabContent>
                     <hr>
                     <select class="form-control" id="selectClassificationOrg" name="selectClassifyItemOrg"
                             (change)="onChangeOrg($event.target.value)" required>
@@ -15,14 +15,14 @@
                     <div class="smallSpace"></div>
                     <div *ngIf="orgClassificationsTreeView">
                         <tree-root [nodes]="orgClassificationsTreeView.classifications" [options]="options">
-                            <template #treeNodeTemplate let-node="node" let-index="index">
+                            <ng-template #treeNodeTemplate let-node="node" let-index="index">
                                 <span>{{ node.data.name }}</span>
                                 <button class="btn btn-default btn-xs" type="button" id="{{node.path}}-classifyBtn"
                                         (click)="classifyItemByTree(node)">
                                     <i class="fa fa-plus"></i> Classify
                                 </button>
-                            </template>
-                            <template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                            </ng-template>
+                            <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
                                 <div class="tree-node tree-node-level-{{ node.level }}" [class]="node.getClass()"
                                      [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
                                      [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
@@ -39,13 +39,13 @@
                                     </div>
                                     <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 </div>
-                            </template>
+                            </ng-template>
                         </tree-root>
                     </div>
-                </template>
+                </ng-template>
             </ngb-tab>
             <ngb-tab id="recentlyAddViewTab" title="By recently added">
-                <template ngbTabContent>
+                <ng-template ngbTabContent>
                     <hr>
                     <p>Select from recently used classifications...</p>
                     <div class="smallSpace"></div>
@@ -58,7 +58,7 @@
                             <i class="fa fa-plus"></i> Classify
                         </button>
                     </div>
-                </template>
+                </ng-template>
             </ngb-tab>
         </ngb-tabset>
     </div>
@@ -67,4 +67,4 @@
                 name="cancelNewClassifyItemBtn" type="button">Close
         </button>
     </div>
-</template>
+</ng-template>
