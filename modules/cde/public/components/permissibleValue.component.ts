@@ -17,12 +17,21 @@ const TYPE_VALUE_MAP = {
     "Externally Defined": 5
 };
 
+const SOURCE = {
+    NCI: {displayAs: "NCI Thesaurus", termType: "PT", selected: false},
+    UMLS: {displayAs: "UMLS", termType: "PT", selected: false},
+    LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: true},
+    SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: true}
+};
+
+const SOURCE_ARRAY = ["NCI", "UMLS", "LNC", "SNOMEDCT_US"];
+
 @Component({
     selector: "cde-permissible-value",
     providers: [NgbActiveModal],
     templateUrl: "./permissibleValue.component.html",
     styles: [`
-        :host >>> a { 
+        :host >>> #permissibleValueDiv a { 
             border-bottom: 0px;
             line-height: 0;
          }
@@ -40,6 +49,7 @@ export class PermissibleValueComponent implements OnInit {
     public edit = true;
     public valueType = 0;
     public uom;
+    public containsKnownSystem: boolean = false;
 
     public columns = [
         {prop: "permissibleValue"},
@@ -59,5 +69,17 @@ export class PermissibleValueComponent implements OnInit {
     saveEditable(value) {
 
         this.elt.valueDomain.datatype = VALUE_TYPE_MAP[value];
+    }
+
+
+    initSrcOptions() {
+        this.containsKnownSystem = false;
+        for (var i = 0; i < this.elt.valueDomain.permissibleValues.length; i++) {
+            if (SOURCE[this.elt.valueDomain.permissibleValues[i].codeSystemName] ||
+                this.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
+                this.containsKnownSystem = true;
+                i = this.elt.valueDomain.permissibleValues.length;
+            }
+        }
     }
 }
