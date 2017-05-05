@@ -119,25 +119,25 @@ exports.getFormOdm = function(form, cb) {
             }
         }
     };
-    let sections = [];
-    let questions = [];
-    let codeLists = [];
+    var sections = [];
+    var questions = [];
+    var codeLists = [];
 
     function flattenFormElement (fe) {
-        let result = [];
-        fe.formElements.map((subFe) => {
+        var result = [];
+        fe.formElements.map(function (subFe) {
             if (!subFe.formElements || subFe.formElements.length === 0) {
                 result.push(subFe);
             } else {
-                let subEs = flattenFormElement(subFe);
-                subEs.forEach(e => {result.push(e);});
+                var subEs = flattenFormElement(subFe);
+                subEs.forEach(function (e) {result.push(e);});
             }
         });
         return result;
     }
 
     form.formElements.forEach(function (s1,si) {
-        let childrenOids = [];
+        var childrenOids = [];
         flattenFormElement(s1).forEach(function (q1, qi) {
             var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
