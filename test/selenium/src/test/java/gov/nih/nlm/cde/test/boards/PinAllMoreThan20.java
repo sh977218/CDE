@@ -13,7 +13,7 @@ public class PinAllMoreThan20 extends BoardTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         clickElement(By.id("li-blank-Disease"));
-        clickElement(By.id("li-blank-Amyotrophic Lateral Sclerosis"));
+        clickElement(By.xpath("//*[@id='li-blank-Amyotrophic Lateral Sclerosis']"));
         clickElement(By.id("li-blank-Classification"));
         clickElement(By.id("li-blank-Core"));
         hangon(3);
@@ -22,7 +22,7 @@ public class PinAllMoreThan20 extends BoardTest {
         scrollToTop();
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
-        clickElement(By.id("viewBoard_" + board_name));
+        clickElement(By.xpath("//*[id='viewBoard_" + board_name + "']"));
         textPresent("All elements pinned.");
         gotoMyBoards();
         int num_cde_after_pinAll_int =

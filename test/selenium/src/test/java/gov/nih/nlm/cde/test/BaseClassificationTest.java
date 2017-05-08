@@ -132,7 +132,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             clickElement(By.id(expanderStr + "-expander"));
             expanderStr += ",";
         }
-        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+        clickElement(By.xpath("//*[@id='" + expanderStr + categories[categories.length - 1] + "-classifyBtn']"));
         closeAlert();
     }
 
@@ -166,7 +166,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        Assert.assertEquals(findElement(By.id(selector)).getText(),
+        Assert.assertEquals(findElement(By.xpath("//*[@id='" + selector + "']")).getText(),
                 categories[categories.length - 1]);
         closeAlert();
     }

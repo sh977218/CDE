@@ -45,7 +45,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         clickElement(By.id("incomingMessage"));
         clickElement(By.xpath("//span[contains(., '| board approval | boarduser')]"));
         textPresent(boardName);
-        clickElement(By.id("board_Bipolar Disorder"));
+        clickElement(By.xpath("//*[@id='board_Bipolar Disorder']"));
         switchTab(1);
         textPresent("In progress");
         clickElement(By.id("disApproveBoardBtn"));

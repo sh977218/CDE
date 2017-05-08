@@ -63,7 +63,7 @@ public class ClassificationTest extends BaseClassificationTest {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         clickElement(By.id("classification_tab"));
-        findElement(By.id("Domain,Assessments and Examinations,Imaging Diagnostics"));
+        findElement(By.xpath("//*[@id='Domain,Assessments and Examinations,Imaging Diagnostics']"));
         removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});
 
         findElement(By.id("Domain,Assessments and Examinations"));
@@ -78,7 +78,7 @@ public class ClassificationTest extends BaseClassificationTest {
     public void classificationLink() {
         goToCdeByName("Spectroscopy water signal removal filter text");
         clickElement(By.id("classification_tab"));
-        clickElement(By.id("Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics"));
+        clickElement(By.xpath("//*[@id='Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics']"));
         showSearchFilters();
         textPresent("Classification");
         textPresent("NINDS (114)");
