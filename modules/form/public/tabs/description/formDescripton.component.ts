@@ -84,17 +84,16 @@ export class FormDescriptionComponent implements OnInit {
                     if (from.insert) {
                         this.addIndex(to.parent.data.formElements, from.data, to.index);
                         tree.update();
-                    }
-                    else if (from.ref) {
+                    } else if (from.ref) {
                         if (from.ref === "question")
                             this.openQuestionSearch();
                         else if (from.ref === "form")
                             this.openFormSearch();
                         this.toolDropTo = to;
                         return;
-                    }
-                    else
+                    } else
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+
                     tree.expandAll();
                     this.stageElt.emit();
                 }

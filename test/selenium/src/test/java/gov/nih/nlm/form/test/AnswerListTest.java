@@ -39,7 +39,7 @@ public class AnswerListTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
         textNotPresent("Female Gender");
         startEditQuestionSectionById("question_0_0");
-        clickElement(By.xpath("//input[@class='select2-search__field']"));
+        clickElement(By.xpath("//div[text()='Answer List:']/following-sibling::div//input[@class='select2-search__field']"));
         clickElement(By.xpath("//li[contains(@class,'select2-results__option') and contains(text(), 'Female Gender')]"));
         saveForm();
 

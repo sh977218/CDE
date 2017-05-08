@@ -1,8 +1,7 @@
 package gov.nih.nlm.form.test;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -55,23 +54,32 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public void addSectionTop(String title, String repeat) {
-        clickElement(By.id("addSectionTop"));
-        String sectionId = "section_0";
-        scrollToViewById(sectionId);
-        startEditQuestionSectionById(sectionId);
-        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
-        String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input";
-        findElement(By.xpath(sectionInput)).clear();
-        findElement(By.xpath(sectionInput)).sendKeys(title);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
-        setRepeat(sectionId, repeat);
+        addSection(title, repeat, 0);
     }
 
     public void addSectionBottom(String title, String repeat) {
-        int nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
-        clickElement(By.id("addSectionBottom"));
+        int nbOfSections = driver.findElements(By.xpath("//*[@class='node-drop-slot']")).size();
+        addSection(title, repeat, nbOfSections);
+    }
+
+    public void addSection(String title, String repeat, Integer sectionNumber) {
+        hangon(5);
+
+        WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
+        WebElement targetElt = findElement(By.xpath("//div[contains(@class,'node-content-wrapper')]"));
+//        WebElement targetElt = findElement(By.xpath("(//*[@class='node-drop-slot'])[" + (sectionNumber + 1) + "]"));
+        Assert.assertTrue(sourceElt.isDisplayed());
+        Assert.assertTrue(targetElt.isDisplayed());
+
+        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).build().perform();
+
+//        (new Actions(driver)).clickAndHold(sourceElt)
+//                .moveToElement(targetElt)
+//                .release(targetElt)
+//                .build().perform();
+
         textPresent("New Section");
-        String sectionId = "section_" + nbOfSections;
+        String sectionId = "section_" + sectionNumber;
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
