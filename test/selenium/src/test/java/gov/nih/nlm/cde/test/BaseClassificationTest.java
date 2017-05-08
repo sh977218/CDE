@@ -166,8 +166,10 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        Assert.assertEquals(findElement(By.id(selector)).getText(),
-                categories[categories.length - 1]);
+        hangon(1);
+        Assert.assertEquals(findElement(By.id(selector)).getText(), categories[categories.length - 1]);
+
+        textPresent("Classification added");
         closeAlert();
     }
     private void _addExistClassificationMethodDo(String[] categories) {
