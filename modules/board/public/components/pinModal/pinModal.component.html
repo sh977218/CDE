@@ -1,4 +1,4 @@
-<template #pinModal id="pinModal" let-c="close" let-d="dismiss">
+<ng-template #pinModal id="pinModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3>Choose a Board to pin this element to
             <cde-create-board></cde-create-board>
@@ -54,9 +54,9 @@
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
-</template>
+</ng-template>
 
-<template #ifYouLoginModal id="ifYouLoginModal" let-c="close" let-d="dismiss">
+<ng-template #ifYouLoginModal id="ifYouLoginModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3>Sign up for an account</h3>
     </div>
@@ -74,4 +74,4 @@
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="c()" id="cancelSelect2">Cancel</button>
     </div>
-</template>
+</ng-template>
