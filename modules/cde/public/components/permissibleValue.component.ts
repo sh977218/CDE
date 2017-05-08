@@ -170,6 +170,9 @@ export class PermissibleValueComponent implements OnInit {
         if (!this.SOURCES[src].selected) this.SOURCES[src].codes = {};
         else this.dupCodesForSameSrc(src);
         if (src === 'UMLS') this.umlsLookup();
+        else {
+
+        }
         console.log("a");
         /*
          $timeout(function () {
