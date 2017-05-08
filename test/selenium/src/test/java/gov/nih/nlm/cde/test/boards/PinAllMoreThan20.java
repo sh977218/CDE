@@ -22,7 +22,7 @@ public class PinAllMoreThan20 extends BoardTest {
         scrollToTop();
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
-        clickElement(By.xpath("//*[id='viewBoard_" + board_name + "']"));
+        clickElement(By.xpath("//*[@id='viewBoard_" + board_name + "']"));
         textPresent("All elements pinned.");
         gotoMyBoards();
         int num_cde_after_pinAll_int =

@@ -51,11 +51,11 @@ public class ClassificationTest extends BaseClassificationTest {
             if (i < categories.length - 1)
                 selector += ",";
         }
-        clickElement(By.id(selector + "-unclassifyBtn"));
+        clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
         textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
         clickElement(By.id("confirmDeleteClassificationBtn"));
         closeAlert();
-        Assert.assertTrue(checkElementDoesNotExistByLocator(By.id(selector)));
+        Assert.assertTrue(checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']")));
     }
 
     @Test
