@@ -70,6 +70,7 @@ public abstract class CommentTest extends CommonTest {
         hangon(1);
         scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));
+        textPresent("Reply to another comment about Naming", By.id("replyText-1-0"));
 
         scrollToTop();
         clickElement(By.id("resolveReply-0-0"));
