@@ -66,7 +66,7 @@ public class ClassificationTest extends BaseClassificationTest {
         findElement(By.xpath("//*[@id='Domain,Assessments and Examinations,Imaging Diagnostics']"));
         removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});
 
-        findElement(By.id("Domain,Assessments and Examinations"));
+        findElement(By.xpath("//*[@id='Domain,Assessments and Examinations']"));
         removeClassificationMethod(new String[]{"Disease", "Myasthenia Gravis"});
         textNotPresent("Myasthenia Gravis");
         openClassificationAudit("NINDS > Disease > Myasthenia Gravis");

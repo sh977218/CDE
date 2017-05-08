@@ -9,7 +9,7 @@ public class EmptyLogicIE extends NlmCdeBaseTest {
 
     private EmptyLogic parentTest = new EmptyLogic();
 
-    @Test
+//    @Test
     @SelectBrowser
     public void noLabelLogicIE() {
         parentTest.emptyLogic();
