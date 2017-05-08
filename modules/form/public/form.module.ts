@@ -4,7 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
-import { SortableModule } from "ng2-bootstrap";
+import { SortableModule } from "ngx-bootstrap";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 
