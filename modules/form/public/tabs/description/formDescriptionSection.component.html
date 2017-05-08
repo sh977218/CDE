@@ -36,9 +36,9 @@
     </span>
 </div>
 
-<template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: section, canCurate: canCurate }"></template>
+<ng-template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: section, canCurate: canCurate }"></ng-template>
 
-<template #formDescriptionSectionTmpl>
+<ng-template #formDescriptionSectionTmpl>
     <div class="section_view">
         <div>
             <div *ngIf="!(canCurate && section.edit)">
@@ -95,9 +95,9 @@
             </div>
         </div>
     </div>
-</template>
+</ng-template>
 
-<template #formDescriptionFormTmpl>
+<ng-template #formDescriptionFormTmpl>
     <div class="form_view">
         <div>
             <div *ngIf="!(canCurate && section.edit)">
@@ -155,4 +155,4 @@
                target="_blank"><i class="fa fa-eye"></i> {{section.inForm.form.name}}</a>
         </div>
     </div>
-</template>
+</ng-template>

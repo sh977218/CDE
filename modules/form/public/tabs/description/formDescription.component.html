@@ -29,7 +29,7 @@
         </div>
         <ng-container *ngFor="let eltIter of [elt]">
             <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
-                <template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
                     <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.descriptionId"
                          [class]="node.getClass()"
                          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
@@ -50,7 +50,7 @@
                                          [treeAllowDrop]="node.allowDrop">
                                         <tree-node-content [node]="node" [index]="index"
                                                            [template]="templates.treeNodeTemplate">
-                                            <template #treeNodeTemplate let-node="node" let-index="index">
+                                            <ng-template #treeNodeTemplate let-node="node" let-index="index">
                                                 <cde-form-description-section
                                                         *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
                                                         [canCurate]="canCurate"
@@ -63,7 +63,7 @@
                                                         [canCurate]="canCurate"
                                                         [node]="node"
                                                         (stageElt)="stageElt.emit()"></cde-form-description-question>
-                                            </template>
+                                            </ng-template>
                                         </tree-node-content>
                                     </div>
                                 </div>
@@ -79,13 +79,13 @@
                         </div>
                         <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>
                     </div>
-                </template>
+                </ng-template>
             </tree-root>
         </ng-container>
     </div>
 </div>
 
-<template #formSearchTmpl let-c="close" let-d="dismiss">
+<ng-template #formSearchTmpl let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3>Search Forms</h3>
     </div>
@@ -95,9 +95,9 @@
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="d()" id="cancelSelectF">Close</button>
     </div>
-</template>
+</ng-template>
 
-<template #questionSearchTmpl let-c="close" let-d="dismiss">
+<ng-template #questionSearchTmpl let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3>Search Questions</h3>
     </div>
@@ -107,4 +107,4 @@
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="d()" id="cancelSelectQ">Close</button>
     </div>
-</template>
+</ng-template>

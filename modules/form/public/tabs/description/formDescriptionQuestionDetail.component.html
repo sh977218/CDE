@@ -1,6 +1,6 @@
-<template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: question, canCurate: canCurate }"></template>
+<ng-template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: question, canCurate: canCurate }"></ng-template>
 
-<template #formDescriptionQuestionTmpl>
+<ng-template #formDescriptionQuestionTmpl>
     <div>
         <span *ngIf="question.question.multiselect" class="label label-success formViewSummaryLabel">
             Select Multiple
@@ -62,9 +62,9 @@
               class="label label-info formViewSummaryLabel"
               [textContent]="uom"></span>
     </div>
-</template>
+</ng-template>
 
-<template #formDescriptionQuestionEditTmpl>
+<ng-template #formDescriptionQuestionEditTmpl>
     <div class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Label:</div>
         <div class="col-sm-10 col-xs-12">
@@ -191,9 +191,9 @@
             <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable" (click)="stageElt.emit()"/>
         </div>
     </div>
-</template>
+</ng-template>
 
-<template #formDescriptionNameSelectTmpl let-c="close" let-d="dismiss">
+<ng-template #formDescriptionNameSelectTmpl let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h3>Select a question label from a CDE Name</h3>
     </div>
@@ -231,4 +231,4 @@
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
     </div>
-</template>
+</ng-template>
