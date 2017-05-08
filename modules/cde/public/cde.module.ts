@@ -14,6 +14,7 @@ import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetai
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
+import { KeysPipe } from "./components/KeysPipe";
 
 @NgModule({
     imports: [
@@ -25,6 +26,7 @@ import { PermissibleValueComponent } from "./components/permissibleValue.compone
         BoardModule
     ],
     declarations: [
+        KeysPipe,
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
