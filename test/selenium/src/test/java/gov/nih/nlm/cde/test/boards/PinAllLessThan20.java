@@ -21,7 +21,7 @@ public class PinAllLessThan20 extends BoardTest {
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
-        clickElement(By.xpath("//*[@id='viewBoard_" + board_name + "']"));
+        clickElement(By.linkText(board_name));
         textPresent("All elements pinned.");
         closeAlert();
         gotoMyBoards();
