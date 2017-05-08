@@ -24,6 +24,8 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         clickElement(By.id("newOrgAdminSubmit"));
         textPresent("Organization Administrator Added");
 
+        hangon(2);
+        
         // Create some classifications for working group
         String classification = "DISEASE";
         String subClassification = "Phase II Lung Cancer";
