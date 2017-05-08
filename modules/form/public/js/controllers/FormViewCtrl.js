@@ -258,7 +258,11 @@ angular.module('formModule').controller
 
     $scope.setIsValid = function (valid) {
         $scope.isFormValid = valid;
-    }
+    };
+
+    $scope.cachePut = function (event) {
+        $scope.cache.put(event.key, event.value);
+    };
 
     $scope.classificationToFilter = function () {
         if ($scope.elt) {

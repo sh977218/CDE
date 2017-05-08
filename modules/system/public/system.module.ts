@@ -30,27 +30,27 @@ import { JsonpModule } from "@angular/http";
     ],
     declarations: [
         CdeAccordionListDirective,
+        DailyUsageComponent,
         FormAccordionListDirective,
         FormSummaryListDirective,
-        ProfileComponent,
-        LinkedFormsComponent,
-        UserCommentsComponent,
         HomeComponent,
+        LinkedFormsComponent,
         LogAuditComponent,
+        OrgAdminComponent,
+        ProfileComponent,
         RegistrationComponent,
-        UsersMgtComponent,
-        DailyUsageComponent,
-        OrgAdminComponent
+        UserCommentsComponent,
+        UsersMgtComponent
     ],
     entryComponents: [
-        ProfileComponent,
-        LinkedFormsComponent,
         HomeComponent,
+        LinkedFormsComponent,
         LogAuditComponent,
-        RegistrationComponent,
-        UsersMgtComponent,
         DailyUsageComponent,
-        OrgAdminComponent
+        OrgAdminComponent,
+        ProfileComponent,
+        RegistrationComponent,
+        UsersMgtComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
                                                                       [canCurate]="canCurate"
@@ -87,24 +87,24 @@
 
 <template #formSearchTmpl let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h3>title</h3>
+        <h3>Search Forms</h3>
     </div>
     <div class="modal-body">
-        <div ng-include="../../"></div>
+        <cde-form-formSearch [cache]="cache" (cachePut)="cachePut.emit($event)" (result)="addFormFromSearch($event)"></cde-form-formSearch>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="cancelSelectF">Cancel</button>
+        <button class="btn btn-warning" (click)="d()" id="cancelSelectF">Close</button>
     </div>
 </template>
 
 <template #questionSearchTmpl let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h3>title</h3>
+        <h3>Search Questions</h3>
     </div>
     <div class="modal-body">
-        <div ng-include="../../"></div>
+        <cde-form-questionSearch [cache]="cache" (cachePut)="cachePut.emit($event)" (result)="addQuestionFromSearch($event)"></cde-form-questionSearch>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning" (click)="d()" id="cancelSelectQ">Cancel</button>
+        <button class="btn btn-warning" (click)="d()" id="cancelSelectQ">Close</button>
     </div>
 </template>

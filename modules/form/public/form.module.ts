@@ -13,6 +13,7 @@ import { FormDescriptionComponent } from "./tabs/description/formDescripton.comp
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
 import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
+import { FormSearchDirective, QuestionSearchDirective } from "./upgrade-components";
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
@@ -41,13 +42,15 @@ import { SkipLogicService } from "./skipLogic.service";
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
+        FormSearchDirective,
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
         NativeSectionComponent,
         NativeSectionMatrixComponent,
         NativeQuestionComponent,
-        NativeTableComponent
+        NativeTableComponent,
+        QuestionSearchDirective
     ],
     entryComponents: [
         FormDescriptionComponent,

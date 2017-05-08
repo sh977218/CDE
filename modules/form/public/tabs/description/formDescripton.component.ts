@@ -27,6 +27,9 @@ import { FormService } from "../../form.service";
             background-color: transparent;
             box-shadow: none;
         }
+        .panel-body-form {
+            background-color: #eee;
+        }
         .descriptionToolbox {
             color: #9d9d9d;
             background-color: #222;
@@ -50,8 +53,10 @@ import { FormService } from "../../form.service";
     `]
 })
 export class FormDescriptionComponent implements OnInit {
+    @Input() cache: any;
     @Input() elt: any;
     @Input() inScoreCdes: any;
+    @Output() cachePut: EventEmitter<any> = new EventEmitter<any>();
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
@@ -61,12 +66,17 @@ export class FormDescriptionComponent implements OnInit {
 
     addIndex = function (elems, elem, i) { return elems.splice(i, 0, elem); };
     canCurate = false;
+    toolDropTo: {index: number, parent: any};
     treeOptions = {
         allowDrag: (element) => {
             return !FormService.isSubForm(element) || element.data.elementType === "form" && !FormService.isSubForm(element.parent);
         },
         allowDrop: (element, {parent, index}) => {
-            return element !== parent && (!element || element.data.elementType !== "question" || parent.data.elementType === "section") && !FormService.isSubForm(parent);
+            return element !== parent && parent.data.elementType !== "question" && (!element
+                    || !element.ref && (element.data.elementType !== "question" || parent.data.elementType === "section")
+                    || element.ref === "form"
+                    || element.ref === "question" && parent.data.elementType === "section"
+                ) && !FormService.isSubForm(parent);
         },
         actionMapping: {
             mouse: {
@@ -76,12 +86,17 @@ export class FormDescriptionComponent implements OnInit {
                         tree.update();
                     }
                     else if (from.ref) {
-                        from.ref.open();
-                        tree.update();
+                        if (from.ref === "question")
+                            this.openQuestionSearch();
+                        else if (from.ref === "form")
+                            this.openFormSearch();
+                        this.toolDropTo = to;
+                        return;
                     }
                     else
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                     tree.expandAll();
+                    this.stageElt.emit();
                 }
             }
         },
@@ -91,7 +106,8 @@ export class FormDescriptionComponent implements OnInit {
         isExpandedField: "id"
     };
 
-    constructor(private http: Http,
+    constructor(private formService: FormService,
+                private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel) {}
 
@@ -100,12 +116,29 @@ export class FormDescriptionComponent implements OnInit {
         this.addIds(this.elt.formElements, "");
     }
 
+    addQuestionFromSearch(fe) {
+        this.formService.convertCdeToQuestion(fe, question => {
+            this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
+            this.tree.treeModel.update();
+            this.tree.treeModel.expandAll();
+            this.stageElt.emit();
+        });
+    }
+
+    addFormFromSearch(fe) {
+        this.addIndex(this.toolDropTo.parent.data.formElements, FormService.convertFormToSection(fe), this.toolDropTo.index++);
+        this.tree.treeModel.update();
+        this.tree.treeModel.expandAll();
+        this.stageElt.emit();
+    }
+
     addIds(fes, preId) {
         fes.forEach((fe, i) => {
             let newPreId = preId + "_" + i;
             if (fe.elementType === "section" || fe.elementType === "form") {
                 fe.descriptionId = (fe.elementType === "section" ? "section" + newPreId : "inform" + newPreId);
-                this.addIds(fe.formElements, newPreId);
+                if (fe.formElements && fe.formElements.length > 0)
+                    this.addIds(fe.formElements, newPreId);
             } else if (fe.elementType === "question")
                 fe.descriptionId = "question" + newPreId;
         });
@@ -122,14 +155,12 @@ export class FormDescriptionComponent implements OnInit {
 
     openFormSearch() {
         this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(result => {
-            this.stageElt.emit();
         }, () => {
         });
     }
 
     openQuestionSearch() {
         this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(result => {
-            this.stageElt.emit();
         }, () => {
         });
     }

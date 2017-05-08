@@ -92,14 +92,6 @@
         <div>
             <div *ngIf="canCurate && section.formElements.length === 0" class="mt-1">
                 <i class='fa fa-exclamation-triangle'></i>To add questions, drag them here.
-                <button id="startAddingQuestions_section_{{sectionIndex}}"
-                        (click)="setToAddCdeMode()" class="btn btn-default">
-                    <i class="fa fa-cube"></i> Add Question
-                </button>
-                <button id="startAddingQuestions_form_{{sectionIndex}}"
-                        (click)="setToAddFormMode()" class="btn btn-default">
-                    <i class="fa fa-cubes"></i> Add Form
-                </button>
             </div>
         </div>
     </div>

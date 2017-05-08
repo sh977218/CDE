@@ -22,16 +22,16 @@ public class AnswerListTest extends BaseFormTest {
         startEditQuestionSectionById("question_0_0");
         List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//li[@class='select2-selection__choice']"));
         Assert.assertEquals(lis.size(), 3);
-        Assert.assertEquals(lis.get(0).getText(), "Female Gender");
-        Assert.assertEquals(lis.get(1).getText(), "Male Gender");
-        Assert.assertEquals(lis.get(2).getText(), "Unknown");
+        Assert.assertEquals(lis.get(0).getText(), "×Female Gender");
+        Assert.assertEquals(lis.get(1).getText(), "×Male Gender");
+        Assert.assertEquals(lis.get(2).getText(), "×Unknown");
 
         clickElement(By.xpath("//li[@class='select2-selection__choice' and contains(., \"Female Gender\")]/span[contains(@class, 'select2-selection__choice__remove')]"));
-        textNotPresent("Female Gender");
+        textNotPresent("×Female Gender");
         lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//li[@class='select2-selection__choice']"));
         Assert.assertEquals(lis.size(), 2);
-        Assert.assertEquals("Male Gender", lis.get(0).getText());
-        Assert.assertEquals("Unknown", lis.get(1).getText());
+        Assert.assertEquals(lis.get(0).getText(), "×Male Gender");
+        Assert.assertEquals(lis.get(1).getText(), "×Unknown");
 
         saveForm();
 
