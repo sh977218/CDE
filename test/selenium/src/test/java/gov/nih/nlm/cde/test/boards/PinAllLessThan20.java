@@ -24,6 +24,7 @@ public class PinAllLessThan20 extends BoardTest {
         clickElement(By.linkText(board_name));
         textPresent("All elements pinned.");
         closeAlert();
+        waitForESUpdate();
         gotoMyBoards();
 
         // find nb of cdes for the boards.
