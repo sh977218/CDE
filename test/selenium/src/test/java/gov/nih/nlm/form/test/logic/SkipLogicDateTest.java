@@ -48,7 +48,7 @@ public class SkipLogicDateTest extends BaseFormTest {
                 By.xpath("//*[*[text()='Indicate date of reference scan']]//*[*[text()='Macula volume (OS)']]//span[text()='If more than 10/11/2016: ']"));
         textPresent("If less than 10/11/2016:",
                 By.xpath("//*[*[text()='Indicate date of reference scan']]//*[*[text()='Laterality Type']]//span[text()='If less than 10/11/2016: ']"));
-        findElement(By.id("Macula volume (OS)_1"));
+        findElement(By.xpath("//*[@id='Macula volume (OS)_1']"));
         textPresent("left eye");
 
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));

@@ -1,1 +1,4 @@
 rootProject.name = 'nlm-cde-test'
+include 'cde-test'
+findProject(':cde-test')?.name = 'nlm-cde-test'
+
