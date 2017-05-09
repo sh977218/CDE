@@ -276,6 +276,15 @@ exports.init = function (app, daoManager) {
         vsac.getAtomsFromUMLS(req.params.id, req.params.src, res);
     });
 
+    app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', function (req, res) {
+        if (!req.params.source || !req.params.code || !req.params.targetSource)
+            return res.status(401).end();
+        else vsac.getCrossWalkingVocabularies(req.params.source, req.param.code, req.param.targetSource, function (err, results) {
+            if (err) return res.status(500).send(err);
+            else res.send(results);
+        })
+    });
+
     app.get('/searchUmls', function (req, res) {
         if (!req.user) return res.status(403).send();
         return vsac.searchUmls(req.query.searchTerm, res);

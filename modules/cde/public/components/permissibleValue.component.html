@@ -6,7 +6,7 @@
                        (ngModelChange)="setValueType($event)" [options]="valueTypeOptions"></inline-editor>
         <div *ngIf="elt.valueDomain.datatype === 'Externally Defined'" class="float-left">
             or
-            <input type="text" [(ngModel)]="elt.valueDomain.datatype"/>
+            <input type="text" title="customDatatype" [(ngModel)]="elt.valueDomain.datatype"/>
         </div>
     </div>
     <div class="col-xs-2 text-right text_label">Unit of Measure:</div>
@@ -83,7 +83,7 @@
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
             <span *ngFor="let source of SOURCES | keys" style="margin-left: 50px">
                 <input [(ngModel)]="SOURCES[source].selected" type="checkbox" (disabled)="SOURCES[source].disabled"
-                       id="{{source}}" (ngModelChange)="lookupAsSource(source)">{{source}} Codes
+                       id="{{source}}" title="{{source}}" (ngModelChange)="lookupAsSource(source)">{{source}} Codes
                 <span *ngIf="SOURCES[source].disabled"> (Login to enable)</span>
             </span>
         </div>
@@ -118,7 +118,7 @@
                         <ng-container *ngIf="pv.notValid">
                             <span class="btn-default fa fa-warning text-danger" id="pv-{{index}}-notValid"></span>
                         </ng-container>
-                        <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" ng-click="removePv(index)"
+                        <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(index)"
                               title="Remove" href=""></span>
                         <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                         (cb)="sortPermissibleValue();"></sortable-array>

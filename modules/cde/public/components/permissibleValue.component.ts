@@ -44,10 +44,10 @@ export class PermissibleValueComponent implements OnInit {
     umlsTerms = [];
     newPermissibleValue = {};
     SOURCES = {
-        "NCI Thesaurus": {termType: "PT", codes: {}, selected: false},
-        "UMLS": {termType: "PT", codes: {}, selected: false},
-        "LOINC": {termType: "LA", codes: {}, selected: false, disabled: true},
-        "SNOMEDCT US": {termType: "PT", codes: {}, selected: false, disabled: true}
+        "NCI Thesaurus": {source: "NCIT", termType: "PT", codes: {}, selected: false},
+        "UMLS": {source: "UMLS", termType: "PT", codes: {}, selected: false},
+        "LOINC": {source: "LNC", termType: "LA", codes: {}, selected: false, disabled: true},
+        "SNOMEDCT US": {source: "SNOMEDCT_US", termType: "PT", codes: {}, selected: false, disabled: true}
     };
 
     constructor(public modalService: NgbModal,
@@ -139,122 +139,19 @@ export class PermissibleValueComponent implements OnInit {
             this.alert.addAlert("danger", "Unknown source in pv source: " + src);
     };
 
-    umlsFromOther(code, system) {
-        this.http.get("/umlsCuiFromSrc/" + code + "/" + system).map(res => res.json())
-            .subscribe(res => {
-                console.log("umls response of " + code + " :");
-                console.log(res.toString());
-                let cuis = [];
-                return res.result.results.forEach(function (result) {
-                    cuis.push({
-                        valueMeaningName: result.name,
-                        valueMeaningCode: result.ui
-                    });
-                }, err => {
-                    this.SOURCES.UMLS.codes[code] = "Error retrieving";
-                });
-            });
-    }
-
-    umlsLookup() {
-        let codes = this.SOURCES.UMLS.codes;
-        for (let code in codes) {
-            let funcArray = [];
-            code.split(":").forEach((pvCode, i) => {
-                this.umlsFromOther(pvCode, "UMLS");
-            });
-        }
-    };
-
     lookupAsSource(src) {
         if (!this.SOURCES[src].selected) this.SOURCES[src].codes = {};
         else this.dupCodesForSameSrc(src);
-        if (src === 'UMLS') this.umlsLookup();
-        else {
-
-        }
+        let targetSource = this.SOURCES[src].source;
+        this.elt.valueDomain.permissibleValues.forEach(pv => {
+            let code = pv.valueMeaningCode;
+            let source = this.SOURCES[pv.codeSystemName].source;
+            this.http.get("/crossWalkingVocabularies/" + source + "/" + code + "/" + targetSource).map(res => res.json())
+                .subscribe(res => {
+                    console.log('a');
+                }, err => {
+                })
+        });
         console.log("a");
-        /*
-         $timeout(function () {
-
-         else {
-         this.elt.valueDomain.permissibleValues.forEach(function (pv) {
-         if (pv.codeSystemName === "UMLS" || (displayAs[pv.codeSystemName] && src !== displayAs[pv.codeSystemName])) {
-         var newCodes = [];
-         pv[src] = {
-         valueMeaningName: "Retrieving...",
-         valueMeaningCode: "Retrieving..."
-         };
-         //var todo = pv.valueMeaningCode.split(":").length;
-         var funcArray = [];
-         pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
-         var def = $q.defer();
-
-         if (pv.codeSystemName !== "UMLS") {
-         umlsFromOther(pvCode, displayAs[pv.codeSystemName], function (err, cuis) {
-         var resolve = cuis[0] ? cuis[0].valueMeaningCode : "Not Found";
-         def.resolve(resolve);
-         });
-         } else {
-         def.resolve(pvCode);
-         }
-         def.promise.then(function (newCode) {
-         if (newCode === "Not Found") {
-         pv[src] = {
-         valueMeaningName: "N/A",
-         valueMeaningCode: "N/A"
-         };
-         } else {
-         funcArray[i] = $q.defer();
-         $http.get("/umlsAtomsBridge/" + newCode + "/" + src).then(function onSuccess(response) {
-         funcArray[i].resolve(response.data);
-         });
-         $q.all(funcArray.map(function (d) {
-         return d.promise;
-         })).then(function (arrOfResponses) {
-         arrOfResponses.forEach(function (response, i) {
-         var termFound = false;
-         if (response.result) {
-         response.result.forEach(function (atom) {
-         if (!termFound && atom.termType === $scope.srcOptions[src].termType) {
-         var srcConceptArr = atom.sourceConcept.split('/');
-         var code = srcConceptArr[srcConceptArr.length - 1];
-         newCodes[i] = {
-         valueMeaningName: atom.name,
-         valueMeaningCode: code
-         };
-         termFound = true;
-         }
-         });
-         if (!termFound) {
-         newCodes[i] = {
-         valueMeaningName: "N/A",
-         valueMeaningCode: "N/A"
-         };
-         }
-         } else {
-         newCodes[i] = {
-         valueMeaningName: "N/A",
-         valueMeaningCode: "N/A"
-         };
-         }
-         });
-         pv[src] = {
-         valueMeaningCode: newCodes.map(function (a) {
-         return a.valueMeaningCode;
-         }).join(":"),
-         valueMeaningName: newCodes.map(function (a) {
-         return a.valueMeaningName;
-         }).join(":")
-         };
-         });
-         }
-         });
-         });
-         }
-         });
-         }
-         }, 0);*/
-    }
-    ;
+    };
 }
