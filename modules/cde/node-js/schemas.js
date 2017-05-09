@@ -14,7 +14,7 @@ var derivationRuleSchema = new mongoose.Schema(
     {
         name: String,
         inputs: {type: [String], index: true, description: "Information operated on by rule"},
-        outputs: {type: [String], description: "Information produced by rule"},
+        outputs: {description: "Information produced by rule", type: [String]},
         ruleType: {type: String, enum: ['score', 'panel']},
         formula: {type: String, enum: ['sumAll', 'mean']}
     }, {_id: true}
@@ -80,7 +80,7 @@ var deJson = {
             format: {type: String, description: "Any format that someone may want to enforce"}
         }
         , datatypeExternallyDefined: {
-            link: {type: String, description: "a link to en external source. Typically a URL"}
+            link: {type: String, description: "a link to an external source. Typically a URL"}
             , description: String
             , descriptionFormat: {type: String, description: "if 'html', then parse with HTML"}
         }
