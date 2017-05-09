@@ -46,8 +46,8 @@ public class BaseFormTest extends FormCommentTest {
         hangon(5);
 
         WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
-        WebElement targetElt = findElement(By.xpath("//div[contains(@class,'node-content-wrapper')]"));
-//        WebElement targetElt = findElement(By.xpath("(//*[@class='node-drop-slot'])[" + (sectionNumber + 1) + "]"));
+//        WebElement targetElt = findElement(By.xpath("//div[contains(@class,'node-content-wrapper')]"));
+        WebElement targetElt = findElement(By.xpath("(//*[@class='node-drop-slot'])[" + (sectionNumber + 1) + "]"));
         Assert.assertTrue(sourceElt.isDisplayed());
         Assert.assertTrue(targetElt.isDisplayed());
 

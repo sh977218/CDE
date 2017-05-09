@@ -26,6 +26,6 @@ public class FormCdeUpdateTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         textNotPresent("(Outdated)", By.id("question_0_0"));
-        textNotPresent("Select Multiple", By.id("question_0_0"));
+        textPresent("Select Multiple", By.id("question_0_0"));
     }
 }
