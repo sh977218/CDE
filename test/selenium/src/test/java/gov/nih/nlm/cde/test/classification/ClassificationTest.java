@@ -51,11 +51,11 @@ public class ClassificationTest extends BaseClassificationTest {
             if (i < categories.length - 1)
                 selector += ",";
         }
-        clickElement(By.id(selector + "-unclassifyBtn"));
+        clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
         textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
         clickElement(By.id("confirmDeleteClassificationBtn"));
         closeAlert();
-        Assert.assertTrue(checkElementDoesNotExistByLocator(By.id(selector)));
+        Assert.assertTrue(checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']")));
     }
 
     @Test
@@ -63,10 +63,10 @@ public class ClassificationTest extends BaseClassificationTest {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("Spectroscopy geometry location not applicable indicator");
         clickElement(By.id("classification_tab"));
-        findElement(By.id("Domain,Assessments and Examinations,Imaging Diagnostics"));
+        findElement(By.xpath("//*[@id='Domain,Assessments and Examinations,Imaging Diagnostics']"));
         removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});
 
-        findElement(By.id("Domain,Assessments and Examinations"));
+        findElement(By.xpath("//*[@id='Domain,Assessments and Examinations']"));
         removeClassificationMethod(new String[]{"Disease", "Myasthenia Gravis"});
         textNotPresent("Myasthenia Gravis");
         openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
@@ -78,7 +78,7 @@ public class ClassificationTest extends BaseClassificationTest {
     public void classificationLink() {
         goToCdeByName("Spectroscopy water signal removal filter text");
         clickElement(By.id("classification_tab"));
-        clickElement(By.id("Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics"));
+        clickElement(By.xpath("//*[@id='Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics']"));
         showSearchFilters();
         textPresent("Classification");
         textPresent("NINDS (114)");

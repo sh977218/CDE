@@ -8,7 +8,7 @@
             </select>
         </span>
         <span>
-            <label style="margin-top: 3px;">Printable Logic:
+            <label style="margin-top: 3px;" id="printableLogicCb">Printable Logic:
                 <input type="checkbox" [(ngModel)]="overridePrintable"
                        (change)="render.setNativeRenderType(($event.target.checked ? nativeRenderService.FOLLOW_UP : nativeRenderService.SHOW_IF))">
             </label>
