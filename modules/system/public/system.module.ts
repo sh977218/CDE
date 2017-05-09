@@ -17,6 +17,8 @@ import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { JsonpModule } from "@angular/http";
+import { NavigationComponent } from "./components/navigation.component";
+import { TruncateLongNamePipe } from "./truncateLongName.pipe";
 
 @NgModule({
     imports: [
@@ -29,28 +31,34 @@ import { JsonpModule } from "@angular/http";
     ],
     declarations: [
         CdeAccordionListDirective,
+        DailyUsageComponent,
         FormAccordionListDirective,
         FormSummaryListDirective,
-        ProfileComponent,
-        LinkedFormsComponent,
-        UserCommentsComponent,
         HomeComponent,
+        LinkedFormsComponent,
         LogAuditComponent,
-        RegistrationComponent,
-        UsersMgtComponent,
-        DailyUsageComponent,
+        NavigationComponent,
         OrgAdminComponent,
-        PlaceHoldEmptyPipe
+        PlaceHoldEmptyPipe,
+        ProfileComponent,
+        RegistrationComponent,
+        TruncateLongNamePipe,
+        UserCommentsComponent,
+        UsersMgtComponent
     ],
     entryComponents: [
-        ProfileComponent,
-        LinkedFormsComponent,
-        HomeComponent,
-        LogAuditComponent,
-        RegistrationComponent,
-        UsersMgtComponent,
         DailyUsageComponent,
-        OrgAdminComponent
+        HomeComponent,
+        LinkedFormsComponent,
+        LogAuditComponent,
+        NavigationComponent,
+        OrgAdminComponent,
+        ProfileComponent,
+        RegistrationComponent,
+        UsersMgtComponent
+    ],
+    exports: [
+        NavigationComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

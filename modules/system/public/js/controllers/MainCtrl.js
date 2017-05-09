@@ -79,10 +79,6 @@ angular.module('systemModule').controller('MainCtrl',
                 return authShared.hasRole(userResource.user, "DocumentationEditor");
             };
 
-            $scope.isPageActive = function (viewLocation) {
-                return viewLocation === $location.path();
-            };
-
             $scope.scrollTo = function (id) {
                 var old = $location.hash();
                 $location.hash(id);
@@ -118,7 +114,7 @@ angular.module('systemModule').controller('MainCtrl',
                 if (userResource.user) {
                     $http.get('/mailStatus').then(function onSuccess(response) {
                         if (response.data.count > 0) $scope.userHasMail = true;
-                    });
+                    }, function () {});
                 }
             };
 
