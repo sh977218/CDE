@@ -60,7 +60,7 @@
 			<cde-navigation [quick-board-count]="quickBoard.elts.length + formQuickBoard.elts.length"
 					 [user]="user" [user-has-mail]="userHasMail" [can-create-forms]="canCreateForms()"
 					 [is-org-admin]="isOrgAdmin()" [is-org-authority]="isOrgAuthority()" [is-org-curator]="isOrgCurator()"
-					 (take-a-tour)="$scope.restartTour()" (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
+					 (take-a-tour)="restartTour()" (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
 		</div>
 	</div>
 
