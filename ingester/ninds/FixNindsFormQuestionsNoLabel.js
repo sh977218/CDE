@@ -14,7 +14,7 @@ FormModel.find({
     }, function () {
         console.log('-----------------------------------------');
         console.log('total Form: ' + totalForm);
-        //noinspection JSUnresolvedVariable
+
         process.exit(0);
     });
 });

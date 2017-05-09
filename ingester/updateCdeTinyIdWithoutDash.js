@@ -23,7 +23,7 @@ function run() {
         if (err) throw err;
         if (existingCdes && existingCdes.length === 0) {
             console.log('no more cde with tinyId contains "-".');
-            //noinspection JSUnresolvedVariable
+
             process.exit(0);
         } else if (existingCdes && existingCdes.length > 0) {
             async.eachSeries(existingCdes, function (existingCde, doneOneCde) {
@@ -80,11 +80,11 @@ function run() {
                 ]);
             }, function doneAllCdes() {
                 console.log('finished all cdes. cdeCount: ' + cdeCount);
-                //noinspection JSUnresolvedVariable
+
                 process.exit(0);
             });
         } else {
-            //noinspection JSUnresolvedVariable
+
             process.exit(0);
         }
     });
