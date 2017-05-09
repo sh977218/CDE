@@ -9,26 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends FormCommentTest {
 
-    protected void startAddingQuestions() {
-        scrollToTop();
-        try {
-            textPresent("Show Question Search", By.id("startAddingQuestions"));
-            clickElement(By.id("startAddingQuestions"));
-        } catch (Exception e) {
-            // if button does not say show, then don't click it.
-        }
-    }
-
-    protected void startAddingForms() {
-        scrollToTop();
-        try {
-            textPresent("Show Form Search", By.id("startAddingForms"));
-            clickElement(By.id("startAddingForms"));
-        } catch (Exception e) {
-            // if button does not say show, then don't click it.
-        }
-    }
-
     protected void saveForm() {
         try {
             clickElement(By.id("openSaveBottom"));
@@ -124,17 +104,17 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
-        return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//textarea[2]";
+        return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//input";
     }
 
 
     public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
                               boolean displayError, String errorMessage) {
         findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
-        textPresent(textToBePresent, By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
-        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-')]/a)")).size();
+        findElement(By.xpath("(//*[contains(@id,'typeahead-0-')])[" + clickNth + "]/*[contains(.,'" + textToBePresent + "')]"));
+        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-0-')])")).size();
         Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
-        clickElement(By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
+        clickElement(By.xpath("(//*[contains(@id,'typeahead-0-')])[" + clickNth + "]"));
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
     }

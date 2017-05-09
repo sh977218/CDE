@@ -20,7 +20,7 @@ public class AnswerListTest extends BaseFormTest {
 
         textNotPresent("Multiple Selections:");
         startEditQuestionSectionById("question_0_0");
-        List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//li[@class='select2-selection__choice']"));
+        List<WebElement> lis = driver.findElements(By.cssSelector("#question_0_0 .select2-selection__choice"));
         Assert.assertEquals(lis.size(), 3);
         Assert.assertEquals(lis.get(0).getText(), "×Female Gender");
         Assert.assertEquals(lis.get(1).getText(), "×Male Gender");
@@ -28,7 +28,7 @@ public class AnswerListTest extends BaseFormTest {
 
         clickElement(By.xpath("//li[@class='select2-selection__choice' and contains(., \"Female Gender\")]/span[contains(@class, 'select2-selection__choice__remove')]"));
         textNotPresent("×Female Gender");
-        lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//li[@class='select2-selection__choice']"));
+        lis = driver.findElements(By.cssSelector("#question_0_0 .select2-selection__choice"));
         Assert.assertEquals(lis.size(), 2);
         Assert.assertEquals(lis.get(0).getText(), "×Male Gender");
         Assert.assertEquals(lis.get(1).getText(), "×Unknown");
@@ -39,7 +39,7 @@ public class AnswerListTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
         textNotPresent("Female Gender");
         startEditQuestionSectionById("question_0_0");
-        clickElement(By.xpath("//div[text()='Answer List:']/following-sibling::div//input[@class='select2-search__field']"));
+        clickElement(By.cssSelector(".formDescriptionAnswerList .select2-search__field"));
         clickElement(By.xpath("//li[contains(@class,'select2-results__option') and contains(text(), 'Female Gender')]"));
         saveForm();
 

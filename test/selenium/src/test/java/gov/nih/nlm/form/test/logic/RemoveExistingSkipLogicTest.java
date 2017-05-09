@@ -3,6 +3,7 @@ package gov.nih.nlm.form.test.logic;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 public class RemoveExistingSkipLogicTest extends BaseFormTest {
@@ -18,15 +19,21 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
         textPresent(skipLogic);
 
         startEditQuestionSectionById("question_0_1");
-        findElement(By.xpath("//*[@id='question_0_1']//textarea[2]")).clear();
+        findElement(By.cssSelector("#question_0_1 input.skipLogicCondition")).clear();
+        findElement(By.cssSelector("#question_0_1 input.skipLogicCondition")).sendKeys(Keys.SPACE);
+        findElement(By.cssSelector("#question_0_1 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
         saveEditQuestionSectionById("question_0_1");
 
         startEditQuestionSectionById("section_0_2");
-        findElement(By.xpath("//*[@id='dd_s_skipLogic_2']//input[2]")).clear();
+        findElement(By.cssSelector("#section_0_2 input.skipLogicCondition")).clear();
+        findElement(By.cssSelector("#section_0_2 input.skipLogicCondition")).sendKeys(Keys.SPACE);
+        findElement(By.cssSelector("#section_0_2 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
         saveEditQuestionSectionById("section_0_2");
 
         startEditQuestionSectionById("inform_0_3");
-        findElement(By.xpath("//*[@id='dd_s_skipLogic_3']//input[2]")).clear();
+        findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).clear();
+        findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).sendKeys(Keys.SPACE);
+        findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
         saveEditQuestionSectionById("inform_0_3");
         saveForm();
 

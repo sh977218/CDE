@@ -13,8 +13,6 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
-        textPresent("Show Question Search Area");
-        startAddingForms();
         addFormToSection("Vessel Imaging Angiography", 0);
         textPresent("Embedded Form: Vessel Imaging Angiography");
         String newFormLabel = "new inner form label";

@@ -97,7 +97,7 @@ public class QuestionTest extends BaseFormTest {
                 textPresent("1 results");
                 textPresent(formName, By.id("acc_link_0"));
 
-                WebElement sourceElt = findElement(By.xpath("//*[@id='accordionList']//*[contains(@class,'question-move-handle')]"));
+                WebElement sourceElt = findElement(By.cssSelector("#accordionList .question-move-handle"));
                 WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
 
                 Assert.assertTrue(sourceElt.isDisplayed());

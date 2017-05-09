@@ -16,7 +16,6 @@ public class FormDragQuestionDropTest extends QuestionTest {
         addSectionTop("Third Section Name", null);
         addSectionTop("Second Section Name", null);
         addSectionTop("First Section Name", null);
-        startAddingQuestions();
 
         String cdeName = "Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score";
 

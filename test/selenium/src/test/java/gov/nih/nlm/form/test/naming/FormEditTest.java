@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.naming;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
@@ -64,14 +65,11 @@ public class FormEditTest extends BaseFormTest {
         textNotPresent("Confirm");
 
         String newQuestionUnitsOfMeasure = "New Units of Measure";
-        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'addUomBtn')]"));
-        textPresent("Please specify");
+        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'formDescriptionUoms')]//*[contains(@class,'.select2-selection__choice')]"));
         clickElement(By.xpath("//*[@id='q_uom_list_0']/span/span/i"));
-        textPresent("Confirm");
         findElement(By.xpath("//*[@id='q_uom_list_0']/span/form/input")).clear();
         findElement(By.xpath("//*[@id='q_uom_list_0']/span/form/input")).sendKeys(newQuestionUnitsOfMeasure);
-        clickElement(By.xpath("//*[@id='q_uom_list_0']/span/form/button[contains(text(),'Confirm')]"));
-        textNotPresent("Confirm");
+        findElement(By.xpath("//*[@id='q_uom_list_0']/span/form/input")).sendKeys(Keys.ENTER);
 
         saveEditQuestionSectionById("question_0_0");
         textPresent("Data unknown text", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));

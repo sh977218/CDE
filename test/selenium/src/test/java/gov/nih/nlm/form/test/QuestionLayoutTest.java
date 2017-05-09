@@ -20,9 +20,6 @@ public class QuestionLayoutTest extends BaseFormTest {
         textPresent(sec1);
         textPresent(sec2);
 
-        textPresent("Show Question Search Area");
-        startAddingQuestions();
-        textPresent("Hide Question Search Area");
         textPresent("Browse by Classification");
         // we are doing twice because of the double scroll bar and we are not sure how Selenium handles it.
         scrollToTop();
