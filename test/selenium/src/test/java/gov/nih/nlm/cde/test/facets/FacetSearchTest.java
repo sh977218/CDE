@@ -12,9 +12,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-caBIG"));
-        int numOfElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-All Candidates")).getText());
+        int numOfElts = Integer.valueOf(findElement(By.xpath("//*[@id='nbOfClassifElts-All Candidates']")).getText());
 
-        clickElement(By.id("li-blank-All Candidates"));
+        clickElement(By.xpath("//*[@id='li-blank-All Candidates']"));
 
         textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Topics | All Statuses");
     }
@@ -35,8 +35,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         clickElement(By.id("li-blank-Disease"));
-        clickElement(By.id("li-blank-Traumatic Brain Injury"));
-        clickElement(By.id("li-blank-Acute Hospitalized"));
+        clickElement(By.xpath("//*[@id='li-blank-Traumatic Brain Injury']"));
+        clickElement(By.xpath("//*[@id='li-blank-Acute Hospitalized']"));
         clickElement(By.id("li-blank-Classification"));
         int numRes = getNumberOfResults();
         clickElement(By.id("li-blank-Basic"));
@@ -44,7 +44,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         numRes = getNumberOfResults();
         Assert.assertTrue(numRes > 248);
         Assert.assertTrue(numRes < 254);
-        clickElement(By.id("li-checked-Acute Hospitalized"));
+        clickElement(By.xpath("//*[@id='li-checked-Acute Hospitalized']"));
         textPresent("Domain (19");
         clickElement(By.id("li-blank-Domain"));
         textPresent("Outcomes and End Points (12");

@@ -37,7 +37,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
     @Test
     public void removeOneFromCdeQuickBoard() {
         goToCdeSearch();
-        clickElement(By.id("browseOrg-OHSU Knight"));
+        clickElement(By.xpath("//*[@id='browseOrg-OHSU Knight']"));
         textPresent("4 results for");
         clickElement(By.id("addToCompare_0")); //right here
         closeAlert();
