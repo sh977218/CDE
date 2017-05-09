@@ -3,14 +3,15 @@ package gov.nih.nlm.form.test;
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 public class CreateForm extends BaseClassificationTest {
 
     @Test
-    public void createForm() {
+    @Parameters("Create Form Test Name")
+    public void createForm(String formName) {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        String formName = "Create Form Test Name";
         String formDef = "Fill out carefully!";
         String formV = "0.1alpha";
         String formOrg = "TEST";

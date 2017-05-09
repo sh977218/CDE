@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-
 import com.jayway.restassured.http.ContentType;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
