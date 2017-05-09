@@ -13,27 +13,35 @@ var today = new Date().toJSON();
 
 function mergeCde(existingCde, newCde) {
     // Naming
-    existingCde.naming = _.uniq(existingCde.naming.concat(newCde.naming), function (naming) {
-        return naming.designation && naming.definition && naming.definitionFormat &&
-            naming.languageCode && naming.source &&
-            naming.context && naming.context.contextName && naming.context.acceptability;
+    existingCde.naming = _.uniqWith(existingCde.naming.concat(newCde.naming), (a, b) => {
+        if (a.designation === b.designation
+            && a.definition === b.definition
+            && a.definitionFormat === b.definitionFormat
+            && a.languageCode === b.languageCode
+            && a.source === b.source
+            && a.context && a.context.contextName === b.context.contextName
+            && b.context && a.context.contextName === b.context.contextName
+            && a.context.acceptability === b.context.acceptability) {
+            b.tags = _.concat(a.tags, b.tags);
+            return true;
+        } else return false;
     });
     _.forEach(existingCde.naming, naming => {
-        naming.tags = _.uniq(naming.tags, tag => tag.tag)
+        naming.tags = _.uniqWith(naming.tags, (a, b) => {
+            return a.tag === b.tag;
+        })
     });
 
     // Sources
     let existedSource = false;
-    _.forEach(existingCde.sources, existingSource => {
-        if (existingSource.sourceName !== newCde.sources[0].sourceName) {
-            existingSource = newCde.sources[0];
-            existedSource = true;
-        }
-    });
-    if (!existedSource) existingCde.sources.push(newCde.sources[0]);
+    existingCde.sources = newCde.sources.concat(_.differenceWith(existingCde.sources, newCde.sources, (a, b) => {
+        return a.sourceName === b.sourceName;
+    }));
 
     // IDs
-    existingCde.ids = newCde.ids.concat(_.difference(existingCde.ids, newCde.ids, 'sourceName'));
+    existingCde.ids = newCde.ids.concat(_.differenceWith(existingCde.ids, newCde.ids, (a, b) => {
+        return a.source === b.source;
+    }));
 
 
     // Properties
@@ -46,25 +54,25 @@ function mergeCde(existingCde, newCde) {
 
     // PermissibleValues
     if (newCde.valueDomain.datatype === 'Value List' && existingCde.valueDomain.datatype === 'Value List') {
-        let temp = _.uniq(existingCde.valueDomain.permissibleValues.concat(newCde.valueDomain.permissibleValues), function (item) {
-            return item.permissibleValue && item.valueMeaningDefinition && item.valueMeaningName;
+        let fullList = _.concat(existingCde.valueDomain.permissibleValues, newCde.valueDomain.permissibleValues);
+        let uniqueList = _.uniqWith(fullList, function (a, b) {
+            return a.permissibleValue === b.permissibleValue
+                && a.valueMeaningDefinition === b.valueMeaningDefinition
+                && a.valueMeaningName === b.valueMeaningName
+                && a.codeSystemName === b.codeSystemName;
         });
-        existingCde.valueDomain.permissibleValues = temp;
+        existingCde.valueDomain.permissibleValues = uniqueList;
+        existingCde.markModified("valueDomain");
     } else if (newCde.valueDomain.datatype !== 'Value List' && existingCde.valueDomain.datatype !== 'Value List') {
     } else {
         console.log("newCde datatype: " + newCde.valueDomain.datatype);
         console.log("existingCde datatype: " + existingCde.valueDomain.datatype);
         process.exit(1);
     }
-
     existingCde.created = today;
     classificationShared.transferClassifications(newCde, existingCde);
 }
 
-/**
- * @param {{cdeId,population,subDomain,domain,minValue,maxValue,dataType,size,permissibleDescription,inputRestrictions,measurementType,permissibleValue,reference,versionNum,cdeName,definitionDescription,questionText,cadsrId,variableName,previousTitle,instruction,aliasesForVariableName}} cde
- * @param ninds
- */
 function createCde(cde, ninds) {
     let naming = [{
         designation: cde.cdeName, definition: cde.definitionDescription,
@@ -73,6 +81,7 @@ function createCde(cde, ninds) {
             contextName: "Health",
             acceptability: "preferred"
         },
+        tags: [],
         source: 'NINDS'
     }];
     if (cde.questionText) _.trim(cde.questionText);
@@ -83,6 +92,7 @@ function createCde(cde, ninds) {
             context: {
                 contextName: 'Question Text'
             },
+            tags: [{tag: "Question Text"}],
             source: 'NINDS'
         });
 
@@ -138,7 +148,8 @@ function createCde(cde, ninds) {
         if (pvsArray[i].length > 0) {
             let pv = {
                 permissibleValue: pvsArray[i],
-                valueMeaningDefinition: pdsArray[i]
+                valueMeaningDefinition: pdsArray[i],
+                codeSystemName: "NINDS"
             };
             if (isPvValueNumber) {
                 pv.valueMeaningName = pdsArray[i];
@@ -160,6 +171,7 @@ function createCde(cde, ninds) {
                 minValue: Number(cde.minValue),
                 maxValue: Number(cde.maxValue)
             };
+        } else if (cde.dataType === 'File') {
         } else {
             console.log('unknown cde.dataType found:' + cde.dataType);
             console.log('*******************ninds:\n' + ninds);
@@ -176,6 +188,7 @@ function createCde(cde, ninds) {
         }
         else if (cde.dataType === 'Date or Date & Time') {
             valueDomain.datatypeValueList = {datatype: 'Date'};
+        } else if (cde.dataType === 'File') {
         } else {
             console.log('unknown cde.dataType found:' + cde.dataType);
             console.log('*******************ninds:\n' + ninds);
