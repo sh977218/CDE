@@ -132,7 +132,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             clickElement(By.id(expanderStr + "-expander"));
             expanderStr += ",";
         }
-        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+        clickElement(By.xpath("//*[@id='" + expanderStr + categories[categories.length - 1] + "-classifyBtn']"));
         closeAlert();
     }
 
@@ -154,10 +154,10 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         String expanderStr = "";
         for (int i = 1; i < categories.length - 1; i++) {
             expanderStr = expanderStr + categories[i];
-            clickElement(By.id(expanderStr + "-expander"));
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
             expanderStr += ",";
         }
-        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+        clickElement(By.xpath("//*[@id='" + expanderStr + categories[categories.length - 1] + "-classifyBtn']"));
 
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
@@ -166,10 +166,10 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        hangon(1);
-        Assert.assertEquals(findElement(By.id(selector)).getText(), categories[categories.length - 1]);
 
         textPresent("Classification added");
+        Assert.assertEquals(findElement(By.xpath("//*[@id='" + selector + "']")).getText(),
+                categories[categories.length - 1]);
         closeAlert();
     }
     private void _addExistClassificationMethodDo(String[] categories) {
@@ -178,10 +178,10 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         String expanderStr = "";
         for (int i = 1; i < categories.length - 1; i++) {
             expanderStr = expanderStr + categories[i];
-            clickElement(By.id(expanderStr + "-expander"));
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
             expanderStr += ",";
         }
-        clickElement(By.id(expanderStr + categories[categories.length - 1] + "-classifyBtn"));
+        clickElement(By.xpath("//*[@id='" + expanderStr + categories[categories.length - 1] + "-classifyBtn']"));
         textPresent("Classification Already Exists");
         closeAlert();
     }

@@ -64,12 +64,12 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
 
         // Make sure ctepCurator user can see it
         goToCdeSearch();
-        findElement(By.id("browseOrg-" + orgWG));
+        findElement(By.xpath("//*[@id='browseOrg-" + orgWG + "']"));
 
         // Make sure nlm users can see it
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
-        findElement(By.id("browseOrg-" + orgWG));
+        findElement(By.xpath("//*[@id='browseOrg-" + orgWG + "']"));
 
         // Make sure cabigAdmin can't
         mustBeLoggedInAs(cabigAdmin_username, password);

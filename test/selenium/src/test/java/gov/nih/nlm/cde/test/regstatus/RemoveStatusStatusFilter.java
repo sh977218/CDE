@@ -30,12 +30,12 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         showSearchFilters();
         hangon(1);
         try {
-            clickElement(By.id("li-blank-Preferred Standard"));
+            clickElement(By.xpath("//*[@id='li-blank-Preferred Standard']"));
         } catch (TimeoutException e) {
             goToCdeSearch();
             clickElement(By.id("browseOrg-PBTC"));
             showSearchFilters();
-            clickElement(By.id("li-blank-Preferred Standard"));
+            clickElement(By.xpath("//*[@id='li-blank-Preferred Standard']"));
         }
         textPresent("1 results for");
         clickElement(By.id("linkToElt_0"));

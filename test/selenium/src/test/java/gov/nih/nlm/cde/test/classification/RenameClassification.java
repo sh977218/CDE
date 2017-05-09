@@ -34,8 +34,8 @@ public class RenameClassification extends BaseClassificationTest {
             textPresent("Renaming complete.");
             closeAlert();
         }
-        findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification"));
-        findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification,Supplemental"));
+        findElement(By.xpath("//*[@id='classification-Disease,Spinal Cord Injuries,Classification']"));
+        findElement(By.xpath("//*[@id='classification-Disease,Spinal Cord Injuries,Classification,Supplemental']"));
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a")).click();
         textPresent("Spinal Cord Injuries");
 
