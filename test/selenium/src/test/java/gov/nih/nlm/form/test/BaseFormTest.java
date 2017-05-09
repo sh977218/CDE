@@ -39,7 +39,7 @@ public class BaseFormTest extends FormCommentTest {
 
     public void addSectionBottom(String title, String repeat) {
         int nbOfSections = driver.findElements(By.xpath("//*[@class='node-drop-slot']")).size();
-        addSection(title, repeat, nbOfSections);
+        addSection(title, repeat, nbOfSections - 1);
     }
 
     public void addSection(String title, String repeat, Integer sectionNumber) {
