@@ -55,7 +55,7 @@
                 </li>
             </ul>
             <ul class="ieFix nav navbar-nav navbar-right" attr.data-userloaded="loaded-{{user?.userLoaded}}">
-                <a ng-cloak *ngIf="userHasMail" title="New messages" href="/inbox">
+                <a *ngIf="userHasMail" title="New messages" href="/inbox">
                     <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
                 <li class="login" [ngClass]="{active: isPageActive('/login')}" [hidden]="user?._id">
                     <a (click)="goToLogin.emit()" href="/login" id="login_link" title="Log in" attr.aria-label="Log in"
