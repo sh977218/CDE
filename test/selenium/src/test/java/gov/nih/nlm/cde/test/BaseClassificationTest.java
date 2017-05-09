@@ -159,7 +159,6 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         }
         clickElement(By.xpath("//*[@id='" + expanderStr + categories[categories.length - 1] + "-classifyBtn']"));
 
-        textPresent("Classification added");
         closeAlert();
 
         String selector = "";
