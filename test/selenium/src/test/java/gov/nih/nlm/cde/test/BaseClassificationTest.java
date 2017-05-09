@@ -159,6 +159,9 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         }
         clickElement(By.xpath("//*[@id='" + expanderStr + categories[categories.length - 1] + "-classifyBtn']"));
 
+        textPresent("Classification added");
+        closeAlert();
+
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
             selector += categories[i];
@@ -166,9 +169,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        Assert.assertEquals(findElement(By.xpath("//*[@id='" + selector + "']")).getText(),
+        Assert.assertEquals(findElement(By.xpath("//div[@id='classificationBody']//*[@id='" + selector + "']")).getText(),
                 categories[categories.length - 1]);
-        closeAlert();
     }
     private void _addExistClassificationMethodDo(String[] categories) {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
