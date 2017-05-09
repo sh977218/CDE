@@ -55,7 +55,7 @@ public class BoardViewTest extends BoardTest {
         textPresent("3535434");
     }
 
-    public void attachToBoard(String cdeName, String boardName) {
+    private void attachToBoard(String cdeName, String boardName) {
         searchElt(cdeName, "cde");
         findElement(By.id("pinToBoard_0")).click();
         findElement(By.linkText(boardName)).click();

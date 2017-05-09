@@ -48,7 +48,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         clickElement(By.id("li-blank-Disease"));
-        clickElement(By.id("li-blank-Neuromuscular Disease"));
+        clickElement(By.xpath("//*[@id='li-blank-Neuromuscular Disease']"));
         textPresent( "NINDS > Disease > Neuromuscular Disease" );
 
         clickElement(By.id("altClassificationFilterModeToggle"));
@@ -56,11 +56,11 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         hangon(1);
         clickElement(By.id("li-blank-NINDS"));
         clickElement(By.id("li-blank-Domain"));
-        clickElement(By.id("li-blank-Assessments and Examinations"));
+        clickElement(By.xpath("//*[@id='li-blank-Assessments and Examinations']"));
         textPresent( "and NINDS > Domain > Assessments and Examinations" );
         textPresent( "Imaging Diagnostics (30" );
 
-        clickElement(By.id("li-blank-Imaging Diagnostics"));
+        clickElement(By.xpath("//*[@id='li-blank-Imaging Diagnostics']"));
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
 
         clickElement(By.linkText("Boards"));
