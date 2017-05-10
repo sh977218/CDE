@@ -33,7 +33,6 @@ function mergeCde(existingCde, newCde) {
     });
 
     // Sources
-    let existedSource = false;
     existingCde.sources = newCde.sources.concat(_.differenceWith(existingCde.sources, newCde.sources, (a, b) => {
         return a.sourceName === b.sourceName;
     }));
@@ -280,6 +279,7 @@ function run() {
         function (cb) {
             MigrationDataElementModel.remove({}, function (err) {
                 if (err) throw err;
+                console.log("Migration Data Element removed.");
                 cb();
             });
         },
@@ -335,18 +335,18 @@ function run() {
                     });
                 } else stream.resume();
             });
-
             stream.on('end', function (err) {
                 if (err) throw err;
                 nindsOrg.markModified('classifications');
                 nindsOrg.save(function (e) {
                     if (e) throw e;
                     if (cb) cb();
-                    process.exit(0);
                 });
             });
         }
-    ]);
+    ], function () {
+        process.exit(0);
+    });
 }
 
 run();

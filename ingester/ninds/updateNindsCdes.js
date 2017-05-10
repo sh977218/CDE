@@ -1,281 +1,203 @@
-var async = require('async'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    cdediff = require('../../modules/cde/node-js/cdediff'),
-    classificationShared = require('../../modules/system/shared/classificationShared'),
-    MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel,
-    DataElement = mongo_cde.DataElement,
-    MigrationOrg = require('../createMigrationConnection').MigrationOrgModel,
-    Org = require('../../modules/system/node-js/mongo-data').Org,
-    updateShare = require('../updateShare');
+var async = require("async");
+var _ = require("lodash");
+var moment = require("moment");
 
-var importDate = new Date().toJSON();
-var source = 'NINDS';
-var username = 'batchloader';
+var mongo_cde = require("../../modules/cde/node-js/mongo-cde");
+var classificationShared = require("../../modules/system/shared/classificationShared");
+var MigrationDataElement = require("../createMigrationConnection").MigrationDataElementModel;
+var DataElement = mongo_cde.DataElement;
+var MigrationOrg = require("../createMigrationConnection").MigrationOrgModel;
+var Org = require("../../modules/system/node-js/mongo-data").Org;
+var updateShare = require("../updateShare");
+var batchUser = require("../config").batchUser;
 
-function removeClassificationTree(cde, org) {
-    for (var i = 0; i < cde.classification.length; i++) {
-        if (cde.classification[i].stewardOrg.name === org) {
-            cde.classification.splice(i, 1);
-            return;
-        }
-    }
-}
-
-var changed = 0;
 var created = 0;
-var createdCDE = [];
 var same = 0;
-var lastEightHours = new Date();
-lastEightHours.setHours(new Date().getHours() - 8);
 var retired = 0;
 
-
-function wipeUseless(toWipeCde) {
-    delete toWipeCde._id;
-    delete toWipeCde.history;
-    delete toWipeCde.imported;
-    delete toWipeCde.created;
-    delete toWipeCde.createdBy;
-    delete toWipeCde.updated;
-    delete toWipeCde.updatedBy;
-    delete toWipeCde.comments;
-    delete toWipeCde.registrationState;
-    delete toWipeCde.tinyId;
-    delete toWipeCde.valueDomain.datatypeValueList;
-
-    Object.keys(toWipeCde).forEach(function (key) {
-        if (Array.isArray(toWipeCde[key]) && toWipeCde[key].length === 0) {
-            delete toWipeCde[key];
-        }
-    });
-}
-
 function compareCdes(existingCde, newCde) {
-    existingCde.ids.sort(function (a, b) {
+    let existingCdeCopy = _.cloneDeep(existingCde);
+    let newCdeCopy = _.cloneDeep(newCde);
+    updateShare.wipeUseless(existingCdeCopy);
+    updateShare.wipeUseless(newCdeCopy);
+
+    existingCdeCopy.ids.sort(function (a, b) {
         return a.source > b.source;
     });
-    newCde.ids.sort(function (a, b) {
+    newCdeCopy.ids.sort(function (a, b) {
         return a.source > b.source;
     });
 
-    existingCde.properties.sort(function (a, b) {
+    existingCdeCopy.properties.sort(function (a, b) {
         return a.key > b.key;
     });
-    newCde.properties.sort(function (a, b) {
+    newCdeCopy.properties.sort(function (a, b) {
         return a.key > b.key;
     });
 
+    if (!existingCdeCopy.classification || existingCdeCopy.classification === [])
+        existingCdeCopy.classification = newCdeCopy.classification;
+    else existingCdeCopy.classification = _.remove(existingCdeCopy.classification, function (o) {
+        return o.stewardOrg.name === "NINDS";
+    });
 
-    existingCde = JSON.parse(JSON.stringify(existingCde));
-    wipeUseless(existingCde);
-    if (!existingCde.classification || existingCde.classification === [])
-        existingCde.classification = newCde.classification;
-    else {
-        for (var i = existingCde.classification.length - 1; i > 0; i--) {
-            if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
-                existingCde.classification.splice(i, 1);
-            }
-        }
-    }
-    try {
-        if (existingCde.classification.length > 0) classificationShared.sortClassification(existingCde);
-    } catch (e) {
-        console.log(existingCde);
-        throw e;
-    }
-
-    classificationShared.sortClassification(newCde);
-    newCde = JSON.parse(JSON.stringify(newCde));
-    wipeUseless(newCde);
-
-    return cdediff.diff(existingCde, newCde);
+    if (existingCdeCopy.classification.length > 0)
+        classificationShared.sortClassification(existingCdeCopy);
+    classificationShared.sortClassification(newCdeCopy);
+    return _.isEqual(existingCdeCopy, newCdeCopy);
 }
 
-function processCde(migrationCde, existingCde, orgName, processCdeCb) {
-    var newDe = existingCde.toObject();
-    delete newDe._id;
-
-    newDe.naming = migrationCde.naming;
-    newDe.version = migrationCde.version;
-    newDe.sources = migrationCde.sources;
-    newDe.changeNote = "Bulk update from source";
-    newDe.imported = importDate;
-    newDe.dataElementConcept = migrationCde.dataElementConcept;
-    newDe.valueDomain = migrationCde.valueDomain;
-    newDe.mappingSpecifications = migrationCde.mappingSpecifications;
-    newDe.referenceDocuments = migrationCde.referenceDocuments;
-    newDe.ids = migrationCde.ids;
-    newDe.properties = newDe.properties;
-
-    removeClassificationTree(newDe, orgName);
-    if (migrationCde.classification[0]) {
-        var indexOfClassZero = null;
-        newDe.classification.forEach(function (c, i) {
-            if (c.stewardOrg.name === migrationCde.classification[0].stewardOrg.name) indexOfClassZero = i;
-        });
-        if (indexOfClassZero) newDe.classification[indexOfClassZero] = migrationCde.classification[0];
-        else {
-            newDe.classification.push(migrationCde.classification[0]);
-        }
-    }
-    newDe._id = existingCde._id;
-    try {
-        mongo_cde.update(newDe, {username: username}, function (err) {
-            if (err) {
-                console.log("Cannot save CDE.");
-                console.log(newDe);
+function run() {
+    let orgClassification;
+    async.series([
+        function (cb) {
+            let stream = MigrationDataElement.find().stream();
+            stream.on("error", function (err) {
                 throw err;
-            }
-            else migrationCde.remove(function (err) {
-                if (err) console.log("unable to remove " + err);
-                processCdeCb();
-                changed++;
             });
-        });
-    } catch (e) {
-        console.log("newDe:\n" + newDe);
-        console.log("existingCde:\n" + existingCde);
-        throw e;
-    }
-}
-
-function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
-    var cdeCond = {
-        archived: false,
-        'sources.sourceName': source,
-        "registrationState.registrationStatus": {$not: /Retired/},
-        imported: {$ne: importDate}
-    };
-    //noinspection JSUnresolvedFunction
-    DataElement.find(cdeCond).where("ids").elemMatch(function (elem) {
-        elem.where("source").equals(source);
-        elem.where("id").equals(cdeId);
-        elem.where("version").equals(idv);
-    }).exec(function (err, existingCdes) {
-        if (err) throw err;
-        if (existingCdes.length === 0) {
-            console.log('not found: ' + cdeId);
-            //delete migrationCde._id;
-            var mCde = JSON.parse(JSON.stringify(migrationCde.toObject()));
-            delete mCde._id; //use mCde below!!!
-            mCde.imported = importDate;
-            mCde.created = importDate;
-            var createDe = new DataElement(mCde);
-            createDe.save(function (err) {
-                if (err) {
-                    console.log("Unable to create CDE.");
-                    console.log(mCde);
-                    console.log(createDe);
-                    throw err;
+            stream.on("close", cb);
+            stream.on("data", function (migrationCde) {
+                stream.pause();
+                classificationShared.sortClassification(migrationCde);
+                let idObj = _.find(migrationCde.ids, function (o) {
+                    return o.source === "NINDS";
+                });
+                if (!idObj.id) {
+                    console.log("CDE with no ID. !! tinyId: " + migrationCde.tinyId);
+                    process.exit(1);
                 } else {
-                    created++;
-                    createdCDE.push(cdeId);
-                    migrationCde.remove(function (err) {
-                        if (err) console.log("unable to remove: " + err);
-                        else findCdeDone();
+                    let cdeId = idObj.id;
+                    let findCond = {
+                        "archived": false,
+                        "sources.sourceName": "NINDS",
+                        "registrationState.registrationStatus": {$not: /Retired/},
+                        "stewardOrg.name": "NINDS",
+                        "imported": {$lt: moment()}
+                    };
+                    DataElement.find(findCond).where("ids").elemMatch(function (elem) {
+                        elem.where("source").equals("NINDS");
+                        elem.where("id").equals(cdeId);
+                        elem.where("version").equals(idObj.version);
+                    }).exec(function (findCdeError, existingCdes) {
+                        if (findCdeError) throw findCdeError;
+                        if (existingCdes.length === 0) {
+                            console.log("not found: " + cdeId);
+                            let newCde = migrationCde.toObject();
+                            delete newCde._id; //use mCde below!!!
+                            newCde.imported = moment();
+                            newCde.created = moment();
+                            new DataElement(newCde).save(function (saveCdeError) {
+                                if (saveCdeError) throw saveCdeError;
+                                else migrationCde.remove(function (removeCdeError) {
+                                    if (removeCdeError) throw removeCdeError;
+                                    else {
+                                        created++;
+                                        stream.resume();
+                                    }
+                                });
+                            });
+                        } else if (existingCdes.length === 1) {
+                            let existingCde = existingCdes[0];
+                            if (compareCdes(existingCde, migrationCde)) {
+                                delete existingCde._id;
+                                existingCde.naming = migrationCde.naming;
+                                existingCde.version = migrationCde.version;
+                                existingCde.changeNote = "Bulk update from source";
+                                existingCde.imported = moment();
+                                existingCde.dataElementConcept = migrationCde.dataElementConcept;
+                                existingCde.valueDomain = migrationCde.valueDomain;
+                                existingCde.mappingSpecifications = migrationCde.mappingSpecifications;
+                                existingCde.referenceDocuments = migrationCde.referenceDocuments;
+                                existingCde.ids = migrationCde.ids;
+
+                                existingCde.sources = migrationCde.sources.concat(_.differenceWith(existingCde.sources, migrationCde.sources, (a, b) => {
+                                    return a.sourceName === b.sourceName;
+                                }));
+
+                                existingCde.properties = migrationCde.properties.concat(_.differenceWith(existingCde.properties, migrationCde.properties, (a, b) => {
+                                    return a.key === b.key && a.source && b.source;
+                                }));
+
+                                existingCde.classification = migrationCde.classification.concat(_.differenceWith(existingCde.classification, migrationCde.classification, (a, b) => {
+                                    return a.stewardOrg.name === b.stewardOrg.name;
+                                }));
+
+                                mongo_cde.update(existingCde, batchUser, function (updateCdeError) {
+                                    if (updateCdeError) throw updateCdeError;
+                                    else migrationCde.remove(function (removeCdeError) {
+                                        if (err) throw removeCdeError;
+                                        else {
+                                            created++;
+                                            stream.resume();
+                                        }
+                                    });
+                                });
+                            } else {
+                                same++;
+                                stream.resume();
+                            }
+                        } else throw "Found " + existingCdes.length + " cde with cdeId " + cdeId;
+                    })
+                }
+            });
+        },
+        function (cb) {
+            let retireCond = {
+                "imported": {$gte: moment().add(-1, "day"), $lt: moment().add(1, "day")},
+                "sources.sourceName": "NINDS",
+                "classification.stewardOrg.name": "NINDS",
+                "archived": false
+            };
+            DataElement.find(retireCond, function (retiredCdeError, retireCdes) {
+                if (retiredCdeError) throw retiredCdeError;
+                else {
+                    async.forEachSeries(retireCdes, function (retireCde, doneOneRetireCde) {
+                        retireCde.registrationState.registrationStatus = "Retired";
+                        retireCde.registrationState.administrativeNote = "Not present in import from " + moment();
+                        retireCde.save(function (error) {
+                            if (error) throw error;
+                            else {
+                                retired++;
+                                doneOneRetireCde();
+                            }
+                        })
+                    }, function doneAllRetireCdes() {
+                        cb();
                     });
                 }
             });
-        } else if (existingCdes.length === 1) {
-            if (existingCdes[0].attachments) {
-                async.forEach(existingCdes[0].attachments, function (attachment, doneOneAttachment) {
-                    mongo_cde.removeAttachmentLinks(attachment.fileid);
-                    doneOneAttachment();
-                }, function doneAllAttachments() {
-                    existingCdes[0].attachments = migrationCde.attachments;
-                    processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
-                })
-            }
-        } else {
-            console.log(cdeId);
-            console.log(source);
-            console.log(idv);
-            throw "Too many CDEs with the same ID/version.";
-        }
-    });
-}
-var migStream;
-
-function streamOnData(migrationCde) {
-    migStream.pause();
-    classificationShared.sortClassification(migrationCde);
-    var orgName = migrationCde.stewardOrg.name;
-    var cdeId = 0;
-    var version;
-    for (var i = 0; i < migrationCde.ids.length; i++) {
-        if (migrationCde.ids[i].source === source) {
-            cdeId = migrationCde.ids[i].id;
-            version = migrationCde.ids[i].version;
-        }
-    }
-
-    if (cdeId !== 0) {
-        findCde(cdeId, migrationCde, source, orgName, version, function () {
-            migStream.resume();
-        });
-    } else {
-        // No Cde.
-        console.log("CDE with no ID. !! tinyId: " + migrationCde.tinyId);
-        process.exit(1);
-    }
-}
-function streamOnClose() {
-    // Retire Missing CDEs
-    DataElement.find({
-        'imported': {$lt: lastEightHours},
-        'sources.sourceName': source,
-        'classification.stewardOrg.name': 'NINDS',
-        'archived': false
-    }).exec(function (retiredCdeError, retireCdes) {
-        if (retiredCdeError) throw retiredCdeError;
-        else {
-            console.log('retiredCdes: ' + retireCdes.length);
-            async.forEachSeries(retireCdes, function (retireCde, doneOneRetireCde) {
-                retireCde.registrationState.registrationStatus = 'Retired';
-                retireCde.registrationState.administrativeNote = "Not present in import from " + importDate;
-                retireCde.save(function (error) {
-                    if (error) throw error;
-                    else {
-                        retired++;
-                        doneOneRetireCde();
-                    }
-                })
-            }, function doneAllRetireCdes() {
-                console.log("Nothing left to do, saving Org");
-                MigrationOrg.find().exec(function (findMigOrgError, orgs) {
-                    if (findMigOrgError) throw findMigOrgError;
-                    async.forEachSeries(orgs, function (org, doneOneOrg) {
-                        Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
-                            if (findOrgError) throw findOrgError;
-                            else {
-                                theOrg.classifications = org.classifications;
-                                theOrg.save(function (saveOrgError) {
-                                    if (saveOrgError) throw saveOrgError;
-                                    else doneOneOrg();
-                                });
-                            }
-                        });
-                    }, function doneAllOrgs() {
-                        //logger.info('createdCDE: ' + JSON.stringify(createdCDE));
-                        console.log(" changed: " + changed + " same: " + same + " created: " + created);
-                        process.exit(0);
-                    });
-                });
+        },
+        function (cb) {
+            MigrationOrg.find({name: "NINDS"}, function (findMigrationOrgError, migrationOrgs) {
+                if (findMigrationOrgError) throw findMigrationOrgError;
+                else if (migrationOrgs.length === 1) {
+                    orgClassification = migrationOrgs[0].classifications;
+                    cb();
+                } else {
+                    console.log("Found " + migrationOrgs.length + " NINDS org in migration.");
+                    process.exit(1);
+                }
             });
-        }
+        },
+        function (cb) {
+            Org.find({name: "NINDS"}, function (findOrgError, orgs) {
+                if (findOrgError) throw findOrgError;
+                else if (orgs.length === 1) {
+                    orgs[0].classifications = orgClassification;
+                    orgs[0].markModified("classifications");
+                    orgs[0].save(saveOrgError => {
+                        if (saveOrgError)throw saveOrgError;
+                        else cb();
+                    });
+                } else {
+                    console.log("Found " + orgs.length + " NINDS org in nlmcde.");
+                    process.exit(1);
+                }
+            });
+        }], function () {
+        console.log("created: " + created + " same: " + same + " retired: " + retired);
+        process.exit(0);
     });
 }
 
-function doStream() {
-    migStream = MigrationDataElement.find().stream();
-    migStream.on('data', streamOnData);
-    migStream.on('error', function () {
-        console.log("!!!!!!!!!!!!!!!!!! Unable to read from Stream !!!!!!!!!!!!!!");
-    });
-    migStream.on('close', streamOnClose);
-}
-
-doStream();
-setInterval(function () {
-    console.log(" changed: " + changed + " same: " + same + " created: " + created);
-}, 10000);
+run();

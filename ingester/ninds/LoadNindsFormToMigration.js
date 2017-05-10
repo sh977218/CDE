@@ -1,10 +1,9 @@
-var async = require('async'),
-    NindsModel = require('./../createMigrationConnection').MigrationNindsModel,
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    mongo_data = require('../../modules/system/node-js/mongo-data'),
-    MigrationForm = require('./../createMigrationConnection').MigrationFormModel,
-    classificationShared = require('../../modules/system/shared/classificationShared')
-    ;
+var async = require('async');
+var NindsModel = require('./../createMigrationConnection').MigrationNindsModel;
+var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
+var mongo_data = require('../../modules/system/node-js/mongo-data');
+var MigrationForm = require('./../createMigrationConnection').MigrationFormModel;
+var classificationShared = require('../../modules/system/shared/classificationShared');
 
 var importDate = new Date().toJSON();
 var count = 0;
@@ -158,106 +157,137 @@ function createForm(ninds) {
     };
 }
 function run() {
-    MigrationForm.remove({}, function () {
-        var stream = NindsModel.find({}).stream();
-        stream.on('data', function (ninds) {
-            stream.pause();
-            var formId = ninds.get('formId');
-            var filterName = ninds.get('crfModuleGuideline').replace('\nInternational Spinal Cord Society (ISCOS)', '')
-                .trim();
-            ninds.set('crfModuleGuideline', filterName);
-            MigrationForm.find({'ids.id': formId}, function (err, existingForms) {
+    async.series([
+        function (cb) {
+            MigrationForm.remove({}, function (err) {
                 if (err) throw err;
-                if (existingForms.length === 0) {
-                    var newForm = createForm(ninds);
-                    console.log('start cde of form: ' + formId);
-                    var cdes = ninds.get('cdes');
-                    if (cdes.length > 0)
-                        newForm.formElements.push({
-                            elementType: 'section',
-                            instructions: {value: ''},
-                            label: '',
-                            formElements: []
-                        });
-                    async.forEachSeries(cdes, function (cde, doneOneCDE) {
-                        var cdeId = cde.cdeId;
-                        mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
-                            if (err) throw (err + ' cdeId: ' + cdeId);
-                            else {
-                                var question = {
-                                    cde: {
-                                        tinyId: existingCde.tinyId,
-                                        name: existingCde.naming[0].designation,
-                                        version: existingCde.version,
-                                        ids: existingCde.ids
-                                    },
-                                    datatype: existingCde.valueDomain.datatype,
-                                    uom: existingCde.valueDomain.uom
-                                };
-                                if (question.datatype === 'Value List') {
-                                    question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
-                                    question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
-                                    question.answers = existingCde.valueDomain.permissibleValues;
-                                } else if (question.datatype === 'Text') {
-                                    question.datatypeText = existingCde.valueDomain.datatypeText;
-                                } else if (question.datatype === 'Number') {
-                                    question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
-                                } else if (question.datatype === 'Date') {
-                                    question.datatypeDate = existingCde.valueDomain.datatypeDate;
-                                } else {
-                                    throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
-                                }
-                                var formElement = {
-                                    elementType: 'question',
-                                    instructions: {value: cde.instruction},
-                                    question: question,
-                                    formElements: []
-                                };
-                                if (cde.questionText === 'N/A' || cde.questionText.trim().length === 0) {
-                                    formElement.label = existingCde.naming[0].designation;
-                                    formElement.hideLabel = true;
-                                } else {
-                                    formElement.label = cde.questionText;
-                                }
-                                newForm.formElements[0].formElements.push(formElement);
-                                doneOneCDE();
-                            }
-                        });
-                    }, function doneAll() {
-                        console.log('finished all cdes in form ' + formId);
-                        var newFormObj = new MigrationForm(newForm);
-                        newFormObj.save(function (err) {
-                            if (err) throw err;
-                            else {
-                                count++;
-                                console.log('count: ' + count);
-                                stream.resume();
-                            }
-                        });
-                    });
-                } else if (existingForms.length === 1) {
-                    var existingForm = existingForms[0];
-                    mergeIntoForm(ninds, existingForm);
-                    existingForm.markModified("classification");
-                    existingForm.markModified("formElements");
-                    existingForm.save(function (err) {
-                        if (err) throw err;
-                        else stream.resume();
-                    });
-                } else {
-                    console.log(existingForms.length + ' forms found, ids.id:' + ninds.formId);
-                    process.exit(1);
-                }
+                console.log("Migration Form removed.");
+                cb();
             });
-        });
+        },
+        function (cb) {
+            let stream = NindsModel.find({}).stream();
+            stream.on('data', function (ninds) {
+                stream.pause();
+                let formId = ninds.get('formId');
+                MigrationForm.find({'ids.id': formId}, function (err, existingForms) {
+                    if (err) throw err;
+                    if (existingForms.length === 0) {
+                        let newForm = createForm(ninds);
+                        console.log('start cde of form: ' + formId);
+                        let cdes = ninds.get('cdes');
+                        if (cdes.length > 0)
+                            newForm.formElements.push({
+                                elementType: 'section',
+                                instructions: {value: ''},
+                                label: '',
+                                formElements: []
+                            });
+                        async.forEachSeries(cdes, function (cde, doneOneCDE) {
+                            let cdeId = cde.cdeId;
+                            mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
+                                if (err) throw (err + ' cdeId: ' + cdeId);
+                                else {
+                                    let question = {
+                                        cde: {
+                                            tinyId: existingCde.tinyId,
+                                            name: existingCde.naming[0].designation,
+                                            version: existingCde.version,
+                                            ids: existingCde.ids
+                                        },
+                                        datatype: existingCde.valueDomain.datatype,
+                                        uom: existingCde.valueDomain.uom
+                                    };
+                                    if (question.datatype === 'Value List') {
+                                        question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
+                                        question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
 
-        stream.on('end', function (err) {
-            if (err) throw err;
-            else {
-                console.log('finished');
-                process.exit(0);
-            }
-        });
+                                        let permissibleValues = [];
+                                        let pvsArray = cde.permissibleValue.split(';');
+                                        let isPvValueNumber = /^\d+$/.test(pvsArray[0]);
+                                        let pdsArray = cde.permissibleDescription.split(';');
+                                        if (pvsArray.length !== pdsArray.length) {
+                                            console.log('*******************permissibleValue and permissibleDescription do not match.');
+                                            console.log('*******************ninds:\n' + ninds);
+                                            console.log('*******************cde:\n' + cde);
+                                            process.exit(1);
+                                        }
+                                        for (let i = 0; i < pvsArray.length; i++) {
+                                            if (pvsArray[i].length > 0) {
+                                                let pv = {
+                                                    permissibleValue: pvsArray[i],
+                                                    valueMeaningDefinition: pdsArray[i],
+                                                    codeSystemName: "NINDS"
+                                                };
+                                                if (isPvValueNumber) {
+                                                    pv.valueMeaningName = pdsArray[i];
+                                                } else {
+                                                    pv.valueMeaningName = pvsArray[i];
+                                                }
+                                                permissibleValues.push(pv);
+                                            }
+                                        }
+                                        question.answers = permissibleValues;
+                                    } else if (question.datatype === 'Text') {
+                                        question.datatypeText = existingCde.valueDomain.datatypeText;
+                                    } else if (question.datatype === 'Number') {
+                                        question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+                                    } else if (question.datatype === 'Date') {
+                                        question.datatypeDate = existingCde.valueDomain.datatypeDate;
+                                    } else {
+                                        throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
+                                    }
+                                    var formElement = {
+                                        elementType: 'question',
+                                        instructions: {value: cde.instruction},
+                                        question: question,
+                                        formElements: []
+                                    };
+                                    if (cde.questionText === 'N/A' || cde.questionText.trim().length === 0) {
+                                        formElement.label = existingCde.naming[0].designation;
+                                        formElement.hideLabel = true;
+                                    } else {
+                                        formElement.label = cde.questionText;
+                                    }
+                                    newForm.formElements[0].formElements.push(formElement);
+                                    doneOneCDE();
+                                }
+                            });
+                        }, function doneAll() {
+                            console.log('finished all cdes in form ' + formId);
+                            var newFormObj = new MigrationForm(newForm);
+                            newFormObj.save(function (err) {
+                                if (err) throw err;
+                                else {
+                                    count++;
+                                    console.log('count: ' + count);
+                                    stream.resume();
+                                }
+                            });
+                        });
+                    } else if (existingForms.length === 1) {
+                        var existingForm = existingForms[0];
+                        mergeIntoForm(ninds, existingForm);
+                        existingForm.markModified("classification");
+                        existingForm.markModified("formElements");
+                        existingForm.save(function (err) {
+                            if (err) throw err;
+                            else stream.resume();
+                        });
+                    } else {
+                        console.log(existingForms.length + ' forms found, ids.id:' + ninds.formId);
+                        process.exit(1);
+                    }
+                });
+            });
+
+            stream.on('end', function (err) {
+                if (err) throw err;
+                if (cb) cb();
+            });
+        }], function () {
+        console.log('Finished.');
+        process.exit(0);
     });
 }
 
