@@ -45,10 +45,26 @@ import { FormService } from "../../form.service";
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             background-clip: padding-box;
         }
+        .toolSection:before {
+            content: ' Section';
+        }
+        .toolQuestion:before {
+            content: ' Question';
+        }
+        .toolForm:before {
+            content: ' Form';
+        }
         .descriptionToolbox .btn {
             margin-left: 0;
             padding: 5px;
             touch-action: auto;
+        }
+        .descriptionToolbox .btn:hover {
+            background-color: #ddffee;
+        }
+        .descriptionToolbox .btn:hover span:before {
+            content: ' Drag';
+            font-weight: 900;
         }
     `]
 })
@@ -65,7 +81,6 @@ export class FormDescriptionComponent implements OnInit {
     @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
 
     addIndex = function (elems, elem, i) { return elems.splice(i, 0, elem); };
-    canCurate = false;
     toolDropTo: {index: number, parent: any};
     treeOptions = {
         allowDrag: (element) => {
@@ -102,6 +117,8 @@ export class FormDescriptionComponent implements OnInit {
         childrenField: "formElements",
         displayField: "label",
         dropSlotHeight: 3,
+        useVirtualScroll: true,
+        nodeHeight: 22,
         isExpandedField: "id"
     };
 
@@ -111,12 +128,12 @@ export class FormDescriptionComponent implements OnInit {
                 @Inject("isAllowedModel") public isAllowedModel) {}
 
     ngOnInit() {
-        this.canCurate = this.isAllowedModel.isAllowed(this.elt);
         this.addIds(this.elt.formElements, "");
     }
 
     addQuestionFromSearch(fe) {
         this.formService.convertCdeToQuestion(fe, question => {
+            question.formElements = [];
             this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
@@ -125,7 +142,9 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     addFormFromSearch(fe) {
-        this.addIndex(this.toolDropTo.parent.data.formElements, FormService.convertFormToSection(fe), this.toolDropTo.index++);
+        let inForm: any = FormService.convertFormToSection(fe);
+        inForm.formElements = [];
+        this.addIndex(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index++);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
         this.stageElt.emit();
@@ -163,60 +182,4 @@ export class FormDescriptionComponent implements OnInit {
         }, () => {
         });
     }
-
-    // sortableOptionsSections = {
-    //     connectWith: ".dragSections",
-    //     handle: ".fa.fa-arrows",
-    //     revert: true,
-    //     placeholder: "questionPlaceholder",
-    //     start: function (event, ui) {
-    //         $('.dragQuestions').css('border', '2px dashed grey');
-    //         ui.placeholder.height("20px");
-    //     },
-    //     stop: function () {
-    //         $('.dragQuestions').css('border', '');
-    //     },
-    //     receive: function (e, ui) {
-    //         if (!ui.item.sortable.moved) {
-    //             ui.item.sortable.cancel();
-    //             return;
-    //         }
-    //         if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question")
-    //             ui.item.sortable.cancel();
-    //     },
-    //     helper: function () {
-    //         return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
-    //     }
-    // };
-    //
-    // sortableOptions = {
-    //     connectWith: ".dragQuestions",
-    //     handle: ".fa.fa-arrows",
-    //     revert: true,
-    //     placeholder: "questionPlaceholder",
-    //     start: function (event, ui) {
-    //         $('.dragQuestions').css('border', '2px dashed grey');
-    //         ui.placeholder.height("20px");
-    //     },
-    //     stop: function () {
-    //         $('.dragQuestions').css('border', '');
-    //     },
-    //     helper: function () {
-    //         return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
-    //     },
-    //     receive: function (e, ui) {
-    //         let elt = ui.item.sortable.moved;
-    //         if (elt.valueDomain) {
-    //             this.convertCdeToQuestion(elt, function (question) {
-    //                 ui.item.sortable.moved = question;
-    //             });
-    //         } else if (elt.naming) {
-    //             ui.item.sortable.moved = FormDescriptionComponent.convertFormToSection(elt);
-    //         }
-    //         this.stageElt.emit();
-    //     },
-    //     update: function () {
-    //         this.stageElt.emit();
-    //     }
-    // };
 }

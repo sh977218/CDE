@@ -6,7 +6,6 @@ import { LocalStorageModule } from "angular-2-local-storage/dist/index";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { Select2Module } from "ng2-select2";
 
-import { ArrayListPipe } from "./arrayList.pipe";
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
 import { ClassificationComponent } from "./components/classification/classification.component";
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
@@ -31,7 +30,6 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         TreeModule
     ],
     declarations: [
-        ArrayListPipe,
         AttachmentsComponent,
         ClassificationComponent,
         ClassifyCdesModalComponent,
@@ -54,7 +52,6 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         ReferenceDocumentComponent
     ],
     exports: [
-        ArrayListPipe,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,

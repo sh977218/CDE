@@ -63,6 +63,7 @@ angular.module('formModule').directive('formSearch', [function () {
         template: require('../html/formSearch.html'),
         controller: ["$scope", function ($scope) {
             $scope.addMode = 0;
+            $scope.openFormInNewTab = true;
             $scope.searchAdded = function (fe) {
                 $scope.result(fe);
             }
@@ -76,6 +77,7 @@ angular.module('formModule').directive('questionSearch', [function () {
         template: require('../html/questionSearch.html'),
         controller: ["$scope", function ($scope) {
             $scope.addMode = 0;
+            $scope.openCdeInNewTab = true;
             $scope.searchAdded = function (fe) {
                 $scope.result(fe);
             }

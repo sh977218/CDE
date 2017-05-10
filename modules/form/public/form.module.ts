@@ -8,6 +8,7 @@ import { SortableModule } from "ngx-bootstrap";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 
+import { ArrayListPipe } from "./arrayList.pipe";
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
 import { FormDescriptionComponent } from "./tabs/description/formDescripton.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
@@ -37,6 +38,7 @@ import { SkipLogicService } from "./skipLogic.service";
         AdminItemModule
     ],
     declarations: [
+        ArrayListPipe,
         CdeSortableComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,

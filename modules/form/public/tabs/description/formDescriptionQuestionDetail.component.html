@@ -1,4 +1,4 @@
-<ng-template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: question, canCurate: canCurate }"></ng-template>
+<ng-template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: question }"></ng-template>
 
 <ng-template #formDescriptionQuestionTmpl>
     <div>
@@ -202,7 +202,7 @@
         <div *ngIf="nameSelectModal.cde === null"><i class="fa fa-spinner fa-pulse"></i> Loading...</div>
         <div *ngIf="nameSelectModal.cde === 'error'">There is an issue retrieving this Data Element.</div>
         <ngb-alert *ngIf="nameSelectModal.updateSkipLogic">
-            Some show if rules reference this label. They will be updated.
+            There is skip logic using this label. It will be updated.
         </ngb-alert>
 
         <div *ngFor="let naming of nameSelectModal.cde.naming; let i = index" class="row" id="q_select_name_{{i}}">

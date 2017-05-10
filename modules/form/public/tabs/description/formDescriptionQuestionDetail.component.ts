@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -11,7 +11,7 @@ import { SkipLogicService } from "../../skipLogic.service";
     templateUrl: "formDescriptionQuestionDetail.component.html"
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
-    @Input() canCurate: boolean;
+    @Input() elt: any;
     @Input() inScoreCdes: any;
     @Input() node: any;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -50,7 +50,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     };
 
-    constructor(private http: Http,
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
+                private http: Http,
                 public modalService: NgbModal,
                 public skipLogicService: SkipLogicService) {
         this.nameSelectModal.checkAndUpdateLabel = (section, doUpdate = false, selectedNaming = false) => {
@@ -131,7 +132,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         );
 
     getTemplate() {
-        return (this.canCurate && this.question.edit ? this.formDescriptionQuestionEditTmpl : this.formDescriptionQuestionTmpl);
+        return (this.isAllowedModel.isAllowed(this.elt) && this.question.edit ? this.formDescriptionQuestionEditTmpl : this.formDescriptionQuestionTmpl);
     }
 
     getAnswersData() {

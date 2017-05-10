@@ -1,21 +1,20 @@
 <div class="row" *ngIf="elt">
     <div class="col-xs-12">
-        <div class="descriptionToolbox" *ngIf="canCurate">
+        <div class="descriptionToolbox" *ngIf="isAllowedModel.isAllowed(elt)">
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
-            <button id="addSectionTop" class="btn btn-default formDescriptionTool"
+            <button id="addSectionTop" class="btn btn-default formDescriptionTool" style="width: 74px"
                     [treeDrag]="{insert: 'section', data: getNewSection()}" [treeDragEnabled]="true">
-                <i class="fa fa-plus"></i> Section
+                <i class="fa fa-plus"></i><span class="toolSection"></span>
             </button>
-            <button id="startAddingQuestions" class="btn btn-default formDescriptionTool"
+            <button id="startAddingQuestions" class="btn btn-default formDescriptionTool" style="width: 87px"
                     *ngIf="elt.formElements.length > 0"
                     [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true">
-                <i class="fa fa-cube"></i>
-                <span style="margin-bottom: 5px">Question</span>
+                <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </button>
-            <button id="startAddingForms" class="btn btn-default formDescriptionTool"
+            <button id="startAddingForms" class="btn btn-default formDescriptionTool" style="width: 68px"
                     *ngIf="elt.formElements.length > 0"
                     [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true">
-                <i class="fa fa-cubes"></i> Form
+                <i class="fa fa-cubes"></i><span class="toolForm"></span>
             </button>
         </div>
         <div *ngIf="elt.formElements.length === 0">
@@ -27,7 +26,7 @@
                 There is no content yet.
             </span>
         </div>
-        <ng-container *ngFor="let eltIter of [elt]">
+        <div *ngFor="let eltIter of [elt]" style="height: 76vh">
             <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
                 <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
                     <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.descriptionId"
@@ -53,14 +52,14 @@
                                             <ng-template #treeNodeTemplate let-node="node" let-index="index">
                                                 <cde-form-description-section
                                                         *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                        [canCurate]="canCurate"
+                                                        [elt]="elt"
                                                         [node]="node"
                                                         [inScoreCdes]="inScoreCdes"
                                                         (isFormValid)="isFormValid.emit($event)"
                                                         (stageElt)="stageElt.emit()"></cde-form-description-section>
                                                 <cde-form-description-question
                                                         *ngIf="node.data.elementType === 'question'"
-                                                        [canCurate]="canCurate"
+                                                        [elt]="elt"
                                                         [node]="node"
                                                         (stageElt)="stageElt.emit()"></cde-form-description-question>
                                             </ng-template>
@@ -71,7 +70,7 @@
                             <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
-                                                                      [canCurate]="canCurate"
+                                                                      [elt]="elt"
                                                                       [node]="node"
                                                                       (isFormValid)="isFormValid.emit($event)"
                                                                       (stageElt)="stageElt.emit()"></cde-form-description-question-detail>
@@ -81,7 +80,7 @@
                     </div>
                 </ng-template>
             </tree-root>
-        </ng-container>
+        </div>
     </div>
 </div>
 

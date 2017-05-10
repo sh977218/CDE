@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 
 import { FormService } from "../../form.service";
@@ -9,7 +9,7 @@ import { SkipLogicService } from "../../skipLogic.service";
     templateUrl: "formDescriptionSection.component.html"
 })
 export class FormDescriptionSectionComponent implements OnInit {
-    @Input() canCurate: boolean;
+    @Input() elt: any;
     @Input() inScoreCdes: any;
     @Input() node: any;
     @Input() preId: string;
@@ -19,6 +19,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
 
+    isSubForm = false;
     parent: any;
     section: any;
     repeatOptions = [
@@ -27,7 +28,8 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Over first question", value: "F"}
     ];
 
-    constructor(public skipLogicService: SkipLogicService) {}
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
+                public skipLogicService: SkipLogicService) {}
 
     ngOnInit() {
         this.section = this.node.data;
@@ -38,15 +40,18 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.section.instructions = {};
         if (!this.section.skipLogic)
             this.section.skipLogic = {};
-        if (this.canCurate) {
-            if (this.node.data.elementType === "form") {
-                if (FormService.isSubForm(this.node.parent))
-                    this.canCurate = false;
-            } else {
-                if (FormService.isSubForm(this.node))
-                    this.canCurate = false;
-            }
+
+        if (this.node.data.elementType === "form") {
+            if (FormService.isSubForm(this.node.parent))
+                this.isSubForm = FormService.isSubForm(this.node);
+        } else {
+            if (FormService.isSubForm(this.node))
+                this.isSubForm = FormService.isSubForm(this.node);
         }
+    }
+
+    canEdit() {
+        return this.section.edit && !this.isSubForm && this.isAllowedModel.isAllowed(this.elt);
     }
 
     removeNode(node) {

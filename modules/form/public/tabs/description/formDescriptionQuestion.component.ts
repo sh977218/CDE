@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -11,26 +11,27 @@ import { FormService } from "../../form.service";
 })
 export class FormDescriptionQuestionComponent implements OnInit {
     @Input() node: any;
-    @Input() canCurate: boolean;
+    @Input() elt: any;
     @Input() inScoreCdes: any;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("updateCdeVersionTmpl") updateCdeVersionTmpl: NgbModalModule;
 
+    isSubForm = false;
     updateCdeVersion: any;
 
     question: any;
     parent: any;
 
-    constructor(public formService: FormService,
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
+                public formService: FormService,
                 private http: Http,
                 public modalService: NgbModal) {}
 
     ngOnInit() {
         this.question = this.node.data;
         this.parent = this.node.parent.data;
-        if (this.canCurate && FormService.isSubForm(this.node))
-            this.canCurate = false;
+        this.isSubForm = FormService.isSubForm(this.node);
     }
 
     getDatatypeLabel(question) {
