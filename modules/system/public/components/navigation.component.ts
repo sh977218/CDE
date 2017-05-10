@@ -8,7 +8,6 @@ import { SharedService } from "../../../core/public/shared.service";
 })
 export class NavigationComponent {
     @Input() quickBoardCount: number;
-    @Input() userHasMail: boolean;
     @Output() takeATour: EventEmitter<void> = new EventEmitter<void>();
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();

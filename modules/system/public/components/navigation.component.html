@@ -55,7 +55,7 @@
                 </li>
             </ul>
             <ul class="ieFix nav navbar-nav navbar-right" attr.data-userloaded="loaded-{{userService.user?.userLoaded}}">
-                <a *ngIf="userHasMail" title="New messages" href="/inbox">
+                <a *ngIf="userService.userHasMail" title="New messages" href="/inbox">
                     <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
                 <li class="login" [ngClass]="{active: isPageActive('/login')}" [hidden]="userService.user?._id">
                     <a (click)="goToLogin.emit()" href="/login" id="login_link" title="Log in" attr.aria-label="Log in"

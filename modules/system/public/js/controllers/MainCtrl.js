@@ -10,17 +10,11 @@ angular.module('systemModule').controller('MainCtrl',
             $scope.formQuickBoard = FormQuickBoard;
             $scope.prodDumpEnabled = window.prodDumpEnabled;
 
-            // Global variables
-            var GLOBALS = {
-                getOrgsInterval: 1000 * 60 * 10 // 10 min
-            };
-
             $scope.resultPerPage = 20;
 
             userResource.getPromise().then(function () {
                 $scope.user = userResource.user;
                 $scope.myOrgs = userResource.userOrgs;
-                $scope.checkMail();
             });
 
             $scope.canCreateForms = function () {
@@ -32,7 +26,6 @@ angular.module('systemModule').controller('MainCtrl',
                 userResource.getPromise().then(function () {
                     $scope.user = userResource.user;
                     $scope.myOrgs = userResource.userOrgs;
-                    $scope.checkMail();
                 });
             };
 
@@ -98,19 +91,6 @@ angular.module('systemModule').controller('MainCtrl',
 
             // Retrieves orgs details from database at an interval
             OrgHelpers.getOrgsDetailedInfoAPI();
-
-            $scope.checkMail = function () {
-                if (userResource.user) {
-                    $http.get('/mailStatus').then(function onSuccess(response) {
-                        if (response.data.count > 0) $scope.userHasMail = true;
-                    }, function () {});
-                }
-            };
-
-            $interval(function () {
-                OrgHelpers.getOrgsDetailedInfoAPI();
-                $scope.checkMail();
-            }, GLOBALS.getOrgsInterval);
 
         }
     ]);

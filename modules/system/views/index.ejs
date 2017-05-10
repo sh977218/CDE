@@ -58,7 +58,6 @@
     <div ng-controller="AuthCtrl">
         <div ng-controller="TakeATourCtrl">
             <cde-navigation [quick-board-count]="quickBoard.elts.length + formQuickBoard.elts.length"
-                            [user-has-mail]="userHasMail"
                             (take-a-tour)="restartTour()" (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
         </div>
     </div>
