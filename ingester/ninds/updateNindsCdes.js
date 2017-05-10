@@ -143,7 +143,7 @@ function run() {
         },
         function (cb) {
             let retireCond = {
-                "imported": {$gte: moment().add(-1, "day"), $lt: moment().add(1, "day")},
+                "imported": {$lt: moment().add(-1, "day")},
                 "sources.sourceName": "NINDS",
                 "classification.stewardOrg.name": "NINDS",
                 "archived": false
