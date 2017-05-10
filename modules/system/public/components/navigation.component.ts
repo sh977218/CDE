@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
+import { SharedService } from "../../../core/public/shared.service";
+
 
 @Component({
     selector: "cde-navigation",
@@ -6,15 +8,14 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 })
 export class NavigationComponent {
     @Input() quickBoardCount: number;
-    @Input() canCreateForms: boolean;
-    @Input() isOrgAdmin: boolean;
-    @Input() isOrgAuthority: boolean;
-    @Input() isOrgCurator: boolean;
-    @Input() user: any;
     @Input() userHasMail: boolean;
     @Output() takeATour: EventEmitter<void> = new EventEmitter<void>();
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
+
+    authShared = SharedService.auth;
+
+    constructor(@Inject("userResource") public userService) {}
 
     isPageActive(viewLocation) {
         return viewLocation === window.location.pathname;

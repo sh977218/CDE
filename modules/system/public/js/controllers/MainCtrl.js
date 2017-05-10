@@ -59,20 +59,9 @@ angular.module('systemModule').controller('MainCtrl',
 
             $scope.Alert = Alert;
 
-            $scope.isOrgCurator = function () {
-                return authShared.isOrgCurator(userResource.user);
-            };
 
             $scope.isOrgAdmin = function () {
                 return authShared.isOrgAdmin(userResource.user);
-            };
-
-            $scope.isOrgAuthority = function() {
-                return authShared.hasRole(userResource.user, "OrgAuthority");
-            };
-
-            $scope.isSiteAdmin = function () {
-                return userResource.user !== undefined && userResource.user.siteAdmin;
             };
 
             $scope.isDocumentationEditor = function () {

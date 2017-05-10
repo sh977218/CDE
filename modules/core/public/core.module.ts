@@ -6,10 +6,12 @@ import { Select2Module } from "ng2-select2";
 
 import { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 import { ClassificationService } from "./classification.service";
-import { SkipLogicService } from "./skipLogic.service";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
+import { SharedService } from "./shared.service";
+import { SkipLogicService } from "./skipLogic.service";
+
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 export { SkipLogicService } from "./skipLogic.service";
@@ -36,6 +38,7 @@ export function getOrgHelpersFactory(i: any) { return i.get("OrgHelpers"); }
         MergeCdeService,
         MergeFormService,
         MergeShareService,
+        SharedService,
         SkipLogicService,
         // upgraded
         UpgradeModule,
