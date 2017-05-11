@@ -2,7 +2,6 @@ package gov.nih.nlm.system;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
@@ -13,6 +12,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.Sleeper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -71,7 +71,6 @@ public class NlmCdeBaseTest {
     protected static String formboarduser = "formboarduser";
     protected static String pinUser = "pinuser";
     protected static String unpinUser = "unpinuser";
-    protected static String docEditor = "docEditor";
     protected static String classificationMgtUser_username = "classMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
     protected static String anonymousCommentUser2_username = "CommentUser2";
@@ -98,10 +97,11 @@ public class NlmCdeBaseTest {
     private ScheduledExecutorService videoExec;
 
     private int videoRate = 300;
-    private int totalCdes = 11700;
-    private int totalForms = 815;
 
     private void countElasticElements(Method m) {
+        int totalCdes = 11700;
+        int totalForms = 815;
+
         int nbOfCde = 0, nbOfForms = 0, waitTimeCdes = 0, waitTimeForms = 0;
         for (int i = 0; i < 15 && nbOfCde < totalCdes; i++) {
             hangon(waitTimeCdes);
@@ -118,7 +118,9 @@ public class NlmCdeBaseTest {
         System.out.println("Starting " + m.getName() + " in Fork: " + (int) (Math.random() * 1000));
     }
 
-    private void setDriver() {
+    private void setDriver(String b) {
+        if (b == null) b = browser;
+
         hangon(new Random().nextInt(10));
         String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
         if (isWindows()) {
@@ -130,9 +132,9 @@ public class NlmCdeBaseTest {
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
         DesiredCapabilities caps;
-        if ("firefox".equals(browser)) {
+        if ("firefox".equals(b)) {
             caps = DesiredCapabilities.firefox();
-        } else if ("chrome".equals(browser)) {
+        } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
@@ -140,7 +142,7 @@ public class NlmCdeBaseTest {
             options.setExperimentalOption("prefs", prefs);
             caps = DesiredCapabilities.chrome();
             caps.setCapability(ChromeOptions.CAPABILITY, options);
-        } else if ("ie".equals(browser)) {
+        } else if ("ie".equals(b)) {
             caps = DesiredCapabilities.internetExplorer();
         } else {
             caps = DesiredCapabilities.chrome();
@@ -150,7 +152,7 @@ public class NlmCdeBaseTest {
         loggingPreferences.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
 
-        caps.setBrowserName(browser);
+        caps.setBrowserName(b);
         baseUrl = System.getProperty("testUrl");
         String hubUrl = System.getProperty("hubUrl");
 
@@ -182,7 +184,12 @@ public class NlmCdeBaseTest {
     public void setUp(Method m) {
         filePerms = new HashSet();
         countElasticElements(m);
-        setDriver();
+
+        if (m.getAnnotation(SelectBrowser.class) != null) {
+            setDriver("internet explorer");
+        } else {
+            setDriver(null);
+        }
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
@@ -429,7 +436,7 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
 
-    public void waitForDownload(String fileName) {
+    protected void waitForDownload(String fileName) {
         for (int i = 0; i < 30; i++) {
             try {
                 String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/" + fileName)));
@@ -461,13 +468,9 @@ public class NlmCdeBaseTest {
             closeAlert();
             findElement(by).click();
         } catch (WebDriverException e) {
-/*
-            WebElement element = findElement(by);
-            JavascriptExecutor executor = (JavascriptExecutor)driver;
-            executor.executeScript("arguments[0].click()", element);
-*/
             JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
-            Object yCoordinate = javascriptExecutor.executeScript("return window.scrollY;");
+            // IE does not support scrollY
+            Object yCoordinate = javascriptExecutor.executeScript("return typeof window.scrollY === 'undefined' ? window.pageYOffset : window.scrollY;");
             Integer value;
             if (yCoordinate instanceof Double) {
                 value = ((Double) yCoordinate).intValue();
@@ -529,7 +532,11 @@ public class NlmCdeBaseTest {
     }
 
     public void hangon(double i) {
-        Sleeper.sleepTight((long) (i * 1000));
+        try {
+            Thread.sleep((long) (i * 1000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean classPresent(String text, By by) {
