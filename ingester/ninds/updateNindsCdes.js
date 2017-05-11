@@ -72,12 +72,11 @@ function run() {
                         "sources.sourceName": "NINDS",
                         "registrationState.registrationStatus": {$not: /Retired/},
                         "stewardOrg.name": "NINDS",
-                        "imported": {$lt: moment()}
+                        "imported": {$lt: moment(-1, 'day')}
                     };
-                    DataElement.find(findCond).where("ids").elemMatch(function (elem) {
-                        elem.where("source").equals("NINDS");
-                        elem.where("id").equals(cdeId);
-                        elem.where("version").equals(idObj.version);
+                    DataElement.find(findCond).elemMatch("ids", function (elem) {
+                        elem.where('source').equals('NINDS');
+                        elem.where('id').equals(cdeId);
                     }).exec(function (findCdeError, existingCdes) {
                         if (findCdeError) throw findCdeError;
                         if (existingCdes.length === 0) {
@@ -125,17 +124,21 @@ function run() {
                                 mongo_cde.update(existingCde, batchUser, function (updateCdeError) {
                                     if (updateCdeError) throw updateCdeError;
                                     else migrationCde.remove(function (removeCdeError) {
-                                        if (err) throw removeCdeError;
+                                        if (removeCdeError) throw removeCdeError;
                                         else {
                                             created++;
                                             stream.resume();
                                         }
                                     });
                                 });
-                            } else {
-                                same++;
-                                stream.resume();
-                            }
+                            } else migrationCde.remove(function (removeCdeError) {
+                                if (removeCdeError) throw removeCdeError;
+                                else {
+                                    same++;
+                                    stream.resume();
+                                }
+                            });
+
                         } else throw "Found " + existingCdes.length + " cde with cdeId " + cdeId;
                     })
                 }
@@ -145,22 +148,39 @@ function run() {
             let retireCond = {
                 "imported": {$lt: moment().add(-1, "day")},
                 "sources.sourceName": "NINDS",
-                "classification.stewardOrg.name": "NINDS",
+                "stewardOrg.name": "NINDS",
                 "archived": false
             };
             DataElement.find(retireCond, function (retiredCdeError, retireCdes) {
                 if (retiredCdeError) throw retiredCdeError;
                 else {
                     async.forEachSeries(retireCdes, function (retireCde, doneOneRetireCde) {
-                        retireCde.registrationState.registrationStatus = "Retired";
-                        retireCde.registrationState.administrativeNote = "Not present in import from " + moment();
-                        retireCde.save(function (error) {
-                            if (error) throw error;
-                            else {
-                                retired++;
-                                doneOneRetireCde();
+                        if (retireCde.classification.length > 1) {
+                            _.remove(retireCde.classification, o => {
+                                return o.stewardOrg.name === 'NINDS';
+                            });
+                            retireCde.registrationState.administrativeNote = "Not present in import from " + new Date() + ", removed NINDS classification.";
+                            retireCde.save(function (error) {
+                                if (error) throw error;
+                                else {
+                                    retired++;
+                                    doneOneRetireCde();
+                                }
+                            })
+                        } else {
+                            if (retireCde.classification.length == 1 && retireCde.classification[0].stewardOrg.name !== 'NINDS') {
+                                throw "cde tinyId: " + retireCde.tinyId + " has one classification of " + retireCde.classification[0].stewardOrg.name;
                             }
-                        })
+                            retireCde.registrationState.registrationStatus = "Retired";
+                            retireCde.registrationState.administrativeNote = "Not present in import from " + new Date();
+                            retireCde.save(function (error) {
+                                if (error) throw error;
+                                else {
+                                    retired++;
+                                    doneOneRetireCde();
+                                }
+                            })
+                        }
                     }, function doneAllRetireCdes() {
                         cb();
                     });
