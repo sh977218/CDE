@@ -38,8 +38,8 @@ public class ScreenShotListener extends TestListenerAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        driver.get(NlmCdeBaseTest.baseUrl);
         try {
+            driver.get(NlmCdeBaseTest.baseUrl);
             System.out.println("Alert TEXT: " + driver.switchTo().alert().getText());
         } catch(Exception e) {
             System.out.println("Could not switch to alert");

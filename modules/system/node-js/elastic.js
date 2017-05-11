@@ -585,6 +585,9 @@ exports.syncWithMesh = function(allMappings) {
                     var newScrollId = response._scroll_id;
                     exports.meshSyncStatus[s.type].total = response.hits.total;
                     if (response.hits.hits.length > 0) {
+                        let request = {
+                            body: []
+                        };
                         response.hits.hits.forEach(function (hit) {
                             var thisElt = hit._source;
                             var trees = new Set();
@@ -603,23 +606,25 @@ exports.syncWithMesh = function(allMappings) {
                                 }
                             });
                             if (trees.size > 0) {
-                                esClient.update({
-                                    index: s.index,
-                                    type: s.type,
-                                    id: thisElt.tinyId,
-                                    body: {
-                                        doc: {
-                                            flatMeshTrees: Array.from(trees),
-                                            flatMeshSimpleTrees: Array.from(simpleTrees)
-                                        }
+
+                                request.body.push({
+                                    update: {
+                                        _index: s.index,
+                                        _type: s.type,
+                                        _id: thisElt.tinyId
+                                    }});
+                                request.body.push({doc: {
+                                        flatMeshTrees: Array.from(trees),
+                                        flatMeshSimpleTrees: Array.from(simpleTrees)
                                     }
-                                }, function (err) {
-                                    if (err) console.log("ERR: " + err);
                                 });
                             }
                             exports.meshSyncStatus[s.type].done++;
                         });
-                        scrollThrough(newScrollId, s);
+                        esClient.bulk(request, err => {
+                            if (err) console.log("ERR: " + err);
+                            scrollThrough(newScrollId, s);
+                        });
                     } else {
                         console.log("done syncing " + s.index + " with MeSH");
                     }
