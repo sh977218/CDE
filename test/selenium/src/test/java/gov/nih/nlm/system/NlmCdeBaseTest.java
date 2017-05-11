@@ -461,10 +461,13 @@ public class NlmCdeBaseTest {
 
     protected void clickElement(By by) {
         // Wait for angular digest cycle.
-        ((JavascriptExecutor) driver).executeAsyncScript(
-                "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
-                , ""
-        );
+
+        try {
+            ((JavascriptExecutor) driver).executeAsyncScript(
+                    "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
+                    , ""
+            );
+        } catch (Exception e) {}
         try {
             wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
