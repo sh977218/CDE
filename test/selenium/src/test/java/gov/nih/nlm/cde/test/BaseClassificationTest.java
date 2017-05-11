@@ -159,6 +159,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         }
         clickElement(By.xpath("//*[@id='" + expanderStr + categories[categories.length - 1] + "-classifyBtn']"));
 
+        closeAlert();
+
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
             selector += categories[i];
@@ -166,8 +168,6 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-
-        closeAlert();
 
         Assert.assertEquals(findElement(By.xpath("//div[@id='classificationBody']//*[@id='" + selector + "']")).getText(),
                 categories[categories.length - 1]);
