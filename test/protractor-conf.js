@@ -1,6 +1,6 @@
 exports.config = {
     framework: 'jasmine',
-    specs: ['../modules/**/*.spec.js'],
+    specs: ['./protractor/tests/**/*.spec.js'],
     capabilities: {
         browserName: 'chrome'
     }
