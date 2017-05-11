@@ -50,7 +50,7 @@ angular.module('systemModule').controller('MainCtrl',
                     }, 120000);
                 }).catch(function onError() {});
             };
-            $scope.checkSystemAlert();
+            // $scope.checkSystemAlert();
 
             //TODO: Don't use the following methods. Use $scope.Alert instead.
             $scope.addAlert = Alert.addAlert;
@@ -122,10 +122,10 @@ angular.module('systemModule').controller('MainCtrl',
                 }
             };
 
-            $interval(function () {
-                OrgHelpers.getOrgsDetailedInfoAPI();
-                $scope.checkMail();
-            }, GLOBALS.getOrgsInterval);
+            // $interval(function () {
+            //     OrgHelpers.getOrgsDetailedInfoAPI();
+            //     $scope.checkMail();
+            // }, GLOBALS.getOrgsInterval);
 
         }
     ]);

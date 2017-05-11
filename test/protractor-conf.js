@@ -3,5 +3,6 @@ exports.config = {
     specs: ['./protractor/tests/**/*.spec.js'],
     capabilities: {
         browserName: 'chrome'
-    }
+    },
+    allScriptsTimeout: 30000
 }
