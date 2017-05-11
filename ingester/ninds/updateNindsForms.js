@@ -53,6 +53,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
         newForm._id = existingForm._id;
         try {
+            newForm.updated = new Date();
             mongo_form.update(newForm, {username: "batchloader"}, function (err) {
                 if (err) {
                     console.log("Cannot save Form.");
