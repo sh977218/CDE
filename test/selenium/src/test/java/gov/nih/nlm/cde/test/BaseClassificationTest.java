@@ -168,6 +168,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
+
         Assert.assertEquals(findElement(By.xpath("//div[@id='classificationBody']//*[@id='" + selector + "']")).getText(),
                 categories[categories.length - 1]);
     }
