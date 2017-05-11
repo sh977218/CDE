@@ -171,6 +171,7 @@ function createCde(cde, ninds) {
                 maxValue: Number(cde.maxValue)
             };
         } else if (cde.dataType === 'File') {
+            valueDomain.datatype = 'File';
         } else {
             console.log('unknown cde.dataType found:' + cde.dataType);
             console.log('*******************ninds:\n' + ninds);
@@ -188,6 +189,7 @@ function createCde(cde, ninds) {
         else if (cde.dataType === 'Date or Date & Time') {
             valueDomain.datatypeValueList = {datatype: 'Date'};
         } else if (cde.dataType === 'File') {
+            valueDomain.datatype = 'File';
         } else {
             console.log('unknown cde.dataType found:' + cde.dataType);
             console.log('*******************ninds:\n' + ninds);

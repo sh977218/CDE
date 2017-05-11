@@ -229,6 +229,8 @@ function run() {
                                         question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
                                     } else if (question.datatype === 'Date') {
                                         question.datatypeDate = existingCde.valueDomain.datatypeDate;
+                                    } else if (question.datatype === 'File') {
+                                        question.datatypeDate = existingCde.valueDomain.datatypeDate;
                                     } else {
                                         throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
                                     }
