@@ -11,6 +11,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { UserCommentsComponent } from "./components/userComments.component";
 import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
+import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
@@ -36,6 +37,7 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         FormSummaryListDirective,
         HomeComponent,
         LinkedFormsComponent,
+        ListManagementComponent,
         LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
@@ -50,6 +52,7 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         DailyUsageComponent,
         HomeComponent,
         LinkedFormsComponent,
+        ListManagementComponent,
         LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
