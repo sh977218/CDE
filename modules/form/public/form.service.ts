@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Http, Response } from "@angular/http";
+import { FormQuestion } from "./form.model";
 
 @Injectable()
 export class FormService {
@@ -62,7 +63,7 @@ export class FormService {
         return result;
     }
 
-    convertCdeToQuestion(cde, cb) {
+    convertCdeToQuestion(cde, cb): FormQuestion {
         if (cde.valueDomain !== undefined) {
             let question = {
                 elementType: "question",

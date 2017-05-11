@@ -4,6 +4,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 
 import { FormService } from "../../form.service";
+import { CdeForm, FormSection } from "../../form.model";
 
 @Component({
     selector: "cde-form-description",
@@ -70,7 +71,7 @@ import { FormService } from "../../form.service";
 })
 export class FormDescriptionComponent implements OnInit {
     @Input() cache: any;
-    @Input() elt: any;
+    @Input() elt: CdeForm;
     @Input() inScoreCdes: any;
     @Output() cachePut: EventEmitter<any> = new EventEmitter<any>();
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -131,8 +132,8 @@ export class FormDescriptionComponent implements OnInit {
         this.addIds(this.elt.formElements, "");
     }
 
-    addQuestionFromSearch(fe) {
-        this.formService.convertCdeToQuestion(fe, question => {
+    addQuestionFromSearch(cde) {
+        this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
             this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
             this.tree.treeModel.update();
@@ -163,12 +164,7 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     getNewSection() {
-        return {
-            label: "New Section",
-            skipLogic: {condition: ''},
-            formElements: [],
-            elementType: "section"
-        };
+        return new FormSection;
     }
 
     openFormSearch() {

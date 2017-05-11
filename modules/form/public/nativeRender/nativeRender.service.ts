@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { CdeForm, DisplayProfile } from "../form.model";
 
 @Injectable()
 export class NativeRenderService {
@@ -8,9 +9,9 @@ export class NativeRenderService {
     private overrideNativeRenderType: string = null;
     private currentNativeRenderType: string;
 
-    profile: any;
-    elt: any;
-    form: any;
+    profile: DisplayProfile;
+    elt: CdeForm;
+    form: CdeForm;
     followForm: any;
 
     getNativeRenderType() {
@@ -47,6 +48,7 @@ export class NativeRenderService {
 
         if (!this.profile)
             this.profile = {
+                _id: false,
                 name: "Default Config",
                 displayInstructions: true,
                 displayNumbering: true,

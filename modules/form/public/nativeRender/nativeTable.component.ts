@@ -1,14 +1,15 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
+import { FormElement, FormQuestion } from "../form.model";
 
 @Component({
     selector: "cde-native-table",
     templateUrl: "./nativeTable.component.html"
 })
 export class NativeTableComponent implements OnInit {
-    @Input() formElement: any;
+    @Input() formElement: FormElement;
 
-    firstQuestion: any;
+    firstQuestion: FormQuestion;
     sectionNumber: number;
     tableForm: any = {
         s: [{q: [{cspan: 1}]}],

@@ -5,15 +5,18 @@ import * as _ from "lodash";
 import { Observable } from "rxjs/Observable";
 
 import { SkipLogicService } from "../../skipLogic.service";
+import { CdeForm, FormElement, FormQuestion, SkipLogic } from "../../form.model";
+import { TreeNode } from "angular-tree-component";
+import { FormattedValue } from "../../../../core/public/models.model";
 
 @Component({
     selector: "cde-form-description-question-detail",
     templateUrl: "formDescriptionQuestionDetail.component.html"
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
-    @Input() elt: any;
+    @Input() elt: CdeForm;
     @Input() inScoreCdes: any;
-    @Input() node: any;
+    @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
@@ -38,8 +41,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     answersSelected: Array<string>;
     nameSelectModal: any = {};
     nameSelectModalRef: NgbModalRef;
-    question: any;
-    parent: any;
+    question: FormQuestion;
+    parent: FormElement;
     uomOptions: any = {
         multiple: true,
         tags: true,
@@ -94,9 +97,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.question = this.node.data;
         this.parent = this.node.parent.data;
         if (!this.question.instructions)
-            this.question.instructions = {};
+            this.question.instructions = new FormattedValue;
         if (!this.question.skipLogic)
-            this.question.skipLogic = {};
+            this.question.skipLogic = new SkipLogic;
         if (!this.question.question.uoms)
             this.question.question.uoms = [];
     }

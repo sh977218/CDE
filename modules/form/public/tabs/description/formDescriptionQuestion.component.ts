@@ -4,14 +4,16 @@ import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { FormService } from "../../form.service";
+import { CdeForm, FormElement, FormQuestion } from "../../form.model";
+import { TreeNode } from "angular-tree-component";
 
 @Component({
     selector: "cde-form-description-question",
     templateUrl: "formDescriptionQuestion.component.html"
 })
 export class FormDescriptionQuestionComponent implements OnInit {
-    @Input() node: any;
-    @Input() elt: any;
+    @Input() elt: CdeForm;
+    @Input() node: TreeNode;
     @Input() inScoreCdes: any;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
@@ -20,8 +22,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
     isSubForm = false;
     updateCdeVersion: any;
 
-    question: any;
-    parent: any;
+    question: FormQuestion;
+    parent: FormElement;
 
     constructor(@Inject("isAllowedModel") public isAllowedModel,
                 public formService: FormService,
