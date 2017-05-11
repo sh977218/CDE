@@ -35,8 +35,8 @@ exports.getFormOdm = function(form, cb) {
         form.formElements = [];
     }
 
-    function cdeToOdmDatatype(cdeType){
-        var cdeOdmMapping = {
+    function cdeToOdmDatatype(cdeType) {
+        return cdeOdmMapping = {
             "Value List": "text",
             "Character": "text",
             "Numeric": "float",
@@ -63,20 +63,11 @@ exports.getFormOdm = function(form, cb) {
             "java.sql.Timestamp": "time",
             "DATE/TIME": "datetime",
             "java.lang.Byte": "integer"
-        };
-        return cdeOdmMapping[cdeType] || 'text';
+        }[cdeType] || 'text';
     }
 
     function escapeHTML(text){
         return text.replace(/\<.+?\>/gi, ""); // jshint ignore:line
-    }
-
-    for (var i = 0; i < form.formElements.length; i++) {
-        var sec = form.formElements[i];
-        for (var j = 0; j < sec.formElements.length; j++) {
-            if (sec.formElements[j].elementType === 'section')
-                return cb(202, "Forms with nested sections cannot be exported to ODM.");
-        }
     }
 
     var odmJsonForm = {
@@ -131,9 +122,23 @@ exports.getFormOdm = function(form, cb) {
     var sections = [];
     var questions = [];
     var codeLists = [];
+
+    function flattenFormElement (fe) {
+        var result = [];
+        fe.formElements.map(function (subFe) {
+            if (!subFe.formElements || subFe.formElements.length === 0) {
+                result.push(subFe);
+            } else {
+                var subEs = flattenFormElement(subFe);
+                subEs.forEach(function (e) {result.push(e);});
+            }
+        });
+        return result;
+    }
+
     form.formElements.forEach(function (s1,si) {
         var childrenOids = [];
-        s1.formElements.forEach(function (q1, qi) {
+        flattenFormElement(s1).forEach(function (q1, qi) {
             var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
             var odmQuestion = {
