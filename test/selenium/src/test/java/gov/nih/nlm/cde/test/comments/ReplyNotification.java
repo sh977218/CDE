@@ -24,7 +24,7 @@ public class ReplyNotification extends CdeCommentTest {
         clickElement(By.id("discussBtn"));
         wait.until(ExpectedConditions.elementToBeClickable(By.id("replyTextarea_0")));
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
-        scrollToViewById("replyBtn_0");
+//        scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
 
         mustBeLoggedInAs(test_username, password);
