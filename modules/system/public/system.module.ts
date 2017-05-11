@@ -16,6 +16,7 @@ import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { JsonpModule } from "@angular/http";
+import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 
 @NgModule({
     imports: [
@@ -33,6 +34,7 @@ import { JsonpModule } from "@angular/http";
         FormSummaryListDirective,
         HomeComponent,
         LinkedFormsComponent,
+        ListManagementComponent,
         LogAuditComponent,
         OrgAdminComponent,
         ProfileComponent,
@@ -43,6 +45,7 @@ import { JsonpModule } from "@angular/http";
     entryComponents: [
         HomeComponent,
         LinkedFormsComponent,
+        ListManagementComponent,
         LogAuditComponent,
         DailyUsageComponent,
         OrgAdminComponent,
