@@ -123,7 +123,7 @@ function createCde(cde, ninds) {
 
     let referenceDocuments = [];
     if (cde.reference) _.trim(cde.reference);
-    if (cde.reference && cde.reference == 'No references available')
+    if (cde.reference && cde.reference !== 'No references available')
         referenceDocuments.push({
             title: cde.reference,
             uri: (cde.reference.indexOf('http://www.') !== -1 || cde.reference.indexOf('https://www.') !== -1) ? cde.reference : '',
