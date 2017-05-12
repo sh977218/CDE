@@ -67,6 +67,7 @@ exports.getFormOdm = function(form, cb) {
     }
 
     function escapeHTML(text){
+        if (!text) return "";
         return text.replace(/\<.+?\>/gi, ""); // jshint ignore:line
     }
 
