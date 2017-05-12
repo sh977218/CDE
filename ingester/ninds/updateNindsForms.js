@@ -9,7 +9,7 @@ var async = require('async'),
     FormModel = mongo_form.Form,
     classificationShared = require('../../modules/system/shared/classificationShared'),
     updateShare = require('../updateShare')
-    ;
+;
 
 var importDate = new Date().toJSON();
 
@@ -31,7 +31,8 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
     var deepDiff = updateShare.compareObjects(existingForm, migrationForm);
     if (!deepDiff || deepDiff.length === 0) {
         // nothing changed, remove from input
-        existingForm.imported = importDate;
+        existingForm.imported = new Date().toJSON();
+        existingForm.markModified("imported");
         existingForm.save(function (err) {
             if (err) throw "Unable to update import date";
             migrationForm.remove(function (err) {
@@ -48,25 +49,24 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         updateShare.mergeReferenceDocument(migrationForm, newForm);
         newForm.version = migrationForm.version;
         newForm.changeNote = "Bulk update from source";
-        newForm.imported = importDate;
+        newForm.imported = new Date().toJSON();
         newForm.formElements = migrationForm.formElements;
 
         updateShare.removeClassificationTree(newForm, orgName);
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
         newForm._id = existingForm._id;
         try {
-            newForm.updated = new Date();
+            newForm.updated = new Date().toJSON();
             mongo_form.update(newForm, {username: "batchloader"}, function (err) {
                 if (err) {
                     console.log("Cannot save Form.");
                     console.log(newForm);
                     throw err;
                 } else migrationForm.remove(function (err) {
-                    if (err) console.log("unable to remove " + err);
+                    if (err) throw err;
                     console.log('------------------------------\n');
-                    processFormCb();
                     changed++;
-                    process.exit(1);
+                    processFormCb();
                 });
             });
         } catch (e) {
@@ -86,12 +86,11 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
 function doMigrationFormModel(formId, migrationForm, source, orgName, findFormDone) {
     var formCond = {
         "stewardOrg.name": "NINDS",
-        archived: false,
+        "archived": false,
         "registrationState.registrationStatus": {$not: /Retired/},
-        created: {$ne: importDate}
+        "created": {$ne: importDate}
     };
-    FormModel.find(formCond)
-        .where("ids").elemMatch(function (elem) {
+    FormModel.find(formCond).where("ids").elemMatch(function (elem) {
         elem.where("source").equals(source);
         elem.where("id").equals(formId);
     }).exec(function (err, existingForms) {

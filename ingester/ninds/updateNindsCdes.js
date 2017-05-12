@@ -137,7 +137,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
     }
 }
 
-function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
+function findCde(cdeId, migrationCde, source, orgName, findCdeDone) {
     var cdeCond = {
         "stewardOrg.name": "NINDS",
         archived: false,
@@ -149,7 +149,6 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
     DataElement.find(cdeCond).where("ids").elemMatch(function (elem) {
         elem.where("source").equals(source);
         elem.where("id").equals(cdeId);
-        elem.where("version").equals(idv);
     }).exec(function (err, existingCdes) {
         if (err) throw err;
         if (existingCdes.length === 0) {
@@ -200,16 +199,14 @@ function streamOnData(migrationCde) {
     classificationShared.sortClassification(migrationCde);
     var orgName = migrationCde.stewardOrg.name;
     var cdeId = 0;
-    var version;
     for (var i = 0; i < migrationCde.ids.length; i++) {
         if (migrationCde.ids[i].source === source) {
             cdeId = migrationCde.ids[i].id;
-            version = migrationCde.ids[i].version;
         }
     }
 
     if (cdeId !== 0) {
-        findCde(cdeId, migrationCde, source, orgName, version, function () {
+        findCde(cdeId, migrationCde, source, orgName, function () {
             migStream.resume();
         });
     } else {
