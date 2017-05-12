@@ -20,10 +20,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $scope.curator = {};
     }
 
-    $http.get("/systemAlert").then(function onSuccess(response) {
-       $scope.broadcast = {message: response.data}; 
-    }).catch(function onError() {});
-
     var allPropertyKeys = [];
     var allTags = [];
     $scope.getOrgs = function(cb) {
@@ -146,40 +142,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         );
     };
 
-    $scope.removePropertyFromOrg = function(p, org) {
-        org.propertyKeys = org.propertyKeys.filter(function (k) {
-            return k !== p;
-        });
-        $scope.updateOrg(org);
-    };
-    $scope.removeTagsFromOrg = function(c, org) {
-        org.nameTags = org.nameTags.filter(function (k) {
-            return k !== c;
-        });
-        $scope.updateOrg(org);
-    };
-
-    $scope.addOrgProperty = function(org) {
-        $modal.open({
-            animation: false,
-            templateUrl: '/system/public/html/addValueModal.html',
-            controller: function () {}
-        }).result.then(function (newValue) {
-            org.propertyKeys.push(newValue);
-            $scope.updateOrg(org);
-        }, function () {});
-    };
-    $scope.addOrgTags = function(org) {
-        $modal.open({
-            animation: false,
-            templateUrl: '/system/public/html/addValueModal.html',
-            controller: function () {}
-        }).result.then(function (newValue) {
-            org.nameTags.push(newValue);
-            $scope.updateOrg(org);
-        }, function () {});
-    };
-
     $scope.updateOrg = function (org) {
         $timeout(function(){
             AccountManagement.updateOrg(org,
@@ -196,11 +158,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             );
         },0);
     };
-    
-    $scope.saveMessage = function() {
-        $http.post('/systemAlert', {alert: $scope.broadcast.message});
-    };
-    
+
     $scope.transferStewardFunc = function() {
         AccountManagement.transferSteward($scope.transferStewardObj,
             function(successMsg) {

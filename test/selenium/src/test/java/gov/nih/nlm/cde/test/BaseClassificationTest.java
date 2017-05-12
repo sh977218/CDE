@@ -168,9 +168,11 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
+
         Assert.assertEquals(findElement(By.xpath("//div[@id='classificationBody']//*[@id='" + selector + "']")).getText(),
                 categories[categories.length - 1]);
     }
+
     private void _addExistClassificationMethodDo(String[] categories) {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         textPresent(categories[1]);

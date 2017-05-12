@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.admin;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
@@ -15,10 +16,9 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        clickElement(By.id("add_org_props_TEST"));
-        findElement(By.id("newValue")).sendKeys("doYouSeeThis");
-        clickElement(By.id("okValue"));
-        textPresent("Org has been updated");
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input")).sendKeys("doYouSeeThis");
+        findElement(By.xpath("//tr[@id='orgListName-TEST']//td[2]//input")).sendKeys(Keys.RETURN);
+        textPresent("Org Updated");
         closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
@@ -40,8 +40,8 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("List Management"));
 
         new Actions(driver).moveToElement(findElement(By.id("orgListName-Training")));
-        clickElement(By.xpath("//span/span[contains(.,'doYouSeeThis')]/i"));
-        textPresent("Org has been updated");
+        clickElement(By.xpath("//li[contains(.,'doYouSeeThis')]/span"));
+        textPresent("Org Updated");
 
         goToCdeByName("Distance from Closest Margin Value");
 
