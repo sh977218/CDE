@@ -36,22 +36,6 @@ angular.module('systemModule').controller('MainCtrl',
                 });
             };
 
-            $scope.checkSystemAlert = function () {
-                $http.get('/systemAlert').then(function onSuccess(response) {
-                    if (response.data.length > 0) {
-                        var id = (new Date()).getTime();
-                        if ($scope.broadcast !== response.data) {
-                            $scope.broadcast = response.data;
-                            $scope.alerts.push({type: "warning", msg: $scope.broadcast, id: id});
-                        }
-                    }
-                    $timeout(function () {
-                        $scope.checkSystemAlert();
-                    }, 120000);
-                }).catch(function onError() {});
-            };
-            $scope.checkSystemAlert();
-
             //TODO: Don't use the following methods. Use $scope.Alert instead.
             $scope.addAlert = Alert.addAlert;
             $scope.closeAlert = Alert.closeAlert;
