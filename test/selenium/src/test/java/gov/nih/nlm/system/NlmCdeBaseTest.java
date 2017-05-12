@@ -239,10 +239,9 @@ public class NlmCdeBaseTest {
         try {
             if (driver.getWindowHandles().size() > 1)
                 System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
-        } catch (Exception e) {
+            driver.quit();
+        } catch (Exception e) {}
 
-        }
-        driver.quit();
     }
 
     protected void clearStorage() {
