@@ -4,6 +4,7 @@ var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var MigrationForm = require('./../createMigrationConnection').MigrationFormModel;
 var classificationShared = require('../../modules/system/shared/classificationShared');
+var updateShare = require('../updateShare');
 
 var importDate = new Date().toJSON();
 var count = 0;
@@ -46,14 +47,15 @@ function checkExistingReferenceDocuments(existingReferenceDocuments, ninds) {
     }
 }
 function mergeForm(ninds, existingForm) {
-    // merges naming
-    checkExistingNaming(existingForm.get('naming'), ninds);
-
-    // merges reference documents
-    checkExistingReferenceDocuments(existingForm.get('referenceDocuments'), ninds);
+    let newForm = createForm(ninds);
+    updateShare.mergeNaming(newForm, existingForm);
+    updateShare.mergeSources(newForm, existingForm);
+    updateShare.mergeIds(newForm, existingForm);
+    updateShare.mergeProperties(newForm, existingForm);
+    updateShare.mergeReferenceDocument(newForm, existingForm);
 
     existingForm.updated = importDate;
-    classificationShared.transferClassifications(createForm(ninds), existingForm);
+    classificationShared.transferClassifications(newForm, existingForm);
 }
 
 function createForm(ninds) {
@@ -211,8 +213,7 @@ function run() {
                                             if (pvsArray[i].length > 0) {
                                                 let pv = {
                                                     permissibleValue: pvsArray[i],
-                                                    valueMeaningDefinition: pdsArray[i],
-                                                    codeSystemName: "NINDS"
+                                                    valueMeaningDefinition: pdsArray[i]
                                                 };
                                                 if (isPvValueNumber) {
                                                     pv.valueMeaningName = pdsArray[i];

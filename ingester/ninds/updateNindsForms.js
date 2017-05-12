@@ -3,6 +3,7 @@
  this script does not update org
  */
 var async = require('async'),
+    _ = require('lodash'),
     MigrationFormModel = require('../createMigrationConnection').MigrationFormModel,
     mongo_form = require('../../modules/form/node-js/mongo-form'),
     FormModel = mongo_form.Form,
@@ -40,14 +41,15 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
             });
         });
     } else if (deepDiff.length > 0) {
-        newForm.naming = migrationForm.naming;
-        newForm.sources = migrationForm.sources;
+        updateShare.mergeNaming(migrationForm, newForm);
+        updateShare.mergeSources(migrationForm, newForm);
+        updateShare.mergeIds(migrationForm, newForm);
+        updateShare.mergeProperties(migrationForm, newForm);
+        updateShare.mergeReferenceDocument(migrationForm, newForm);
         newForm.version = migrationForm.version;
         newForm.changeNote = "Bulk update from source";
         newForm.imported = importDate;
-        newForm.referenceDocuments = migrationForm.referenceDocuments;
         newForm.formElements = migrationForm.formElements;
-        newForm.properties = newForm.properties;
 
         updateShare.removeClassificationTree(newForm, orgName);
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
@@ -59,12 +61,12 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
                     console.log("Cannot save Form.");
                     console.log(newForm);
                     throw err;
-                }
-                else migrationForm.remove(function (err) {
+                } else migrationForm.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
                     console.log('------------------------------\n');
                     processFormCb();
                     changed++;
+                    process.exit(1);
                 });
             });
         } catch (e) {
@@ -76,6 +78,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
     } else {
         console.log("Something wrong with deepDiff");
         console.log(deepDiff);
+        process.exit(1);
     }
 }
 

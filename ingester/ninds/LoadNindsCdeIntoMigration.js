@@ -5,6 +5,7 @@ var MigrationDataElementModel = require('./../createMigrationConnection').Migrat
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var classificationShared = require('../../modules/system/shared/classificationShared');
+var updateShare = require('../updateShare');
 
 var cdeCounter = 0;
 var nindsOrg = null;
@@ -12,57 +13,24 @@ var newline = '<br>';
 var today = new Date().toJSON();
 
 function mergeCde(existingCde, newCde) {
-    // Naming
-    existingCde.naming = _.uniqWith(existingCde.naming.concat(newCde.naming), (a, b) => {
-        if (a.designation === b.designation
-            && a.definition === b.definition
-            && a.definitionFormat === b.definitionFormat
-            && a.languageCode === b.languageCode
-            && a.source === b.source
-            && a.context && a.context.contextName === b.context.contextName
-            && b.context && a.context.contextName === b.context.contextName
-            && a.context.acceptability === b.context.acceptability) {
-            b.tags = _.concat(a.tags, b.tags);
-            return true;
-        } else return false;
-    });
-    _.forEach(existingCde.naming, naming => {
-        naming.tags = _.uniqWith(naming.tags, (a, b) => {
-            return a.tag === b.tag;
-        })
-    });
-
-    // Sources
-    existingCde.sources = newCde.sources.concat(_.differenceWith(existingCde.sources, newCde.sources, (a, b) => {
-        return a.sourceName === b.sourceName;
-    }));
-
-    // IDs
-    existingCde.ids = newCde.ids.concat(_.differenceWith(existingCde.ids, newCde.ids, (a, b) => {
-        return a.source === b.source;
-    }));
-
-
-    // Properties
-    existingCde.properties = newCde.properties.concat(_.difference(existingCde.properties, newCde.properties,
-        (a, b) => a.key === b.key && a.source && b.source));
-
-    // ReferenceDocuments
-    existingCde.referenceDocuments = newCde.referenceDocuments.concat(_.difference(existingCde.referenceDocuments, newCde.referenceDocuments,
-        (a, b) => a.key === b.key && a.source && b.source));
+    updateShare.mergeNaming(newCde, existingCde);
+    updateShare.mergeSources(newCde, existingCde);
+    updateShare.mergeIds(newCde, existingCde);
+    updateShare.mergeProperties(newCde, existingCde);
+    updateShare.mergeReferenceDocument(newCde, existingCde);
 
     // PermissibleValues
     if (newCde.valueDomain.datatype === 'Value List' && existingCde.valueDomain.datatype === 'Value List') {
         let fullList = _.concat(existingCde.valueDomain.permissibleValues, newCde.valueDomain.permissibleValues);
-        let uniqueList = _.uniqWith(fullList, function (a, b) {
-            return a.permissibleValue === b.permissibleValue
-                && a.valueMeaningDefinition === b.valueMeaningDefinition
-                && a.valueMeaningName === b.valueMeaningName
-                && a.codeSystemName === b.codeSystemName;
-        });
+        let uniqueList = _.uniqWith(fullList,
+            (a, b) => a.permissibleValue === b.permissibleValue
+            && a.valueMeaningDefinition === b.valueMeaningDefinition
+            && a.valueMeaningName === b.valueMeaningName
+            && a.codeSystemName === b.codeSystemName);
         existingCde.valueDomain.permissibleValues = uniqueList;
         existingCde.markModified("valueDomain");
     } else if (newCde.valueDomain.datatype !== 'Value List' && existingCde.valueDomain.datatype !== 'Value List') {
+        // do NOT remove this condition. it has its special purpose.
     } else {
         console.log("newCde datatype: " + newCde.valueDomain.datatype);
         console.log("existingCde datatype: " + existingCde.valueDomain.datatype);
@@ -147,8 +115,7 @@ function createCde(cde, ninds) {
         if (pvsArray[i].length > 0) {
             let pv = {
                 permissibleValue: pvsArray[i],
-                valueMeaningDefinition: pdsArray[i],
-                codeSystemName: "NINDS"
+                valueMeaningDefinition: pdsArray[i]
             };
             if (isPvValueNumber) {
                 pv.valueMeaningName = pdsArray[i];

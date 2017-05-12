@@ -1,4 +1,5 @@
 var async = require('async'),
+    _ = require('lodash'),
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     cdediff = require('../../modules/cde/node-js/cdediff'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
@@ -29,27 +30,6 @@ var lastEightHours = new Date();
 lastEightHours.setHours(new Date().getHours() - 8);
 var retired = 0;
 
-
-function wipeUseless(toWipeCde) {
-    delete toWipeCde._id;
-    delete toWipeCde.history;
-    delete toWipeCde.imported;
-    delete toWipeCde.created;
-    delete toWipeCde.createdBy;
-    delete toWipeCde.updated;
-    delete toWipeCde.updatedBy;
-    delete toWipeCde.comments;
-    delete toWipeCde.registrationState;
-    delete toWipeCde.tinyId;
-    delete toWipeCde.valueDomain.datatypeValueList;
-
-    Object.keys(toWipeCde).forEach(function (key) {
-        if (Array.isArray(toWipeCde[key]) && toWipeCde[key].length === 0) {
-            delete toWipeCde[key];
-        }
-    });
-}
-
 function compareCdes(existingCde, newCde) {
     existingCde.ids.sort(function (a, b) {
         return a.source > b.source;
@@ -67,7 +47,7 @@ function compareCdes(existingCde, newCde) {
 
 
     existingCde = JSON.parse(JSON.stringify(existingCde));
-    wipeUseless(existingCde);
+    updateShare.wipeUseless(existingCde);
     if (!existingCde.classification || existingCde.classification === [])
         existingCde.classification = newCde.classification;
     else {
@@ -86,7 +66,7 @@ function compareCdes(existingCde, newCde) {
 
     classificationShared.sortClassification(newCde);
     newCde = JSON.parse(JSON.stringify(newCde));
-    wipeUseless(newCde);
+    updateShare.wipeUseless(newCde);
 
     return cdediff.diff(existingCde, newCde);
 }
@@ -95,47 +75,65 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
     var newDe = existingCde.toObject();
     delete newDe._id;
 
-    newDe.naming = migrationCde.naming;
-    newDe.version = migrationCde.version;
-    newDe.sources = migrationCde.sources;
-    newDe.changeNote = "Bulk update from source";
-    newDe.imported = importDate;
-    newDe.dataElementConcept = migrationCde.dataElementConcept;
-    newDe.valueDomain = migrationCde.valueDomain;
-    newDe.mappingSpecifications = migrationCde.mappingSpecifications;
-    newDe.referenceDocuments = migrationCde.referenceDocuments;
-    newDe.ids = migrationCde.ids;
-    newDe.properties = newDe.properties;
-
-    removeClassificationTree(newDe, orgName);
-    if (migrationCde.classification[0]) {
-        var indexOfClassZero = null;
-        newDe.classification.forEach(function (c, i) {
-            if (c.stewardOrg.name === migrationCde.classification[0].stewardOrg.name) indexOfClassZero = i;
-        });
-        if (indexOfClassZero) newDe.classification[indexOfClassZero] = migrationCde.classification[0];
-        else {
-            newDe.classification.push(migrationCde.classification[0]);
-        }
-    }
-    newDe._id = existingCde._id;
-    try {
-        mongo_cde.update(newDe, {username: username}, function (err) {
-            if (err) {
-                console.log("Cannot save CDE.");
-                console.log(newDe);
-                throw err;
-            }
-            else migrationCde.remove(function (err) {
-                if (err) console.log("unable to remove " + err);
+    var deepDiff = updateShare.compareObjects(existingCde, migrationCde);
+    if (!deepDiff || deepDiff.length === 0) {
+        // nothing changed, remove from input
+        existingCde.imported = importDate;
+        existingCde.save(function (err) {
+            if (err) throw "Unable to update import date";
+            migrationCde.remove(function (err) {
+                same++;
+                if (err) throw "unable to remove";
                 processCdeCb();
-                changed++;
             });
         });
-    } catch (e) {
-        console.log("newDe:\n" + newDe);
-        console.log("existingCde:\n" + existingCde);
-        throw e;
+    } else if (deepDiff.length > 0) {
+        updateShare.mergeNaming(migrationCde, newDe);
+        updateShare.mergeSources(migrationCde, newDe);
+        updateShare.mergeIds(migrationCde, newDe);
+        updateShare.mergeProperties(migrationCde, newDe);
+        updateShare.mergeReferenceDocument(migrationCde, newDe);
+        newDe.version = migrationCde.version;
+        newDe.changeNote = "Bulk update from source";
+        newDe.imported = importDate;
+        newDe.dataElementConcept = migrationCde.dataElementConcept;
+        newDe.valueDomain = migrationCde.valueDomain;
+        newDe.mappingSpecifications = migrationCde.mappingSpecifications;
+        if (newDe.valueDomain.datatype === "Value List" && newDe.valueDomain && newDe.valueDomain.permissibleValues.length === 0) {
+            newDe.valueDomain.datatype === newDe.valueDomain.datatypeValueList.datatype;
+            delete newDe.valueDomain.datatypeValueList;
+        }
+
+        removeClassificationTree(newDe, orgName);
+        if (migrationCde.classification[0]) {
+            var indexOfClassZero = null;
+            newDe.classification.forEach(function (c, i) {
+                if (c.stewardOrg.name === migrationCde.classification[0].stewardOrg.name) indexOfClassZero = i;
+            });
+            if (indexOfClassZero) newDe.classification[indexOfClassZero] = migrationCde.classification[0];
+            else {
+                newDe.classification.push(migrationCde.classification[0]);
+            }
+        }
+        newDe._id = existingCde._id;
+        try {
+            mongo_cde.update(newDe, {username: username}, function (err) {
+                if (err) {
+                    console.log("Cannot save CDE.");
+                    console.log(newDe);
+                    throw err;
+                }
+                else migrationCde.remove(function (err) {
+                    if (err) console.log("unable to remove " + err);
+                    processCdeCb();
+                    changed++;
+                });
+            });
+        } catch (e) {
+            console.log("newDe:\n" + newDe);
+            console.log("existingCde:\n" + existingCde);
+            throw e;
+        }
     }
 }
 

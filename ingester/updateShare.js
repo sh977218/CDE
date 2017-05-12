@@ -1,10 +1,11 @@
 var xml2js = require('xml2js'),
+    _ = require('lodash'),
     builder = new xml2js.Builder({attrkey: 'attribute'}),
     Readable = require('stream').Readable,
     mongo_data = require('../modules/system/node-js/mongo-data'),
     cdediff = require('../modules/cde/node-js/cdediff'),
     classificationShared = require('../modules/system/shared/classificationShared')
-    ;
+;
 
 exports.findEltIdVersion = function (elt, source) {
     var idVersions = [];
@@ -115,3 +116,47 @@ exports.mergeSources = function (sources, migrationSources) {
         }
     }
 };
+
+exports.mergeNaming = function (eltMergeFrom, eltMergeTo) {
+    eltMergeTo.naming = _.uniqWith(eltMergeTo.naming.concat(eltMergeFrom.naming), (a, b) => {
+        if (a.designation === b.designation
+            && a.definition === b.definition
+            && a.definitionFormat === b.definitionFormat
+            && a.languageCode === b.languageCode
+            && a.source === b.source
+            && a.context && a.context.contextName === b.context.contextName
+            && b.context && a.context.contextName === b.context.contextName
+            && a.context.acceptability === b.context.acceptability) {
+            b.tags = _.concat(a.tags, b.tags);
+            return true;
+        } else return false;
+    });
+    _.forEach(eltMergeTo.naming, naming => {
+        naming.tags = _.uniqWith(naming.tags, (a, b) => {
+            return a.tag === b.tag;
+        })
+    });
+};
+
+exports.mergeReferenceDocument = function (eltMergeFrom, eltMergeTo) {
+    eltMergeTo.referenceDocuments = eltMergeFrom.referenceDocuments.concat(_.difference(eltMergeTo.referenceDocuments, eltMergeFrom.referenceDocuments,
+        (a, b) => a.source && b.source && a.title === b.title));
+};
+exports.mergeProperties = function (eltMergeFrom, eltMergeTo) {
+    eltMergeTo.properties = eltMergeFrom.properties.concat(_.difference(eltMergeTo.properties, eltMergeFrom.properties,
+        (a, b) => a.source && b.source && a.key === b.key && a.value && b.value));
+};
+exports.mergeSources = function (eltMergeFrom, eltMergeTo) {
+    eltMergeTo.sources = eltMergeFrom.sources.concat(_.difference(eltMergeTo.sources, eltMergeFrom.sources,
+        (a, b) => a.sourceName === b.sourceName));
+};
+
+exports.mergeIds = function (eltMergeFrom, eltMergeTo) {
+    eltMergeTo.ids = eltMergeFrom.ids.concat(_.difference(eltMergeTo.ids, eltMergeFrom.ids,
+        (a, b) => a.source === b.source && a.id === b.id));
+};
+exports.mergeReferenceDocument = function (eltMergeFrom, eltMergeTo) {
+    eltMergeTo.referenceDocuments = eltMergeFrom.referenceDocuments.concat(_.difference(eltMergeTo.referenceDocuments, eltMergeFrom.referenceDocuments,
+        (a, b) => a.title === b.title && a.source && b.source));
+};
+
