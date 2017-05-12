@@ -140,24 +140,27 @@ exports.mergeNaming = function (eltMergeFrom, eltMergeTo) {
 };
 
 exports.mergeReferenceDocument = function (eltMergeFrom, eltMergeTo) {
-    eltMergeTo.referenceDocuments = eltMergeFrom.referenceDocuments.concat(_.difference(eltMergeTo.referenceDocuments, eltMergeFrom.referenceDocuments,
+    eltMergeTo.referenceDocuments = eltMergeFrom.referenceDocuments.concat(_.differenceWith(eltMergeTo.referenceDocuments, eltMergeFrom.referenceDocuments,
         (a, b) => a.source && b.source && a.title === b.title));
 };
 exports.mergeProperties = function (eltMergeFrom, eltMergeTo) {
-    eltMergeTo.properties = eltMergeFrom.properties.concat(_.difference(eltMergeTo.properties, eltMergeFrom.properties,
-        (a, b) => a.source && b.source && a.key === b.key && a.value && b.value));
+    let temp = _.differenceWith(eltMergeTo.properties, eltMergeFrom.properties,
+        (a, b) => {
+            return a.source && b.source && a.key === b.key;
+        });
+    eltMergeTo.properties = eltMergeFrom.properties.concat(temp);
 };
 exports.mergeSources = function (eltMergeFrom, eltMergeTo) {
-    eltMergeTo.sources = eltMergeFrom.sources.concat(_.difference(eltMergeTo.sources, eltMergeFrom.sources,
+    eltMergeTo.sources = eltMergeFrom.sources.concat(_.differenceWith(eltMergeTo.sources, eltMergeFrom.sources,
         (a, b) => a.sourceName === b.sourceName));
 };
 
 exports.mergeIds = function (eltMergeFrom, eltMergeTo) {
-    eltMergeTo.ids = eltMergeFrom.ids.concat(_.difference(eltMergeTo.ids, eltMergeFrom.ids,
+    eltMergeTo.ids = eltMergeFrom.ids.concat(_.differenceWith(eltMergeTo.ids, eltMergeFrom.ids,
         (a, b) => a.source === b.source && a.id === b.id));
 };
 exports.mergeReferenceDocument = function (eltMergeFrom, eltMergeTo) {
-    eltMergeTo.referenceDocuments = eltMergeFrom.referenceDocuments.concat(_.difference(eltMergeTo.referenceDocuments, eltMergeFrom.referenceDocuments,
+    eltMergeTo.referenceDocuments = eltMergeFrom.referenceDocuments.concat(_.differenceWith(eltMergeTo.referenceDocuments, eltMergeFrom.referenceDocuments,
         (a, b) => a.title === b.title && a.source && b.source));
 };
 
