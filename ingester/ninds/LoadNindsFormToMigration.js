@@ -68,6 +68,7 @@ function createForm(ninds) {
             contextName: "Health",
             acceptability: "preferred"
         },
+        tags: [],
         source: 'NINDS'
     };
     naming.push(formName);
@@ -150,6 +151,7 @@ function createForm(ninds) {
         referenceDocuments: referenceDocuments,
         ids: ids,
         classification: classification,
+        properties: [],
         formElements: []
     };
 }
