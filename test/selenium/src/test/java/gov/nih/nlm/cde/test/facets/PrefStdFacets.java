@@ -18,6 +18,8 @@ public class PrefStdFacets extends NlmCdeBaseTest {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         textPresent("Standard elements cannot be edited by their stewards");
         clickElement(By.id("saveRegStatus"));
+        textPresent("Saved");
+        closeAlert();
         waitForESUpdate();
         goToCdeSearch();
         clickElement(By.id("browseOrg-DCP"));
