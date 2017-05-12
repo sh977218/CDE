@@ -124,8 +124,9 @@ exports.mergeNaming = function (eltMergeFrom, eltMergeTo) {
             && a.definitionFormat === b.definitionFormat
             && a.languageCode === b.languageCode
             && a.source === b.source
-            && a.context && a.context.contextName === b.context.contextName
-            && b.context && a.context.contextName === b.context.contextName
+            && a.context && b.context
+            && a.context.contextName === b.context.contextName
+            && a.context.contextName === b.context.contextName
             && a.context.acceptability === b.context.acceptability) {
             b.tags = _.concat(a.tags, b.tags);
             return true;
