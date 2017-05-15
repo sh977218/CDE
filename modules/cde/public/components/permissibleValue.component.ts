@@ -60,6 +60,9 @@ export class PermissibleValueComponent implements OnInit {
         if (this.elt.valueDomain.datatype === 'Value List' && !this.elt.valueDomain.datatypeValueList) {
             this.elt.valueDomain.datatypeValueList = {};
         }
+        if (this.elt.valueDomain.datatype === 'Number' && !this.elt.valueDomain.datatypeNumber) {
+            this.elt.valueDomain.datatypeNumber = {};
+        }
         this.containsKnownSystem = this.elt.valueDomain.permissibleValues.filter(pv => {
                 return this.SOURCES[pv.codeSystemName];
             }).length > 0;
@@ -130,7 +133,7 @@ export class PermissibleValueComponent implements OnInit {
                         if (!source.codes)
                             source.codes = {};
                         if (!source.codes[code])
-                            source.codes[code] = "Retrieving...";
+                            source.codes[code] = {code: "", meaning: "Retrieving..."};
 
                     } else this.alert.addAlert("danger", "Unknown source in pv code " + code);
                 })
@@ -140,15 +143,21 @@ export class PermissibleValueComponent implements OnInit {
     };
 
     lookupAsSource(src) {
+        let __this = this;
         if (!this.SOURCES[src].selected) this.SOURCES[src].codes = {};
         else this.dupCodesForSameSrc(src);
         let targetSource = this.SOURCES[src].source;
         this.elt.valueDomain.permissibleValues.forEach(pv => {
+            __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "", meaning: "Retrieving..."};
             let code = pv.valueMeaningCode;
             let source = this.SOURCES[pv.codeSystemName].source;
             this.http.get("/crossWalkingVocabularies/" + source + "/" + code + "/" + targetSource).map(res => res.json())
                 .subscribe(res => {
-                    console.log('a');
+                    if (res.result.length > 0)
+                        res.result.forEach((r) => {
+                            __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
+                        });
+                    else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
                 }, err => {
                 })
         });

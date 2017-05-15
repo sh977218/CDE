@@ -160,8 +160,8 @@ exports.searchUmls = function (term, res) {
 
 exports.getCrossWalkingVocabularies = function (source, code, targetSource, cb) {
     this.getTicket(function (oneTimeTicket) {
-        let url = "https://uts-ws.nlm.nih.gov/rest/crosswalk/current/"
-            + source + "/" + code + "targetSource=" + targetSource
+        let url = "https://uts-ws.nlm.nih.gov/rest/crosswalk/current/source/"
+            + source + "/" + code + "?targetSource=" + targetSource
             + "&ticket=" + oneTimeTicket;
         request({url: url, strictSSL: false}, function (err, response) {
             cb(err, response);

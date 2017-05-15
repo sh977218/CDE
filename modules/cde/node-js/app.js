@@ -279,9 +279,13 @@ exports.init = function (app, daoManager) {
     app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', function (req, res) {
         if (!req.params.source || !req.params.code || !req.params.targetSource)
             return res.status(401).end();
-        else vsac.getCrossWalkingVocabularies(req.params.source, req.param.code, req.param.targetSource, function (err, results) {
-            if (err) return res.status(500).send(err);
-            else res.send(results);
+        else vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, function (err, result) {
+            if (err)
+                return res.status(500).send(err);
+            else if (result.statusCode === 200)
+                return res.send({result: JSON.parse(result.body).result});
+            else
+                return res.send({result: []});
         })
     });
 
