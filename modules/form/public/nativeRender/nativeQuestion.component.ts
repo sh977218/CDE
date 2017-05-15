@@ -12,9 +12,6 @@ export class NativeQuestionComponent {
     @Input() parentValue: any;
     @Input() index: any;
 
-    // generatedHtml: SafeHtml = "";  // template: `<div #rendered_question></div>`
-    // @ViewChild("rendered_question", {read: ViewContainerRef}) templateRef: ViewContainerRef;
-
     constructor(private sanitizer: DomSanitizer,
                 public nativeRenderService: NativeRenderService) {
     }

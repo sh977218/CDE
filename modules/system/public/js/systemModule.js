@@ -217,20 +217,6 @@ angular.module('systemModule').filter('truncateTo', [function () {
     };
 }]);
 
-
-angular.module('systemModule').filter('truncateLongUserName', [function () {
-    return function (input) {
-        if (!(input === undefined || input === null || input === "")) {
-            if (input.length > 17) {
-                return input.substr(0, 17) + '...';
-            }
-            else return input;
-        } else {
-            return "N/A";
-        }
-    };
-}]);
-
 angular.module('systemModule').filter('bytes', [function () {
     return function (bytes, precision) {
         if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
@@ -426,6 +412,10 @@ angular.module('systemModule').factory('SkipLogicUtil', downgradeInjectable(Skip
 
 import {HomeComponent} from "../components/home/home.component";
 angular.module('systemModule').directive('cdeHome', downgradeComponent({component: HomeComponent, inputs: [], outputs: []}));
+
+import {NavigationComponent} from "../components/navigation.component";
+angular.module('systemModule').directive('cdeNavigation', downgradeComponent({component: NavigationComponent,
+    inputs: ['quickBoardCount'], outputs: ['takeATour', 'goToLogin', 'logout']}));
 
 import {ProfileComponent} from "../components/profile.component";
 angular.module('systemModule').directive('cdeProfile', downgradeComponent({component: ProfileComponent, inputs: [], outputs: []}));
