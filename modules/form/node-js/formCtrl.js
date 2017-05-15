@@ -208,12 +208,14 @@ exports.formById = function (req, res) {
         if (!req.user) adminSvc.hideProprietaryIds(form);
         wipeRenderDisallowed(form, req, function() {
             if (req.query.type === 'xml' && req.query.subtype === 'odm') {
-                formShared.getFormOdm(form, function (err, xmlForm) {
-                    if (err) res.status(err).send(xmlForm);
-                    else {
-                        res.set('Content-Type', 'text/xml');
-                        res.send(JXON.jsToString({element: xmlForm}));
-                    }
+                exports.fetchWholeForm(form, function (wholeForm) {
+                    formShared.getFormOdm(wholeForm, function (err, xmlForm) {
+                        if (err) res.status(err).send(xmlForm);
+                        else {
+                            res.set('Content-Type', 'text/xml');
+                            res.send(JXON.jsToString({element: xmlForm}));
+                        }
+                    });
                 });
             }
             else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);

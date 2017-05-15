@@ -56,10 +56,9 @@ angular.module('systemModule').controller('AuthCtrl',
     };
 
     $scope.logout = function () {
-        $http.post("/logout", {}).then(function() {
-            $scope.reloadUser();
-            $location.url("/login");
-        });
+        $http.post("/logout", {}).then(function() {}, function () {});
+        $scope.reloadUser();
+        $location.url("/login");
     };
 
 }
