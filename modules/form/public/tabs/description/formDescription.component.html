@@ -3,7 +3,7 @@
         <div class="descriptionToolbox" *ngIf="isAllowedModel.isAllowed(elt)">
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
             <button id="addSectionTop" class="btn btn-default formDescriptionTool" style="width: 74px"
-                    [treeDrag]="{insert: 'section', data: getNewSection()}" [treeDragEnabled]="true">
+                    [treeDrag]="toolSection" [treeDragEnabled]="true">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </button>
             <button id="startAddingQuestions" class="btn btn-default formDescriptionTool" style="width: 87px"

@@ -10,7 +10,7 @@ import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 
 import { ArrayListPipe } from "./arrayList.pipe";
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
-import { FormDescriptionComponent } from "./tabs/description/formDescripton.component";
+import { FormDescriptionComponent } from "./tabs/description/formDescription.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
 import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";

@@ -4,7 +4,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 
 import { FormService } from "../../form.service";
-import { CdeForm, FormSection } from "../../form.model";
+import { CdeForm, FormElement, FormSection } from "../../form.model";
 
 @Component({
     selector: "cde-form-description",
@@ -83,6 +83,7 @@ export class FormDescriptionComponent implements OnInit {
 
     addIndex = function (elems, elem, i) { return elems.splice(i, 0, elem); };
     toolDropTo: {index: number, parent: any};
+    toolSection: {insert: 'section', data: FormElement};
     treeOptions = {
         allowDrag: (element) => {
             return !FormService.isSubForm(element) || element.data.elementType === "form" && !FormService.isSubForm(element.parent);
@@ -98,7 +99,7 @@ export class FormDescriptionComponent implements OnInit {
             mouse: {
                 drop: (tree, node, $event, {from, to}) => {
                     if (from.insert) {
-                        this.addIndex(to.parent.data.formElements, from.data, to.index);
+                        this.addIndex(to.parent.data.formElements, this.getNewSection(), to.index);
                         tree.update();
                     } else if (from.ref) {
                         if (from.ref === "question")
@@ -111,6 +112,7 @@ export class FormDescriptionComponent implements OnInit {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
 
                     tree.expandAll();
+                    this.addIds(this.elt.formElements, "");
                     this.stageElt.emit();
                 }
             }
@@ -126,7 +128,9 @@ export class FormDescriptionComponent implements OnInit {
     constructor(private formService: FormService,
                 private http: Http,
                 public modalService: NgbModal,
-                @Inject("isAllowedModel") public isAllowedModel) {}
+                @Inject("isAllowedModel") public isAllowedModel) {
+        this.toolSection = {insert: "section", data: this.getNewSection()};
+    }
 
     ngOnInit() {
         this.addIds(this.elt.formElements, "");

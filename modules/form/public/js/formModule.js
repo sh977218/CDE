@@ -87,7 +87,7 @@ angular.module('formModule').directive('questionSearch', [function () {
 
 import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
-import {FormDescriptionComponent} from "../tabs/description/formDescripton.component";
+import {FormDescriptionComponent} from "../tabs/description/formDescription.component";
 angular.module('formModule').directive('cdeFormDescription', downgradeComponent({component: FormDescriptionComponent, inputs: ['elt', 'inScoreCdes', 'cache'], outputs: ['isFormValid', 'stageElt', 'cachePut']}));
 
 import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";

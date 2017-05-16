@@ -5,6 +5,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends FormCommentTest {
@@ -43,22 +45,10 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public void addSection(String title, String repeat, Integer sectionNumber) {
-        hangon(5);
-
         WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
-//        WebElement targetElt = findElement(By.xpath("//div[contains(@class,'node-content-wrapper')]"));
         WebElement targetElt = findElement(By.xpath("(//*[@class='node-drop-slot'])[" + (sectionNumber + 1) + "]"));
-        Assert.assertTrue(sourceElt.isDisplayed());
-        Assert.assertTrue(targetElt.isDisplayed());
-
-        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).build().perform();
-
-//        (new Actions(driver)).clickAndHold(sourceElt)
-//                .moveToElement(targetElt)
-//                .release(targetElt)
-//                .build().perform();
-
-        textPresent("New Section");
+        dragAndDrop(sourceElt, targetElt);
+        textPresent("N/A");
         String sectionId = "section_" + sectionNumber;
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
@@ -68,6 +58,44 @@ public class BaseFormTest extends FormCommentTest {
         findElement(By.xpath(sectionInput)).sendKeys(title);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
         setRepeat(sectionId, repeat);
+    }
+
+    public void dragAndDrop(WebElement source, WebElement target) {
+        String basePath = new File("").getAbsolutePath();
+
+        // drag and drop selenium is buggy, try 5 times.
+        for (int i = 0; i < 5; i++) {
+            try {
+                Assert.assertTrue(source.isDisplayed());
+                Assert.assertTrue(target.isDisplayed());
+
+                String JS_DRAG_DROP = readFile(basePath + "/src/test/resources/drag-drop.js");
+                ((JavascriptExecutor) driver).executeScript(JS_DRAG_DROP, source, target, null, null, 100);
+                i = 10;
+            } catch (WebDriverException e) {
+                if (i == 4) {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    private String readFile(String file) {
+        Charset cs = Charset.forName("UTF-8");
+        StringBuilder builder = new StringBuilder();
+        try {
+            FileInputStream stream = new FileInputStream(file);
+            Reader reader = new BufferedReader(new InputStreamReader(stream, cs));
+            char[] buffer = new char[8192];
+            int read;
+            while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
+                builder.append(buffer, 0, read);
+            }
+            stream.close();
+        } catch (IOException e) {
+            textPresent("IOException");
+        }
+        return builder.toString();
     }
 
     public void setRepeat(String sectionId, String repeat) {
