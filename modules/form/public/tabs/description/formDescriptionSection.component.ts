@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Observable } from "rxjs/Observable";
+import { TreeNode } from "angular-tree-component";
 
 import { FormService } from "../../form.service";
+import { FormElement, FormSection, SkipLogic } from "../../form.model";
+import { FormattedValue, Instruction } from "../../../../core/public/models.model";
 import { SkipLogicService } from "../../skipLogic.service";
 
 @Component({
@@ -11,7 +14,7 @@ import { SkipLogicService } from "../../skipLogic.service";
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() inScoreCdes: any;
-    @Input() node: any;
+    @Input() node: TreeNode;
     @Input() preId: string;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
@@ -20,7 +23,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
 
     isSubForm = false;
-    parent: any;
+    parent: FormElement;
     section: any;
     repeatOptions = [
         {label: "", value: ""},
@@ -37,9 +40,9 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.section.repeatOption = this.getRepeatOption(this.section);
         this.section.repeatNumber = this.getRepeatNumber(this.section);
         if (!this.section.instructions)
-            this.section.instructions = {};
+            this.section.instructions = new FormattedValue;
         if (!this.section.skipLogic)
-            this.section.skipLogic = {};
+            this.section.skipLogic = new SkipLogic;
 
         if (this.node.data.elementType === "form") {
             if (FormService.isSubForm(this.node.parent))

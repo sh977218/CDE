@@ -26,9 +26,10 @@
                 There is no content yet.
             </span>
         </div>
+
         <div *ngFor="let eltIter of [elt]" style="height: 76vh">
             <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
-                <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
                     <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.descriptionId"
                          [class]="node.getClass()"
                          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
@@ -47,23 +48,18 @@
                                          (contextmenu)="node.mouseAction('contextMenu', $event)"
                                          (treeDrop)="node.onDrop($event)"
                                          [treeAllowDrop]="node.allowDrop">
-                                        <tree-node-content [node]="node" [index]="index"
-                                                           [template]="templates.treeNodeTemplate">
-                                            <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                                                <cde-form-description-section
-                                                        *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                        [elt]="elt"
-                                                        [node]="node"
-                                                        [inScoreCdes]="inScoreCdes"
-                                                        (isFormValid)="isFormValid.emit($event)"
-                                                        (stageElt)="stageElt.emit()"></cde-form-description-section>
-                                                <cde-form-description-question
-                                                        *ngIf="node.data.elementType === 'question'"
-                                                        [elt]="elt"
-                                                        [node]="node"
-                                                        (stageElt)="stageElt.emit()"></cde-form-description-question>
-                                            </ng-template>
-                                        </tree-node-content>
+                                        <cde-form-description-section
+                                                *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
+                                                [elt]="elt"
+                                                [node]="node"
+                                                [inScoreCdes]="inScoreCdes"
+                                                (isFormValid)="isFormValid.emit($event)"
+                                                (stageElt)="stageElt.emit()"></cde-form-description-section>
+                                        <cde-form-description-question
+                                                *ngIf="node.data.elementType === 'question'"
+                                                [elt]="elt"
+                                                [node]="node"
+                                                (stageElt)="stageElt.emit()"></cde-form-description-question>
                                     </div>
                                 </div>
                             </div>
@@ -89,7 +85,8 @@
         <h3>Search Forms</h3>
     </div>
     <div class="modal-body">
-        <cde-form-formSearch [cache]="cache" (cachePut)="cachePut.emit($event)" (result)="addFormFromSearch($event)"></cde-form-formSearch>
+        <cde-form-formSearch [cache]="cache" (cachePut)="cachePut.emit($event)"
+                             (result)="addFormFromSearch($event)"></cde-form-formSearch>
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="d()" id="cancelSelectF">Close</button>
@@ -101,7 +98,8 @@
         <h3>Search Questions</h3>
     </div>
     <div class="modal-body">
-        <cde-form-questionSearch [cache]="cache" (cachePut)="cachePut.emit($event)" (result)="addQuestionFromSearch($event)"></cde-form-questionSearch>
+        <cde-form-questionSearch [cache]="cache" (cachePut)="cachePut.emit($event)"
+                                 (result)="addQuestionFromSearch($event)"></cde-form-questionSearch>
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="d()" id="cancelSelectQ">Close</button>

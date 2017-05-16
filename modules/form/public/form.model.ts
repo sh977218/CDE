@@ -69,11 +69,14 @@ export interface FormElement {
 
 export class FormSection implements FormElement {
     _id: boolean;
+    edit: boolean = false;
     elementType = "section";
     instructions: Instruction;
     formElements = [];
     label = "";
     repeat: string;
+    repeatNumber: number;
+    repeatOption: string;
     section: Section;
     skipLogic = new SkipLogic;
 }
@@ -127,7 +130,7 @@ export class Question {
 }
 
 export class SkipLogic {
-    action: string = null;
+    action: string;
     condition: string;
 }
 
