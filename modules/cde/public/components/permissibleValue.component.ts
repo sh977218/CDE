@@ -1,23 +1,29 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
 
+import * as deValidator from "../../../cde/shared/deValidator";
+import * as _ from "lodash";
+
 @Component({
+    moduleId: "permissibleValue",
     selector: "cde-permissible-value",
     providers: [NgbActiveModal],
-    templateUrl: "./permissibleValue.component.html",
-    styles: [`
-        :host > > > #inlineEditWrapper[_ngcontent-c1] {
-            border-bottom: 0px;
-            line-height: 0;
-            margin-left: 0px;
-        }
-    `]
+    templateUrl: "permissibleValue.component.html",
+    encapsulation: ViewEncapsulation.None,
 })
 export class PermissibleValueComponent implements OnInit {
     @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
     public modalRef: NgbModalRef;
     @Input() public elt: any;
+    showValidateButton;
+    pvNotValidMsg;
+    vsacValueSet = [];
+    allValid;
+    editMode;
+    oid: String;
+    vsac = {};
+    pVTypeheadVsacNameList;
 
     public valueTypeOptions = {
         data: [
@@ -108,11 +114,6 @@ export class PermissibleValueComponent implements OnInit {
     removePv(index) {
         this.elt.valueDomain.permissibleValues.splice(index, 1);
         this.elt.unsaved = true;
-        /*
-         $scope.stageElt($scope.elt);
-         $scope.runManualValidation();
-         initSrcOptions();
-         */
     }
 
     addNewPermissibleValue() {
@@ -163,4 +164,101 @@ export class PermissibleValueComponent implements OnInit {
         });
         console.log("a");
     };
+
+
+    vsacMappingExists() {
+        return typeof(this.elt.dataElementConcept.conceptualDomain) !== "undefined" &&
+            typeof(this.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
+    };
+
+    removeVSMapping = function () {
+        delete this.elt.dataElementConcept.conceptualDomain.vsac;
+    };
+
+    isVsInPv = function (vs) {
+        let pvs = this.elt.valueDomain.permissibleValues;
+        if (!pvs) return false;
+        return pvs.filter(pv =>
+            pv.valueMeaningCode === vs.code &&
+            pv.codeSystemName === vs.codeSystemName &&
+            pv.valueMeaningName === vs.displayName).length > 0
+    };
+
+    validatePvWithVsac = function () {
+        let pvs = this.elt.valueDomain.permissibleValues;
+        if (!pvs) {
+            return;
+        }
+        pvs.forEach(function (pv) {
+            pv.isValid = this.isPvInVSet(pv);
+        });
+    };
+
+    checkPvUnicity() {
+        let validObject = deValidator.checkPvUnicity(this.elt.valueDomain);
+        /*
+         this.allValid = validObject.allValid;
+         this.pvNotValidMsg = validObject.pvNotValidMsg;
+         */
+    };
+
+    validateVsacWithPv() {
+        this.vsacValueSet.forEach(function (vsItem) {
+            vsItem.isValid = this.isVsInPv(vsItem);
+        });
+    };
+
+    runManualValidation() {
+        delete this.showValidateButton;
+        this.validatePvWithVsac();
+        this.validateVsacWithPv();
+        this.checkPvUnicity();
+    };
+
+    addVsacValue(vsacValue) {
+        if (this.isVsInPv(vsacValue)) {
+            return;
+        }
+        this.elt.valueDomain.permissibleValues.push({
+            "permissibleValue": vsacValue.displayName,
+            "valueMeaningName": vsacValue.displayName,
+            "valueMeaningCode": vsacValue.code,
+            "codeSystemName": vsacValue.codeSystemName,
+            "codeSystemVersion": vsacValue.codeSystemVersion
+        });
+        this.runManualValidation();
+    };
+
+
+    loadValueSet() {
+        let dec = this.elt.dataElementConcept;
+        if (dec && this.oid) {
+            this.vsacValueSet = [];
+            this.pVTypeheadVsacNameList = [];
+            this.http.get("/vsacBridge/" + this.oid).map(res => res.json()).subscribe(
+                res => {
+                    let data = res["ns0:RetrieveValueSetResponse"];
+                    if (data) {
+                        for (var i = 0; i < data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
+                            let vsac = data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$'];
+                            this.vsacValueSet.push(vsac);
+                            this.pVTypeheadVsacNameList.push(vsac.displayName);
+                        }
+                        this.validateVsacWithPv();
+                    } else this.alert.addAlert("danger", "Error: No data retrieved from VSAC.");
+                },
+                err => {
+                    console.log('err');
+                    this.alert.addAlert("danger", "Error querying VSAC");
+                }
+            )
+        }
+    };
+
+    checkVsacId() {
+        this.loadValueSet();
+        this.elt.unsaved = true;
+        this.editMode = false;
+    };
+
 }

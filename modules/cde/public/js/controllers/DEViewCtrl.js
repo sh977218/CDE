@@ -322,10 +322,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
         return allVsacMatch;
     };
 
-    $scope.vsacMappingExists = function() {
-        return typeof($scope.elt.dataElementConcept.conceptualDomain) !== "undefined" &&
-            typeof($scope.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
-    };
+
 
     $scope.loadValueSet = function() {
         var dec = $scope.elt.dataElementConcept;

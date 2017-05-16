@@ -237,11 +237,7 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
         return result;
     };
 
-    $scope.removeVSMapping = function() {
-        delete $scope.elt.dataElementConcept.conceptualDomain.vsac;
-        $scope.stageElt($scope.elt);
-    };
-    
+
     $scope.removeAllPvs = function() {
         $scope.elt.valueDomain.permissibleValues = [];
         $scope.runManualValidation();

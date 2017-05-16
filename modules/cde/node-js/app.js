@@ -246,12 +246,11 @@ exports.init = function (app, daoManager) {
         if (!req.user) {
             res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
         } else {
-            vsac.getValueSet(req.params.vsacId, function (result) {
-                if (result === 404 || result === 400) {
-                    res.status(result);
-                    res.end();
+            vsac.getValueSet(req.params.vsacId, function (err, result) {
+                if (result.statusCode === 404 || result === 400) {
+                    return res.status(500).end();
                 } else {
-                    parser.parseString(result, function (err, jsonResult) {
+                    parser.parseString(result.body, function (err, jsonResult) {
                         res.send(jsonResult);
                     });
                 }

@@ -101,31 +101,12 @@ exports.getTicket = function (cb) {
     req.end();
 };
 
-exports.getValueSet = function (vs_id, cb) {
+exports.getValueSet = function (oid, cb) {
     this.getTicket(function (vsacTicket) {
-        valueSetOptions.path = config.vsac.valueSet.path + '?id=' + vs_id + "&ticket=" + vsacTicket;
-        var req = https.request(valueSetOptions, function (res) {
-            var output = '';
-            res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                output += chunk;
-            });
-            res.on('end', function () {
-                if (res.statusCode === 404) {
-                    cb(404);
-                }
-                if (output.length > 0) {
-                    cb(output);
-                }
-            });
+        let url = "https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet" + "?id=" + oid + "&ticket=" + vsacTicket;
+        request({url: url, strictSSL: false}, function (err, response) {
+            cb(err, response);
         });
-
-        req.on('error', function (e) {
-            console.log('getValueSet: ERROR with request: ' + e);
-            cb(400);
-        });
-
-        req.end();
     });
 };
 

@@ -348,6 +348,11 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
         return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user)
             || authShared.isSiteAdmin(userResource.user);
     };
+
+    isAllowedModel.loggedIn = function () {
+        return userResource.user && userResource.user._id;
+    };
+
     return isAllowedModel;
 }]);
 
