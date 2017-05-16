@@ -1,6 +1,18 @@
 exports.rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];
 
+exports.canComment = function(user) {
+    return exports.hasRole(user, "CommentAuthor") || exports.hasRole(user, "CommentReviewer") || exports.isOrgCurator(user);
+};
+
+exports.canCreateForms = function (user) {
+    return exports.hasRole(user, "FormEditor");
+};
+
+exports.canOrgAuthority = function (user) {
+    return exports.hasRole(user, "OrgAuthority");
+};
+
 exports.hasRole = function(user, role) {
     if (!user) return false;
     if (user.siteAdmin) return true;
@@ -13,19 +25,15 @@ exports.isCuratorOf = function(user, orgName) {
     return (user.orgAdmin && user.orgAdmin.indexOf(orgName) >= 0)
         || (user.orgCurator && user.orgCurator.indexOf(orgName) >= 0);
 };
-    
-exports.isOrgCurator = function(user) {     
+
+exports.isOrgCurator = function(user) {
     if (!user) return false;
-    return exports.isOrgAdmin(user) || (user.orgCurator && user.orgCurator.length > 0);  
+    return exports.isOrgAdmin(user) || (user.orgCurator && user.orgCurator.length > 0);
 };
 
 exports.isOrgAdmin = function(user) {
     if (!user) return false;
-    return user.siteAdmin === true || (user.orgAdmin && user.orgAdmin.length > 0);  
-};
-
-exports.canComment = function(user) {
-    return exports.hasRole(user, "CommentAuthor") || exports.hasRole(user, "CommentReviewer") || exports.isOrgCurator(user);
+    return user.siteAdmin === true || (user.orgAdmin && user.orgAdmin.length > 0);
 };
 
 exports.isSiteAdmin = function (user) {
