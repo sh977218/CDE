@@ -15,31 +15,20 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {
-        // drag and drop selenium is buggy, try 5 times.
-        for (int i = 0; i < 5; i++) {
-            try {
-                findElement(By.id("ftsearch-input")).clear();
-                textPresent("", By.id("ftsearch-input"));
-                findElement(By.id("ftsearch-input")).sendKeys("\"" + cdeName + "\"");
-                hangon(1);
-                clickElement(By.id("search.submit"));
-                textPresent("1 results");
-                textPresent(cdeName, By.id("acc_link_0"));
+        WebElement sourceElt = findElement(By.xpath("//button[@id='startAddingQuestions']"));
+        WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
+        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+        dragAndDrop(sourceElt, targetElt);
+        textPresent("Search Questions");
 
-                WebElement sourceElt = findElement(By.xpath("//*[@id='accordionList']//*[contains(@class,'question-move-handle')]"));
-                WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
-
-                Assert.assertTrue(sourceElt.isDisplayed());
-                (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
-                textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));
-                i = 10;
-            } catch (TimeoutException e) {
-                if (i == 4) {
-                    throw e;
-                }
-            }
-
-        }
+        findElement(By.id("ftsearch-input")).clear();
+        textPresent("", By.id("ftsearch-input"));
+        findElement(By.id("ftsearch-input")).sendKeys("\"" + cdeName + "\"");
+        hangon(1);
+        clickElement(By.id("search.submit"));
+        textPresent("1 results");
+        clickElement(By.xpath("//*[@class='modal-content']//button[following-sibling::a/*[@id='acc_link_0']]"));
+        clickElement(By.id("cancelSelectQ"));
     }
 
     public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {

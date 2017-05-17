@@ -14,7 +14,6 @@ public class FormScoreTest extends QuestionTest {
 
         clickElement(By.id("description_tab"));
         addSectionBottom("Score Section", null);
-
         addQuestionToSection("ALS Severity Score (ALSSS) - total score value", 0);
 
         textPresent("The following CDEs are part of a score but are missing from this form:");
