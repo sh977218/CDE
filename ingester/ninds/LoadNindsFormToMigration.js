@@ -168,121 +168,129 @@ function run() {
             let stream = NindsModel.find({}).stream();
             stream.on('data', function (ninds) {
                 stream.pause();
-                let formId = ninds.get('formId');
-                MigrationForm.find({'ids.id': formId}, function (err, existingForms) {
-                    if (err) throw err;
-                    if (existingForms.length === 0) {
-                        let newForm = createForm(ninds);
-                        console.log('start cde of form: ' + formId);
-                        let cdes = ninds.get('cdes');
-                        if (cdes.length > 0)
-                            newForm.formElements.push({
-                                elementType: 'section',
-                                instructions: {value: ''},
-                                label: '',
-                                formElements: []
-                            });
-                        async.forEachSeries(cdes, function (cde, doneOneCDE) {
-                            let cdeId = cde.cdeId;
-                            mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
-                                if (err || !existingCde) throw (err);
-                                else {
-                                    let question = {
-                                        cde: {
-                                            tinyId: existingCde.tinyId,
-                                            name: existingCde.naming[0].designation,
-                                            version: existingCde.version,
-                                            ids: existingCde.ids
-                                        },
-                                        datatype: existingCde.valueDomain.datatype,
-                                        uom: existingCde.valueDomain.uom
-                                    };
-                                    if (question.datatype === 'Value List') {
-                                        question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
-                                        question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
+                let formName = ninds.crfModuleGuideline.toLowerCase();
+                if (formName.indexOf("summary of") > 0 ||
+                    formName.indexOf("recommendations by") > 0 ||
+                    formName.indexOf("summary") > 0 ||
+                    formName.indexOf("guidelines for") > 0) {
+                    stream.resume();
+                } else {
+                    let formId = ninds.get('formId');
+                    MigrationForm.find({'ids.id': formId}, function (err, existingForms) {
+                        if (err) throw err;
+                        if (existingForms.length === 0) {
+                            let newForm = createForm(ninds);
+                            console.log('start cde of form: ' + formId);
+                            let cdes = ninds.get('cdes');
+                            if (cdes.length > 0)
+                                newForm.formElements.push({
+                                    elementType: 'section',
+                                    instructions: {value: ''},
+                                    label: '',
+                                    formElements: []
+                                });
+                            async.forEachSeries(cdes, function (cde, doneOneCDE) {
+                                let cdeId = cde.cdeId;
+                                mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
+                                    if (err || !existingCde) throw (err);
+                                    else {
+                                        let question = {
+                                            cde: {
+                                                tinyId: existingCde.tinyId,
+                                                name: existingCde.naming[0].designation,
+                                                version: existingCde.version,
+                                                ids: existingCde.ids
+                                            },
+                                            datatype: existingCde.valueDomain.datatype,
+                                            uom: existingCde.valueDomain.uom
+                                        };
+                                        if (question.datatype === 'Value List') {
+                                            question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
+                                            question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
 
-                                        let permissibleValues = [];
-                                        let pvsArray = cde.permissibleValue.split(';');
-                                        let isPvValueNumber = /^\d+$/.test(pvsArray[0]);
-                                        let pdsArray = cde.permissibleDescription.split(';');
-                                        if (pvsArray.length !== pdsArray.length) {
-                                            console.log('*******************permissibleValue and permissibleDescription do not match.');
-                                            console.log('*******************ninds:\n' + ninds);
-                                            console.log('*******************cde:\n' + cde);
-                                            process.exit(1);
-                                        }
-                                        for (let i = 0; i < pvsArray.length; i++) {
-                                            if (pvsArray[i].length > 0) {
-                                                let pv = {
-                                                    permissibleValue: pvsArray[i],
-                                                    valueMeaningDefinition: pdsArray[i]
-                                                };
-                                                if (isPvValueNumber) {
-                                                    pv.valueMeaningName = pdsArray[i];
-                                                } else {
-                                                    pv.valueMeaningName = pvsArray[i];
-                                                }
-                                                permissibleValues.push(pv);
+                                            let permissibleValues = [];
+                                            let pvsArray = cde.permissibleValue.split(';');
+                                            let isPvValueNumber = /^\d+$/.test(pvsArray[0]);
+                                            let pdsArray = cde.permissibleDescription.split(';');
+                                            if (pvsArray.length !== pdsArray.length) {
+                                                console.log('*******************permissibleValue and permissibleDescription do not match.');
+                                                console.log('*******************ninds:\n' + ninds);
+                                                console.log('*******************cde:\n' + cde);
+                                                process.exit(1);
                                             }
+                                            for (let i = 0; i < pvsArray.length; i++) {
+                                                if (pvsArray[i].length > 0) {
+                                                    let pv = {
+                                                        permissibleValue: pvsArray[i],
+                                                        valueMeaningDefinition: pdsArray[i]
+                                                    };
+                                                    if (isPvValueNumber) {
+                                                        pv.valueMeaningName = pdsArray[i];
+                                                    } else {
+                                                        pv.valueMeaningName = pvsArray[i];
+                                                    }
+                                                    permissibleValues.push(pv);
+                                                }
+                                            }
+                                            question.answers = permissibleValues;
+                                        } else if (question.datatype === 'Text') {
+                                            question.datatypeText = existingCde.valueDomain.datatypeText;
+                                        } else if (question.datatype === 'Number') {
+                                            question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+                                        } else if (question.datatype === 'Date') {
+                                            question.datatypeDate = existingCde.valueDomain.datatypeDate;
+                                        } else if (question.datatype === 'File') {
+                                            question.datatypeDate = existingCde.valueDomain.datatypeDate;
+                                        } else {
+                                            throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
                                         }
-                                        question.answers = permissibleValues;
-                                    } else if (question.datatype === 'Text') {
-                                        question.datatypeText = existingCde.valueDomain.datatypeText;
-                                    } else if (question.datatype === 'Number') {
-                                        question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
-                                    } else if (question.datatype === 'Date') {
-                                        question.datatypeDate = existingCde.valueDomain.datatypeDate;
-                                    } else if (question.datatype === 'File') {
-                                        question.datatypeDate = existingCde.valueDomain.datatypeDate;
-                                    } else {
-                                        throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
+                                        let formElement = {
+                                            elementType: 'question',
+                                            instructions: {value: cde.instruction},
+                                            question: question,
+                                            formElements: []
+                                        };
+                                        if (cde.questionText === 'N/A' || cde.questionText.trim().length === 0) {
+                                            formElement.label = existingCde.naming[0].designation;
+                                            formElement.hideLabel = true;
+                                        } else {
+                                            formElement.label = cde.questionText;
+                                        }
+                                        newForm.formElements[0].formElements.push(formElement);
+                                        doneOneCDE();
                                     }
-                                    let formElement = {
-                                        elementType: 'question',
-                                        instructions: {value: cde.instruction},
-                                        question: question,
-                                        formElements: []
-                                    };
-                                    if (cde.questionText === 'N/A' || cde.questionText.trim().length === 0) {
-                                        formElement.label = existingCde.naming[0].designation;
-                                        formElement.hideLabel = true;
-                                    } else {
-                                        formElement.label = cde.questionText;
+                                });
+                            }, function doneAll() {
+                                new MigrationForm(newForm).save(function (err) {
+                                    if (err) throw err;
+                                    else {
+                                        count++;
+                                        console.log('count: ' + count);
+                                        stream.resume();
                                     }
-                                    newForm.formElements[0].formElements.push(formElement);
-                                    doneOneCDE();
-                                }
+                                });
                             });
-                        }, function doneAll() {
-                            new MigrationForm(newForm).save(function (err) {
+                        } else if (existingForms.length === 1) {
+                            let existingForm = existingForms[0];
+                            mergeForm(ninds, existingForm);
+                            existingForm.markModified("classification");
+                            existingForm.markModified("formElements");
+                            existingForm.save(function (err) {
                                 if (err) throw err;
-                                else {
-                                    count++;
-                                    console.log('count: ' + count);
-                                    stream.resume();
-                                }
+                                else stream.resume();
                             });
-                        });
-                    } else if (existingForms.length === 1) {
-                        let existingForm = existingForms[0];
-                        mergeForm(ninds, existingForm);
-                        existingForm.markModified("classification");
-                        existingForm.markModified("formElements");
-                        existingForm.save(function (err) {
-                            if (err) throw err;
-                            else stream.resume();
-                        });
-                    } else {
-                        console.log(existingForms.length + ' forms found, formId: ' + ninds.formId);
-                        process.exit(1);
-                    }
-                });
+                        } else {
+                            console.log(existingForms.length + ' forms found, formId: ' + ninds.formId);
+                            process.exit(1);
+                        }
+                    });
+                }
             });
-
             stream.on('end', function (err) {
                 if (err) throw err;
                 if (cb) cb();
             });
+
         }], function () {
         console.log('Finished.');
         process.exit(0);
