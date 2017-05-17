@@ -63,7 +63,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             restrict: 'AE',
             scope: {
                 model: '=',
-                inputType: '=?',
+                inputType: '=',
                 isAllowed: '=',
                 onOk: '&',
                 typeaheadSource: '=',
@@ -93,18 +93,16 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             restrict: 'AE',
             scope: {
                 model: '=',
-                isAllowed: '&',
+                isAllowed: '=',
                 onOk: '&',
                 allOptions: '='
             },
-            templateUrl: '/system/public/html/systemTemplate/inlineSelectEdit.html',
+            template: require('../html/systemTemplate/inlineSelectEdit.html'),
             controller: ["$scope", function ($scope) {
-                $scope.value = $scope.model;
                 $scope.discard = function () {
                     $scope.editMode = false;
                 };
                 $scope.save = function () {
-                    $scope.model = angular.copy($scope.value);
                     $scope.editMode = false;
                     $timeout($scope.onOk, 0);
                 };
@@ -126,7 +124,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 inlineAreaVisibility: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
-            controller: ["$scope", "$element", function ($scope, $element) {
+            controller: ["$scope", "$element", function ($scope) {
                 $scope.setHtml = function (html) {
                     $scope.defFormat = html ? 'html' : '';
                 };

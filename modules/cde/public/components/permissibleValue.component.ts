@@ -24,28 +24,12 @@ export class PermissibleValueComponent implements OnInit {
     oid: String;
     vsac = {};
     pVTypeheadVsacNameList;
+    public isAllowed: boolean = false;
 
-    public valueTypeOptions = {
-        data: [
-            {field: "Value List"},
-            {field: "Text"},
-            {field: "Date"},
-            {field: "Number"},
-            {field: "Externally Defined"}
-        ],
-        value: "field",
-        text: "field"
-    };
-    public dataTypeOptions = {
-        data: [
-            {field: "Text"},
-            {field: "Date"},
-            {field: "Number"},
-            {field: "File"}
-        ],
-        value: "field",
-        text: "field"
-    };
+    public allOptions = ["Value List", "Text", "Date", "Number", "Externally Defined"];
+
+    dataTypeOptions = ["Text", "Date", "Number", "File"];
+
     public containsKnownSystem: boolean = false;
     umlsTerms = [];
     newPermissibleValue = {};
@@ -63,16 +47,26 @@ export class PermissibleValueComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.elt.valueDomain.datatype === 'Value List' && !this.elt.valueDomain.datatypeValueList) {
-            this.elt.valueDomain.datatypeValueList = {};
-        }
-        if (this.elt.valueDomain.datatype === 'Number' && !this.elt.valueDomain.datatypeNumber) {
-            this.elt.valueDomain.datatypeNumber = {};
-        }
+        this.fixDatatype();
+        this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
         this.containsKnownSystem = this.elt.valueDomain.permissibleValues.filter(pv => {
                 return this.SOURCES[pv.codeSystemName];
             }).length > 0;
     }
+
+    fixDatatype() {
+        if (this.elt.valueDomain.datatype === 'Value List' && !this.elt.valueDomain.datatypeValueList)
+            this.elt.valueDomain.datatypeValueList = {};
+        if (this.elt.valueDomain.datatype === 'Number' && !this.elt.valueDomain.datatypeNumber)
+            this.elt.valueDomain.datatypeNumber = {};
+        if (this.elt.valueDomain.datatype === 'Text' && !this.elt.valueDomain.datatypeText)
+            this.elt.valueDomain.datatypeText = {};
+        if (this.elt.valueDomain.datatype === "Date" && !this.elt.valueDomain.datatypeDate)
+            this.elt.valueDomain.datatypeDate = {};
+        if (this.elt.valueDomain.datatype === "Externally Defined" && !this.elt.valueDomain.datatypeExternallyDefined)
+            this.elt.valueDomain.datatypeExternallyDefined = {};
+    }
+
 
     openNewPermissibleValueModal() {
         this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
@@ -80,27 +74,6 @@ export class PermissibleValueComponent implements OnInit {
             this.newPermissibleValue = {};
         }, () => {
         });
-    }
-
-    setValueType(valueType) {
-        if (valueType === "Value List" && !this.elt.valueDomain.datatypeText)
-            this.elt.valueDomain.datatypeText = {};
-        if (valueType === "Text" && !this.elt.valueDomain.datatypeText)
-            this.elt.valueDomain.datatypeText = {};
-        if (valueType === "Date" && !this.elt.valueDomain.datatypeDate)
-            this.elt.valueDomain.datatypeDate = {};
-        if (valueType === "Number" && !this.elt.valueDomain.datatypeNumber)
-            this.elt.valueDomain.datatypeNumber = {};
-        if (valueType === "Externally Defined" && !this.elt.valueDomain.datatypeExternallyDefined)
-            this.elt.valueDomain.datatypeExternallyDefined = {};
-    }
-
-    saveValueType(value) {
-        this.elt.valueDomain.datatype = value;
-    }
-
-    saveDataType(value) {
-        this.elt.valueDomain.datatypeValueList.datatype = value;
     }
 
     lookupUmls = function () {
@@ -117,6 +90,11 @@ export class PermissibleValueComponent implements OnInit {
     }
 
     addNewPermissibleValue() {
+        this.elt.valueDomain.permissibleValues.push(this.newPermissibleValue);
+    }
+
+    removeAllPermissibleValues() {
+        this.elt.valueDomain.permissibleValues = [];
     }
 
     sortPermissibleValue() {
@@ -178,57 +156,53 @@ export class PermissibleValueComponent implements OnInit {
     isVsInPv = function (vs) {
         let pvs = this.elt.valueDomain.permissibleValues;
         if (!pvs) return false;
-        return pvs.filter(pv =>
-            pv.valueMeaningCode === vs.code &&
-            pv.codeSystemName === vs.codeSystemName &&
-            pv.valueMeaningName === vs.displayName).length > 0
+        let temp = pvs.filter(pv => {
+            return pv.valueMeaningCode === vs.code &&
+                pv.codeSystemName === vs.codeSystemName &&
+                pv.valueMeaningName === vs.displayName
+        });
+        return temp.length > 0
     };
 
-    validatePvWithVsac = function () {
+    isPvInVSet(pv) {
+        let temp = this.vsacValueSet.filter(vsac => {
+            return pv.valueMeaningCode === vsac.code &&
+                pv.codeSystemName === vsac.codeSystemName &&
+                pv.valueMeaningName === vsac.displayName
+        });
+        return temp.length > 0;
+    };
+
+    validatePvWithVsac() {
         let pvs = this.elt.valueDomain.permissibleValues;
         if (!pvs) {
             return;
         }
-        pvs.forEach(function (pv) {
+        pvs.forEach(pv => {
             pv.isValid = this.isPvInVSet(pv);
         });
     };
 
     checkPvUnicity() {
         let validObject = deValidator.checkPvUnicity(this.elt.valueDomain);
-        /*
-         this.allValid = validObject.allValid;
-         this.pvNotValidMsg = validObject.pvNotValidMsg;
-         */
     };
 
     validateVsacWithPv() {
-        this.vsacValueSet.forEach(function (vsItem) {
+        this.vsacValueSet.forEach(vsItem => {
             vsItem.isValid = this.isVsInPv(vsItem);
         });
     };
 
-    runManualValidation() {
-        delete this.showValidateButton;
-        this.validatePvWithVsac();
-        this.validateVsacWithPv();
-        this.checkPvUnicity();
-    };
-
     addVsacValue(vsacValue) {
-        if (this.isVsInPv(vsacValue)) {
-            return;
-        }
-        this.elt.valueDomain.permissibleValues.push({
+        if (this.isVsInPv(vsacValue)) return;
+        else this.elt.valueDomain.permissibleValues.push({
             "permissibleValue": vsacValue.displayName,
             "valueMeaningName": vsacValue.displayName,
             "valueMeaningCode": vsacValue.code,
             "codeSystemName": vsacValue.codeSystemName,
             "codeSystemVersion": vsacValue.codeSystemVersion
         });
-        this.runManualValidation();
     };
-
 
     loadValueSet() {
         let dec = this.elt.dataElementConcept;
@@ -259,6 +233,15 @@ export class PermissibleValueComponent implements OnInit {
         this.loadValueSet();
         this.elt.unsaved = true;
         this.editMode = false;
+    };
+
+    selectFromUmls(term) {
+        this.newPermissibleValue["valueMeaningName"] = term.name;
+        this.newPermissibleValue["valueMeaningCode"] = term.ui;
+        this.newPermissibleValue["codeSystemName"] = "UMLS";
+        if (!this.newPermissibleValue["permissibleValue"]) {
+            this.newPermissibleValue["permissibleValue"] = term.name;
+        }
     };
 
 }

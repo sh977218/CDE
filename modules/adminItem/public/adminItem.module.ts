@@ -7,7 +7,7 @@ import { IdentifiersComponent } from "./components/identifiers.component";
 import { PropertiesComponent } from "./components/properties.component";
 import { NamingComponent } from "./components/naming.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
-import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
+import { InlineSelectEditDirective, InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageModule } from "angular-2-local-storage/dist/index";
@@ -29,6 +29,7 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
     ],
     declarations: [
         AttachmentsComponent,
+        InlineSelectEditDirective,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
@@ -49,6 +50,7 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
         ClassificationComponent
     ],
     exports: [
+        InlineSelectEditDirective,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,

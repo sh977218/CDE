@@ -2,16 +2,35 @@
     <h4>Values Allowed</h4>
     <div class="col-xs-2 text-right text_label">Value Type:</div>
     <div class="col-xs-10">
-        <inline-editor type="select" [(ngModel)]="elt.valueDomain.datatype" (onSave)="saveValueType($event)"
-                       (ngModelChange)="setValueType($event)" [options]="valueTypeOptions"></inline-editor>
-        <div *ngIf="elt.valueDomain.datatype === 'Externally Defined'" class="float-left">
+        <span *ngIf="editDtMode">
+            <select id="valueTypeSelect" [(ngModel)]="elt.valueDomain.datatype" (ngModelChange)="fixDatatype();">
+                <option value="">None Selected</option>
+                <option value="Value List">Value List</option>
+                <option value="Text">Text</option>
+                <option value="Date">Date</option>
+                <option value="Number">Number</option>
+                <option value="Externally Defined">Externally Defined</option>
+            </select>
             or
-            <input type="text" title="customDatatype" [(ngModel)]="elt.valueDomain.datatype"/>
-        </div>
+            <input ng-model="elt.valueDomain.datatype" name="datatypeFreeText"/>
+            <i class="fa fa-check-square-o" ng-click="editDtMode = false; stageElt(elt)" id="confirmDatatype"></i>
+            <i class="fa fa-trash-o" ng-click="editDtMode = false; reload({cdeId: elt._id});"></i>
+        </span>
+        <span *ngIf="!editDtMode">
+            <i title="Edit Value" role="link" *ngIf="isAllowed" class="fa fa-edit"
+               (click)="editDtMode = true" id="editDatatype"></i> {{elt.valueDomain.datatype}}
+        </span>
     </div>
+    <ng-container *ngIf="elt.valueDomain.definition">
+        <div class="col-xs-2 text-right text_label">Instructions:</div>
+        <div class="col-xs-10">
+            {{elt.valueDomain.definition}}
+        </div>
+    </ng-container>
     <div class="col-xs-2 text-right text_label">Unit of Measure:</div>
-    <div class="col-xs-10" id="uom">
-        <inline-editor type="text" [(ngModel)]="elt.valueDomain.uom"></inline-editor>
+    <div class="col-xs-10">
+        <inline-edit id="uom" [(model)]="elt.valueDomain.uom"
+                     (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
     </div>
     <div class="col-xs-2 text-right text_label">Ids:</div>
     <div class="col-xs-10">
@@ -25,45 +44,56 @@
     <ng-container *ngIf="elt.valueDomain.datatype === 'Text'">
         <div class="col-xs-2 text-right text_label">Minimum Length:</div>
         <div class="col-xs-10">
-            <inline-editor type="number" [(ngModel)]="elt.valueDomain.datatypeText.minLength"></inline-editor>
+            <inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength" [inputType]="'Number'"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Maximum Length:</div>
         <div class="col-xs-10">
-            <inline-editor type="number" [(ngModel)]="elt.valueDomain.datatypeText.maxLength"></inline-editor>
+            <inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength" [inputType]="'Number'"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Regular Expression:</div>
         <div class="col-xs-10">
-            <inline-editor type="text" [(ngModel)]="elt.valueDomain.datatypeText.regex"></inline-editor>
+            <inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Free text rule:</div>
         <div class="col-xs-10">
-            <inline-editor type="text" [(ngModel)]="elt.valueDomain.datatypeText.rule"></inline-editor>
+            <inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype === 'Number'">
         <div class="col-xs-2 text-right text_label">Minimum Value:</div>
         <div class="col-xs-10">
-            <inline-editor type="number" [(ngModel)]="elt.valueDomain.datatypeNumber.minValue"></inline-editor>
+            <inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
+                         [inputType]="'Number'"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Maximum Value:</div>
         <div class="col-xs-10">
-            <inline-editor type="number" [(ngModel)]="elt.valueDomain.datatypeNumber.maxValue"></inline-editor>
+            <inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
+                         [inputType]="'Number'"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Precision:</div>
         <div class="col-xs-10">
-            <inline-editor type="number" [(ngModel)]="elt.valueDomain.datatypeNumber.precision"></inline-editor>
+            <inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype === 'Date'">
         <div class="col-xs-2 text-right text_label">Date Format:</div>
         <div class="col-xs-10">
-            <inline-editor type="text" [(ngModel)]="elt.valueDomain.datatypeDate.format"></inline-editor>
+            <inline-edit id="datatypeDateFormat" [(model)]="elt.valueDomain.datatypeDate.format"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype === 'Externally Defined'">
         <div class="col-xs-2 text-right text_label">Link:</div>
         <div class="col-xs-10">
-            <inline-editor type="text" [(ngModel)]="elt.valueDomain.datatypeExternallyDefined.link"></inline-editor>
+            <inline-edit id="datatypeExternallyDefinedLink" [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Description:</div>
         <div class="col-xs-10">
@@ -76,8 +106,8 @@
         <h4>Permissible Value</h4>
         <div class="col-xs-2 text-right text_label">Datatype:</div>
         <div class="col-xs-10">
-            <inline-editor type="select" [(ngModel)]="elt.valueDomain.datatypeValueList.datatype"
-                           (onSave)="saveDataType($event)" [options]="dataTypeOptions"></inline-editor>
+            <inline-select-edit [(model)]="elt.valueDomain.datatypeValueList.datatype" (onOk)="saveDataType($event)"
+                                [isAllowed]="isAllowed" [allOptions]="dataTypeOptions"></inline-select-edit>
         </div>
 
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
@@ -106,7 +136,8 @@
                 </tr>
                 <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index">
                     <td>
-                        <inline-editor type="text" [(ngModel)]="pv.permissibleValue"></inline-editor>
+                        <inline-edit id="pvValueEdit" [(model)]="pv.permissibleValue" (onOk)="elt.unsaved = true;"
+                                     [isAllowed]="isAllowed"></inline-edit>
                     </td>
                     <td>{{pv.valueMeaningName}}</td>
                     <td>{{pv.valueMeaningCode}}</td>
@@ -136,7 +167,8 @@
                         {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
                     </td>
                     <td>
-                        <inline-editor type="text" [(ngModel)]="pv.valueMeaningDefinition"></inline-editor>
+                        <inline-edit id="pvMeaningEdit" [(model)]="pv.valueMeaningDefinition"
+                                     (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
                     </td>
                     <td>
                         <ng-container *ngIf="pv.notValid">
@@ -151,16 +183,16 @@
             </table>
         </ng-container>
         <div>
-            <button class="btn btn-small btn-default" (click)="openNewPermissibleValueModal()" role="button"
-                    title="Add Permissible Value">
+            <button class="btn btn-small btn-default" role="button" title="Add Permissible Value"
+                    (click)="openNewPermissibleValueModal()">
                 <i class="fa fa-plus"></i>Add Permissible Value
             </button>
-            <button class="btn btn-small btn-default" role="button" title="Remove All Values">
+            <button class="btn btn-small btn-default" role="button" title="Remove All Values"
+                    (click)="removeAllPermissibleValues()">
                 <i class="fa fa-trash-o"></i>Remove All Values
             </button>
         </div>
-    </ng-container>
-    <div>
+
         <h4>VSAC Value Set</h4>
         <a href="https://vsac.nlm.nih.gov" target="_blank">Lookup Value Sets here.</a>
 
@@ -216,9 +248,7 @@
                 </td>
             </tr>
         </table>
-
-    </div>
-
+    </ng-container>
 </div>
 
 <ng-template #newPermissibleValueContent id="newPermissibleValueModal" let-c="close" let-d="dismiss">
@@ -257,10 +287,10 @@
                        name="codeSystemInput" Placeholder="Code System"
                        (required)="newPermissibleValue.valueMeaningCode.length > 0"/>
             </div>
-            <div ng-if="umlsTerms.length > 0">
+            <div *ngIf="umlsTerms.length > 0">
                 <h4>Choices from UMLS: </h4>
-                <div *ngFor="let term of umlsTerms">
-                    <a (click)="selectFromUmls($index)" href="#">{{term.ui}} : {{term.name}}</a>
+                <div *ngFor="let term of umlsTerms; let index = i;">
+                    <a (click)="selectFromUmls(term)" href="#">{{term.ui}} : {{term.name}}</a>
                 </div>
             </div>
         </div>
