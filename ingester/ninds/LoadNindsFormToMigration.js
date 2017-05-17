@@ -168,7 +168,7 @@ function run() {
             let stream = NindsModel.find({}).stream();
             stream.on('data', function (ninds) {
                 stream.pause();
-                let formName = ninds.crfModuleGuideline.toLowerCase();
+                let formName = ninds.get('crfModuleGuideline').toLowerCase();
                 if (formName.indexOf("summary") > -1 ||
                     formName.indexOf("recommendations") > -1 ||
                     formName.indexOf("recommended") > -1 ||
