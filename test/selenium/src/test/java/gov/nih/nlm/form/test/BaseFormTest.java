@@ -47,6 +47,7 @@ public class BaseFormTest extends FormCommentTest {
     public void addSection(String title, String repeat, Integer sectionNumber) {
         WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
         WebElement targetElt = findElement(By.xpath("(//*[@class='node-drop-slot'])[" + (sectionNumber + 1) + "]"));
+        (new Actions(driver)).moveToElement(targetElt).perform();
         dragAndDrop(sourceElt, targetElt);
         textPresent("N/A");
         String sectionId = "section_" + sectionNumber;
