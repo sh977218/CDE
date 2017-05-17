@@ -40,13 +40,13 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public void addSectionBottom(String title, String repeat) {
-        int nbOfSections = driver.findElements(By.xpath("//*[@class='node-drop-slot']")).size();
+        int nbOfSections = driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']")).size();
         addSection(title, repeat, nbOfSections - 1);
     }
 
     public void addSection(String title, String repeat, Integer sectionNumber) {
         WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
-        WebElement targetElt = findElement(By.xpath("(//*[@class='node-drop-slot'])[" + (sectionNumber + 1) + "]"));
+        WebElement targetElt = findElement(By.xpath("(//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot'])[" + (sectionNumber + 1) + "]"));
         (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
         dragAndDrop(sourceElt, targetElt);
         textPresent("N/A");
