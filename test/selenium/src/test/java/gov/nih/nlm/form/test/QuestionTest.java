@@ -15,11 +15,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {
-        WebElement sourceElt = findElement(By.xpath("//button[@id='startAddingQuestions']"));
-        WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
-        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
-        dragAndDrop(sourceElt, targetElt);
-        textPresent("Search Questions");
+        addQuestionDialog(sectionNumber);
 
         findElement(By.id("ftsearch-input")).clear();
         textPresent("", By.id("ftsearch-input"));
@@ -29,6 +25,14 @@ public class QuestionTest extends BaseFormTest {
         textPresent("1 results");
         clickElement(By.xpath("//*[@class='modal-content']//button[following-sibling::a/*[@id='acc_link_0']]"));
         clickElement(By.id("cancelSelectQ"));
+    }
+
+    public void addQuestionDialog(int sectionNumber) {
+        WebElement sourceElt = findElement(By.xpath("//button[@id='startAddingQuestions']"));
+        WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
+        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+        dragAndDrop(sourceElt, targetElt);
+        textPresent("Search Questions");
     }
 
     public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {

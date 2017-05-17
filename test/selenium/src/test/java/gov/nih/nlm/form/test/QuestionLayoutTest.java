@@ -3,7 +3,7 @@ package gov.nih.nlm.form.test;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class QuestionLayoutTest extends BaseFormTest {
+public class QuestionLayoutTest extends QuestionTest {
 
     @Test
     public void questionsLayoutTest() {
@@ -20,19 +20,20 @@ public class QuestionLayoutTest extends BaseFormTest {
         textPresent(sec1);
         textPresent(sec2);
 
+        addQuestionDialog(0);
         textPresent("Browse by Classification");
-        // we are doing twice because of the double scroll bar and we are not sure how Selenium handles it.
-        scrollToTop();
-        scrollToTop();
         scrollToViewById("browseOrg-caCORE");
         clickElement(By.id("browseOrg-caCORE"));
         textPresent(" results for All Terms");
         clickElement(By.id("showHideFilters"));
         textPresent("Show Filters");
+        clickElement(By.id("cancelSelectQ"));
 
         clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
+        clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]"));
         textNotPresent(sec2);
         clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//*[contains(@class,'badge')]/*[contains(@class,'fa-check')]"));
         textNotPresent(sec1);
 
         textPresent("There is no content yet.");

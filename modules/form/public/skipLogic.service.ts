@@ -233,7 +233,7 @@ export class SkipLogicService {
                 }
             } else if (filteredQuestion.question.datatype === 'Date') {
                 if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date')
-                    return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '".';
+                    return tokens[2] + ' is not a valid date for "' + filteredQuestion.label + '".';
             }
         }
     }
