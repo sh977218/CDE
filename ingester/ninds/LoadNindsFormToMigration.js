@@ -169,10 +169,12 @@ function run() {
             stream.on('data', function (ninds) {
                 stream.pause();
                 let formName = ninds.crfModuleGuideline.toLowerCase();
-                if (formName.indexOf("summary of") > 0 ||
-                    formName.indexOf("recommendations by") > 0 ||
-                    formName.indexOf("summary") > 0 ||
-                    formName.indexOf("guidelines for") > 0) {
+                if (formName.indexOf("summary") > -1 ||
+                    formName.indexOf("recommendations") > -1 ||
+                    formName.indexOf("recommended") > -1 ||
+                    formName.indexOf("overview") > -1 ||
+                    formName.indexOf("guidelines") > -1
+                ) {
                     stream.resume();
                 } else {
                     let formId = ninds.get('formId');
