@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -40,17 +41,45 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public void addSectionBottom(String title, String repeat) {
-        int nbOfSections = driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']")).size();
+        String searchString;
+        try {
+            findElement(By.xpath("//tree-viewport/div/div/tree-node-drop-slot"));
+            searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+        } catch (TimeoutException e) {
+            searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+        }
+        int nbOfSections = driver.findElements(By.xpath(searchString)).size();
+        Assert.assertTrue(nbOfSections > 0);
         addSection(title, repeat, nbOfSections - 1);
     }
 
     public void addSection(String title, String repeat, Integer sectionNumber) {
-        WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
-        WebElement targetElt = findElement(By.xpath("(//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot'])[" + (sectionNumber + 1) + "]"));
-        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
-        dragAndDrop(sourceElt, targetElt);
-        textPresent("N/A");
         String sectionId = "section_" + sectionNumber;
+
+        String searchString;
+        try {
+            findElement(By.xpath("//tree-viewport/div/div/tree-node-drop-slot"));
+            searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+        } catch (TimeoutException e) {
+            searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+        }
+        // drag and drop selenium is buggy, try 5 times.
+        for (int i = 0; i < 5; i++) {
+            try {
+                WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
+                WebElement targetElt = findElement(By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]"));
+
+                (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+                dragAndDrop(sourceElt, targetElt);
+                textPresent("N/A", By.id(sectionId));
+                i = 10;
+            } catch (TimeoutException e) {
+                if (i == 4) {
+                    throw e;
+                }
+            }
+        }
+
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
