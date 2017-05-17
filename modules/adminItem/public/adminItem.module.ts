@@ -5,6 +5,7 @@ import { Select2Module } from "ng2-select2";
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
 import { PropertiesComponent } from "./components/properties.component";
+import { HistoryComponent } from "./components/history.component";
 import { NamingComponent } from "./components/naming.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
@@ -34,6 +35,7 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
         SortableArrayDirective,
         IdentifiersComponent,
         PropertiesComponent,
+        HistoryComponent,
         NamingComponent,
         ReferenceDocumentComponent,
         ClassificationComponent,
@@ -43,6 +45,7 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
     entryComponents: [
         IdentifiersComponent,
         PropertiesComponent,
+        HistoryComponent,
         NamingComponent,
         ReferenceDocumentComponent,
         AttachmentsComponent,
@@ -54,6 +57,7 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
         SortableArrayDirective,
         IdentifiersComponent,
         PropertiesComponent,
+        HistoryComponent,
         NamingComponent,
         ReferenceDocumentComponent,
         ClassificationComponent

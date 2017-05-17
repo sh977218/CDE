@@ -447,6 +447,9 @@ angular.module('systemModule').directive('cdeAdminItemAttachments', downgradeCom
 import {PropertiesComponent} from "../../../adminItem/public/components/properties.component";
 angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComponent({component: PropertiesComponent, inputs: ['elt'], outputs: []}));
 
+import {HistoryComponent} from "../../../adminItem/public/components/history.component";
+angular.module('systemModule').directive('cdeAdminItemHistory', downgradeComponent({component: HistoryComponent, inputs: ['elt'], outputs: []}));
+
 import {NamingComponent} from "../../../adminItem/public/components/naming.component";
 angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({component: NamingComponent, inputs: ['elt'], outputs: []}));
 
