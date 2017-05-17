@@ -58,6 +58,7 @@
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
                                                 [elt]="elt"
+                                                [inScoreCdes]="inScoreCdes"
                                                 [node]="node"
                                                 (stageElt)="stageElt.emit()"></cde-form-description-question>
                                     </div>

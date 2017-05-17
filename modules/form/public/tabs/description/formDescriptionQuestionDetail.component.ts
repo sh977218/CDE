@@ -15,7 +15,6 @@ import { FormattedValue } from "../../../../core/public/models.model";
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() elt: CdeForm;
-    @Input() inScoreCdes: any;
     @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();

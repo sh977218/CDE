@@ -65,11 +65,9 @@ public class FormEditTest extends BaseFormTest {
         textNotPresent("Confirm");
 
         String newQuestionUnitsOfMeasure = "New Units of Measure";
-        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'formDescriptionUoms')]//*[contains(@class,'.select2-selection__choice')]"));
-        clickElement(By.xpath("//*[@id='q_uom_list_0']/span/span/i"));
-        findElement(By.xpath("//*[@id='q_uom_list_0']/span/form/input")).clear();
-        findElement(By.xpath("//*[@id='q_uom_list_0']/span/form/input")).sendKeys(newQuestionUnitsOfMeasure);
-        findElement(By.xpath("//*[@id='q_uom_list_0']/span/form/input")).sendKeys(Keys.ENTER);
+        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]"));
+        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]")).sendKeys(newQuestionUnitsOfMeasure);
+        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'formDescriptionUoms')]//input[contains(@class,'select2-search__field')]")).sendKeys(Keys.ENTER);
 
         saveEditQuestionSectionById("question_0_0");
         textPresent("Data unknown text", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));

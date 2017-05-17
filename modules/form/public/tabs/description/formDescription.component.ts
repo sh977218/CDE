@@ -142,6 +142,7 @@ export class FormDescriptionComponent implements OnInit {
             this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
+            this.addIds(this.elt.formElements, "");
             this.stageElt.emit();
         });
     }
@@ -152,6 +153,7 @@ export class FormDescriptionComponent implements OnInit {
         this.addIndex(this.toolDropTo.parent.data.formElements, inForm, this.toolDropTo.index++);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
+        this.addIds(this.elt.formElements, "");
         this.stageElt.emit();
     }
 
