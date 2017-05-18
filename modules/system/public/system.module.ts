@@ -5,7 +5,6 @@ import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
 
 import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListDirective } from "./upgrade-components";
-import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { UserCommentsComponent } from "./components/userComments.component";
@@ -42,7 +41,6 @@ import { InlineEditComponent } from "./components/inlineEdit.component";
         LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
-        PlaceHoldEmptyPipe,
         ProfileComponent,
         RegistrationComponent,
         TruncateLongNamePipe,

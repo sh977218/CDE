@@ -16,7 +16,6 @@ public class SectionInSectionTest extends BaseFormTest {
         String formName = "Section in Section Form";
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
-        startAddingQuestions();
         // Add 2nd Section
         questionTest.addQuestionToSection("Smoking History Ind", 0);
         questionTest.addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);

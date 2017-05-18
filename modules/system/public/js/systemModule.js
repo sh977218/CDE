@@ -225,6 +225,7 @@ angular.module('systemModule').filter('bytes', [function () {
     };
 }]);
 
+//ported
 angular.module('systemModule').filter('tagsToArray', [function () {
     return function (input) {
         return input.map(function (m) {
@@ -409,9 +410,6 @@ import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
 import {ClassificationService} from "../../../core/public/classification.service";
 angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
-
-import {SkipLogicService} from "../../../core/public/skipLogic.service";
-angular.module('systemModule').factory('SkipLogicUtil', downgradeInjectable(SkipLogicService));
 
 import {HomeComponent} from "../components/home/home.component";
 angular.module('systemModule').directive('cdeHome', downgradeComponent({component: HomeComponent, inputs: [], outputs: []}));
