@@ -27,13 +27,13 @@ exports.getFormCdes = function(form){
     return exports.getFormQuestions(form).map(function(q){return q.cde;});
 };
 
-exports.flattenFormElement = (fe) => {
-    let result = [];
+exports.flattenFormElement = function (fe) {
+    var result = [];
     fe.formElements.map(function (subFe) {
         if (!subFe.formElements || subFe.formElements.length === 0) {
             result.push(subFe);
         } else {
-            let subEs = exports.flattenFormElement(subFe);
+            var subEs = exports.flattenFormElement(subFe);
             subEs.forEach(function (e) {result.push(e);});
         }
     });
