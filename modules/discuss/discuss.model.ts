@@ -1,4 +1,5 @@
 export class Comment {
+    _id: string;
     text: string;
     user: string;
     username: string;
@@ -6,6 +7,7 @@ export class Comment {
     pendingApproval: boolean;
     linkedTab: string;
     status: string;
+    currentlyReplying: boolean;
     replies: [
         {
             text: string

@@ -1,28 +1,31 @@
 import { Component, Inject, Input, OnDestroy, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
 import { Comment } from "../../discuss.model";
-import { SocketIoModule, SocketIoConfig, Socket} from 'ng2-socket-io';
 
 import "rxjs/add/operator/map";
+import * as io from "socket.io-client";
+import { TimerObservable } from "rxjs/observable/TimerObservable";
 
 @Component({
     selector: "cde-discuss-area",
     templateUrl: "./discussArea.component.html"
 })
 
-const config: SocketIoConfig = { url: window.publicUrl + "/comment", options: {} };
 
 export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     constructor(private http: Http,
                 @Inject("Alert") private alert,
-                @Inject("userResource") private userService) {};
+                @Inject("userResource") private userService
+    ) {};
 
     newComment: Comment = new Comment();
     eltComments: Comment[];
 
-//     $scope.allOnlineUsers = {};
-    
+    subscriptions: any = {};
+
+    socket = io((<any>window).publicUrl + "/comment");
+
     tempReplies: any = {};
     avatarUrls: any = {};
     showAllReplies: any = {};
@@ -30,16 +33,27 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     @Input() public elt: any;
     @Input() public eltId: string;
     @Input() public eltName: string;
-
     @Input() public selectedElt: string;
-
 
     ngOnInit () {
         this.loadComments();
+
+        this.socket.emit("room", this.eltId);
+        this.socket.on("commentUpdated", () => this.loadComments());
+        this.socket.on("userTyping", data => {
+            this.eltComments.forEach(c => {
+                if (c._id === data.commentId && data.username !== this.userService.user.username) {
+                    if (this.subscriptions[c._id]) this.subscriptions[c._id].unsubscribe();
+                    c.currentlyReplying = true;
+                    this.subscriptions[c._id] = TimerObservable.create(10000)
+                        .take(1).subscribe(t => c.currentlyReplying = false);
+                }
+            });
+        });
     };
 
     ngOnDestroy () {
-
+        this.socket.close();
     }
 
     loadComments = function (cb?) {
@@ -58,26 +72,6 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         });
     };
 
-//     var socket = socketIo.connect(window.publicUrl + "/comment");
-//     socket.emit("room", $scope.getEltId());
-//     socket.on("commentUpdated", loadComments);
-//     socket.on("userTyping", function (data) {
-//     $scope.eltComments.forEach(function (c) {
-//         $timeout.cancel(c.timer);
-//         if (c._id === data.commentId && data.username !== userResource.user.username) {
-//             c.currentReplying = true;
-//             c.timer = $timeout(function () {
-//                 c.currentReplying = false;
-//             }, 10000);
-//         }
-//     });
-//     $timeout($scope.apply, 0);
-// });
-//
-//     $scope.$on("$destroy", function () {
-//     socket.close();
-// });
-//
     addAvatar = function(username) {
         if (username && !this.avatarUrls[username]) {
             this.http.get('/user/avatar/' + username).map(r => r.text()).subscribe(res => {
@@ -86,10 +80,6 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         }
     };
 
-//
-//     userResource.getPromise().then(function () {
-//     addAvatar(userResource.user.username);
-// });
     canRemoveComment = (com) =>  this.userService.doesUserOwnElt(this.elt) ||
         (this.userService.user && this.userService.user._id && (this.userService.user._id === com.user));
 
@@ -102,13 +92,13 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             comment: this.newComment.text,
             linkedTab: this.selectedElt,
             element: {eltId: this.eltId}
-    }).map(r => r.json()).subscribe(res => {
-        this.newComment.content = "";
-        this.loadComments(() => {
-            this.alert.addAlert("success", res.message);
+        }).map(r => r.json()).subscribe(res => {
+            this.newComment.content = "";
+            this.loadComments(() => {
+                this.alert.addAlert("success", res.message);
+            });
         });
-    });
-};
+    };
 
     removeComment (commentId, replyId) {
         this.http.post("/comments/" + this.elt.elementType + "/remove", {
@@ -136,14 +126,9 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             this.loadComments();
         });
     };
-//
-//     $scope.cancelReply = function (comment) {
-//     $scope.tempReplies[comment._id] = '';
-// };
-//
-//     $scope.changeOnReply = function (comment) {
-//     socket.emit('currentReplying', $scope.getEltId(), comment._id);
-// };
-// }
-//
+
+    cancelReply = (comment) => this.tempReplies[comment._id] = '';
+
+    changeOnReply = (comment) => this.socket.emit('currentReplying', this.eltId, comment._id);
+
 }
