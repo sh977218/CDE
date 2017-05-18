@@ -62,7 +62,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                     let updateSkipLogic = false;
                     let tokens = this.skipLogicService.tokenSplitter(fe.skipLogic.condition);
                     tokens.forEach((token, i) => {
-                        if (i % 2 === 0 && token === this.nameSelectModal.question.label) {
+                        if (i % 2 === 0 && token === '"' + this.nameSelectModal.question.label + '"') {
                             this.nameSelectModal.updateSkipLogic = true;
                             updateSkipLogic = true;
                             if (doUpdate && selectedNaming)

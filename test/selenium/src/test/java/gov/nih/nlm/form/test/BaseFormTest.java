@@ -169,10 +169,10 @@ public class BaseFormTest extends FormCommentTest {
     public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
                               boolean displayError, String errorMessage) {
         findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
-        findElement(By.xpath("(//*[contains(@id,'typeahead-0-')])[" + clickNth + "]/*[contains(.,'" + textToBePresent + "')]"));
-        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-0-')])")).size();
+        findElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]/*[contains(.,'" + textToBePresent + "')]"));
+        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])")).size();
         Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
-        clickElement(By.xpath("(//*[contains(@id,'typeahead-0-')])[" + clickNth + "]"));
+        clickElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]"));
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
     }
