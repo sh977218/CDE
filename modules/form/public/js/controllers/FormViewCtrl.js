@@ -3,9 +3,9 @@ import * as formShared from "../../../../form/shared/formShared";
 
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-        '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil', 'Alert',
+        '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'Alert',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil, Alert) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, Alert) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -256,6 +256,14 @@ angular.module('formModule').controller
         $scope.elt.unsaved = true;
     };
 
+    $scope.setIsValid = function (valid) {
+        $scope.isFormValid = valid;
+    };
+
+    $scope.cachePut = function (event) {
+        $scope.cache.put(event.key, event.value);
+    };
+
     $scope.classificationToFilter = function () {
         if ($scope.elt) {
             return $scope.elt.classification;
@@ -314,137 +322,6 @@ angular.module('formModule').controller
         });
 
     };
-
-    $scope.updateSkipLogic = function (section) {
-        if (!section.skipLogic) return;
-        section.skipLogic.condition = "'" + section.skipLogic.condition1 + "'='" + section.skipLogic.condition3 + "'";
-        $scope.stageElt();
-    };
-
-    function validateSingleExpression(tokens, previousQuestions) {
-        var filteredQuestions = previousQuestions.filter(function (pq) {
-            var label = pq.label;
-            if (!label || label.length === 0) label = pq.question.cde.name;
-            return questionSanitizer(label) === tokens[0];
-        });
-        if (filteredQuestions.length !== 1) {
-            return '"' + tokens[0] + '" is not a valid question label';
-        } else {
-            var filteredQuestion = filteredQuestions[0];
-            if (filteredQuestion.question.datatype === 'Value List') {
-                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(function (a) {
-                        return questionSanitizer(a.permissibleValue);
-                    }).indexOf(tokens[2]) < 0) {
-                    return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
-                }
-            } else if (filteredQuestion.question.datatype === 'Number') {
-                if (isNaN(tokens[2]))
-                    return '"' + tokens[2] + '" is not a valid number for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid number.";
-                else if (filteredQuestion.question.datatypeNumber) {
-                    var answerNumber = parseInt(tokens[2]);
-                    var max = filteredQuestion.question.datatypeNumber.maxValue;
-                    var min = filteredQuestion.question.datatypeNumber.minValue;
-                    if (min != undefined && answerNumber < min)
-                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
-                    if (max != undefined && answerNumber > max)
-                        return '"' + tokens[2] + '" is bigger than a maximal answer for "' + filteredQuestion.label + '"';
-                }
-            } else if (filteredQuestion.question.datatype === 'Date') {
-                if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date')
-                    return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '".';
-            }
-        }
-    }
-
-    var preSkipLogicSelect = "";
-
-    $scope.validateSkipLogic = function(skipLogic, previousQuestions, $item) {
-        if (!skipLogic) skipLogic = {condition: ''};
-        if ($item) {
-            skipLogic.condition = preSkipLogicSelect + $item;
-        }
-        $timeout(function() {
-            var logic = skipLogic.condition.trim();
-            var tokens = SkipLogicUtil.tokenSplitter(logic);
-            delete skipLogic.validationError;
-            if (tokens.unmatched) {
-                $scope.isFormValid = false;
-                return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
-            }
-            if (!logic || logic.length === 0) {
-                $scope.stageElt($scope.elt);
-                return;
-            }
-            if ((tokens.length - 3) % 4 !== 0) {
-                $scope.isFormValid = false;
-                return skipLogic.validationError = "Unexpected number of tokens in expression " + tokens.length;
-            }
-            var err = validateSingleExpression(tokens.slice(0, 3), previousQuestions);
-            if (err) {
-                $scope.isFormValid = false;
-                return skipLogic.validationError = err;
-            }
-            $scope.stageElt($scope.elt);
-        }, 0);
-
-    };
-
-     $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion, index) {
-         if (!currentContent) currentContent = '';
-         if (!thisQuestion.skipLogic) thisQuestion.skipLogic = {condition: ''};
-
-         var tokens = SkipLogicUtil.tokenSplitter(currentContent);
-         $scope.tokens = tokens;
-
-         preSkipLogicSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
-
-         var options = [];
-         if (tokens.length % 4 === 0) {
-             options = previousQuestions.filter(function (q, i) {
-                 //Will assemble a list of questions
-                 if (i >= index) return false; //Exclude myself
-                 else if (q.elementType !== "question") return false; //This element is not a question, ignore
-                 else if (q.question.datatype === 'Value List' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
-                 else if (q.question.datatype === 'Date' || q.question.datatype === 'Number') return true;
-                 else return true;
-             }).map(function (q) {
-                 var label = q.label;
-                 if (!label || label.length === 0) label = q.question.cde.name;
-                 return '"' + questionSanitizer(label) + '" ';
-             });
-         } else if (tokens.length % 4 === 1) {
-             options = ["=", "<", ">", ">=", "<=", "!="];
-         } else if (tokens.length % 4 === 2) {
-             options = getAnswer(previousQuestions, tokens[tokens.length - 2]);
-         } else if (tokens.length % 4 === 3) {
-             options = ["AND", "OR"];
-         }
-         return options;
-    };
-
-    function questionSanitizer(label) {
-        return label.replace(/"/g, "'").trim();
-    }
-
-    function getAnswer(previousLevel, questionName) {
-        var questions = previousLevel.filter(function (q) {
-            var label = q.label;
-            if (!label || label.length === 0) label = q.question.cde.name;
-            if (label && questionName) return questionSanitizer(label) === questionName;
-        });
-        if (questions.length <= 0) return [];
-        var question = questions[0];
-        if (question.question.datatype === 'Value List') {
-            var answers = question.question.answers;
-            return answers.map(function (a) {
-                return '"' + questionSanitizer(a.permissibleValue) + '"';
-            });
-        } else if (question.question.datatype === 'Number') {
-            return ['"{{' + question.question.datatype + '}}"'];
-        } else if (question.question.datatype === 'Date') {
-            return ['"{{MM/DD/YYYY}}"'];
-        }
-    }
 
     $scope.missingCdes = [];
     $scope.inScoreCdes = [];

@@ -57,7 +57,38 @@ angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$pa
     };
 }]);
 
+angular.module('formModule').directive('formSearch', [function () {
+    return {
+        scope: {result: '&', cache: '<', cachePut: '&'},
+        template: require('../html/formSearch.html'),
+        controller: ["$scope", function ($scope) {
+            $scope.addMode = 0;
+            $scope.openFormInNewTab = true;
+            $scope.searchAdded = function (fe) {
+                $scope.result(fe);
+            }
+        }]
+    };
+}]);
+
+angular.module('formModule').directive('questionSearch', [function () {
+    return {
+        scope: {result: '&', cache: '<', cachePut: '&'},
+        template: require('../html/questionSearch.html'),
+        controller: ["$scope", function ($scope) {
+            $scope.addMode = 0;
+            $scope.openCdeInNewTab = true;
+            $scope.searchAdded = function (fe) {
+                $scope.result(fe);
+            }
+        }]
+    };
+}]);
+
 import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
+
+import {FormDescriptionComponent} from "../tabs/description/formDescription.component";
+angular.module('formModule').directive('cdeFormDescription', downgradeComponent({component: FormDescriptionComponent, inputs: ['elt', 'inScoreCdes', 'cache'], outputs: ['isFormValid', 'stageElt', 'cachePut']}));
 
 import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
 angular.module('formModule').directive('cdeMergeForm', downgradeComponent({component: MergeFormComponent, inputs: ['left', 'right'], outputs: []}));

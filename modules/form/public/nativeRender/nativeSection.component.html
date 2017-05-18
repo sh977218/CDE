@@ -23,7 +23,8 @@
                                [formElement]="formElement" [numSubQuestions]="numSubQuestions"></cde-native-section-matrix>
     <div *ngIf="sectionType() === 'section'">
         <div *ngFor="let element of formElement.formElements; let i = index">
-            <div *ngIf="nativeRenderService.evaluateSkipLogicAndClear(element.skipLogic?.condition, formElement.formElements, element)">
+            <div *ngIf="skipLogicService.evaluateSkipLogicAndClear(element.skipLogic?.condition, formElement.formElements,
+                    element, nativeRenderService.getElt(), nativeRenderService.getErrors())">
                 <div *ngIf="element.elementType === 'question'" [ngClass]="{'keep-with-previous':i===0}"
                      class="native-question-header native-question-answers">
                     <cde-native-question [formElement]="element" [index]="i"
