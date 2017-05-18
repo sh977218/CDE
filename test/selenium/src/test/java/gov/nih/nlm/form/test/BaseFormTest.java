@@ -79,6 +79,7 @@ public class BaseFormTest extends FormCommentTest {
             }
         }
 
+        hangon(1); // allow time for id to be processed
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
