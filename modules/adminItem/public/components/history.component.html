@@ -4,11 +4,13 @@
         This Element has no history.
     </ng-container>
     <ng-container *ngIf="priorCdes.length > 0">
-        <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
-        <label for="showVersionedHistory">Only show versioned revisions.</label>
-        <button class="btn btn-default">
-            <i class="fa fa-files-o"></i> Compare
-        </button>
+        <div style="line-height:40px;">
+            <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
+            <label for="showVersionedHistory">Only show versioned revisions.</label>
+            <button class="btn btn-default" *ngIf="numberSelected===2">
+                <i class="fa fa-files-o"></i> Compare
+            </button>
+        </div>
         <table class="table table-hover" id="historyTable">
             <caption>List of previous versions. Click rows to select them.</caption>
             <tr>
@@ -20,8 +22,8 @@
                 <th>View</th>
             </tr>
             <ng-container *ngFor="let priorCde of priorCdes; let i = index">
-                <tr *ngIf="!showVersioned || priorCde.version !== priorCdes[i-1].version"
-                    (click)="priorCde.selected = !priorCde.selected;">
+                <tr *ngIf="!showVersioned || priorCde?.version !== priorCdes[i-1]?.version"
+                    (click)="selectRow(priorCde)">
                     <td>
                         <i class="fa fa-check-square-o" *ngIf="priorCde.selected" aria-hidden="true"></i>
                         <i class="fa fa-square-o" *ngIf="!priorCde.selected" aria-hidden="true"></i>
@@ -29,15 +31,17 @@
                     <td>
                         {{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}
                     </td>
-                    <td>{{priorCde.updatedBy.username}}</td>
-                    <td>{{i === 0?priorCde._changeNote:priorCde.changeNote}}</td>
-                    <td>{{priorCde.version}}</td>
-                    <td *ngIf="i === 0" class="historyView disabledText">
-                        Viewing
-                    </td>
-                    <td *ngIf="i > 0" class="historyView historyViewButton"
-                        (click)="clickView($event,'/deview?cdeId=',priorCde._id);" id="prior-{{i}}">
-                        <span class="fa fa-eye fa-2x"></span>
+                    <td>{{priorCde.updatedBy?.username}}</td>
+                    <td>{{priorCde.changeNote}}</td>
+                    <td>{{priorCde?.version}}</td>
+                    <td>
+                        <ng-container *ngIf="priorCde.viewing">
+                            Viewing
+                        </ng-container>
+                        <ng-container *ngIf="!priorCde.viewing">
+                            <a [href]="'/deview?cdeId='+priorCde._id" target="_blank">
+                                <span class="fa fa-eye fa-2x gray"></span></a>
+                        </ng-container>
                     </td>
                 </tr>
             </ng-container>

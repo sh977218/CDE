@@ -5,12 +5,17 @@ import "rxjs/add/operator/map";
 
 @Component({
     selector: "cde-admin-item-history",
-    templateUrl: "./history.component.html"
+    templateUrl: "./history.component.html",
+    styles: [`
+        caption {
+            caption-side: top;
+        }`]
 })
 export class HistoryComponent implements OnInit {
     @Input() public elt: any;
     showVersioned: boolean = false;
     public priorCdes = [];
+    public numberSelected: number = 0;
 
     constructor(@Inject("Alert") private alert,
                 private http: Http,
@@ -22,9 +27,23 @@ export class HistoryComponent implements OnInit {
             this.http.get('/priorcdes/' + this.elt._id).map(res => res.json())
                 .subscribe(res => {
                     this.priorCdes = res.reverse();
+                    this.elt.viewing = true;
                     this.priorCdes.splice(0, 0, this.elt);
                 }, err => this.alert.addAlert("danger", "Error retrieving history: " + err));
         }
 
+    }
+
+    selectRow(priorCde) {
+        if (this.numberSelected === 2 && !priorCde.selected) {
+            priorCde.selected = false;
+        } else if (this.numberSelected === 2 && priorCde.selected) {
+            priorCde.selected = false;
+            this.numberSelected--;
+        } else {
+            priorCde.selected = !priorCde.selected;
+            if (priorCde.selected) this.numberSelected++;
+            else this.numberSelected--;
+        }
     }
 }
