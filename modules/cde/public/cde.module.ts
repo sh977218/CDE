@@ -14,6 +14,8 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
 import { KeysPipe } from "./components/KeysPipe";
+import { CoreModule } from "../../core/public/core.module";
+import { SystemModule } from "../../system/public/system.module";
 
 @NgModule({
     imports: [
@@ -21,7 +23,9 @@ import { KeysPipe } from "./components/KeysPipe";
         FormsModule,
         NgbModule,
         AdminItemModule,
-        BoardModule
+        BoardModule,
+        CoreModule,
+        SystemModule
     ],
     declarations: [
         KeysPipe,

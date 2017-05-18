@@ -20,6 +20,7 @@ import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.comp
 import { JsonpModule } from "@angular/http";
 import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
+import { InlineEditComponent } from "./components/inlineEdit.component";
 
 @NgModule({
     imports: [
@@ -46,7 +47,8 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         RegistrationComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
-        UsersMgtComponent
+        UsersMgtComponent,
+        InlineEditComponent
     ],
     entryComponents: [
         DailyUsageComponent,
@@ -61,7 +63,8 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         UsersMgtComponent
     ],
     exports: [
-        NavigationComponent
+        NavigationComponent,
+        InlineEditComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -6,11 +6,9 @@ import * as deValidator from "../../../cde/shared/deValidator";
 import * as _ from "lodash";
 
 @Component({
-    moduleId: "permissibleValue",
     selector: "cde-permissible-value",
     providers: [NgbActiveModal],
-    templateUrl: "permissibleValue.component.html",
-    encapsulation: ViewEncapsulation.None,
+    templateUrl: "permissibleValue.component.html"
 })
 export class PermissibleValueComponent implements OnInit {
     @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
@@ -24,11 +22,11 @@ export class PermissibleValueComponent implements OnInit {
     oid: String;
     vsac = {};
     pVTypeheadVsacNameList;
-    public isAllowed: boolean = false;
 
     public allOptions = ["Value List", "Text", "Date", "Number", "Externally Defined"];
 
-    dataTypeOptions = ["Text", "Date", "Number", "File"];
+    dataTypeOptions = ["Text", "Date", "Number", "File", "Externally Defined"];
+    dataTypeValueListOptions = ["Text", "Date", "Number", "File"];
 
     public containsKnownSystem: boolean = false;
     umlsTerms = [];
@@ -48,7 +46,6 @@ export class PermissibleValueComponent implements OnInit {
 
     ngOnInit(): void {
         this.fixDatatype();
-        this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
         this.containsKnownSystem = this.elt.valueDomain.permissibleValues.filter(pv => {
                 return this.SOURCES[pv.codeSystemName];
             }).length > 0;
@@ -241,5 +238,9 @@ export class PermissibleValueComponent implements OnInit {
             this.newPermissibleValue["permissibleValue"] = term.name;
         }
     };
+
+    foo(event) {
+        console.log(event);
+    }
 
 }

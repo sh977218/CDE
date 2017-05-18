@@ -2,7 +2,7 @@
     <h4>Values Allowed</h4>
     <div class="col-xs-2 text-right text_label">Value Type:</div>
     <div class="col-xs-10">
-        <span *ngIf="editDtMode">
+        <span *ngIf="editMode">
             <select id="valueTypeSelect" [(ngModel)]="elt.valueDomain.datatype" (ngModelChange)="fixDatatype();">
                 <option value="">None Selected</option>
                 <option value="Value List">Value List</option>
@@ -13,10 +13,10 @@
             </select>
             or
             <input ng-model="elt.valueDomain.datatype" name="datatypeFreeText"/>
-            <i class="fa fa-check-square-o" ng-click="editDtMode = false; stageElt(elt)" id="confirmDatatype"></i>
-            <i class="fa fa-trash-o" ng-click="editDtMode = false; reload({cdeId: elt._id});"></i>
+            <i class="fa fa-check-square-o" (click)="editMode = false; stageElt(elt)" id="confirmDatatype"></i>
+            <i class="fa fa-trash-o" (click)="editMode = false; reload({cdeId: elt._id});"></i>
         </span>
-        <span *ngIf="!editDtMode">
+        <span *ngIf="!editMode">
             <i title="Edit Value" role="link" *ngIf="isAllowed" class="fa fa-edit"
                (click)="editDtMode = true" id="editDatatype"></i> {{elt.valueDomain.datatype}}
         </span>
@@ -30,7 +30,7 @@
     <div class="col-xs-2 text-right text_label">Unit of Measure:</div>
     <div class="col-xs-10">
         <inline-edit id="uom" [(model)]="elt.valueDomain.uom"
-                     (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                     (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
     </div>
     <div class="col-xs-2 text-right text_label">Ids:</div>
     <div class="col-xs-10">
@@ -45,22 +45,22 @@
         <div class="col-xs-2 text-right text_label">Minimum Length:</div>
         <div class="col-xs-10">
             <inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength" [inputType]="'Number'"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Maximum Length:</div>
         <div class="col-xs-10">
             <inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength" [inputType]="'Number'"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Regular Expression:</div>
         <div class="col-xs-10">
             <inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Free text rule:</div>
         <div class="col-xs-10">
             <inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype === 'Number'">
@@ -68,32 +68,32 @@
         <div class="col-xs-10">
             <inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
                          [inputType]="'Number'"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Maximum Value:</div>
         <div class="col-xs-10">
             <inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
                          [inputType]="'Number'"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Precision:</div>
         <div class="col-xs-10">
             <inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype === 'Date'">
         <div class="col-xs-2 text-right text_label">Date Format:</div>
         <div class="col-xs-10">
             <inline-edit id="datatypeDateFormat" [(model)]="elt.valueDomain.datatypeDate.format"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype === 'Externally Defined'">
         <div class="col-xs-2 text-right text_label">Link:</div>
         <div class="col-xs-10">
             <inline-edit id="datatypeExternallyDefinedLink" [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Description:</div>
         <div class="col-xs-10">
@@ -106,10 +106,10 @@
         <h4>Permissible Value</h4>
         <div class="col-xs-2 text-right text_label">Datatype:</div>
         <div class="col-xs-10">
-            <inline-select-edit [(model)]="elt.valueDomain.datatypeValueList.datatype" (onOk)="saveDataType($event)"
-                                [isAllowed]="isAllowed" [allOptions]="dataTypeOptions"></inline-select-edit>
+            <cde-inline-edit [(model)]="elt.valueDomain.datatypeValueList.datatype" (ngModelChange)="fixDatatype()"
+                             [isAllowed]="isAllowedModel.isAllowed(elt)" [inputType]="'select'"
+                             [selectOptions]="dataTypeOptions"></cde-inline-edit>
         </div>
-
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
             <span *ngFor="let source of SOURCES | keys" style="margin-left: 50px">
                 <input [(ngModel)]="SOURCES[source].selected" type="checkbox" (disabled)="SOURCES[source].disabled"
@@ -117,7 +117,7 @@
                 <span *ngIf="SOURCES[source].disabled"> (Login to enable)</span>
             </span>
         </div>
-        <ng-container *ngIf="!elt.valueDomain.permissibleValues.length > 0">
+        <ng-container *ngIf="!(elt.valueDomain.permissibleValues.length > 0)">
             <h4>No Permissible Values</h4>
         </ng-container>
         <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0">
@@ -136,12 +136,12 @@
                 </tr>
                 <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index">
                     <td>
-                        <inline-edit id="pvValueEdit" [(model)]="pv.permissibleValue" (onOk)="elt.unsaved = true;"
-                                     [isAllowed]="isAllowed"></inline-edit>
+                        <cde-inline-edit [model]="pv.permissibleValue" [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                         (onOk)="foo($event)"></cde-inline-edit>
                     </td>
-                    <td>{{pv.valueMeaningName}}</td>
-                    <td>{{pv.valueMeaningCode}}</td>
-                    <td>{{pv.codeSystemName}}</td>
+                    <td [textContent]="pv.valueMeaningName"></td>
+                    <td [textContent]="pv.valueMeaningCode"></td>
+                    <td [textContent]="pv.codeSystemName"></td>
                     <td *ngIf="SOURCES['UMLS'].selected">
                         {{SOURCES['UMLS'].codes[pv.valueMeaningCode].code}}
                     </td>
@@ -167,17 +167,22 @@
                         {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
                     </td>
                     <td>
-                        <inline-edit id="pvMeaningEdit" [(model)]="pv.valueMeaningDefinition"
-                                     (onOk)="elt.unsaved = true;" [isAllowed]="isAllowed"></inline-edit>
+                        <ng-container *ngIf="isAllowed">
+                            <inline-edit id="pvMeaningEdit" [(model)]="pv.valueMeaningDefinition"
+                                         (onOk)="elt.unsaved = true;"
+                                         [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+                        </ng-container>
                     </td>
                     <td>
-                        <ng-container *ngIf="pv.notValid">
-                            <span class="btn-default fa fa-warning text-danger" id="pv-{{index}}-notValid"></span>
-                        </ng-container>
-                        <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(index)"
-                              title="Remove" href=""></span>
-                        <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
-                                        (cb)="sortPermissibleValue();"></sortable-array>
+                        <!--
+                                                <ng-container *ngIf="pv.notValid">
+                                                    <span class="btn-default fa fa-warning text-danger" id="pv-{{index}}-notValid"></span>
+                                                </ng-container>
+                                                <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(index)"
+                                                      title="Remove" href=""></span>
+                                                <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
+                                                                (cb)="sortPermissibleValue();"></sortable-array>
+                        -->
                     </td>
                 </tr>
             </table>
