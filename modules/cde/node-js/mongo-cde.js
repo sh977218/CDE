@@ -387,6 +387,9 @@ exports.byOtherIdAndNotRetired = function (source, id, cb) {
         if (err) cb(err, null);
         else if (cdes.length > 1)
             cb("Multiple results, returning first. source: " + source + " id: " + id, cdes[0]);
+        else if (cdes.length === 0) {
+            cb("No results", null);
+        }
         else cb(err, cdes[0]);
     });
 };
