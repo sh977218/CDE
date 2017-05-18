@@ -263,6 +263,10 @@ angular.module('resourcesSystem', ['ngResource'])
             userResource.checkMail();
         }, 600000);
 
+        this.doesUserOwnElt = function (elt) {
+            return this.user && (this.user.siteAdmin || (this.user._id && (this.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
+        };
+
         return this;
     }])
     .factory("AutoCompleteResource", ["$http", function ($http) {
