@@ -239,8 +239,8 @@ export class PermissibleValueComponent implements OnInit {
         }
     };
 
-    foo(event) {
-        console.log(event);
+    stage(event = null) {
+        this.elt.unsave = true;
     }
 
 }

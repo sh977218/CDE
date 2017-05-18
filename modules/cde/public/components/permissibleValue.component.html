@@ -137,7 +137,7 @@
                 <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index">
                     <td>
                         <cde-inline-edit [model]="pv.permissibleValue" [isAllowed]="isAllowedModel.isAllowed(elt)"
-                                         (onOk)="foo($event)"></cde-inline-edit>
+                                         (onOk)="stageElt()"></cde-inline-edit>
                     </td>
                     <td [textContent]="pv.valueMeaningName"></td>
                     <td [textContent]="pv.valueMeaningCode"></td>
@@ -168,21 +168,19 @@
                     </td>
                     <td>
                         <ng-container *ngIf="isAllowed">
-                            <inline-edit id="pvMeaningEdit" [(model)]="pv.valueMeaningDefinition"
-                                         (onOk)="elt.unsaved = true;"
-                                         [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+                            <cde-inline-edit [model]="pv.valueMeaningDefinition"
+                                             [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                             (onOk)="stageElt()"></cde-inline-edit>
                         </ng-container>
                     </td>
                     <td>
-                        <!--
-                                                <ng-container *ngIf="pv.notValid">
-                                                    <span class="btn-default fa fa-warning text-danger" id="pv-{{index}}-notValid"></span>
-                                                </ng-container>
-                                                <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(index)"
-                                                      title="Remove" href=""></span>
-                                                <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
-                                                                (cb)="sortPermissibleValue();"></sortable-array>
-                        -->
+                        <ng-container *ngIf="pv.notValid">
+                            <span class="btn-default fa fa-warning text-danger" id="pv-{{index}}-notValid"></span>
+                        </ng-container>
+                        <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(index)"
+                              title="Remove" href=""></span>
+                        <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
+                                        (cb)="sortPermissibleValue();"></sortable-array>
                     </td>
                 </tr>
             </table>
