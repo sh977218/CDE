@@ -16,7 +16,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     constructor(private http: Http,
                 @Inject("Alert") private alert,
-                @Inject("userResource") private userService
+                @Inject("userResource") public userService
     ) {};
 
     newComment: Comment = new Comment();
