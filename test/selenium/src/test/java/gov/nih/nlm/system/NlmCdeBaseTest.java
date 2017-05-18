@@ -857,16 +857,6 @@ public class NlmCdeBaseTest {
         setVisibleStatus("minStatus-Incomplete");
     }
 
-    protected void enableBetaFeature() {
-        clickElement(By.id("searchSettings"));
-        classNotPresent("btn-success", By.id("betaEnabled"));
-        classPresent("btn-danger", By.id("betaDisabled"));
-        clickElement(By.id("betaEnabled"));
-        classPresent("btn-success", By.id("betaEnabled"));
-        classNotPresent("btn-danger", By.id("betaDisabled"));
-        driver.navigate().back();
-    }
-
     protected void loadDefaultSettings() {
         clickElement(By.id("searchSettings"));
         clickElement(By.id("loadDefaultSettings"));
