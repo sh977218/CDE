@@ -1,24 +1,24 @@
-var async = require('async'),
-    NindsModel = require('./../createMigrationConnection').MigrationNindsModel,
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    mongo_data = require('../../modules/system/node-js/mongo-data'),
-    MigrationForm = require('./../createMigrationConnection').MigrationFormModel,
-    classificationShared = require('../../modules/system/shared/classificationShared')
-    ;
+var async = require('async');
+var NindsModel = require('./../createMigrationConnection').MigrationNindsModel;
+var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
+var mongo_data = require('../../modules/system/node-js/mongo-data');
+var MigrationForm = require('./../createMigrationConnection').MigrationFormModel;
+var classificationShared = require('../../modules/system/shared/classificationShared');
+var updateShare = require('../updateShare');
 
 var importDate = new Date().toJSON();
 var count = 0;
 
 function checkExistingNaming(existingNaming, ninds) {
-    var crfModuleGuideline = ninds.get('crfModuleGuideline').trim();
-    var description = ninds.get('description').trim();
-    var existFormName;
+    let crfModuleGuideline = ninds.get('crfModuleGuideline').trim();
+    let description = ninds.get('description').trim();
+    let existFormName;
     existingNaming.forEach(function (existingName) {
         if (existingName.designation.trim() === crfModuleGuideline && existingName.definition.trim() === description)
             existFormName = true;
     });
     if (!existFormName && crfModuleGuideline.length > 0) {
-        var newFormName = {
+        let newFormName = {
             designation: crfModuleGuideline,
             definition: description,
             languageCode: "EN-US"
@@ -30,14 +30,14 @@ function checkExistingNaming(existingNaming, ninds) {
     }
 }
 function checkExistingReferenceDocuments(existingReferenceDocuments, ninds) {
-    var downloadLink = ninds.get('downloadLink').trim();
-    var existReferenceDocument;
+    let downloadLink = ninds.get('downloadLink').trim();
+    let existReferenceDocument;
     existingReferenceDocuments.forEach(function (existingReferenceDocument) {
         if (existingReferenceDocument.uri.trim() === downloadLink)
             existReferenceDocument = true;
     });
     if (!existReferenceDocument && downloadLink && downloadLink.length > 0) {
-        var newReferenceDocument = {
+        let newReferenceDocument = {
             uri: (downloadLink.indexOf('http://') !== -1 || downloadLink.indexOf('https://') !== -1) ? downloadLink : ''
         };
         existingReferenceDocuments.push(newReferenceDocument);
@@ -46,58 +46,55 @@ function checkExistingReferenceDocuments(existingReferenceDocuments, ninds) {
         console.log('ninds._id: ' + ninds.id);
     }
 }
-function mergeIntoForm(ninds, existingForm) {
-    // merges naming
-    var existingNaming = existingForm.get('naming');
-    checkExistingNaming(existingNaming, ninds);
-
-    // merges reference documents
-    var existingReferenceDocuments = existingForm.get('referenceDocuments');
-    checkExistingReferenceDocuments(existingReferenceDocuments, ninds);
+function mergeForm(ninds, existingForm) {
+    let newForm = createForm(ninds);
+    updateShare.mergeNaming(newForm, existingForm);
+    updateShare.mergeSources(newForm, existingForm);
+    updateShare.mergeIds(newForm, existingForm);
+    updateShare.mergeProperties(newForm, existingForm);
+    updateShare.mergeReferenceDocument(newForm, existingForm);
 
     existingForm.updated = importDate;
-    classificationShared.transferClassifications(createForm(ninds), existingForm);
+    classificationShared.transferClassifications(newForm, existingForm);
 }
 
 function createForm(ninds) {
-    var formId = ninds.get('formId');
-    var naming = [];
-    var formName = {
+    let formId = ninds.get('formId');
+    let naming = [];
+    let formName = {
         designation: ninds.get('crfModuleGuideline').trim(), definition: ninds.get('description').trim(),
         languageCode: "EN-US",
         context: {
             contextName: "Health",
             acceptability: "preferred"
         },
+        tags: [],
         source: 'NINDS'
     };
     naming.push(formName);
 
-    var sources = [];
+    let sources = [];
     sources.push({
         sourceName: 'NINDS',
         updated: ninds.get('versionDate')
     });
 
-    var ids = [];
-    var crfId = {
+    let ids = [];
+    let crfId = {
         source: 'NINDS',
         id: formId,
         'version': ninds.get('versionNum').length > 0 ? Number(ninds.get('versionNum')).toString() : ''
     };
-    if (formId && formId.length > 0)
-        ids.push(crfId);
+    if (formId && formId.length > 0) ids.push(crfId);
 
-    var referenceDocuments = [];
-    var referenceDocument = {
+    let referenceDocuments = [];
+    let referenceDocument = {
         uri: (ninds.get('downloadLink').indexOf('http://') !== -1 || ninds.get('downloadLink').indexOf('https://') !== -1) ? ninds.get('downloadLink') : '',
         source: 'NINDS'
     };
-    if (referenceDocument.uri.length > 0) {
-        referenceDocuments.push(referenceDocument);
-    }
+    if (referenceDocument.uri.length > 0) referenceDocuments.push(referenceDocument);
 
-    var domainSubDomain = {
+    let domainSubDomain = {
         "name": "Domain",
         elements: [{
             "name": ninds.get('domainName'),
@@ -112,8 +109,8 @@ function createForm(ninds) {
         });
     }
 
-    var elements = [];
-    var diseaseElement;
+    let elements = [];
+    let diseaseElement;
     if (ninds.get('diseaseName') === 'Traumatic Brain Injury') {
         diseaseElement = {
             name: 'Disease',
@@ -139,7 +136,7 @@ function createForm(ninds) {
     }
     elements.push(domainSubDomain);
     elements.push(diseaseElement);
-    var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
+    let classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
     return {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'batchloader'},
@@ -154,110 +151,151 @@ function createForm(ninds) {
         referenceDocuments: referenceDocuments,
         ids: ids,
         classification: classification,
+        properties: [],
         formElements: []
     };
 }
 function run() {
-    MigrationForm.remove({}, function () {
-        var stream = NindsModel.find({}).stream();
-        stream.on('data', function (ninds) {
-            stream.pause();
-            var formId = ninds.get('formId');
-            var filterName = ninds.get('crfModuleGuideline').replace('\nInternational Spinal Cord Society (ISCOS)', '')
-                .trim();
-            ninds.set('crfModuleGuideline', filterName);
-            MigrationForm.find({'ids.id': formId}, function (err, existingForms) {
+    async.series([
+        function (cb) {
+            MigrationForm.remove({}, function (err) {
                 if (err) throw err;
-                if (existingForms.length === 0) {
-                    var newForm = createForm(ninds);
-                    console.log('start cde of form: ' + formId);
-                    var cdes = ninds.get('cdes');
-                    if (cdes.length > 0)
-                        newForm.formElements.push({
-                            elementType: 'section',
-                            instructions: {value: ''},
-                            label: '',
-                            formElements: []
-                        });
-                    async.forEachSeries(cdes, function (cde, doneOneCDE) {
-                        var cdeId = cde.cdeId;
-                        mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
-                            if (err) throw (err + ' cdeId: ' + cdeId);
-                            else {
-                                var question = {
-                                    cde: {
-                                        tinyId: existingCde.tinyId,
-                                        name: existingCde.naming[0].designation,
-                                        version: existingCde.version,
-                                        ids: existingCde.ids
-                                    },
-                                    datatype: existingCde.valueDomain.datatype,
-                                    uom: existingCde.valueDomain.uom
-                                };
-                                if (question.datatype === 'Value List') {
-                                    question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
-                                    question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
-                                    question.answers = existingCde.valueDomain.permissibleValues;
-                                } else if (question.datatype === 'Text') {
-                                    question.datatypeText = existingCde.valueDomain.datatypeText;
-                                } else if (question.datatype === 'Number') {
-                                    question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
-                                } else if (question.datatype === 'Date') {
-                                    question.datatypeDate = existingCde.valueDomain.datatypeDate;
-                                } else {
-                                    throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
-                                }
-                                var formElement = {
-                                    elementType: 'question',
-                                    instructions: {value: cde.instruction},
-                                    question: question,
-                                    formElements: []
-                                };
-                                if (cde.questionText === 'N/A' || cde.questionText.trim().length === 0) {
-                                    formElement.label = existingCde.naming[0].designation;
-                                    formElement.hideLabel = true;
-                                } else {
-                                    formElement.label = cde.questionText;
-                                }
-                                newForm.formElements[0].formElements.push(formElement);
-                                doneOneCDE();
-                            }
-                        });
-                    }, function doneAll() {
-                        console.log('finished all cdes in form ' + formId);
-                        var newFormObj = new MigrationForm(newForm);
-                        newFormObj.save(function (err) {
-                            if (err) throw err;
-                            else {
-                                count++;
-                                console.log('count: ' + count);
-                                stream.resume();
-                            }
-                        });
-                    });
-                } else if (existingForms.length === 1) {
-                    var existingForm = existingForms[0];
-                    mergeIntoForm(ninds, existingForm);
-                    existingForm.markModified("classification");
-                    existingForm.markModified("formElements");
-                    existingForm.save(function (err) {
-                        if (err) throw err;
-                        else stream.resume();
-                    });
+                console.log("Migration Form removed.");
+                cb();
+            });
+        },
+        function (cb) {
+            let stream = NindsModel.find({}).stream();
+            stream.on('data', function (ninds) {
+                stream.pause();
+                let formName = ninds.get('crfModuleGuideline').toLowerCase();
+                if (formName.indexOf("summary") > -1 ||
+                    formName.indexOf("recommendations") > -1 ||
+                    formName.indexOf("recommended") > -1 ||
+                    formName.indexOf("overview") > -1 ||
+                    formName.indexOf("guidelines") > -1
+                ) {
+                    stream.resume();
                 } else {
-                    console.log(existingForms.length + ' forms found, ids.id:' + ninds.formId);
-                    process.exit(1);
+                    let formId = ninds.get('formId');
+                    MigrationForm.find({'ids.id': formId}, function (err, existingForms) {
+                        if (err) throw err;
+                        if (existingForms.length === 0) {
+                            let newForm = createForm(ninds);
+                            console.log('start cde of form: ' + formId);
+                            let cdes = ninds.get('cdes');
+                            if (cdes.length > 0)
+                                newForm.formElements.push({
+                                    elementType: 'section',
+                                    instructions: {value: ''},
+                                    label: '',
+                                    formElements: []
+                                });
+                            async.forEachSeries(cdes, function (cde, doneOneCDE) {
+                                let cdeId = cde.cdeId;
+                                mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
+                                    if (err || !existingCde) throw (err);
+                                    else {
+                                        let question = {
+                                            cde: {
+                                                tinyId: existingCde.tinyId,
+                                                name: existingCde.naming[0].designation,
+                                                version: existingCde.version,
+                                                ids: existingCde.ids
+                                            },
+                                            datatype: existingCde.valueDomain.datatype,
+                                            uom: existingCde.valueDomain.uom
+                                        };
+                                        if (question.datatype === 'Value List') {
+                                            question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
+                                            question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
+
+                                            let permissibleValues = [];
+                                            let pvsArray = cde.permissibleValue.split(';');
+                                            let isPvValueNumber = /^\d+$/.test(pvsArray[0]);
+                                            let pdsArray = cde.permissibleDescription.split(';');
+                                            if (pvsArray.length !== pdsArray.length) {
+                                                console.log('*******************permissibleValue and permissibleDescription do not match.');
+                                                console.log('*******************ninds:\n' + ninds);
+                                                console.log('*******************cde:\n' + cde);
+                                                process.exit(1);
+                                            }
+                                            for (let i = 0; i < pvsArray.length; i++) {
+                                                if (pvsArray[i].length > 0) {
+                                                    let pv = {
+                                                        permissibleValue: pvsArray[i],
+                                                        valueMeaningDefinition: pdsArray[i]
+                                                    };
+                                                    if (isPvValueNumber) {
+                                                        pv.valueMeaningName = pdsArray[i];
+                                                    } else {
+                                                        pv.valueMeaningName = pvsArray[i];
+                                                    }
+                                                    permissibleValues.push(pv);
+                                                }
+                                            }
+                                            question.answers = permissibleValues;
+                                        } else if (question.datatype === 'Text') {
+                                            question.datatypeText = existingCde.valueDomain.datatypeText;
+                                        } else if (question.datatype === 'Number') {
+                                            question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+                                        } else if (question.datatype === 'Date') {
+                                            question.datatypeDate = existingCde.valueDomain.datatypeDate;
+                                        } else if (question.datatype === 'File') {
+                                            question.datatypeDate = existingCde.valueDomain.datatypeDate;
+                                        } else {
+                                            throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
+                                        }
+                                        let formElement = {
+                                            elementType: 'question',
+                                            instructions: {value: cde.instruction},
+                                            question: question,
+                                            formElements: []
+                                        };
+                                        if (cde.questionText === 'N/A' || cde.questionText.trim().length === 0) {
+                                            formElement.label = existingCde.naming[0].designation;
+                                            formElement.hideLabel = true;
+                                        } else {
+                                            formElement.label = cde.questionText;
+                                        }
+                                        newForm.formElements[0].formElements.push(formElement);
+                                        doneOneCDE();
+                                    }
+                                });
+                            }, function doneAll() {
+                                new MigrationForm(newForm).save(function (err) {
+                                    if (err) throw err;
+                                    else {
+                                        count++;
+                                        console.log('count: ' + count);
+                                        stream.resume();
+                                    }
+                                });
+                            });
+                        } else if (existingForms.length === 1) {
+                            let existingForm = existingForms[0];
+                            mergeForm(ninds, existingForm);
+                            existingForm.markModified("classification");
+                            existingForm.markModified("formElements");
+                            existingForm.save(function (err) {
+                                if (err) throw err;
+                                else stream.resume();
+                            });
+                        } else {
+                            console.log(existingForms.length + ' forms found, formId: ' + ninds.formId);
+                            process.exit(1);
+                        }
+                    });
                 }
             });
-        });
+            stream.on('end', function (err) {
+                if (err) throw err;
+                if (cb) cb();
+            });
 
-        stream.on('end', function (err) {
-            if (err) throw err;
-            else {
-                console.log('finished');
-                process.exit(0);
-            }
-        });
+        }], function () {
+        console.log('Finished.');
+        process.exit(0);
     });
 }
 

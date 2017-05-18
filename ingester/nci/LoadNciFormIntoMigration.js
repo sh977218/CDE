@@ -6,7 +6,7 @@ var async = require('async'),
     MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
     classificationShared = require('../../modules/system/shared/classificationShared'),
     classificationMapping = require('./caDSRClassificationMapping.json')
-    ;
+;
 
 var orgName = 'NCI';
 var source = 'caDSR';
@@ -291,7 +291,7 @@ function run() {
             stream.on('data', function (nci) {
                 stream.pause();
                 var nciObj;
-                if (nci.toObject)  nciObj = nci.toObject().form;
+                if (nci.toObject) nciObj = nci.toObject().form;
                 validateNciForm(nciObj);
                 MigrationFormModel.find({'ids.id': nciObj.publicID[0]}, function (err, existingForms) {
                     if (err) throw err;
@@ -316,7 +316,7 @@ function run() {
                 nciOrg.save(function (e) {
                     if (e) throw e;
                     if (cb) cb();
-                    //noinspection JSUnresolvedVariable
+
                     process.exit(0);
                 });
             });
