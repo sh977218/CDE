@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
 import { DomSanitizer } from "@angular/platform-browser";
+import { SkipLogicService } from "../skipLogic.service";
+import { CdeForm, DisplayProfile } from "../form.model";
 
 @Component({
     selector: "cde-native-render",
@@ -8,9 +10,9 @@ import { DomSanitizer } from "@angular/platform-browser";
     providers: [NativeRenderService]
 })
 export class NativeRenderComponent implements OnInit {
-    @Input() eltLoaded: any;
-    @Input() elt: any;
-    @Input() profile: any;
+    @Input() eltLoaded: {promise: Promise<void>};
+    @Input() elt: CdeForm;
+    @Input() profile: DisplayProfile;
     @Input() submitForm: string;
 
     endpointUrl: string;
@@ -18,6 +20,7 @@ export class NativeRenderComponent implements OnInit {
     mapping: any;
 
     constructor(private sanitizer: DomSanitizer,
+                public skipLogicService: SkipLogicService,
                 public nativeRenderService: NativeRenderService) {
         this.formUrl = window.location.href;
         this.endpointUrl = (<any>window).endpointUrl;

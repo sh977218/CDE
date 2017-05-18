@@ -702,6 +702,11 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
 
+    protected void scrollContainerDownBy(WebElement c, Integer y) {
+        String jsScroll = "arguments[0].scrollTop += " + Integer.toString(y) + ";";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, c);
+    }
+
     private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");

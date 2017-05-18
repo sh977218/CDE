@@ -19,7 +19,7 @@
 
         <div attr.id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
             <div *ngIf="formElement.question.isScore">Score: <span
-                    [textContent]="nativeRenderService.score(formElement)"></span></div>
+                    [textContent]="formService.score(formElement, nativeRenderService.getElt())"></span></div>
             <div *ngIf="!formElement.question.isScore">
                 <div [ngSwitch]="formElement.question.datatype">
                     <div *ngSwitchCase="'Value List'">
@@ -55,7 +55,8 @@
                                     <div *ngIf="pv?.subQuestions">
                                         <div *ngFor="let fe of pv.subQuestions; let j = index">
                                             <div *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
-                                               || nativeRenderService.evaluateSkipLogicAndClear(fe.skipLogic?.condition, pv.subQuestions, fe)"
+                                               || skipLogicService.evaluateSkipLogicAndClear(fe.skipLogic?.condition,
+					       pv.subQuestions, fe, nativeRenderService.getElt(), nativeRenderService.getErrors())"
                                                  [ngClass]="{'native-question-oneline-r': pv.subQuestions && isOneLiner(pv.subQuestions[0], (pv && pv.subQuestions ? pv.subQuestions.length : 0)),
                                                             'native-box': pv.subQuestions && !isOneLiner(fe, (pv && pv.subQuestions ? pv.subQuestions.length : 0))}"
                                                  class="native-question-header">
@@ -137,7 +138,8 @@
                 <div *ngIf="pv.nonValuelist && pv.subQuestions">
                     <div *ngFor="let fe of pv.subQuestions; let j = index">
                         <div *ngIf="nativeRenderService.getNativeRenderType() !== this.nativeRenderService.SHOW_IF
-                                        || nativeRenderService.evaluateSkipLogicAndClear(fe.skipLogic?.condition, pv.subQuestions, fe)"
+                                        || skipLogicService.evaluateSkipLogicAndClear(fe.skipLogic?.condition,
+					pv.subQuestions, fe, nativeRenderService.getElt(), nativeRenderService.getErrors())"
                              [ngClass]="{'native-question-oneline-r': pv.subQuestions && isOneLiner(pv.subQuestions[0], (pv && pv.subQuestions ? pv.subQuestions.length : 0))}"
                              class="native-question-header">
                             <cde-native-question
