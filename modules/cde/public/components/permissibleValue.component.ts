@@ -55,11 +55,11 @@ export class PermissibleValueComponent implements OnInit {
     }
 
     fixDatatype() {
-        if (this.elt.valueDomain.datatype === 'Value List' && !this.elt.valueDomain.datatypeValueList)
+        if (this.elt.valueDomain.datatype === "Value List" && !this.elt.valueDomain.datatypeValueList)
             this.elt.valueDomain.datatypeValueList = {};
-        if (this.elt.valueDomain.datatype === 'Number' && !this.elt.valueDomain.datatypeNumber)
+        if (this.elt.valueDomain.datatype === "Number" && !this.elt.valueDomain.datatypeNumber)
             this.elt.valueDomain.datatypeNumber = {};
-        if (this.elt.valueDomain.datatype === 'Text' && !this.elt.valueDomain.datatypeText)
+        if (this.elt.valueDomain.datatype === "Text" && !this.elt.valueDomain.datatypeText)
             this.elt.valueDomain.datatypeText = {};
         if (this.elt.valueDomain.datatype === "Date" && !this.elt.valueDomain.datatypeDate)
             this.elt.valueDomain.datatypeDate = {};
@@ -81,7 +81,7 @@ export class PermissibleValueComponent implements OnInit {
             .subscribe(res => {
                 if (res.result && res.result.results)
                     this.umlsTerms = res.result.results;
-            })
+            });
     };
 
     removePv(index) {
@@ -115,7 +115,7 @@ export class PermissibleValueComponent implements OnInit {
                             source.codes[code] = {code: "", meaning: "Retrieving..."};
 
                     } else this.alert.addAlert("danger", "Unknown source in pv code " + code);
-                })
+                });
             });
         } else
             this.alert.addAlert("danger", "Unknown source in pv source: " + src);
@@ -137,8 +137,7 @@ export class PermissibleValueComponent implements OnInit {
                             __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                         });
                     else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
-                }, err => {
-                })
+                }, err => this.alert.addAlert("danger", err));
         });
         console.log("a");
     };
@@ -156,20 +155,20 @@ export class PermissibleValueComponent implements OnInit {
     isVsInPv = function (vs) {
         let pvs = this.elt.valueDomain.permissibleValues;
         if (!pvs) return false;
-        let temp = pvs.filter(pv => {
-            return pv.valueMeaningCode === vs.code &&
-                pv.codeSystemName === vs.codeSystemName &&
-                pv.valueMeaningName === vs.displayName
-        });
-        return temp.length > 0
+        let temp = pvs.filter(pv =>
+            pv.valueMeaningCode === vs.code &&
+            pv.codeSystemName === vs.codeSystemName &&
+            pv.valueMeaningName === vs.displayName
+        );
+        return temp.length > 0;
     };
 
     isPvInVSet(pv) {
-        let temp = this.vsacValueSet.filter(vsac => {
-            return pv.valueMeaningCode === vsac.code &&
-                pv.codeSystemName === vsac.codeSystemName &&
-                pv.valueMeaningName === vsac.displayName
-        });
+        let temp = this.vsacValueSet.filter(vsac =>
+            pv.valueMeaningCode === vsac.code &&
+            pv.codeSystemName === vsac.codeSystemName &&
+            pv.valueMeaningName === vsac.displayName
+        );
         return temp.length > 0;
     };
 
@@ -213,8 +212,8 @@ export class PermissibleValueComponent implements OnInit {
                 res => {
                     let data = res["ns0:RetrieveValueSetResponse"];
                     if (data) {
-                        for (var i = 0; i < data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
-                            let vsac = data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$'];
+                        for (let i = 0; i < data["ns0:ValueSet"][0]["ns0:ConceptList"][0]["ns0:Concept"].length; i++) {
+                            let vsac = data["ns0:ValueSet"][0]["ns0:ConceptList"][0]["ns0:Concept"][i]["$"];
                             this.vsacValueSet.push(vsac);
                             this.pVTypeheadVsacNameList.push(vsac.displayName);
                         }
@@ -222,10 +221,9 @@ export class PermissibleValueComponent implements OnInit {
                     } else this.alert.addAlert("danger", "Error: No data retrieved from VSAC.");
                 },
                 err => {
-                    console.log('err');
+                    console.log("err");
                     this.alert.addAlert("danger", "Error querying VSAC");
-                }
-            )
+                });
         }
     };
 
