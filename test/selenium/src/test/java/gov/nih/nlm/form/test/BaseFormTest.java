@@ -41,13 +41,12 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public void addSectionBottom(String title, String repeat) {
+        hangon(2);
         String searchString;
-        try {
-            findElement(By.xpath("//tree-viewport/div/div/tree-node-drop-slot"));
+        if (driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-drop-slot")).size() > 0)
             searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
-        } catch (TimeoutException e) {
+        else
             searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
-        }
         int nbOfSections = driver.findElements(By.xpath(searchString)).size();
         Assert.assertTrue(nbOfSections > 0);
         addSection(title, repeat, nbOfSections - 1);
@@ -56,13 +55,13 @@ public class BaseFormTest extends FormCommentTest {
     public void addSection(String title, String repeat, Integer sectionNumber) {
         String sectionId = "section_" + sectionNumber;
 
+        hangon(2);
         String searchString;
-        try {
-            findElement(By.xpath("//tree-viewport/div/div/tree-node-drop-slot"));
+        if (driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-drop-slot")).size() > 0)
             searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
-        } catch (TimeoutException e) {
+        else
             searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
-        }
+
         // drag and drop selenium is buggy, try 5 times.
         for (int i = 0; i < 5; i++) {
             try {
