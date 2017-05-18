@@ -66,6 +66,6 @@ async.series([
             }
         });
     }, function () {
-        //noinspection JSUnresolvedVariable
+
         process.exit(0);
     }]);

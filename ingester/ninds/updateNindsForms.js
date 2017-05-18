@@ -3,12 +3,13 @@
  this script does not update org
  */
 var async = require('async'),
+    _ = require('lodash'),
     MigrationFormModel = require('../createMigrationConnection').MigrationFormModel,
     mongo_form = require('../../modules/form/node-js/mongo-form'),
     FormModel = mongo_form.Form,
     classificationShared = require('../../modules/system/shared/classificationShared'),
     updateShare = require('../updateShare')
-    ;
+;
 
 var importDate = new Date().toJSON();
 
@@ -30,7 +31,8 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
     var deepDiff = updateShare.compareObjects(existingForm, migrationForm);
     if (!deepDiff || deepDiff.length === 0) {
         // nothing changed, remove from input
-        existingForm.imported = importDate;
+        existingForm.imported = new Date().toJSON();
+        existingForm.markModified("imported");
         existingForm.save(function (err) {
             if (err) throw "Unable to update import date";
             migrationForm.remove(function (err) {
@@ -40,30 +42,31 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
             });
         });
     } else if (deepDiff.length > 0) {
-        newForm.naming = migrationForm.naming;
-        newForm.sources = migrationForm.sources;
+        updateShare.mergeNaming(migrationForm, newForm);
+        updateShare.mergeSources(migrationForm, newForm);
+        updateShare.mergeIds(migrationForm, newForm);
+        updateShare.mergeProperties(migrationForm, newForm);
+        updateShare.mergeReferenceDocument(migrationForm, newForm);
         newForm.version = migrationForm.version;
         newForm.changeNote = "Bulk update from source";
-        newForm.imported = importDate;
-        newForm.referenceDocuments = migrationForm.referenceDocuments;
+        newForm.imported = new Date().toJSON();
         newForm.formElements = migrationForm.formElements;
-        newForm.properties = newForm.properties;
 
         updateShare.removeClassificationTree(newForm, orgName);
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
         newForm._id = existingForm._id;
         try {
+            newForm.updated = new Date().toJSON();
             mongo_form.update(newForm, {username: "batchloader"}, function (err) {
                 if (err) {
                     console.log("Cannot save Form.");
                     console.log(newForm);
                     throw err;
-                }
-                else migrationForm.remove(function (err) {
-                    if (err) console.log("unable to remove " + err);
+                } else migrationForm.remove(function (err) {
+                    if (err) throw err;
                     console.log('------------------------------\n');
-                    processFormCb();
                     changed++;
+                    processFormCb();
                 });
             });
         } catch (e) {
@@ -75,18 +78,19 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
     } else {
         console.log("Something wrong with deepDiff");
         console.log(deepDiff);
+        process.exit(1);
     }
 }
 
 
 function doMigrationFormModel(formId, migrationForm, source, orgName, findFormDone) {
     var formCond = {
-        archived: false,
+        "stewardOrg.name": "NINDS",
+        "archived": false,
         "registrationState.registrationStatus": {$not: /Retired/},
-        created: {$ne: importDate}
+        "created": {$ne: importDate}
     };
-    FormModel.find(formCond)
-        .where("ids").elemMatch(function (elem) {
+    FormModel.find(formCond).where("ids").elemMatch(function (elem) {
         elem.where("source").equals(source);
         elem.where("id").equals(formId);
     }).exec(function (err, existingForms) {
