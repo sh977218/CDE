@@ -12,7 +12,7 @@
     </div>
     <br/>
 
-    <div class="comment" id="comment_{{commentIndex}}" [ngClass]="{currentTabComment:currentTab === comment.linkedTab}"
+    <div class="comment" id="comment_{{commentIndex}}" [ngClass]="{currentTabComment:selectedElt === comment.linkedTab}"
          *ngFor="let comment of eltComments; let commentIndex = index">
         <div *ngIf="comment.linkedTab === selectedElt" class="comment-arrow-outer"></div>
         <div *ngIf="comment.linkedTab === selectedElt" class="comment-arrow-inner"></div>
