@@ -1119,10 +1119,6 @@ div + .questionPlaceholder {
     border-left: 2px solid rgba(201, 200, 200, 0.88) !important;
 }
 
-.betaFeature {
-    color: green
-}
-
 #sidebar-wrapper {
     /*border: 1px solid rgb(220, 220, 220);*/
     border-radius: 5px;

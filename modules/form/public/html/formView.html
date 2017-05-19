@@ -62,9 +62,9 @@
                     <li ng-if="user._id">
                         <a id='formPublishExport' ng-click="preparePublishExport()" target="_blank">Published Form</a>
                     </li>
-                    <li ng-if="user._id && enableBeta">
+                    <li ng-if="user._id">
                         <a id='nihRedCap' ng-href="form/{{elt._id}}?type=REDCap" target="_blank">
-                            REDCap <sup class="betaFeature">beta</sup></a>
+                            REDCap</a>
                     </li>
                     <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
                 </ul>

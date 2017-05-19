@@ -14,7 +14,6 @@ public class RedCapExportTest extends BaseFormTest {
     public void checkRedCapExportZipFileSize() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Frontal Behavioral Inventory (FBI)");
-        enableBetaFeature();
         clickElement(By.id("export"));
         clickElement(By.id("nihRedCap"));
         long zipSize = 0;
