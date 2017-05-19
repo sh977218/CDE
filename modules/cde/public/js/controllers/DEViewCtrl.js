@@ -35,6 +35,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
     }
+    $scope.setCurrentTab = function (thisTab) {
+        $scope.currentTab = thisTab;
+    };
 
     $scope.switchCommentMode = function(){
         $scope.deferredEltLoaded.promise.then(function() {
@@ -51,13 +54,13 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.getCtrlType = function () {return "cde";};
 
     $scope.tabs = {
-        general: {
-            heading: "General Details",
-            includes: ['/cde/public/html/cdeGeneralDetail.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
+        // general: {
+        //     heading: "General Details",
+        //     includes: ['/cde/public/html/cdeGeneralDetail.html'],
+        //     select: function (thisTab) {
+        //         setCurrentTab(thisTab);
+        //     }
+        // },
         pvs: {
             heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html'],
             select: function (thisTab) {
