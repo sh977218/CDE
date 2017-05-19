@@ -1,18 +1,12 @@
 <div>
     <span *ngIf="!editMode">
-        <i title="Edit" role="link" *ngIf="isAllowed" class="fa fa-edit"
-           (click)="edit()"></i>
+        <i *ngIf="isAllowed" title="Edit" role="link" class="fa fa-edit" (click)="edit()"></i>
         <span>{{value}}</span>
     </span>
-    <ng-container *ngIf="editMode">
-        <ng-container *ngIf="inputType.toLowerCase() === 'text'">
-            <input class="form-control" type="text" autocomplete="off" [(ngModel)]="value"/>
-        </ng-container>
-        <ng-container *ngIf="inputType.toLowerCase() === 'email'">
-            <input class="form-control" type="email" autocomplete="off" [(ngModel)]="value"/>
-        </ng-container>
-        <ng-container *ngIf="inputType.toLowerCase() === 'number'">
-            <input class="form-control" type="number" autocomplete="off" [(ngModel)]="value"/>
+    <form *ngIf="editMode" #inlineForm="ngForm" role="form">
+        <ng-container *ngIf="INPUT_TYPE_ARRAY[inputType.toLowerCase()]">
+            <input class="form-control" name="inlineInput" type="{{inputType.toLowerCase()}}" autocomplete="off"
+                   [(ngModel)]="value"/>
         </ng-container>
         <ng-container *ngIf="inputType.toLowerCase() === 'select'">
             <select class="form-control" [(ngModel)]="value">
@@ -24,7 +18,7 @@
         <ng-container *ngIf="inputType.toLowerCase() === 'textarea'">
             <textarea class="form-control" autocomplete="off" [(ngModel)]="value"></textarea>
         </ng-container>
-        <button class="fa fa-check" (click)="save()">Confirm</button>
+        <button class="fa fa-check" (click)="save()" [disabled]="!inlineForm.form.valid">Confirm</button>
         <button class="fa fa-times" (click)="discard()"> Discard</button>
-    </ng-container>
+    </form>
 </div>

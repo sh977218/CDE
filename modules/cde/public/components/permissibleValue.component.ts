@@ -23,8 +23,8 @@ export class PermissibleValueComponent implements OnInit {
     vsac = {};
     pVTypeheadVsacNameList;
 
-    dataTypeOptions = ["Value List", "Text", "Date", "Number", "File", "Externally Defined"];
-    dataTypeValueListOptions = ["Text", "Date", "Number", "File"];
+    dataTypeOptions = ["Value List", "Text", "Date", "Number", "Externally Defined"];
+    dataTypeValueListOptions = ["Text", "Date", "Number"];
 
     public containsKnownSystem: boolean = false;
     umlsTerms = [];
@@ -243,5 +243,4 @@ export class PermissibleValueComponent implements OnInit {
     stageElt(event = null) {
         this.elt.unsave = true;
     }
-
 }

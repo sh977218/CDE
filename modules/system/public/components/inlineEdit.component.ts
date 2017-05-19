@@ -25,12 +25,13 @@ import * as _ from "lodash";
     `]
 })
 export class InlineEditComponent implements OnInit {
-    @Input() model: any = "";
+    @Input() model;
     @Input() inputType: string = "text";
     @Input() selectOptions: Array<any> = [];
     @Input() isAllowed: boolean = false;
-    @Output() onOk = new EventEmitter();
-    @Output() onEdit = new EventEmitter();
+    @Output() modelChange = new EventEmitter<string>();
+
+    public INPUT_TYPE_ARRAY = ["text", "email", "number"];
 
     public editMode: boolean = false;
     public value: any;
@@ -42,7 +43,6 @@ export class InlineEditComponent implements OnInit {
 
     edit() {
         this.editMode = true;
-        this.onEdit.emit();
     }
 
     discard() {
@@ -51,9 +51,8 @@ export class InlineEditComponent implements OnInit {
     }
 
     save() {
-        this.model = _.cloneDeep(this.value);
         this.editMode = false;
-        this.onOk.emit(this.model);
+        this.modelChange.emit(this.value);
     }
 
 }

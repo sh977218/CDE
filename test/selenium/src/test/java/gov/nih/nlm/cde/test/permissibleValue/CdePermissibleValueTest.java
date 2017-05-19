@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test.valueDomain;
+package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.common.test.PermissibleValueTest;
 import org.testng.annotations.Test;

@@ -1,31 +1,11 @@
-package gov.nih.nlm.cde.test.valueDomain;
+package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ValueDomainTest extends NlmCdeBaseTest {
-
-    @Test
-    public void randomDatatype() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        String cdeName = "CTC Adverse Event Apnea Grade";
-        goToCdeByName(cdeName);
-        clickElement(By.linkText("Permissible Values"));
-        clickElement(By.id("editDatatype"));
-        findElement(By.name("datatypeFreeText")).clear();
-        findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");
-        clickElement(By.id("confirmDatatype"));
-        newCdeVersion();
-
-        textPresent("java.lang.Date");
-
-        clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 2);
-        textPresent("java.lang.Date");
-    }
+public class TextDatatypeTest extends NlmCdeBaseTest {
 
     @Test
     public void textDatatype() {
@@ -33,9 +13,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Cocaine use frequency";
         goToCdeByName(cdeName);
         clickElement(By.id("pvs_tab"));
-        clickElement(By.id("editDatatype"));
-        new Select(findElement(By.id("valueTypeSelect"))).selectByVisibleText("Text");
-        clickElement(By.id("confirmDatatype"));
+        clickElement(By.xpath("//*[@id='datatypeSelect']//i[contains(@class,'fa fa-edit')]"));
+        new Select(findElement(By.xpath("//*[@id='datatypeSelect']//select"))).selectByVisibleText("Text");
+        clickElement(By.xpath("//*[@id='datatypeSelect']//button[contains(@class,'fa fa-check')]"));
 
         clickElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']"));
         clickElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']"));
