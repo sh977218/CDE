@@ -139,7 +139,7 @@ exports.getFormOdm = function(form, cb) {
 
     form.formElements.forEach(function (s1,si) {
         var childrenOids = [];
-        exportts.flattenFormElement(s1).forEach(function (q1, qi) {
+        exports.flattenFormElement(s1).forEach(function (q1, qi) {
             var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
             var odmQuestion = {
