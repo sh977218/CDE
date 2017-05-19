@@ -17,13 +17,13 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         new Select(findElement(By.xpath("//*[@id='datatypeSelect']//select"))).selectByVisibleText("Text");
         clickElement(By.xpath("//*[@id='datatypeSelect']//button[contains(@class,'fa fa-check')]"));
 
-        clickElement(By.xpath("//*//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]")).sendKeys("789");
-        clickElement(By.xpath("//*//*[@id='datatypeTextMin']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id='datatypeTextMin']//input")).sendKeys("789");
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//button[contains(@class,'fa fa-check')]"));
 
-        clickElement(By.xpath("//*//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]")).sendKeys("987");
-        clickElement(By.xpath("//*//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys("987");
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
 
         newCdeVersion();
 
@@ -36,21 +36,21 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         textPresent("Value List", By.xpath("//*[@id='historyCompareRight_Value Type']"));
 
         clickElement(By.id("pvs_tab"));
-        clickElement(By.xpath("//*//*[@id='datatypeTextRegex']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*//*[@id='datatypeTextRegex']//i[contains(@class,'fa fa-edit')]")).sendKeys("newrule");
-        clickElement(By.xpath("//*//*[@id='datatypeTextRegex']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextRegex']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).sendKeys("newrule");
+        clickElement(By.xpath("//*[@id='datatypeTextRegex']//button[contains(@class,'fa fa-check')]"));
 
-        clickElement(By.xpath("//*//*[@id='datatypeTextRule']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*//*[@id='datatypeTextRule']//i[contains(@class,'fa fa-edit')]")).sendKeys("newre");
-        clickElement(By.xpath("//*//*[@id='datatypeTextRule']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextRule']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id='datatypeTextRule']//input")).sendKeys("newre");
+        clickElement(By.xpath("//*[@id='datatypeTextRule']//button[contains(@class,'fa fa-check')]"));
 
-        clickElement(By.xpath("//*//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]")).sendKeys("123");
-        clickElement(By.xpath("//*//*[@id='datatypeTextMin']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id='datatypeTextMin']//input")).sendKeys("123");
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//button[contains(@class,'fa fa-check')]"));
 
-        clickElement(By.xpath("//*//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]")).sendKeys("321");
-        clickElement(By.xpath("//*//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys("321");
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
         newCdeVersion();
 
         goToCdeByName(cdeName);
