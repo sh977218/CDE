@@ -63,7 +63,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             restrict: 'AE',
             scope: {
                 model: '=',
-                inputType: '=',
+                inputType: '=?',
                 isAllowed: '=',
                 onOk: '&',
                 typeaheadSource: '=',

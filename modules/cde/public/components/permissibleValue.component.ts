@@ -23,8 +23,6 @@ export class PermissibleValueComponent implements OnInit {
     vsac = {};
     pVTypeheadVsacNameList;
 
-    public allOptions = ["Value List", "Text", "Date", "Number", "Externally Defined"];
-
     dataTypeOptions = ["Text", "Date", "Number", "File", "Externally Defined"];
     dataTypeValueListOptions = ["Text", "Date", "Number", "File"];
 
@@ -78,7 +76,8 @@ export class PermissibleValueComponent implements OnInit {
             .subscribe(res => {
                 if (res.result && res.result.results)
                     this.umlsTerms = res.result.results;
-            });
+                else this.umlsTerms = [];
+            }, err => this.alert.addAlert("danger", err));
     };
 
     removePv(index) {
@@ -88,6 +87,8 @@ export class PermissibleValueComponent implements OnInit {
 
     addNewPermissibleValue() {
         this.elt.valueDomain.permissibleValues.push(this.newPermissibleValue);
+        this.modalRef.close();
+        this.stage();
     }
 
     removeAllPermissibleValues() {

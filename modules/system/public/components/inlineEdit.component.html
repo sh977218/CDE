@@ -8,6 +8,9 @@
         <ng-container *ngIf="inputType.toLowerCase() === 'text'">
             <input class="form-control" type="text" autocomplete="off" [(ngModel)]="value"/>
         </ng-container>
+        <ng-container *ngIf="inputType.toLowerCase() === 'email'">
+            <input class="form-control" type="email" autocomplete="off" [(ngModel)]="value"/>
+        </ng-container>
         <ng-container *ngIf="inputType.toLowerCase() === 'number'">
             <input class="form-control" type="number" autocomplete="off" [(ngModel)]="value"/>
         </ng-container>

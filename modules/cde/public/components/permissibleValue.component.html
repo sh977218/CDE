@@ -108,7 +108,7 @@
         <div class="col-xs-10">
             <cde-inline-edit [(model)]="elt.valueDomain.datatypeValueList.datatype" (ngModelChange)="fixDatatype()"
                              [isAllowed]="isAllowedModel.isAllowed(elt)" [inputType]="'select'"
-                             [selectOptions]="dataTypeOptions"></cde-inline-edit>
+                             [selectOptions]="dataTypeValueListOptions"></cde-inline-edit>
         </div>
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
             <span *ngFor="let source of SOURCES | keys" style="margin-left: 50px">
@@ -270,7 +270,7 @@
                 <label for="valueMeaningNameInput">Code Name</label>
                 <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningName"
                        id="valueMeaningNameInput" name="valueMeaningNameInput" (ngModelChange)="lookupUmls()"
-                       Placeholder="Code Name"/>
+                       Placeholder="Code Name" (ngModelChange)="lookupUmls()"/>
             </div>
             <div class="form-group">
                 <label for="valueMeaningCodeInput">Code</label>
@@ -292,8 +292,8 @@
             </div>
             <div *ngIf="umlsTerms.length > 0">
                 <h4>Choices from UMLS: </h4>
-                <div *ngFor="let term of umlsTerms; let index = i;">
-                    <a (click)="selectFromUmls(term)" href="#">{{term.ui}} : {{term.name}}</a>
+                <div *ngFor="let term of umlsTerms; let i = index;">
+                    <a *ngIf="i<10" (click)="selectFromUmls(term)" href="#">{{term.ui}} : {{term.name}}</a>
                 </div>
             </div>
         </div>
@@ -303,8 +303,8 @@
                     type="button">Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newPermissibleValueForm.form.valid"
-                    id="createNewPermissibleValueBtn"
-                    name="createNewPermissibleValueBtn" type="submit" (click)="addNewPermissibleValue();">Save
+                    id="createNewPermissibleValueBtn" name="createNewPermissibleValueBtn" type="submit"
+                    (click)="addNewPermissibleValue();">Save
             </button>
         </div>
     </form>
