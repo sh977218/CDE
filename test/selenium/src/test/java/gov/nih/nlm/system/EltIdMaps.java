@@ -98,6 +98,7 @@ public class EltIdMaps {
         eltMap.put("Patient Health Questionnaire 2 item (PHQ-2) [Reported]", "XkZqYRlqKf");
         eltMap.put("PHQ-9 quick depression assessment panel [Reported.PHQ]", "mJsGoMU1m");
         eltMap.put("Patient Health Questionnaire - 9 (PHQ-9) Depression Scale", "mJP_B1HrFg");
+        eltMap.put("PROMIS Bank v1.0 - Anxiety", "mksbrh_YIx");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
         eltMap.put("PROMIS SF v1.0 - Applied Cog Abilities 4a", "Q1Ogr2OtIe");
