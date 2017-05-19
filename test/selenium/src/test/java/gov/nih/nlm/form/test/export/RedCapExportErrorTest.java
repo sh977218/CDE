@@ -11,7 +11,6 @@ public class RedCapExportErrorTest extends BaseFormTest {
     public void promisCanNotExportRedCap() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("PROMIS SF v2.0 - Instrumental Support 8a");
-        enableBetaFeature();
         clickElement(By.id("export"));
         clickElement(By.id("nihRedCap"));
         switchTab(1);
@@ -23,7 +22,6 @@ public class RedCapExportErrorTest extends BaseFormTest {
     public void phenxCanNotExportRedCap() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("PhenX Form RedCAP Export");
-        enableBetaFeature();
         clickElement(By.id("export"));
         clickElement(By.id("nihRedCap"));
         switchTab(1);
@@ -31,27 +29,4 @@ public class RedCapExportErrorTest extends BaseFormTest {
         switchTabAndClose(0);
     }
 
-    @Test
-    public void canNotExportRedCapOfEmptySectionForm() {
-        mustBeLoggedInAs(testAdmin_username, password);
-        goToFormByName("Empty Section Form");
-        enableBetaFeature();
-        clickElement(By.id("export"));
-        clickElement(By.id("nihRedCap"));
-        switchTab(1);
-        textPresent("REDCap cannot support empty section.");
-        switchTabAndClose(0);
-    }
-
-    @Test
-    public void canNotExportRedCapOfSectionInsideSectionForm() {
-        mustBeLoggedInAs(testAdmin_username, password);
-        goToFormByName("Section Inside Section Form");
-        enableBetaFeature();
-        clickElement(By.id("export"));
-        clickElement(By.id("nihRedCap"));
-        switchTab(1);
-        textPresent("REDCap cannot support nested section.");
-        switchTabAndClose(0);
-    }
 }

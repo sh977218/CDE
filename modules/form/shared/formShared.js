@@ -27,6 +27,19 @@ exports.getFormCdes = function(form){
     return exports.getFormQuestions(form).map(function(q){return q.cde;});
 };
 
+exports.flattenFormElement = function (fe) {
+    var result = [];
+    fe.formElements.map(function (subFe) {
+        if (!subFe.formElements || subFe.formElements.length === 0) {
+            result.push(subFe);
+        } else {
+            var subEs = exports.flattenFormElement(subFe);
+            subEs.forEach(function (e) {result.push(e);});
+        }
+    });
+    return result;
+};
+
 
 exports.getFormOdm = function(form, cb) {
 
@@ -124,22 +137,9 @@ exports.getFormOdm = function(form, cb) {
     var questions = [];
     var codeLists = [];
 
-    function flattenFormElement (fe) {
-        var result = [];
-        fe.formElements.map(function (subFe) {
-            if (!subFe.formElements || subFe.formElements.length === 0) {
-                result.push(subFe);
-            } else {
-                var subEs = flattenFormElement(subFe);
-                subEs.forEach(function (e) {result.push(e);});
-            }
-        });
-        return result;
-    }
-
     form.formElements.forEach(function (s1,si) {
         var childrenOids = [];
-        flattenFormElement(s1).forEach(function (q1, qi) {
+        exports.flattenFormElement(s1).forEach(function (q1, qi) {
             var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
             var odmQuestion = {
