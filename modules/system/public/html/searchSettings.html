@@ -138,24 +138,6 @@
         </div>
     </div>
 
-    <h2><i class="fa fa-flask"></i> Beta Features</h2>
-    <label for="betaEnabled">Enabled </label>
-    <div class="btn-group">
-        <button id="betaEnabled" class="btn btn-sm" ng-class="{'btn-success':$root.enableBeta}"
-                ng-click="enableBeta(true)"> On
-        </button>
-        <button id="betaDisabled" class="btn btn-sm" ng-class="{'btn-danger':!$root.enableBeta}"
-                ng-click="enableBeta(false)"> Off
-        </button>
-    </div>
-
-    <div ng-show="$root.enableBeta" style="margin-top: 20px"> The following features are now enabled.
-        <ul>
-            <li>Export a Form to REDCap format.</li>
-        </ul>
-    </div>
-
-
     <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i
             class="fa fa-check"></i> Save
     </button>
