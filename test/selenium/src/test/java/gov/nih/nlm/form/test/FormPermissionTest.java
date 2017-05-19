@@ -24,7 +24,6 @@ public class FormPermissionTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
         textNotPresent("Delete");
         textNotPresent("Add Section");
-        textNotPresent("Show Question Search Area");
     }
 
 }
