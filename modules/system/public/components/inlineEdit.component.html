@@ -4,18 +4,18 @@
         <span>{{value}}</span>
     </span>
     <form *ngIf="editMode" #inlineForm="ngForm" role="form">
-        <ng-container *ngIf="INPUT_TYPE_ARRAY[inputType.toLowerCase()]">
+        <ng-container *ngIf="INPUT_TYPE_ARRAY.indexOf(inputType.toLowerCase()) > -1">
             <input class="form-control" name="inlineInput" type="{{inputType.toLowerCase()}}" autocomplete="off"
-                   [(ngModel)]="value"/>
+                   [(ngModel)]="value" email="{{value && inputType.toLowerCase() === 'email' || !value && null}}"/>
         </ng-container>
         <ng-container *ngIf="inputType.toLowerCase() === 'select'">
-            <select class="form-control" [(ngModel)]="value">
+            <select class="form-control" [(ngModel)]="value" name="inlineSelect">
                 <option *ngFor="let selectOption of selectOptions;let i =index;" [selected]="selectOption === value">
                     {{selectOption}}
                 </option>
             </select>
         </ng-container>
-        <ng-container *ngIf="inputType.toLowerCase() === 'textarea'">
+        <ng-container *ngIf="inputType.toLowerCase() === 'textarea'" name="inlineTextarea">
             <textarea class="form-control" autocomplete="off" [(ngModel)]="value"></textarea>
         </ng-container>
         <button class="fa fa-check" (click)="save()" [disabled]="!inlineForm.form.valid">Confirm</button>
