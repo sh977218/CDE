@@ -13,5 +13,9 @@ export class DeGeneralDetailsComponent  {
                ) {
     }
 
+    @Input() elt: any;
+
+    editDtMode: boolean;
+
 
 }

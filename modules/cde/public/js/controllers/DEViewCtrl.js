@@ -64,13 +64,13 @@ angular.module('cdeModule').controller('DEViewCtrl',
         pvs: {
             heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
             }
         },
         naming: {
             heading: "Naming", includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
                 OrgHelpers.deferred.promise.then(function () {
                     $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
                 });
@@ -79,19 +79,19 @@ angular.module('cdeModule').controller('DEViewCtrl',
         classification: {
             heading: "Classification", includes: ['/system/public/html/classification.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
             }
         },
         concepts: {
             heading: "Concepts", includes: ['/cde/public/html/concepts.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
             }
         },
         referenceDocument: {
             heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
             }
         },
         properties: {

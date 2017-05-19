@@ -58,15 +58,12 @@
                     <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss</button>
             </h1>
 
-            DOLLY - {{currentTab}}
-
             <uib-tabset active="currentTab">
-                <uib-tab id="general_tab" select="setCurrentTab('general')" index="general">
+                <uib-tab id="general_tab" index="'general'">
                     <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
                         General Details
                     </uib-tab-heading>
-                    <div ng-if="currentTab == 'general'">
-                        HELLO
+                    <div ng-if="currentTab === 'general'">
                         <cde-de-general-details [elt]="elt"></cde-de-general-details>
                     </div>
                 </uib-tab>

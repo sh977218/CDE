@@ -28,7 +28,6 @@ export class InlineAreaEditDirective extends UpgradeComponent {
     @Output() onErr: EventEmitter<void>;
     @Input() defFormat: any;
     @Output() defFormatChange: EventEmitter<void>;
-    @Input() inlineAreaVisibility: any;
     constructor(elementRef: ElementRef, injector: Injector) {
         super("inlineAreaEdit", elementRef, injector);
     }

@@ -1,14 +1,104 @@
 <div class="row" *ngIf="elt">
     <div class="col-md-6">
-        <!--<div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>-->
-        <!--<div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>-->
+        <h4 >General Details</h4>
+        <div class="row">
+            <div class="col-sm-5 questionSectionLabel text-right">Name:</div>
+            <div class="col-sm-7" id="dd_general_name" itemprop="name">{{elt.naming[0].designation}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
+            <div class="col-sm-7" id="dd_general_steward">
+                <span *ngIf="editDtMode">
+                    <select id="elt.stewardOrg.name" ([ng-model])="elt.stewardOrg.name">
+                        <option *ngFor="let myOrg of myOrgs">{{myOrg}}</option>
+                    </select>
+                    <i id="elt.stewardOrg.name.ok" class="fa fa-check"
+                       (click)="editDtMode = false; elt.staged = true"></i>&nbsp;&nbsp;
+                    <i id="elt.stewardOrg.name.cancel" class="fa fa-times"
+                       (click)="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
+                </span>
+                <span *ngIf="!editDtMode">
+                    <i title="Edit Steward" role="link" *ngIf="isAllowedModel.isAllowed(elt)"
+                       class="fa fa-edit"
+                       (click)="oldStewardName = elt.stewardOrg.name; editDtMode = true"
+                       id="dd_edit_steward"></i>
+                    <!--<a uib-tooltip-html="orgDetailsInfoHtml" tooltip-popup-delay="500" tooltip-placement="right"-->
+                       <!--tooltip-append-to-body="true" id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>-->
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 questionSectionLabel text-right">Definition:</div>
+            <div class="col-sm-7" id="dd_def" itemprop="description">
+                <!--<inline-area-edit [(model)]="elt.naming[0].definition"-->
+                                  <!--(onOk)="elt.unsaved = true"-->
+                                  <!--[defFormat]="elt.naming[0].definitionFormat"-->
+                                  <!--[isAllowed]="false"></inline-area-edit>-->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 questionSectionLabel text-right">Used By:</div>
+            <div class="col-sm-7" id="dd_usedBy">
+                <div *ngIf="elt.classification?.length > 0">
+                    <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
+                </div>
+                <div *ngIf="!(elt.classification.length > 0)">
+                    <span>None</span>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="elt.origin">
+            <div class="col-sm-5 questionSectionLabel text-right">Origin:</div>
+            <div class="col-sm-7">
+                <inline-edit [(model)]="elt.origin"
+                             [isAllowed]="isAllowedModel.isAllowed(elt)"
+                             (onOk)="elt.unsaved = true"></inline-edit>
+                <!--<div inline-edit id="origin" model="elt.origin" is-allowed="canCurate"-->
+                     <!--on-ok="stageElt(elt)"></div>-->
+            </div>
+        </div>
+        <div class="row" *ngIf="elt.views">
+            <div class="col-sm-5 questionSectionLabel text-right">Views:</div>
+            <div class="col-sm-7" id="dd_views">{{elt.views}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 questionSectionLabel text-right">SDC View:</div>
+            <div class="col-sm-7">
+                <a href="/sdcview/?cdeId={{elt._id}}" aria-label="SDC View" target="_blank">
+                    <i class="fa fa-share-square-o"></i> SDC View</a>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="elt.imported">
+            <div class="col-sm-5 questionSectionLabel text-right">Last import:</div>
+            <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}
+            </div>
+        </div>
+        <div class="row" *ngIf="elt.created">
+            <div class="col-sm-5 questionSectionLabel text-right">Created:</div>
+            <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
+            </div>
+        </div>
+        <div class="row" *ngIf="elt.updated">
+            <div class="col-sm-5 questionSectionLabel text-right">Updated:</div>
+            <div class="col-sm-7" id="dd_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+            </div>
+        </div>
+        <div class="row" *ngIf="elt.createdBy">
+            <div class="col-sm-5 questionSectionLabel text-right">Created By:</div>
+            <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}
+            </div>
+        </div>
+
         <!--<div ng-include="'/system/public/html/sources.html'"></div>-->
         <cde-registration [elt]="elt"></cde-registration>
         <div role="group" aria-label="More Info">
-            <-- replace eltType -->
-            <cde-linked-forms [elt]="elt" [eltType]="'cde'"></cde-linked-forms>
+            <!-- replace eltType -->
+            <!--<cde-linked-forms [elt]="elt" [eltType]="'cde'"></cde-linked-forms>-->
             <cde-mlt [elt]="elt"></cde-mlt>
-            <cde-linked-boards [elt]="elt"></cde-linked-boards>
+            <!--<cde-linked-boards [elt]="elt"></cde-linked-boards>-->
             <cde-datasets [elt]="elt"></cde-datasets>
         </div>
     </div>

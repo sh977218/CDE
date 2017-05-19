@@ -123,7 +123,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 onOk: '&',
                 onErr: '&',
                 defFormat: '=',
-                inlineAreaVisibility: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
             controller: ["$scope", "$element", function ($scope, $element) {
