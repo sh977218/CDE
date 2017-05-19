@@ -1,0 +1,234 @@
+<ng-template [ngTemplateOutlet]="getTemplate()" [ngOutletContext]="{ $implicit: question }"></ng-template>
+
+<ng-template #formDescriptionQuestionTmpl>
+    <div>
+        <span *ngIf="question.question.multiselect" class="label label-success formViewSummaryLabel">
+            Select Multiple
+        </span>
+        <span *ngIf="question.question?.datatypeText?.minLength" class="label label-success formViewSummaryLabel">
+            At least: {{question.question?.datatypeText?.minLength}} characters
+        </span>
+        <span *ngIf="question.question?.datatypeText?.maxLength" class="label label-success formViewSummaryLabel">
+            At most: {{question.question?.datatypeText?.maxLength}} characters
+        </span>
+        <span *ngIf="question.question?.datatypeNumber?.minValue" class="label label-success formViewSummaryLabel">
+            At least: {{question.question?.datatypeNumber.minValue}}
+        </span>
+        <span *ngIf="question.question?.datatypeNumber?.maxValue" class="label label-success formViewSummaryLabel">
+            At most: {{question.question?.datatypeNumber?.maxValue}}
+        </span>
+        <span *ngIf="question.question?.datatypeDate?.format" class="label label-success formViewSummaryLabel">
+            Format: {{question.question?.datatypeDate?.format}}
+        </span>
+        <span *ngIf="getRepeatLabel(question)" class="label label-primary formViewSummaryLabel">
+            Repeats: {{getRepeatLabel(question)}} times
+        </span>
+        <span *ngIf="isScore(question)" class="label label-primary formViewSummaryLabel">
+            Score: <span [textContent]="question.question.scoreFormula"></span>
+        </span>
+        <span *ngIf="question.question.required" class="label label-danger formViewSummaryLabel">
+            Required
+        </span>
+        <span *ngIf="question.question.invisible" class="label label-default formViewSummaryLabel" style="background-color: #666">
+            Invisible
+        </span>
+        <span *ngIf="question.question.editable === false" class="label label-default formViewSummaryLabel" style="background-color: #666">
+            Disabled
+        </span>
+        <span *ngIf="question.skipLogic?.condition?.length > 0 && parent"
+              class="label label-warning formViewSummaryLabel">
+            Show if: {{question.skipLogic.condition}}
+        </span>
+    </div>
+    <div *ngIf="question.instructions?.value" class="questionInstruction">
+        <span class="formViewQuestionLabel">Instructions:</span>
+        <span *ngIf="question.instructions.valueFormat === 'html'"
+              [innerHtml]="question.instructions.value"></span>
+        <span *ngIf="question.instructions.valueFormat !== 'html'" [textContent]="question.instructions.value"></span>
+    </div>
+    <div class="answerList" *ngIf="question.question.answers && question.question.answers.length > 0">
+        <span class="formViewQuestionLabel">Answer Choices:</span>
+        <span *ngFor="let pv of question.question.answers" style="margin-right: -3px">
+            <span class="label label-default formViewSummaryLabel" style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
+        </span>
+    </div>
+    <div *ngIf="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="defaultAnswer">
+        <span class="formViewQuestionLabel">Default Answer:</span>
+        <span class="label label-default formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
+    </div>
+    <div *ngIf="question.question.uoms.length > 0" class="questionUom">
+        <span class="formViewQuestionLabel">Units of Measure:</span>
+        <span *ngFor="let uom of question.question.uoms"
+              class="label label-info formViewSummaryLabel"
+              [textContent]="uom"></span>
+    </div>
+</ng-template>
+
+<ng-template #formDescriptionQuestionEditTmpl>
+    <div class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Label:</div>
+        <div class="col-sm-10 col-xs-12">
+            <i class="fa fa-pencil changeQuestionLabelIcon" title="Change question label"
+               (click)="openNameSelect(question, parent)"></i>
+            <span *ngIf="!question.hideLabel">{{question.label}}</span>
+            <span *ngIf="question.hideLabel">(No label)</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Instructions:</div>
+        <div class="col-sm-10 col-xs-12 editQuestionInstructionIcon" *ngIf="question.edit">
+            <inline-area-edit [inlineAreaVisibility]="inlineAreaEditVisibility"
+                 [(model)]="question.instructions.value"
+                 [(defFormat)]="question.instructions.valueFormat"
+                 [isAllowed]="true" (onOk)="stageElt.emit()">
+            </inline-area-edit>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Required:</div>
+        <div class="col-xs-1">
+            <input type="checkbox" title="Required" [(ngModel)]="question.question.required" (click)="stageElt.emit()"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Invisible:</div>
+        <div class="col-xs-1">
+            <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible" (click)="stageElt.emit()">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Repeats:</div>
+        <div class="col-sm-2 col-xs-12 mb-1">
+            <select class="form-control" title="Repeats" [(ngModel)]="question.cardinality" (change)="stageElt.emit()">
+                    <option *ngFor="let item of cardinalityOptions" value="item.value" [textContent]="item.label"></option>
+            </select>
+        </div>
+    </div>
+    <div class="row" *ngIf="parent">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Show if:</div>
+        <div class="col-sm-10 col-xs-12 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
+            <input type="text" title="Show if"
+                   [ngModel]="question.skipLogic.condition"
+                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event)"
+                   class="form-control skipLogicCondition"
+                   [ngbTypeahead]="getSkipLogicOptions"
+                   (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault()"/>
+            <span [textContent]="question.skipLogic?.validationError"></span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Units of Measure:</div>
+        <div class="col-sm-10 col-xs-12">
+            <select2 class="formDescriptionUoms" [data]="getUoms()" [value]="question.question.uoms" [options]="uomOptions" width="100%"
+                     (valueChanged)="checkUom($event)">
+            </select2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Datatype:</div>
+        <div class="col-sm-10 col-xs-12">
+            {{question.question.datatype | cdePlaceholder }}
+        </div>
+    </div>
+    <div *ngIf="question.question.datatype === 'Text'" class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Min Length:</div>
+        <div class="col-sm-10 col-xs-12">
+            {{question.question?.datatypeText?.minLength | cdePlaceholder }}
+        </div>
+        <div class="clear"></div>
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Max Length:</div>
+        <div class="col-sm-10 col-xs-12">
+            {{question.question?.datatypeText?.maxLength}}
+        </div>
+    </div>
+    <div *ngIf="question.question.datatype === 'Number'" class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Min Value:</div>
+        <div class="col-sm-10 col-xs-12">
+            {{question.question?.datatypeNumber?.minValue | cdePlaceholder }}
+        </div>
+        <div class="clear"></div>
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Max Value:</div>
+        <div class="col-sm-10 col-xs-12">
+            {{question.question?.datatypeNumber?.maxValue | cdePlaceholder }}
+        </div>
+    </div>
+    <div *ngIf="question.question.datatype === 'Date'" class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Date Format:</div>
+        <div class="col-sm-10 col-xs-12">
+            {{question.question?.datatypeDate?.format}}
+        </div>
+    </div>
+    <div *ngIf="question.question.datatype === 'Value List'" class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Multiple Selections:</div>
+        <div class="col-xs-1">
+            <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect" (change)="stageElt.emit()"/>
+        </div>
+        <div class="clear"></div>
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Answer List:</div>
+        <div class="col-sm-10 col-xs-12 mb5">
+            <select2 class="formDescriptionAnswerList" [data]="getAnswersData()" [value]="getAnswersValue()" [options]="answersOptions" width="100%"
+                     (valueChanged)="checkAnswers($event)">
+            </select2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Default Answer:</div>
+        <div *ngIf="question.question.datatype === 'Value List'" class="col-sm-10 col-xs-12">
+            <select title="Default" class="form-control defaultAnswer"
+                    [(ngModel)]="question.question.defaultAnswer" (change)="stageElt.emit()">
+                <option value=""></option>
+                <option *ngFor="let pv of question.question.answers " [value]="pv.permissibleValue"
+                        [textContent]="pv?.valueMeaningName"></option>
+            </select>
+        </div>
+        <div *ngIf="question.question.datatype !== 'Value List'" class="col-sm-10 col-xs-12 defaultAnswer">
+            <inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true" (onOk)="stageElt.emit()"></inline-edit>
+        </div>
+    </div>
+    <div *ngIf="question.question.defaultAnswer" class="row">
+        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Editable:</div>
+        <div class="col-xs-1">
+            <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable" (click)="stageElt.emit()"/>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #formDescriptionNameSelectTmpl let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Select a question label from a CDE Name</h3>
+    </div>
+
+    <div class="modal-body">
+        <div *ngIf="nameSelectModal.cde === null"><i class="fa fa-spinner fa-pulse"></i> Loading...</div>
+        <div *ngIf="nameSelectModal.cde === 'error'">There is an issue retrieving this Data Element.</div>
+        <ngb-alert *ngIf="nameSelectModal.updateSkipLogic">
+            There is skip logic using this label. It will be updated.
+        </ngb-alert>
+
+        <div *ngFor="let naming of nameSelectModal.cde.naming; let i = index" class="row" id="q_select_name_{{i}}">
+            <div class="col-md-3">
+                <button class="btn btn-default" (click)="nameSelectModal.okSelect(naming)"><i class="fa fa-check"></i> Select</button>
+            </div>
+            <div class="col-md-9">
+                <dl class="dl-horizontal">
+                    <dt>Name:</dt>
+                    <dd>{{naming.designation}}</dd>
+                    <dt>Definition:</dt>
+                    <dd>{{naming.definition | cdePlaceholder}}</dd>
+                    <dt>Tags:</dt>
+                    <dd>{{naming.tags | cdeArrayList}}</dd>
+                </dl>
+            </div>
+            <hr/>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-default" (click)="nameSelectModal.okSelect()"><i class="fa fa-stop"></i> No Label</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+    </div>
+</ng-template>

@@ -16,7 +16,6 @@ public class FormEmptyPermissibleValueMeaningTest extends QuestionTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
-        startAddingQuestions();
         addQuestionToSection(cdeName, 0);
         saveForm();
 

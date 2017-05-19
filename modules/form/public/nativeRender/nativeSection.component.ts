@@ -1,16 +1,19 @@
 import { Component, Input, OnInit, Output } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
+import { SkipLogicService } from "../skipLogic.service";
+import { FormElement } from "../form.model";
 
 @Component({
     selector: "cde-native-section",
     templateUrl: "./nativeSection.component.html"
 })
 export class NativeSectionComponent {
-    @Input() formElements: any;
-    @Input() formElement: any;
+    @Input() formElements: FormElement[];
+    @Input() formElement: FormElement;
     @Input() numSubQuestions: number;
 
-    constructor(public nativeRenderService: NativeRenderService) {
+    constructor(public skipLogicService: SkipLogicService,
+                public nativeRenderService: NativeRenderService) {
     }
 
     sectionType() {
