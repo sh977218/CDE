@@ -2,6 +2,8 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { QuillModule } from "ngx-quill";
+import { CKEditorModule } from "ng2-ckeditor";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { BoardModule } from "../../board/public/board.module";
@@ -20,6 +22,7 @@ import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGener
         FormsModule,
         NgbModule,
         AdminItemModule,
+        CKEditorModule,
         BoardModule
     ],
     declarations: [

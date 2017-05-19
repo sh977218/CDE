@@ -31,6 +31,10 @@
         <div class="row">
             <div class="col-sm-5 questionSectionLabel text-right">Definition:</div>
             <div class="col-sm-7" id="dd_def" itemprop="description">
+                <ckeditor
+                        [(ngModel)]="ckeditcontent">
+                    <ckbutton [name]="'saveButton'"></ckbutton>
+                </ckeditor>
                 <!--<inline-area-edit [(model)]="elt.naming[0].definition"-->
                                   <!--(onOk)="elt.unsaved = true"-->
                                   <!--[defFormat]="elt.naming[0].definitionFormat"-->
