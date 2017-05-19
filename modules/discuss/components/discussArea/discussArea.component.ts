@@ -16,6 +16,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     constructor(private http: Http,
                 @Inject("Alert") private alert,
+                @Inject("isAllowedModel") private isAllowedModel,
                 @Inject("userResource") public userService
     ) {};
 
@@ -80,7 +81,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         }
     };
 
-    canRemoveComment = (com) =>  this.userService.doesUserOwnElt(this.elt) ||
+    canRemoveComment = (com) =>  this.isAllowedModel.doesUserOwnElt(this.elt) ||
         (this.userService.user && this.userService.user._id && (this.userService.user._id === com.user));
 
     canResolveComment = (com) => com.status !== "resolved" && this.canRemoveComment(com);

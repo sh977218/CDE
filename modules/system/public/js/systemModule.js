@@ -349,6 +349,15 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
         return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user)
             || authShared.isSiteAdmin(userResource.user);
     };
+
+    isAllowedModel.doesUserOwnElt = function (elt) {
+        if (elt.elementType === 'board') {
+            return userResource.user.siteAdmin || (userResource.user.username === elt.owner.username);
+        } else
+            return userResource.user &&
+                (userResource.user.siteAdmin || (userResource.user._id && (userResource.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
+    };
+
     return isAllowedModel;
 }]);
 
