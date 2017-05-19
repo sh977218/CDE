@@ -2,7 +2,7 @@
     <span *ngIf="!editMode">
         <i title="Edit" role="link" *ngIf="isAllowed" class="fa fa-edit"
            (click)="edit()"></i>
-        <span [(textContent)]="value"></span>
+        <span>{{value}}</span>
     </span>
     <ng-container *ngIf="editMode">
         <ng-container *ngIf="inputType.toLowerCase() === 'text'">
@@ -16,7 +16,9 @@
         </ng-container>
         <ng-container *ngIf="inputType.toLowerCase() === 'select'">
             <select class="form-control" [(ngModel)]="value">
-                <option *ngFor="let selectOption of selectOptions;let i =index;" [textContent]="selectOption"></option>
+                <option *ngFor="let selectOption of selectOptions;let i =index;" [selected]="selectOption === value">
+                    {{selectOption}}
+                </option>
             </select>
         </ng-container>
         <ng-container *ngIf="inputType.toLowerCase() === 'textarea'">

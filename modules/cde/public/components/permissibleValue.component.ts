@@ -23,7 +23,7 @@ export class PermissibleValueComponent implements OnInit {
     vsac = {};
     pVTypeheadVsacNameList;
 
-    dataTypeOptions = ["Text", "Date", "Number", "File", "Externally Defined"];
+    dataTypeOptions = ["Value List", "Text", "Date", "Number", "File", "Externally Defined"];
     dataTypeValueListOptions = ["Text", "Date", "Number", "File"];
 
     public containsKnownSystem: boolean = false;
@@ -88,7 +88,7 @@ export class PermissibleValueComponent implements OnInit {
     addNewPermissibleValue() {
         this.elt.valueDomain.permissibleValues.push(this.newPermissibleValue);
         this.modalRef.close();
-        this.stage();
+        this.stageElt();
     }
 
     removeAllPermissibleValues() {
@@ -240,7 +240,7 @@ export class PermissibleValueComponent implements OnInit {
         }
     };
 
-    stage(event = null) {
+    stageElt(event = null) {
         this.elt.unsave = true;
     }
 

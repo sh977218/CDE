@@ -2,24 +2,13 @@
     <h4>Values Allowed</h4>
     <div class="col-xs-2 text-right text_label">Value Type:</div>
     <div class="col-xs-10">
-        <span *ngIf="editMode">
-            <select id="valueTypeSelect" [(ngModel)]="elt.valueDomain.datatype" (ngModelChange)="fixDatatype();">
-                <option value="">None Selected</option>
-                <option value="Value List">Value List</option>
-                <option value="Text">Text</option>
-                <option value="Date">Date</option>
-                <option value="Number">Number</option>
-                <option value="Externally Defined">Externally Defined</option>
-            </select>
-            or
-            <input ng-model="elt.valueDomain.datatype" name="datatypeFreeText"/>
-            <i class="fa fa-check-square-o" (click)="editMode = false; stageElt(elt)" id="confirmDatatype"></i>
-            <i class="fa fa-trash-o" (click)="editMode = false; reload({cdeId: elt._id});"></i>
-        </span>
-        <span *ngIf="!editMode">
-            <i title="Edit Value" role="link" *ngIf="isAllowed" class="fa fa-edit"
-               (click)="editDtMode = true" id="editDatatype"></i> {{elt.valueDomain.datatype}}
-        </span>
+        <cde-inline-edit [(model)]="elt.valueDomain.datatype" (ngModelChange)="fixDatatype()"
+                         [isAllowed]="isAllowedModel.isAllowed(elt)" [inputType]="'select'"
+                         [selectOptions]="dataTypeOptions"></cde-inline-edit>
+        or
+        <input [(ngModel)]="elt.valueDomain.datatype" name="datatypeFreeText"/>
+        <i class="fa fa-check-square-o" (click)="stageElt()" id="confirmDatatype"></i>
+        <i class="fa fa-trash-o"></i>
     </div>
     <ng-container *ngIf="elt.valueDomain.definition">
         <div class="col-xs-2 text-right text_label">Instructions:</div>
@@ -139,9 +128,9 @@
                         <cde-inline-edit [model]="pv.permissibleValue" [isAllowed]="isAllowedModel.isAllowed(elt)"
                                          (onOk)="stageElt()"></cde-inline-edit>
                     </td>
-                    <td [textContent]="pv.valueMeaningName"></td>
-                    <td [textContent]="pv.valueMeaningCode"></td>
-                    <td [textContent]="pv.codeSystemName"></td>
+                    <td>{{pv.valueMeaningName}}</td>
+                    <td>{{pv.valueMeaningCode}}</td>
+                    <td>{{pv.codeSystemName}}</td>
                     <td *ngIf="SOURCES['UMLS'].selected">
                         {{SOURCES['UMLS'].codes[pv.valueMeaningCode].code}}
                     </td>
@@ -229,7 +218,7 @@
 
         <div *ngIf="!isAllowedModel.loggedIn() && vsacMappingExists()">Please log in to see VSAC mapping.</div>
 
-        <table class="table-bordered table-condensed table-striped" *ngIf="vsacValueSet">
+        <table class="table-bordered table-condensed table-striped" *ngIf="vsacValueSet.length > 0">
             <tr>
                 <th>Code Name</th>
                 <th>Code</th>
