@@ -165,11 +165,9 @@
                         {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
                     </td>
                     <td>
-                        <ng-container *ngIf="isAllowed">
-                            <cde-inline-edit [model]="pv.valueMeaningDefinition"
-                                             [isAllowed]="isAllowedModel.isAllowed(elt)"
-                                             (onOk)="stageElt()"></cde-inline-edit>
-                        </ng-container>
+                        <cde-inline-edit [model]="pv.valueMeaningDefinition"
+                                         [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                         (modelChange)="stageElt()"></cde-inline-edit>
                     </td>
                     <td>
                         <ng-container *ngIf="pv.notValid">
