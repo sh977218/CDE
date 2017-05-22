@@ -107,7 +107,7 @@
             to <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> trees.
         </span>
         <ul>
-            <!--<li ng-repeat="t in elt.flatMeshSimpleTrees | orderBy:t">{{t}} <br></li>-->
+            <li *ngFor="let t of elt.flatMeshSimpleTrees">{{t}} <br></li>
         </ul>
     </div>
 </div>
