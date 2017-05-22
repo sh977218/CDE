@@ -44,7 +44,6 @@ import "./system/public/js/controllers/ClassificationCtrl";
 import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
 import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
-import "./system/public/js/controllers/CommentsCtrl";
 import "./system/public/js/controllers/AuditServerErrorListCtrl";
 import "./system/public/js/controllers/AuditClientErrorListCtrl";
 import "./system/public/js/controllers/TriggerClientExceptionCtrl";
