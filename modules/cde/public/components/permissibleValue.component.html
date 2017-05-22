@@ -20,8 +20,8 @@
     </ng-container>
     <div class="col-xs-2 text-right text_label">Unit of Measure:</div>
     <div class="col-xs-10">
-        <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom"
-                      [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
+        <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom" (modelChange)="stageElt()"
+                         [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
     </div>
     <div class="col-xs-2 text-right text_label">Ids:</div>
     <div class="col-xs-10">
@@ -35,49 +35,51 @@
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() == 'text'">
         <div class="col-xs-2 text-right text_label">Minimum Length:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength" [inputType]="'Number'"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength"
+                             [inputType]="'Number'" (modelChange)="stageElt()"
+                             [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Maximum Length:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength" [inputType]="'Number'"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength"
+                             [inputType]="'Number'" (modelChange)="stageElt()"
+                             [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Regular Expression:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
+                             (modelChange)="stageElt()" [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Free text rule:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
+                             (modelChange)="stageElt()" [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() == 'number'">
         <div class="col-xs-2 text-right text_label">Minimum Value:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
-                         [inputType]="'Number'"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
+                             [inputType]="'Number'" (modelChange)="stageElt()"
+                             [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Maximum Value:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
-                         [inputType]="'Number'"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
+                             [inputType]="'Number'" (modelChange)="stageElt()"
+                             [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Precision:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
+                             (modelChange)="stageElt()" [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'date'">
         <div class="col-xs-2 text-right text_label">Date Format:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeDateFormat" [(model)]="elt.valueDomain.datatypeDate.format"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeDateFormat" [(model)]="elt.valueDomain.datatypeDate.format"
+                             (modelChange)="stageElt()" [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'file'">
@@ -87,8 +89,9 @@
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'externally defined'">
         <div class="col-xs-2 text-right text_label">Link:</div>
         <div class="col-xs-10">
-            <inline-edit id="datatypeExternallyDefinedLink" [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
-                         (onOk)="elt.unsaved = true;" [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-edit>
+            <cde-inline-edit id="datatypeExternallyDefinedLink"
+                             [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
+                             (modelChange)="stageElt()" [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
         </div>
         <div class="col-xs-2 text-right text_label">Description:</div>
         <div class="col-xs-10">

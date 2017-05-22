@@ -1,7 +1,8 @@
 <div>
     <span *ngIf="!editMode">
         <i *ngIf="isAllowed" title="Edit" role="link" class="fa fa-edit" (click)="edit()"></i>
-        <span>{{value}}</span>
+        <span *ngIf="value">{{value}}</span>
+        <span *ngIf="!value">N/A</span>
     </span>
     <form *ngIf="editMode" #inlineForm="ngForm" role="form">
         <ng-container *ngIf="INPUT_TYPE_ARRAY.indexOf(inputType.toLowerCase()) > -1">
