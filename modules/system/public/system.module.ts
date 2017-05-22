@@ -8,7 +8,6 @@ import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListD
 import { ProfileComponent } from "./components/profile.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { UserCommentsComponent } from "./components/userComments.component";
-import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
 import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
@@ -41,7 +40,6 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
-        RegistrationComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent
@@ -51,15 +49,16 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         HomeComponent,
         LinkedFormsComponent,
         ListManagementComponent,
+        LinkedFormsComponent,
         LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
-        RegistrationComponent,
         UsersMgtComponent
     ],
     exports: [
-        NavigationComponent
+        LinkedFormsComponent,
+        NavigationComponent,
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

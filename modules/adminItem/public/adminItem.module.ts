@@ -16,6 +16,8 @@ import { NamingComponent } from "./components/naming.component";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
+import { SourcesComponent } from "./components/sources/sources.component";
+import {RegistrationComponent} from "./components/registration/registration.component";
 
 @NgModule({
     imports: [
@@ -41,7 +43,9 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         NamingComponent,
         PlaceHoldEmptyPipe,
         PropertiesComponent,
-        ReferenceDocumentComponent
+        ReferenceDocumentComponent,
+        RegistrationComponent,
+        SourcesComponent
     ],
     entryComponents: [
         AttachmentsComponent,
@@ -49,9 +53,12 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         IdentifiersComponent,
         NamingComponent,
         PropertiesComponent,
-        ReferenceDocumentComponent
+        ReferenceDocumentComponent,
+        RegistrationComponent,
+        SourcesComponent
     ],
     exports: [
+        ClassificationComponent,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
@@ -60,7 +67,8 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,
-        ClassificationComponent
+        RegistrationComponent,
+        SourcesComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

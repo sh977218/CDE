@@ -9,14 +9,14 @@ export class DeGeneralDetailsComponent  {
 
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("OrgHelpers") private orgHelpers
+                @Inject("OrgHelpers") private orgHelpers,
+                @Inject("userResource") public userService
                ) {
     }
 
     @Input() elt: any;
 
     editDtMode: boolean;
-    ckeditcontent: string;
 
 
 }
