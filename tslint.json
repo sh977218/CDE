@@ -76,9 +76,6 @@
             "check-whitespace"
         ],
         "pipe-naming": [true, "camelCase", "cde"],
-        "quotemark": [
-            true
-        ],
         "semicolon": [
             true,
             "always"
