@@ -20,6 +20,7 @@ export class PermissibleValueComponent implements OnInit {
     oid: String;
     vsac = {};
     pVTypeheadVsacNameList;
+    canLinkPv = false;
 
     dataTypeOptions = ["Value List", "Text", "Date", "Number", "Externally Defined"];
     dataTypeValueListOptions = ["Text", "Date", "Number"];
@@ -43,7 +44,13 @@ export class PermissibleValueComponent implements OnInit {
     ngOnInit(): void {
         this.fixDatatype();
         this.elt.allValid = true;
+        this.loadValueSet();
         this.initSrcOptions();
+        this.canLinkPvFunc();
+        if (!this.elt.dataElementConcept.conceptualDomain)
+            this.elt.dataElementConcept.conceptualDomain = {
+                vsac: {}
+            };
     }
 
     initSrcOptions() {
@@ -179,10 +186,10 @@ export class PermissibleValueComponent implements OnInit {
         });
     };
 
-
     vsacMappingExists() {
-        return typeof(this.elt.dataElementConcept.conceptualDomain) !== "undefined" &&
-            typeof(this.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
+        return this.elt.dataElementConcept.conceptualDomain.vsac.name
+            && this.elt.dataElementConcept.conceptualDomain.vsac.version
+            && this.elt.dataElementConcept.conceptualDomain.vsac.id;
     };
 
     removeVSMapping = function () {
@@ -249,28 +256,36 @@ export class PermissibleValueComponent implements OnInit {
         this.runManualValidation();
     };
 
+    canLinkPvFunc() {
+        let dec = this.elt.dataElementConcept;
+        this.canLinkPv = (this.isAllowedModel.isAllowed(this.elt) && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
+    }
+
     loadValueSet() {
         let dec = this.elt.dataElementConcept;
-        if (dec && this.oid) {
+        if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac) {
             this.vsacValueSet = [];
             this.pVTypeheadVsacNameList = [];
-            this.http.get("/vsacBridge/" + this.oid).map(res => res.json()).subscribe(
+            this.http.get("/vsacBridge/" + dec.conceptualDomain.vsac.id).map(res => res.json()).subscribe(
                 res => {
                     let data = res["ns0:RetrieveValueSetResponse"];
                     if (data) {
+                        this.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:ValueSet'][0]['$'].displayName;
+                        this.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:ValueSet'][0]['$'].version;
                         for (let i = 0; i < data["ns0:ValueSet"][0]["ns0:ConceptList"][0]["ns0:Concept"].length; i++) {
                             let vsac = data["ns0:ValueSet"][0]["ns0:ConceptList"][0]["ns0:Concept"][i]["$"];
                             this.vsacValueSet.push(vsac);
                             this.pVTypeheadVsacNameList.push(vsac.displayName);
                         }
                         this.validateVsacWithPv();
+                        this.validatePvWithVsac();
                     } else this.alert.addAlert("danger", "Error: No data retrieved from VSAC.");
-                },
-                err => {
+                }, err => {
                     console.log("err");
                     this.alert.addAlert("danger", "Error querying VSAC");
                 });
         }
+        this.canLinkPvFunc();
     };
 
     checkVsacId() {

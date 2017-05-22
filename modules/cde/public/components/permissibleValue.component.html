@@ -211,13 +211,12 @@
         <div *ngIf="isAllowedModel.loggedIn()">
             <div>{{vsacError}}</div>
             <div *ngIf="!editMode">
-                <a class="btn btn-default" (click)="editMode=true" id="updateOID">Update O.I.D</a>
+                <a class="btn btn-default" (click)="editMode=true" id="updateOIDBtn">Update O.I.D</a>
                 <a *ngIf="isAllowedModel.isAllowed(elt) && vsacMappingExists()" class="btn btn-default"
                    (click)="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
             </div>
             <div *ngIf="editMode">
-                <input name="vsacId" type="text" [(ngModel)]="oid"
-                       placeholder="VSAC O.I.D"/>
+                <input name="vsacId" type="text" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
                 <i id="vsacIdCheck" class="fa fa-check" (click)="checkVsacId(elt)"></i>
                 <i class="fa fa-times" (click)="editMode = false"></i>
             </div>
