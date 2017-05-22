@@ -22,8 +22,7 @@
             "check-whitespace"
         ],
         "quotemark": [
-            true,
-            "double"
+            true
         ],
         "semicolon": [
             true,
@@ -77,10 +76,6 @@
             "check-whitespace"
         ],
         "pipe-naming": [true, "camelCase", "cde"],
-        "quotemark": [
-            true,
-            "double"
-        ],
         "semicolon": [
             true,
             "always"

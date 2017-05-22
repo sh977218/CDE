@@ -207,9 +207,10 @@ angular.module('resourcesSystem', ['ngResource'])
             , steps: []
         };
     }])
-    .factory("userResource", ["$http", "$q", function ($http, $q) {
+    .factory("userResource", ["$http", "$q", "$interval", "OrgHelpers", function ($http, $q, $interval, OrgHelpers) {
         var userResource = this;
         this.user = null;
+        this.userHasMail = false;
 
         this.getRemoteUser = function() {
             userResource.deferred = $q.defer();
@@ -222,6 +223,7 @@ angular.module('resourcesSystem', ['ngResource'])
                     userResource.setOrganizations();
                     userResource.user.userLoaded = true;
                 }
+                userResource.checkMail();
                 userResource.deferred.resolve(response.data);
             });
         };
@@ -247,6 +249,20 @@ angular.module('resourcesSystem', ['ngResource'])
             if (!userResource.user || !userResource.user.username) return;
             $http.post("/user/update/searchSettings", settings);
         };
+
+        this.checkMail = function () {
+            if (userResource.user) {
+                $http.get('/mailStatus').then(function onSuccess(response) {
+                    if (response.data.count > 0) userResource.userHasMail = true;
+                }, function () {});
+            }
+        };
+
+        $interval(function () {
+            OrgHelpers.getOrgsDetailedInfoAPI();
+            userResource.checkMail();
+        }, 600000);
+
         return this;
     }])
     .factory("AutoCompleteResource", ["$http", function ($http) {

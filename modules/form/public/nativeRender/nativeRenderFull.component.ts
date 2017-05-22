@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
+import { CdeForm } from "../form.model";
 
 @Component({
     selector: "cde-native-render-full",
@@ -7,8 +8,8 @@ import { NativeRenderService } from "./nativeRender.service";
     providers: [NativeRenderService]
 })
 export class NativeRenderFullComponent implements OnInit {
-    @Input() eltLoaded: any;
-    @Input() elt: any;
+    @Input() eltLoaded: {promise: Promise<void>};
+    @Input() elt: CdeForm;
 
     profileIndex: any;
     overridePrintable: boolean = true;

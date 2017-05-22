@@ -183,7 +183,7 @@ exports.init = function (app, daoManager) {
 
     app.post("/removeFormClassification/", function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send();
-        else classificationNode_system.removeClassification(req.body.body, mongo_form, function (err) {
+        else classificationNode_system.removeClassification(req.body, mongo_form, function (err) {
             if (err) return res.status(202).send({error: {message: "Classification does not exists."}});
             else {
                 res.end();

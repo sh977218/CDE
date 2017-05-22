@@ -13,7 +13,7 @@ public class EmptyAnswers extends NlmCdeBaseTest {
         clickElement(By.id("description_tab"));
         textPresent("Answer Choices:", By.id("question_0_0"));
         clickElement(By.cssSelector("#question_0_0 .fa-pencil"));
-        clickElement(By.xpath("//*[@id='question_0_0']//button[. = 'Clear all']"));
+        clickElement(By.cssSelector("#question_0_0 .formDescriptionAnswerList .select2-selection__clear"));
         clickElement(By.cssSelector("#question_0_0 .fa-check"));
         textNotPresent("Answer Choices:", By.id("question_0_0"));
     }

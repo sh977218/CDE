@@ -70,7 +70,7 @@ export class LogAuditComponent {
         sort[p] = this.sortMap[p].sort;
         if (sort[p] === "desc") sort[p] = "asc";
         if (sort[p] === "asc") sort[p] = "desc";
-        this.searchLogs(sort, ()=> {
+        this.searchLogs(sort, () => {
             this.currentPage = 1;
             this.sortMap = SORT_MAP;
             this.setOppositeSort(this.sortMap[p]);
@@ -82,7 +82,7 @@ export class LogAuditComponent {
         else return;
     }
 
-    searchLogs(sort = null, cb = ()=> {
+    searchLogs(sort = null, cb = () => {
     }) {
         let postBody = {
             currentPage: this.currentPage,
@@ -106,7 +106,7 @@ export class LogAuditComponent {
                         method: log.method,
                         status: log.httpStatus,
                         respTime: log.responseTime
-                    }
+                    };
                 });
                 if (cb) cb();
             });

@@ -23,9 +23,9 @@ public class CreateEditSectionTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         scrollToInfiniteById("section_2");
-        Assert.assertEquals("Section 1", findElement(By.xpath("//*[@id='section_0']/div/div[1]/div[1]")).getText());
-        Assert.assertEquals("Section 2", findElement(By.xpath("//*[@id='section_1']/div/div[1]/div[1]")).getText());
-        Assert.assertEquals("Section 3", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]")).getText());
+        Assert.assertEquals("Section 1", findElement(By.xpath("//*[@id='section_0']/div/div[1]/div[1]//*[contains(@class,'section_title')]")).getText());
+        Assert.assertEquals("Section 2", findElement(By.xpath("//*[@id='section_1']/div/div[1]/div[1]//*[contains(@class,'section_title')]")).getText());
+        Assert.assertEquals("Section 3", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]//*[contains(@class,'section_title')]")).getText());
 
 
         textNotPresent("Repeats", By.xpath("//*[@id='section_0']"));
