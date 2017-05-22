@@ -348,6 +348,14 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
             || authShared.isSiteAdmin(userResource.user);
     };
 
+    isAllowedModel.doesUserOwnElt = function (elt) {
+        if (elt.elementType === 'board') {
+            return userResource.user.siteAdmin || (userResource.user.username === elt.owner.username);
+        } else
+            return userResource.user &&
+                (userResource.user.siteAdmin || (userResource.user._id && (userResource.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
+    };
+
     isAllowedModel.loggedIn = function () {
         return userResource.user && userResource.user._id;
     };
@@ -462,3 +470,7 @@ angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({
 
 import {ClassificationComponent} from "../../../adminItem/public/components/classification/classification.component";
 angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({component: ClassificationComponent, inputs: ['elt'], outputs: []}));
+
+import {DiscussAreaComponent} from "../../../discuss/components/discussArea/discussArea.component";
+angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
+    {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));
