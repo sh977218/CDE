@@ -3,6 +3,7 @@ package gov.nih.nlm.form.test.logic;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 public class EditSkipLogic extends BaseFormTest {
@@ -12,7 +13,6 @@ public class EditSkipLogic extends BaseFormTest {
         mustBeLoggedOut();
         String formName = "PROMIS SF v1.0-Fatigue 8a";
         goToFormByName(formName);
-        String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3_2");
         clickElement(By.id("description_tab"));
         scrollToInfiniteById("question_3_2");
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
@@ -34,6 +34,8 @@ public class EditSkipLogic extends BaseFormTest {
         textPresent("Always", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
 
         startEditQuestionSectionById("question_3_2");
+        (new Actions(driver)).moveToElement(findElement(By.id("question_3_2"))).perform(); // scroll into view
+        String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3_2");
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true,
                 "Unexpected number of tokens in expression 1");
         editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 2");

@@ -1,34 +1,16 @@
 package gov.nih.nlm.form.test;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
+import org.openqa.selenium.*;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends FormCommentTest {
-
-    protected void startAddingQuestions() {
-        scrollToTop();
-        try {
-            textPresent("Show Question Search", By.id("startAddingQuestions"));
-            clickElement(By.id("startAddingQuestions"));
-        } catch (Exception e) {
-            // if button does not say show, then don't click it.
-        }
-    }
-
-    protected void startAddingForms() {
-        scrollToTop();
-        try {
-            textPresent("Show Form Search", By.id("startAddingForms"));
-            clickElement(By.id("startAddingForms"));
-        } catch (Exception e) {
-            // if button does not say show, then don't click it.
-        }
-    }
 
     protected void saveForm() {
         try {
@@ -55,8 +37,49 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public void addSectionTop(String title, String repeat) {
-        clickElement(By.id("addSectionTop"));
-        String sectionId = "section_0";
+        addSection(title, repeat, 0);
+    }
+
+    public void addSectionBottom(String title, String repeat) {
+        hangon(2);
+        String searchString;
+        if (driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-drop-slot")).size() > 0)
+            searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+        else
+            searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+        int nbOfSections = driver.findElements(By.xpath(searchString)).size();
+        Assert.assertTrue(nbOfSections > 0);
+        addSection(title, repeat, nbOfSections - 1);
+    }
+
+    public void addSection(String title, String repeat, Integer sectionNumber) {
+        String sectionId = "section_" + sectionNumber;
+
+        hangon(2);
+        String searchString;
+        if (driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-drop-slot")).size() > 0)
+            searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+        else
+            searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+
+        // drag and drop selenium is buggy, try 5 times.
+        for (int i = 0; i < 5; i++) {
+            try {
+                WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
+                WebElement targetElt = findElement(By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]"));
+
+                (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+                dragAndDrop(sourceElt, targetElt);
+                textPresent("N/A", By.id(sectionId));
+                i = 10;
+            } catch (TimeoutException e) {
+                if (i == 4) {
+                    throw e;
+                }
+            }
+        }
+
+        hangon(1); // allow time for id to be processed
         scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
@@ -67,19 +90,42 @@ public class BaseFormTest extends FormCommentTest {
         setRepeat(sectionId, repeat);
     }
 
-    public void addSectionBottom(String title, String repeat) {
-        int nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
-        clickElement(By.id("addSectionBottom"));
-        textPresent("New Section");
-        String sectionId = "section_" + nbOfSections;
-        scrollToViewById(sectionId);
-        startEditQuestionSectionById(sectionId);
-        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
-        String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input";
-        findElement(By.xpath(sectionInput)).clear();
-        findElement(By.xpath(sectionInput)).sendKeys(title);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
-        setRepeat(sectionId, repeat);
+    public void dragAndDrop(WebElement source, WebElement target) {
+        String basePath = new File("").getAbsolutePath();
+
+        // drag and drop selenium is buggy, try 5 times.
+        for (int i = 0; i < 5; i++) {
+            try {
+                Assert.assertTrue(source.isDisplayed());
+                Assert.assertTrue(target.isDisplayed());
+
+                String JS_DRAG_DROP = readFile(basePath + "/src/test/resources/drag-drop.js");
+                ((JavascriptExecutor) driver).executeScript(JS_DRAG_DROP, source, target, null, null, 100);
+                i = 10;
+            } catch (WebDriverException e) {
+                if (i == 4) {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    private String readFile(String file) {
+        Charset cs = Charset.forName("UTF-8");
+        StringBuilder builder = new StringBuilder();
+        try {
+            FileInputStream stream = new FileInputStream(file);
+            Reader reader = new BufferedReader(new InputStreamReader(stream, cs));
+            char[] buffer = new char[8192];
+            int read;
+            while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
+                builder.append(buffer, 0, read);
+            }
+            stream.close();
+        } catch (IOException e) {
+            textPresent("IOException");
+        }
+        return builder.toString();
     }
 
     public void setRepeat(String sectionId, String repeat) {
@@ -116,17 +162,17 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
-        return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//textarea[2]";
+        return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//input";
     }
 
 
     public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
                               boolean displayError, String errorMessage) {
         findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
-        textPresent(textToBePresent, By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
-        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-')]/a)")).size();
+        findElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]/*[contains(.,'" + textToBePresent + "')]"));
+        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])")).size();
         Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
-        clickElement(By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
+        clickElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]"));
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
     }
