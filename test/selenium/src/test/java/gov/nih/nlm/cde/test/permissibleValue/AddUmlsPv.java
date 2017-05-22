@@ -12,35 +12,35 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator");
         clickElement(By.id("pvs_tab"));
-        clickElement(By.partialLinkText("Add Permissible Value"));
+        clickElement(By.id("openAddPermissibleValueModelBtn"));
         clickElement(By.id("valueMeaningNameInput"));
         findElement(By.id("valueMeaningNameInput")).sendKeys("Female");
         textPresent("Choices from UMLS");
-        textPresent("C0015780 : Female");
+        textPresent("C0043210 : Woman");
         textPresent("C0086287 : Females");
-        clickElement(By.linkText("C0015780 : Female"));
-        clickElement(By.id("createNewPv"));
-        textPresent("C0015780", By.id("pvCode-5"));
+        clickElement(By.linkText("C0086287 : Females"));
+        clickElement(By.id("createNewPermissibleValueBtn"));
+        textPresent("C0015780", By.id("pvCode_5"));
 
-        findElement(By.id("displayNCICodes")).click();
-        textPresent("Female", By.id("nameAsNCI-5"));
-        textPresent("C16576", By.id("codeAsNCI-5"));
+        clickElement(By.id("displayNCICodes"));
+        textPresent("Female", By.id("nameAsNCI_5"));
+        textPresent("C16576", By.id("codeAsNCI_5"));
 
-        findElement(By.id("displayLNCCodes")).click();
-        textPresent("Female", By.id("nameAsLNC-5"));
-        textPresent("LA3-6", By.id("codeAsLNC-5"));
+        clickElement(By.id("displayLNCCodes"));
+        textPresent("Female", By.id("nameAsLNC_5"));
+        textPresent("LA3-6", By.id("codeAsLNC_5"));
 
-        findElement(By.id("displaySNOMEDCT_USCodes")).click();
-        textPresent("Female", By.id("nameAsSCT-5"));
-        textPresent("248152002", By.id("codeAsSCT-5"));
+        clickElement(By.id("displaySNOMEDCT_USCodes"));
+        textPresent("Female", By.id("nameAsSCT_5"));
+        textPresent("248152002", By.id("codeAsSCT_5"));
 
         newCdeVersion();
-        textPresent("Female", By.id("nameAsNCI-5"));
-        textPresent("C16576", By.id("codeAsNCI-5"));
-        textPresent("Female", By.id("nameAsLNC-5"));
-        textPresent("LA3-6", By.id("codeAsLNC-5"));
-        textPresent("Female", By.id("nameAsSCT-5"));
-        textPresent("248152002", By.id("codeAsSCT-5"));
+        textPresent("Female", By.id("nameAsNCI_5"));
+        textPresent("C16576", By.id("codeAsNCI_5"));
+        textPresent("Female", By.id("nameAsLNC_5"));
+        textPresent("LA3-6", By.id("codeAsLNC_5"));
+        textPresent("Female", By.id("nameAsSCT_5"));
+        textPresent("248152002", By.id("codeAsSCT_5"));
 
         mustBeLoggedOut();
         goToCdeByName("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator");
@@ -49,7 +49,7 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         Assert.assertFalse(findElement(By.id("displayLNCCodes")).isEnabled());
         Assert.assertFalse(findElement(By.id("displaySNOMEDCT_USCodes")).isEnabled());
 
-        findElement(By.id("displayNCICodes")).click();
+        clickElement(By.id("displayNCICodes"));
         textPresent("Female", By.id("nameAsNCI-5"));
         textPresent("C16576", By.id("codeAsNCI-5"));
     }

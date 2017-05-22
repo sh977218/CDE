@@ -111,7 +111,7 @@
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
             <span *ngFor="let source of SOURCES | keys" style="margin-left: 50px">
                 <input [(ngModel)]="SOURCES[source].selected" type="checkbox" (disabled)="SOURCES[source].disabled"
-                       id="{{source}}" title="{{source}}" (ngModelChange)="lookupAsSource(source)">{{source}} Codes
+                       id="display{{source}}Codes" title="{{source}}" (ngModelChange)="lookupAsSource(source)">{{source}} Codes
                 <span *ngIf="SOURCES[source].disabled"> (Login to enable)</span>
             </span>
         </div>
@@ -140,28 +140,28 @@
                     <td class="pvMeaningName">{{pv.valueMeaningName}}</td>
                     <td class="pvMeaningCode">{{pv.valueMeaningCode}}</td>
                     <td class="pvCodeSystem">{{pv.codeSystemName}}</td>
-                    <td *ngIf="SOURCES['UMLS'].selected">
+                    <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
                         {{SOURCES['UMLS'].codes[pv.valueMeaningCode].code}}
                     </td>
-                    <td *ngIf="SOURCES['UMLS'].selected">
+                    <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}">
                         {{SOURCES['UMLS'].codes[pv.valueMeaningCode].meaning}}
                     </td>
-                    <td *ngIf="SOURCES['NCI Thesaurus'].selected">
+                    <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="codeAsNCI_{{i}}">
                         {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode].code}}
                     </td>
-                    <td *ngIf="SOURCES['NCI Thesaurus'].selected">
+                    <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}">
                         {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode].meaning}}
                     </td>
-                    <td *ngIf="SOURCES['LOINC'].selected">
+                    <td *ngIf="SOURCES['LOINC'].selected" id="codeAsLNC_{{i}}">
                         {{SOURCES['LOINC'].codes[pv.valueMeaningCode].code}}
                     </td>
-                    <td *ngIf="SOURCES['LOINC'].selected">
+                    <td *ngIf="SOURCES['LOINC'].selected" id="nameAsLNC_{{i}}">
                         {{SOURCES['LOINC'].codes[pv.valueMeaningCode].meaning}}
                     </td>
-                    <td *ngIf="SOURCES['SNOMEDCT US'].selected">
+                    <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="codeAsSCT_{{i}}">
                         {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].code}}
                     </td>
-                    <td *ngIf="SOURCES['SNOMEDCT US'].selected">
+                    <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}">
                         {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
                     </td>
                     <td>
@@ -225,7 +225,6 @@
             </div>
         </div>
         <hr/>
-
         <div *ngIf="!isAllowedModel.loggedIn() && vsacMappingExists()">Please log in to see VSAC mapping.</div>
 
         <table class="table-bordered table-condensed table-striped" *ngIf="vsacValueSet.length > 0">

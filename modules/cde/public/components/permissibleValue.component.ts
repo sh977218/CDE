@@ -28,7 +28,7 @@ export class PermissibleValueComponent implements OnInit {
     umlsTerms = [];
     newPermissibleValue = {};
     SOURCES = {
-        "NCI Thesaurus": {source: "NCIT", termType: "PT", codes: {}, selected: false},
+        "NCI Thesaurus": {source: "NCI", termType: "PT", codes: {}, selected: false},
         "UMLS": {source: "UMLS", termType: "PT", codes: {}, selected: false},
         "LOINC": {source: "LNC", termType: "LA", codes: {}, selected: false, disabled: true},
         "SNOMEDCT US": {source: "SNOMEDCT_US", termType: "PT", codes: {}, selected: false, disabled: true}
@@ -43,6 +43,10 @@ export class PermissibleValueComponent implements OnInit {
     ngOnInit(): void {
         this.fixDatatype();
         this.elt.allValid = true;
+        this.initSrcOptions();
+    }
+
+    initSrcOptions() {
         this.containsKnownSystem = this.elt.valueDomain.permissibleValues.filter(pv => {
                 return this.SOURCES[pv.codeSystemName];
             }).length > 0;
@@ -81,21 +85,22 @@ export class PermissibleValueComponent implements OnInit {
 
     removePv(index) {
         this.elt.valueDomain.permissibleValues.splice(index, 1);
-        this.validatePvWithVsac();
-        this.validateVsacWithPv();
-        this.checkPvUnicity();
+        this.runManualValidation();
+        this.initSrcOptions();
         this.elt.unsaved = true;
     }
 
     addNewPermissibleValue() {
         this.elt.valueDomain.permissibleValues.push(this.newPermissibleValue);
         this.modalRef.close();
-        this.checkPvUnicity();
+        this.runManualValidation();
+        this.initSrcOptions();
         this.stageElt();
     }
 
     removeAllPermissibleValues() {
         this.elt.valueDomain.permissibleValues = [];
+        this.runManualValidation();
     }
 
     sortPermissibleValue() {
@@ -114,7 +119,6 @@ export class PermissibleValueComponent implements OnInit {
                             source.codes = {};
                         if (!source.codes[code])
                             source.codes[code] = {code: "", meaning: "Retrieving..."};
-
                     } else this.alert.addAlert("danger", "Unknown source in pv code " + code);
                 });
             });
@@ -130,17 +134,49 @@ export class PermissibleValueComponent implements OnInit {
         this.elt.valueDomain.permissibleValues.forEach(pv => {
             __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "", meaning: "Retrieving..."};
             let code = pv.valueMeaningCode;
-            let source = this.SOURCES[pv.codeSystemName].source;
-            this.http.get("/crossWalkingVocabularies/" + source + "/" + code + "/" + targetSource).map(res => res.json())
-                .subscribe(res => {
-                    if (res.result.length > 0)
-                        res.result.forEach((r) => {
-                            __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
-                        });
-                    else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
-                }, err => this.alert.addAlert("danger", err));
+            let source;
+            if (pv.codeSystemName)
+                source = this.SOURCES[pv.codeSystemName].source;
+            if (code && source) {
+                if (src === "UMLS" && source === "UMLS") {
+                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                        code: pv.valueMeaningCode,
+                        meaning: pv.valueMeaningName
+                    };
+                } else if (src === "UMLS") {
+                    this.http.get("/umlsCuiFromSrc/" + code + "/" + source).map(res => res.json())
+                        .subscribe(
+                            res => {
+                                if (res.result.length > 0)
+                                    res.result.forEach((r) => {
+                                        __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
+                                    });
+                                else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
+                            }, err => this.alert.addAlert("danger", err));
+
+                }
+                else if (source === "UMLS") {
+                    this.http.get("/umlsAtomsBridge/" + code + "/" + targetSource).map(res => res.json())
+                        .subscribe(
+                            res => {
+                                if (res.result.length > 0)
+                                    res.result.forEach((r) => {
+                                        __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
+                                    });
+                                else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
+                            }, err => this.alert.addAlert("danger", err));
+                } else {
+                    this.http.get("/crossWalkingVocabularies/" + source + "/" + code + "/" + targetSource).map(res => res.json())
+                        .subscribe(res => {
+                            if (res.result.length > 0)
+                                res.result.forEach((r) => {
+                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
+                                });
+                            else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
+                        }, err => this.alert.addAlert("danger", err));
+                }
+            } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
         });
-        console.log("a");
     };
 
 
@@ -195,6 +231,12 @@ export class PermissibleValueComponent implements OnInit {
         });
     };
 
+    runManualValidation() {
+        this.validatePvWithVsac();
+        this.validateVsacWithPv();
+        this.checkPvUnicity();
+    }
+
     addVsacValue(vsacValue) {
         if (this.isVsInPv(vsacValue)) return;
         else this.elt.valueDomain.permissibleValues.push({
@@ -204,6 +246,7 @@ export class PermissibleValueComponent implements OnInit {
             "codeSystemName": vsacValue.codeSystemName,
             "codeSystemVersion": vsacValue.codeSystemVersion
         });
+        this.runManualValidation();
     };
 
     loadValueSet() {

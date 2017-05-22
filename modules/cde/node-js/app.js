@@ -258,6 +258,7 @@ exports.init = function (app, daoManager) {
         }
     });
 
+    // from others to UMLS
     app.get('/umlsCuiFromSrc/:id/:src', function (req, res) {
         if (!config.umls.sourceOptions[req.params.src]) {
             return res.send("Source cannot be looked up, use UTS Instead.");
@@ -265,6 +266,7 @@ exports.init = function (app, daoManager) {
         return vsac.umlsCuiFromSrc(req.params.id, req.params.src, res);
     });
 
+    // from UMLS to others
     app.get('/umlsAtomsBridge/:id/:src', function (req, res) {
         if (!config.umls.sourceOptions[req.params.src]) {
             return res.send("Source cannot be looked up, use UTS Instead.");
