@@ -54,13 +54,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.getCtrlType = function () {return "cde";};
 
     $scope.tabs = {
-        // general: {
-        //     heading: "General Details",
-        //     includes: ['/cde/public/html/cdeGeneralDetail.html'],
-        //     select: function (thisTab) {
-        //         setCurrentTab(thisTab);
-        //     }
-        // },
         pvs: {
             heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html'],
             select: function (thisTab) {

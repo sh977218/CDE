@@ -7,8 +7,7 @@ import org.testng.annotations.Test;
 
 public class CdeSearchTest extends NlmCdeBaseTest {
 
-    @Test
-    public void cdeFullDetail() {
+    public void fullDetail() {
         goToCdeByName("Genotype Therapy Basis Mutation");
         textPresent("Genotype Therapy Basis Mutation Analysis Indicator");
         textPresent("Text descriptor to indicate whether "
@@ -33,6 +32,11 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("ids_tab"));
         textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
+    }
+
+    @Test
+    public void cdeFullDetail() {
+        fullDetail();
 
         clickElement(By.id("general_tab"));
         clickElement(By.linkText("SDC View"));
