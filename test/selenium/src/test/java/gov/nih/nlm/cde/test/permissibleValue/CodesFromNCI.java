@@ -12,11 +12,11 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         goToCdeByName("Race Category Text");
         clickElement(By.id("pvs_tab"));
         clickElement(By.id("displayNCICodes"));
-        textPresent("American Indian or Alaska Native", By.id("nameAsNCI-0"));
-        textPresent("C41259", By.id("codeAsNCI-0"));
+        textPresent("American Indian or Alaska Native", By.id("nameAsNCI_0"));
+        textPresent("C41259", By.id("codeAsNCI_0"));
         clickElement(By.id("displayUMLSCodes"));
-        textPresent("American Indian or Alaska Native", By.id("nameAsUMLS-0"));
-        textPresent("C1515945", By.id("codeAsUMLS-0"));
+        textPresent("American Indian or Alaska Native", By.id("nameAsUMLS_0"));
+        textPresent("C1515945", By.id("codeAsUMLS_0"));
         Assert.assertFalse(findElement(By.id("displayLNCCodes")).isEnabled());
         Assert.assertFalse(findElement(By.id("displaySNOMEDCT_USCodes")).isEnabled());
 
@@ -25,12 +25,12 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         clickElement(By.id("pvs_tab"));
 
         clickElement(By.id("displayLNCCodes"));
-        textPresent("American Indian or Alaska Native", By.id("nameAsLNC-0"));
-        textPresent("LA10608-0", By.id("codeAsLNC-0"));
+        textPresent("American Indian or Alaska Native", By.id("nameAsLNC_0"));
+        textPresent("LA10608-0", By.id("codeAsLNC_0"));
 
         clickElement(By.id("displaySNOMEDCT_USCodes"));
-        textPresent("American Indian or Alaska native", By.id("nameAsSCT-0"));
-        textPresent("413490006", By.id("codeAsSCT-0"));
+        textPresent("American Indian or Alaska native", By.id("nameAsSCT_0"));
+        textPresent("413490006", By.id("codeAsSCT_0"));
     }
 
 }

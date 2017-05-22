@@ -111,7 +111,8 @@
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
             <span *ngFor="let source of SOURCES | keys" style="margin-left: 50px">
                 <input [(ngModel)]="SOURCES[source].selected" type="checkbox" (disabled)="SOURCES[source].disabled"
-                       id="display{{source}}Codes" title="{{source}}" (ngModelChange)="lookupAsSource(source)">{{source}} Codes
+                       id="display{{SOURCES[source].source}}Codes" title="{{source}}"
+                       (ngModelChange)="lookupAsSource(source)">{{source}} Codes
                 <span *ngIf="SOURCES[source].disabled"> (Login to enable)</span>
             </span>
         </div>
@@ -133,7 +134,7 @@
                     <th>Actions</th>
                 </tr>
                 <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
-                    <td class="pvValue">
+                    <td id="pvValue_{{i}}">
                         <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="isAllowedModel.isAllowed(elt)"
                                          (modelChange)="checkPvUnicity();stageElt();"></cde-inline-edit>
                     </td>

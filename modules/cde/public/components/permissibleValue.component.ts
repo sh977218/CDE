@@ -60,6 +60,7 @@ export class PermissibleValueComponent implements OnInit {
     }
 
     fixDatatype() {
+        if (!this.elt.valueDomain.datatype) this.elt.valueDomain.datatype = "";
         if (this.elt.valueDomain.datatype === "Value List" && !this.elt.valueDomain.datatypeValueList)
             this.elt.valueDomain.datatypeValueList = {};
         if (this.elt.valueDomain.datatype === "Number" && !this.elt.valueDomain.datatypeNumber)
