@@ -171,6 +171,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.elt = de;
             $scope.elt._changeNote = $scope.elt.changeNote;
             delete $scope.elt.changeNote;
+            $scope.elt.allValid = true;
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
             $scope.loadBoards();
@@ -525,13 +526,13 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.validateAndStageElt = function (elt) {
         if (elt.valueDomain.datatype === 'Value List'
             && (!elt.valueDomain.permissibleValues || elt.valueDomain.permissibleValues.length === 0)) {
-            $scope.allValid = false;
-            $scope.pvNotValidMsg = 'Empty Permissible Values';
+            $scope.elt.allValid = false;
+            $scope.elt.pvNotValidMsg = 'Empty Permissible Values';
             return;
         }
         else {
-            $scope.allValid = true;
-            delete $scope.pvNotValidMsg;
+            $scope.elt.allValid = true;
+            delete $scope.elt.pvNotValidMsg;
             elt.unsaved = true;
         }
     }

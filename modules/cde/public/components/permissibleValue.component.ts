@@ -15,9 +15,7 @@ export class PermissibleValueComponent implements OnInit {
     public modalRef: NgbModalRef;
     @Input() public elt: any;
     showValidateButton;
-    pvNotValidMsg;
     vsacValueSet = [];
-    allValid = true;
     editMode;
     oid: String;
     vsac = {};
@@ -44,6 +42,7 @@ export class PermissibleValueComponent implements OnInit {
 
     ngOnInit(): void {
         this.fixDatatype();
+        this.elt.allValid = true;
         this.containsKnownSystem = this.elt.valueDomain.permissibleValues.filter(pv => {
                 return this.SOURCES[pv.codeSystemName];
             }).length > 0;
@@ -77,7 +76,7 @@ export class PermissibleValueComponent implements OnInit {
                 if (res.result && res.result.results)
                     this.umlsTerms = res.result.results;
                 else this.umlsTerms = [];
-            }, err => this.alert.addAlert("danger", err));
+            });
     };
 
     removePv(index) {
@@ -186,8 +185,8 @@ export class PermissibleValueComponent implements OnInit {
 
     checkPvUnicity() {
         let validObject = deValidator.checkPvUnicity(this.elt.valueDomain);
-        this.allValid = validObject["allValid"];
-        this.pvNotValidMsg = validObject["pvNotValidMsg"];
+        this.elt.allValid = validObject["allValid"];
+        this.elt.pvNotValidMsg = validObject["pvNotValidMsg"];
     };
 
     validateVsacWithPv() {
@@ -247,6 +246,6 @@ export class PermissibleValueComponent implements OnInit {
     };
 
     stageElt(event = null) {
-        this.elt.unsave = true;
+        this.elt.unsaved = true;
     }
 }

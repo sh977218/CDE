@@ -46,7 +46,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
 
-        changeField("pv-1", "pv1");
+        changeField("pv_1", "pv1");
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
@@ -58,7 +58,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
-        addPv("pv5", "name1", "code2", "NCi");
+        addPv("pv5", "name5", "code2", "NCI");
         textPresent("There are validation errors. Duplicate Code");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
@@ -66,12 +66,12 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
-        clickElement(By.id("addPv"));
+        clickElement(By.id("openAddPermissibleValueModelBtn"));
         findElement(By.id("permissibleValueInput")).sendKeys("pv6");
         findElement(By.id("valueMeaningCodeInput")).sendKeys("code6");
-        Assert.assertEquals(findElement(By.id("createNewPv")).isEnabled(), false);
+        Assert.assertFalse(findElement(By.id("createNewPermissibleValueBtn")).isEnabled());
         findElement(By.id("codeSystemInput")).sendKeys("MESH");
-        Assert.assertEquals(findElement(By.id("createNewPv")).isEnabled(), true);
+        Assert.assertTrue(findElement(By.id("createNewPermissibleValueBtn")).isEnabled());
     }
 
 }
