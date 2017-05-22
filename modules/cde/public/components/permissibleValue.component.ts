@@ -17,7 +17,7 @@ export class PermissibleValueComponent implements OnInit {
     showValidateButton;
     pvNotValidMsg;
     vsacValueSet = [];
-    allValid;
+    allValid = true;
     editMode;
     oid: String;
     vsac = {};
@@ -82,12 +82,16 @@ export class PermissibleValueComponent implements OnInit {
 
     removePv(index) {
         this.elt.valueDomain.permissibleValues.splice(index, 1);
+        this.validatePvWithVsac();
+        this.validateVsacWithPv();
+        this.checkPvUnicity();
         this.elt.unsaved = true;
     }
 
     addNewPermissibleValue() {
         this.elt.valueDomain.permissibleValues.push(this.newPermissibleValue);
         this.modalRef.close();
+        this.checkPvUnicity();
         this.stageElt();
     }
 
@@ -182,6 +186,8 @@ export class PermissibleValueComponent implements OnInit {
 
     checkPvUnicity() {
         let validObject = deValidator.checkPvUnicity(this.elt.valueDomain);
+        this.allValid = validObject["allValid"];
+        this.pvNotValidMsg = validObject["pvNotValidMsg"];
     };
 
     validateVsacWithPv() {

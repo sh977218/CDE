@@ -1,15 +1,15 @@
 package gov.nih.nlm.cde.test.permissibleValue;
 
-import gov.nih.nlm.cde.test.BaseClassificationTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class PvValidatorTest extends BaseClassificationTest {
+public class PvValidatorTest extends NlmCdeBaseTest {
 
     public void addPv(String pv, String name, String code, String codeSystem) {
-        clickElement(By.id("addPv"));
+        clickElement(By.id("openAddPermissibleValueModelBtn"));
         findElement(By.id("permissibleValueInput")).sendKeys(pv);
 
         if (name != null) {
@@ -24,14 +24,14 @@ public class PvValidatorTest extends BaseClassificationTest {
             findElement(By.id("codeSystemInput")).sendKeys(codeSystem);
         }
 
-        clickElement(By.id("createNewPv"));
+        clickElement(By.id("createNewPermissibleValueBtn"));
     }
 
     public void changeField(String which, String to) {
-        clickElement(By.xpath("//td[@id='" + which + "']//i"));
-        findElement(By.xpath("//td[@id='" + which + "']//input")).clear();
-        findElement(By.xpath("//td[@id='" + which + "']//input")).sendKeys(to);
-        clickElement(By.cssSelector("#" + which + " .fa-check"));
+        clickElement(By.xpath("//tr[@id='" + which + "']//td[contains(@class,'pvValue')]//i"));
+        findElement(By.xpath("//tr[@id='" + which + "']//td[contains(@class,'pvValue')]//input")).clear();
+        findElement(By.xpath("//tr[@id='" + which + "']//td[contains(@class,'pvValue')]//input")).sendKeys(to);
+        clickElement(By.xpath("//tr[@id='" + which + "']//td[contains(@class,'pvValue')]//button[contains(@class,'fa fa-check')]"));
     }
 
     @Test
@@ -41,7 +41,7 @@ public class PvValidatorTest extends BaseClassificationTest {
         clickElement(By.id("pvs_tab"));
         textNotPresent("There are validation errors");
 
-        changeField("pv-0", "pv2");
+        changeField("pv_0", "pv2");
         textPresent("There are validation errors. Duplicate Permissible Value");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));

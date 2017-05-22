@@ -129,14 +129,14 @@
                     <th>Code Description</th>
                     <th>Actions</th>
                 </tr>
-                <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index">
-                    <td>
-                        <cde-inline-edit [model]="pv.permissibleValue" [isAllowed]="isAllowedModel.isAllowed(elt)"
-                                         (onOk)="stageElt()"></cde-inline-edit>
+                <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
+                    <td class="pvValue">
+                        <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                         (modelChange)="checkPvUnicity();stageElt();"></cde-inline-edit>
                     </td>
-                    <td>{{pv.valueMeaningName}}</td>
-                    <td>{{pv.valueMeaningCode}}</td>
-                    <td>{{pv.codeSystemName}}</td>
+                    <td class="pvMeaningName">{{pv.valueMeaningName}}</td>
+                    <td class="pvMeaningCode">{{pv.valueMeaningCode}}</td>
+                    <td class="pvCodeSystem">{{pv.codeSystemName}}</td>
                     <td *ngIf="SOURCES['UMLS'].selected">
                         {{SOURCES['UMLS'].codes[pv.valueMeaningCode].code}}
                     </td>
@@ -170,9 +170,9 @@
                     </td>
                     <td>
                         <ng-container *ngIf="pv.notValid">
-                            <span class="btn-default fa fa-warning text-danger" id="pv-{{index}}-notValid"></span>
+                            <span class="btn-default fa fa-warning text-danger" id="pv-{{i}}-notValid"></span>
                         </ng-container>
-                        <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(index)"
+                        <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(i)"
                               title="Remove" href=""></span>
                         <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                         (cb)="sortPermissibleValue();"></sortable-array>
@@ -181,7 +181,11 @@
             </table>
         </ng-container>
         <div>
-            <button class="btn btn-small btn-default" role="button" title="Add Permissible Value"
+            <div *ngIf="!allValid" class="alert alert-danger mt20" role="alert">
+                There are validation errors. {{pvNotValidMsg }}
+            </div>
+            <button class="btn btn-small btn-default" role="button" id="openAddPermissibleValueModelBtn"
+                    title="Add Permissible Value"
                     (click)="openNewPermissibleValueModal()">
                 <i class="fa fa-plus"></i>Add Permissible Value
             </button>
