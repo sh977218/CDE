@@ -16,11 +16,10 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         clickElement(By.id("valueMeaningNameInput"));
         findElement(By.id("valueMeaningNameInput")).sendKeys("Female");
         textPresent("Choices from UMLS");
-        textPresent("C0043210 : Woman");
         textPresent("C0086287 : Females");
         clickElement(By.linkText("C0086287 : Females"));
         clickElement(By.id("createNewPermissibleValueBtn"));
-        textPresent("C0015780", By.id("pvCode_5"));
+        textPresent("C0015780", By.id("pvMeaningCode_5"));
 
         clickElement(By.id("displayNCICodes"));
         textPresent("Female", By.id("nameAsNCI_5"));

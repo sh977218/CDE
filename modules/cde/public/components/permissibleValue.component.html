@@ -137,9 +137,9 @@
                         <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="isAllowedModel.isAllowed(elt)"
                                          (modelChange)="checkPvUnicity();stageElt();"></cde-inline-edit>
                     </td>
-                    <td class="pvMeaningName">{{pv.valueMeaningName}}</td>
-                    <td class="pvMeaningCode">{{pv.valueMeaningCode}}</td>
-                    <td class="pvCodeSystem">{{pv.codeSystemName}}</td>
+                    <td id="pvMeaningName_{{i}}">{{pv.valueMeaningName}}</td>
+                    <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
+                    <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
                     <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
                         {{SOURCES['UMLS'].codes[pv.valueMeaningCode].code}}
                     </td>
@@ -164,7 +164,7 @@
                     <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}">
                         {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
                     </td>
-                    <td>
+                    <td id="pvMeaningDefinition_{{i}}">
                         <cde-inline-edit [model]="pv.valueMeaningDefinition"
                                          [isAllowed]="isAllowedModel.isAllowed(elt)"
                                          (modelChange)="stageElt()"></cde-inline-edit>
@@ -220,7 +220,8 @@
                    (click)="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
             </div>
             <div *ngIf="editMode">
-                <input name="vsacId" type="text" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id" placeholder="VSAC O.I.D"/>
+                <input name="vsacId" type="text" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id"
+                       placeholder="VSAC O.I.D"/>
                 <i id="vsacIdCheck" class="fa fa-check" (click)="checkVsacId(elt)"></i>
                 <i class="fa fa-times" (click)="editMode = false"></i>
             </div>
