@@ -7,8 +7,7 @@ import org.testng.annotations.Test;
 
 public class CdeSearchTest extends NlmCdeBaseTest {
 
-    @Test
-    public void cdeFullDetail() {
+    public void fullDetail() {
         goToCdeByName("Genotype Therapy Basis Mutation");
         textPresent("Genotype Therapy Basis Mutation Analysis Indicator");
         textPresent("Text descriptor to indicate whether "
