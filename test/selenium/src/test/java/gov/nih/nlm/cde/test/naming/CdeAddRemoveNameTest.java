@@ -18,30 +18,30 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-
         addNewName(newName, newDefinition, null);
         newCdeVersion();
 
+        goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         textPresent(newName);
         editDesignationByIndex(1, newNameChange);
         newCdeVersion();
 
+        goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         textPresent(newName + newNameChange);
-
         editDefinitionByIndex(1, newDefinitionChange, false);
         newCdeVersion();
 
+        goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         textPresent(newDefinition + newDefinitionChange);
-
         editTagByIndex(1, new String[]{newTag});
         newCdeVersion();
 
+        goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         textPresent(newTag);
-
         clickElement(By.id("removeNaming-1"));
         newCdeVersion();
 
