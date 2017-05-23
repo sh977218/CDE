@@ -120,8 +120,6 @@ export class FormDescriptionComponent implements OnInit {
         childrenField: "formElements",
         displayField: "label",
         dropSlotHeight: 3,
-        useVirtualScroll: true,
-        nodeHeight: 22,
         isExpandedField: "id"
     };
 
