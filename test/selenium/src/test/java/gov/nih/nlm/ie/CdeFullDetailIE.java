@@ -13,7 +13,7 @@ public class CdeFullDetailIE extends NlmCdeBaseTest {
     @Test
     @SelectBrowser()
     public void cdeSearchTestIE() {
-        cdeSearchTest.cdeFullDetail();
+        cdeSearchTest.fullDetail();
     }
 
 }

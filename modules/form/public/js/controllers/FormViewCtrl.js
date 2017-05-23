@@ -21,6 +21,7 @@ angular.module('formModule').controller
     $scope.isFormValid = true;
 
     $scope.pinModal = PinModal.new('cde');
+    $scope.formPinModal = PinModal.new('form');
 
     $scope.getEltId = function () {return $scope.elt.tinyId;};
     $scope.getEltName = function () {return $scope.elt.naming[0].designation;};
