@@ -1034,11 +1034,6 @@ div + .questionPlaceholder {
     font-size: small;
 }
 
-.formDescriptionTool,
-.btn.formDescriptionTool {
-    cursor: move;
-}
-
 .label.formViewSummaryLabel {
     margin-right: 5px;
     white-space: normal;
