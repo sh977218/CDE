@@ -8,18 +8,18 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
 
     @Test
     public void dateDatatype() {
-        mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Cisternal compression type";
+        String datatype = "Date";
+
+        mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("pvs_tab"));
-        clickElement(By.xpath("//*[@id='datatypeSelect']//span[contains(@class,'select2-selection--single')]"));
-        clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[text()='Date']"));
+        changeDatatype(datatype);
 
         clickElement(By.xpath("//*[@id='datatypeDateFormat']//i"));
         findElement(By.xpath("//*[@id='datatypeDateFormat']//input")).sendKeys("format1");
         clickElement(By.xpath("//*[@id='datatypeDateFormat']//button[contains(@class,'fa fa-check')]"));
         newCdeVersion();
-
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
