@@ -14,7 +14,7 @@
     </div>
     <ng-container *ngIf="elt.valueDomain.definition">
         <div class="col-xs-2 text-right text_label">Instructions:</div>
-        <div class="col-xs-10">
+        <div class="col-xs-10" id="instructions">
             {{elt.valueDomain.definition}}
         </div>
     </ng-container>
@@ -24,7 +24,7 @@
                          [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-edit>
     </div>
     <div class="col-xs-2 text-right text_label">Ids:</div>
-    <div class="col-xs-10">
+    <div class="col-xs-10" id="identifiers">
         <ng-container *ngIf="!elt.valueDomain.ids || elt.valueDomain.ids.length===0">
             empty
         </ng-container>
@@ -174,10 +174,12 @@
                         <ng-container *ngIf="pv.notValid">
                             <span class="btn-default fa fa-warning text-danger" id="pv-{{i}}-notValid"></span>
                         </ng-container>
-                        <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(i)"
-                              title="Remove" href=""></span>
-                        <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
-                                        (cb)="sortPermissibleValue();"></sortable-array>
+                        <ng-container *ngIf="isAllowedModel.isAllowed(elt)">
+                            <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(i)"
+                                  title="Remove" href=""></span>
+                            <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
+                                            (cb)="sortPermissibleValue();"></sortable-array>
+                        </ng-container>
                     </td>
                 </tr>
             </table>
@@ -186,16 +188,17 @@
             <div *ngIf="!elt.allValid" class="alert alert-danger mt20" role="alert">
                 There are validation errors. {{elt.pvNotValidMsg }}
             </div>
-
-            <button class="btn btn-small btn-default" role="button" id="openAddPermissibleValueModelBtn"
-                    title="Add Permissible Value"
-                    (click)="openNewPermissibleValueModal()">
-                <i class="fa fa-plus"></i>Add Permissible Value
-            </button>
-            <button class="btn btn-small btn-default" role="button" title="Remove All Values"
-                    (click)="removeAllPermissibleValues()">
-                <i class="fa fa-trash-o"></i>Remove All Values
-            </button>
+            <ng-container *ngIf="isAllowedModel.isAllowed(elt)">
+                <button class="btn btn-small btn-default" role="button" id="openAddPermissibleValueModelBtn"
+                        title="Add Permissible Value"
+                        (click)="openNewPermissibleValueModal()">
+                    <i class="fa fa-plus"></i>Add Permissible Value
+                </button>
+                <button class="btn btn-small btn-default" role="button" title="Remove All Values"
+                        (click)="removeAllPermissibleValues()">
+                    <i class="fa fa-trash-o"></i>Remove All Values
+                </button>
+            </ng-container>
         </div>
 
         <h4>VSAC Value Set</h4>
@@ -215,10 +218,9 @@
         <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
         <div *ngIf="isAllowedModel.loggedIn()">
             <div>{{vsacError}}</div>
-            <div *ngIf="!editMode">
-                <a class="btn btn-default" (click)="editMode=true" id="updateOIDBtn">Update O.I.D</a>
-                <a *ngIf="isAllowedModel.isAllowed(elt) && vsacMappingExists()" class="btn btn-default"
-                   (click)="removeVSMapping()" id="removeVSButton">Remove Mapping</a>
+            <div *ngIf="!editMode && isAllowedModel.isAllowed(elt) && vsacMappingExists()">
+                <a class="btn btn-default" id="updateOIDBtn" (click)="editMode=true">Update O.I.D</a>
+                <a class="btn btn-default" id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</a>
             </div>
             <div *ngIf="editMode">
                 <input name="vsacId" type="text" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id"

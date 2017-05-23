@@ -21,15 +21,15 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         String prefix = "//*[@id='permissibleValueDiv']//*[@id='";
         String postfix = "']";
         clickElement(By.id("pvs_tab"));
-        Assert.assertFalse(driver.findElements(By.id("editDatatype")).get(0).isDisplayed());
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='datatypeSelect']//i")).size(), 0);
 
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
 
         Assert.assertEquals(driver.findElements(By.xpath("//*[@id='pv-1']//i[contains(@class, 'fa-edit')]")).size(), 0);
-        Assert.assertFalse(driver.findElements(By.id("addPv")).get(0).isDisplayed());
-        Assert.assertFalse(driver.findElements(By.id("updateOID")).get(0).isDisplayed());
+        Assert.assertEquals(driver.findElements(By.id("openAddPermissibleValueModelBtn")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.id("updateOIDBtn")).size(), 0);
 
         // Can't edit naming
         clickElement(By.id("naming_tab"));

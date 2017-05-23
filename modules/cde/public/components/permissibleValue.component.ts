@@ -264,7 +264,7 @@ export class PermissibleValueComponent implements OnInit {
 
     loadValueSet() {
         let dec = this.elt.dataElementConcept;
-        if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac) {
+        if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id) {
             this.vsacValueSet = [];
             this.pVTypeheadVsacNameList = [];
             this.http.get("/vsacBridge/" + dec.conceptualDomain.vsac.id).map(res => res.json()).subscribe(
