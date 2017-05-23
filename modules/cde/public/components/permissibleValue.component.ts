@@ -188,7 +188,8 @@ export class PermissibleValueComponent implements OnInit {
     };
 
     vsacMappingExists() {
-        return this.elt.dataElementConcept.conceptualDomain.vsac.name
+        return this.elt.dataElementConcept.conceptualDomain.vsac
+            && this.elt.dataElementConcept.conceptualDomain.vsac.name
             && this.elt.dataElementConcept.conceptualDomain.vsac.version
             && this.elt.dataElementConcept.conceptualDomain.vsac.id;
     };

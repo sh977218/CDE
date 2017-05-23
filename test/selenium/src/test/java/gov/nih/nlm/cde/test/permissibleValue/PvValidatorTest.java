@@ -27,11 +27,11 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         clickElement(By.id("createNewPermissibleValueBtn"));
     }
 
-    public void changeField(String which, String to) {
-        clickElement(By.xpath("//tr[@id='" + which + "']//td[contains(@class,'pvValue')]//i"));
-        findElement(By.xpath("//tr[@id='" + which + "']//td[contains(@class,'pvValue')]//input")).clear();
-        findElement(By.xpath("//tr[@id='" + which + "']//td[contains(@class,'pvValue')]//input")).sendKeys(to);
-        clickElement(By.xpath("//tr[@id='" + which + "']//td[contains(@class,'pvValue')]//button[contains(@class,'fa fa-check')]"));
+    public void changeField(int index, String to) {
+        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//i"));
+        findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).clear();
+        findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(to);
+        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button[contains(@class,'fa fa-check')]"));
     }
 
     @Test
@@ -41,12 +41,12 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         clickElement(By.id("pvs_tab"));
         textNotPresent("There are validation errors");
 
-        changeField("pv_0", "pv2");
+        changeField(0, "pv2");
         textPresent("There are validation errors. Duplicate Permissible Value");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
 
-        changeField("pv_1", "pv1");
+        changeField(1, "pv1");
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
@@ -54,7 +54,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         textPresent("There are validation errors. Duplicate Code Name");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
-        clickElement(By.id("pvRemove-4"));
+        clickElement(By.id("pvRemove_4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
@@ -62,7 +62,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         textPresent("There are validation errors. Duplicate Code");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
-        clickElement(By.id("pvRemove-4"));
+        clickElement(By.id("pvRemove_4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 

@@ -19,27 +19,27 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         textPresent("C0086287 : Females");
         clickElement(By.linkText("C0086287 : Females"));
         clickElement(By.id("createNewPermissibleValueBtn"));
-        textPresent("C0015780", By.id("pvMeaningCode_5"));
+        textPresent("C0086287", By.id("pvMeaningCode_5"));
 
         clickElement(By.id("displayNCICodes"));
-        textPresent("Female", By.id("nameAsNCI_5"));
-        textPresent("C16576", By.id("codeAsNCI_5"));
+        textPresent("Female Gender, Self Reported", By.id("nameAsNCI_5"));
+        textPresent("A10805030", By.id("codeAsNCI_5"));
 
         clickElement(By.id("displayLNCCodes"));
         textPresent("Female", By.id("nameAsLNC_5"));
-        textPresent("LA3-6", By.id("codeAsLNC_5"));
+        textPresent("A24095561", By.id("codeAsLNC_5"));
 
         clickElement(By.id("displaySNOMEDCT_USCodes"));
-        textPresent("Female", By.id("nameAsSCT_5"));
-        textPresent("248152002", By.id("codeAsSCT_5"));
+        textPresent("Female structure (body structure)", By.id("nameAsSCT_5"));
+        textPresent("A3453355", By.id("codeAsSCT_5"));
 
         newCdeVersion();
-        textPresent("Female", By.id("nameAsNCI_5"));
-        textPresent("C16576", By.id("codeAsNCI_5"));
+        textPresent("Female Gender, Self Reported", By.id("nameAsNCI_5"));
+        textPresent("A10805030", By.id("codeAsNCI_5"));
         textPresent("Female", By.id("nameAsLNC_5"));
-        textPresent("LA3-6", By.id("codeAsLNC_5"));
-        textPresent("Female", By.id("nameAsSCT_5"));
-        textPresent("248152002", By.id("codeAsSCT_5"));
+        textPresent("A24095561", By.id("codeAsLNC_5"));
+        textPresent("Female structure (body structure)", By.id("nameAsSCT_5"));
+        textPresent("A3453355", By.id("codeAsSCT_5"));
 
         mustBeLoggedOut();
         goToCdeByName("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator");
@@ -49,8 +49,8 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         Assert.assertFalse(findElement(By.id("displaySNOMEDCT_USCodes")).isEnabled());
 
         clickElement(By.id("displayNCICodes"));
-        textPresent("Female", By.id("nameAsNCI-5"));
-        textPresent("C16576", By.id("codeAsNCI-5"));
+        textPresent("Female Gender, Self Reported", By.id("nameAsNCI_5"));
+        textPresent("A10805030", By.id("codeAsNCI_5"));
     }
 
 }

@@ -175,7 +175,7 @@
                             <span class="btn-default fa fa-warning text-danger" id="pv-{{i}}-notValid"></span>
                         </ng-container>
                         <ng-container *ngIf="isAllowedModel.isAllowed(elt)">
-                            <span id="pvRemove-{{index}}" class="btn-default fa fa-trash-o" (click)="removePv(i)"
+                            <span id="pvRemove_{{i}}" class="btn-default fa fa-trash-o" (click)="removePv(i)"
                                   title="Remove" href=""></span>
                             <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                             (cb)="sortPermissibleValue();"></sortable-array>
@@ -218,9 +218,11 @@
         <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
         <div *ngIf="isAllowedModel.loggedIn()">
             <div>{{vsacError}}</div>
-            <div *ngIf="!editMode && isAllowedModel.isAllowed(elt) && vsacMappingExists()">
-                <a class="btn btn-default" id="updateOIDBtn" (click)="editMode=true">Update O.I.D</a>
-                <a class="btn btn-default" id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</a>
+            <div *ngIf="!editMode">
+                <a *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-default"
+                   id="updateOIDBtn" (click)="editMode=true">Update O.I.D</a>
+                <a *ngIf="isAllowedModel.isAllowed(elt) && vsacMappingExists()" class="btn btn-default"
+                   id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</a>
             </div>
             <div *ngIf="editMode">
                 <input name="vsacId" type="text" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id"

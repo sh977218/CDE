@@ -8,13 +8,14 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeAddRemoveName() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
         String cdeName = "Principal Investigator State java.lang.String";
         String newName = "New Name";
         String newDefinition = "New Definition";
         String newNameChange = " Change";
         String newDefinitionChange = " Change";
         String newTag = "Health Changed";
+
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
 
@@ -23,7 +24,6 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
 
         clickElement(By.id("naming_tab"));
         textPresent(newName);
-
         editDesignationByIndex(1, newNameChange);
         newCdeVersion();
 
