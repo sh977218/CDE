@@ -348,20 +348,6 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    var systemAlert = "";
-    app.get("/systemAlert", exportShared.nocacheMiddleware, function (req, res) {
-        res.send(systemAlert);
-    });
-
-    app.post("/systemAlert", function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            systemAlert = req.body.alert;
-            res.send("OK");
-        } else {
-            res.status(401).send("Not Authorized");
-        }
-    });
-
     app.get('/sdc/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         sdc.byTinyIdVersion(req, res);
     });
