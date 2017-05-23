@@ -1759,9 +1759,3 @@ div.slider .ui-slider-handle {
 .progress-bar .bg-success {
     width: 100% !important;
 }
-
-a[_ngcontent-kng-20] {
-    border-bottom: 0px !important;
-    line-height: 0 !important;
-    background-color: lightgrey;
-}
