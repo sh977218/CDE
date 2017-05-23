@@ -308,4 +308,19 @@ export class PermissibleValueComponent implements OnInit {
     stageElt(event = null) {
         this.elt.unsaved = true;
     }
+
+    addAllVsac() {
+        this.vsacValueSet.forEach(v => {
+            this.addVsacValue(v);
+        })
+    };
+
+    allVsacMatch = function () {
+        let allVsacMatch = true;
+        this.vsacValueSet.forEach(v => {
+            allVsacMatch = allVsacMatch && v.isValid;
+        });
+        return allVsacMatch;
+    };
+
 }

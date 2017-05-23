@@ -45,7 +45,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void vdInstruction() {
         goToCdeByName("Participant Identifier Source");
         clickElement(By.id("pvs_tab"));
-        textNotPresent("One of \"GUID\" or \"Source Registry Specific Identifier\"", By.id("instructions"));
+        textPresent("One of \"GUID\" or \"Source Registry Specific Identifier\"", By.id("instructions"));
     }
 
     @Test

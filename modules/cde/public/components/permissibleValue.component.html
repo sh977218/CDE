@@ -185,8 +185,8 @@
             </table>
         </ng-container>
         <div>
-            <div *ngIf="!elt.allValid" class="alert alert-danger mt20" role="alert">
-                There are validation errors. {{elt.pvNotValidMsg }}
+            <div *ngIf="!elt.allValid && elt.valueDomain.permissibleValues.length > 0" class="alert alert-danger mt20"
+                 role="alert">There are validation errors. {{elt.pvNotValidMsg }}
             </div>
             <ng-container *ngIf="isAllowedModel.isAllowed(elt)">
                 <button class="btn btn-small btn-default" role="button" id="openAddPermissibleValueModelBtn"
@@ -194,7 +194,8 @@
                         (click)="openNewPermissibleValueModal()">
                     <i class="fa fa-plus"></i>Add Permissible Value
                 </button>
-                <button class="btn btn-small btn-default" role="button" title="Remove All Values"
+                <button class="btn btn-small btn-default" role="button" id="removeAllPermissibleValueBtn"
+                        title="Remove All Values"
                         (click)="removeAllPermissibleValues()">
                     <i class="fa fa-trash-o"></i>Remove All Values
                 </button>
@@ -242,20 +243,25 @@
                 <th id="validation">Match</th>
                 <th *ngIf="isAllowedModel.isAllowed(elt)">Actions</th>
             </tr>
-            <tr *ngFor="let con of vsacValueSet; let index = i;">
+            <tr *ngFor="let con of vsacValueSet; let i = index;">
                 <td>{{con.displayName}}</td>
                 <td>{{con.code}}</td>
                 <td>{{con.codeSystemName}}</td>
                 <td>
-                    <i *ngIf="con.isValid" class="fa fa-check text-success" id="vset-{{index}}-valid"></i>
-                    <i *ngIf="!con.isValid" class="fa fa-exclamation text-warning" id="vset-{{index}}-warning"></i>
+                    <i *ngIf="con.isValid" class="fa fa-check text-success" id="vset-{{i}}-valid"></i>
+                    <i *ngIf="!con.isValid" class="fa fa-exclamation text-warning" id="vset-{{i}}-warning"></i>
                 </td>
                 <td>
-                    <i *ngIf="!isVsInPv(con)" class="fa fa fa-plus" id="addVsacValue-{{index}}"
+                    <i *ngIf="!isVsInPv(con)" class="fa fa fa-plus" id="addVsacValue_{{i}}"
                        (click)="addVsacValue(con)"></i>
                 </td>
             </tr>
         </table>
+        <div *ngIf="vsacMappingExists() && !isAllowedModel.loggedIn()">Please log in to see VSAC mapping.</div>
+        <a *ngIf="vsacMappingExists() && isAllowedModel.isAllowed(elt) && !allVsacMatch()"
+           class="btn btn-small btn-default mt20"
+           (click)="addAllVsac()"><i id="addAllVsac" class="fa fa-plus"></i> Import Missing Values</a>
+
     </ng-container>
 </div>
 
