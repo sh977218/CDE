@@ -13,21 +13,20 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         String newDatatype = "Custom Datatype";
         goToCdeByName(cdeName);
         clickElement(By.id("pvs_tab"));
-        clickElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']"));
-        findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Custom Datatype");
-        clickElement(By.cssSelector("#listDatatype .fa-check"));
-
+        clickElement(By.xpath("//*[@id='datatypeSelect']//span[contains(@class,'select2-selection--single')]"));
+        findElement(By.xpath("//*[contains(@class,'select2-dropdown')]//*[contains(@class,'elect2-search--dropdown')]//input")).sendKeys("Custom Datatype");
+        clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[1]"));
         newCdeVersion();
 
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDatatype, By.xpath("//*[@id='historyCompareLeft_Value List Data Type']"));
+        textPresent(newDatatype, By.xpath("//*[@id='historyCompareLeft_Value Type']"));
 
         clickElement(By.id("pvs_tab"));
-        clickElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']"));
-        findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Other Datatype");
-        clickElement(By.cssSelector("#listDatatype .fa-check"));
+        clickElement(By.xpath("//*[@id='datatypeSelect']//span[contains(@class,'select2-selection--single')]"));
+        findElement(By.xpath("//*[contains(@class,'select2-dropdown')]//*[contains(@class,'elect2-search--dropdown')]//input")).sendKeys("Other Datatype");
+        clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[1]"));
         newCdeVersion();
 
         goToCdeByName(cdeName);

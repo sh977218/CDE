@@ -15,12 +15,14 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
 import { KeysPipe } from "./components/KeysPipe";
 import { SystemModule } from "../../system/public/system.module";
+import { Select2Module } from "ng2-select2";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        Select2Module,
         AdminItemModule,
         BoardModule,
         SystemModule

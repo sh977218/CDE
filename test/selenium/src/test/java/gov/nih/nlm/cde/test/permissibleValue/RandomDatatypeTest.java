@@ -11,11 +11,10 @@ public class RandomDatatypeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "CTC Adverse Event Apnea Grade";
         goToCdeByName(cdeName);
-        clickElement(By.linkText("Permissible Values"));
-        clickElement(By.id("editDatatype"));
-        findElement(By.name("datatypeFreeText")).clear();
-        findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");
-        clickElement(By.id("confirmDatatype"));
+        clickElement(By.id("pvs_tab"));
+        clickElement(By.xpath("//*[@id='datatypeSelect']//span[contains(@class,'select2-selection--single')]"));
+        findElement(By.xpath("//*[contains(@class,'select2-dropdown')]//*[contains(@class,'elect2-search--dropdown')]//input")).sendKeys("java.lang.Date");
+        clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[1]"));
         newCdeVersion();
 
         textPresent("java.lang.Date");

@@ -35,6 +35,12 @@ export class PermissibleValueComponent implements OnInit {
         "SNOMEDCT US": {source: "SNOMEDCT_US", termType: "PT", codes: {}, selected: false, disabled: true}
     };
 
+    options = {
+        multiple: false,
+        tags: true
+    };
+
+
     constructor(public modalService: NgbModal,
                 public http: Http,
                 @Inject("isAllowedModel") public isAllowedModel,
@@ -322,5 +328,11 @@ export class PermissibleValueComponent implements OnInit {
         });
         return allVsacMatch;
     };
+
+    changedDatatype(data: { value: string[] }) {
+        this.elt.valueDomain.datatype = data.value;
+        this.fixDatatype();
+        this.elt.unsaved = true;
+    }
 
 }
