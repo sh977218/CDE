@@ -16,11 +16,11 @@ public class InfiniteScrollDescription extends NlmCdeBaseTest {
         textNotPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
 
         try {
-            scrollToViewById("scrollMore");
+            scrollContainerDownBy(findElement(By.tagName("tree-viewport")), 500);
             textPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
         } catch (Exception e) {
             for (int i = 0; i < 10; i++) {
-                scrollToViewById("scrollMore");
+                scrollContainerDownBy(findElement(By.tagName("tree-viewport")), 500);
             }
             textPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
         }

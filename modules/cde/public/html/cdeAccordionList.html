@@ -4,6 +4,10 @@
             <uib-accordion-heading ng-controller="AccordionCtrl">
                 <a href  class="nonLinkAnchor" ng-if="addMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
+                <button ng-if="addMode === 0"
+                        ng-click="$event.stopPropagation();$event.preventDefault();searchAdded(elt)"
+                        class="btn btn-default btn-xs ml-0">
+                    <i class="fa fa-plus"></i> Add</button>
                 <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
                 <a href  class="nonLinkAnchor">
                     <span role="link" ng-bind-html="elt.primaryNameCopy" id="acc_link_{{$index}}"

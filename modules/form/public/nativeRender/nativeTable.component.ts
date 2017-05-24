@@ -1,14 +1,15 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
+import { FormElement, FormQuestion } from "../form.model";
 
 @Component({
     selector: "cde-native-table",
     templateUrl: "./nativeTable.component.html"
 })
 export class NativeTableComponent implements OnInit {
-    @Input() formElement: any;
+    @Input() formElement: FormElement;
 
-    firstQuestion: any;
+    firstQuestion: FormQuestion;
     sectionNumber: number;
     tableForm: any = {
         s: [{q: [{cspan: 1}]}],
@@ -110,9 +111,11 @@ export class NativeTableComponent implements OnInit {
                 question: f.question,
                 style: sectionStyle.answerStyle
             });
-            this.tableForm.rows.forEach((r, i) => {
-                this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId] = {answer: ""};
-            });
+            if (f.question.datatype === "Value List" && f.question.multiselect === true)
+                this.tableForm.rows.forEach((r, i) => {
+                    this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId] = [];
+                    this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId].answer = this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId];
+                });
             if (f.question.uoms && f.question.uoms.length === 1)
                 this.tableForm.rows.forEach((r, i) => {
                     this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId + "_uom"] = f.question.uoms[0];

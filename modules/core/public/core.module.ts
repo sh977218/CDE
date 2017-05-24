@@ -10,11 +10,9 @@ import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
 import { SharedService } from "./shared.service";
-import { SkipLogicService } from "./skipLogic.service";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
-export { SkipLogicService } from "./skipLogic.service";
 
 export function getAlertFactory(i: any) { return i.get("Alert"); }
 export function getUserResourceFactory(i: any) { return i.get("userResource"); }
@@ -39,7 +37,6 @@ export function getOrgHelpersFactory(i: any) { return i.get("OrgHelpers"); }
         MergeFormService,
         MergeShareService,
         SharedService,
-        SkipLogicService,
         // upgraded
         UpgradeModule,
         {provide: "Alert", useFactory: getAlertFactory, deps: ["$injector"]},

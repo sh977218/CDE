@@ -227,6 +227,7 @@ angular.module('systemModule').filter('bytes', [function () {
     };
 }]);
 
+//ported
 angular.module('systemModule').filter('tagsToArray', [function () {
     return function (input) {
         return input.map(function (m) {
@@ -348,6 +349,15 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
         return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user)
             || authShared.isSiteAdmin(userResource.user);
     };
+
+    isAllowedModel.doesUserOwnElt = function (elt) {
+        if (elt.elementType === 'board') {
+            return userResource.user.siteAdmin || (userResource.user.username === elt.owner.username);
+        } else
+            return userResource.user &&
+                (userResource.user.siteAdmin || (userResource.user._id && (userResource.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
+    };
+
     return isAllowedModel;
 }]);
 
@@ -407,9 +417,6 @@ import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 import {ClassificationService} from "../../../core/public/classification.service";
 angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
 
-import {SkipLogicService} from "../../../core/public/skipLogic.service";
-angular.module('systemModule').factory('SkipLogicUtil', downgradeInjectable(SkipLogicService));
-
 import {HomeComponent} from "../components/home/home.component";
 angular.module('systemModule').directive('cdeHome', downgradeComponent({component: HomeComponent, inputs: [], outputs: []}));
 
@@ -464,3 +471,7 @@ angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({
 
 import {ClassificationComponent} from "../../../adminItem/public/components/classification/classification.component";
 angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({component: ClassificationComponent, inputs: ['elt'], outputs: []}));
+
+import {DiscussAreaComponent} from "../../../discuss/components/discussArea/discussArea.component";
+angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
+    {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));

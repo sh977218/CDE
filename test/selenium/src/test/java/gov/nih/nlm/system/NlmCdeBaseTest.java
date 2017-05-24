@@ -702,6 +702,11 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
 
+    protected void scrollContainerDownBy(WebElement c, Integer y) {
+        String jsScroll = "arguments[0].scrollTop += " + Integer.toString(y) + ";";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, c);
+    }
+
     private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
@@ -855,16 +860,6 @@ public class NlmCdeBaseTest {
 
     protected void setLowStatusesVisible() {
         setVisibleStatus("minStatus-Incomplete");
-    }
-
-    protected void enableBetaFeature() {
-        clickElement(By.id("searchSettings"));
-        classNotPresent("btn-success", By.id("betaEnabled"));
-        classPresent("btn-danger", By.id("betaDisabled"));
-        clickElement(By.id("betaEnabled"));
-        classPresent("btn-success", By.id("betaEnabled"));
-        classNotPresent("btn-danger", By.id("betaDisabled"));
-        driver.navigate().back();
     }
 
     protected void loadDefaultSettings() {

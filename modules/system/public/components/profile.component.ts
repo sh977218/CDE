@@ -1,6 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
+import { User } from "../../../core/public/models.model";
 
 @Component({
     selector: "cde-profile",
@@ -12,7 +13,7 @@ export class ProfileComponent {
     hasQuota: any;
     orgCurator: string;
     orgAdmin: string;
-    user: any;
+    user: User;
 
     constructor(private http: Http,
                 @Inject("Alert") private alert,

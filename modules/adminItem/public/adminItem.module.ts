@@ -13,8 +13,6 @@ import { ClassifyItemModalComponent } from "./components/classification/classify
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageModule } from "angular-2-local-storage/dist/index";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
-import { ClassificationComponent } from "./components/classification/classification.component";
-import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 
 @NgModule({
     imports: [
@@ -30,6 +28,9 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
     ],
     declarations: [
         AttachmentsComponent,
+        ClassificationComponent,
+        ClassifyCdesModalComponent,
+        ClassifyItemModalComponent,
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
@@ -37,25 +38,26 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
         PropertiesComponent,
         HistoryComponent,
         NamingComponent,
-        ReferenceDocumentComponent,
-        ClassificationComponent,
-        ClassifyItemModalComponent,
-        ClassifyCdesModalComponent
+        PlaceHoldEmptyPipe,
+        PropertiesComponent,
+        ReferenceDocumentComponent
     ],
     entryComponents: [
+        AttachmentsComponent,
+        ClassificationComponent,
         IdentifiersComponent,
         PropertiesComponent,
         HistoryComponent,
         NamingComponent,
-        ReferenceDocumentComponent,
-        AttachmentsComponent,
-        ClassificationComponent
+        PropertiesComponent,
+        ReferenceDocumentComponent
     ],
     exports: [
         InlineEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
+        PlaceHoldEmptyPipe,
         PropertiesComponent,
         HistoryComponent,
         NamingComponent,
