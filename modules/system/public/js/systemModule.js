@@ -357,7 +357,7 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
     };
 
     isAllowedModel.loggedIn = function () {
-        return userResource.user && userResource.user._id;
+        return (userResource.user && userResource.user._id) ? true : false;
     };
 
     return isAllowedModel;

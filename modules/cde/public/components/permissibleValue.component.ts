@@ -29,8 +29,8 @@ export class PermissibleValueComponent implements OnInit {
     umlsTerms = [];
     newPermissibleValue = {};
     SOURCES = {
-        "NCI Thesaurus": {source: "NCI", termType: "PT", codes: {}, selected: false},
-        "UMLS": {source: "UMLS", termType: "PT", codes: {}, selected: false},
+        "NCI Thesaurus": {source: "NCI", termType: "PT", codes: {}, selected: false, disabled: false},
+        "UMLS": {source: "UMLS", termType: "PT", codes: {}, selected: false, disabled: false},
         "LOINC": {source: "LNC", termType: "LA", codes: {}, selected: false, disabled: true},
         "SNOMEDCT US": {source: "SNOMEDCT_US", termType: "PT", codes: {}, selected: false, disabled: true}
     };

@@ -9,7 +9,8 @@ public class CodesFromNCI extends NlmCdeBaseTest {
 
     @Test
     public void codesFromNCI() {
-        goToCdeByName("Race Category Text");
+        String cdeName = "Race Category Text";
+        goToCdeByName(cdeName);
         clickElement(By.id("pvs_tab"));
         clickElement(By.id("displayNCICodes"));
         textPresent("Enterovirus", By.id("nameAsNCI_0"));

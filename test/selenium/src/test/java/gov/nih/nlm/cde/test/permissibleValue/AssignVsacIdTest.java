@@ -12,8 +12,9 @@ import java.util.List;
 public class AssignVsacIdTest extends NlmCdeBaseTest {
     @Test
     public void assignVsacId() {
+        String cdeName = "Patient Ethnic Group Category";
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Patient Ethnic Group Category");
+        goToCdeByName(cdeName);
         clickElement(By.id("pvs_tab"));
         textPresent("No Value Set specified.");
         clickElement(By.id("updateOIDBtn"));
@@ -21,6 +22,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         clickElement(By.id("vsacIdCheck"));
         textPresent("Error querying VSAC");
         closeAlert();
+        scrollToViewById("updateOIDBtn");
         clickElement(By.id("updateOIDBtn"));
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         clickElement(By.id("vsacIdCheck"));
