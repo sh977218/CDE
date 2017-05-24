@@ -33,6 +33,12 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
 
+    }
+
+    @Test
+    public void cdeFullDetail() {
+        fullDetail();
+
         clickElement(By.id("general_tab"));
         clickElement(By.linkText("SDC View"));
         switchTab(1);
@@ -40,6 +46,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("enumerated");
         switchTabAndClose(0);
     }
+
 
     @Test
     public void vdInstruction() {
