@@ -14,6 +14,7 @@ public class DeleteRootClassificationTest extends BaseClassificationTest {
         clickElement(By.id("classification_tab"));
         textPresent("PROMIS / Neuro-QOL");
         clickElement(By.xpath("//*[@id='PROMIS Instruments-unclassifyBtn']"));
+        clickElement(By.id("confirmDeleteClassificationBtn"));
         textNotPresent("PROMIS / Neuro-QOL");
     }
 }
