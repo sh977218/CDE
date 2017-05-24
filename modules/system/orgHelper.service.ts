@@ -11,15 +11,15 @@ export class MergeCdeService {
 
     orgsDetailedInfo: {};
 // , deferred: $q.defer()
-// , addLongNameToOrgs : function(buckets) {
-//     if(this.orgsDetailedInfo) {
-//         for(var i=0; i<buckets.length; i++) {
-//             if(this.orgsDetailedInfo[buckets[i].key] && this.orgsDetailedInfo[buckets[i].key].longName) {
-//                 buckets[i].longName = this.orgsDetailedInfo[buckets[i].key].longName;
-//             }
-//         }
-//     }
-// }
+    addLongNameToOrgs = (buckets) => {
+        if (this.orgsDetailedInfo) {
+            buckets.forEach( v => {
+                if (this.orgsDetailedInfo[v.key] && this.orgsDetailedInfo[v.key].longName) {
+                    v.longName = this.orgsDetailedInfo[v.key].longName;
+                };
+            );
+        }
+    }
 // , createOrgDetailedInfoHtml : function(orgName) {
 //     if(this.orgsDetailedInfo && this.orgsDetailedInfo[orgName]) {
 //         var anOrg = this.orgsDetailedInfo[orgName];
