@@ -46,6 +46,19 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             background-clip: padding-box;
         }
+        .descriptionToolbox .btn.formDescriptionTool {
+            margin-left: 0;
+            padding: 0;
+            touch-action: auto;
+            cursor: move;
+        }
+        .descriptionToolbox .btn.formDescriptionTool:hover {
+            background-color: #ddffee;
+        }
+        .descriptionToolbox .btn.formDescriptionTool:hover span:before {
+            content: ' Drag';
+            font-weight: 900;
+        }
         .toolSection:before {
             content: ' Section';
         }
@@ -54,18 +67,6 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
         }
         .toolForm:before {
             content: ' Form';
-        }
-        .descriptionToolbox .btn {
-            margin-left: 0;
-            padding: 5px;
-            touch-action: auto;
-        }
-        .descriptionToolbox .btn:hover {
-            background-color: #ddffee;
-        }
-        .descriptionToolbox .btn:hover span:before {
-            content: ' Drag';
-            font-weight: 900;
         }
     `]
 })
@@ -120,8 +121,6 @@ export class FormDescriptionComponent implements OnInit {
         childrenField: "formElements",
         displayField: "label",
         dropSlotHeight: 3,
-        useVirtualScroll: true,
-        nodeHeight: 22,
         isExpandedField: "id"
     };
 
