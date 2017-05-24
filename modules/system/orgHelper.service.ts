@@ -9,35 +9,33 @@ export class MergeCdeService {
     }
 
 
-    orgsDetailedInfo: {};
+    orgsDetailedInfo: any = {};
 // , deferred: $q.defer()
-    addLongNameToOrgs = (buckets) => {
-        if (this.orgsDetailedInfo) {
-            buckets.forEach( v => {
-                if (this.orgsDetailedInfo[v.key] && this.orgsDetailedInfo[v.key].longName) {
-                    v.longName = this.orgsDetailedInfo[v.key].longName;
-                };
-            );
-        }
+    addLongNameToOrgs = buckets => {
+        buckets.forEach( v => {
+            if (this.orgsDetailedInfo[v.key] && this.orgsDetailedInfo[v.key].longName) {
+                v.longName = this.orgsDetailedInfo[v.key].longName;
+            }
+        });
     }
-// , createOrgDetailedInfoHtml : function(orgName) {
-//     if(this.orgsDetailedInfo && this.orgsDetailedInfo[orgName]) {
-//         var anOrg = this.orgsDetailedInfo[orgName];
-//
-//         if(anOrg.longName || anOrg.mailAddress || anOrg.emailAddress || anOrg.phoneNumber || anOrg.uri) {
-//             var orgDetailsInfoHtml = '<strong>Organization Details</strong><br/><br/>Name: '+anOrg.name;
-//             orgDetailsInfoHtml += (anOrg.longName ? '<br/>Long name: '+anOrg.longName : '');
-//             orgDetailsInfoHtml += (anOrg.mailAddress ? '<br/>Mailing address: '+anOrg.mailAddress : '');
-//             orgDetailsInfoHtml += (anOrg.emailAddress ? '<br/>E-mail address: '+anOrg.emailAddress : '');
-//             orgDetailsInfoHtml += (anOrg.phoneNumber ? '<br/>Phone number: '+anOrg.phoneNumber : '');
-//             orgDetailsInfoHtml += (anOrg.uri ? '<br/>Website: '+anOrg.uri : '');
-//
-//             return orgDetailsInfoHtml;
-//         }
-//     }
-//
-//     return '';
-// }
+
+    createOrgDetailedInfoHtml = orgName => {
+        if (this.orgsDetailedInfo[orgName]) {
+            let anOrg = this.orgsDetailedInfo[orgName];
+            if (anOrg.longName || anOrg.mailAddress || anOrg.emailAddress || anOrg.phoneNumber || anOrg.uri) {
+                let orgDetailsInfoHtml = '<strong>Organization Details</strong><br/><br/>Name: '+ anOrg.name;
+                orgDetailsInfoHtml += (anOrg.longName ? '<br/>Long name: '+ anOrg.longName : '');
+                orgDetailsInfoHtml += (anOrg.mailAddress ? '<br/>Mailing address: '+ anOrg.mailAddress : '');
+                orgDetailsInfoHtml += (anOrg.emailAddress ? '<br/>E-mail address: '+ anOrg.emailAddress : '');
+                orgDetailsInfoHtml += (anOrg.phoneNumber ? '<br/>Phone number: '+ anOrg.phoneNumber : '');
+                orgDetailsInfoHtml += (anOrg.uri ? '<br/>Website: '+ anOrg.uri : '');
+
+                return orgDetailsInfoHtml;
+            }
+        }
+        return '';
+    }
+
 // , orgIsWorkingGroupOf : function(orgName) {
 //     if (!this.orgsDetailedInfo) return false;
 //     return this.orgsDetailedInfo[orgName].workingGroupOf && this.orgsDetailedInfo[orgName].workingGroupOf.trim()!=='';
