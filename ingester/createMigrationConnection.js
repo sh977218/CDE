@@ -99,8 +99,13 @@ exports.MigrationRedcapModel = migrationConn.model('MigrationRedcapModel', new S
     strict: false,
     collection: 'Redcap'
 }));
+exports.MigrationPhenXChanged = migrationConn.model('PhenX_changed', new Schema({}, {
+    strict: false,
+    collection: 'PhenX_changed'
+}));
 exports.PhenxURL = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
 exports.PHENX_ZIP_BASE_FOLDER = 's:/MLB/CDE/phenx/www.phenxtoolkit.org/toolkit_content/redcap_zip/all';
+
 
 // MIGRATION REFERENCE COLLECTION
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {
