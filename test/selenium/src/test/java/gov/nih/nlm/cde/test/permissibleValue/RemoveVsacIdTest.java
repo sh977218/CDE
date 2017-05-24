@@ -20,6 +20,8 @@ public class RemoveVsacIdTest extends NlmCdeBaseTest {
         textPresent("2186-5");
         newCdeVersion();
         hangon(1);
+        goToCdeByName(cdeName);
+        clickElement(By.id("pvs_tab"));
         clickElement(By.id("removeVSButton"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("2.16.840.1.114222.4.11.837"), -1);

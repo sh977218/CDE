@@ -16,6 +16,10 @@
       }
     }
   },
+  "vsac": {
+    "username": "cdevsac",
+    "password": "Aa!!!000"
+  },
   "oauth": {
     "enabled": "true"
   },

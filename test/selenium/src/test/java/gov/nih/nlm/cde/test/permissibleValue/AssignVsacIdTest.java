@@ -24,6 +24,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         closeAlert();
         scrollToViewById("updateOIDBtn");
         clickElement(By.id("updateOIDBtn"));
+        findElement(By.name("vsacId")).clear();
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         clickElement(By.id("vsacIdCheck"));
         // check that version got fetched.
@@ -31,7 +32,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         textPresent("2186-5");
         newCdeVersion("Adding vsac Id");
 
-        textPresent("20121025");
+        textPresent("20161109");
         textPresent("2135-2");
         textPresent("CDCREC");
         WebElement tbody = driver.findElement(By.id("vsacTableBody"));

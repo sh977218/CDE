@@ -7,6 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static com.jayway.restassured.RestAssured.get;
+import static com.jayway.restassured.RestAssured.given;
 
 public class MiscTests extends NlmCdeBaseTest {
 
@@ -46,6 +47,13 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void checkTicketValid() {
+        String username = "cdevsac";
+        String password = "Aa!!!000";
+
+
+        String tgt = given().contentType("application/x-www-form-urlencoded").body("{username:\"cdevsac\",password:\"Aa!!!000\"}").when().post("https://vsac.nlm.nih.gov:443/vsac/ws/Ticket").asString();
+        System.out.println("tgt: " + tgt);
+
         // Test to make sure user isn't logged in
         String response = get(baseUrl + "/user/me").asString();
         Assert.assertEquals("Not logged in.", response);
@@ -69,21 +77,7 @@ public class MiscTests extends NlmCdeBaseTest {
     }
 
     @Test
-    public void checkConnectionTimeout() {
-
-        // Make sure ticket validation times out
-        String response = get(baseUrl + "/user/me?ticket=timeout4").asString();
-        Assert.assertEquals("Not logged in.", response);
-
-        // Make sure ticket validation doesn't times out
-        response = get(baseUrl + "/user/me?ticket=timeout1").asString();
-        get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue(response.contains("_id"), "Does not contain _id. Actual response: " + response);
-        Assert.assertTrue(response.contains("ninds"), "Does not contain ninds. Actual Response: " + response);
-    }
-
-    @Test
-    public void checkSchemas () {
+    public void checkSchemas() {
         Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("{\"title\":\"DataElement\",\"type\":\"object\",\"properties\":{\"elementType\":{\"type\":\"string\",\"default\":\"cde\",\"description\":\"This value is always 'cde'\"},\"naming\":{\"type\":\"array\","));
 
         Assert.assertTrue(get(baseUrl + "/schema/form").asString().contains("{\"title\":\"Form\",\"type\":\"object\",\"properties\":{\"elementType\":{\"type\":\"string\",\"default\":\"form\"},\"tinyId\":{\"type\":\"string\"},\"naming\":{\"type\":\"array\",\"items\":{\"title\":\"itemOf_naming\",\"type\":\"object\",\"properties\":{\"designation\":"));
