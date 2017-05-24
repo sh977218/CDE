@@ -9,8 +9,9 @@ import org.testng.annotations.Test;
 public class RemoveVsacIdTest extends NlmCdeBaseTest {
     @Test
     public void removeVsacId() {
+        String cdeName = "Left Colon Excision Ind-2";
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Left Colon Excision Ind-2");
+        goToCdeByName(cdeName);
         clickElement(By.id("pvs_tab"));
         clickElement(By.id("updateOIDBtn"));
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
