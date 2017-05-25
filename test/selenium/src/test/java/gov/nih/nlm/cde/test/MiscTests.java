@@ -67,7 +67,6 @@ public class MiscTests extends NlmCdeBaseTest {
         System.out.println("got ticket: " + ticket);
 
         String actualResponse = get(baseUrl + "/user/me?ticket=" + ticket).asString();
-        Assert.assertTrue(actualResponse.contains("_id"));
         Assert.assertTrue(actualResponse.contains(username));
         Assert.assertTrue(actualResponse.contains(password));
     }
