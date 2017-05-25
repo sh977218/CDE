@@ -1,16 +1,23 @@
-var mongo_cde = require('../modules/cde/node-js/mongo-cde'),
-    async = require('async')
+const mongo_cde = require('../modules/cde/node-js/mongo-cde')
 ;
 
 
-var stream = mongo_cde.getStream({archived: false,
+let stream = mongo_cde.getStream({archived: false,
     retired: {$ne: 'Retired'},
     source: 'NINDS'
 });
 
+findSameName (n) {
+
+}
+
 stream.on('data', (cde) => {
     stream.pause();
 
+
+    cde.naming.forEach(n => {
+
+    });
     // remove dups
 
 
