@@ -8,9 +8,6 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.jayway.restassured.RestAssured.get;
 
 public class MiscTests extends NlmCdeBaseTest {
@@ -53,32 +50,26 @@ public class MiscTests extends NlmCdeBaseTest {
     public void checkTicketValid() {
         String username = "cdevsac";
         String password = "Aa!!!000";
-
-        Map<String, String> body = new HashMap<String, String>();
-        body.put(username, username);
-        body.put(password, password);
         String tgtUrl = "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket";
-        String contentType = "application/x-www-form-urlencoded";
-        String bodyString = "{username:\"cdevsac\",password:\"Aa!!!000\"}";
-//        String tgt = post(tgtUrl, body).asString();
-        Header header = new Header("Content-Type", "application/x-www-form-urlencoded");
-        Response response = RestAssured.given().body(body).header(header).request().post(tgtUrl);
-        String tgt = response.asString();
 
-        System.out.println("tgt: " + tgt);
-/*
-.formParam("username", username).formParam("password", password)
         // Test to make sure user isn't logged in
-        String response = get(baseUrl + "/user/me").asString();
-        Assert.assertEquals("Not logged in.", response);
+        String notLoggedInResponse = get(baseUrl + "/user/me").asString();
+        Assert.assertEquals("Not logged in.", notLoggedInResponse);
 
-        // Provide fake ticket and make sure user info is retrieved
-        response = get(baseUrl + "/user/me?ticket=valid").asString();
-        get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue(response.contains("_id"), "actualResponse: " + response);
-        Assert.assertTrue(response.contains("ninds"), "actualReponse: " + response);
+        Header header = new Header("Content-Type", "application/x-www-form-urlencoded");
+        Response tpgResponse = RestAssured.given().formParam("username", username).formParam("password", password).header(header).request().post(tgtUrl);
+        String tgt = tpgResponse.asString();
+        System.out.println("got tgt: " + tgt);
 
-*/
+        String ticketUrl = "https://vsac.nlm.nih.gov/vsac/ws/Ticket/" + tgt;
+        Response ticketResponse = RestAssured.given().formParam("service", "http://umlsks.nlm.nih.gov").header(header).request().post(ticketUrl);
+        String ticket = ticketResponse.asString();
+        System.out.println("got ticket: " + ticket);
+
+        String actualResponse = get(baseUrl + "/user/me?ticket=" + ticket).asString();
+        Assert.assertTrue(actualResponse.contains("_id"));
+        Assert.assertTrue(actualResponse.contains(username));
+        Assert.assertTrue(actualResponse.contains(password));
     }
 
     @Test
