@@ -37,7 +37,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         textPresent("CDCREC");
         WebElement tbody = driver.findElement(By.id("vsacTableBody"));
         List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
-        Assert.assertEquals(vsacLines.size(), 2);
+        Assert.assertEquals(vsacLines.size(), 3);
         textPresent("Match");
     }
 

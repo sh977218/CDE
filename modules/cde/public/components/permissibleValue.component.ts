@@ -200,8 +200,11 @@ export class PermissibleValueComponent implements OnInit {
             && this.elt.dataElementConcept.conceptualDomain.vsac.id;
     };
 
-    removeVSMapping = function () {
+    removeVSMapping() {
         delete this.elt.dataElementConcept.conceptualDomain.vsac;
+        this.runManualValidation();
+        this.initSrcOptions();
+        this.stageElt();
     };
 
     isVsInPv = function (vs) {
