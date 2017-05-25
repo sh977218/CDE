@@ -13,7 +13,7 @@ import { CompareSideBySideComponent } from "../../../compare/compareSideBySide.c
         }`]
 })
 export class HistoryComponent implements OnInit {
-    @ViewChild("compareSideBySideModal") public compareSideBySideModal: CompareSideBySideComponent;
+    @ViewChild("compareSideBySideComponent") public compareSideBySideComponent: CompareSideBySideComponent;
     @Input() public elt: any;
     showVersioned: boolean = false;
     public priorCdes = [];
@@ -50,7 +50,7 @@ export class HistoryComponent implements OnInit {
     }
 
     openCompareSideBySideModal() {
-        this.compareSideBySideModal.openCdesModal();
+        this.compareSideBySideComponent.openModal();
     }
 
 }

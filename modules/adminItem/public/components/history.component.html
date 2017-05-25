@@ -7,7 +7,7 @@
         <div style="line-height:40px;">
             <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
             <label for="showVersionedHistory">Only show versioned revisions.</label>
-            <button class="btn btn-default" *ngIf="numberSelected===2">
+            <button class="btn btn-default" *ngIf="numberSelected===2" (click)="openCompareSideBySideModal()">
                 <i class="fa fa-files-o"></i> Compare
             </button>
         </div>
@@ -49,4 +49,4 @@
     </ng-container>
 </div>
 
-<cde-compare-side-by-side #compareSideBySideModal></cde-compare-side-by-side>
+<cde-compare-side-by-side #compareSideBySideComponent></cde-compare-side-by-side>
