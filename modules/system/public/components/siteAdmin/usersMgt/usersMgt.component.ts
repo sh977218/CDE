@@ -35,21 +35,21 @@ export class UsersMgtComponent {
     constructor(private http: Http,
                 @Inject("Alert") private Alert,
                 @Inject("AccountManagement") private AccountManagement,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
-    }
+                public modalService: NgbModal
+                ) {}
 
     formatter = (result: any) => result.username;
 
     //noinspection TypeScriptValidateTypes
-    searchTypeahead = (text$: Observable<string>) =>
-        text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 ? [] :
+    searchTypeahead (text$: Observable<string>) {
+        return text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 ? [] :
             this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
                 .catch(() => {
                     //noinspection TypeScriptUnresolvedFunction
                     return Observable.of([]);
                 })
-        )
+        );
+    }
 
     searchUsers() {
         let uname = this.search.username.username ? this.search.username.username : this.search.username;
@@ -91,7 +91,7 @@ export class UsersMgtComponent {
         this.modalRef.close();
     }
 
-    getEltLink(c) {
+    getEltLink (c) {
         return {
                 cde: "/deview?tinyId=",
                 form: "/formView?tinyId=",

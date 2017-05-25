@@ -19,6 +19,7 @@ import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.comp
 import { JsonpModule } from "@angular/http";
 import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
+import {OrgHelperService} from "../orgHelper.service";
 
 @NgModule({
     imports: [
@@ -61,7 +62,9 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
     exports: [
         NavigationComponent
     ],
-    providers: [],
+    providers: [
+        OrgHelperService
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

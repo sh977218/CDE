@@ -1,6 +1,7 @@
 import { Http } from "@angular/http";
 import { Component, Inject, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
+import { OrgHelperService } from "../../../../orgHelper.service";
 
 @Component({
     selector: "cde-list-management",
@@ -17,7 +18,7 @@ export class ListManagementComponent implements OnInit {
     constructor(
         private http: Http,
         @Inject("Alert") private Alert,
-        @Inject("OrgHelpers") private orgHelpers
+        public orgHelper: OrgHelperService
     ) {}
 
     ngOnInit () {
@@ -62,7 +63,8 @@ export class ListManagementComponent implements OnInit {
 
     saveOrg (org) {
         this.http.post("/updateOrg", org).subscribe(() => {
-            this.orgHelpers.getOrgsDetailedInfoAPI(() => this.Alert.addAlert("success", "Org Updated"));
+            this.orgHelper.getOrgsDetails();
+            this.orgHelper.orgDetails.then(() => this.Alert.addAlert("success", "Org Updated"));
         }, response => this.Alert.addAlert("danger", "Error. Unable to save."));
     }
 

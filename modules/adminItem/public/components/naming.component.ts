@@ -1,10 +1,11 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { OrgHelperService } from "../../../system/orgHelper.service";
 
 @Component({
     selector: "cde-admin-item-naming",
-    providers: [NgbActiveModal],
+    providers: [NgbActiveModal, OrgHelperService],
     templateUrl: "./naming.component.html"
 })
 export class NamingComponent implements OnInit {
@@ -19,25 +20,27 @@ export class NamingComponent implements OnInit {
 
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("OrgHelpers") private orgHelpers,
+                public orgHelpers: OrgHelperService,
                 public modalService: NgbModal) {
     }
 
     ngOnInit(): void {
-        this.orgNamingTags = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.map(r => {
-            return {"id": r, "text": r};
-        });
-        this.options = {
-            multiple: true,
-            tags: true,
-            language: {
-                noResults: () => {
-                    return "No Tags found, Tags are managed in Org Management > List Management";
+        this.orgHelpers.orgDetails.then(() => {
+            this.orgNamingTags = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.map(r => {
+                return {"id": r, "text": r};
+            });
+            this.options = {
+                multiple: true,
+                tags: true,
+                language: {
+                    noResults: () => {
+                        return "No Tags found, Tags are managed in Org Management > List Management";
+                    }
                 }
-            }
-        };
-        this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
-        this.getCurrentTags();
+            };
+            this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
+            this.getCurrentTags();
+        });
     }
 
     getCurrentTags() {

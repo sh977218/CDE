@@ -1,6 +1,7 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { OrgHelperService } from "../../../system/orgHelper.service";
 
 @Component({
     selector: "cde-admin-item-properties",
@@ -16,12 +17,14 @@ export class PropertiesComponent implements OnInit {
 
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("OrgHelpers") private orgHelpers,
+                public orgHelpers: OrgHelperService,
                 public modalService: NgbModal) {
     }
 
-    ngOnInit(): void {
-        this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+    ngOnInit() {
+        this.orgHelpers.orgDetails.then(() => {
+            this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+        });
     }
 
     openNewPropertyModal() {

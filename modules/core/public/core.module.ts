@@ -23,7 +23,6 @@ export function getAccountManagementFactory(i: any) { return i.get("AccountManag
 export function getFormQuickBoardFactory(i: any) { return i.get("FormQuickBoard"); }
 export function getPinModalFactory(i: any) { return i.get("PinModal"); }
 export function getElasticFactory(i: any) { return i.get("Elastic"); }
-export function getOrgHelpersFactory(i: any) { return i.get("OrgHelpers"); }
 
 @NgModule({
     imports: [
@@ -48,7 +47,6 @@ export function getOrgHelpersFactory(i: any) { return i.get("OrgHelpers"); }
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
         {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
         {provide: "Elastic", useFactory: getElasticFactory, deps: ["$injector"]},
-        {provide: "OrgHelpers", useFactory: getOrgHelpersFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,
