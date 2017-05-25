@@ -16,6 +16,7 @@ import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { ClassificationComponent } from "./components/classification/classification.component";
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
+import { CompareModule } from "../../compare/compare.module";
 
 @NgModule({
     imports: [
@@ -23,10 +24,7 @@ import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
         FormsModule,
         Select2Module,
         NgbModule,
-        LocalStorageModule.withConfig({
-            prefix: "nlmcde",
-            storageType: "localStorage"
-        }),
+        LocalStorageModule.withConfig({prefix: "nlmcde", storageType: "localStorage"}),
         TreeModule
     ],
     declarations: [

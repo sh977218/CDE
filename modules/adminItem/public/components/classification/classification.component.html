@@ -37,8 +37,8 @@
         </div>\
     </div>
 </div>
-<cde-classify-item-modal #classifyItemModal [elt]="elt" (updateElt)="updateThisElt($event)"></cde-classify-item-modal>
-<cde-classify-cdes-modal #classifyCdesModal [elt]="elt" (updateElt)="updateThisElt($event)"></cde-classify-cdes-modal>
+<cde-classify-item-modal #classifyItemComponent [elt]="elt" (updateElt)="updateThisElt($event)"></cde-classify-item-modal>
+<cde-classify-cdes-modal #classifyCdesComponent [elt]="elt" (updateElt)="updateThisElt($event)"></cde-classify-cdes-modal>
 
 <ng-template #deleteClassificationContent id="deleteClassificationModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="deleteClassificationModalHeader">

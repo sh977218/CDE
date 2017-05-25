@@ -11,7 +11,7 @@ import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstra
 })
 export class CompareSideBySideComponent implements OnInit {
 
-    @ViewChild("compareSideBySideModel") compareSideBySideModel: NgbModal;
+    @ViewChild("compareSideBySideContent") compareSideBySideContent: NgbModal;
     public modalRef: NgbModalRef;
 
     constructor(public modalService: NgbModal,
@@ -24,6 +24,6 @@ export class CompareSideBySideComponent implements OnInit {
     }
 
     openModal() {
-        this.modalRef = this.modalService.open(this.compareSideBySideModel);
+        this.modalRef = this.modalService.open(this.compareSideBySideContent);
     }
 }
