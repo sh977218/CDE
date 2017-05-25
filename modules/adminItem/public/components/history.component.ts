@@ -1,7 +1,8 @@
-import { Component, Inject, Input, OnInit } from "@angular/core";
+import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from '@angular/http';
 
 import "rxjs/add/operator/map";
+import { CompareSideBySideComponent } from "../../../compare/compareSideBySide.component";
 
 @Component({
     selector: "cde-admin-item-history",
@@ -12,6 +13,7 @@ import "rxjs/add/operator/map";
         }`]
 })
 export class HistoryComponent implements OnInit {
+    @ViewChild("compareSideBySideModal") public compareSideBySideModal: CompareSideBySideComponent;
     @Input() public elt: any;
     showVersioned: boolean = false;
     public priorCdes = [];
@@ -46,4 +48,9 @@ export class HistoryComponent implements OnInit {
             else this.numberSelected--;
         }
     }
+
+    openCompareSideBySideModal() {
+        this.compareSideBySideModal.openCdesModal();
+    }
+
 }
