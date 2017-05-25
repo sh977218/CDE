@@ -9,7 +9,6 @@ import "rxjs/add/operator/map";
 
 export class SourcesComponent {
 
-
     @Input() elt: any;
 
 }

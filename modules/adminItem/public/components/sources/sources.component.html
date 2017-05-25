@@ -28,8 +28,8 @@
     <div class="row" *ngIf="eltSource.copyright">
         <div class="col-sm-5 questionSectionLabel text-right">Copyright:</div>
         <div class="col-sm-7">
-            <!--<div inline-area-edit inline-area-visibility="true" is-allowed="false"-->
-                 <!--model="eltSource.copyright.value" def-format="eltSource.copyright.valueFormat"></div>-->
+            <div *ngIf="eltSource.copyright.valueFormat === 'html'" [innerHtml]="eltSource.copyright.value"></div>
+            <div *ngIf="!(eltSource.copyright.valueFormat === 'html')">{{eltSource.copyright.value}}</div>
         </div>
     </div>
 </fieldset>

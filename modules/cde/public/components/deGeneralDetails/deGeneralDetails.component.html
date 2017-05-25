@@ -10,7 +10,7 @@
             <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
             <div class="col-sm-7" id="dd_general_steward">
                 <span *ngIf="editDtMode">
-                    <select class="form-control" id="elt.stewardOrg.name" ([ng-model])="elt.stewardOrg.name">
+                    <select class="form-control" id="elt.stewardOrg.name" [(ngModel)]="elt.stewardOrg.name">
                         <option *ngFor="let myOrg of userService.userOrgs">{{myOrg}}</option>
                     </select>
                     <i id="elt.stewardOrg.name.ok" class="fa fa-check"
@@ -51,7 +51,9 @@
         <div class="row" *ngIf="elt.origin">
             <div class="col-sm-5 questionSectionLabel text-right">Origin:</div>
             <div class="col-sm-7">
-                <inline-edit [(model)]="elt.origin"
+                <inline-edit
+                        id="origin"
+                        [(model)]="elt.origin"
                              [isAllowed]="isAllowedModel.isAllowed(elt)"
                              (onOk)="elt.unsaved = true"></inline-edit>
             </div>
