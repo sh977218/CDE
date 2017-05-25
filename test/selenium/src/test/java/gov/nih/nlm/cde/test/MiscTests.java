@@ -70,6 +70,7 @@ public class MiscTests extends NlmCdeBaseTest {
         Assert.assertTrue(actualResponse.contains("_id"), "actualResponse: " + actualResponse);
         Assert.assertTrue(actualResponse.contains(username), "actualResponse: " + actualResponse);
         Assert.assertFalse(actualResponse.contains(password), "actualResponse: " + actualResponse);
+
     }
 
     @Test
