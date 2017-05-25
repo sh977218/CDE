@@ -292,7 +292,6 @@ export class PermissibleValueComponent implements OnInit {
                         this.validatePvWithVsac();
                     } else this.alert.addAlert("danger", "Error: No data retrieved from VSAC.");
                 }, err => {
-                    console.log("err");
                     this.alert.addAlert("danger", "Error querying VSAC");
                 });
         }
