@@ -20,10 +20,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $scope.curator = {};
     }
 
-    $http.get("/systemAlert").then(function onSuccess(response) {
-       $scope.broadcast = {message: response.data}; 
-    }).catch(function onError() {});
-
     var allPropertyKeys = [];
     var allTags = [];
     $scope.getOrgs = function(cb) {
@@ -162,11 +158,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             );
         },0);
     };
-    
-    $scope.saveMessage = function() {
-        $http.post('/systemAlert', {alert: $scope.broadcast.message});
-    };
-    
+
     $scope.transferStewardFunc = function() {
         AccountManagement.transferSteward($scope.transferStewardObj,
             function(successMsg) {
