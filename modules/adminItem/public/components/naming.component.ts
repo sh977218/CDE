@@ -13,7 +13,7 @@ export class NamingComponent implements OnInit {
     @Input() public elt: any;
     public newNaming: any = {};
     public modalRef: NgbModalRef;
-    orgNamingTags: string[] = [];
+    orgNamingTags: {id: string; text: string}[] = [];
     //noinspection TypeScriptUnresolvedVariable
     public options: Select2Options;
     public isAllowed: boolean = false;
@@ -25,9 +25,21 @@ export class NamingComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.getCurrentTags();
+        this.elt.naming.forEach(n => {
+            n.currentTags.forEach (ct => {
+                if (this.orgNamingTags.indexOf({"id": ct, "text": ct}) === -1) {
+                    this.orgNamingTags.push({"id": ct, "text": ct});
+                }
+            });
+        });
         this.orgHelpers.orgDetails.then(() => {
-            this.orgNamingTags = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.map(r => {
+            this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.map(r => {
                 return {"id": r, "text": r};
+            }).forEach(nt => {
+                if (this.orgNamingTags.indexOf({"id": nt, "text": nt}) === -1) {
+                    this.orgNamingTags.push({"id": nt, "text": nt});
+                }
             });
             this.options = {
                 multiple: true,
@@ -39,16 +51,13 @@ export class NamingComponent implements OnInit {
                 }
             };
             this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
-            this.getCurrentTags();
         });
     }
 
     getCurrentTags() {
         this.elt.naming.forEach(n => {
             if (!n.tags) n.tags = [];
-            n.currentTags = n.tags.map(t => {
-                return t.tag;
-            });
+            n.currentTags = n.tags.map(t => t.tag);
         });
     }
     openNewNamingModal() {
