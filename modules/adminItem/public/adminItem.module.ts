@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
@@ -25,7 +25,8 @@ import { CompareModule } from "../../compare/compare.module";
         Select2Module,
         NgbModule,
         LocalStorageModule.withConfig({prefix: "nlmcde", storageType: "localStorage"}),
-        TreeModule
+        TreeModule,
+        CompareModule
     ],
     declarations: [
         AttachmentsComponent,

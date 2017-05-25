@@ -12,7 +12,6 @@ import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
-import { CompareModule } from "../../compare/compare.module";
 
 @NgModule({
     imports: [
@@ -20,8 +19,7 @@ import { CompareModule } from "../../compare/compare.module";
         FormsModule,
         NgbModule,
         AdminItemModule,
-        BoardModule,
-        CompareModule
+        BoardModule
     ],
     declarations: [
         ConceptsComponent,

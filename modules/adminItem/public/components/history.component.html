@@ -49,4 +49,5 @@
     </ng-container>
 </div>
 
-<cde-compare-side-by-side #compareSideBySideComponent></cde-compare-side-by-side>
+<cde-compare-side-by-side #compareSideBySideComponent [left]="getSelectedElt()[0]" [right]="getSelectedElt()[1]"
+                          [options]="compareOptions"></cde-compare-side-by-side>

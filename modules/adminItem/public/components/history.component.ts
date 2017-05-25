@@ -18,6 +18,7 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorCdes = [];
     public numberSelected: number = 0;
+    public compareOptions = {};
 
     constructor(@Inject("Alert") private alert,
                 private http: Http,
@@ -51,6 +52,10 @@ export class HistoryComponent implements OnInit {
 
     openCompareSideBySideModal() {
         this.compareSideBySideComponent.openModal();
+    }
+
+    getSelectedElt() {
+        return this.priorCdes.filter(p => p.selected);
     }
 
 }
