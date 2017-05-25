@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-public class AddDeleteClassification extends BaseClassificationTest {
+public class AddDeleteClassificationTest extends BaseClassificationTest {
     
     @Test
     public void addDeleteClassificationMgt() {
