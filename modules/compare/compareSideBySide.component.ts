@@ -8,7 +8,7 @@ import { CompareService } from "../core/public/compare.service";
 @Component({
     selector: "cde-compare-side-by-side",
     templateUrl: "./compareSideBySide.component.html",
-    providers: [NgbActiveModal, CompareService]
+    providers: [NgbActiveModal]
 })
 export class CompareSideBySideComponent implements OnInit {
     @ViewChild("compareSideBySideContent") compareSideBySideContent: NgbModal;
@@ -17,17 +17,20 @@ export class CompareSideBySideComponent implements OnInit {
     @Input() left;
     @Input() right;
     @Input() options;
+    public result;
 
     constructor(public modalService: NgbModal,
-                @Inject("Alert") private alert,
-                private http: Http,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                public compareService: CompareService) {
     }
 
     ngOnInit(): void {
+        if (!this.options) this.options = {};
+        if (!this.options.properties) this.options.properties = [];
     }
 
     openModal() {
+        this.result = this.compareService.doCompare(this.left, this.right, this.options);
         this.modalRef = this.modalService.open(this.compareSideBySideContent, {size: "lg"});
     }
+
 }

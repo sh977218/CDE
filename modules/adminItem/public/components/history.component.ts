@@ -18,7 +18,21 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorCdes = [];
     public numberSelected: number = 0;
-    public compareOptions = {};
+    public compareOptions = {
+        properties: [
+            {
+                property: "naming",
+                properties: []
+            },
+            {
+                property: "Steward",
+                properties: [{
+                    property: "name",
+                    properties: []
+                }]
+            }
+        ]
+    };
 
     constructor(@Inject("Alert") private alert,
                 private http: Http,
