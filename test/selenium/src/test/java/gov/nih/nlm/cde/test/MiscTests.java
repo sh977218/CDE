@@ -6,8 +6,11 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.jayway.restassured.RestAssured.get;
-import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.RestAssured.post;
 
 public class MiscTests extends NlmCdeBaseTest {
 
@@ -50,8 +53,13 @@ public class MiscTests extends NlmCdeBaseTest {
         String username = "cdevsac";
         String password = "Aa!!!000";
 
-
-        String tgt = given().contentType("application/x-www-form-urlencoded").body("{username:\"cdevsac\",password:\"Aa!!!000\"}").when().post("https://vsac.nlm.nih.gov:443/vsac/ws/Ticket").asString();
+        Map<String, String> body = new HashMap<String, String>();
+        body.put(username, username);
+        body.put(password, password);
+        String tgtUrl = "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket";
+        String contentType = "application/x-www-form-urlencoded";
+        String bodyString = "{username:\"cdevsac\",password:\"Aa!!!000\"}";
+        String tgt = post(tgtUrl, body).asString();
         System.out.println("tgt: " + tgt);
 
         // Test to make sure user isn't logged in
