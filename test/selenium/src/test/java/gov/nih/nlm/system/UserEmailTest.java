@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class UserEmail extends NlmCdeBaseTest {
+public class UserEmailTest extends NlmCdeBaseTest {
     @Test
     public void userEmail() {
         mustBeLoggedInAs(test_username, password);
@@ -12,9 +12,9 @@ public class UserEmail extends NlmCdeBaseTest {
         clickElement(By.linkText("Profile"));
         textPresent("test@example.com");
         Assert.assertEquals(findElement(By.id("user_email")).getText(), "test@example.com");
-        clickElement(By.xpath("//inline-edit[@id='emailEdit']//i"));
-        findElement(By.xpath("//inline-edit[@id='emailEdit']//input")).clear();
-        findElement(By.xpath("//inline-edit[@id='emailEdit']//input")).sendKeys("me@");
+        clickElement(By.xpath("//*[@id='emailEdit']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id='emailEdit']//input")).clear();
+        findElement(By.xpath("//*[@id='emailEdit']//input")).sendKeys("me@");
         Assert.assertFalse(findElement(By.xpath("//inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
         findElement(By.xpath("//inline-edit[@id='emailEdit']//input")).sendKeys("me.com");
         Assert.assertTrue(findElement(By.xpath("//inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());

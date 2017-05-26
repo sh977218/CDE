@@ -14,34 +14,41 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
 import { SystemModule } from "../../system/public/system.module";
+import { PermissibleValueComponent } from "./components/permissibleValue.component";
+import { KeysPipe } from "./components/KeysPipe";
+import { Select2Module } from "ng2-select2";
 
 @NgModule({
     imports: [
+        AdminItemModule,
+        BoardModule,
         CommonModule,
         FormsModule,
         NgbModule,
-        AdminItemModule,
-        BoardModule,
+        Select2Module,
         SystemModule
     ],
     declarations: [
-        ConceptsComponent,
-        DerivationRulesComponent,
-        DatasetsComponent,
-        MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
-        ValueDomainSummaryComponent,
         CdeSummaryListComponent,
-        DeGeneralDetailsComponent
-    ],
-    entryComponents: [
         ConceptsComponent,
         DeGeneralDetailsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
+        KeysPipe,
         MoreLikeThisComponent,
+        PermissibleValueComponent,
+        ValueDomainSummaryComponent,
+    ],
+    entryComponents: [
         CdeGeneralDetailsComponent,
-        ValueDomainSummaryComponent
+        ConceptsComponent,
+        DatasetsComponent,
+        DeGeneralDetailsComponent,
+        DerivationRulesComponent,
+        MoreLikeThisComponent,
+        PermissibleValueComponent,
+        ValueDomainSummaryComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

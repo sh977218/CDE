@@ -1,10 +1,9 @@
 
-package gov.nih.nlm.cde.test.valueDomain;
+package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.Assert;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -29,15 +28,4 @@ public class PvTest extends NlmCdeBaseTest {
         textPresent("Absent added to pv", By.xpath("//*[@id='historyCompareLeft_Data Type Value List_0_0']"));
         textPresent("Indeterminate", By.xpath("//*[@id='historyCompareLeft_Data Type Value List_0_0']"));
     }
-
-    @Test
-    public void longPvList() {
-        goToCdeByName("Common Toxicity Criteria Adverse Event Short Name Type");
-        clickElement(By.id("pvs_tab"));
-        textPresent("Hemoglobinuria");
-        textNotPresent("Hypermagnesemia");
-        clickElement(By.id("showMorePvs"));
-        textPresent("Hypermagnesemia");
-    }
-
 }

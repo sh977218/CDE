@@ -32,6 +32,7 @@ public class MyForm {
     static {
         diseaseNameSet.add("Amyotrophic Lateral Sclerosis");
         diseaseNameSet.add("Congenital Muscular Dystrophy");
+        diseaseNameSet.add("Cerebral Palsy");
         diseaseNameSet.add("Duchenne/Becker Muscular Dystrophy");
         diseaseNameSet.add("Epilepsy");
         diseaseNameSet.add("Facioscapulohumeral muscular dystrophy (FSHD)");
@@ -48,6 +49,7 @@ public class MyForm {
         diseaseNameSet.add("Spinal Cord Injury");
         diseaseNameSet.add("Spinal Muscular Atrophy");
         diseaseNameSet.add("Stroke");
+        diseaseNameSet.add("Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage");
         diseaseNameSet.add("Traumatic Brain Injury");
         diseaseNameSet.add("Chiari I Malformation");
 
@@ -69,6 +71,7 @@ public class MyForm {
         diseaseNameMap.put("Spinal Cord Injury", "Spinal Cord Injury");
         diseaseNameMap.put("Spinal Muscular Atrophy", "Spinal Muscular Atrophy");
         diseaseNameMap.put("Stroke", "Stroke");
+        diseaseNameMap.put("Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage", "Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage");
         diseaseNameMap.put("Traumatic Brain Injury", "Traumatic Brain Injury");
         diseaseNameMap.put("Chiari I Malformation", "Chiari I Malformation");
     }
@@ -182,7 +185,8 @@ public class MyForm {
         } else {
             String disease = this.diseaseNameMap.get(diseaseName);
             if (disease == null || disease.length() == 0) {
-                System.out.println("form:" + this.toString() + "\n has error diseaseName:" + diseaseName);
+                System.out.println("form:" + this.toString() + "\n has error diseaseName:`" + diseaseName + "`");
+                System.out.println("diseaseNameMap:`" + Arrays.toString(this.diseaseNameMap.entrySet().toArray()) + "`");
                 System.exit(0);
             }
             this.diseaseName = disease;

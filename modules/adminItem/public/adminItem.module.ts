@@ -11,7 +11,7 @@ import { ClassificationComponent } from "./components/classification/classificat
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
-import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
+import { InlineEditDirective, InlineSelectEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { PropertiesComponent } from "./components/properties.component";
@@ -37,6 +37,7 @@ import {RegistrationComponent} from "./components/registration/registration.comp
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
         InlineEditDirective,
+        InlineSelectEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
@@ -60,6 +61,7 @@ import {RegistrationComponent} from "./components/registration/registration.comp
     exports: [
         ClassificationComponent,
         InlineEditDirective,
+        InlineSelectEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,

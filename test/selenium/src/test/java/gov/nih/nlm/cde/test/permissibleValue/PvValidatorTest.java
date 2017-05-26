@@ -1,15 +1,15 @@
-package gov.nih.nlm.cde.test.valueDomain;
+package gov.nih.nlm.cde.test.permissibleValue;
 
-import gov.nih.nlm.cde.test.BaseClassificationTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class PvValidatorTest extends BaseClassificationTest {
+public class PvValidatorTest extends NlmCdeBaseTest {
 
     public void addPv(String pv, String name, String code, String codeSystem) {
-        clickElement(By.id("addPv"));
+        clickElement(By.id("openAddPermissibleValueModelBtn"));
         findElement(By.id("permissibleValueInput")).sendKeys(pv);
 
         if (name != null) {
@@ -24,14 +24,14 @@ public class PvValidatorTest extends BaseClassificationTest {
             findElement(By.id("codeSystemInput")).sendKeys(codeSystem);
         }
 
-        clickElement(By.id("createNewPv"));
+        clickElement(By.id("createNewPermissibleValueBtn"));
     }
 
-    public void changeField(String which, String to) {
-        clickElement(By.xpath("//td[@id='" + which + "']//i"));
-        findElement(By.xpath("//td[@id='" + which + "']//input")).clear();
-        findElement(By.xpath("//td[@id='" + which + "']//input")).sendKeys(to);
-        clickElement(By.cssSelector("#" + which + " .fa-check"));
+    public void changeField(int index, String to) {
+        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//i"));
+        findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).clear();
+        findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(to);
+        clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button[contains(@class,'fa fa-check')]"));
     }
 
     @Test
@@ -41,12 +41,12 @@ public class PvValidatorTest extends BaseClassificationTest {
         clickElement(By.id("pvs_tab"));
         textNotPresent("There are validation errors");
 
-        changeField("pv-0", "pv2");
+        changeField(0, "pv2");
         textPresent("There are validation errors. Duplicate Permissible Value");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
 
-        changeField("pv-1", "pv1");
+        changeField(1, "pv1");
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
@@ -54,24 +54,24 @@ public class PvValidatorTest extends BaseClassificationTest {
         textPresent("There are validation errors. Duplicate Code Name");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
-        clickElement(By.id("pvRemove-4"));
+        clickElement(By.id("pvRemove_4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
-        addPv("pv5", "name1", "code2", "NCi");
+        addPv("pv5", "name5", "code2", "NCI");
         textPresent("There are validation errors. Duplicate Code");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
-        clickElement(By.id("pvRemove-4"));
+        clickElement(By.id("pvRemove_4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
-        clickElement(By.id("addPv"));
+        clickElement(By.id("openAddPermissibleValueModelBtn"));
         findElement(By.id("permissibleValueInput")).sendKeys("pv6");
         findElement(By.id("valueMeaningCodeInput")).sendKeys("code6");
-        Assert.assertEquals(findElement(By.id("createNewPv")).isEnabled(), false);
+        Assert.assertFalse(findElement(By.id("createNewPermissibleValueBtn")).isEnabled());
         findElement(By.id("codeSystemInput")).sendKeys("MESH");
-        Assert.assertEquals(findElement(By.id("createNewPv")).isEnabled(), true);
+        Assert.assertTrue(findElement(By.id("createNewPermissibleValueBtn")).isEnabled());
     }
 
 }
