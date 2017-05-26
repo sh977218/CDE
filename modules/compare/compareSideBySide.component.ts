@@ -4,7 +4,7 @@ import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
 import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { CompareService } from "../core/public/compare.service";
-
+import * as _ from "lodash";
 @Component({
     selector: "cde-compare-side-by-side",
     templateUrl: "./compareSideBySide.component.html",
@@ -25,7 +25,8 @@ export class CompareSideBySideComponent implements OnInit {
 
     ngOnInit(): void {
         if (!this.options) this.options = {};
-        if (!this.options.properties) this.options.properties = [];
+        let allProperties = _.concat(Object.keys(this.left), Object.keys(this.right));
+        if (!this.options.properties) this.options.properties = _.uniq(allProperties);
     }
 
     openModal() {

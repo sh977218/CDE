@@ -4,15 +4,21 @@ import * as _ from "lodash";
 @Injectable()
 export class CompareService {
     doCompare(left, right, options) {
-        let result = [];
+        let result = {};
+        options.forEach(p => {
+            result["result"] = this.doCompare(left[p], right[p], p);
+        });
+        return result;
+        /*
         _.reduce(left, function (result, value, key) {
-            let temp = _.isEqual(value, right[key]);
-            if (temp) return result;
-            else {
-                result.concat(key);
-                return result;
-            }
+         console.log(key);
+         console.log(value);
+         return _.isEqualWith(value, right[key], (l, r) => {
+         return _.isEqual(l, r);
+         }) ? result : result.concat(key);
         }, []);
+         */
+
         console.log('a');
     }
 }
