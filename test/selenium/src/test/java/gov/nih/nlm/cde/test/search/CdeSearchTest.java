@@ -38,12 +38,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void cdeFullDetail() {
         fullDetail();
 
-    }
-
-    @Test
-    public void cdeFullDetail() {
-        fullDetail();
-
         clickElement(By.id("general_tab"));
         clickElement(By.linkText("SDC View"));
         switchTab(1);
