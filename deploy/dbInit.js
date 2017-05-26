@@ -100,6 +100,7 @@ var users = [
     , {username: 'theOrgAuth', password: 'pass', orgAdmin: ["CTEP"], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: [], roles: ["OrgAuthority"]}
     , {username: 'classifyBoardUser', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
     , {username: 'tagBoardUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
+    , {username: 'cdevsac', password: 'umls', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
 ];
 
 users.forEach(function(u) {

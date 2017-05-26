@@ -46,7 +46,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
 
         findElement(By.linkText(name));
-        textPresent("Scanned by ClamAV");
+//        textPresent("Scanned by ClamAV");
         clickElement(By.id("approve-" + name));
         textPresent("Attachment approved");
         closeAlert();
@@ -61,7 +61,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
 
         findElement(By.linkText(name));
-        textPresent("Scanned by ClamAV");
+       // textPresent("Scanned by ClamAV");
 
         clickElement(By.id("decline-" + name));
         textPresent("Attachment declined");

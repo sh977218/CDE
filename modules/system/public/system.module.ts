@@ -19,7 +19,8 @@ import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.comp
 import { JsonpModule } from "@angular/http";
 import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
-import {OrgHelperService} from "../orgHelper.service";
+import { OrgHelperService } from "../orgHelper.service";
+import { InlineEditComponent } from "./components/inlineEdit.component";
 
 @NgModule({
     imports: [
@@ -45,7 +46,8 @@ import {OrgHelperService} from "../orgHelper.service";
         RegistrationComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
-        UsersMgtComponent
+        UsersMgtComponent,
+        InlineEditComponent
     ],
     entryComponents: [
         DailyUsageComponent,
@@ -60,7 +62,8 @@ import {OrgHelperService} from "../orgHelper.service";
         UsersMgtComponent
     ],
     exports: [
-        NavigationComponent
+        NavigationComponent,
+        InlineEditComponent
     ],
     providers: [
         OrgHelperService

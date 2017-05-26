@@ -12,23 +12,31 @@ import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
+import { PermissibleValueComponent } from "./components/permissibleValue.component";
+import { KeysPipe } from "./components/KeysPipe";
+import { SystemModule } from "../../system/public/system.module";
+import { Select2Module } from "ng2-select2";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        Select2Module,
         AdminItemModule,
-        BoardModule
+        BoardModule,
+        SystemModule
     ],
     declarations: [
+        KeysPipe,
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
         MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
         ValueDomainSummaryComponent,
-        CdeSummaryListComponent
+        CdeSummaryListComponent,
+        PermissibleValueComponent
     ],
     entryComponents: [
         ConceptsComponent,
@@ -36,7 +44,8 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
         DatasetsComponent,
         MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
-        ValueDomainSummaryComponent
+        ValueDomainSummaryComponent,
+        PermissibleValueComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -39,7 +39,7 @@ public class FindMissingForms implements Runnable {
         wait = new WebDriverWait(driver, 120);
         long startTime = System.currentTimeMillis();
         goToSite(url);
-        cdeUtility.checkDataQuality(mongoOperation, url);
+        cdeUtility.checkDataQuality(mongoOperation);
         driver.close();
         long endTime = System.currentTimeMillis();
         long totalTimeInMillis = endTime - startTime;

@@ -246,12 +246,11 @@ exports.init = function (app, daoManager) {
         if (!req.user) {
             res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
         } else {
-            vsac.getValueSet(req.params.vsacId, function (result) {
-                if (result === 404 || result === 400) {
-                    res.status(result);
-                    res.end();
+            vsac.getValueSet(req.params.vsacId, function (err, result) {
+                if (result.statusCode === 404 || result === 400) {
+                    return res.status(500).end();
                 } else {
-                    parser.parseString(result, function (err, jsonResult) {
+                    parser.parseString(result.body, function (err, jsonResult) {
                         res.send(jsonResult);
                     });
                 }
@@ -259,6 +258,7 @@ exports.init = function (app, daoManager) {
         }
     });
 
+    // from others to UMLS
     app.get('/umlsCuiFromSrc/:id/:src', function (req, res) {
         if (!config.umls.sourceOptions[req.params.src]) {
             return res.send("Source cannot be looked up, use UTS Instead.");
@@ -266,6 +266,7 @@ exports.init = function (app, daoManager) {
         return vsac.umlsCuiFromSrc(req.params.id, req.params.src, res);
     });
 
+    // from UMLS to others
     app.get('/umlsAtomsBridge/:id/:src', function (req, res) {
         if (!config.umls.sourceOptions[req.params.src]) {
             return res.send("Source cannot be looked up, use UTS Instead.");
@@ -274,6 +275,19 @@ exports.init = function (app, daoManager) {
             return res.status(403).send();
         }
         vsac.getAtomsFromUMLS(req.params.id, req.params.src, res);
+    });
+
+    app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', function (req, res) {
+        if (!req.params.source || !req.params.code || !req.params.targetSource)
+            return res.status(401).end();
+        else vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, function (err, result) {
+            if (err)
+                return res.status(500).send(err);
+            else if (result.statusCode === 200)
+                return res.send({result: JSON.parse(result.body).result});
+            else
+                return res.send({result: []});
+        })
     });
 
     app.get('/searchUmls', function (req, res) {
