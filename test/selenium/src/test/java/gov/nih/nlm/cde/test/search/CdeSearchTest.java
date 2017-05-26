@@ -33,6 +33,12 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
 
+    }
+
+    @Test
+    public void cdeFullDetail() {
+        fullDetail();
+
         clickElement(By.id("general_tab"));
         clickElement(By.linkText("SDC View"));
         switchTab(1);
@@ -41,11 +47,12 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 
+
     @Test
     public void vdInstruction() {
         goToCdeByName("Participant Identifier Source");
         clickElement(By.id("pvs_tab"));
-        Assert.assertEquals("One of \"GUID\" or \"Source Registry Specific Identifier\"", findElement(By.id("dd_vd_def")).getText());
+        textPresent("One of \"GUID\" or \"Source Registry Specific Identifier\"", By.id("instructions"));
     }
 
     @Test

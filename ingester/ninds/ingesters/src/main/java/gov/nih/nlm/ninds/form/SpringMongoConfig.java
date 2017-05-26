@@ -13,7 +13,7 @@ public class SpringMongoConfig {
     public
     @Bean
     MongoDbFactory mongoDbFactory() throws Exception {
-        return new SimpleMongoDbFactory(new MongoClientURI(Consts.MONGO_URL));
+        return new SimpleMongoDbFactory(new MongoClientURI(Constants.MONGO_URL));
     }
 
     public

@@ -1,11 +1,11 @@
 <span>
     <span ng-hide="editMode">
-        <i  title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit"
+        <i title="Edit" role="link" ng-show="isAllowed" class="fa fa-edit"
            ng-click="edit();"></i> {{model}}
     </span>
     <form name="inlineForm" ng-show="editMode">
-        <select ng-model="value" class="form-control">
-            <option ng-repeat="o in allOptions" value="{{o}}">{{o}}</option>
+        <select ng-model="model" class="form-control">
+            <option ng-repeat="o in allOptions track by $index" value="{{o}}">{{o}}</option>
         </select>
         <button class="btn btn-default btn-sm fa fa-check" ng-click="save()"> Confirm</button>
         <button class="btn btn-default btn-sm fa fa-times" ng-click="discard();"> Discard</button>
