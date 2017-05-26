@@ -25,9 +25,9 @@ import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 
 import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
-import {FormGeneralDetailsComponent} from "./components/formGeneralDetails/formGeneralDetails.component";
-import {DisplayProfile} from "./form.model";
-import {DisplayProfileComponent} from "./components/displayProfile/displayProfile.component";
+import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
+import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
+import {Ng2SliderComponent} from "ng2-slider-component/ng2-slider.component";
 
 @NgModule({
     imports: [
@@ -57,6 +57,7 @@ import {DisplayProfileComponent} from "./components/displayProfile/displayProfil
         NativeSectionMatrixComponent,
         NativeQuestionComponent,
         NativeTableComponent,
+        Ng2SliderComponent,
         QuestionSearchDirective
     ],
     entryComponents: [

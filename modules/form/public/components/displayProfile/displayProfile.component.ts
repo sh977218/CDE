@@ -1,4 +1,5 @@
 import { Component, Inject, Input } from "@angular/core";
+
 import "rxjs/add/operator/map";
 
 @Component({

@@ -48,6 +48,10 @@
                     </dd>
                     <dt><label>Number of Columns:</label></dt>
                     <dd>
+                        <ng2-slider
+                            id="nc_{{$index}}"
+                            min="1" max="6"
+                            ></ng2-slider>
                         <!--<div class="slider" id="nc_{{$index}}" style="width: 150px; top: 5px;"-->
                              <!--jq-slider="profile.numberOfColumns" jq-slider-onslide="$scope.stageElt();$scope.updateRender();"-->
                              <!--jq-slider-min="1" jq-slider-max="6" jq-slider-step="1">-->
@@ -59,7 +63,7 @@
                         <input type="checkbox" [(ngModel)]="profile.displayInvisible" [disabled]="!isAllowedModel.isAllowed(elt)"
                                id="displayInvisible_{{$index}}" (click)="elt.unsaved = true">
                     </dd>
-                    <dt><label for="displayInvisible_{{$index}}">Repeat Format String:</label></dt>
+                    <dt><label for="displayRepeatFormat_{{$index}}">Repeat Format String:</label></dt>
                     <dd>
                         <input type="text" class="form-control" [(ngModel)]="profile.repeatFormat"
                                [disabled]="!isAllowedModel.isAllowed(elt)"
