@@ -25,8 +25,6 @@ export class CompareSideBySideComponent implements OnInit {
 
     ngOnInit(): void {
         if (!this.options) this.options = {};
-        let allProperties = _.concat(Object.keys(this.left), Object.keys(this.right));
-        if (!this.options.properties) this.options.properties = _.uniq(allProperties);
     }
 
     openModal() {

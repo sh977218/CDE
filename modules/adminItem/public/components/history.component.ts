@@ -18,19 +18,26 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorCdes = [];
     public numberSelected: number = 0;
-    public compareOptions = [
-        {
-            property: "naming",
-            properties: []
-        },
-        {
-            property: "Steward",
-            properties: [{
-                property: "name",
-                properties: []
-            }]
+    public compareOptions = {
+        "version": {},
+        "_id": {},
+        "tinyId": {},
+        "views": {},
+        "stewardOrg": {"name": {}},
+        "registrationState": {"registrationStatus": {}},
+        "valueDomain": {
+            "datatype": {},
+            "name": {}
         }
-    ];
+        /*
+         "naming": {
+         properties: {
+         "designation": {},
+         "definition": {}
+         }
+         }
+         */
+    };
 
     constructor(@Inject("Alert") private alert,
                 private http: Http,
@@ -67,7 +74,8 @@ export class HistoryComponent implements OnInit {
     }
 
     getSelectedElt() {
-        return this.priorCdes.filter(p => p.selected);
+        let temp = this.priorCdes.filter(p => p.selected);
+        return temp;
     }
 
 }
