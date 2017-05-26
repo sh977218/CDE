@@ -106,8 +106,6 @@ import "./form/public/js/controllers/CreateFormCtrl";
 import "./form/public/js/controllers/FormViewCtrl";
 import "./form/public/js/controllers/FormDiffCtrl";
 import "./form/public/js/controllers/ClassifyFormCdesModalCtrl";
-import "./form/public/js/controllers/FormGeneralDetailCollapseCtrl";
-import "./form/public/js/controllers/DisplayProfileCtrl";
 import "./form/public/js/controllers/CreateFormAbstractCtrl";
 import "./form/public/js/controllers/CreateFormFromBoardModalCtrl";
 import * as formShared from "./form/shared/formShared";

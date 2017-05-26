@@ -107,8 +107,11 @@ exports.formJson = {
     , isCopyrighted: {type: Boolean}
     , noRenderAllowed: {type: Boolean}
     , copyright: {
-        authority: String
-        , text: String
+        type: {
+            authority: String
+            , text: String
+        },
+        default: {text: null}
     }
     , origin: String
     , attachments: [sharedSchemas.attachmentSchema]

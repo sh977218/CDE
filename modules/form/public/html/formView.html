@@ -94,6 +94,89 @@
         </h3>
 
         <uib-tabset ng-if="elt" active="currentTab">
+            <uib-tab id="general_tab" index="'general'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    General Details
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'general'">
+                    <cde-form-general-details [elt]="elt"></cde-form-general-details>
+                </div>
+            </uib-tab>
+
+            <uib-tab id="description_tab" index="'description'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    Form Description
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'description'">
+                    <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
+                                          (cachePut)="cachePut($event)" (isFormValid)="setIsValid($event)"
+                                          ></cde-form-description>
+                </div>
+            </uib-tab>
+
+            <uib-tab id="naming_tab" index="'naming'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    Naming
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'naming'">
+                    <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
+                </div>
+            </uib-tab>
+
+            <uib-tab id="classification_tab" index="'classification'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    Classification
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'classification'">
+                    <cde-admin-item-classification [elt]="elt"></cde-admin-item-classification>
+                </div>
+            </uib-tab>
+
+            <uib-tab id="referenceDocument_tab" index="'referenceDocument'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    Reference Documents
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'referenceDocument'">
+                    <cde-admin-item-reference-document [elt]="elt"></cde-admin-item-reference-document>
+                </div>
+            </uib-tab>
+
+            <uib-tab id="displayProfiles" index="'displayProfiles'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    Display Profiles
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'displayProfiles'">
+                    <cde-form-display-profile [elt]="elt"></cde-form-display-profile>
+                </div>
+            </uib-tab>
+
+            <uib-tab id="properties" index="'properties'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    Properties
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'properties'">
+                    <cde-admin-item-properties [elt]="elt"></cde-admin-item-properties>
+                </div>
+            </uib-tab>
+
+            <uib-tab id="ids" index="'ids'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    Identifiers
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'ids'">
+                    <cde-admin-item-ids [elt]="elt"></cde-admin-item-ids>
+                </div>
+            </uib-tab>
+
+            <uib-tab id="attachments" index="'ids'">
+                <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                    Attachments
+                </uib-tab-heading>
+                <div ng-if="currentTab === 'attachments'">
+                    <cde-admin-item-attachments [elt]="elt"></cde-admin-item-attachments>
+                </div>
+            </uib-tab>
+
             <uib-tab ng-repeat="(tabName, tab) in tabs" ng-if="tab.if?tab.if():true"
                      id="{{tabName}}_tab" select="tab.select(tabName)" index="tabName">
                 <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">

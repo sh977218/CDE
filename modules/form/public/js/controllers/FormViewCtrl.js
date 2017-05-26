@@ -43,74 +43,8 @@ angular.module('formModule').controller
     $scope.setCurrentTab = function (thisTab) {
         $scope.currentTab = thisTab;
     };
-        
+
     $scope.tabs = {
-        general: {
-            heading: "General Details",
-            includes: ['/form/public/html/formGeneralDetail.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-            }
-        },
-        description: {
-            heading: "Form Description",
-            includes: ['/form/public/html/formDescription.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-                $scope.nbOfEltsLimit = 1;
-            }
-        },
-        naming: {
-            heading: "Naming",
-            includes: ['/system/public/html/naming.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-                $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
-            }
-        },
-        classification: {
-            heading: "Classification",
-            includes: ['/system/public/html/classification.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-            }
-        },
-        displayProfiles: {
-            heading: "Display Profiles",
-            includes: ['/form/public/html/displayProfiles.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-            }
-        },
-        referenceDocument: {
-            heading: "Reference Documents",
-            includes: ['/system/public/html/referenceDocument.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-            }
-        },
-        properties: {
-            heading: "Properties",
-            includes: ['/system/public/html/properties.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-                $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
-            }
-        },
-        ids: {
-            heading: "Identifiers",
-            includes: ['/system/public/html/identifiers.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-            }
-        },
-        attachments: {
-            heading: "Attachments",
-            includes: ['/system/public/html/attachments.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-            }
-        },
         history: {
             heading: "History",
             includes: ['/form/public/html/formHistory.html'],

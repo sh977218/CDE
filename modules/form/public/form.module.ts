@@ -25,6 +25,9 @@ import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 
 import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
+import {FormGeneralDetailsComponent} from "./components/formGeneralDetails/formGeneralDetails.component";
+import {DisplayProfile} from "./form.model";
+import {DisplayProfileComponent} from "./components/displayProfile/displayProfile.component";
 
 @NgModule({
     imports: [
@@ -40,10 +43,12 @@ import { SkipLogicService } from "./skipLogic.service";
     declarations: [
         ArrayListPipe,
         CdeSortableComponent,
+        DisplayProfileComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
+        FormGeneralDetailsComponent,
         FormSearchDirective,
         MergeFormComponent,
         NativeRenderFullComponent,
@@ -55,7 +60,9 @@ import { SkipLogicService } from "./skipLogic.service";
         QuestionSearchDirective
     ],
     entryComponents: [
+        DisplayProfileComponent,
         FormDescriptionComponent,
+        FormGeneralDetailsComponent,
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,

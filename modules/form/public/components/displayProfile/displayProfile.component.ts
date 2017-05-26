@@ -1,7 +1,22 @@
-angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', function($scope)
-{
-    $scope.addProfile = function() {
-        var newProfile = {
+import { Component, Inject, Input } from "@angular/core";
+import "rxjs/add/operator/map";
+
+@Component({
+    selector: "cde-form-display-profile",
+    templateUrl: "./displayProfile.component.html"
+})
+export class DisplayProfileComponent  {
+
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
+                @Inject("userResource") public userService
+    ) {}
+
+    @Input() elt: any;
+
+    showDelete: boolean;
+
+    addProfile () {
+        let newProfile = {
             name: "New Profile",
             displayInstructions: true,
             displayNumbering: true,
@@ -12,27 +27,24 @@ angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', functio
             displayInvisible: false,
             repeatFormat: "#."
         };
-        var elt = $scope.elt;
-        if (!elt.displayProfiles) elt.displayProfiles = [newProfile];
+        if (!this.elt.displayProfiles) this.elt.displayProfiles = [newProfile];
         else {
-            elt.displayProfiles.push(newProfile);
+            this.elt.displayProfiles.push(newProfile);
         }
-        $scope.stageElt();
+        this.elt.unsaved = true;
     };
 
-    $scope.removeDisplayProfile = function (index) {
-        $scope.elt.displayProfiles.splice(index, 1);
-        $scope.stageElt();
+    removeDisplayProfile (index) {
+        this.elt.displayProfiles.splice(index, 1);
+        this.elt.unsaved = true;
     };
 
-    $scope.updateRender = function () {
+    setDisplayType (profile, $event) {
+        profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
+        this.elt.unsaved = true;
     }
 
-}]);
-
-angular.module('formModule').controller('DisplayProfileDataCtrl', ['$scope', function($scope) {
-    $scope.formElements = [];
-    $scope.elt = {
+    sampleElt = {
         "formElements": [
             {
                 "label": "Section",
@@ -267,4 +279,5 @@ angular.module('formModule').controller('DisplayProfileDataCtrl', ['$scope', fun
             }
         ]
     };
-}]);
+
+}

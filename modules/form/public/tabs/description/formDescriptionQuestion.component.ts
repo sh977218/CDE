@@ -127,7 +127,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                     this.modalService.open(this.updateCdeVersionTmpl).result.then(function () {
                         question.question = newQuestion.question;
                         question.label = newQuestion.label;
-                        self.stageElt.emit();
+                        self.elt.unsaved = true;
                     });
                 });
             });

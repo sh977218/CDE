@@ -17,7 +17,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() node: TreeNode;
     @Input() preId: string;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
@@ -60,7 +59,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
-        this.stageElt.emit();
+        this.elt.unsaved = true;
     }
 
     getRepeatOption(section) {
@@ -104,7 +103,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     validateSkipLogic(skipLogic, previousQuestions, item) {
         if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
-            this.stageElt.emit();
+            this.elt.unsaved = true;
         else
             this.isFormValid.emit(false);
     }
