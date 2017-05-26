@@ -8,13 +8,13 @@ import { PropertiesComponent } from "./components/properties.component";
 import { HistoryComponent } from "./components/history.component";
 import { NamingComponent } from "./components/naming.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
-import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageModule } from "angular-2-local-storage/dist/index";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { ClassificationComponent } from "./components/classification/classification.component";
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
+import { InlineEditDirective, InlineSelectEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { CompareModule } from "../../compare/compare.module";
 
@@ -34,6 +34,7 @@ import { CompareModule } from "../../compare/compare.module";
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
         InlineEditDirective,
+        InlineSelectEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
@@ -56,6 +57,7 @@ import { CompareModule } from "../../compare/compare.module";
     ],
     exports: [
         InlineEditDirective,
+        InlineSelectEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
