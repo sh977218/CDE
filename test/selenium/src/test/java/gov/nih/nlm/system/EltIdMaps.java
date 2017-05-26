@@ -73,6 +73,7 @@ public class EltIdMaps {
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
 
         // Forms
+        eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
@@ -82,6 +83,7 @@ public class EltIdMaps {
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("Form Table Test", "713d9u1vX");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
+        eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
         eltMap.put("Mean Value Test", "X17IaQ_NQ");
@@ -98,6 +100,7 @@ public class EltIdMaps {
         eltMap.put("Patient Health Questionnaire 2 item (PHQ-2) [Reported]", "XkZqYRlqKf");
         eltMap.put("PHQ-9 quick depression assessment panel [Reported.PHQ]", "mJsGoMU1m");
         eltMap.put("Patient Health Questionnaire - 9 (PHQ-9) Depression Scale", "mJP_B1HrFg");
+        eltMap.put("PROMIS Bank v1.0 - Anxiety", "mksbrh_YIx");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
         eltMap.put("PROMIS SF v1.0 - Applied Cog Abilities 4a", "Q1Ogr2OtIe");
@@ -107,14 +110,14 @@ public class EltIdMaps {
         eltMap.put("PROMIS SF v1.0-Sleep Disturbance 6a", "QJbbHnOFUl");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
+        eltMap.put("PROMIS SF v2.0 - Companionship 6a", "m1BxH3_tIe");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
-        eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
         eltMap.put("Two Dimensional Speckle Tracking Echocardiography Imaging", "7kKLUkHBtl");
-        eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
+        eltMap.put("Vessel Imaging Angiography", "XJDPIySHtx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("Vital Signs", "m1j_L1HHte");
 

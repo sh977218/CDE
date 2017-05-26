@@ -1,0 +1,187 @@
+<div class="question_view" [ngClass]="{'bg-warning': question.question.cde.outdated}">
+    <div *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="ib left">
+        <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
+           [treeDrag]="node"
+           [treeDragEnabled]="node.allowDrag()"></i>
+        <i *ngIf="question.skipLogic?.condition?.length > 0" class="fa fa-cog updatedSkipLogicIcon"
+           [ngClass]="{'fa-spin': question.updatedSkipLogic}"
+           title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
+    </div>
+    <div *ngIf="question.question.isScore" class="ib left">
+        <strong>Score: </strong>
+    </div>
+    <div class="ib left questionLabel" title="{{question.label}}" style="margin-left: 5px">
+            <span *ngIf="question.hideLabel">
+                <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
+                <span [textContent]="question.question.cde.name"></span>
+            </span>
+        <span *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</span>
+        <small *ngIf="inScoreCdes && inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
+            (part of score)
+        </small>
+    </div>
+    <div class="ib left">
+        <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
+    </div>
+    <div *ngIf="question.question.cde.outdated" class="ib left error-block"> (Outdated)
+        <button class="btn btn-default btn-xs updateQuestionBtn"
+                (click)="openUpdateCdeVersion(question);">
+            Update
+        </button>
+    </div>
+    <div class="ib left">
+        <a target="_blank" title="{{question.question.cde.name}}"
+           href="/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
+            <i class="fa fa-eye"></i> View CDE
+        </a>
+    </div>
+    <div class="ib left">{{getDatatypeLabel(question)}}</div>
+    <div *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="ib pull-right editIconDiv" style="font-size: 16px">
+        <i *ngIf="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
+           (click)="question.edit = true"></i>
+        <i *ngIf="question.edit" class="fa fa-check hand-cursor" title="save edit question"
+           (click)="question.edit = false;"></i>
+        <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
+           class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
+        <span *ngIf="question.confirmDelete" class="badge">Confirm Delete
+                <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
+                      id="confirmRemoveProperty-{{i}}" title="Delete" href=""></span>
+                <span class="btn-default fa fa-times panel-badge-btn hand-cursor"
+                      (click)="question.confirmDelete = false"
+                      id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
+            </span>
+    </div>
+</div>
+
+<ng-template #updateCdeVersionTmpl let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Confirm Changes:</h3>
+    </div>
+    <div style="margin-top: 10px">
+        <i *ngIf="reloading" class="fa fa-spinner fa-spin"></i>
+        <div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
+                <div class="col-sm-8" id="mdd_question_title">
+                    <span [ngClass]="{mark: updateCdeVersion.bLabel}">{{updateCdeVersion.newQuestion.label | cdePlaceholder}}</span>
+                    <span *ngIf="updateCdeVersion.bLabel" class="red">( was {{ updateCdeVersion.currentQuestion.label }} )</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Datatype:</div>
+                <div class="col-sm-8" id="mdd_datatype">
+                    <span [ngClass]="{mark: updateCdeVersion.bDatatype}">{{updateCdeVersion.newQuestion.question.datatype | cdePlaceholder }}</span>
+                    <span *ngIf="bDatatype" class="red">( was {{updateCdeVersion.currentQuestion.question.datatype}} )</span>
+                </div>
+            </div>
+            <div *ngIf="updateCdeVersion.newQuestion.question.datatype ==='Number'">
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
+                    <div class="col-sm-8" id="mdd_minimal">
+                    <span [ngClass]="{mark: updateCdeVersion.bNumberMin}">
+                        {{updateCdeVersion.newQuestion.question?.datatypeNumber?.minValue | cdePlaceholder }}</span>
+                        <span *ngIf="updateCdeVersion.bNumberMin" class="red">
+                        ( was {{ updateCdeVersion.currentQuestion.question?.datatypeNumber?.minValue }} )</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
+                    <div class="col-sm-8" id="mdd_maximal">
+                    <span [ngClass]="{mark: updateCdeVersion.bNumberMax}">
+                        {{updateCdeVersion.newQuestion.question?.datatypeNumber.maxValue | cdePlaceholder }}</span>
+                        <span *ngIf="updateCdeVersion.bNumberMax" class="red">
+                        ( was {{ updateCdeVersion.currentQuestion.question?.datatypeNumber?.maxValue }} )</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
+                <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>
+                <div class="col-sm-8" id="mdd_question_multi">
+                    <input type="checkbox" [ngModel]="updateCdeVersion.newQuestion.question.multiselect"
+                           title="Multiple Selection" disabled/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Units of Measures:</div>
+                <div class="col-sm-8" id="mdd_q_uoms">
+                    <span [ngClass]="{mark: updateCdeVersion.bUom}" *ngIf="updateCdeVersion.newQuestion.question.uoms.length > 0">
+                        <span *ngFor="let uom of updateCdeVersion.newQuestion.question.uoms; let i = index">
+                              <span id="mq_uom_list_{{i}}" [textContent]="updateCdeVersion.newQuestion.question.uoms[i]"></span>
+                        </span>
+                    </span>
+                    <span [ngClass]="{mark: updateCdeVersion.bUom}" *ngIf="updateCdeVersion.newQuestion.question.uoms.length <= 0">N/A</span>
+                    <span *ngIf="updateCdeVersion.bUom" class="red">
+                        ( was
+                        <span *ngIf="updateCdeVersion.currentQuestion.question.uoms.length > 0">
+                            <span *ngFor="let uom of updateCdeVersion.currentQuestion.question.uoms; let i = index">
+                                <span id="mq_old_uom_list_{{i}}" [textContent]="updateCdeVersion.currentQuestion.question.uoms[i]"></span>
+                            </span>
+                        </span>
+                        <span *ngIf="updateCdeVersion.currentQuestion.question.uoms.length <= 0">N/A</span>
+                        )
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
+                <div class="col-sm-8" id="mdd_q_defaultAnswer">
+                    <span [ngClass]="{mark: updateCdeVersion.bDefault}" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
+                        <select [ngModel]="updateCdeVersion.newQuestion.question.defaultAnswer"
+                                title="Default Value" id="mq_default_answer" disabled>
+                            <option *ngFor="let pv of updateCdeVersion.newQuestion.question.answers" [value]="pv.valueMeaningName"
+                                    [textContent]="pv.permissibleValue"></option>
+                        </select>
+                    </span>
+                    <span [ngClass]="{mark: updateCdeVersion.bDefault}" *ngIf="updateCdeVersion.newQuestion.question.datatype !== 'Value List'">
+                        <label id="mq_defaultAnswer_text" [textContent]="updateCdeVersion.newQuestion.question.defaultAnswer"></label>
+                    </span>
+                    <span *ngIf="updateCdeVersion.bDefault" class="red">
+                        ( was
+                            <span *ngIf="updateCdeVersion.currentQuestion.question.datatype === 'Value List'">
+                                <select [ngModel]="updateCdeVersion.currentQuestion.question.defaultAnswer"
+                                        title="Old Default Value" id="mq_old_default_answer" disabled>
+                                    <option *ngFor="let pv of updateCdeVersion.currentQuestion.question.answers"
+                                            [value]="pv.valueMeaningName" [textContent]="pv.permissibleValue"></option>
+                                </select>
+                            </span>
+                        <span *ngIf="updateCdeVersion.currentQuestion.question.datatype !== 'Value List'"
+                              id="mq_old_defaultAnswer_text" [textContent]="updateCdeVersion.currentQuestion.question.defaultAnswer"></span>
+                        )
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
+                <div class="col-sm-8" id="mdd_d_cde">
+                    <a [ngClass]="{mark: updateCdeVersion.bCde}"
+                       href="/deview?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
+                       target="_blank"><i class="fa fa-eye"></i>
+                        <span id="mdd_question_cde_name">{{updateCdeVersion.newQuestion.question.cde.name}}</span>
+                    </a>
+                    <span *ngIf="updateCdeVersion.bCde" class="red">( was
+                    <a style="color: red"
+                       href="/deview?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
+                       target="_blank"><i class="fa fa-eye"></i>
+                        <span id="mdd_old_question_cde_name">{{updateCdeVersion.currentQuestion.question.cde.name}}</span>
+                    </a> )
+                </span>
+                </div>
+            </div>
+            <div class="row answerList" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
+                <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
+                <div class="col-sm-8" id="mdd_d_answers">
+                    <div [ngClass]="{mark: updateCdeVersion.bValuelist}" *ngFor="let pv of updateCdeVersion.newQuestion.question.answers"
+                         [textContent]="pv.valueMeaningName"></div>
+                    <span *ngIf="updateCdeVersion.bValuelist" class="red">( was
+                        <span class="mark" *ngFor="let pv of updateCdeVersion.currentQuestion.question.answers"
+                             [textContent]="pv.valueMeaningName"></span> )
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="c()" id="okSelect">OK</button>
+        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+    </div>
+</ng-template>

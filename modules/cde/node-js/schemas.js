@@ -97,7 +97,7 @@ var deJson = {
     , properties: {type: [sharedSchemas.propertySchema], description: "Attribute not otherwise documented by structured CDE record"}
     , ids: {type: [sharedSchemas.idSchema], description: "Identifier used to establish or indicate what CDE is within a specific context"}
     , dataSets: {type: [sharedSchemas.dataSetSchema], description: "A list of datasets that use this CDE"}
-    , mappingSpecifications: {type: [{content: String, spec_type: String, script: String, _id: false}], descrition: "Deprecated"}
+    , mappingSpecifications: {type: [{content: String, spec_type: String, script: String, _id: false}], description: "Deprecated"}
     , comments: [sharedSchemas.commentSchema]
     , archived: {type: Boolean, default: false, index: true, description: "Indication of historical record. True for previous versions."}
     , forkOf: {type: String, description: "May point to a tinyID if the CDE is a fork"}

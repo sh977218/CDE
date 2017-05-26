@@ -1,21 +1,23 @@
-import { Component, Input, OnInit, Output, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
+import { SkipLogicService } from "../skipLogic.service";
+import { FormService } from "../form.service";
+import { FormQuestion } from "../form.model";
 
 @Component({
     selector: "cde-native-question",
     templateUrl: "./nativeQuestion.component.html"
 })
 export class NativeQuestionComponent {
-    @Input() formElement: any;
+    @Input() formElement: FormQuestion;
     @Input() numSubQuestions: number;
     @Input() parentValue: any;
     @Input() index: any;
 
-    // generatedHtml: SafeHtml = "";  // template: `<div #rendered_question></div>`
-    // @ViewChild("rendered_question", {read: ViewContainerRef}) templateRef: ViewContainerRef;
-
     constructor(private sanitizer: DomSanitizer,
+                public formService: FormService,
+                public skipLogicService: SkipLogicService,
                 public nativeRenderService: NativeRenderService) {
     }
 

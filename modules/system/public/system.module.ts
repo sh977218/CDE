@@ -5,19 +5,21 @@ import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
 
 import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListDirective } from "./upgrade-components";
-import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { ProfileComponent } from "./components/profile.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { UserCommentsComponent } from "./components/userComments.component";
 import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
+import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { JsonpModule } from "@angular/http";
-import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
+import { NavigationComponent } from "./components/navigation.component";
+import { TruncateLongNamePipe } from "./truncateLongName.pipe";
+import { InlineEditComponent } from "./components/inlineEdit.component";
 
 @NgModule({
     imports: [
@@ -30,30 +32,37 @@ import { ListManagementComponent } from "./components/siteAdmin/listManagement/l
     ],
     declarations: [
         CdeAccordionListDirective,
+        DailyUsageComponent,
         FormAccordionListDirective,
         FormSummaryListDirective,
-        ProfileComponent,
-        LinkedFormsComponent,
-        UserCommentsComponent,
         HomeComponent,
-        LogAuditComponent,
-        RegistrationComponent,
-        UsersMgtComponent,
-        DailyUsageComponent,
-        OrgAdminComponent,
+        LinkedFormsComponent,
         ListManagementComponent,
-        PlaceHoldEmptyPipe
+        LogAuditComponent,
+        NavigationComponent,
+        OrgAdminComponent,
+        ProfileComponent,
+        RegistrationComponent,
+        TruncateLongNamePipe,
+        UserCommentsComponent,
+        UsersMgtComponent,
+        InlineEditComponent
     ],
     entryComponents: [
-        ProfileComponent,
-        LinkedFormsComponent,
-        HomeComponent,
-        LogAuditComponent,
-        RegistrationComponent,
-        UsersMgtComponent,
         DailyUsageComponent,
+        HomeComponent,
+        LinkedFormsComponent,
         ListManagementComponent,
-        OrgAdminComponent
+        LogAuditComponent,
+        NavigationComponent,
+        OrgAdminComponent,
+        ProfileComponent,
+        RegistrationComponent,
+        UsersMgtComponent
+    ],
+    exports: [
+        NavigationComponent,
+        InlineEditComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

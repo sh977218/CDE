@@ -29,8 +29,8 @@ public class QuestionDefaultValue extends BaseFormTest {
                 .findElement(By.cssSelector("input:checked"));
 
         clickElement(By.id("description_tab"));
-        textPresent("Default Answer: Brother", By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"));
-        textPresent("Default Answer: A default answer!", By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]"));
+        textPresent("Brother", By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"));
+        textPresent("A default answer!", By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]"));
 
     }
 

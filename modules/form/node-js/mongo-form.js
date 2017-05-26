@@ -62,6 +62,9 @@ exports.findForms = function (request, callback) {
 };
 
 exports.update = function (elt, user, callback, special) {
+    if (elt.tinyId === '7yDEGJBrYl') {
+        console.log("a");
+    }
     if (elt.toObject) elt = elt.toObject();
     return Form.findOne({_id: elt._id}).exec(function (err, form) {
         delete elt._id;
@@ -69,9 +72,10 @@ exports.update = function (elt, user, callback, special) {
             elt.history = [];
         elt.history.push(form._id);
         elt.updated = new Date().toJSON();
-        elt.updatedBy = {};
-        elt.updatedBy.userId = user._id;
-        elt.updatedBy.username = user.username;
+        elt.updatedBy = {
+            userId: user._id,
+            username: user.username
+        };
         elt.sources = form.sources;
         elt.comments = form.comments;
         var newForm = new Form(elt);

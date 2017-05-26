@@ -17,6 +17,7 @@ public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
         editDefinitionByIndex(0, definitionChange, false);
         newCdeVersion();
 
+        goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         switchDefinitionFormatByIndex(0, null, true);
         newCdeVersion();

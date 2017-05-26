@@ -1,0 +1,108 @@
+<div class="row" *ngIf="elt">
+    <div class="col-xs-12">
+        <div class="descriptionToolbox" *ngIf="isAllowedModel.isAllowed(elt)">
+            <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
+            <button id="addSectionTop" class="btn btn-default formDescriptionTool" style="width: 74px"
+                    [treeDrag]="toolSection" [treeDragEnabled]="true">
+                <i class="fa fa-plus"></i><span class="toolSection"></span>
+            </button>
+            <button id="startAddingQuestions" class="btn btn-default formDescriptionTool" style="width: 87px"
+                    *ngIf="elt.formElements.length > 0"
+                    [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true">
+                <i class="fa fa-cube"></i><span class="toolQuestion"></span>
+            </button>
+            <button id="startAddingForms" class="btn btn-default formDescriptionTool" style="width: 68px"
+                    *ngIf="elt.formElements.length > 0"
+                    [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true">
+                <i class="fa fa-cubes"></i><span class="toolForm"></span>
+            </button>
+        </div>
+        <div *ngIf="elt.formElements.length === 0">
+            <i class="fa fa-exclamation-triangle"></i>
+            <span *ngIf="elt.noRenderAllowed">
+                Rendering is disabled for this form.
+            </span>
+            <span *ngIf="!elt.noRenderAllowed">
+                There is no content yet.
+            </span>
+        </div>
+
+        <div *ngFor="let eltIter of [elt]">
+            <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
+                <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
+                    <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.descriptionId"
+                         [class]="node.getClass()"
+                         [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
+                         [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
+                         [class.tree-node-leaf]="node.isLeaf"
+                         [class.tree-node-active]="node.isActive"
+                         [class.tree-node-focused]="node.isFocused">
+                        <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index"
+                                             [node]="node.parent"></tree-node-drop-slot>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+                                    <div class="node-content-wrapper w-100"
+                                         (click)="node.mouseAction('click', $event)"
+                                         (dblclick)="node.mouseAction('dblClick', $event)"
+                                         (contextmenu)="node.mouseAction('contextMenu', $event)"
+                                         (treeDrop)="node.onDrop($event)"
+                                         [treeAllowDrop]="node.allowDrop">
+                                        <cde-form-description-section
+                                                *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
+                                                [elt]="elt"
+                                                [node]="node"
+                                                [inScoreCdes]="inScoreCdes"
+                                                (isFormValid)="isFormValid.emit($event)"
+                                                (stageElt)="stageElt.emit()"></cde-form-description-section>
+                                        <cde-form-description-question
+                                                *ngIf="node.data.elementType === 'question'"
+                                                [elt]="elt"
+                                                [inScoreCdes]="inScoreCdes"
+                                                [node]="node"
+                                                (stageElt)="stageElt.emit()"></cde-form-description-question>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
+                                <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
+                                <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
+                                                                      [elt]="elt"
+                                                                      [node]="node"
+                                                                      (isFormValid)="isFormValid.emit($event)"
+                                                                      (stageElt)="stageElt.emit()"></cde-form-description-question-detail>
+                            </div>
+                        </div>
+                        <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>
+                    </div>
+                </ng-template>
+            </tree-root>
+        </div>
+    </div>
+</div>
+
+<ng-template #formSearchTmpl let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Search Forms</h3>
+    </div>
+    <div class="modal-body">
+        <cde-form-formSearch [cache]="cache" (cachePut)="cachePut.emit($event)"
+                             (result)="addFormFromSearch($event)"></cde-form-formSearch>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="d()" id="cancelSelectF">Close</button>
+    </div>
+</ng-template>
+
+<ng-template #questionSearchTmpl let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Search Questions</h3>
+    </div>
+    <div class="modal-body">
+        <cde-form-questionSearch [cache]="cache" (cachePut)="cachePut.emit($event)"
+                                 (result)="addQuestionFromSearch($event)"></cde-form-questionSearch>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="d()" id="cancelSelectQ">Close</button>
+    </div>
+</ng-template>

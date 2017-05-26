@@ -208,17 +208,23 @@ exports.formById = function (req, res) {
         if (!req.user) adminSvc.hideProprietaryIds(form);
         wipeRenderDisallowed(form, req, function() {
             if (req.query.type === 'xml' && req.query.subtype === 'odm') {
-                formShared.getFormOdm(form, function (err, xmlForm) {
-                    if (err) res.status(err).send(xmlForm);
-                    else {
-                        res.set('Content-Type', 'text/xml');
-                        res.send(JXON.jsToString({element: xmlForm}));
-                    }
+                exports.fetchWholeForm(form, function (wholeForm) {
+                    formShared.getFormOdm(wholeForm, function (err, xmlForm) {
+                        if (err) res.status(err).send(xmlForm);
+                        else {
+                            res.set('Content-Type', 'text/xml');
+                            res.send(JXON.jsToString({element: xmlForm}));
+                        }
+                    });
                 });
             }
             else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
             else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
-            else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form.toObject(), res);
+            else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
+                exports.fetchWholeForm(form, function (wholeForm) {
+                    getFormRedCap(wholeForm, res);
+                });
+            }
             else getFormJson(form, req, res);
         });
         if (req.isAuthenticated()) {
@@ -326,17 +332,8 @@ function loopForm(form) {
         for (var i = 0; i < fe.formElements.length; i++) {
             var e = fe.formElements[i];
             if (e.elementType === 'section') {
-                if (insideSection === true) {
-                    return 'nestedSection';
-                }
-                else if (e.formElements.length === 0) {
-                    return 'emptySection';
-                }
-                else {
-                    return loopFormElements(e, true);
-                }
+                return loopFormElements(e, true);
             } else if (e.elementType !== 'question') {
-                console.log('unknown element type in form: ' + form);
                 return 'unknownElementType';
             }
         }

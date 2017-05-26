@@ -21,6 +21,8 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         textPresent("Org Updated");
         closeAlert();
 
+        goHome();
+
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         clickElement(By.id("openNewNamingModalBtn"));

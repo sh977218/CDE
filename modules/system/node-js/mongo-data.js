@@ -125,7 +125,7 @@ exports.userByName = function(name, callback) {
     User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(callback);
 };
 exports.usersByName = function (name, callback) {
-    User.find({'username': new RegExp('^' + name + '$', "i")}).exec(callback);
+    User.find({'username': new RegExp('^' + name + '$', "i")}, userProject).exec(callback);
 };
 
 exports.usersByPartialName = function(name, callback) {
@@ -143,8 +143,10 @@ exports.usernamesByIp = function(ip, callback) {
     });
 };
 
+let userProject = {password: 0};
+
 exports.userById = function(id, callback) {
-    User.findOne({'_id': id}).exec(callback);
+    User.findOne({'_id': id}, userProject).exec(callback);
 };
 
 exports.addUser = function(user, callback) {

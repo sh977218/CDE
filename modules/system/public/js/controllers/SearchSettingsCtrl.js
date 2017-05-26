@@ -23,9 +23,6 @@ angular.module('systemModule').controller('SearchSettingsCtrl', ['$scope', 'Sear
         $scope.goBack = function () {
             $window.history.back();
         };
-        $scope.enableBeta = function (b) {
-            $rootScope.enableBeta = b;
-        };
 
 
     }]);

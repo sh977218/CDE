@@ -93,18 +93,16 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             restrict: 'AE',
             scope: {
                 model: '=',
-                isAllowed: '&',
+                isAllowed: '=',
                 onOk: '&',
                 allOptions: '='
             },
-            templateUrl: '/system/public/html/systemTemplate/inlineSelectEdit.html',
+            template: require('../html/systemTemplate/inlineSelectEdit.html'),
             controller: ["$scope", function ($scope) {
-                $scope.value = $scope.model;
                 $scope.discard = function () {
                     $scope.editMode = false;
                 };
                 $scope.save = function () {
-                    $scope.model = angular.copy($scope.value);
                     $scope.editMode = false;
                     $timeout($scope.onOk, 0);
                 };
@@ -126,7 +124,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 inlineAreaVisibility: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
-            controller: ["$scope", "$element", function ($scope, $element) {
+            controller: ["$scope", "$element", function ($scope) {
                 $scope.setHtml = function (html) {
                     $scope.defFormat = html ? 'html' : '';
                 };
@@ -217,20 +215,6 @@ angular.module('systemModule').filter('truncateTo', [function () {
     };
 }]);
 
-
-angular.module('systemModule').filter('truncateLongUserName', [function () {
-    return function (input) {
-        if (!(input === undefined || input === null || input === "")) {
-            if (input.length > 17) {
-                return input.substr(0, 17) + '...';
-            }
-            else return input;
-        } else {
-            return "N/A";
-        }
-    };
-}]);
-
 angular.module('systemModule').filter('bytes', [function () {
     return function (bytes, precision) {
         if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
@@ -241,6 +225,7 @@ angular.module('systemModule').filter('bytes', [function () {
     };
 }]);
 
+//ported
 angular.module('systemModule').filter('tagsToArray', [function () {
     return function (input) {
         return input.map(function (m) {
@@ -362,6 +347,19 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
         return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user)
             || authShared.isSiteAdmin(userResource.user);
     };
+
+    isAllowedModel.doesUserOwnElt = function (elt) {
+        if (elt.elementType === 'board') {
+            return userResource.user.siteAdmin || (userResource.user.username === elt.owner.username);
+        } else
+            return userResource.user &&
+                (userResource.user.siteAdmin || (userResource.user._id && (userResource.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
+    };
+
+    isAllowedModel.loggedIn = function () {
+        return (userResource.user && userResource.user._id) ? true : false;
+    };
+
     return isAllowedModel;
 }]);
 
@@ -421,11 +419,12 @@ import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 import {ClassificationService} from "../../../core/public/classification.service";
 angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
 
-import {SkipLogicService} from "../../../core/public/skipLogic.service";
-angular.module('systemModule').factory('SkipLogicUtil', downgradeInjectable(SkipLogicService));
-
 import {HomeComponent} from "../components/home/home.component";
 angular.module('systemModule').directive('cdeHome', downgradeComponent({component: HomeComponent, inputs: [], outputs: []}));
+
+import {NavigationComponent} from "../components/navigation.component";
+angular.module('systemModule').directive('cdeNavigation', downgradeComponent({component: NavigationComponent,
+    inputs: ['quickBoardCount'], outputs: ['takeATour', 'goToLogin', 'logout']}));
 
 import {ProfileComponent} from "../components/profile.component";
 angular.module('systemModule').directive('cdeProfile', downgradeComponent({component: ProfileComponent, inputs: [], outputs: []}));
@@ -471,3 +470,7 @@ angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({
 
 import {ClassificationComponent} from "../../../adminItem/public/components/classification/classification.component";
 angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({component: ClassificationComponent, inputs: ['elt'], outputs: []}));
+
+import {DiscussAreaComponent} from "../../../discuss/components/discussArea/discussArea.component";
+angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
+    {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));

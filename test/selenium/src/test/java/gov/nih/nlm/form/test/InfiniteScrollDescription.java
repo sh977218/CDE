@@ -13,16 +13,17 @@ public class InfiniteScrollDescription extends NlmCdeBaseTest {
         textPresent("The Food Frequency Questionnaire (FFQ) consists of a list of foods with little descriptive detail, and the respondent answers questions about the frequency of each food on the list.");
         clickElement(By.id("description_tab"));
         textPresent("Do you currently take multi-vitamins?(Please report other individual vitamins in question 2)");
-        textNotPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
-
-        try {
-            scrollToViewById("scrollMore");
-            textPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
-        } catch (Exception e) {
-            for (int i = 0; i < 10; i++) {
-                scrollToViewById("scrollMore");
-            }
-            textPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
-        }
+        textPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
+//        textNotPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
+//
+//        try {
+//            scrollContainerDownBy(findElement(By.tagName("tree-viewport")), 500);
+//            textPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
+//        } catch (Exception e) {
+//            for (int i = 0; i < 10; i++) {
+//                scrollContainerDownBy(findElement(By.tagName("tree-viewport")), 500);
+//            }
+//            textPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
+//        }
     }
 }

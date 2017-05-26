@@ -406,10 +406,6 @@ dl.dl-horizontal dd {
     padding: 10px;
 }
 
-.formSectionArea {
-    min-height: 700px;
-}
-
 .question-search-area {
     max-height: 800px;
     overflow-y: scroll;
@@ -1038,8 +1034,10 @@ div + .questionPlaceholder {
     font-size: small;
 }
 
-.formViewSummaryLabel {
+.label.formViewSummaryLabel {
     margin-right: 5px;
+    white-space: normal;
+    display: inline-flex
 }
 
 .text_label {
@@ -1114,10 +1112,6 @@ div + .questionPlaceholder {
 
 .extraCodeSystem {
     border-left: 2px solid rgba(201, 200, 200, 0.88) !important;
-}
-
-.betaFeature {
-    color: green
 }
 
 #sidebar-wrapper {

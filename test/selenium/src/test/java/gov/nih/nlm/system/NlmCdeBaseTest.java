@@ -12,7 +12,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.support.ui.Sleeper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -97,6 +96,10 @@ public class NlmCdeBaseTest {
     private ScheduledExecutorService videoExec;
 
     private int videoRate = 300;
+
+
+    ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
+
 
     private void countElasticElements(Method m) {
         int totalCdes = 11700;
@@ -240,7 +243,8 @@ public class NlmCdeBaseTest {
             if (driver.getWindowHandles().size() > 1)
                 System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
             driver.quit();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
     }
 
@@ -466,7 +470,8 @@ public class NlmCdeBaseTest {
                     "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
                     , ""
             );
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         try {
             wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
@@ -702,6 +707,11 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
 
+    protected void scrollContainerDownBy(WebElement c, Integer y) {
+        String jsScroll = "arguments[0].scrollTop += " + Integer.toString(y) + ";";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, c);
+    }
+
     private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
@@ -855,16 +865,6 @@ public class NlmCdeBaseTest {
 
     protected void setLowStatusesVisible() {
         setVisibleStatus("minStatus-Incomplete");
-    }
-
-    protected void enableBetaFeature() {
-        clickElement(By.id("searchSettings"));
-        classNotPresent("btn-success", By.id("betaEnabled"));
-        classPresent("btn-danger", By.id("betaDisabled"));
-        clickElement(By.id("betaEnabled"));
-        classPresent("btn-success", By.id("betaEnabled"));
-        classNotPresent("btn-danger", By.id("betaDisabled"));
-        driver.navigate().back();
     }
 
     protected void loadDefaultSettings() {
@@ -1032,6 +1032,17 @@ public class NlmCdeBaseTest {
         clickElement(By.id("createNewIdentifierBtn"));
         textPresent("Identifier Added");
         closeAlert();
+    }
+
+    protected void changeDatatype(String newDatatype) {
+        if (PREDEFINED_DATATYPE.contains(newDatatype)) {
+            clickElement(By.xpath("//*[@id='datatypeSelect']//span[contains(@class,'select2-selection--single')]"));
+            clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[text()='" + newDatatype + "']"));
+        } else {
+            clickElement(By.xpath("//*[@id='datatypeSelect']//span[contains(@class,'select2-selection--single')]"));
+            findElement(By.xpath("//*[contains(@class,'select2-dropdown')]//*[contains(@class,'elect2-search--dropdown')]//input")).sendKeys(newDatatype);
+            clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[1]"));
+        }
     }
 
 

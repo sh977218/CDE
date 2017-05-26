@@ -32,7 +32,14 @@
     </div>
     <div class="row">
     <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-        <h3>{{elt.naming[0].designation}}
+        <h3 class="mt-5">{{elt.naming[0].designation}}
+            <a class="btn btn-small btn-default" ng-show="formQuickBoard.canAddElt(elt)" role="button"
+               ng-click="formQuickBoard.add(elt)" title="Add to Compare List" id="addToQuickBoard">
+                <i class="fa fa-plus"></i> Add to Quick Board</a>
+            <a class="btn btn-small btn-default" role="button"
+               ng-click="formPinModal.openPinModal(elt)" title="Add to Board" id="addToBoard">
+                <i class="fa fa-thumb-tack"></i> Add to Board</a>
+
             <div class="btn-group" ng-if="elt.tinyId">
                 <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
@@ -62,9 +69,9 @@
                     <li ng-if="user._id">
                         <a id='formPublishExport' ng-click="preparePublishExport()" target="_blank">Published Form</a>
                     </li>
-                    <li ng-if="user._id && enableBeta">
+                    <li ng-if="user._id">
                         <a id='nihRedCap' ng-href="form/{{elt._id}}?type=REDCap" target="_blank">
-                            REDCap <sup class="betaFeature">beta</sup></a>
+                            REDCap</a>
                     </li>
                     <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
                 </ul>
@@ -98,7 +105,8 @@
     </div>
     <div ng-if="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"
          style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-        <div ng-include="'/system/public/html/comments.html'" style="padding:30px;"></div>
+        <cde-discuss-area [selected-elt]="currentTab" [elt-id]="elt.tinyId" [elt]="elt"
+                          [elt-name]="elt.naming[0].designation"></cde-discuss-area>
     </div>
     </div>
     <div class="row" ng-controller="VersionCtrl">
