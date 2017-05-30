@@ -19,7 +19,7 @@
                 <input type="checkbox" [(ngModel)]="elt.isCopyrighted"
                        [disabled]="!isAllowedModel.isAllowed(elt)"
                        id="isCopyrighted" title="copyrighted"
-                       (click)="elt.staged = true"/>
+                       (click)="elt.unsaved = true"/>
                 <div *ngIf="elt.isCopyrighted">
                     Statement:
                     <inline-edit
@@ -44,7 +44,7 @@
                 <input type="checkbox" [(ngModel)]="elt.noRenderAllowed"
                        [disabled]="!isAllowedModel.isAllowed(elt)"
                        id="disallowRendering" title="disallow rendering"
-                       (click)="elt.staged = true"/>
+                       (click)="elt.unsaved = true"/>
             </div>
         </div>
         <div class="row">
