@@ -62,8 +62,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
         },
         naming: {
             heading: "Naming", includes: ['/system/public/html/naming.html'],
-            select: function (thisTab) {
-                // setCurrentTab(thisTab);
+            select: function () {
                 OrgHelpers.deferred.promise.then(function () {
                     $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
                 });

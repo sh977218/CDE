@@ -68,7 +68,6 @@
                     </div>
                 </uib-tab>
 
-                </uib-tab>
                 <uib-tab ng-repeat="(tabName, tab) in tabs" ng-if="tab.if?tab.if():true"
                          id="{{tabName}}_tab" select="tab.select(tabName)" index="tabName">
                     <uib-tab-heading
