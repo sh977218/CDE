@@ -13,18 +13,23 @@ import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetai
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
+import { PermissibleValueComponent } from "./components/permissibleValue.component";
+import { KeysPipe } from "./components/KeysPipe";
 import { SystemModule } from "../../system/public/system.module";
+import { Select2Module } from "ng2-select2";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        Select2Module,
         AdminItemModule,
         BoardModule,
         SystemModule
     ],
     declarations: [
+        KeysPipe,
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
@@ -32,7 +37,8 @@ import { SystemModule } from "../../system/public/system.module";
         CdeGeneralDetailsComponent,
         ValueDomainSummaryComponent,
         CdeSummaryListComponent,
-        DeGeneralDetailsComponent
+        DeGeneralDetailsComponent,
+        PermissibleValueComponent,
     ],
     entryComponents: [
         ConceptsComponent,
@@ -41,7 +47,8 @@ import { SystemModule } from "../../system/public/system.module";
         DatasetsComponent,
         MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
-        ValueDomainSummaryComponent
+        ValueDomainSummaryComponent,
+        PermissibleValueComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

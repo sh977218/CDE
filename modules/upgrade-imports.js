@@ -82,7 +82,6 @@ import "./system/public/js/controllers/CompareCtrl";
 import "./cde/public/js/controllers/CreateCdeCtrl";
 import "./cde/public/js/controllers/DEViewCtrl";
 import "./cde/public/js/controllers/BoardExportCtrl";
-import "./cde/public/js/controllers/PermissibleValuesCtrl";
 import "./cde/public/js/controllers/MyBoardsCtrl";
 import "./cde/public/js/controllers/MergeModalCtrl";
 import "./cde/public/js/controllers/InboxCtrl";

@@ -4,40 +4,47 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Consts {
+public final class Constants {
 
-    public static final Map<String, String> diseaseMap;
-    public static final Map<String, String> fieldPropertyMap;
-    public static final int diseaseNum;
-    public static final int maxDatatypeSize = 4;
-    public static final int maxInputRestrictionsSize = 3;
+    public static final Map<String, String> DISEASE_MAP;
+    public static final Map<String, String> FIELD_PROPERTY_MAP;
+    public static final int DISEASE_NUM;
+    public static final int MAX_DATATYPE_SIZE = 5;
+    public static final int MAX_INPUT_RESTRICTIONS_SIZE = 3;
+    public static final int TOTAL_PAGE = 31;
+    public static final int TOTAL_RECORD = 3037;
+    public static final String URL = "https://commondataelements.ninds.nih.gov/CRF.aspx";
 
     public static String MONGO_URL = "mongodb://miguser:password@localhost:27017/migration";
 
     static {
         Map<String, String> aMap = new HashMap<String, String>();
-        aMap.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
-        aMap.put("Congenital Muscular Dystrophy", "CMD.aspx");
-        aMap.put("Duchenne/Becker Muscular Dystrophy", "DMD.aspx");
-        aMap.put("Epilepsy", "Epilepsy.aspx");
-        aMap.put("Facioscapulohumeral muscular dystrophy (FSHD)", "FSHD.aspx");
-        aMap.put("Friedreich's Ataxia", "FA.aspx");
         aMap.put("General (For all diseases)", "General.aspx");
+        aMap.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
+        aMap.put("Cerebral Palsy", "CP.aspx");
+        aMap.put("Chiari I Malformation", "CM.aspx");
+        aMap.put("Epilepsy", "Epilepsy.aspx");
+        aMap.put("Friedreich's Ataxia", "FA.aspx");
         aMap.put("Headache", "Headache.aspx");
         aMap.put("Huntington’s Disease", "HD.aspx");
         aMap.put("Mitochondrial Disease", "MITO.aspx");
         aMap.put("Multiple Sclerosis", "MS.aspx");
+        aMap.put("Neuromuscular Diseases", "NMD.aspx");
+        aMap.put("Congenital Muscular Dystrophy", "CMD.aspx");
+        aMap.put("Duchenne/Becker Muscular Dystrophy", "DMD.aspx");
+        aMap.put("Facioscapulohumeral muscular dystrophy (FSHD)", "FSHD.aspx");
         aMap.put("Myasthenia Gravis", "MG.aspx");
         aMap.put("Myotonic Dystrophy", "MMD.aspx");
-        aMap.put("Neuromuscular Diseases", "NMD.aspx");
+        aMap.put("Spinal Muscular Atrophy", "SMA.aspx");
         aMap.put("Parkinson's Disease", "PD.aspx");
         aMap.put("Spinal Cord Injury", "SCI.aspx");
         aMap.put("Spinal Muscular Atrophy", "SMA.aspx");
         aMap.put("Stroke", "Stroke.aspx");
+        aMap.put("Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage", "SAH.aspx");
         aMap.put("Traumatic Brain Injury", "TBI.aspx");
-        aMap.put("Chiari I Malformation", "CM.aspx");
-        diseaseMap = Collections.unmodifiableMap(aMap);
-        diseaseNum = diseaseMap.size();
+        aMap.put("Sports-Related Concussion", "SRC.aspx");
+        DISEASE_MAP = Collections.unmodifiableMap(aMap);
+        DISEASE_NUM = DISEASE_MAP.size();
     }
 
     static {
@@ -71,10 +78,10 @@ public final class Consts {
         aMap.put("SNOMED", "snomed");
         aMap.put("caDSR ID", "cadsrId");
         aMap.put("CDISC ID", "cdiscId");
-        fieldPropertyMap = Collections.unmodifiableMap(aMap);
+        FIELD_PROPERTY_MAP = Collections.unmodifiableMap(aMap);
     }
 
-    private Consts() {
+    private Constants() {
         throw new AssertionError();
     }
 }
