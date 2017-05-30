@@ -1,9 +1,8 @@
-import { Component, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
+import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
 
 import * as deValidator from "../../../cde/shared/deValidator";
-import * as _ from "lodash";
 
 @Component({
     selector: "cde-permissible-value",
@@ -14,10 +13,8 @@ export class PermissibleValueComponent implements OnInit {
     @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
     public modalRef: NgbModalRef;
     @Input() public elt: any;
-    showValidateButton;
     vsacValueSet = [];
     editMode;
-    oid: String;
     vsac = {};
     pVTypeheadVsacNameList;
     canLinkPv = false;
@@ -82,10 +79,7 @@ export class PermissibleValueComponent implements OnInit {
 
     openNewPermissibleValueModal() {
         this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
-        this.modalRef.result.then(result => {
-            this.newPermissibleValue = {};
-        }, () => {
-        });
+        this.modalRef.result.then(() => this.newPermissibleValue = {});
     }
 
     lookupUmls = function () {
@@ -229,12 +223,8 @@ export class PermissibleValueComponent implements OnInit {
 
     validatePvWithVsac() {
         let pvs = this.elt.valueDomain.permissibleValues;
-        if (!pvs) {
-            return;
-        }
-        pvs.forEach(pv => {
-            pv.isValid = this.isPvInVSet(pv);
-        });
+        if (!pvs) return;
+        pvs.forEach(pv => pv.isValid = this.isPvInVSet(pv));
     };
 
     checkPvUnicity() {
@@ -291,9 +281,7 @@ export class PermissibleValueComponent implements OnInit {
                         this.validateVsacWithPv();
                         this.validatePvWithVsac();
                     } else this.alert.addAlert("danger", "Error: No data retrieved from VSAC.");
-                }, err => {
-                    this.alert.addAlert("danger", "Error querying VSAC");
-                });
+                }, () => this.alert.addAlert("danger", "Error querying VSAC"));
         }
         this.canLinkPvFunc();
     };
@@ -313,21 +301,17 @@ export class PermissibleValueComponent implements OnInit {
         }
     };
 
-    stageElt(event = null) {
+    stageElt() {
         this.elt.unsaved = true;
     }
 
     addAllVsac() {
-        this.vsacValueSet.forEach(v => {
-            this.addVsacValue(v);
-        })
+        this.vsacValueSet.forEach(v => this.addVsacValue(v));
     };
 
     allVsacMatch = function () {
         let allVsacMatch = true;
-        this.vsacValueSet.forEach(v => {
-            allVsacMatch = allVsacMatch && v.isValid;
-        });
+        this.vsacValueSet.forEach(v => allVsacMatch = allVsacMatch && v.isValid);
         return allVsacMatch;
     };
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
 
 import * as _ from "lodash";
 
@@ -24,7 +24,7 @@ import * as _ from "lodash";
         }
     `]
 })
-export class InlineEditComponent implements OnInit {
+export class InlineEditComponent implements OnInit, OnChanges {
     @Input() model;
     @Input() inputType: string = "text";
     @Input() selectOptions: Array<any> = [];

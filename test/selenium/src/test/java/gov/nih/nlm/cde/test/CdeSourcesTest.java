@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class CdeSourcesTest extends NlmCdeBaseTest {
@@ -20,6 +21,7 @@ public class CdeSourcesTest extends NlmCdeBaseTest {
         textPresent("Datatype:");
         textPresent("Number");
         textPresent("Copyright:");
-        textPresent("Terms of Use");
+        findElement(By.linkText("Terms of Use"));
+
     }
 }

@@ -2,11 +2,12 @@
     <div class="{{leftPanel}}">
         <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
         <div ng-include="'/form/public/html/formSpecificDetails.html'"></div>
-        <div ng-include="'/system/public/html/sources.html'"></div>
+
+        <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
         <cde-registration [elt]="elt"></cde-registration>
 
         <cde-linked-boards [elt]="elt"></cde-linked-boards>
-        <cde-linked-forms [elt]="elt" [elt-type]="'form'"></cde-linked-forms>
+        <cde-linked-forms [elt]="elt"></cde-linked-forms>
 
     </div>
     <div class="{{rightPanel}}">
