@@ -324,7 +324,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
         if (regStatusFilter.bool.should.length === 0)
             regStatusFilter = undefined;
-        if (regStatusFilter.bool.should.length === 1)
+        else if (regStatusFilter.bool.should.length === 1)
             regStatusFilter = regStatusFilter.bool.should[0];
 
         return regStatusFilter;
@@ -558,7 +558,6 @@ exports.syncWithMesh = function(allMappings) {
     let searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
     searches.forEach(function (search) {
         search.scroll = '1m';
-        search.search_type = 'scan';
         search.body = {};
     });
 
