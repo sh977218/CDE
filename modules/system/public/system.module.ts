@@ -8,7 +8,6 @@ import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListD
 import { ProfileComponent } from "./components/profile.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { UserCommentsComponent } from "./components/userComments.component";
-import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
 import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
@@ -42,7 +41,6 @@ import { InlineEditComponent } from "./components/inlineEdit.component";
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
-        RegistrationComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
@@ -53,14 +51,15 @@ import { InlineEditComponent } from "./components/inlineEdit.component";
         HomeComponent,
         LinkedFormsComponent,
         ListManagementComponent,
+        LinkedFormsComponent,
         LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
-        RegistrationComponent,
         UsersMgtComponent
     ],
     exports: [
+        LinkedFormsComponent,
         NavigationComponent,
         InlineEditComponent
     ],

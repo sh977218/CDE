@@ -32,7 +32,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("ids_tab"));
         textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
-
     }
 
     @Test

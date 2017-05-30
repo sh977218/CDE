@@ -5,7 +5,6 @@ import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { UpgradeModule } from "@angular/upgrade/static";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-
 import { CdeAppComponent } from "./app.component";
 import { CoreModule } from "./core/public/core.module";
 import { CdeModule } from "./cde/public/cde.module";
