@@ -7,6 +7,12 @@
     display: block;
 }
 
+.navbar-collapse.collapse.in,
+.navbar-collapse.collapsing {
+    display: block !important;
+    width: auto;
+}
+
 .form-inline, .form-inline label {
     display: inline-block;
 }

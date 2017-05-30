@@ -105,12 +105,12 @@ export class SkipLogicService {
         if (question.question.datatype === 'Value List') {
             let answers = question.question.answers;
             return answers.map(function (a) {
-                return '"' + SkipLogicService.questionSanitizer(a.permissibleValue) + '"';
+                return '"' + SkipLogicService.questionSanitizer(a.permissibleValue) + '" ';
             });
         } else if (question.question.datatype === 'Number') {
-            return ['"{{' + question.question.datatype + '}}"'];
+            return ['"{{' + question.question.datatype + '}}" '];
         } else if (question.question.datatype === 'Date') {
-            return ['"{{MM/DD/YYYY}}"'];
+            return ['"{{MM/DD/YYYY}}" '];
         }
     }
 
@@ -136,11 +136,11 @@ export class SkipLogicService {
                 return '"' + SkipLogicService.questionSanitizer(label) + '" ';
             });
         } else if (tokens.length % 4 === 1) {
-            options = ["=", "<", ">", ">=", "<=", "!="];
+            options = ["= ", "< ", "> ", ">= ", "<= ", "!= "];
         } else if (tokens.length % 4 === 2) {
             options = this.getAnswer(previousQuestions, tokens[tokens.length - 2]);
         } else if (tokens.length % 4 === 3) {
-            options = ["AND", "OR"];
+            options = ["AND ", "OR "];
         }
 
         let optionsFiltered = options.filter(o => o.indexOf(tokens.unmatched) > -1);
