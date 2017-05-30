@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 
 public class OriginEditTest extends NlmCdeBaseTest {
 
-    @Test(priority = 3)
     void originEdit() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Person Gender Text Type");
@@ -27,8 +26,6 @@ public class OriginEditTest extends NlmCdeBaseTest {
         String newOrigin = findElement(By.cssSelector("#origin > span > span")).getText();
 
         Assert.assertEquals(origin, newOrigin);
-
-
     }
 }
 

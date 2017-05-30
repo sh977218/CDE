@@ -16,6 +16,8 @@ import { ClassificationComponent } from "./components/classification/classificat
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { InlineEditDirective, InlineSelectEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
+import { SourcesComponent } from "./components/sources/sources.component";
+import { RegistrationComponent } from "./components/registration/registration.component";
 import { CompareModule } from "../../compare/compare.module";
 
 @NgModule({
@@ -43,7 +45,9 @@ import { CompareModule } from "../../compare/compare.module";
         NamingComponent,
         PlaceHoldEmptyPipe,
         PropertiesComponent,
-        ReferenceDocumentComponent
+        ReferenceDocumentComponent,
+        RegistrationComponent,
+        SourcesComponent
     ],
     entryComponents: [
         AttachmentsComponent,
@@ -53,9 +57,12 @@ import { CompareModule } from "../../compare/compare.module";
         HistoryComponent,
         NamingComponent,
         PropertiesComponent,
-        ReferenceDocumentComponent
+        ReferenceDocumentComponent,
+        RegistrationComponent,
+        SourcesComponent
     ],
     exports: [
+        ClassificationComponent,
         InlineEditDirective,
         InlineSelectEditDirective,
         InlineAreaEditDirective,
@@ -66,7 +73,8 @@ import { CompareModule } from "../../compare/compare.module";
         HistoryComponent,
         NamingComponent,
         ReferenceDocumentComponent,
-        ClassificationComponent
+        RegistrationComponent,
+        SourcesComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

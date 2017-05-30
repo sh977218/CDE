@@ -12,40 +12,43 @@ import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
+import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
+import { SystemModule } from "../../system/public/system.module";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
 import { KeysPipe } from "./components/KeysPipe";
-import { SystemModule } from "../../system/public/system.module";
 import { Select2Module } from "ng2-select2";
 
 @NgModule({
     imports: [
+        AdminItemModule,
+        BoardModule,
         CommonModule,
         FormsModule,
         NgbModule,
         Select2Module,
-        AdminItemModule,
-        BoardModule,
         SystemModule
     ],
     declarations: [
-        KeysPipe,
+        CdeGeneralDetailsComponent,
+        CdeSummaryListComponent,
         ConceptsComponent,
+        DeGeneralDetailsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
+        KeysPipe,
         MoreLikeThisComponent,
-        CdeGeneralDetailsComponent,
+        PermissibleValueComponent,
         ValueDomainSummaryComponent,
-        CdeSummaryListComponent,
-        PermissibleValueComponent
     ],
     entryComponents: [
-        ConceptsComponent,
-        DerivationRulesComponent,
-        DatasetsComponent,
-        MoreLikeThisComponent,
         CdeGeneralDetailsComponent,
+        ConceptsComponent,
+        DatasetsComponent,
+        DeGeneralDetailsComponent,
+        DerivationRulesComponent,
+        MoreLikeThisComponent,
+        PermissibleValueComponent,
         ValueDomainSummaryComponent,
-        PermissibleValueComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

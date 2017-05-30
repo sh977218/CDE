@@ -29,7 +29,6 @@ angular.module('OrgFactories', ['ngResource'])
                     return orgDetailsInfoHtml;
                 }
             }
-
             return '';
         }
         , orgIsWorkingGroupOf : function(orgName) {

@@ -54,6 +54,9 @@ angular.module('cdeModule').directive('cdeDerivationRules', downgradeComponent({
 import {CdeGeneralDetailsComponent} from "../components/summary/cdeGeneralDetails.component";
 angular.module('systemModule').directive('cdeCdeGeneralDetails', downgradeComponent({component: CdeGeneralDetailsComponent, inputs: ['elt'], outputs: []}));
 
+import {DeGeneralDetailsComponent} from "../components/deGeneralDetails/deGeneralDetails.component";
+angular.module('systemModule').directive('cdeDeGeneralDetails', downgradeComponent({component: DeGeneralDetailsComponent, inputs: ['elt'], outputs: []}));
+
 import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
 angular.module('systemModule').directive('cdeValueDomainSummary', downgradeComponent({component: ValueDomainSummaryComponent, inputs: ['elt'], outputs: []}));
 

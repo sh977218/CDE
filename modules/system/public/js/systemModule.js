@@ -121,7 +121,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 onOk: '&',
                 onErr: '&',
                 defFormat: '=',
-                inlineAreaVisibility: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
             controller: ["$scope", "$element", function ($scope) {
@@ -465,8 +464,11 @@ angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponen
 import {ReferenceDocumentComponent} from "../../../adminItem/public/components/referenceDocument.component";
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({component: ReferenceDocumentComponent, inputs: ['elt'], outputs: []}));
 
-import {RegistrationComponent} from "../components/adminItem/registration.component";
+import {RegistrationComponent} from "../../../adminItem/public/components/registration/registration.component";
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
+
+import {SourcesComponent} from "../../../adminItem/public/components/sources/sources.component";
+angular.module('systemModule').directive('cdeAdminItemSources', downgradeComponent({component: SourcesComponent, inputs: ['elt'], outputs: []}));
 
 import {LinkedBoardsComponent} from "../../../board/public/components/linkedBoards/linkedBoards.component";
 angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({component: LinkedBoardsComponent, inputs: ['elt'], outputs: []}));
