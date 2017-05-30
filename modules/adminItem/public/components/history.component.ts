@@ -19,24 +19,36 @@ export class HistoryComponent implements OnInit {
     public priorCdes = [];
     public numberSelected: number = 0;
     public compareOptions = {
+/*
         "version": {},
         "_id": {},
         "tinyId": {},
         "views": {},
         "stewardOrg": {"name": {}},
         "registrationState": {"registrationStatus": {}},
+*/
         "valueDomain": {
             "datatype": {},
-            "name": {}
+            "name": {},
+            "datatypeDate": {
+                "format": {}
+            },
+            "datatypeText": {
+                "minLength": {},
+                "maxLength": {},
+                "regex": {},
+                "rule": {}
+            }
         }
-        /*
-         "naming": {
-         properties: {
-         "designation": {},
-         "definition": {}
-         }
-         }
-         */
+/*
+        "naming": {
+            array: true,
+            properties: {
+                "designation": {},
+                "definition": {}
+            }
+        }
+*/
     };
 
     constructor(@Inject("Alert") private alert,

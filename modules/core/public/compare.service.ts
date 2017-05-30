@@ -3,35 +3,132 @@ import * as _ from "lodash";
 
 @Injectable()
 export class CompareService {
-    doCompare(left, right, options) {
-        let result = {};
-        _.forOwn(options, (pValue, pKey) => {
-            let l = left[pKey];
-            let r = right[pKey];
-            if (_.isEmpty(pValue))
-                result[pKey] = {
-                    match: _.isEqual(l, r),
-                    left: l,
-                    right: r
+
+    doCompareObject(left, right, option) {
+        if (_.isArray(left) || _.isArray(right)) throw "compare object type does not match.\n";
+        if (_.isEmpty(option)) {
+            return _.isEqual(left, right) ?
+                {match: true} : {match: false, left: left, right: right};
+        } else {
+            let result = {};
+            _.forOwn(option, (pValue, pKey) => {
+                result[pKey] = this.doCompare(left[pKey], right[pKey], pValue);
+            });
+            return result;
+        }
+    };
+
+    static doValidateArrayCompare(left, right, option) {
+        if (!_.isArray(left) || !_.isArray(right))
+            throw ("compare array type does not match of option " + JSON.stringify(option));
+        if (option.sort && !option.sortFn)
+            throw ("sort function is missing");
+        else if (!option.sort && option.sortFn)
+            throw ("existing sort function but sort is missing");
+        else if (option.sort && option.sortFn) {
+            left.sort(option.sortFn);
+            right.sort(option.sortFn);
+        }
+        if (!option.properties)
+            option.properties = _.uniq(_.concat(Object.keys(left), Object.keys(right)));
+        if (!option.equal)
+            option.equal = _.isEqual;
+    }
+
+    doCompareArray(left, right, option) {
+        let result = [];
+        CompareService.doValidateArrayCompare(left, right, option);
+        let matchCount = 0;
+        let beginIndex = 0;
+
+        _.forEach(left, (value, leftIndex) => {
+            let rightArrayCopy = _.slice(right, beginIndex);
+            let leftItemInRightArrayIndex = _.findIndex(rightArrayCopy, o => option.equal(o, value));
+            if (leftItemInRightArrayIndex === -1) {
+                // put all right list elements before this element
+                if (beginIndex === left.length - 1) {
+                    for (let m = 0; m < left.length; m++) {
+                        result.push({
+                            found: "right",
+                            rightIndex: m,
+                            result: _.cloneDeep(option.properties)
+                        });
+                        beginIndex++;
+                    }
+                }
+                // put this element not found
+                result.push({
+                    found: 'left',
+                    leftIndex: leftIndex,
+                    result: _.cloneDeep(option.properties)
+                });
+            } else {
+                // put all right elements before matched element
+                let beginIndexCopy = beginIndex;
+                for (let k = 0; k < leftItemInRightArrayIndex; k++) {
+                    result.push({
+                        found: "right",
+                        rightIndex: beginIndex + leftItemInRightArrayIndex - 1
+                    });
+                    beginIndex++;
+                }
+                // put this element found
+                let found = {
+                    match: true,
+                    leftIndex: leftIndex,
+                    rightIndex: beginIndexCopy + leftItemInRightArrayIndex
                 };
-            else {
-                let temp = this.doCompare(l, r, pValue);
-                if (!temp["match"])
-                    result["match"] = false;
-                result[pKey] = temp;
+                let rightIndexCopy = beginIndexCopy + leftItemInRightArrayIndex;
+                found["result"] = this.doCompare(left[leftIndex], right[rightIndexCopy], option["properties"]);
+                result.push(found);
+                matchCount++;
+                beginIndex++;
             }
         });
-        console.log('a');
+        // if after looping left list, there are element in the right list, put all of them
+        for (let i = beginIndex; i < right.length; i++)
+            result.push({
+                found: "right",
+                rightIndex: i,
+                result: _.cloneDeep(option.properties)
+            })
         return result;
-        /*
-         _.reduce(left, function (result, value, key) {
-         console.log(key);
-         console.log(value);
-         return _.isEqualWith(value, right[key], (l, r) => {
-         return _.isEqual(l, r);
-         }) ? result : result.concat(key);
-         }, []);
-         */
     }
+
+    doCompare(left, right, option) {
+        let result = {};
+        _.forOwn(option, (pValue, pKey) => {
+            let l = left[pKey];
+            let r = right[pKey];
+            if (option[pKey].array) result[pKey] = this.doCompareArray(l, r, option[pKey]);
+            else result[pKey] = this.doCompareObject(l, r, option[pKey]);
+            let tempMatch = true;
+            _.forOwn(result[pKey], (v, k) => {
+                if (!result[pKey][k].match)
+                    tempMatch = false;
+            });
+            result[pKey].match = tempMatch;
+            if (!tempMatch) {
+                result[pKey].left = l;
+                result[pKey].right = r;
+            }
+        });
+        return result;
+    }
+
+
+    getValueByNestedProperty(obj, propertyString) {
+        if (!obj) return "";
+        // convert indexes to properties and strip a leading dot
+        propertyString = propertyString.replace(/\[(\w+)]/g, '.$1').replace(/^\./, '');
+        var propertyArray = propertyString.split('.');
+        for (var i = 0, n = propertyArray.length; i < n; ++i) {
+            var k = propertyArray[i];
+            if (k in obj) obj = obj[k];
+            else return;
+        }
+        return obj;
+    }
+
 }
 
