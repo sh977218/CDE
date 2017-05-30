@@ -13,7 +13,7 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 export class RegistrationComponent implements OnInit {
     @ViewChild("regStatusEdit") public regStatusEditModal: NgbModalModule;
     @Input() public elt: any;
-    regStatusShared: any = require("../../../shared/regStatusShared");
+    regStatusShared: any = require("../../../../system/shared/regStatusShared");
     helpMessage: string;
     newState: any = {};
     public modalRef: NgbModalRef;
