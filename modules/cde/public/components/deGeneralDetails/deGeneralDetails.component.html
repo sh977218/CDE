@@ -9,7 +9,8 @@
             <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
             <div class="col-sm-7" id="dd_general_steward">
                 <span *ngIf="editDtMode">
-                    <select class="form-control" id="elt.stewardOrg.name" [(ngModel)]="elt.stewardOrg.name">
+                    <select class="form-control" id="elt.stewardOrg.name" [(ngModel)]="elt.stewardOrg.name"
+                            (change)="elt.unsaved = true">
                         <option *ngFor="let myOrg of userService.userOrgs">{{myOrg}}</option>
                     </select>
                     <i id="elt.stewardOrg.name.ok" class="fa fa-check"

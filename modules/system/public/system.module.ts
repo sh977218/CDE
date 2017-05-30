@@ -60,6 +60,7 @@ import { InlineEditComponent } from "./components/inlineEdit.component";
     ],
     exports: [
         LinkedFormsComponent,
+        NavigationComponent,
         InlineEditComponent
     ],
     providers: [],

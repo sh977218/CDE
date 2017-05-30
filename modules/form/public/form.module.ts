@@ -5,6 +5,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
 import { SortableModule } from "ngx-bootstrap";
+import { NouisliderModule } from 'ng2-nouislider';
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 
@@ -27,13 +28,13 @@ import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
 import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
-import {Ng2SliderComponent} from "ng2-slider-component/ng2-slider.component";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        NouisliderModule,
         Select2Module,
         SortableModule.forRoot(),
         TreeModule,
@@ -57,7 +58,6 @@ import {Ng2SliderComponent} from "ng2-slider-component/ng2-slider.component";
         NativeSectionMatrixComponent,
         NativeQuestionComponent,
         NativeTableComponent,
-        Ng2SliderComponent,
         QuestionSearchDirective
     ],
     entryComponents: [

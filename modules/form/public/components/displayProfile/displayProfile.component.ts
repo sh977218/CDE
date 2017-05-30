@@ -1,5 +1,7 @@
 import { Component, Inject, Input } from "@angular/core";
 
+import "nouislider/distribute/nouislider.min.css";
+
 import "rxjs/add/operator/map";
 
 @Component({

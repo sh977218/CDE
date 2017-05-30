@@ -17,7 +17,7 @@ import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { SourcesComponent } from "./components/sources/sources.component";
-import {RegistrationComponent} from "./components/registration/registration.component";
+import { RegistrationComponent } from "./components/registration/registration.component";
 
 @NgModule({
     imports: [
