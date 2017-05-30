@@ -80,14 +80,10 @@
                               [elt-name]="elt.naming[0].designation"></cde-discuss-area>
         </div>
 
-        <div ng-show="elt.unsaved && allValid" class="mt20">
+        <div ng-show="elt.unsaved && elt.allValid" class="mt20">
             <button class="btn cancel" ng-click="revert(elt)" id="discardChanges">Discard Changes</button>
             <button class="btn btn-primary" ng-click="openSave(elt, 'deview?tinyId=')" id="openSave">Save Changes
             </button>
         </div>
-    </div>
-
-    <div ng-if="!allValid" class="alert alert-danger mt20" role="alert">
-        There are validation errors. {{pvNotValidMsg }}
     </div>
 </div>

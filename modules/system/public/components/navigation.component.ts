@@ -4,7 +4,12 @@ import { SharedService } from "../../../core/public/shared.service";
 
 @Component({
     selector: "cde-navigation",
-    templateUrl: "./navigation.component.html"
+    templateUrl: "./navigation.component.html",
+    styles: [`
+        .navbar-fixed-top .navbar-collapse {
+            max-height: none;
+        }
+    `]
 })
 export class NavigationComponent {
     @Input() quickBoardCount: number;

@@ -1,6 +1,8 @@
 package gov.nih.nlm.cde.test;
 
-import com.jayway.restassured.http.ContentType;
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Header;
+import com.jayway.restassured.response.Response;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
@@ -46,15 +48,29 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void checkTicketValid() {
-        // Test to make sure user isn't logged in
-        String response = get(baseUrl + "/user/me").asString();
-        Assert.assertEquals("Not logged in.", response);
+        String username = "cdevsac";
+        String password = "Aa!!!000";
+        String tgtUrl = "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket";
 
-        // Provide fake ticket and make sure user info is retrieved
-        response = get(baseUrl + "/user/me?ticket=valid").asString();
-        get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue(response.contains("_id"), "actualResponse: " + response);
-        Assert.assertTrue(response.contains("ninds"), "actualReponse: " + response);
+        // Test to make sure user isn't logged in
+        String notLoggedInResponse = get(baseUrl + "/user/me").asString();
+        Assert.assertEquals("Not logged in.", notLoggedInResponse);
+
+        Header header = new Header("Content-Type", "application/x-www-form-urlencoded");
+        Response tpgResponse = RestAssured.given().formParam("username", username).formParam("password", password).header(header).request().post(tgtUrl);
+        String tgt = tpgResponse.asString();
+        System.out.println("got tgt: " + tgt);
+
+        String ticketUrl = "https://vsac.nlm.nih.gov/vsac/ws/Ticket/" + tgt;
+        Response ticketResponse = RestAssured.given().formParam("service", "http://umlsks.nlm.nih.gov").header(header).request().post(ticketUrl);
+        String ticket = ticketResponse.asString();
+        System.out.println("got ticket: " + ticket);
+
+        String actualResponse = get(baseUrl + "/user/me?ticket=" + ticket).asString();
+        Assert.assertTrue(actualResponse.contains("_id"), "actualResponse: " + actualResponse);
+        Assert.assertTrue(actualResponse.contains(username), "actualResponse: " + actualResponse);
+        Assert.assertFalse(actualResponse.contains(password), "actualResponse: " + actualResponse);
+
     }
 
     @Test
@@ -69,21 +85,7 @@ public class MiscTests extends NlmCdeBaseTest {
     }
 
     @Test
-    public void checkConnectionTimeout() {
-
-        // Make sure ticket validation times out
-        String response = get(baseUrl + "/user/me?ticket=timeout4").asString();
-        Assert.assertEquals("Not logged in.", response);
-
-        // Make sure ticket validation doesn't times out
-        response = get(baseUrl + "/user/me?ticket=timeout1").asString();
-        get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue(response.contains("_id"), "Does not contain _id. Actual response: " + response);
-        Assert.assertTrue(response.contains("ninds"), "Does not contain ninds. Actual Response: " + response);
-    }
-
-    @Test
-    public void checkSchemas () {
+    public void checkSchemas() {
         Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("{\"title\":\"DataElement\",\"type\":\"object\",\"properties\":{\"elementType\":{\"type\":\"string\",\"default\":\"cde\",\"description\":\"This value is always 'cde'\"},\"naming\":{\"type\":\"array\","));
 
         Assert.assertTrue(get(baseUrl + "/schema/form").asString().contains("{\"title\":\"Form\",\"type\":\"object\",\"properties\":{\"elementType\":{\"type\":\"string\",\"default\":\"form\"},\"tinyId\":{\"type\":\"string\"},\"naming\":{\"type\":\"array\",\"items\":{\"title\":\"itemOf_naming\",\"type\":\"object\",\"properties\":{\"designation\":"));
