@@ -27,7 +27,7 @@
             </span>
         </div>
 
-        <div *ngFor="let eltIter of [elt]">
+        <ng-container *ngFor="let eltIter of [elt]">
             <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
                 <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
                     <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.descriptionId"
@@ -77,7 +77,7 @@
                     </div>
                 </ng-template>
             </tree-root>
-        </div>
+        </ng-container>
     </div>
 </div>
 

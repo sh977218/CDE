@@ -320,7 +320,7 @@ export class PermissibleValueComponent implements OnInit {
     addAllVsac() {
         this.vsacValueSet.forEach(v => {
             this.addVsacValue(v);
-        })
+        });
     };
 
     allVsacMatch = function () {

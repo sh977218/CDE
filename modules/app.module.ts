@@ -12,7 +12,7 @@ import { CdeModule } from "./cde/public/cde.module";
 import { FormModule } from "./form/public/form.module";
 import { SystemModule } from "./system/public/system.module";
 import { BoardModule } from "./board/public/board.module";
-import {DiscussModule} from "./discuss/discuss.module";
+import { DiscussModule } from "./discuss/discuss.module";
 
 @NgModule({
     declarations: [
