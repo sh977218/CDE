@@ -708,7 +708,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
 
     let search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
-    search.search_type = 'scan';
     search.body = query;
 
     let scrollThrough = function (scrollId) {
