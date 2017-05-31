@@ -1,11 +1,14 @@
 <ng-template #compareSideBySideContent>
-
     <div class="modal-header">
         <h4 class="modal-title">Compare Side By Side</h4>
     </div>
     <div class="modal-body">
-        <div class="col-xs-6">{{left | json}}</div>
-        <div class="col-xs-6">{{right| json}}</div>
+        <ng-container *ngIf="!result.match">
+            <div *ngFor="let r of result | compareKeys" class="col-xs-12">
+                <div class="col-xs-6">{{r | json}}</div>
+                <div class="col-xs-6">{{r | json}}</div>
+            </div>
+        </ng-container>
     </div>
     <div class="modal-footer"></div>
 </ng-template>

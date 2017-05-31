@@ -1,10 +1,10 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
-import { Http } from '@angular/http';
-
+///<reference path="../core/public/KeysPipe.ts"/>
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { CompareService } from "../core/public/compare.service";
-import * as _ from "lodash";
+import { KeysPipe } from "../core/public/KeysPipe";
+
 @Component({
     selector: "cde-compare-side-by-side",
     templateUrl: "./compareSideBySide.component.html",

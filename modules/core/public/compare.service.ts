@@ -7,18 +7,18 @@ export class CompareService {
     doCompareObject(left, right, option) {
         if (_.isArray(left) || _.isArray(right)) throw "compare object type does not match.\n";
         if (_.isEmpty(option)) {
-            return _.isEqual(left, right) ?
-                {match: true} : {match: false, left: left, right: right};
+            return {match: _.isEqual(left, right), left: left, right: right};
         } else {
             let result = {};
             _.forOwn(option, (pValue, pKey) => {
                 result[pKey] = this.doCompare(left[pKey], right[pKey], pValue);
             });
+            this.findMatchInResult(left, right, result);
             return result;
         }
     };
 
-    static doValidateArrayCompare(left, right, option) {
+    static doCompareArrayValidator(left, right, option) {
         if (!_.isArray(left) || !_.isArray(right))
             throw ("compare array type does not match of option " + JSON.stringify(option));
         if (option.sort && !option.sortFn)
@@ -31,13 +31,12 @@ export class CompareService {
         }
         if (!option.properties)
             option.properties = _.uniq(_.concat(Object.keys(left), Object.keys(right)));
-        if (!option.equal)
-            option.equal = _.isEqual;
+        if (!option.equal) option.equal = _.isEqual;
     }
 
     doCompareArray(left, right, option) {
         let result = [];
-        CompareService.doValidateArrayCompare(left, right, option);
+        CompareService.doCompareArrayValidator(left, right, option);
         let matchCount = 0;
         let beginIndex = 0;
 
@@ -95,27 +94,40 @@ export class CompareService {
         return result;
     }
 
+    static doCompareValidator(left, right, option) {
+        if (!left && !right) {
+            throw "left and right are both null";
+        } else if (_.isArray(left) && _.isArray(right)) {
+        } else if (!_.isArray(left) && _.isArray(right)) {
+            throw "type miss match, left is not array, right is array";
+        } else if (_.isArray(left) && !_.isArray(right)) {
+            throw "type miss match, left is array, right is not array";
+        }
+    }
+
     doCompare(left, right, option) {
+        CompareService.doCompareValidator(left, right, option);
+        if (!left || !right) return {match: false, left: left, right: right};
         let result = {};
-        _.forOwn(option, (pValue, pKey) => {
-            let l = left[pKey];
-            let r = right[pKey];
-            if (option[pKey].array) result[pKey] = this.doCompareArray(l, r, option[pKey]);
-            else result[pKey] = this.doCompareObject(l, r, option[pKey]);
-            let tempMatch = true;
-            _.forOwn(result[pKey], (v, k) => {
-                if (!result[pKey][k].match)
-                    tempMatch = false;
-            });
-            result[pKey].match = tempMatch;
-            if (!tempMatch) {
-                result[pKey].left = l;
-                result[pKey].right = r;
-            }
-        });
+        if (option.array)
+            result = this.doCompareArray(left, right, option["properties"]);
+        else
+            result = this.doCompareObject(left, right, option);
         return result;
     }
 
+    findMatchInResult(left, right, result) {
+        let tempMatch = true;
+        _.forOwn(result, (v, k) => {
+            if (!result[k].match)
+                tempMatch = false;
+        });
+        result.match = tempMatch;
+        /*
+         result.left = left;
+         result.right = right;
+         */
+    }
 
     getValueByNestedProperty(obj, propertyString) {
         if (!obj) return "";

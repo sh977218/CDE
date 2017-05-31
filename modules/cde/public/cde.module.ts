@@ -15,8 +15,8 @@ import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.com
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
 import { SystemModule } from "../../system/public/system.module";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
-import { KeysPipe } from "./components/KeysPipe";
 import { Select2Module } from "ng2-select2";
+import { KeysPipe } from "../../core/public/KeysPipe";
 
 @NgModule({
     imports: [

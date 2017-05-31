@@ -19,14 +19,12 @@ export class HistoryComponent implements OnInit {
     public priorCdes = [];
     public numberSelected: number = 0;
     public compareOptions = {
-/*
         "version": {},
         "_id": {},
         "tinyId": {},
         "views": {},
         "stewardOrg": {"name": {}},
         "registrationState": {"registrationStatus": {}},
-*/
         "valueDomain": {
             "datatype": {},
             "name": {},
@@ -40,15 +38,15 @@ export class HistoryComponent implements OnInit {
                 "rule": {}
             }
         }
-/*
-        "naming": {
-            array: true,
-            properties: {
-                "designation": {},
-                "definition": {}
-            }
-        }
-*/
+        /*
+         "naming": {
+         array: true,
+         properties: {
+         "designation": {},
+         "definition": {}
+         }
+         }
+         */
     };
 
     constructor(@Inject("Alert") private alert,
