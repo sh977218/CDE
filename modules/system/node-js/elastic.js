@@ -485,7 +485,9 @@ exports.buildElasticSearchQuery = function (user, settings) {
         delete queryStuff.query.bool.must;
     }
 
-    queryStuff.from = ((settings.page ? settings.page : 1) - 1) * settings.resultPerPage;
+    queryStuff.from = (settings.page - 1) * settings.resultPerPage;
+    if (!queryStuff.from)
+        queryStuff.from = 0;
 
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
@@ -710,8 +712,8 @@ exports.elasticSearchExport = function (dataCb, query, type) {
     search.scroll = '1m';
     search.body = query;
 
-    let scrollThrough = function (scrollId) {
-        esClient.scroll({scrollId: scrollId, scroll: '1m'},
+    function scrollThrough(response) {
+        esClient.scroll({scrollId: response._scroll_id, scroll: '1m'},
             function (err, response) {
                 if (err) {
                     lock = false;
@@ -721,21 +723,25 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                         });
                     dataCb("ES Error");
                 } else {
-                    let newScrollId = response._scroll_id;
-                    if (response.hits.hits.length === 0) {
-                        lock = false;
-                        dataCb();
-                    }
-                    else {
-                        for (let i = 0; i < response.hits.hits.length; i++) {
-                            let thisCde = response.hits.hits[i]._source;
-                            dataCb(null, thisCde);
-                        }
-                        scrollThrough(newScrollId);
-                    }
+                    processScroll(response);
                 }
-        });
-    };
+            }
+        );
+    }
+
+    function processScroll(response) {
+        if (response.hits.hits.length === 0) {
+            lock = false;
+            dataCb();
+        }
+        else {
+            for (let i = 0; i < response.hits.hits.length; i++) {
+                let thisCde = response.hits.hits[i]._source;
+                dataCb(null, thisCde);
+            }
+            scrollThrough(response);
+        }
+    }
 
     esClient.search(search, function (err, response) {
         if (err) {
@@ -747,7 +753,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                 });
             dataCb("ES Error");
         } else {
-            scrollThrough(response._scroll_id);
+            processScroll(response);
         }
     });
 };
