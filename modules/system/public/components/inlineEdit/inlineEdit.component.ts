@@ -4,7 +4,7 @@ import * as _ from "lodash";
 
 @Component({
     selector: "cde-inline-edit",
-    templateUrl: "inlineEdit.component.html",
+    templateUrl: "./inlineEdit.component.html",
     styles: [`
         button {
             display: inline-block;

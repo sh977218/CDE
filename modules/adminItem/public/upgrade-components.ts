@@ -42,7 +42,7 @@ export class InlineAreaEditDirective extends UpgradeComponent {
     @Input() defFormat: any;
     @Output() defFormatChange: EventEmitter<void>;
     constructor(elementRef: ElementRef, injector: Injector) {
-        super("inlineAreaEdit", elementRef, injector);
+        super("inlineEdit", elementRef, injector);
     }
 }
 

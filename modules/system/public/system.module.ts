@@ -18,7 +18,7 @@ import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.comp
 import { JsonpModule } from "@angular/http";
 import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
-import { InlineEditComponent } from "./components/inlineEdit.component";
+import { InlineEditComponent } from "./components/inlineEdit/inlineEdit.component";
 
 @NgModule({
     imports: [
