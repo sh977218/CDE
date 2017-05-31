@@ -20,7 +20,6 @@
     "bootstrap": "3.3.6",
     "bootstrap-css-only": "3.3.6",
     "bootstrap-tour": "0.10.1",
-    "ng-grid": "2.0.14",
     "angularjs-camelCase-human": "1.0.0",
     "angular-send-feedback": "https://github.com/sh977218/angular-feedback.git#7c057dd44088080e42acbc46368466aef95f5a86",
     "html2canvas": "*",
