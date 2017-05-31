@@ -7,7 +7,7 @@
     <button *ngIf="isAllowedModel.isOrgCurator() && elt.elementType === 'form' && elt.formElements.length > 0"
             class="btn btn-default" id="openClassifyCdesModalBtn" [disabled]="elt.unsaved"
             (click)="openClassifyCdesModal()">
-        <i class="fa fa-indent"></i> Classify Cdes
+        <i class="fa fa-indent"></i> Classify CDEs
     </button>
     <div id="classificationBody">
         <div *ngFor="let classification of elt.classification;let i = index">
