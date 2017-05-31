@@ -4,7 +4,7 @@ describe('Form Comments', () => {
 
     it ('should blah blah', () => {
         browser.get("");
-        utils.mustBeLoggedInAs("ludetc", "Aa!!!000");
+        utils.mustBeLoggedInAs("nlm", "nlm");
     });
 
 
