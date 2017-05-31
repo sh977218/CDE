@@ -258,6 +258,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
         {
             "query_string": {
+                "analyze_wildcard": true,
                 "query": searchQ
             }
         };
@@ -266,8 +267,9 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
         {
             "query_string": {
-                "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
-                , "query": searchQ
+                "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
+                "analyze_wildcard": true,
+                "query": searchQ
             }
         };
         // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
@@ -277,8 +279,9 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
             {
                 "query_string": {
-                    "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
-                    , "query": "\"" + searchQ + "\"~4"
+                    "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
+                    "analyze_wildcard": true,
+                    "query": "\"" + searchQ + "\"~4"
                 }
             };
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
