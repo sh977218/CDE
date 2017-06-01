@@ -1,0 +1,7 @@
+<ng-template #compareObjectContent>
+    <ng-container *ngFor="let s of result | compareKeys">
+        <ng-container *ngIf="!s.array">
+            <cde-compare-object [left]="left[s]" [right]="right[s]"></cde-compare-object>
+        </ng-container>
+    </ng-container>
+</ng-template>

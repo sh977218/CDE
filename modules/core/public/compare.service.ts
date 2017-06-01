@@ -4,10 +4,19 @@ import * as _ from "lodash";
 @Injectable()
 export class CompareService {
 
+    static doCompareObjectValidator(left, right, option) {
+        if (_.isArray(left) || _.isArray(right) || option.array)
+            throw "compare object type does not match.\n";
+    }
+
     doCompareObject(left, right, option) {
-        if (_.isArray(left) || _.isArray(right)) throw "compare object type does not match.\n";
+        CompareService.doCompareObjectValidator(left, right, option);
         if (_.isEmpty(option)) {
-            return {match: _.isEqual(left, right), left: left, right: right};
+            return {
+                match: _.isEqual(left, right),
+                left: left ? left.toString() : "",
+                right: right ? right.toString() : ""
+            };
         } else {
             let result = {};
             _.forOwn(option, (pValue, pKey) => {

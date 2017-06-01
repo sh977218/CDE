@@ -50,6 +50,10 @@
 </div>
 
 <ng-container *ngIf="getSelectedElt()&& getSelectedElt().length == 2">
-    <cde-compare-side-by-side #compareSideBySideComponent [left]="getSelectedElt()[0]" [right]="getSelectedElt()[1]"
-                              [options]="compareOptions"></cde-compare-side-by-side>
+    <!--
+        <cde-compare-side-by-side #compareSideBySideComponent [left]="getSelectedElt()[0]" [right]="getSelectedElt()[1]"
+                                  [option]="compareOption"></cde-compare-side-by-side>
+    -->
+    <cde-compare-object #compareObjectComponent [left]="getSelectedElt()[0]" [right]="getSelectedElt()[1]"
+                        [option]="compareOption"></cde-compare-object>
 </ng-container>

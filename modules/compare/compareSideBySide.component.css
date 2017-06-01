@@ -1,0 +1,9 @@
+:host /deep/  ins {
+      color:  black;
+      background:   #bbffbb;
+}
+
+:host /deep/  del {
+      color:  black;
+      background:   #ffbbbb;
+}

@@ -1754,3 +1754,13 @@ div.slider .ui-slider-handle {
 .progress-bar .bg-success {
     width: 100% !important;
 }
+
+ins {
+    color: black;
+    background: #bbffbb;
+}
+
+del {
+    color: black;
+    background: #ffbbbb;
+}
