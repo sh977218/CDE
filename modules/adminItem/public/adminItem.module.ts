@@ -13,11 +13,11 @@ import { ClassifyItemModalComponent } from "./components/classification/classify
 import { IdentifiersComponent } from "./components/identifiers.component";
 import { InlineEditDirective, InlineSelectEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
-import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { SourcesComponent } from "./components/sources/sources.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
+import { SystemModule } from "../../system/public/system.module";
 
 @NgModule({
     imports: [
@@ -25,6 +25,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
         FormsModule,
         Select2Module,
         NgbModule,
+        SystemModule,
         LocalStorageModule.withConfig({
             prefix: "nlmcde",
             storageType: "localStorage"
@@ -42,7 +43,6 @@ import { RegistrationComponent } from "./components/registration/registration.co
         SortableArrayDirective,
         IdentifiersComponent,
         NamingComponent,
-        PlaceHoldEmptyPipe,
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
@@ -65,7 +65,6 @@ import { RegistrationComponent } from "./components/registration/registration.co
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
-        PlaceHoldEmptyPipe,
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,

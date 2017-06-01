@@ -19,6 +19,8 @@ import { JsonpModule } from "@angular/http";
 import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
 import { InlineEditComponent } from "./components/inlineEdit/inlineEdit.component";
+import { InlineAreaEditComponent } from "./components/inlineEdit/inlineAreaEdit.component";
+import {PlaceHoldEmptyPipe} from "./placeHoldEmpty.pipe";
 
 @NgModule({
     imports: [
@@ -26,8 +28,7 @@ import { InlineEditComponent } from "./components/inlineEdit/inlineEdit.componen
         FormsModule,
         Select2Module,
         NgbModule,
-        JsonpModule,
-        AdminItemModule
+        JsonpModule
     ],
     declarations: [
         CdeAccordionListDirective,
@@ -40,11 +41,13 @@ import { InlineEditComponent } from "./components/inlineEdit/inlineEdit.componen
         LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
+        PlaceHoldEmptyPipe,
         ProfileComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
-        InlineEditComponent
+        InlineEditComponent,
+        InlineAreaEditComponent
     ],
     entryComponents: [
         DailyUsageComponent,
@@ -61,7 +64,9 @@ import { InlineEditComponent } from "./components/inlineEdit/inlineEdit.componen
     exports: [
         LinkedFormsComponent,
         NavigationComponent,
-        InlineEditComponent
+        InlineEditComponent,
+        InlineAreaEditComponent,
+        PlaceHoldEmptyPipe
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

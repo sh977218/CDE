@@ -2,6 +2,7 @@
     <div *ngIf="!editMode" class="wordwrap">
         <i  title="Edit" role="link" *ngIf="isAllowed" class="fa fa-edit" (click)="edit()"></i>
         <span *ngIf="defFormat !== 'html'">
+            {{value}}
             <!--<span ng-text-truncate="model" ng-tt-threshold="500">{{value}}</span>-->
         </span>
         <span *ngIf="defFormat === 'html'">
