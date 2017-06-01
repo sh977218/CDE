@@ -12,7 +12,7 @@
             </a>
         </div>
         <div class="navbar-collapse collapse" id="main-navigation">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav hidden-md-up">
                 <li class="nav-item" [ngClass]="{active: isPageActive('/cde/search')}">
                     <a id="menu_cdes_link" href="/cde/search" data-toggle="collapse" data-target="#main-navigation"
                        attr.aria-controls="main-navigation" attr.aria-expanded="false">CDEs</a>
@@ -60,9 +60,10 @@
                     <a ngbDropdownToggle class="dropdown-toggle" href="#" id="dropdownMenu_help" title="Help"
                        attr.aria-label="Help">Help<span class="caret"></span></a>
                     <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu_help">
-                        <a href="/home" class="dropdown-item" data-toggle="collapse" data-target="#main-navigation"
-                               attr.aria-controls="main-navigation" attr.aria-expanded="false">About</a>
-                        <a href="" (click)="takeATour.emit()" class="dropdown-item"
+                        <a href="/home" class="dropdown-item"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">About</a>
+                        <a href="" class="dropdown-item" (click)="takeATour.emit()"
                            data-toggle="collapse" data-target="#main-navigation"
                            attr.aria-controls="main-navigation" attr.aria-expanded="false">Take a tour</a>
                         <a href="/stats" class="dropdown-item" *ngIf="userService.user?._id && userService.user?.siteAdmin"
@@ -71,7 +72,7 @@
                     </div>
                 </li>
             </ul>
-            <ul class="ieFix nav navbar-nav navbar-right" attr.data-userloaded="loaded-{{userService.user?.userLoaded}}">
+            <ul class="ieFix nav navbar-nav navbar-right hidden-md-up" attr.data-userloaded="loaded-{{userService.user?.userLoaded}}">
                 <li class="nav-item" >
                     <a *ngIf="userService.userHasMail" title="New messages" href="/inbox">
                         <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
@@ -125,6 +126,118 @@
                 <li class="nav-item" >
                     <a href="/searchSettings" title="open search setting"
                        data-toggle="collapse" data-target="#main-navigation"
+                       attr.aria-controls="main-navigation" attr.aria-expanded="false">
+                        <i class="fa fa-cog navbar-inverse text-muted" id="searchSettings"></i></a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav hidden-sm-down">
+                <li class="nav-item" [ngClass]="{active: isPageActive('/cde/search')}">
+                    <a id="menu_cdes_link" href="/cde/search"
+                       attr.aria-controls="main-navigation" attr.aria-expanded="false">CDEs</a>
+                </li>
+                <li class="nav-item" [ngClass]="{active: isPageActive('/form/search')}">
+                    <a id="menu_forms_link" href="/form/search"
+                       attr.aria-controls="main-navigation" attr.aria-expanded="false">Forms</a>
+                </li>
+                <li ngbDropdown class="nav-item" [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}"
+                    *ngIf="userService.user?._id">
+                    <a ngbDropdownToggle class="dropdown-toggle" href="#" id="boardsMenu" title="Boards"
+                       attr.aria-label="Boards">Boards<span class="caret"></span></a>
+                    <div role="menu" class="dropdown-menu" attr.aria-labelledby="boardsMenu" attr.aria-expanded="true">
+                        <a href="/boardList" id="publicBoardsLink"
+                           class="dropdown-item"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Public Boards</a>
+                        <a href="/myboards" id="myBoardsLink"
+                           class="dropdown-item"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">My Boards</a>
+                    </div>
+                </li>
+                <li id="boardsMenu" class="nav-item" [ngClass]="{active: isPageActive('/boardList')}" *ngIf="!userService.user?._id">
+                    <a href="/boardList"
+                       attr.aria-controls="main-navigation" attr.aria-expanded="false">Boards</a>
+                </li>
+                <li ngbDropdown class="nav-item"  [ngClass]="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
+                    [hidden]="!authShared.isOrgCurator(userService.user)" id="createEltLink">
+                    <a ngbDropdownToggle class="dropdown-toggle" href="#" id="dropdownMenu2" title="Create"
+                       attr.aria-label="Create">Create<span class="caret"></span></a>
+                    <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu2">
+                        <a id="createCDELink" href="/createCde"
+                           class="dropdown-item"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">CDE</a>
+                        <a id="createFormLink" href="/createForm" *ngIf="authShared.canCreateForms(userService.user)"
+                           class="dropdown-item"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Form</a>
+                    </div>
+                </li>
+                <li id="menu_qb_link" class="nav-item"  [ngClass]="{ active: isPageActive('/quickBoard')}">
+                    <a href="/quickBoard" [textContent]="'Quick Board (' + quickBoardCount + ')'"
+                       attr.aria-controls="main-navigation" attr.aria-expanded="false" attr.aria-label="Quick Board"></a>
+                </li>
+                <li id="menu_help_link" class="nav-item"  ngbDropdown [ngClass]="{active: isPageActive('/help')}">
+                    <a ngbDropdownToggle class="dropdown-toggle" href="#" id="dropdownMenu_help" title="Help"
+                       attr.aria-label="Help">Help<span class="caret"></span></a>
+                    <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu_help">
+                        <a href="/home" class="dropdown-item"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">About</a>
+                        <a href="" class="dropdown-item" (click)="takeATour.emit()"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Take a tour</a>
+                        <a href="/stats" class="dropdown-item" *ngIf="userService.user?._id && userService.user?.siteAdmin"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Statistics</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="ieFix nav navbar-nav navbar-right hidden-sm-down" attr.data-userloaded="loaded-{{userService.user?.userLoaded}}">
+                <li class="nav-item" >
+                    <a *ngIf="userService.userHasMail" title="New messages" href="/inbox">
+                        <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
+                </li>
+                <li class="nav-item login" [ngClass]="{active: isPageActive('/login')}" [hidden]="userService.user?._id">
+                    <a (click)="goToLogin.emit()" href="/login" id="login_link" title="Log in"
+                       attr.aria-controls="main-navigation" attr.aria-expanded="false">Log In</a>
+                </li>
+                <li ngbDropdown class="nav-item login" *ngIf="userService.user?._id">
+                    <a ngbDropdownToggle class="dropdown-toggle" href="#" id="username_link"
+                       title="{{userService.user?.username}}" attr.aria-label="{{userService.user?.username}}">
+                        <span [textContent]="userService.user?.username | cdeTruncateLongName"></span><span class="caret"></span></a>
+                    <div role="menu" class="dropdown-menu" attr.aria-labelledby="username_link">
+                        <a href="/profile" id="user_profile" class="dropdown-item" [hidden]="!userService.user?._id"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Profile</a>
+                        <a href="/inbox" id="user_inbox" class="dropdown-item"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Inbox</a>
+                        <a href="/orgComments" id="org_comments" class="dropdown-item"
+                           [hidden]="!authShared.isOrgCurator(userService.user) || userService.user?.siteAdmin"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Org Comments</a>
+                        <a href="/classificationmanagement" id="user_classifications" class="dropdown-item"
+                           [hidden]="!authShared.isOrgCurator(userService.user)"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Classifications</a>
+                        <a href="/orgAuthority" id="user_org_authority" class="dropdown-item"
+                           [hidden]="!authShared.canOrgAuthority(userService.user)"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Org Management</a>
+                        <a href="/orgaccountmanagement" id="user_account_management" class="dropdown-item"
+                           [hidden]="!authShared.isOrgAdmin(userService.user)"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Account Management</a>
+                        <a href="/siteaccountmanagement" id="user_site_management" class="dropdown-item"
+                           [hidden]="!userService.user?._id || !userService.user?.siteAdmin"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Site Management</a>
+                        <a href="/siteAudit" id="user_audit" class="dropdown-item"
+                           [hidden]="!userService.user?._id || !userService.user?.siteAdmin"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Audit</a>
+                        <a href="" (click)="logout.emit()" target="_self" id="user_logout" class="dropdown-item"
+                           [hidden]="!userService.user?._id"
+                           data-toggle="collapse" data-target="#main-navigation"
+                           attr.aria-controls="main-navigation" attr.aria-expanded="false">Log Out</a>
+                    </div>
+                </li>
+                <li class="nav-item" >
+                    <a href="/searchSettings" title="open search setting"
                        attr.aria-controls="main-navigation" attr.aria-expanded="false">
                         <i class="fa fa-cog navbar-inverse text-muted" id="searchSettings"></i></a>
                 </li>
