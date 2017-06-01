@@ -1,7 +1,6 @@
 import { Injectable, Pipe, PipeTransform } from "@angular/core";
 
-@Injectable()
-@Pipe({name: "keys", pure: false})
+@Pipe({name: "cdeKeys", pure: false})
 export class KeysPipe implements PipeTransform {
     transform(value: any, args: any[] = null): any {
         return Object.keys(value);
