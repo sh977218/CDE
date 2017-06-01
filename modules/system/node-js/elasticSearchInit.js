@@ -156,7 +156,8 @@ exports.storedQueryRiverFunction = function (elt, cb) {
     elt.selectedElements1.forEach(function (se, i) {
         elt['classifLevel' + i] = se;
     });
-    elt.search_suggest = elt.searchTerm;
+    if(elt.searchTerm && elt.searchTerm.length > 0)
+        elt.search_suggest = elt.searchTerm;
     return cb(elt);
 };
 
