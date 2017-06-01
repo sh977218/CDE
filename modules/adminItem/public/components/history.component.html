@@ -49,11 +49,16 @@
     </ng-container>
 </div>
 
-<ng-container *ngIf="getSelectedElt()&& getSelectedElt().length == 2">
-    <!--
-        <cde-compare-side-by-side #compareSideBySideComponent [left]="getSelectedElt()[0]" [right]="getSelectedElt()[1]"
-                                  [option]="compareOption"></cde-compare-side-by-side>
-    -->
-    <cde-compare-object #compareObjectComponent [left]="getSelectedElt()[0]" [right]="getSelectedElt()[1]"
-                        [option]="compareOption"></cde-compare-object>
-</ng-container>
+<ng-template #compareContent>
+    <div class="modal-header">
+        <h4 class="modal-title">Compare Side By Side</h4>
+    </div>
+    <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
+        <cde-compare-object [left]="getSelectedElt()[1]" [right]="getSelectedElt()[0]"></cde-compare-object>
+<!--
+        <cde-compare-array [left]="getSelectedElt()[1]" [right]="getSelectedElt()[0]"
+                           [option]="compareArrayOption"></cde-compare-array>
+-->
+    </div>
+    <div class="modal-footer"></div>
+</ng-template>

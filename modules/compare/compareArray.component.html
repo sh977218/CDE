@@ -1,0 +1,11 @@
+<ng-container *ngFor="let property of option.properties">
+    <ng-container *ngIf="!property.match">
+        <div class="col-xs-12">
+            <label for="{{property.label}}">{{property.label}}:</label>
+            <pre id="{{property.label}}" lineDiff [left]="property.left" [right]="property.right"></pre>
+        </div>
+    </ng-container>
+    ****************
+    <pre lineDiff [left]="property.left" [right]="property.right"></pre>
+    ****************
+</ng-container>

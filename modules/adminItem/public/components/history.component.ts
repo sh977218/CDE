@@ -2,8 +2,8 @@ import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from '@angular/http';
 
 import "rxjs/add/operator/map";
-import { CompareSideBySideComponent } from "../../../compare/compareSideBySide.component";
 import { CompareObjectComponent } from "../../../compare/compareObject.component";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-admin-item-history",
@@ -11,52 +11,45 @@ import { CompareObjectComponent } from "../../../compare/compareObject.component
     styles: [`
         caption {
             caption-side: top;
-        }`]
+        }`],
+    providers: [NgbActiveModal]
 })
 export class HistoryComponent implements OnInit {
-//    @ViewChild("compareSideBySideComponent") public compareSideBySideComponent: CompareSideBySideComponent;
-    @ViewChild("compareObjectComponent") public compareObjectComponent: CompareObjectComponent;
+    @ViewChild("compareContent") public compareContent: NgbModal;
     @Input() public elt: any;
+    public modalRef: NgbActiveModal;
     showVersioned: boolean = false;
     public priorCdes = [];
     public numberSelected: number = 0;
-    public compareOption = {
-        /*"version": {}*//*,
-         "tinyId": {},
-         "views": {},
-         "stewardOrg": {"name": {}},
-         "registrationState": {"registrationStatus": {}},
-         "valueDomain": {
-         "datatype": {},
-         "name": {},
-         "datatypeDate": {
-         "format": {}
-         },
-         "datatypeText": {
-         "minLength": {},
-         "maxLength": {},
-         "regex": {},
-         "rule": {}
-         }
-         }*/
-        /*
-         "naming": {
-         array: true,
-         properties: {
-         "designation": {},
-         "definition": {}
-         }
-         }
-         */
-    };
 
-    constructor(@Inject("Alert") private alert,
+    public compareArrayOption = [
+        {
+            label: "Naming",
+            equal: function (a, b) {
+                return a.designation === b.designation;
+            },
+            sort: function (a, b) {
+                return a.designation.localeCompare(b.designation);
+                properties: [
+                    {label: 'Name', property: 'designation'},
+                    {label: 'Definition', property: 'definition'},
+                    {label: 'Tags', property: 'tags'}
+                ]
+            }
+        }
+    ];
+
+    constructor(@Inject("Alert")
+                private alert,
                 private http: Http,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                public modalService: NgbModal,
+                @Inject("isAllowedModel")
+                public isAllowedModel) {
     }
 
     ngOnInit(): void {
-        if (this.elt.history && this.elt.history.length > 0) {
+        if (this.elt.history && this.elt.history.length > 0
+        ) {
             this.http.get('/priorcdes/' + this.elt._id).map(res => res.json())
                 .subscribe(res => {
                     this.priorCdes = res.reverse();
@@ -81,26 +74,11 @@ export class HistoryComponent implements OnInit {
     }
 
     openCompareSideBySideModal() {
-//        this.compareSideBySideComponent.openModal();
-        this.compareObjectComponent.openModal();
-
+        this.modalRef = this.modalService.open(this.compareContent, {size: "lg"});
     }
 
     getSelectedElt() {
-        this.compareOption = {
-            array: false,
-            properties: {
-                version: {}
-            }
-        };
-        return [
-            {version: 1, _id: "id1"},
-            {version: 2, _id: "id2"}
-        ];
-        /*
-         let temp = this.priorCdes.filter(p => p.selected);
-         return temp;
-         */
+        return this.priorCdes.filter(p => p.selected);
     }
 
 }

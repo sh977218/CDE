@@ -1,7 +1,18 @@
-<ng-template #compareObjectContent>
-    <ng-container *ngFor="let s of result | compareKeys">
-        <ng-container *ngIf="!s.array">
-            <cde-compare-object [left]="left[s]" [right]="right[s]"></cde-compare-object>
-        </ng-container>
+<ng-container *ngFor="let property of compareObjectProperties">
+    <ng-container *ngIf="!property.match">
+        <div class="col-xs-12">
+            <label for="{{property.label}}">{{property.label}}:</label>
+            <ng-container *ngIf="property.data">
+                <div class="col-xs-12">
+                    <ng-container *ngFor="let p of property.data">
+                        <label for="{{p.label}}">{{p.label}}:</label>
+                        <pre id="{{p.label}}" lineDiff [left]="p.left" [right]="p.right"></pre>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="!property.data">
+                <pre id="{{property.label}}" lineDiff [left]="property.left" [right]="property.right"></pre>
+            </ng-container>
+        </div>
     </ng-container>
-</ng-template>
+</ng-container>

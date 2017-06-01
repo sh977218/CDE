@@ -4,27 +4,29 @@ import * as _ from "lodash";
 @Injectable()
 export class CompareService {
 
-    static doCompareObjectValidator(left, right, option) {
-        if (_.isArray(left) || _.isArray(right) || option.array)
-            throw "compare object type does not match.\n";
-    }
-
     doCompareObject(left, right, option) {
-        CompareService.doCompareObjectValidator(left, right, option);
-        if (_.isEmpty(option)) {
-            return {
-                match: _.isEqual(left, right),
-                left: left ? left.toString() : "",
-                right: right ? right.toString() : ""
-            };
-        } else {
-            let result = {};
-            _.forOwn(option, (pValue, pKey) => {
-                result[pKey] = this.doCompare(left[pKey], right[pKey], pValue);
-            });
-            this.findMatchInResult(left, right, result);
-            return result;
-        }
+        _.forEach(option, (property) => {
+            if (!left && !right) {
+                property.match = true;
+                property.left = "";
+                property.right = "";
+                return;
+            }
+            let l = "";
+            if (left) l = _.get(left, property.property);
+            let r = "";
+            if (right) r = _.get(right, property.property);
+            if (!property.data) {
+                property.match = _.isEqual(l, r);
+                property.left = l ? l.toString() : "";
+                property.right = r ? r.toString() : "";
+                if (!left && !right) property.match = true;
+            } else {
+                this.doCompareObject(l, r, property.data);
+                if (property.data) property.match = property.data.filter(p => p.match).length > 0;
+            }
+        });
+        return option;
     };
 
     static doCompareArrayValidator(left, right, option) {
