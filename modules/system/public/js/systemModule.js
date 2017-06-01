@@ -3,7 +3,7 @@ import * as authShared from "../../../system/shared/authorizationShared";
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
-    'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
+    'OrgFactories', 'classification', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
     'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive',
