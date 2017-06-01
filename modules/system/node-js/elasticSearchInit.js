@@ -326,12 +326,7 @@ exports.createStoredQueryIndexJson = {
                 , "classifLevel3": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel4": {"type": "string", "index": "not_analyzed"}
                 , "searchTerm": {"type": "string", "analyzer": "stop"}
-                , "search_suggest": {
-                    "type": "completion",
-                    "analyzer": "simple",
-                    "search_analyzer": "simple",
-                    "payloads": true
-                }
+                , "search_suggest": {"type": "completion"}
             }
         }
     }, settings: {
