@@ -13,7 +13,13 @@ public class CdeTruncateRichPropertiesTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("properties_tab"));
-        switchValueFormatByIndex(2, null, true);
+
+        clickElement(By.xpath("//*[@id='value_2']//*[contains(@class,'fa-edit')])"));
+        clickElement(By.xpath("//*[@id='value_2']//button[contains(text(),'Rich Text')]"));
+        hangon(2);
+        clickElement(By.xpath("//*[@id='value_2']//*[contains(@class,'fa-check')]"));
+        textNotPresent("Confirm");
+
         scrollToViewById("openNewPropertyModalBtn");
         clickElement(By.xpath("//*[@id='value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");

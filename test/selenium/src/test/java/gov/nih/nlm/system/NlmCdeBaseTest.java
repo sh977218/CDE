@@ -904,24 +904,6 @@ public class NlmCdeBaseTest {
         textNotPresent("Confirm");
     }
 
-    protected void switchValueFormatByIndex(int index, String newValue, boolean html) {
-        String valueEditIconXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-edit')]";
-        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[contains(text(),'Rich Text')]";
-        String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
-        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-check')]";
-        clickElement(By.xpath(valueEditIconXpath));
-        if (html) {
-            clickElement(By.xpath(richTextBtnXpath));
-            textPresent("Characters:");
-        }
-        if (newValue != null)
-            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
-        hangon(2);
-        clickElement(By.xpath(valueConfirmBtnXpath));
-        textNotPresent("Confirm");
-    }
-
-
     protected void editTagByIndex(int index, String[] tags) {
         String tagsInputXpath = "//*[@id='tags_" + index + "']//input";
         for (String tag : tags) {

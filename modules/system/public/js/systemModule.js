@@ -112,6 +112,60 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }])
+    .directive('inlineAreaEdit', ["$timeout", function ($timeout) {
+        return {
+            restrict: 'AE',
+            scope: {
+                model: '=',
+                isAllowed: '=',
+                onOk: '&',
+                onErr: '&',
+                defFormat: '=',
+            },
+            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
+            controller: ["$scope", "$element", function ($scope) {
+                $scope.setHtml = function (html) {
+                    $scope.defFormat = html ? 'html' : '';
+                };
+                $scope.clickEdit = function () {
+                    $scope.inScope = {
+                        value: $scope.model
+                    };
+                    $scope.editMode = true;
+                };
+                $scope.isInvalidHtml = function (html) {
+                    var srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
+                    if (srcs) {
+                        for (var i = 0; i < srcs.length; i++) {
+                            var src = srcs[i];
+                            var urls = src.match(/\s*["'](.+?)["']/ig);
+                            if (urls) {
+                                for (var j = 0; j < urls.length; j++) {
+                                    var url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
+                                    if (url.indexOf("/data/") !== 0 && url.indexOf(window.publicUrl + "/data/") !== 0) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+                $scope.confirm = function () {
+                    if ($scope.isInvalidHtml($scope.inScope.value)) {
+                        alert('Error. Img src may only be a relative url starting with /data');
+                    } else {
+                        $scope.model = $scope.inScope.value;
+                        $scope.editMode = false;
+                        $timeout($scope.onOk, 0);
+                    }
+                };
+                $scope.cancel = function () {
+                    $scope.editMode = false;
+                };
+            }]
+        };
+    }])
     .directive('sortableArray', [function () {
         return {
             restrict: 'AE',
