@@ -22,7 +22,7 @@
                     <div class="col-xs-2 text-right text_label">Definition:</div>
                     <div class="col-xs-10" id="definition_{{i}}">
                         <cde-inline-area-edit [(model)]="name.definition" (modelChange)="elt.unsaved = true;"
-                                          [defFormat]="name.definitionFormat"
+                                          [(defFormat)]="name.definitionFormat"
                                           [isAllowed]="isAllowed"></cde-inline-area-edit>
                     </div>
                 </div>

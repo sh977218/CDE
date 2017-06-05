@@ -1,12 +1,11 @@
 <div>
     <div *ngIf="!editMode" class="wordwrap">
         <i  title="Edit" role="link" *ngIf="isAllowed" class="fa fa-edit" (click)="edit()"></i>
-        <span *ngIf="defFormat !== 'html'">
-            {{value}}
-            <!--<span ng-text-truncate="model" ng-tt-threshold="500">{{value}}</span>-->
+        <span *ngIf="localFormat !== 'html'">
+            <cde-text-truncate [text]="value" [threshold]="500"></cde-text-truncate>
         </span>
-        <span *ngIf="defFormat === 'html'">
-            <!--<span [innerHtml]="value" ng-text-truncate="model" ng-tt-threshold="500"></span>-->
+        <span *ngIf="localFormat === 'html'">
+            <cde-text-truncate [threshold]="500" [text]="value" [textType]="'html'"></cde-text-truncate>
         </span>
     </div>
     <div *ngIf="editMode">
@@ -14,10 +13,14 @@
             <button type="button" class="btn btn-default btn-xs" (click)="setHtml(false)">Plain Text</button>
             <button type="button" class="btn btn-default btn-xs" (click)="setHtml(true)">Rich Text</button>
         </div>
-        <textarea *ngIf="defFormat!='html'" [(ngModel)]="value" class="form-control"></textarea>
 
-        <!--<div text-angular ng-if="defFormat=='html'" ng-model="inScope.value"-->
-             <!--ta-toolbar-group-class="btn-group btn-group-sm"></div>-->
+        <textarea *ngIf="localFormat != 'html'" [(ngModel)]="value" class="form-control"></textarea>
+
+
+        <ckeditor *ngIf="localFormat === 'html'"
+                [(ngModel)]="value">
+        </ckeditor>
+
         <button class="fa fa-check" (click)="save()">Confirm</button>
         <button class="fa fa-times" (click)="discard()">Cancel</button>
     </div>

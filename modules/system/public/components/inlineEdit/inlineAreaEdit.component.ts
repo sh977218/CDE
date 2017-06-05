@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import * as _ from "lodash";
 
@@ -24,26 +24,34 @@ import * as _ from "lodash";
         }
     `]
 })
-export class InlineAreaEditComponent implements OnInit {
+export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     @Input() model;
     @Input() inputType: string = "text";
-    @Input() selectOptions: Array<any> = [];
     @Input() isAllowed: boolean = false;
     @Input() defFormat: String = "";
     @Output() modelChange = new EventEmitter<string>();
+    @Output() defFormatChange = new EventEmitter<string>();
 
-    public INPUT_TYPE_ARRAY = ["text", "email", "number"];
+    public editMode: boolean;
+    public value: string;
+    public localFormat: string;
 
-    public editMode: boolean = false;
-    public value: any;
+    constructor(private elementRef: ElementRef) {};
 
     ngOnInit(): void {
-        if (!this.inputType) this.inputType = 'text';
         this.value = _.cloneDeep(this.model);
+        this.localFormat = _.cloneDeep(this.defFormat);
+    }
+
+    ngAfterViewInit() {
+        let s = document.createElement("script");
+        s.type = "text/javascript";
+        s.src = "http://cdn.ckeditor.com/4.7.0/standard/ckeditor.js";
+        this.elementRef.nativeElement.appendChild(s);
     }
 
     setHtml (html) {
-        this.defFormat = html ? 'html' : '';
+        this.localFormat = html ? 'html' : '';
     }
 
     edit() {
@@ -52,12 +60,14 @@ export class InlineAreaEditComponent implements OnInit {
 
     discard() {
         this.value = _.cloneDeep(this.model);
+        this.localFormat = _.cloneDeep(this.defFormat);
         this.editMode = false;
     }
 
     save() {
         this.editMode = false;
         this.modelChange.emit(this.value);
+        this.defFormatChange.emit(this.localFormat);
     }
 
 }

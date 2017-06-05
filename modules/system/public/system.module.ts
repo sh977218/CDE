@@ -3,6 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { Select2Module } from "ng2-select2";
+import { CKEditorModule } from 'ng2-ckeditor';
 
 import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListDirective } from "./upgrade-components";
 import { ProfileComponent } from "./components/profile.component";
@@ -12,7 +13,6 @@ import { HomeComponent } from "./components/home/home.component";
 import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
-import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { JsonpModule } from "@angular/http";
@@ -20,15 +20,17 @@ import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
 import { InlineEditComponent } from "./components/inlineEdit/inlineEdit.component";
 import { InlineAreaEditComponent } from "./components/inlineEdit/inlineAreaEdit.component";
-import {PlaceHoldEmptyPipe} from "./placeHoldEmpty.pipe";
+import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
+import { TextTruncateComponent } from "./components/textTruncate/textTruncate.component";
 
 @NgModule({
     imports: [
+        CKEditorModule,
         CommonModule,
         FormsModule,
         Select2Module,
         NgbModule,
-        JsonpModule
+        JsonpModule,
     ],
     declarations: [
         CdeAccordionListDirective,
@@ -47,7 +49,8 @@ import {PlaceHoldEmptyPipe} from "./placeHoldEmpty.pipe";
         UserCommentsComponent,
         UsersMgtComponent,
         InlineEditComponent,
-        InlineAreaEditComponent
+        InlineAreaEditComponent,
+        TextTruncateComponent,
     ],
     entryComponents: [
         DailyUsageComponent,
@@ -66,7 +69,8 @@ import {PlaceHoldEmptyPipe} from "./placeHoldEmpty.pipe";
         NavigationComponent,
         InlineEditComponent,
         InlineAreaEditComponent,
-        PlaceHoldEmptyPipe
+        PlaceHoldEmptyPipe,
+        TextTruncateComponent,
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

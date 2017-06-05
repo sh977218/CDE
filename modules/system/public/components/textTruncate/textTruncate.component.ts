@@ -2,7 +2,20 @@ import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
     selector: "cde-text-truncate",
-    template: ""
+    templateUrl: "./textTruncate.component.html",
+    styles: [`
+        .collapseText {
+            display: block;
+            overflow: hidden;
+            max-height: 165px;
+            box-shadow: 0 9px 7px -5px #969696;
+        }
+
+        .expandText {
+            overflow: hidden;
+            display: inline-block;
+        }
+    `]
 })
 
 export class TextTruncateComponent implements OnInit {
