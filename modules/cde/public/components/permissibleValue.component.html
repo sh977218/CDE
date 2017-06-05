@@ -92,9 +92,10 @@
         </div>
         <div class="col-xs-2 text-right text_label">Description:</div>
         <div class="col-xs-10">
-            <inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
+            <cde-inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
                               [isAllowed]="isAllowedModel.isAllowed(elt)"
-                              [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat"></inline-area-edit>
+                              [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat">
+            </cde-inline-area-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'value list'">

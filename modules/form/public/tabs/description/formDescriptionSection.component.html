@@ -58,10 +58,10 @@
             <div *ngIf="canEdit()">
                 <div class="section_instruction">
                     <span class="questionSectionLabel">Instructions:</span>
-                    <inline-area-edit [inlineAreaVisibility]="inlineAreaEditVisibility"
-                                      [(model)]="section.instructions.value"
-                                      [(defFormat)]="section.instructions.valueFormat"
-                                      [isAllowed]="canEdit()" (onOk)="stageElt.emit()"></inline-area-edit>
+                    <inline-area-edit
+                            [(model)]="section.instructions.value"
+                            [(defFormat)]="section.instructions.valueFormat"
+                            [isAllowed]="canEdit()" (onOk)="stageElt.emit()"></inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
                     <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
@@ -117,11 +117,10 @@
             <div *ngIf="canEdit()">
                 <div class="section_instruction">
                     <span class="questionSectionLabel">Instructions:</span>
-                    <inline-area-edit [inlineAreaVisibility]="inlineAreaEditVisibility"
-                                      [(model)]="section.instructions.value"
+                    <cde-inline-area-edit [(model)]="section.instructions.value"
                                       [(defFormat)]="section.instructions.valueFormat"
                                       [isAllowed]="canEdit()"
-                                      (onOk)="stageElt.emit()"></inline-area-edit>
+                                      (modelChange)="elt.unsaved = true"></cde-inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
                     <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
