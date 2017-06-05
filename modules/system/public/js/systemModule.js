@@ -3,7 +3,7 @@ import * as authShared from "../../../system/shared/authorizationShared";
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
-    'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
+    'OrgFactories', 'classification', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
     'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive',
@@ -93,18 +93,16 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             restrict: 'AE',
             scope: {
                 model: '=',
-                isAllowed: '&',
+                isAllowed: '=',
                 onOk: '&',
                 allOptions: '='
             },
-            templateUrl: '/system/public/html/systemTemplate/inlineSelectEdit.html',
+            template: require('../html/systemTemplate/inlineSelectEdit.html'),
             controller: ["$scope", function ($scope) {
-                $scope.value = $scope.model;
                 $scope.discard = function () {
                     $scope.editMode = false;
                 };
                 $scope.save = function () {
-                    $scope.model = angular.copy($scope.value);
                     $scope.editMode = false;
                     $timeout($scope.onOk, 0);
                 };
@@ -123,10 +121,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 onOk: '&',
                 onErr: '&',
                 defFormat: '=',
-                inlineAreaVisibility: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
-            controller: ["$scope", "$element", function ($scope, $element) {
+            controller: ["$scope", "$element", function ($scope) {
                 $scope.setHtml = function (html) {
                     $scope.defFormat = html ? 'html' : '';
                 };
@@ -358,6 +355,10 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
                 (userResource.user.siteAdmin || (userResource.user._id && (userResource.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
     };
 
+    isAllowedModel.loggedIn = function () {
+        return (userResource.user && userResource.user._id) ? true : false;
+    };
+
     return isAllowedModel;
 }]);
 
@@ -460,8 +461,11 @@ angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponen
 import {ReferenceDocumentComponent} from "../../../adminItem/public/components/referenceDocument.component";
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({component: ReferenceDocumentComponent, inputs: ['elt'], outputs: []}));
 
-import {RegistrationComponent} from "../components/adminItem/registration.component";
+import {RegistrationComponent} from "../../../adminItem/public/components/registration/registration.component";
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
+
+import {SourcesComponent} from "../../../adminItem/public/components/sources/sources.component";
+angular.module('systemModule').directive('cdeAdminItemSources', downgradeComponent({component: SourcesComponent, inputs: ['elt'], outputs: []}));
 
 import {LinkedBoardsComponent} from "../../../board/public/components/linkedBoards/linkedBoards.component";
 angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({component: LinkedBoardsComponent, inputs: ['elt'], outputs: []}));

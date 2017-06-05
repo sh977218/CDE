@@ -9,15 +9,15 @@ import java.util.concurrent.Executors;
 
 public class NindsFormRunner {
     public static void main(String[] args) throws IOException, AWTException {
+        int nbOfThread = 1;
+        int startingPage = 31;
+        int endingPages = 31;
+//        int endingPages = Constants.TOTAL_PAGE;
 
-        int nbOfThread = 3;
-        int startingPage = 1;
-        int endingPages = 28;
-
+/*
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
-
         for (int i = startingPage; i <= endingPages; i++) {
-            Runnable worker = new NindsFormLoader(i, i);
+            Runnable worker = new NindsFormLoader(i);
             executor1.execute(worker);
         }
         executor1.shutdown();
@@ -25,8 +25,9 @@ public class NindsFormRunner {
         }
         System.out.println("Finished all forms. from " + startingPage + " to " + endingPages);
 
+*/
         ExecutorService executor2 = Executors.newFixedThreadPool(nbOfThread);
-        Iterator it = Consts.diseaseMap.entrySet().iterator();
+        Iterator it = Constants.DISEASE_MAP.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             Runnable worker = new FindMissingForms("https://commondataelements.ninds.nih.gov/" + pair.getValue());
@@ -35,7 +36,7 @@ public class NindsFormRunner {
         executor2.shutdown();
         while (!executor2.isTerminated()) {
         }
-        System.out.println("Finished all forms in the map: " + Consts.diseaseMap);
+        System.out.println("Finished all forms in the map: " + Constants.DISEASE_MAP);
         System.exit(0);
     }
 }

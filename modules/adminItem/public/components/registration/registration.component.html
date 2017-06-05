@@ -1,0 +1,112 @@
+<fieldset class="cdeFieldset" id="registrationStateDiv">
+    <legend>Registration State:
+        <button  title="Edit Status" role="link" id="editStatus"
+                *ngIf="isAllowedModel.isAllowed(elt) && !elt.unsaved" class="btn btn-default"
+                (click)="openRegStatusUpdate()"><span class="fa fa-edit"> Edit</span>
+        </button>
+    </legend>
+    <div class="row" *ngIf="elt.registrationState.effectiveDate">
+        <div class="col-sm-5 questionSectionLabel text-right">Effective Date:</div>
+        <div class="col-sm-7" id="effectiveDate">
+            {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.effectiveDate">
+        <div class="col-sm-5 questionSectionLabel text-right">Until Date:</div>
+        <div class="col-sm-7" id="untilDate">
+            {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.administrativeNote">
+        <div class="col-sm-5 questionSectionLabel text-right">Administrative Note:</div>
+        <div class="col-sm-7" id="administrativeNote">
+            {{elt.registrationState.administrativeNote | cdePlaceholder}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.unresolvedIssue">
+        <div class="col-sm-5 questionSectionLabel text-right">Unresolved Issue:</div>
+        <div class="col-sm-7" id="unresolvedIssue">{{elt.registrationState.unresolvedIssue | cdePlaceholder}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.registrationStatus">
+        <div class="col-sm-5 questionSectionLabel text-right">Registration Status:</div>
+        <div class="col-sm-7" id="registrationStatus">{{elt.registrationState.registrationStatus | cdePlaceholder}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.registrationState.administrativeStatus">
+        <div class="col-sm-5 questionSectionLabel text-right">Administrative Status:</div>
+        <div class="col-sm-7" id="administrativeStatus">{{elt.registrationState.administrativeStatus}}
+        </div>
+    </div>
+</fieldset>
+
+
+<ng-template #regStatusEdit id="newPropertyModal" let-c="close" let-d="dismiss">
+        <div class="modal-content">
+            <div class="modal-header" id="regStatusModalHeader">
+                <h4>Update Registration Status</h4>
+            </div>
+            <form role="form" #regForm="ngForm">
+                <div class="modal-body" id="regStatusModalBody">
+                    <div class="alert-warning">{{helpMessage}}</div>
+                    <div class="form-group">
+                        <label for="registrationStatus">Registration Status</label>
+                        <select id="newRegistrationStatus" class="form-control"
+                                [(ngModel)]="newState.registrationStatus"
+                                name="registrationStatus" (ngModelChange)="setHelpMessage($event)">
+                            <option *ngFor="let s of validRegStatuses" value="{{s}}">{{s}}</option>
+                        </select>
+                    </div>
+
+                    <div id="effectiveDateDiv">
+                        <label for="effectiveDate">Effective Date</label>
+                        <div class="input-group">
+                            <input class="form-control" name="effectiveDate"
+                                   [(ngModel)]="newState.effectiveDate" ngbDatepicker #dpEf="ngbDatepicker">
+                            <div class="input-group-addon" (click)="dpEf.toggle()" >
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="untilDateDiv">
+                        <label for="untilDate">Until Date</label>
+                        <div class="input-group">
+                            <input class="form-control" name="untilDate"
+                                   [(ngModel)]="newState.untilDate" ngbDatepicker #dpUn="ngbDatepicker">
+                            <div class="input-group-addon" (click)="dpUn.toggle()" >
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="administrativeStatus">Administrative Status</label>
+                        <input id="newAdministrativeStatus" class="form-control" type="text" name="administrativeStatus"
+                               [(ngModel)]="newState.administrativeStatus"
+                               placeholder="Optional Administrative Status"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="administrativeNote">Administrative Note</label>
+                        <textarea id="newAdministrativeNote" class="form-control" name="administrativeNote"
+                                  [(ngModel)]="newState.administrativeNote"
+                                  placeholder="Optional Administrative Note"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="unresolvedIssue">Unresolved Issue</label>
+                        <textarea id="newUnresolvedIssue" class="form-control" name="unresolvedIssue"
+                                  [(ngModel)]="newState.unresolvedIssue"
+                                  placeholder="Optional Unresolved Issue Note"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer" id="regStatusModalFooter">
+                    <button class="btn cancel" (click)="d()" id="cancelRegStatus"
+                            type="button">Cancel</button>
+                    <button class="btn btn-warning" (click)="ok()" [disabled]="!regForm.form.valid"
+                            id="saveRegStatus" type="submit">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+</ng-template>

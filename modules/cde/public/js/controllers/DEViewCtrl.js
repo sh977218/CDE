@@ -35,6 +35,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
     }
+    $scope.setCurrentTab = function (thisTab) {
+        $scope.currentTab = thisTab;
+    };
 
     $scope.switchCommentMode = function(){
         $scope.deferredEltLoaded.promise.then(function() {
@@ -51,23 +54,15 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.getCtrlType = function () {return "cde";};
 
     $scope.tabs = {
-        general: {
-            heading: "General Details",
-            includes: ['/cde/public/html/cdeGeneralDetail.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
         pvs: {
-            heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html'],
+            heading: "Permissible Values", includes: ['/cde/public/html/permissibleValue.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
             }
         },
         naming: {
             heading: "Naming", includes: ['/system/public/html/naming.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
+            select: function () {
                 OrgHelpers.deferred.promise.then(function () {
                     $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
                 });
@@ -76,19 +71,19 @@ angular.module('cdeModule').controller('DEViewCtrl',
         classification: {
             heading: "Classification", includes: ['/system/public/html/classification.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
             }
         },
         concepts: {
             heading: "Concepts", includes: ['/cde/public/html/concepts.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
             }
         },
         referenceDocument: {
             heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
+                // setCurrentTab(thisTab);
             }
         },
         properties: {
@@ -171,6 +166,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.elt = de;
             $scope.elt._changeNote = $scope.elt.changeNote;
             delete $scope.elt.changeNote;
+            $scope.elt.allValid = true;
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
             $scope.loadBoards();
@@ -322,10 +318,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
         return allVsacMatch;
     };
 
-    $scope.vsacMappingExists = function() {
-        return typeof($scope.elt.dataElementConcept.conceptualDomain) !== "undefined" &&
-            typeof($scope.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
-    };
+
 
     $scope.loadValueSet = function() {
         var dec = $scope.elt.dataElementConcept;
@@ -528,13 +521,13 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.validateAndStageElt = function (elt) {
         if (elt.valueDomain.datatype === 'Value List'
             && (!elt.valueDomain.permissibleValues || elt.valueDomain.permissibleValues.length === 0)) {
-            $scope.allValid = false;
-            $scope.pvNotValidMsg = 'Empty Permissible Values';
+            $scope.elt.allValid = false;
+            $scope.elt.pvNotValidMsg = 'Empty Permissible Values';
             return;
         }
         else {
-            $scope.allValid = true;
-            delete $scope.pvNotValidMsg;
+            $scope.elt.allValid = true;
+            delete $scope.elt.pvNotValidMsg;
             elt.unsaved = true;
         }
     }

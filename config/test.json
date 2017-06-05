@@ -6,12 +6,6 @@
   "debugEnabled": true,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.5.4-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
-  "umls": {
-    "wsHost": "https://localhost:4000"
-  },
-  "mesh": {
-    "mockPort": 10081
-  },
   "database": {
     "local": {
       "db": "local",
@@ -23,24 +17,8 @@
     }
   },
   "vsac": {
-    "username": "user",
-    "password": "pass",
-    "host": "localhost",
-    "ticket": {
-      "path": "/vsac/ws/Ticket"
-    },
-    "valueSet": {
-      "path": "/vsac/ws/RetrieveValueSet"
-    },
-    "port": 4000
-  },
-  "uts": {
-    "service": "http://umlsks.nlm.nih.gov",
-    "ticketValidation": {
-      "host": "localhost",
-      "path": "/cas/serviceValidate",
-      "port": 4000
-    }
+    "username": "cdevsac",
+    "password": "DO_NOT_TRY_TO_GUESS"
   },
   "oauth": {
     "enabled": "true"

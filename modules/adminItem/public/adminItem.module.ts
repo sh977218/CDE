@@ -11,11 +11,13 @@ import { ClassificationComponent } from "./components/classification/classificat
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
-import { InlineEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
+import { InlineEditDirective, InlineSelectEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
+import { SourcesComponent } from "./components/sources/sources.component";
+import { RegistrationComponent } from "./components/registration/registration.component";
 
 @NgModule({
     imports: [
@@ -35,13 +37,16 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
         InlineEditDirective,
+        InlineSelectEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
         NamingComponent,
         PlaceHoldEmptyPipe,
         PropertiesComponent,
-        ReferenceDocumentComponent
+        ReferenceDocumentComponent,
+        RegistrationComponent,
+        SourcesComponent
     ],
     entryComponents: [
         AttachmentsComponent,
@@ -49,10 +54,14 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         IdentifiersComponent,
         NamingComponent,
         PropertiesComponent,
-        ReferenceDocumentComponent
+        ReferenceDocumentComponent,
+        RegistrationComponent,
+        SourcesComponent
     ],
     exports: [
+        ClassificationComponent,
         InlineEditDirective,
+        InlineSelectEditDirective,
         InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
@@ -60,7 +69,8 @@ import { ReferenceDocumentComponent } from "./components/referenceDocument.compo
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,
-        ClassificationComponent
+        RegistrationComponent,
+        SourcesComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
