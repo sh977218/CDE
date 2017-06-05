@@ -30,8 +30,7 @@ export class TextTruncateComponent implements OnInit {
     _class: string = "collapseText";
 
     toggleShow () {
-        this.open = this.open;
-        // $element.empty();
+        this.open = !this.open;
         this._class = (this._class === "collapseText") ? "expandText" : "collapseText";
         // var THRESHOLD = parseInt($scope.threshold);
         // Truncation.applyTruncation(THRESHOLD, $scope, $element);
@@ -42,6 +41,5 @@ export class TextTruncateComponent implements OnInit {
     ngOnInit () {
         //     $($element.find('span')[0]).text($scope.text); //jshint ignore:line
     }
-
 
 }

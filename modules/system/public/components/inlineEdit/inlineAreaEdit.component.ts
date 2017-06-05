@@ -64,10 +64,33 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
         this.editMode = false;
     }
 
+    static isInvalidHtml (html) {
+        let srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
+        if (srcs) {
+            for (let i = 0; i < srcs.length; i++) {
+                let src = srcs[i];
+                let urls = src.match(/\s*["'](.+?)["']/ig);
+                if (urls) {
+                    for (let j = 0; j < urls.length; j++) {
+                        let url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
+                        if (url.indexOf("/data/") !== 0 && url.indexOf((window as any).publicUrl + "/data/") !== 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    };
+
     save() {
-        this.editMode = false;
-        this.modelChange.emit(this.value);
-        this.defFormatChange.emit(this.localFormat);
+        if (InlineAreaEditComponent.isInvalidHtml(this.value)) {
+            alert('Error. Img src may only be a relative url starting with /data');
+        } else {
+            this.editMode = false;
+            this.modelChange.emit(this.value);
+            this.defFormatChange.emit(this.localFormat);
+        }
     }
 
 }
