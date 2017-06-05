@@ -191,12 +191,12 @@
                 <button class="btn btn-small btn-default" role="button" id="openAddPermissibleValueModelBtn"
                         title="Add Permissible Value"
                         (click)="openNewPermissibleValueModal()">
-                    <i class="fa fa-plus"></i>Add Permissible Value
+                    <i class="fa fa-plus"></i> Add Permissible Value
                 </button>
                 <button class="btn btn-small btn-default" role="button" id="removeAllPermissibleValueBtn"
                         title="Remove All Values"
                         (click)="removeAllPermissibleValues()">
-                    <i class="fa fa-trash-o"></i>Remove All Values
+                    <i class="fa fa-trash-o"></i> Remove All Values
                 </button>
             </ng-container>
         </div>
@@ -278,7 +278,7 @@
             <div class="form-group">
                 <label for="valueMeaningNameInput">Code Name</label>
                 <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningName"
-                       id="valueMeaningNameInput" name="valueMeaningNameInput" (ngModelChange)="lookupUmls()"
+                       id="valueMeaningNameInput" name="valueMeaningNameInput" (keyup)="lookupUmls()"
                        Placeholder="Code Name" (ngModelChange)="lookupUmls()"/>
             </div>
             <div class="form-group">

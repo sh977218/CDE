@@ -41,7 +41,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
 
         clickElement(By.cssSelector(".cke_button__image"));
-        findElement(By.id("cke_181_textInput")).sendKeys("www.google.com");
+        findElement(By.xpath("//div[label[. = 'URL']]//input")).sendKeys("www.google.com");
         clickElement(By.linkText("OK"));
         clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Confirm')]"));
 
