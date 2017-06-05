@@ -45,15 +45,21 @@ export class CompareService {
         if (!option.equal) option.equal = _.isEqual;
     }
 
+    copyValue(obj, data) {
+        _.forEach(data, d => {
+            obj[d.property] = _.get(obj, d.property);
+        })
+    }
+
     doCompareArrayImpl(left, right, option) {
         option.result = [];
-        let matchCount = 0;
         let beginIndex = 0;
 
         _.forEach(left, (l, leftIndex) => {
             let rightArrayCopy = _.slice(right, beginIndex);
-            let rightIndex = _.findIndex(rightArrayCopy, o => option.equal(o, l));
+            let rightIndex = _.findIndex(rightArrayCopy, o => option.isEqual(o, l));
             if (rightIndex === -1) {
+                this.copyValue(l, option.data);
                 option.result.push({
                     match: false,
                     left: l,
@@ -64,6 +70,7 @@ export class CompareService {
             else {
                 let r = rightArrayCopy[rightIndex];
                 for (let k = 0; k < rightIndex; k++) {
+                    this.copyValue(rightArrayCopy[k], option.data);
                     option.result.push({
                         match: false,
                         left: null,
@@ -71,15 +78,27 @@ export class CompareService {
                     });
                     beginIndex++;
                 }
+                this.copyValue(l, option.data);
+                this.copyValue(r, option.data);
                 option.result.push({
                     match: true,
                     left: l,
-                    right: r
+                    right: r,
+                    display: l.display && r.display,
+                    diff: _.uniq(_.concat(l.diff, right.diff))
                 });
                 beginIndex++;
             }
         });
-        if (option.result) option.match = !(option.result.filter(p => !p.match).length > 0);
+        if (option.result) {
+            option.match = !(option.result.filter(p => !p.match).length > 0);
+            option.display = option.result.filter(p => p.display).length > 0;
+            /*
+             option.result.forEach(p => {
+             p.diff = _.concat(left.diff, right.diff);
+             })
+             */
+        }
     }
 
     doCompareArray(left, right, option) {
@@ -90,7 +109,7 @@ export class CompareService {
                 property.right = "";
                 return;
             }
-            if (!property.euqal) property.equal = _.isEqual;
+            if (!property.isEqual) property.isEqual = _.isEqual;
             let l = [];
             if (left) l = _.get(left, property.property);
             let r = [];

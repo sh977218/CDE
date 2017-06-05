@@ -19,7 +19,7 @@ export class HistoryComponent implements OnInit {
     @Input() public elt: any;
     public modalRef: NgbActiveModal;
     showVersioned: boolean = false;
-    public priorCdes = [];
+    public priorElements = [];
     public numberSelected: number = 0;
 
     constructor(@Inject("Alert")
@@ -31,14 +31,15 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.elt.history && this.elt.history.length > 0
-        ) {
-            this.http.get('/priorcdes/' + this.elt._id).map(res => res.json())
+        delete this.elt.selected;
+        if (this.elt.history && this.elt.history.length > 0) {
+            this.http.get('/priorElements/' + this.elt.elementType + '/' + this.elt._id).map(res => res.json())
                 .subscribe(res => {
-                    this.priorCdes = res.reverse();
+                    this.priorElements = res.reverse();
                     this.elt.viewing = true;
-                    this.priorCdes.splice(0, 0, this.elt);
-                }, err => this.alert.addAlert("danger", "Error retrieving history: " + err));
+                    this.priorElements.splice(0, 0, this.elt);
+                }, err =>
+                    this.alert.addAlert("danger", "Error retrieving history: " + err));
         }
 
     }
@@ -61,7 +62,7 @@ export class HistoryComponent implements OnInit {
     }
 
     getSelectedElt() {
-        return this.priorCdes.filter(p => p.selected);
+        return this.priorElements.filter(p => p.selected);
     }
 
 }
