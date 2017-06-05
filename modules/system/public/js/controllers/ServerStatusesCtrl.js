@@ -12,7 +12,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                         return ind.up;
                     }).length === s.elastic.indices.length;
                 });
-            });
+            }, function (error) {});
         };
 
         $scope.reIndex = function(i) {
