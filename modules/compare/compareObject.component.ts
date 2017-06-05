@@ -1,6 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { CompareService } from "../core/public/compare.service";
 
 @Component({
