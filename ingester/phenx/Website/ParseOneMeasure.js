@@ -27,7 +27,7 @@ function parsingClassification(driver, measure, done) {
     });
 };
 
-function parsingProtocolLinks(driver, measure, done) {
+function parsingProtocolLinks(driver, measure, done, loadLoinc) {
     var protocolLinksXpath = "//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]";
     driver.findElements(By.xpath(protocolLinksXpath)).then(function (protocolLinks) {
         var protocols = [];
@@ -46,7 +46,7 @@ function parsingProtocolLinks(driver, measure, done) {
                     protocolLink.getAttribute('href').then(function (linkText) {
                         ParseOneProtocol.parseProtocol(protocol, linkText.trim(), function () {
                             cb();
-                        });
+                        }, loadLoinc);
                     });
                 }
             ], function () {
@@ -59,7 +59,7 @@ function parsingProtocolLinks(driver, measure, done) {
     })
 };
 
-exports.parseOneMeasure = function (measure, cb) {
+exports.parseOneMeasure = function (measure, cb, loadLoinc) {
     driver.get(measure.href);
     async.series([
         function (doneIntroduction) {
@@ -69,7 +69,7 @@ exports.parseOneMeasure = function (measure, cb) {
             parsingClassification(driver, measure, doneClassification)
         },
         function (doneProtocol) {
-            parsingProtocolLinks(driver, measure, doneProtocol);
+            parsingProtocolLinks(driver, measure, doneProtocol, loadLoinc);
         }
     ], function doneOneMeasure() {
         cb();

@@ -55,10 +55,7 @@
     </div>
     <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
         <cde-compare-object [left]="getSelectedElt()[1]" [right]="getSelectedElt()[0]"></cde-compare-object>
-<!--
-        <cde-compare-array [left]="getSelectedElt()[1]" [right]="getSelectedElt()[0]"
-                           [option]="compareArrayOption"></cde-compare-array>
--->
+        <cde-compare-array [left]="getSelectedElt()[0]" [right]="getSelectedElt()[1]"></cde-compare-array>
     </div>
     <div class="modal-footer"></div>
 </ng-template>

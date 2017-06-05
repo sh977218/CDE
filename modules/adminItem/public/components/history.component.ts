@@ -22,23 +22,6 @@ export class HistoryComponent implements OnInit {
     public priorCdes = [];
     public numberSelected: number = 0;
 
-    public compareArrayOption = [
-        {
-            label: "Naming",
-            equal: function (a, b) {
-                return a.designation === b.designation;
-            },
-            sort: function (a, b) {
-                return a.designation.localeCompare(b.designation);
-                properties: [
-                    {label: 'Name', property: 'designation'},
-                    {label: 'Definition', property: 'definition'},
-                    {label: 'Tags', property: 'tags'}
-                ]
-            }
-        }
-    ];
-
     constructor(@Inject("Alert")
                 private alert,
                 private http: Http,

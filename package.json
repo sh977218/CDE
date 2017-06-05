@@ -69,7 +69,8 @@
     "angular-2-local-storage": "1.0.1",
     "angular-tree-component": "3.6.0",
     "lodash": "4.17.4",
-    "ng-diff-match-patch": "1.0.3"
+    "ng-diff-match-patch": "1.0.3",
+    "ng2-scrollspy": "0.3.9"
   },
   "devDependencies": {
     "@angular/common": "4.1.2",

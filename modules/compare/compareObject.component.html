@@ -1,6 +1,6 @@
 <ng-container *ngFor="let property of compareObjectProperties">
     <ng-container *ngIf="!property.match">
-        <div class="col-xs-12">
+        <div class="col-xs-12" id="{{property.label}}">
             <label for="{{property.label}}">{{property.label}}:</label>
             <ng-container *ngIf="property.data">
                 <div class="col-xs-12">
@@ -11,7 +11,7 @@
                 </div>
             </ng-container>
             <ng-container *ngIf="!property.data">
-                <pre id="{{property.label}}" lineDiff [left]="property.left" [right]="property.right"></pre>
+                <pre lineDiff [left]="property.left" [right]="property.right"></pre>
             </ng-container>
         </div>
     </ng-container>

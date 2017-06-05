@@ -5,7 +5,7 @@ import * as _ from "lodash";
 export class CompareService {
 
     doCompareObject(left, right, option) {
-        _.forEach(option, (property) => {
+        _.forEach(option, property => {
             if (!left && !right) {
                 property.match = true;
                 property.left = "";
@@ -23,7 +23,7 @@ export class CompareService {
                 if (!left && !right) property.match = true;
             } else {
                 this.doCompareObject(l, r, property.data);
-                if (property.data) property.match = property.data.filter(p => p.match).length > 0;
+                if (property.data) property.match = !(property.data.filter(p => !p.match).length > 0);
             }
         });
         return option;
@@ -45,64 +45,58 @@ export class CompareService {
         if (!option.equal) option.equal = _.isEqual;
     }
 
-    doCompareArray(left, right, option) {
-        let result = [];
-        CompareService.doCompareArrayValidator(left, right, option);
+    doCompareArrayImpl(left, right, option) {
+        option.result = [];
         let matchCount = 0;
         let beginIndex = 0;
 
-        _.forEach(left, (value, leftIndex) => {
+        _.forEach(left, (l, leftIndex) => {
             let rightArrayCopy = _.slice(right, beginIndex);
-            let leftItemInRightArrayIndex = _.findIndex(rightArrayCopy, o => option.equal(o, value));
-            if (leftItemInRightArrayIndex === -1) {
-                // put all right list elements before this element
-                if (beginIndex === left.length - 1) {
-                    for (let m = 0; m < left.length; m++) {
-                        result.push({
-                            found: "right",
-                            rightIndex: m,
-                            result: _.cloneDeep(option.properties)
-                        });
-                        beginIndex++;
-                    }
-                }
-                // put this element not found
-                result.push({
-                    found: 'left',
-                    leftIndex: leftIndex,
-                    result: _.cloneDeep(option.properties)
+            let rightIndex = _.findIndex(rightArrayCopy, o => option.equal(o, l));
+            if (rightIndex === -1) {
+                option.result.push({
+                    match: false,
+                    left: l,
+                    right: null
                 });
-            } else {
-                // put all right elements before matched element
-                let beginIndexCopy = beginIndex;
-                for (let k = 0; k < leftItemInRightArrayIndex; k++) {
-                    result.push({
-                        found: "right",
-                        rightIndex: beginIndex + leftItemInRightArrayIndex - 1
+            }
+            // found match in right array
+            else {
+                let r = rightArrayCopy[rightIndex];
+                for (let k = 0; k < rightIndex; k++) {
+                    option.result.push({
+                        match: false,
+                        left: null,
+                        right: rightArrayCopy[k]
                     });
                     beginIndex++;
                 }
-                // put this element found
-                let found = {
+                option.result.push({
                     match: true,
-                    leftIndex: leftIndex,
-                    rightIndex: beginIndexCopy + leftItemInRightArrayIndex
-                };
-                let rightIndexCopy = beginIndexCopy + leftItemInRightArrayIndex;
-                found["result"] = this.doCompare(left[leftIndex], right[rightIndexCopy], option["properties"]);
-                result.push(found);
-                matchCount++;
+                    left: l,
+                    right: r
+                });
                 beginIndex++;
             }
         });
-        // if after looping left list, there are element in the right list, put all of them
-        for (let i = beginIndex; i < right.length; i++)
-            result.push({
-                found: "right",
-                rightIndex: i,
-                result: _.cloneDeep(option.properties)
-            })
-        return result;
+        if (option.result) option.match = !(option.result.filter(p => !p.match).length > 0);
+    }
+
+    doCompareArray(left, right, option) {
+        _.forEach(option, property => {
+            if (!left && !right) {
+                property.match = true;
+                property.left = "";
+                property.right = "";
+                return;
+            }
+            if (!property.euqal) property.equal = _.isEqual;
+            let l = [];
+            if (left) l = _.get(left, property.property);
+            let r = [];
+            if (right) r = _.get(right, property.property);
+            this.doCompareArrayImpl(l, r, property);
+        })
     }
 
     static doCompareValidator(left, right, option) {
@@ -114,17 +108,6 @@ export class CompareService {
         } else if (_.isArray(left) && !_.isArray(right)) {
             throw "type miss match, left is array, right is not array";
         }
-    }
-
-    doCompare(left, right, option) {
-        CompareService.doCompareValidator(left, right, option);
-        if (!left || !right) return {match: false, left: left, right: right};
-        let result = {};
-        if (option.array)
-            result = this.doCompareArray(left, right, option["properties"]);
-        else
-            result = this.doCompareObject(left, right, option);
-        return result;
     }
 
     findMatchInResult(left, right, result) {
@@ -139,19 +122,5 @@ export class CompareService {
          result.right = right;
          */
     }
-
-    getValueByNestedProperty(obj, propertyString) {
-        if (!obj) return "";
-        // convert indexes to properties and strip a leading dot
-        propertyString = propertyString.replace(/\[(\w+)]/g, '.$1').replace(/^\./, '');
-        var propertyArray = propertyString.split('.');
-        for (var i = 0, n = propertyArray.length; i < n; ++i) {
-            var k = propertyArray[i];
-            if (k in obj) obj = obj[k];
-            else return;
-        }
-        return obj;
-    }
-
 }
 
