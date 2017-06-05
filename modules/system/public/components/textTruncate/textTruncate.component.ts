@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 @Component({
     selector: "cde-text-truncate",
@@ -18,7 +18,7 @@ import { Component, Input, OnInit } from "@angular/core";
     `]
 })
 
-export class TextTruncateComponent implements OnInit {
+export class TextTruncateComponent {
 
     @Input() text: string;
     @Input() textType: string = "plainText";
@@ -32,14 +32,5 @@ export class TextTruncateComponent implements OnInit {
     toggleShow () {
         this.open = !this.open;
         this._class = (this._class === "collapseText") ? "expandText" : "collapseText";
-        // var THRESHOLD = parseInt($scope.threshold);
-        // Truncation.applyTruncation(THRESHOLD, $scope, $element);
-        // if ($scope.textType === 'plainText')
-        //     $($element.find('span')[0]).text($scope.text); //jshint ignore:line
     }
-
-    ngOnInit () {
-        //     $($element.find('span')[0]).text($scope.text); //jshint ignore:line
-    }
-
 }

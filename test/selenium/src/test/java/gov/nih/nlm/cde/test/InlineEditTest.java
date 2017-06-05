@@ -56,13 +56,14 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
         clickElement(By.cssSelector(".cke_button__source"));
         findElement(By.cssSelector("textarea.cke_source")).sendKeys("validate image url");
-        textPresent("validate image url");
         clickElement(By.cssSelector(".cke_button__source"));
         clickElement(By.cssSelector(".cke_button__image"));
         findElement(By.id("cke_181_textInput")).sendKeys(url);
         clickElement(By.linkText("OK"));
 
         clickElement(By.cssSelector("button.fa-check"));
+
+        textPresent("validate image url");
 
         textPresent("Saved");
         closeAlert();

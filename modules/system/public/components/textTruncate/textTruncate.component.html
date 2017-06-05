@@ -11,7 +11,7 @@
         </span>
     </span>
     <span *ngIf="textType === 'plainText'">
-        <span [ngClass]="_class"></span>
+        <span [ngClass]="_class">{{text}}</span>
         <span *ngIf="!open" class="btn-link" (click)="toggleShow()">
             <span *ngIf="customMoreLabel">{{customMoreLabel}}</span>
             <span *ngIf="!customMoreLabel">More</span>

@@ -14,7 +14,7 @@ public class CdeTruncateRichPropertiesTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         clickElement(By.id("properties_tab"));
 
-        clickElement(By.xpath("//*[@id='value_2']//*[contains(@class,'fa-edit')])"));
+        clickElement(By.xpath("//*[@id='value_2']//*[contains(@class,'fa-edit')]"));
         clickElement(By.xpath("//*[@id='value_2']//button[contains(text(),'Rich Text')]"));
         hangon(2);
         clickElement(By.xpath("//*[@id='value_2']//*[contains(@class,'fa-check')]"));
