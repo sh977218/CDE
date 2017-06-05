@@ -2,13 +2,10 @@ const mongo_cde = require('../modules/cde/node-js/mongo-cde')
     _ = require('lodash')
 ;
 
-
 let stream = mongo_cde.getStream({archived: false,
     retired: {$ne: 'Retired'},
     source: 'NINDS'
 });
-
-
 
 stream.on('data', (cde) => {
     stream.pause();
