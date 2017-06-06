@@ -258,10 +258,10 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
 
-        $interval(function () {
-            OrgHelpers.getOrgsDetailedInfoAPI();
-            userResource.checkMail();
-        }, 600000);
+        // $interval(function () {
+        //     OrgHelpers.getOrgsDetailedInfoAPI();
+        //     userResource.checkMail();
+        // }, 600000);
 
         return this;
     }])

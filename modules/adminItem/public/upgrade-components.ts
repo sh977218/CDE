@@ -2,6 +2,18 @@ import { Directive, ElementRef, Injector, Output, Input, EventEmitter } from "@a
 import { UpgradeComponent } from "@angular/upgrade/static";
 /* tslint:disable */
 @Directive({
+    selector: "inline-select-edit"
+})
+export class InlineSelectEditDirective extends UpgradeComponent {
+    @Input() model: any;
+    @Input() allOptions: any;
+    @Input() isAllowed: any;
+    @Output() onOk: EventEmitter<void>;
+    constructor(elementRef: ElementRef, injector: Injector) {
+        super("inlineSelectEdit", elementRef, injector);
+    }
+}
+@Directive({
     selector: "inline-edit"
 })
 export class InlineEditDirective extends UpgradeComponent {
@@ -12,6 +24,7 @@ export class InlineEditDirective extends UpgradeComponent {
     @Output() onOk: EventEmitter<void>;
     @Input() typeaheadSource: any;
     @Input() linkSource: any;
+
     constructor(elementRef: ElementRef, injector: Injector) {
         super("inlineEdit", elementRef, injector);
     }
@@ -28,7 +41,6 @@ export class InlineAreaEditDirective extends UpgradeComponent {
     @Output() onErr: EventEmitter<void>;
     @Input() defFormat: any;
     @Output() defFormatChange: EventEmitter<void>;
-    @Input() inlineAreaVisibility: any;
     constructor(elementRef: ElementRef, injector: Injector) {
         super("inlineAreaEdit", elementRef, injector);
     }

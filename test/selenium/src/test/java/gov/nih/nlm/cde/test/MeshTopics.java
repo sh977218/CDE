@@ -38,6 +38,7 @@ public class MeshTopics extends NlmCdeBaseTest {
             System.out.println("Retry after one 30 seconds.");
             try {
                 hangon(20);
+                clickElement(By.id("menu_forms_link"));
                 clickElement(By.id("menu_cdes_link"));
                 clickElement(By.linkText("Browse by Topic"));
                 textPresent("Health Care Economics and Organizations (11148)");
@@ -45,6 +46,7 @@ public class MeshTopics extends NlmCdeBaseTest {
                 System.out.println("Retry after one 20 seconds.");
                 try {
                     hangon(10);
+                    clickElement(By.id("menu_forms_link"));
                     clickElement(By.id("menu_cdes_link"));
                     clickElement(By.linkText("Browse by Topic"));
                     textPresent("Health Care Economics and Organizations (11148)");

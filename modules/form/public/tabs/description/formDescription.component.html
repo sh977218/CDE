@@ -27,7 +27,7 @@
             </span>
         </div>
 
-        <div *ngFor="let eltIter of [elt]" style="height: 76vh">
+        <div *ngFor="let eltIter of [elt]">
             <tree-root #tree [nodes]="eltIter.formElements" [options]="treeOptions">
                 <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
                     <div class="tree-node tree-node-level-{{ node.level }}" [id]="node.data.descriptionId"

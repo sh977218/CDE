@@ -4,7 +4,7 @@ var https = require('https')
     , request = require('request')
 ;
 
-var authData = querystring.stringify( {
+var authData = querystring.stringify({
     username: config.vsac.username
     , password: config.vsac.password
 });
@@ -60,80 +60,61 @@ var valueSetOptions = {
 var vsacTGT = '';
 
 exports.getTGT = function (cb) {
-    var req = https.request(tgtOptions, function(res) {
+    var req = https.request(tgtOptions, function (res) {
         var output = '';
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
             output += chunk;
         });
-        res.on('end', function() {
+        res.on('end', function () {
             vsacTGT = output;
             ticketOptions.path = config.vsac.ticket.path + '/' + vsacTGT;
             cb(vsacTGT);
         });
     });
-    
+
     req.on('error', function (e) {
         console.log('getTgt: ERROR with request: ' + e);
     });
-    
+
     req.write(authData);
     req.end();
 };
 
-exports.getTicket = function(cb) {
-    var req = https.request(ticketOptions, function(res) {
+exports.getTicket = function (cb) {
+    var req = https.request(ticketOptions, function (res) {
         var output = '';
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
             output += chunk;
         });
-        res.on('end', function() {
+        res.on('end', function () {
             cb(output);
         });
     });
-    
+
     req.on('error', function (e) {
         console.log('getTicket: ERROR with request ' + e);
     });
-    
+
     req.write(ticketData);
     req.end();
 };
 
-exports.getValueSet = function(vs_id, cb) {
-    this.getTicket(function(vsacTicket) {
-        valueSetOptions.path = config.vsac.valueSet.path + '?id=' + vs_id + "&ticket=" + vsacTicket;
-        var req = https.request(valueSetOptions, function(res) {
-            var output = '';
-            res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                output += chunk;
-            });
-            res.on('end', function() {
-                if (res.statusCode === 404) {
-                    cb(404);
-                }
-                if (output.length > 0) {
-                    cb(output);
-                }
-            });
+exports.getValueSet = function (oid, cb) {
+    this.getTicket(function (vsacTicket) {
+        let url = "https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet" + "?id=" + oid + "&ticket=" + vsacTicket;
+        request({url: url, strictSSL: false}, function (err, response) {
+            cb(err, response);
         });
-
-        req.on('error', function (e) {
-            console.log('getValueSet: ERROR with request: ' + e);
-            cb(400);
-        });
-
-        req.end();
     });
 };
 
-exports.getAtomsFromUMLS = function(cui, source, res) {
-    this.getTicket(function(oneTimeTicket) {
+exports.getAtomsFromUMLS = function (cui, source, res) {
+    this.getTicket(function (oneTimeTicket) {
         var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
             "&pageSize=500&ticket=" + oneTimeTicket;
-        request({url: url, strictSSL: false}, function(err, response, body) {
+        request({url: url, strictSSL: false}, function (err, response, body) {
             if (!err && response.statusCode === 200) res.send(body);
             else {
                 res.send();
@@ -142,19 +123,30 @@ exports.getAtomsFromUMLS = function(cui, source, res) {
     });
 };
 
-exports.umlsCuiFromSrc = function(id, src, res) {
-    this.getTicket(function(oneTimeTicket) {
+exports.umlsCuiFromSrc = function (id, src, res) {
+    this.getTicket(function (oneTimeTicket) {
         var url = config.umls.wsHost + "/rest/search/current?string=" + id +
             "&searchType=exact&inputType=sourceUi&sabs=" + src + "&ticket=" + oneTimeTicket;
         request.get({url: url, strictSSL: false}).pipe(res);
     });
 };
 
-exports.searchUmls = function(term, res) {
-    this.getTicket(function(oneTimeTicket) {
+exports.searchUmls = function (term, res) {
+    this.getTicket(function (oneTimeTicket) {
         var url = config.umls.wsHost + "/rest/search/current?ticket=" +
-        oneTimeTicket + "&string=" + term;
+            oneTimeTicket + "&string=" + term;
         request.get({url: url, strictSSL: false}).pipe(res);
+    });
+};
+
+exports.getCrossWalkingVocabularies = function (source, code, targetSource, cb) {
+    this.getTicket(function (oneTimeTicket) {
+        let url = "https://uts-ws.nlm.nih.gov/rest/crosswalk/current/source/"
+            + source + "/" + code + "?targetSource=" + targetSource
+            + "&ticket=" + oneTimeTicket;
+        request({url: url, strictSSL: false}, function (err, response) {
+            cb(err, response);
+        });
     });
 };
 

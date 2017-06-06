@@ -19,7 +19,10 @@ import { LinkedBoardsComponent } from "./components/linkedBoards/linkedBoards.co
     ],
     providers: [MyBoardsService],
     imports: [CommonModule, FormsModule, NgbModule],
-    exports: [PinModalComponent],
+    exports: [
+        LinkedBoardsComponent,
+        PinModalComponent,
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

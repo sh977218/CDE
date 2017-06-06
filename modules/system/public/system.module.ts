@@ -8,7 +8,6 @@ import { CdeAccordionListDirective, FormAccordionListDirective, FormSummaryListD
 import { ProfileComponent } from "./components/profile.component";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { UserCommentsComponent } from "./components/userComments.component";
-import { RegistrationComponent } from "./components/adminItem/registration.component";
 import { HomeComponent } from "./components/home/home.component";
 import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
@@ -19,6 +18,7 @@ import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.comp
 import { JsonpModule } from "@angular/http";
 import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
+import { InlineEditComponent } from "./components/inlineEdit.component";
 
 @NgModule({
     imports: [
@@ -41,25 +41,27 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
-        RegistrationComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
-        UsersMgtComponent
+        UsersMgtComponent,
+        InlineEditComponent
     ],
     entryComponents: [
         DailyUsageComponent,
         HomeComponent,
         LinkedFormsComponent,
         ListManagementComponent,
+        LinkedFormsComponent,
         LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
-        RegistrationComponent,
         UsersMgtComponent
     ],
     exports: [
-        NavigationComponent
+        LinkedFormsComponent,
+        NavigationComponent,
+        InlineEditComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
