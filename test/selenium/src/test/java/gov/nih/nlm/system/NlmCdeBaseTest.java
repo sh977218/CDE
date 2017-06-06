@@ -922,10 +922,9 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath(valueEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
-            textPresent("Characters:");
         }
-        if (newValue != null)
-            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
+        if (newValue != null) findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
+
         hangon(2);
         clickElement(By.xpath(valueConfirmBtnXpath));
         textNotPresent("Confirm");
