@@ -138,12 +138,12 @@ export class CompareArrayComponent implements OnInit {
     }
 
     flatFormQuestions(fe, questions) {
-        if (fe.formElements != undefined) {
+        if (fe.formElements !== undefined) {
             _.forEach(fe.formElements, e => {
                 if (e.elementType && e.elementType === 'question' || e.elementType && e.elementType === 'form') {
                     questions.push(_.cloneDeep(e));
                 } else this.flatFormQuestions(e, questions);
-            })
+            });
         }
     };
 }

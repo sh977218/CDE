@@ -48,7 +48,7 @@ export class CompareService {
     copyValue(obj, data) {
         _.forEach(data, d => {
             obj[d.property] = _.get(obj, d.property);
-        })
+        });
     }
 
     doCompareArrayImpl(left, right, option) {
@@ -117,7 +117,7 @@ export class CompareService {
             let r = [];
             if (right) r = _.get(right, property.property);
             this.doCompareArrayImpl(l, r, property);
-        })
+        });
     }
 
     static doCompareValidator(left, right, option) {
