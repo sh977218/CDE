@@ -39,30 +39,34 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.xpath("//*[@id='value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
-        clickElement(By.xpath("//div[contains(@id,'taTextElement')]"));
-        clickElement(By.cssSelector(".fa-picture-o"));
-        shortWait.until(ExpectedConditions.alertIsPresent());
-        Alert alert = driver.switchTo().alert();
-        alert.sendKeys("www.google.com");
-        alert.accept();
+
+        clickElement(By.cssSelector(".cke_button__image"));
+        findElement(By.xpath("//div[label[. = 'URL']]//input")).sendKeys("www.google.com");
+        clickElement(By.linkText("OK"));
         clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Confirm')]"));
+
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert errorAlert = driver.switchTo().alert();
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
         errorAlert.accept();
-        findElement(By.xpath("//*[contains(@id,'taTextElement')]")).clear();
-        findElement(By.xpath("//*[contains(@id,'taTextElement')]")).sendKeys("validate image url");
+        clickElement(By.cssSelector("button.fa-times"));
+
+        clickElement(By.xpath("//*[@id='value_0']//i[contains(@class,'fa fa-edit')]"));
+        textPresent("Rich Text");
+        clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
+        clickElement(By.cssSelector(".cke_button__source"));
+        findElement(By.cssSelector("textarea.cke_source")).sendKeys("validate image url");
+        clickElement(By.cssSelector(".cke_button__source"));
+        clickElement(By.cssSelector(".cke_button__image"));
+        findElement(By.xpath("//div[label[. = 'URL']]//input")).sendKeys(url);
+        clickElement(By.linkText("OK"));
+
+        clickElement(By.cssSelector("button.fa-check"));
+
         textPresent("validate image url");
-        clickElement(By.cssSelector(".fa-picture-o"));
-        shortWait.until(ExpectedConditions.alertIsPresent());
-        alert = driver.switchTo().alert();
-        System.out.println("**** URL: " + url);
-        alert.sendKeys(url);
-        alert.accept();
-        System.out.println(findElement(By.cssSelector("[id^='taTextElement'] img")).getAttribute("src"));
-        clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Confirm')]"));
-        hangon(2);
-        clickElement(By.id("properties_tab"));
+
+        textPresent("Saved");
+        closeAlert();
         Assert.assertTrue(findElement(By.xpath("//*[@id='value_0']//img")).getAttribute("src").contains("cde"));
     }
 }

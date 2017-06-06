@@ -82,8 +82,8 @@ exports.getTGT = function (cb) {
 };
 
 exports.getTicket = function (cb) {
-    var req = https.request(ticketOptions, function (res) {
-        var output = '';
+    let req = https.request(ticketOptions, function (res) {
+        let output = '';
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
             output += chunk;
@@ -112,7 +112,7 @@ exports.getValueSet = function (oid, cb) {
 
 exports.getAtomsFromUMLS = function (cui, source, res) {
     this.getTicket(function (oneTimeTicket) {
-        var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
+        let url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
             "&pageSize=500&ticket=" + oneTimeTicket;
         request({url: url, strictSSL: false}, function (err, response, body) {
             if (!err && response.statusCode === 200) res.send(body);
@@ -125,15 +125,15 @@ exports.getAtomsFromUMLS = function (cui, source, res) {
 
 exports.umlsCuiFromSrc = function (id, src, res) {
     this.getTicket(function (oneTimeTicket) {
-        var url = config.umls.wsHost + "/rest/search/current?string=" + id +
+        let url = config.umls.wsHost + "/rest/search/current?string=" + id +
             "&searchType=exact&inputType=sourceUi&sabs=" + src + "&ticket=" + oneTimeTicket;
         request.get({url: url, strictSSL: false}).pipe(res);
     });
 };
 
 exports.searchUmls = function (term, res) {
-    this.getTicket(function (oneTimeTicket) {
-        var url = config.umls.wsHost + "/rest/search/current?ticket=" +
+    this.getTicket((oneTimeTicket) => {
+        let url = config.umls.wsHost + "/rest/search/current?ticket=" +
             oneTimeTicket + "&string=" + term;
         request.get({url: url, strictSSL: false}).pipe(res);
     });
