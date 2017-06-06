@@ -16,7 +16,7 @@ export class RegistrationValidatorService {
             return true;
         });
         if (rules.length === 0) return [];
-        return rules.map(function (r) {
+        return rules.map((r) => {
             return {ruleName: r.ruleName, cdePassingRule: this.cdePassingRule(cde, r)};
         });
     }
