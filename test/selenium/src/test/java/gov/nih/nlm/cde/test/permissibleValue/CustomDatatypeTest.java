@@ -19,7 +19,8 @@ public class CustomDatatypeTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDatatype, By.xpath("//*[@id='historyCompareLeft_Value Type']"));
+        textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
+        textPresent(newDatatype, By.xpath("//*[@id='Data Type']//ins"));
 
         clickElement(By.id("pvs_tab"));
         changeDatatype(newDatatype2);
@@ -28,8 +29,8 @@ public class CustomDatatypeTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDatatype, By.xpath("//*[@id='historyCompareRight_Value Type']"));
-        textPresent(newDatatype2, By.xpath("//*[@id='historyCompareLeft_Value Type']"));
+        textPresent(newDatatype, By.xpath("//*[@id='Data Type']//del"));
+        textPresent(newDatatype2, By.xpath("//*[@id='Data Type']//ins"));
     }
 
 }
