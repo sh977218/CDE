@@ -6,9 +6,9 @@
 </div>
 <div class="row">
     <div class="col-sm-5 questionSectionLabel text-right">Description:</div>
-    <div class="col-sm-7" inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
-         model="elt.naming[0].definition" is-allowed="false" def-format="elt.naming[0].definitionFormat"
-         on-ok="stageCde(form)">
+    <div class="col-sm-7" id="dd_def" itemprop="description">
+        <span *ngIf="elt.naming[0].definitionFormat !== 'html'">{{elt.naming[0].definition}}</span>
+        <span *ngIf="elt.naming[0].definitionFormat === 'html'" [innerHtml]="elt.naming[0].definition"></span>
     </div>
 </div>
 <div class="row">

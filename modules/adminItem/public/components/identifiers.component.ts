@@ -18,18 +18,14 @@ export class IdentifiersComponent {
     public newIdentifier: any = {};
     constructor(@Inject("Alert") private alert,
                 @Inject("isAllowedModel") public isAllowedModel,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
+                public modalService: NgbModal
+               ) {
     }
 
     openNewIdentifierModal() {
         this.modalRef = this.modalService.open(this.newIdentifierContent, {size: "lg"});
-        this.modalRef.result.then(result => {
-            this.newIdentifier = {};
-        }, () => {
-        });
+        this.modalRef.result.then(() => this.newIdentifier = {});
     }
-
 
     addNewIdentifier() {
         this.elt.ids.push(this.newIdentifier);
