@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as _ from "lodash";
 
-@Injectable()
+@Injectable()\
 export class CompareService {
 
     doCompareObject(left, right, option) {
@@ -80,13 +80,15 @@ export class CompareService {
                 }
                 this.copyValue(l, option.data);
                 this.copyValue(r, option.data);
-                option.result.push({
+                let tempResult = {
                     match: true,
                     left: l,
                     right: r,
-                    display: l.display && r.display,
-                    diff: _.uniq(_.concat(l.diff, right.diff))
-                });
+                    display: l.display && r.display
+                };
+                let diff = _.uniq(_.concat(l.diff, r.diff));
+                if (!_.isEmpty(diff)) tempResult["diff"] = diff;
+                option.result.push(tempResult);
                 beginIndex++;
             }
         });

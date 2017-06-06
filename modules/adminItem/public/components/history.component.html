@@ -61,8 +61,8 @@
         <h4 class="modal-title">Compare Side By Side</h4>
     </div>
     <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
-        <cde-compare-object [left]="getSelectedElt()[1]" [right]="getSelectedElt()[0]"></cde-compare-object>
-        <cde-compare-array [left]="getSelectedElt()[0]" [right]="getSelectedElt()[1]"></cde-compare-array>
+        <cde-compare-object [old]="getSelectedElt()[0]" [new]="getSelectedElt()[0]"></cde-compare-object>
+        <cde-compare-array [old]="getSelectedElt()[0]" [new]="getSelectedElt()[1]"></cde-compare-array>
     </div>
     <div class="modal-footer"></div>
 </ng-template>

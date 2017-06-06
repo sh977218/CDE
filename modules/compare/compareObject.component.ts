@@ -8,8 +8,8 @@ import { CompareService } from "../core/public/compare.service";
 })
 export class CompareObjectComponent implements OnInit {
 
-    @Input() left;
-    @Input() right;
+    @Input() old;
+    @Input() new;
     map = {
         "Text": "valueDomain.datatypeText"
     };
@@ -51,6 +51,6 @@ export class CompareObjectComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.compareService.doCompareObject(this.left, this.right, this.compareObjectProperties);
+        this.compareService.doCompareObject(this.old, this.new, this.compareObjectProperties);
     }
 }
