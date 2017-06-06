@@ -20,8 +20,8 @@ import * as _ from "lodash";
         }`]
 })
 export class CompareArrayComponent implements OnInit {
-    @Input() old;
-    @Input() new;
+    @Input() older;
+    @Input() newer;
     public compareArrayOption = [
         /*   {
          label: "Questions",
@@ -102,7 +102,7 @@ export class CompareArrayComponent implements OnInit {
          },*/
         {
             label: "Properties",
-            equal: function (a, b) {
+            isEqual: function (a, b) {
                 if (_.isEmpty(a.diff)) a.diff = [];
                 if (_.isEmpty(b.diff)) b.diff = [];
                 let result = _.isEqual(a.key, b.key);
@@ -129,11 +129,11 @@ export class CompareArrayComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.old.questions = [];
-        this.flatFormQuestions(this.old, this.old.questions);
-        this.new.questions = [];
-        this.flatFormQuestions(this.new, this.new.questions);
-        this.compareService.doCompareArray(this.old, this.new, this.compareArrayOption);
+        this.older.questions = [];
+        this.flatFormQuestions(this.older, this.older.questions);
+        this.newer.questions = [];
+        this.flatFormQuestions(this.newer, this.newer.questions);
+        this.compareService.doCompareArray(this.newer, this.older, this.compareArrayOption);
         console.log('a');
     }
 

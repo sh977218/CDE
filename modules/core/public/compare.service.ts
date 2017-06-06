@@ -29,39 +29,25 @@ export class CompareService {
         return option;
     };
 
-    static doCompareArrayValidator(left, right, option) {
-        if (!_.isArray(left) || !_.isArray(right))
-            throw ("compare array type does not match of option " + JSON.stringify(option));
-        if (option.sort && !option.sortFn)
-            throw ("sort function is missing");
-        else if (!option.sort && option.sortFn)
-            throw ("existing sort function but sort is missing");
-        else if (option.sort && option.sortFn) {
-            left.sort(option.sortFn);
-            right.sort(option.sortFn);
-        }
-        if (!option.properties)
-            option.properties = _.uniq(_.concat(Object.keys(left), Object.keys(right)));
-        if (!option.equal) option.equal = _.isEqual;
-    }
-
     copyValue(obj, data) {
         _.forEach(data, d => {
             obj[d.property] = _.get(obj, d.property);
         });
     }
 
-    doCompareArrayImpl(left, right, option) {
+    doCompareArrayImpl(newer, older, option) {
         option.result = [];
         let beginIndex = 0;
 
-        _.forEach(left, (l, leftIndex) => {
-            let rightArrayCopy = _.slice(right, beginIndex);
+        _.forEach(newer, l => {
+            let rightArrayCopy = _.slice(older, beginIndex);
             let rightIndex = _.findIndex(rightArrayCopy, o => option.isEqual(o, l));
             if (rightIndex === -1) {
                 this.copyValue(l, option.data);
                 option.result.push({
                     match: false,
+                    removed: true,
+                    data: l,
                     left: l,
                     right: null
                 });
@@ -73,21 +59,30 @@ export class CompareService {
                     this.copyValue(rightArrayCopy[k], option.data);
                     option.result.push({
                         match: false,
+                        add: true,
+                        data: rightArrayCopy[k],
                         left: null,
                         right: rightArrayCopy[k]
                     });
                     beginIndex++;
                 }
-                this.copyValue(l, option.data);
-                this.copyValue(r, option.data);
                 let tempResult = {
                     match: true,
-                    left: l,
-                    right: r,
                     display: l.display && r.display
                 };
+                let lCopy = {};
+                let rCopy = {};
                 let diff = _.uniq(_.concat(l.diff, r.diff));
-                if (!_.isEmpty(diff)) tempResult["diff"] = diff;
+                if (!_.isEmpty(diff)) {
+                    diff.forEach(d => {
+                        lCopy[d] = _.get(l, d);
+                        rCopy[d] = _.get(r, d);
+                    });
+                    tempResult["left"] = lCopy;
+                    tempResult["right"] = rCopy;
+                    tempResult["diff"] = diff;
+                    tempResult["edited"] = true;
+                }
                 option.result.push(tempResult);
                 beginIndex++;
             }
@@ -103,45 +98,20 @@ export class CompareService {
         }
     }
 
-    doCompareArray(left, right, option) {
+    doCompareArray(newer, older, option) {
         _.forEach(option, property => {
-            if (!left && !right) {
+            if (!newer && !older) {
                 property.match = true;
-                property.left = "";
-                property.right = "";
+                property.display = false;
                 return;
             }
             if (!property.isEqual) property.isEqual = _.isEqual;
             let l = [];
-            if (left) l = _.get(left, property.property);
+            if (newer) l = _.get(newer, property.property);
             let r = [];
-            if (right) r = _.get(right, property.property);
+            if (older) r = _.get(older, property.property);
             this.doCompareArrayImpl(l, r, property);
         });
-    }
-
-    static doCompareValidator(left, right, option) {
-        if (!left && !right) {
-            throw "left and right are both null";
-        } else if (_.isArray(left) && _.isArray(right)) {
-        } else if (!_.isArray(left) && _.isArray(right)) {
-            throw "type miss match, left is not array, right is array";
-        } else if (_.isArray(left) && !_.isArray(right)) {
-            throw "type miss match, left is array, right is not array";
-        }
-    }
-
-    findMatchInResult(left, right, result) {
-        let tempMatch = true;
-        _.forOwn(result, (v, k) => {
-            if (!result[k].match)
-                tempMatch = false;
-        });
-        result.match = tempMatch;
-        /*
-         result.left = left;
-         result.right = right;
-         */
     }
 }
 

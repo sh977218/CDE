@@ -3,11 +3,19 @@
         <label>{{property.label}}:</label>
         <div *ngFor="let r of property.result">
             <div class="col-xs-12" *ngIf="!r.match || r.display">
-                <div *ngFor="let d of r.diff">
-                    <ng-container *ngIf="r.left[d]">
+                <ng-container *ngIf="r.add">
+                    added;
+                    {{r.data | json}}
+                </ng-container>
+                <ng-container *ngIf="r.removed">
+                    removed;
+                    {{r.data | json}}
+                </ng-container>
+                <ng-container *ngIf="r.edited">
+                    <div *ngFor="let d of r.diff">
                         <pre lineDiff [left]="r.left[d]" [right]="r.right[d]"></pre>
-                    </ng-container>
-                </div>
+                    </div>
+                </ng-container>
             </div>
         </div>
     </div>
