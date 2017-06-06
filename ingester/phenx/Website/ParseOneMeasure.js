@@ -11,6 +11,21 @@ function parsingIntroduction(driver, measure, done) {
         done();
     });
 };
+function parsingKeywords(driver, measure, done) {
+    var instructionXpath = "//p[./b[normalize-space(text())='Keywords']]/following-sibling::p";
+    driver.findElement(By.xpath(instructionXpath)).getText().then(function (text) {
+        measure.keywords = text.trim();
+        done();
+    });
+};
+
+function parsingMeasureName(driver, measure, done) {
+    var measureNameXpath = "//*[@class='definitionTitle']/following-sibling::text()";
+    driver.findElement(By.xpath(measureNameXpath)).getText().then(function (text) {
+        measure.measureName = text.trim();
+        done();
+    });
+}
 
 function parsingClassification(driver, measure, done) {
     var classificationXpath = "//p[@class='back'][1]/a";
@@ -64,6 +79,12 @@ exports.parseOneMeasure = function (measure, cb, loadLoinc) {
     async.series([
         function (doneIntroduction) {
             parsingIntroduction(driver, measure, doneIntroduction);
+        },
+        function (doneKeywords) {
+            parsingKeywords(driver, measure, doneKeywords);
+        },
+        function (doneMeasureName) {
+            parsingMeasureName(driver, measure, doneMeasureName);
         },
         function (doneClassification) {
             parsingClassification(driver, measure, doneClassification)
