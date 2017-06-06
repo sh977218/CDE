@@ -25,6 +25,7 @@ import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 
 import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
+import {SystemModule} from "../../system/public/system.module";
 
 @NgModule({
     imports: [
@@ -35,7 +36,8 @@ import { SkipLogicService } from "./skipLogic.service";
         SortableModule.forRoot(),
         TreeModule,
         // internal
-        AdminItemModule
+        AdminItemModule,
+        SystemModule,
     ],
     declarations: [
         ArrayListPipe,
