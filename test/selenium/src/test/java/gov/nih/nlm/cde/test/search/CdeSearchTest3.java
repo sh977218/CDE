@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test.search;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -47,28 +46,5 @@ public class CdeSearchTest3 extends NlmCdeBaseTest {
         textPresent("ISO21090.ST");
 
     }
-
-//    @Test
-//    public void openAllButton() {
-//        goToCdeSearch();
-//        clickElement(By.id("browseOrg-NINDS"));
-//        textPresent("Expand All");
-//        textNotPresent("Collapse All");
-//        for (int i = 0; i < 19; i++) {
-//            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_" + i)));
-//        }
-//        clickElement(By.id("openAllCb"));
-//        textPresent("Collapse All");
-//        textNotPresent("Expand All");
-//        for (int i = 0; i < 19; i++) {
-//            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_" + i)));
-//        }
-//        clickElement(By.id("openAllCb"));
-//        textPresent("Expand All");
-//        textNotPresent("Collapse All");
-//        for (int i = 0; i < 19; i++) {
-//            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_" + i)));
-//        }
-//    }
 
 }
