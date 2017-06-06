@@ -634,18 +634,6 @@ button#selectDefault {
     word-wrap: break-word;
 }
 
-.collapseText {
-    display: block;
-    overflow: hidden;
-    max-height: 165px;
-    box-shadow: 0 9px 7px -5px #969696;
-}
-
-.expandText {
-    overflow: hidden;
-    display: inline-block;
-}
-
 .cdeTable caption {
     color: black;
     font-size: 18px;

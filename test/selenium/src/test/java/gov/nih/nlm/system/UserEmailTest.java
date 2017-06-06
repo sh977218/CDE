@@ -15,10 +15,10 @@ public class UserEmailTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='emailEdit']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id='emailEdit']//input")).clear();
         findElement(By.xpath("//*[@id='emailEdit']//input")).sendKeys("me@");
-        Assert.assertFalse(findElement(By.xpath("//inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
-        findElement(By.xpath("//inline-edit[@id='emailEdit']//input")).sendKeys("me.com");
-        Assert.assertTrue(findElement(By.xpath("//inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
-        clickElement(By.xpath("//inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]"));
+        Assert.assertFalse(findElement(By.xpath("//cde-inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
+        findElement(By.xpath("//cde-inline-edit[@id='emailEdit']//input")).sendKeys("me.com");
+        Assert.assertTrue(findElement(By.xpath("//cde-inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
+        clickElement(By.xpath("//cde-inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]"));
         textPresent("Saved");
     }
 }

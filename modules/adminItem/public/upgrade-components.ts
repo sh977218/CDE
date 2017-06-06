@@ -31,22 +31,6 @@ export class InlineEditDirective extends UpgradeComponent {
 }
 
 @Directive({
-    selector: "inline-area-edit"
-})
-export class InlineAreaEditDirective extends UpgradeComponent {
-    @Input() model: any;
-    @Output() modelChange: EventEmitter<void>;
-    @Input() isAllowed: any;
-    @Output() onOk: EventEmitter<void>;
-    @Output() onErr: EventEmitter<void>;
-    @Input() defFormat: any;
-    @Output() defFormatChange: EventEmitter<void>;
-    constructor(elementRef: ElementRef, injector: Injector) {
-        super("inlineAreaEdit", elementRef, injector);
-    }
-}
-
-@Directive({
     selector: "sortable-array"
 })
 export class SortableArrayDirective extends UpgradeComponent {
