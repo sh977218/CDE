@@ -199,8 +199,5 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.isFormValid.emit(false);
     }
 
-    static inputEvent = new Event('input', {
-        'bubbles': true,
-        'cancelable': true
-    });
+    static inputEvent = new CustomEvent('input');
 }
