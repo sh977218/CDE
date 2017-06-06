@@ -7,7 +7,7 @@ var ParseOneMeasure = require('./ParseOneMeasure');
 
 var measureCount = 0;
 
-function doLoadPhenxMeasure(done) {
+function doLoadPhenxMeasure(done, loadLoinc) {
     var driver = new webdriver.Builder().forBrowser('chrome').build();
     driver.get(baseUrl);
     var measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
@@ -28,7 +28,7 @@ function doLoadPhenxMeasure(done) {
                     });
                 },
                 function parseOneMeasure(doneParseOneMeasure) {
-                    ParseOneMeasure.parseOneMeasure(measure, doneParseOneMeasure);
+                    ParseOneMeasure.parseOneMeasure(measure, doneParseOneMeasure, loadLoinc);
                 }
             ], function () {
                 new MigrationMeasureModel(measure).save(function (e) {
@@ -44,7 +44,7 @@ function doLoadPhenxMeasure(done) {
     })
 }
 
-exports.run = function (cb) {
+exports.run = function (loadLoinc, cb) {
     async.series([
         function removeMeasureCollection(doneRemoveMigrationMeasure) {
             MigrationMeasureModel.remove({}, function (err) {
@@ -61,7 +61,7 @@ exports.run = function (cb) {
             });
         },
         function (doneLoadPhenxMeasure) {
-            doLoadPhenxMeasure(doneLoadPhenxMeasure);
+            doLoadPhenxMeasure(doneLoadPhenxMeasure, loadLoinc);
         },
         function () {
             console.log('Finished grab all measures from PhenX website');
@@ -70,4 +70,4 @@ exports.run = function (cb) {
         }])
 };
 
-exports.run();
+exports.run(false);
