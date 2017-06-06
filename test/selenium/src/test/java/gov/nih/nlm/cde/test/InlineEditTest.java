@@ -58,7 +58,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         findElement(By.cssSelector("textarea.cke_source")).sendKeys("validate image url");
         clickElement(By.cssSelector(".cke_button__source"));
         clickElement(By.cssSelector(".cke_button__image"));
-        findElement(By.id("//div[label[. = 'URL']]//input")).sendKeys(url);
+        findElement(By.xpath("//div[label[. = 'URL']]//input")).sendKeys(url);
         clickElement(By.linkText("OK"));
 
         clickElement(By.cssSelector("button.fa-check"));
