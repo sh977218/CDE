@@ -74,9 +74,9 @@ export class CompareService {
                 let rCopy = {};
                 let diff = _.uniq(_.concat(l.diff, r.diff));
                 if (!_.isEmpty(diff)) {
-                    diff.forEach(d => {
-                        lCopy[d] = _.get(l, d);
-                        rCopy[d] = _.get(r, d);
+                    option.data.forEach(d => {
+                        lCopy[d.property] = _.get(l, d.property);
+                        rCopy[d.property] = _.get(r, d.property);
                     });
                     tempResult["left"] = lCopy;
                     tempResult["right"] = rCopy;
@@ -90,11 +90,23 @@ export class CompareService {
         if (option.result) {
             option.match = !(option.result.filter(p => !p.match).length > 0);
             option.display = option.result.filter(p => p.display).length > 0;
-            /*
-             option.result.forEach(p => {
-             p.diff = _.concat(left.diff, right.diff);
-             })
-             */
+            let addResultArray = option.result.filter(r1 => r1.add);
+            let removeResultArray = option.result.filter(r1 => r1.removed);
+            option.result.forEach(r => {
+                if (r.add && _.findIndex(removeResultArray, o => {
+                        return _.isEqual(o.data, r.data)
+                    }) !== -1) {
+                    r.reorder = true;
+                }
+                if (r.removed && _.findIndex(addResultArray, o => {
+                        return _.isEqual(o.data, r.data)
+                    }) !== -1) {
+                    r.reorder = true;
+                }
+            });
+            option.result = _.uniqWith(option.result, (a, b) => {
+                return a.reorder && b.reorder && _.isEqual(a.data, b.data);
+            })
         }
     }
 

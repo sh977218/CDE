@@ -3,17 +3,40 @@
         <label>{{property.label}}:</label>
         <div *ngFor="let r of property.result">
             <div class="col-xs-12" *ngIf="!r.match || r.display">
-                <ng-container *ngIf="r.add">
-                    added;
-                    {{r.data | json}}
-                </ng-container>
-                <ng-container *ngIf="r.removed">
-                    removed;
-                    {{r.data | json}}
-                </ng-container>
-                <ng-container *ngIf="r.edited">
-                    <div *ngFor="let d of r.diff">
-                        <pre lineDiff [left]="r.left[d]" [right]="r.right[d]"></pre>
+                <div class="col-xs-12 arrayObj" *ngIf="r.reorder">
+                    Reorder;
+                    <div *ngFor="let d of property.data">
+                        <label>{{d.label}}:</label>
+                        <span>{{r.data[d.property]}}</span>
+                    </div>
+                </div>
+                <ng-container *ngIf="!r.reorder">
+                    <div class="col-xs-12 arrayObj" *ngIf="r.add">
+                        Added;
+                        <div *ngFor="let d of property.data">
+                            <label>{{d.label}}:</label>
+                            <span>{{r.data[d.property]}}</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 arrayObj" *ngIf="r.removed">
+                        Removed;
+                        <div *ngFor="let d of property.data">
+                            <label>{{d.label}}:</label>
+                            <span>{{r.data[d.property]}}</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 arrayObj" *ngIf="r.edited">
+                        Edited:
+                        <div *ngFor="let d of property.data">
+                            <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
+                                <label>{{d.label}}:</label>
+                                <pre lineDiff [left]="r.left[d.property]" [right]="r.right[d.property]"></pre>
+                            </ng-container>
+                            <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
+                                <label>{{d.label}}:</label>
+                                <span>{{r.left[d.property]}}</span>
+                            </ng-container>
+                        </div>
                     </div>
                 </ng-container>
             </div>

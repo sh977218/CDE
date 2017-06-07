@@ -56,7 +56,7 @@
     </ng-container>
 </div>
 
-<ng-template #compareContent>
+<ng-template #compareContent let-c="close" let-d="dismiss" class="hugeModal">
     <div class="modal-header">
         <h4 class="modal-title">Compare Side By Side</h4>
     </div>
@@ -64,5 +64,8 @@
         <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>
         <cde-compare-array [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-array>
     </div>
-    <div class="modal-footer"></div>
+    <div class="modal-footer">
+        <button class="btn cancel" (click)="c('Close click')" type="button">Close
+        </button>
+    </div>
 </ng-template>

@@ -1537,7 +1537,7 @@ label.input-group-addon {
     margin-bottom: 0;
 }
 
-div.native-question-label{
+div.native-question-label {
     font-size: 14px;
     font-weight: 700;
 }
@@ -1736,7 +1736,7 @@ div.slider .ui-slider-handle {
     height: 50px;
 }
 
-.hugeModal > .modal-dialog {
+.hugeModal > .modal-dialog > .modal-content {
     max-width: 90% !important;
     width: 90% !important;
 }
