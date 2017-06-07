@@ -2,7 +2,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { LocalStorageModule } from "angular-2-local-storage/dist/index";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { Select2Module } from "ng2-select2";
 
@@ -11,13 +10,14 @@ import { ClassificationComponent } from "./components/classification/classificat
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
-import { InlineEditDirective, InlineSelectEditDirective, InlineAreaEditDirective, SortableArrayDirective } from "./upgrade-components";
+import { InlineEditDirective, InlineSelectEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
-import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { SourcesComponent } from "./components/sources/sources.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
+import { SystemModule } from "../../system/public/system.module";
+import { LocalStorageModule } from "angular-2-local-storage";
 
 @NgModule({
     imports: [
@@ -25,6 +25,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
         FormsModule,
         Select2Module,
         NgbModule,
+        SystemModule,
         LocalStorageModule.withConfig({
             prefix: "nlmcde",
             storageType: "localStorage"
@@ -38,11 +39,9 @@ import { RegistrationComponent } from "./components/registration/registration.co
         ClassifyItemModalComponent,
         InlineEditDirective,
         InlineSelectEditDirective,
-        InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
         NamingComponent,
-        PlaceHoldEmptyPipe,
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
@@ -62,10 +61,8 @@ import { RegistrationComponent } from "./components/registration/registration.co
         ClassificationComponent,
         InlineEditDirective,
         InlineSelectEditDirective,
-        InlineAreaEditDirective,
         SortableArrayDirective,
         IdentifiersComponent,
-        PlaceHoldEmptyPipe,
         PropertiesComponent,
         NamingComponent,
         ReferenceDocumentComponent,

@@ -156,7 +156,7 @@ exports.storedQueryRiverFunction = function (elt, cb) {
     elt.selectedElements1.forEach(function (se, i) {
         elt['classifLevel' + i] = se;
     });
-    elt.search_suggest = elt.searchTerm;
+    if(elt.searchTerm && elt.searchTerm.length > 0) elt.search_suggest = elt.searchTerm;
     return cb(elt);
 };
 
@@ -326,12 +326,7 @@ exports.createStoredQueryIndexJson = {
                 , "classifLevel3": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel4": {"type": "string", "index": "not_analyzed"}
                 , "searchTerm": {"type": "string", "analyzer": "stop"}
-                , "search_suggest": {
-                    "type": "completion",
-                    "analyzer": "simple",
-                    "search_analyzer": "simple",
-                    "payloads": true
-                }
+                , "search_suggest": {"type": "completion"}
             }
         }
     }, settings: {

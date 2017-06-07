@@ -4,7 +4,7 @@ import * as _ from "lodash";
 
 @Component({
     selector: "cde-inline-edit",
-    templateUrl: "inlineEdit.component.html",
+    templateUrl: "./inlineEdit.component.html",
     styles: [`
         button {
             display: inline-block;
@@ -24,7 +24,7 @@ import * as _ from "lodash";
         }
     `]
 })
-export class InlineEditComponent implements OnInit, OnChanges {
+export class InlineEditComponent implements OnInit {
     @Input() model;
     @Input() inputType: string = "text";
     @Input() selectOptions: Array<any> = [];
