@@ -65,8 +65,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                         var status = exportSettings.status;
                         var cdes = [];
                         JSON.parse(result).forEach(function (oneElt) {
-                            var getOrgRulesForCde = RegStatusValidator.getOrgRulesForCde;
-                            var cdeOrgRules = getOrgRulesForCde(oneElt);
+                            var cdeOrgRules = RegStatusValidator.getOrgRulesForCde(oneElt);
 
                             if (!RegStatusValidator.conditionsMetForStatusWithinOrg(oneElt, orgName, status, cdeOrgRules)) {
                                 var record = {
