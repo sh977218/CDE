@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+    Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef,
+    ViewChild
+} from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 
@@ -21,6 +24,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
+    @ViewChild("slInput") slInput: ElementRef;
 
     isSubForm = false;
     parent: FormElement;
@@ -77,7 +81,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     getSkipLogicOptions = (text$: Observable<string>) =>
-        text$.debounceTime(300).distinctUntilChanged().map(term =>
+        text$.debounceTime(300).map(term =>
             this.skipLogicService.getCurrentOptions(term, this.parent.formElements, this.section, this.parent.formElements.indexOf(this.section))
         );
 
@@ -102,10 +106,18 @@ export class FormDescriptionSectionComponent implements OnInit {
         return parseInt(section.repeat) + " times";
     }
 
+    slOptionsRetrigger() {
+        setTimeout(() => {
+           this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
+        }, 0);
+    }
+
     validateSkipLogic(skipLogic, previousQuestions, item) {
         if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
             this.stageElt.emit();
         else
             this.isFormValid.emit(false);
     }
+
+    static inputEvent = new Event('input');
 }

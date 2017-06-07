@@ -19,6 +19,22 @@
 	</script>
 	<![endif]-->
 
+	<script type="text/javascript">
+        (function () {
+            function CustomEvent ( event, params ) {
+                params = params || { bubbles: false, cancelable: false, detail: undefined };
+                var evt = document.createEvent( 'CustomEvent' );
+                evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+                return evt;
+            }
+
+            CustomEvent.prototype = window.Event.prototype;
+
+            if (typeof(window.Event) !== 'function')
+                window.Event = CustomEvent;
+        })();
+	</script>
+
 	<!--[if IE]><!-->
 	<style>
 		.ieFix {
@@ -38,7 +54,6 @@
 	<link rel='stylesheet' href='/components/bootstrap-css-only/css/bootstrap.css' />
 	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour.css' />
 	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css' />
-	<link rel='stylesheet' href='/components/ng-grid/ng-grid.css' />
 	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
 	<!-- endbower -->
 
@@ -109,7 +124,6 @@
 <script src="/components/bootstrap/dist/js/bootstrap.js"></script>
 <script src="/components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
 <script src="/components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
-<script src="/components/ng-grid/build/ng-grid.js"></script>
 <script src="/components/angularjs-camelCase-human/camelcase-browser.js"></script>
 <script src="/components/html2canvas/build/html2canvas.js"></script>
 <script src="/components/angular-send-feedback/dist/angular-send-feedback.js"></script>
