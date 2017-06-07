@@ -1,7 +1,6 @@
 import * as authShared from "../../../system/shared/authorizationShared";
 
-angular.module('OrgFactories', ['ngResource'])
-.factory('OrgHelpers', ["$http", "$q", function ($http, $q) {
+angular.module('OrgFactories', ['ngResource']).factory('OrgHelpers', ["$http", "$q", function ($http, $q) {
     var orgHelpers = {
         orgsDetailedInfo: {}
         , deferred: $q.defer()
