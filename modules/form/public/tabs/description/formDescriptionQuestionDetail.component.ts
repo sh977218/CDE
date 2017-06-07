@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+    Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef,
+    ViewChild
+} from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -22,6 +25,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @ViewChild("formDescriptionNameSelectTmpl") formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild("formDescriptionQuestionTmpl") formDescriptionQuestionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionQuestionEditTmpl") formDescriptionQuestionEditTmpl: TemplateRef<any>;
+    @ViewChild("slInput") slInput: ElementRef;
 
     answersOptions: any = {
         allowClear: true,
@@ -129,7 +133,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     getSkipLogicOptions = (text$: Observable<string>) =>
-        text$.debounceTime(300).distinctUntilChanged().map(term =>
+        text$.debounceTime(300).map(term =>
             this.skipLogicService.getCurrentOptions(term, this.parent.formElements, this.question, this.parent.formElements.indexOf(this.question))
         );
 
@@ -182,10 +186,18 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.stageElt.emit();
     }
 
+    slOptionsRetrigger() {
+        setTimeout(() => {
+            this.slInput.nativeElement.dispatchEvent(FormDescriptionQuestionDetailComponent.inputEvent);
+        }, 0);
+    }
+
     validateSkipLogic(skipLogic, previousQuestions, item) {
         if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
             this.stageElt.emit();
         else
             this.isFormValid.emit(false);
     }
+
+    static inputEvent = new Event('input');
 }

@@ -18,6 +18,8 @@ export class NavigationComponent {
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
 
     authShared = SharedService.auth;
+    smallContext = {$implicit: "collapse"};
+    largeContext = {$implicit: ""};
 
     constructor(@Inject("userResource") public userService) {}
 
