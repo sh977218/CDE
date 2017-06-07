@@ -68,3 +68,9 @@ angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({c
 import {PermissibleValueComponent} from "../components/permissibleValue.component";
 angular.module('cdeModule').directive('cdePermissibleValue', downgradeComponent({component: PermissibleValueComponent, inputs: ['elt'], outputs: []
 }));
+
+import {RegistrationValidatorService} from "../components/validationRules/registrationValidator.service";
+angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
+
+import {ValidRulesComponent} from "../components/validationRules/validRules.component";
+angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], ouputs: []}));
