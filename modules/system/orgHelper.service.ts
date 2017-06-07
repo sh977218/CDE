@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import * as authShared from "./shared/authorizationShared";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class OrgHelperService  {
@@ -43,11 +44,11 @@ export class OrgHelperService  {
         && this.orgsDetailedInfo[orgName].workingGroupOf.trim() !== '';
 
 
-    orgDetails: Promise<any>;
+    orgDetails: Observable<any>;
 
     getOrgsDetails () {
-        this.orgDetails = this.http.get('/listOrgsDetailedInfo').map(r => r.json()).toPromise();
-        this.orgDetails.then(response => {
+        this.orgDetails = this.http.get('/listOrgsDetailedInfo').map(r => r.json());
+        this.orgDetails.subscribe(response => {
             response.forEach(org => {
                 if (org) {
                     if (!org.propertyKeys) org.propertyKeys = [];

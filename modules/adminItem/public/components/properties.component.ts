@@ -22,7 +22,7 @@ export class PropertiesComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.orgHelpers.orgDetails.then(() => {
+        this.orgHelpers.orgDetails.subscribe(() => {
             this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
         });
     }

@@ -64,7 +64,7 @@ export class ListManagementComponent implements OnInit {
     saveOrg (org) {
         this.http.post("/updateOrg", org).subscribe(() => {
             this.orgHelper.getOrgsDetails();
-            this.orgHelper.orgDetails.then(() => this.Alert.addAlert("success", "Org Updated"));
+            this.orgHelper.orgDetails.subscribe(() => this.Alert.addAlert("success", "Org Updated"));
         }, response => this.Alert.addAlert("danger", "Error. Unable to save."));
     }
 

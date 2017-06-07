@@ -1,21 +1,33 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { OrgHelperService } from "../../../system/orgHelper.service";
 
 @Component({
     selector: "cde-admin-item-naming",
-    providers: [NgbActiveModal, OrgHelperService],
     templateUrl: "./naming.component.html"
 })
 export class NamingComponent implements OnInit {
+
     @ViewChild("newNamingContent") public newNamingContent: NgbModalModule;
     @Input() public elt: any;
     public newNaming: any = {};
     public modalRef: NgbModalRef;
-    orgNamingTags: {id: string; text: string}[] = [];
+    public orgNamingTags: {id: string; text: string}[] = [];
+
+    loaded: boolean;
+
     //noinspection TypeScriptUnresolvedVariable
-    public options: Select2Options;
+    public options: Select2Options = {
+        multiple: true,
+        tags: true,
+        language: {
+            noResults: () => {
+                return "No Tags found, Tags are managed in Org Management > List Management";
+            }
+        }
+    };
+
     public isAllowed: boolean = false;
 
     constructor(@Inject("Alert") private alert,
@@ -28,30 +40,20 @@ export class NamingComponent implements OnInit {
         this.getCurrentTags();
         this.elt.naming.forEach(n => {
             n.currentTags.forEach (ct => {
-                if (this.orgNamingTags.indexOf({"id": ct, "text": ct}) === -1) {
+                if (!this.orgNamingTags.find((elt) => ct === elt.text)) {
                     this.orgNamingTags.push({"id": ct, "text": ct});
                 }
             });
         });
-        this.orgHelpers.orgDetails.then(() => {
-            this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.map(r => {
-                return {"id": r, "text": r};
-            }).forEach(nt => {
-                if (this.orgNamingTags.indexOf({"id": nt, "text": nt}) === -1) {
+        this.orgHelpers.orgDetails.subscribe(() => {
+            this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach(nt => {
+                if (!this.orgNamingTags.find((elt) => nt === elt.text)) {
                     this.orgNamingTags.push({"id": nt, "text": nt});
                 }
             });
-            this.options = {
-                multiple: true,
-                tags: true,
-                language: {
-                    noResults: () => {
-                        return "No Tags found, Tags are managed in Org Management > List Management";
-                    }
-                }
-            };
-            this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
+            this.loaded = true;
         });
+        this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
     }
 
     getCurrentTags() {
