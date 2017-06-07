@@ -58,7 +58,22 @@
 
 <ng-template #compareContent let-c="close" let-d="dismiss" class="hugeModal">
     <div class="modal-header">
-        <h4 class="modal-title">Compare Side By Side</h4>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #fad000;"></div>
+            <span>Reorder</span>
+        </div>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #008000;"></div>
+            <span>Add</span>
+        </div>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #a94442;"></div>
+            <span>Remove</span>
+        </div>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #0000ff;"></div>
+            <span>Edit</span>
+        </div>
     </div>
     <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
         <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>

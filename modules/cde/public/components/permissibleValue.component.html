@@ -93,8 +93,8 @@
         <div class="col-xs-2 text-right text_label">Description:</div>
         <div class="col-xs-10">
             <cde-inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
-                              [isAllowed]="isAllowedModel.isAllowed(elt)"
-                              [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat">
+                                  [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                  [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat">
             </cde-inline-area-edit>
         </div>
     </ng-container>
@@ -165,7 +165,7 @@
                         {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
                     </td>
                     <td id="pvMeaningDefinition_{{i}}">
-                        <cde-inline-edit [model]="pv.valueMeaningDefinition"
+                        <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
                                          [isAllowed]="isAllowedModel.isAllowed(elt)"
                                          (modelChange)="stageElt()"></cde-inline-edit>
                     </td>

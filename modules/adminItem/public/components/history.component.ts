@@ -11,7 +11,20 @@ import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
     styles: [`
         caption {
             caption-side: top;
-        }`],
+        }
+
+        .input-color input {
+            padding-left: 20px;
+        }
+
+        .input-color .color-box {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            left: 5px;
+            top: 5px;
+        }
+    `],
     providers: [NgbActiveModal]
 })
 export class HistoryComponent implements OnInit {

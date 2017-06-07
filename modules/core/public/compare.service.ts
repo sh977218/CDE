@@ -39,18 +39,36 @@ export class CompareService {
         option.result = [];
         let beginIndex = 0;
 
-        _.forEach(newer, l => {
+        _.forEach(newer, (l, leftIndex) => {
             let rightArrayCopy = _.slice(older, beginIndex);
             let rightIndex = _.findIndex(rightArrayCopy, o => option.isEqual(o, l));
             if (rightIndex === -1) {
-                this.copyValue(l, option.data);
-                option.result.push({
-                    match: false,
-                    removed: true,
-                    data: l,
-                    left: l,
-                    right: null
-                });
+                if (leftIndex === newer.length - 1) {
+                    this.copyValue(l, option.data);
+                    option.result.push({
+                        match: false,
+                        add: true,
+                        data: l,
+                        left: l
+                    });
+                    rightArrayCopy.forEach(o => {
+                        this.copyValue(o, option.data);
+                        option.result.push({
+                            match: false,
+                            add: true,
+                            data: o,
+                            right: o
+                        });
+                    })
+                } else {
+                    this.copyValue(l, option.data);
+                    option.result.push({
+                        match: false,
+                        remove: true,
+                        data: l,
+                        left: l
+                    });
+                }
             }
             // found match in right array
             else {
@@ -61,7 +79,6 @@ export class CompareService {
                         match: false,
                         add: true,
                         data: rightArrayCopy[k],
-                        left: null,
                         right: rightArrayCopy[k]
                     });
                     beginIndex++;
@@ -78,8 +95,8 @@ export class CompareService {
                         lCopy[d.property] = _.get(l, d.property);
                         rCopy[d.property] = _.get(r, d.property);
                     });
-                    tempResult["left"] = lCopy;
-                    tempResult["right"] = rCopy;
+                    tempResult["older"] = lCopy;
+                    tempResult["newer"] = rCopy;
                     tempResult["diff"] = diff;
                     tempResult["edited"] = true;
                 }
@@ -91,21 +108,56 @@ export class CompareService {
             option.match = !(option.result.filter(p => !p.match).length > 0);
             option.display = option.result.filter(p => p.display).length > 0;
             let addResultArray = option.result.filter(r1 => r1.add);
-            let removeResultArray = option.result.filter(r1 => r1.removed);
+            let removeResultArray = option.result.filter(r1 => r1.remove);
             option.result.forEach(r => {
+                if (r.left && r.remove) {
+                    _.forEach(option.result, o => {
+                        if (o.remove && _.isEqual(o.data, r.data)) {
+                            o.display = false;
+                        }
+                    });
+                    if (_.findIndex(removeResultArray, o => {
+                            return _.isEqual(o.data, r.data);
+                        }) !== -1)
+                        r.reorder = true;
+                }
+                if (r.right && r.add) {
+                    let temp = false;
+                    _.forEach(option.result, o => {
+                        if (o.add && _.isEqual(o.data, r.data)) {
+                            o.display = false;
+                        }
+                        if (o.left && _.isEqual(o.data, r.data)) {
+                            temp = false;
+                        }
+                    });
+                    if (_.findIndex(addResultArray, o => {
+                            return _.isEqual(o.data, r.data);
+                        }) !== -1)
+                        r.reorder = true;
+                }
                 if (r.add && _.findIndex(removeResultArray, o => {
                         return _.isEqual(o.data, r.data)
                     }) !== -1) {
                     r.reorder = true;
                 }
-                if (r.removed && _.findIndex(addResultArray, o => {
+                if (r.remove && _.findIndex(addResultArray, o => {
                         return _.isEqual(o.data, r.data)
                     }) !== -1) {
                     r.reorder = true;
                 }
             });
             option.result = _.uniqWith(option.result, (a, b) => {
-                return a.reorder && b.reorder && _.isEqual(a.data, b.data);
+                if (a.reorder && b.reorder) {
+                    let aData = _.cloneDeep(a.data);
+                    delete aData.diff;
+                    let bData = _.cloneDeep(b.data);
+                    delete bData.diff;
+                    if (_.isEqual(aData, bData)) {
+                        return true;
+                    }
+                }
+                return false;
             })
         }
     }
