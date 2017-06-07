@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import * as authShared from "./shared/authorizationShared";
-import {Observable} from "rxjs/Observable";
+import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class OrgHelperService  {
