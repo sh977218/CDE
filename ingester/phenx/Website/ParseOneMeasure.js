@@ -3,6 +3,7 @@ var By = webdriver.By;
 var async = require('async');
 var ParseOneProtocol = require('./ParseOneProtocol');
 var driver = new webdriver.Builder().forBrowser('chrome').build();
+var _ = require('lodash');
 
 function parsingIntroduction(driver, measure, done) {
     var instructionXpath = '/html/body/center/table/tbody/tr[3]/td/div/div[5]/div[1]';
@@ -19,14 +20,6 @@ function parsingKeywords(driver, measure, done) {
     });
 };
 
-function parsingMeasureName(driver, measure, done) {
-    var measureNameXpath = "//*[@class='definitionTitle']/following-sibling::text()";
-    driver.findElement(By.xpath(measureNameXpath)).getText().then(function (text) {
-        measure.measureName = text.trim();
-        done();
-    });
-}
-
 function parsingClassification(driver, measure, done) {
     var classificationXpath = "//p[@class='back'][1]/a";
     driver.findElements(By.xpath(classificationXpath)).then(function (classificationArr) {
@@ -37,6 +30,7 @@ function parsingClassification(driver, measure, done) {
                 doneOneClassification();
             });
         }, function doneAllClassification() {
+            measure.measureName = _.last(measure.classification);
             done();
         });
     });
@@ -82,9 +76,6 @@ exports.parseOneMeasure = function (measure, cb, loadLoinc) {
         },
         function (doneKeywords) {
             parsingKeywords(driver, measure, doneKeywords);
-        },
-        function (doneMeasureName) {
-            parsingMeasureName(driver, measure, doneMeasureName);
         },
         function (doneClassification) {
             parsingClassification(driver, measure, doneClassification)
