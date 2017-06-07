@@ -13,7 +13,6 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         }).
         when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/cde/public/html/quickBoard.html', title: "Quickboard"}).
         when('/sdcview', {controller: 'SDCViewCtrl', templateUrl: '/cde/public/html/sdcView.html'}).
-        when('/boardExport/:boardId', {controller: 'ExportCtrl', templateUrl: '/cde/public/html/boardExport.html'}).
         when('/cdeSearchExport', {controller: 'DEListCtrl', templateUrl: '/cde/public/html/exportCdeSearch.html'}).
         when('/myboards', {controller: 'MyBoardsCtrl', templateUrl: '/cde/public/html/myBoards.html'}).
         when('/board/:boardId', {controller: 'SwitchListViewCtrl', templateUrl: '/board/public/html/boardView.html'}).
@@ -69,3 +68,9 @@ angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({c
 import {PermissibleValueComponent} from "../components/permissibleValue.component";
 angular.module('cdeModule').directive('cdePermissibleValue', downgradeComponent({component: PermissibleValueComponent, inputs: ['elt'], outputs: []
 }));
+
+import {RegistrationValidatorService} from "../components/validationRules/registrationValidator.service";
+angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
+
+import {ValidRulesComponent} from "../components/validationRules/validRules.component";
+angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], ouputs: []}));

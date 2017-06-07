@@ -28,6 +28,7 @@ import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
 import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
+import { SystemModule } from "../../system/public/system.module";
 
 @NgModule({
     imports: [
@@ -39,7 +40,8 @@ import { DisplayProfileComponent } from "./components/displayProfile/displayProf
         SortableModule.forRoot(),
         TreeModule,
         // internal
-        AdminItemModule
+        AdminItemModule,
+        SystemModule,
     ],
     declarations: [
         ArrayListPipe,

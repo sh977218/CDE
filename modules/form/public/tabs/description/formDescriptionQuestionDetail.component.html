@@ -77,11 +77,11 @@
     <div class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Instructions:</div>
         <div class="col-sm-10 col-xs-12 editQuestionInstructionIcon" *ngIf="question.edit">
-            <inline-area-edit [inlineAreaVisibility]="inlineAreaEditVisibility"
+            <cde-inline-area-edit
                  [(model)]="question.instructions.value"
                  [(defFormat)]="question.instructions.valueFormat"
-                 [isAllowed]="true" (onOk)="elt.unsaved = true">
-            </inline-area-edit>
+                 [isAllowed]="true" (modelChange)="elt.unsaved = true">
+            </cde-inline-area-edit>
         </div>
     </div>
     <div class="row">
@@ -107,12 +107,13 @@
     <div class="row" *ngIf="parent">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Show if:</div>
         <div class="col-sm-10 col-xs-12 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
-            <input type="text" title="Show if"
+            <input #slInput type="text" title="Show if"
+                   (focus)="slOptionsRetrigger()"
                    [ngModel]="question.skipLogic.condition"
                    (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event)"
                    class="form-control skipLogicCondition"
                    [ngbTypeahead]="getSkipLogicOptions"
-                   (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault()"/>
+                   (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
             <span [textContent]="question.skipLogic?.validationError"></span>
         </div>
     </div>

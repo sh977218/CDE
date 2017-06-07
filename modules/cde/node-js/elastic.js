@@ -155,8 +155,8 @@ exports.morelike = function (id, callback) {
     var limit = 20;
     var mltPost = {
         "query": {
-            "filtered": {
-                "query": {
+            "bool": {
+                "must": {
                     "more_like_this": {
                         "fields": mltConf.mlt_fields,
                         "docs": [

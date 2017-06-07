@@ -24,9 +24,9 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
             color: white;
             background-color: #333;
         }
-        .node-content-wrapper:hover {
-            background-color: transparent;
-            box-shadow: none;
+        .node-content-wrapper.is-dragging-over {
+            background-color: #ddffee;
+            box-shadow: inset 0 0 1px #999;
         }
         .panel-body-form {
             background-color: #eee;

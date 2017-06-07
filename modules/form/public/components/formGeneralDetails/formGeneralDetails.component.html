@@ -22,19 +22,19 @@
                        (click)="elt.unsaved = true"/>
                 <div *ngIf="elt.isCopyrighted">
                     Statement:
-                    <inline-edit
+                    <cde-inline-edit
                             id="formCopyrightText"
                             [(model)]="elt.copyright.text"
                             [isAllowed]="isAllowedModel.isAllowed(elt)"
-                            (onOk)="elt.unsaved = true"></inline-edit>
+                            (modelChange)="elt.unsaved = true"></cde-inline-edit>
                 </div>
                 <div *ngIf="elt.isCopyrighted">
                     Authority:
-                    <inline-edit
+                    <cde-inline-edit
                             id="formCopyrightAuthority"
                             [(model)]="elt.copyright.authority"
                             [isAllowed]="isAllowedModel.isAllowed(elt)"
-                            (onOk)="elt.unsaved = true"></inline-edit>
+                            (modelChange)="elt.unsaved = true"></cde-inline-edit>
                 </div>
             </div>
         </div>
