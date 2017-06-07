@@ -2,21 +2,24 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { Select2Module } from "ng2-select2";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { BoardModule } from "../../board/public/board.module";
-import { ConceptsComponent } from "./components/concepts.component";
-import { DerivationRulesComponent } from "./components/derivationRules.component";
-import { DatasetsComponent } from "./components/datasets/datasets.component";
-import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
-import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
-import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
-import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
-import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
 import { SystemModule } from "../../system/public/system.module";
-import { PermissibleValueComponent } from "./components/permissibleValue.component";
-import { Select2Module } from "ng2-select2";
+
+import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
+import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
+import { ConceptsComponent } from "./components/concepts.component";
+import { DatasetsComponent } from "./components/datasets/datasets.component";
+import { DerivationRulesComponent } from "./components/derivationRules.component";
+import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
 import { KeysPipe } from "../../core/public/KeysPipe";
+import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
+import { PermissibleValueComponent } from "./components/permissibleValue.component";
+import { RegistrationValidatorService } from "./components/validationRules/registrationValidator.service";
+import { ValidRulesComponent } from "./components/validationRules/validRules.component";
+import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 
 @NgModule({
     imports: [
@@ -26,7 +29,7 @@ import { KeysPipe } from "../../core/public/KeysPipe";
         FormsModule,
         NgbModule,
         Select2Module,
-        SystemModule
+        SystemModule,
     ],
     declarations: [
         CdeGeneralDetailsComponent,
@@ -38,6 +41,7 @@ import { KeysPipe } from "../../core/public/KeysPipe";
         KeysPipe,
         MoreLikeThisComponent,
         PermissibleValueComponent,
+        ValidRulesComponent,
         ValueDomainSummaryComponent,
     ],
     entryComponents: [
@@ -48,7 +52,11 @@ import { KeysPipe } from "../../core/public/KeysPipe";
         DerivationRulesComponent,
         MoreLikeThisComponent,
         PermissibleValueComponent,
+        ValidRulesComponent,
         ValueDomainSummaryComponent,
+    ],
+    providers: [
+        RegistrationValidatorService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

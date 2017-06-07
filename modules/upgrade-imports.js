@@ -97,7 +97,6 @@ import "./cde/public/js/controllers/NewPvModalCtrl";
 import "./cde/public/js/controllers/CreateCdeAbstractCtrl";
 import "./cde/public/js/cdeDiff";
 import "./cde/shared/deValidator";
-import "./cde/public/js/controllers/RegStatusValidationCtrl";
 import "./form/public/js/controllers/FormListCtrl";
 import "./form/public/js/controllers/FormDEListCtrl";
 import "./form/public/js/controllers/FormFormListCtrl";
