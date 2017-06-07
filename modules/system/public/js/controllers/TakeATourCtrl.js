@@ -8,12 +8,12 @@ angular.module('systemModule').controller('TakeATourCtrl', ['$scope', 'TourConte
                 content: "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here. Different sections of the applications have different help sections."
             },
             {
-                element: "a#menu_cdes_link",
+                element: "#menu_cdes_link",
                 title: "CDEs",
                 content: "This menu will take you back to the CDE search page"
             },
             {
-                element: "a#menu_forms_link",
+                element: "#menu_forms_link",
                 title: "Forms",
                 content: "This menu will take you to the Form search page"
             },

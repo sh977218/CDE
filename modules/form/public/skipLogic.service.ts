@@ -7,16 +7,16 @@ export class SkipLogicService {
 
     constructor(private formService: FormService) {}
 
-    evaluateSkipLogic(condition, formElements, question, elt, errors = []) {
+    evaluateSkipLogic(condition, formElements, fe, elt, errors = []) {
         if (!condition) return true;
         let rule = condition.trim();
         if (rule.indexOf("AND") > -1) {
-            return this.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements, question, elt, errors) &&
-                this.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), formElements, question, elt, errors);
+            return this.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements, fe, elt, errors) &&
+                this.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), formElements, fe, elt, errors);
         }
         if (rule.indexOf("OR") > -1) {
-            return (this.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements, question, elt, errors) ||
-            this.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), formElements, question, elt, errors));
+            return (this.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements, fe, elt, errors) ||
+            this.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), formElements, fe, elt, errors));
         }
         let ruleArr = rule.split(/>=|<=|=|>|<|!=/);
         let questionLabel = ruleArr[0].replace(/"/g, "").trim();
@@ -45,7 +45,6 @@ export class SkipLogicService {
                 // format American DD/MM/YYYY to HTML5 standard YYYY-MM-DD
                 if (realAnswer)
                     realAnswer = realAnswer.month + "/" + realAnswer.day + "/" + realAnswer.year;
-                question.question.dateOptions = {};
                 if (operator === "=") return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
                 if (operator === "!=") return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();
                 if (operator === "<") return new Date(realAnswer) < new Date(expectedAnswer);
@@ -87,10 +86,10 @@ export class SkipLogicService {
             return false;
     }
 
-    evaluateSkipLogicAndClear(rule, formElements, question, elt, errors = []) {
-        let skipLogicResult = this.evaluateSkipLogic(rule, formElements, question, elt, errors);
+    evaluateSkipLogicAndClear(rule, formElements, fe, elt, errors = []) {
+        let skipLogicResult = this.evaluateSkipLogic(rule, formElements, fe, elt, errors);
 
-        if (!skipLogicResult) question.question.answer = undefined;
+        if (!skipLogicResult && fe.question) fe.question.answer = undefined;
         return skipLogicResult;
     }
 
@@ -98,7 +97,7 @@ export class SkipLogicService {
         let searchQuestion = questionName.substring(1, questionName.length - 1);
         let questions = previousLevel.filter(function (q) {
             let label = q.label;
-            if (!label || label.length === 0) label = q.question.cde.name;
+            if ((!label || label.length === 0) && q.question) label = q.question.cde.name;
             if (label && questionName) return SkipLogicService.questionSanitizer(label) === searchQuestion;
         });
         if (questions.length <= 0) return [];
@@ -106,12 +105,12 @@ export class SkipLogicService {
         if (question.question.datatype === 'Value List') {
             let answers = question.question.answers;
             return answers.map(function (a) {
-                return '"' + SkipLogicService.questionSanitizer(a.permissibleValue) + '"';
+                return '"' + SkipLogicService.questionSanitizer(a.permissibleValue) + '" ';
             });
         } else if (question.question.datatype === 'Number') {
-            return ['"{{' + question.question.datatype + '}}"'];
+            return ['"{{' + question.question.datatype + '}}" '];
         } else if (question.question.datatype === 'Date') {
-            return ['"{{MM/DD/YYYY}}"'];
+            return ['"{{MM/DD/YYYY}}" '];
         }
     }
 
@@ -133,15 +132,15 @@ export class SkipLogicService {
                 else return true;
             }).map(function (q) {
                 let label = q.label;
-                if (!label || label.length === 0) label = q.question.cde.name;
+                if ((!label || label.length === 0) && q.question) label = q.question.cde.name;
                 return '"' + SkipLogicService.questionSanitizer(label) + '" ';
             });
         } else if (tokens.length % 4 === 1) {
-            options = ["=", "<", ">", ">=", "<=", "!="];
+            options = ["= ", "< ", "> ", ">= ", "<= ", "!= "];
         } else if (tokens.length % 4 === 2) {
             options = this.getAnswer(previousQuestions, tokens[tokens.length - 2]);
         } else if (tokens.length % 4 === 3) {
-            options = ["AND", "OR"];
+            options = ["AND ", "OR "];
         }
 
         let optionsFiltered = options.filter(o => o.indexOf(tokens.unmatched) > -1);
@@ -206,7 +205,7 @@ export class SkipLogicService {
     validateSingleExpression(tokens, previousQuestions) {
         let filteredQuestions = previousQuestions.filter(function (pq) {
             let label = pq.label;
-            if (!label || label.length === 0) label = pq.question.cde.name;
+            if ((!label || label.length === 0) && pq.question) label = pq.question.cde.name;
             return '"' + SkipLogicService.questionSanitizer(label) + '"' === tokens[0];
         });
         if (filteredQuestions.length !== 1) {
