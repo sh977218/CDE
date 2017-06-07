@@ -11,26 +11,23 @@
                     </div>
                 </div>
                 <ng-container *ngIf="!r.reorder">
-                    <div class="col-xs-12 arrayObj" *ngIf="r.add">
-                        Added;
+                    <div class="col-xs-12 arrayObj" *ngIf="r.add" style="border-left: 5px solid green">
                         <div *ngFor="let d of property.data">
                             <label>{{d.label}}:</label>
                             <span>{{r.data[d.property]}}</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 arrayObj" *ngIf="r.removed">
-                        Removed;
+                    <div class="col-xs-12 arrayObj" *ngIf="r.removed" style="border-left: 5px solid #a94442">
                         <div *ngFor="let d of property.data">
                             <label>{{d.label}}:</label>
                             <span>{{r.data[d.property]}}</span>
                         </div>
                     </div>
-                    <div class="col-xs-12 arrayObj" *ngIf="r.edited">
-                        Edited:
+                    <div class="col-xs-12 arrayObj" *ngIf="r.edited" style="border-left: 5px solid blue">
                         <div *ngFor="let d of property.data">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <label>{{d.label}}:</label>
-                                <pre lineDiff [left]="r.left[d.property]" [right]="r.right[d.property]"></pre>
+                                <pre semanticDiff [left]="r.left[d.property]" [right]="r.right[d.property]"></pre>
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
                                 <label>{{d.label}}:</label>

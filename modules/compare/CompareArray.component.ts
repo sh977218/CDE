@@ -1,6 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
-import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { CompareService } from "../core/public/compare.service";
 import * as _ from "lodash";
 
@@ -175,13 +174,11 @@ export class CompareArrayComponent implements OnInit {
             isEqual: function (a, b) {
                 if (_.isEmpty(a.diff)) a.diff = [];
                 if (_.isEmpty(b.diff)) b.diff = [];
-                let result = _.isEqual(a.permissibleValue, b.permissibleValue) &&
-                    _.isEqual(a.valueMeaningCode, b.valueMeaningCode) &&
-                    _.isEqual(a.codeSystemName, b.codeSystemName);
+                let result = _.isEqual(a.valueMeaningName, b.valueMeaningName);
                 if (result) {
-                    if (!_.isEqual(a.valueMeaningName, b.valueMeaningName)) {
-                        a.diff.push("valueMeaningName");
-                        b.diff.push("valueMeaningName");
+                    if (!_.isEqual(a.permissibleValue, b.permissibleValue)) {
+                        a.diff.push("permissibleValue");
+                        b.diff.push("permissibleValue");
                         a.display = true;
                         b.display = true;
                     }
