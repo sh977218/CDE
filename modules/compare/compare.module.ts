@@ -4,7 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { DiffMatchPatchModule, DiffDirective } from "ng-diff-match-patch";
 import { CompareObjectComponent } from "./compareObject.component";
-import { CompareArrayComponent } from "./CompareArray.component";
+import { CompareArrayComponent } from "./aCompareArray.component";
 
 @NgModule({
     declarations: [CompareArrayComponent, CompareObjectComponent],
