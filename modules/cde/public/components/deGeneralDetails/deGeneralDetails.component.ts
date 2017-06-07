@@ -1,6 +1,6 @@
-import { Component, Inject, Input, OnInit } from "@angular/core";
+import { Component, Inject, Input } from "@angular/core";
 import "rxjs/add/operator/map";
-import {OrgHelperService} from "../../../../system/orgHelper.service";
+import { OrgHelperService } from "../../../../system/orgHelper.service";
 
 @Component({
     selector: "cde-de-general-details",
