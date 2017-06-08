@@ -14,20 +14,16 @@ public class FormHistoryCompareTest extends BaseFormTest {
 
         clickElement(By.id("history_tab"));
         textPresent("List of previous versions");
-        Assert.assertEquals(4, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
+        Assert.assertEquals(4, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
 
-        selectHistoryAndCompare(2,3);
-        findElement(By.xpath("//*[@id='historyCompareLeft_Form Description_1_0']//*[contains(@class,'unmatchedIcon')]"));
-        findElement(By.xpath("//*[@id='historyCompareLeft_Form Description_1_1']//*[contains(@class,'unmatchedIcon')]"));
-        findElement(By.xpath("//*[@id='historyCompareRight_Form Description_1_0']//*[contains(@class,'unmatchedIcon')]"));
-        findElement(By.xpath("//*[@id='historyCompareRight_Form Description_1_1']//*[contains(@class,'unmatchedIcon')]"));
+        selectHistoryAndCompare(2, 3);
+        textPresent("\"Neoadjuvant Therapy\" = \"Yes (specify type)\"", By.xpath("//*[@id='Form Elements_3']//ins"));
 
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[2]"));
-        selectHistoryAndCompare(1,2);
-        textPresent("Reordered",
-                By.xpath("//*[@id='historyCompareLeft_Form Description_0_4']//div[contains(@class,'compareMessage')]"));
-        textPresent("Reordered",
-                By.xpath("//*[@id='historyCompareRight_Form Description_0_2']//div[contains(@class,'compareMessage')]"));
+        selectHistoryAndCompare(1, 2);
+
+        String boarderCss = findElement(By.xpath("//*[@id='Form Elements_2']")).getCssValue("border-left");
+        Assert.assertTrue(boarderCss.contains("#fad000"));
     }
 
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {

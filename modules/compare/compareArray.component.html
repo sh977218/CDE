@@ -1,8 +1,8 @@
-<ng-container *ngFor="let property of compareArrayOption">
+<ng-container *ngFor="let property of compareArrayOption;">
     <div *ngIf="!property.match || property.display" class="col-xs-12" id="{{property.label}}">
         <label>{{property.label}}:</label>
-        <div *ngFor="let r of property.result">
-            <div class="col-xs-12" *ngIf="!r.match || r.display">
+        <div *ngFor="let r of property.result;let i = index">
+            <div class="col-xs-12" *ngIf="!r.match || r.display" id="{{property.label}}_{{i}}">
                 <div class="col-xs-12 arrayObj" *ngIf="r.reorder" style="border-left: 5px solid #fad000">
                     <div *ngFor="let d of property.data">
                         <ng-container *ngIf="r.diff">

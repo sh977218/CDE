@@ -17,7 +17,7 @@ public class FormHistoryTest extends BaseFormTest {
 
         clickElement(By.id("history_tab"));
         textPresent("List of previous versions");
-        Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
+        Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
 
         clickElement(By.id("naming_tab"));
         textPresent("Form testing history");
@@ -25,13 +25,11 @@ public class FormHistoryTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-
         clickElement(By.id("history_tab"));
         textPresent("List of previous versions");
-        Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
-
+        Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
         selectHistoryAndCompare(1, 2);
-        textPresent(newFormDef, By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='definition']"));
+        textPresent(newFormDef, By.xpath("//*[@id='Naming']//ins"));
 
         clickElement(By.id("prior-1"));
         ArrayList<String> wintabs = new ArrayList<String>(driver.getWindowHandles());
@@ -42,8 +40,6 @@ public class FormHistoryTest extends BaseFormTest {
         driver.close();
         driver.switchTo().window(wintabs.get(0));
         textNotPresent("View current form");
-
-
     }
 
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {

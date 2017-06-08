@@ -52,6 +52,8 @@ export class CompareArrayComponent implements OnInit {
                         if (!_.isEqual(a.question.answers, b.question.answers)) {
                             a.diff.push("question.answers");
                             b.diff.push("question.answers");
+                            a.question.answers = JSON.stringify(a.question.answers);
+                            b.question.answers = JSON.stringify(b.question.answers);
                             a.display = true;
                             b.display = true;
                         }
