@@ -64,7 +64,7 @@ export class CompareService {
                     this.copyValue(l, option.data);
                     option.result.push({
                         match: false,
-                        remove: true,
+                        add: true,
                         data: l,
                         left: l
                     });
@@ -110,41 +110,20 @@ export class CompareService {
             let addResultArray = option.result.filter(r1 => r1.add);
             let removeResultArray = option.result.filter(r1 => r1.remove);
             option.result.forEach(r => {
-                if (r.left && r.remove) {
-                    _.forEach(option.result, o => {
-                        if (o.remove && _.isEqual(o.data, r.data)) {
-                            o.display = false;
-                        }
-                    });
-                    if (_.findIndex(removeResultArray, o => {
-                            return _.isEqual(o.data, r.data);
-                        }) !== -1)
+                if (r.left && r.add) {
+                    if (_.findIndex(older, o => option.isEqual(o, r.data)) !== -1) {
+                        delete r.add;
                         r.reorder = true;
+                    }
                 }
                 if (r.right && r.add) {
-                    let temp = false;
-                    _.forEach(option.result, o => {
-                        if (o.add && _.isEqual(o.data, r.data)) {
-                            o.display = false;
-                        }
-                        if (o.left && _.isEqual(o.data, r.data)) {
-                            temp = false;
-                        }
-                    });
-                    if (_.findIndex(addResultArray, o => {
-                            return _.isEqual(o.data, r.data);
-                        }) !== -1)
+                    if (_.findIndex(newer, o => option.isEqual(o, r.data)) === -1) {
+                        delete r.add;
+                        r.remove = true;
+                    } else {
+                        delete r.add;
                         r.reorder = true;
-                }
-                if (r.add && _.findIndex(removeResultArray, o => {
-                        return _.isEqual(o.data, r.data)
-                    }) !== -1) {
-                    r.reorder = true;
-                }
-                if (r.remove && _.findIndex(addResultArray, o => {
-                        return _.isEqual(o.data, r.data)
-                    }) !== -1) {
-                    r.reorder = true;
+                    }
                 }
             });
             option.result = _.uniqWith(option.result, (a, b) => {
@@ -153,7 +132,7 @@ export class CompareService {
                     delete aData.diff;
                     let bData = _.cloneDeep(b.data);
                     delete bData.diff;
-                    if (_.isEqual(aData, bData)) {
+                    if (option.isEqual(aData, bData)) {
                         return true;
                     }
                 }
