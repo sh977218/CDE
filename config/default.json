@@ -116,7 +116,7 @@
   },
   "status": {
     "timeouts": {
-      "statusCheck": 60000,
+      "statusCheck": 5000,
       // How often to update /status/cde page ? (miliseconds),
       "clusterStatus": 30
       // How often to update your status in DB (seconds)

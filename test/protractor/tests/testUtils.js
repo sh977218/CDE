@@ -28,6 +28,14 @@ module.exports = {
             // }
         }
 
+    },
+
+    textPresent: function (text) {
+        expect(element(by.css("body")).getText()).toContain(text);
+    },
+
+    closeAlert: function () {
+        element(by.css("button.close")).click();
     }
 
 };

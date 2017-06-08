@@ -302,7 +302,7 @@ angular.module('resourcesSystem', ['ngResource'])
         result.restoreFromLocalStorage();
         return result;
     }])
-    .factory("Alert", ["$timeout", function($timeout){
+    .factory("Alert", ["$interval", function($timeout){
         var alerts = [];
         var closeAlert = function (index) {
             alerts.splice(index, 1);
@@ -310,13 +310,13 @@ angular.module('resourcesSystem', ['ngResource'])
         var addAlert = function (type, msg) {
             var id = (new Date()).getTime();
             alerts.push({type: type, msg: msg, id: id});
-            $timeout(function () {
+            $interval(function () {
                 for (var i = 0; i < alerts.length; i++) {
                     if (alerts[i].id === id) {
                         alerts.splice(i, 1);
                     }
                 }
-            }, window.userAlertTime);
+            }, window.userAlertTime, 1);
         };
         var mapAlerts = function() {return alerts;};
         return {closeAlert: closeAlert, addAlert: addAlert, mapAlerts: mapAlerts};

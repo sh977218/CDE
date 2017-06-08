@@ -100,27 +100,6 @@ public class NlmCdeBaseTest {
 
     ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
 
-
-    private void countElasticElements(Method m) {
-        int totalCdes = 11700;
-        int totalForms = 815;
-
-        int nbOfCde = 0, nbOfForms = 0, waitTimeCdes = 0, waitTimeForms = 0;
-        for (int i = 0; i < 15 && nbOfCde < totalCdes; i++) {
-            hangon(waitTimeCdes);
-            nbOfCde = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
-            System.out.println("nb of cdes: " + nbOfCde);
-            waitTimeCdes = 10;
-        }
-        for (int j = 0; j < 5 && nbOfForms < totalForms; j++) {
-            hangon(waitTimeForms);
-            nbOfForms = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
-            System.out.println("nb of forms: " + nbOfForms);
-            waitTimeForms = 10;
-        }
-        System.out.println("Starting " + m.getName() + " in Fork: " + (int) (Math.random() * 1000));
-    }
-
     private void setDriver(String b) {
         if (b == null) b = browser;
 
@@ -186,7 +165,6 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     public void setUp(Method m) {
         filePerms = new HashSet();
-        countElasticElements(m);
 
         if (m.getAnnotation(SelectBrowser.class) != null) {
             setDriver("internet explorer");
