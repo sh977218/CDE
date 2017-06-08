@@ -111,18 +111,9 @@ export class CompareService {
                 if (r.newer && r.add) {
                     if (_.findIndex(older, o => option.isEqual(o, r.data)) !== -1) {
                         delete r.add;
+                        if (!r.match) r.diff = _.uniq(r.data.diff);
                         r.reorder = true;
                     }
-                    /*
-                     if (_.findIndex(older, o => {
-                     let temp = option.isEqual(o, r.data);
-                     r.diff = _.uniq(o.diff.concat(r.data.diff));
-                     return temp;
-                     }) !== -1) {
-                     delete r.add;
-                     r.reorder = true;
-                     }
-                     */
                 }
                 if (r.older && r.add) {
                     if (_.findIndex(newer, o => option.isEqual(o, r.data)) === -1) {
@@ -130,15 +121,18 @@ export class CompareService {
                         r.remove = true;
                     } else {
                         delete r.add;
+                        if (!r.match) r.diff = _.uniq(r.data.diff);
                         r.reorder = true;
                     }
                 }
             });
-            option.result = _.uniqWith(option.result, (a, b) => {
-                if (a.reorder && b.reorder) {
-                    let aData = _.cloneDeep(a.data);
+            option.result = _.uniqWith(option.result, (willRemove, willStay) => {
+                if (willRemove.reorder && willStay.reorder) {
+                    if (!willStay.newer) willStay.newer = willRemove.newer;
+                    if (!willStay.older) willStay.older = willRemove.older;
+                    let aData = _.cloneDeep(willRemove.data);
                     delete aData.diff;
-                    let bData = _.cloneDeep(b.data);
+                    let bData = _.cloneDeep(willStay.data);
                     delete bData.diff;
                     if (option.isEqual(aData, bData)) {
                         return true;

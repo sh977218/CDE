@@ -8,16 +8,9 @@ import * as _ from "lodash";
     templateUrl: "./compareArray.component.html",
     styles: [`
         :host .arrayObj {
-            /*
-            background-color: #f5f5f5;
-            */
             border: 1px solid #ccc;
             padding: 9.5px;
             margin: 0 0 10px;
-        }
-
-        :host .diff {
-            background-color: rgba(242, 217, 217, 0.5);
         }`]
 })
 export class CompareArrayComponent implements OnInit {
@@ -27,8 +20,6 @@ export class CompareArrayComponent implements OnInit {
         {
             label: "Form Elements",
             isEqual: function (a, b) {
-                if (!a.skipLogic) a.skipLogic = {};
-                if (!b.skipLogic) b.skipLogic = {};
                 if (a.elementType === 'question' && b.elementType === 'question') {
                     if (_.isEmpty(a.diff)) a.diff = [];
                     if (_.isEmpty(b.diff)) b.diff = [];
@@ -201,6 +192,14 @@ export class CompareArrayComponent implements OnInit {
                         a.display = true;
                         b.display = true;
                     }
+                    if (!_.isEqual(a.tags, b.tags)) {
+                        a.diff.push("tags");
+                        b.diff.push("tags");
+                        a.tags = a.tags.map(t => t.tag).join(", ");
+                        b.tags = b.tags.map(t => t.tag).join(", ");
+                        a.display = true;
+                        b.display = true;
+                    }
                 }
                 return result;
             },
@@ -280,19 +279,27 @@ export class CompareArrayComponent implements OnInit {
         console.log('a');
     }
 
+    fixFormElement(f) {
+        if (!f.skipLogic) f.skipLogic = {};
+        if (!f.instructions) f.instructions = {};
+    }
+
     flatFormQuestions(fe, questions) {
         let index = 0;
         if (fe.formElements !== undefined) {
             _.forEach(fe.formElements, e => {
                 if (e.elementType && e.elementType === 'question') {
                     let questionCopy = _.cloneDeep(e);
+                    this.fixFormElement(questionCopy);
                     if (questionCopy.hideLabel) questionCopy.label = "";
-                    questions.push(_.cloneDeep(e));
+                    questions.push(questionCopy);
                 } else if (e.elementType && e.elementType === 'form') {
-                    questions.push(_.cloneDeep(e));
+                    let formCopy = _.cloneDeep(e);
+                    this.fixFormElement(formCopy);
+                    questions.push(formCopy);
                 } else if (e.elementType && e.elementType === 'section') {
                     let sectionCopy = _.cloneDeep(e);
-                    sectionCopy.elements = [];
+                    this.fixFormElement(sectionCopy);
                     sectionCopy["sectionId"] = "section_" + index;
                     index++;
                     questions.push(sectionCopy);
