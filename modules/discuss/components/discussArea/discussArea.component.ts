@@ -94,7 +94,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             linkedTab: this.selectedElt,
             element: {eltId: this.eltId}
         }).map(r => r.json()).subscribe(res => {
-            this.newComment.content = "";
+            this.newComment.text = "";
             this.loadComments(() => {
                 this.alert.addAlert("success", res.message);
             });
