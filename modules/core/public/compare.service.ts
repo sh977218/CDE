@@ -4,23 +4,23 @@ import * as _ from "lodash";
 @Injectable()
 export class CompareService {
 
-    doCompareObject(left, right, option) {
+    doCompareObject(newer, older, option) {
         _.forEach(option, property => {
-            if (!left && !right) {
+            if (!newer && !older) {
                 property.match = true;
-                property.left = "";
-                property.right = "";
+                property.newer = "";
+                property.older = "";
                 return;
             }
             let l = "";
-            if (left) l = _.get(left, property.property);
+            if (newer) l = _.get(newer, property.property);
             let r = "";
-            if (right) r = _.get(right, property.property);
+            if (older) r = _.get(older, property.property);
             if (!property.data) {
                 property.match = _.isEqual(l, r);
-                property.left = l ? l.toString() : "";
-                property.right = r ? r.toString() : "";
-                if (!left && !right) property.match = true;
+                property.newer = l ? l.toString() : "";
+                property.older = r ? r.toString() : "";
+                if (!newer && !older) property.match = true;
             } else {
                 this.doCompareObject(l, r, property.data);
                 if (property.data) property.match = !(property.data.filter(p => !p.match).length > 0);
@@ -49,7 +49,7 @@ export class CompareService {
                         match: false,
                         add: true,
                         data: l,
-                        left: l
+                        newer: l
                     });
                     rightArrayCopy.forEach(o => {
                         this.copyValue(o, option.data);
@@ -57,7 +57,7 @@ export class CompareService {
                             match: false,
                             add: true,
                             data: o,
-                            right: o
+                            older: o
                         });
                     })
                 } else {
@@ -66,7 +66,7 @@ export class CompareService {
                         match: false,
                         add: true,
                         data: l,
-                        left: l
+                        newer: l
                     });
                 }
             }
@@ -79,7 +79,7 @@ export class CompareService {
                         match: false,
                         add: true,
                         data: rightArrayCopy[k],
-                        right: rightArrayCopy[k]
+                        older: rightArrayCopy[k]
                     });
                     beginIndex++;
                 }
@@ -107,16 +107,24 @@ export class CompareService {
         if (option.result) {
             option.match = !(option.result.filter(p => !p.match).length > 0);
             option.display = option.result.filter(p => p.display).length > 0;
-            let addResultArray = option.result.filter(r1 => r1.add);
-            let removeResultArray = option.result.filter(r1 => r1.remove);
             option.result.forEach(r => {
-                if (r.left && r.add) {
+                if (r.newer && r.add) {
                     if (_.findIndex(older, o => option.isEqual(o, r.data)) !== -1) {
                         delete r.add;
                         r.reorder = true;
                     }
+                    /*
+                     if (_.findIndex(older, o => {
+                     let temp = option.isEqual(o, r.data);
+                     r.diff = _.uniq(o.diff.concat(r.data.diff));
+                     return temp;
+                     }) !== -1) {
+                     delete r.add;
+                     r.reorder = true;
+                     }
+                     */
                 }
-                if (r.right && r.add) {
+                if (r.older && r.add) {
                     if (_.findIndex(newer, o => option.isEqual(o, r.data)) === -1) {
                         delete r.add;
                         r.remove = true;

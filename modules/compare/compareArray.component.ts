@@ -25,44 +25,109 @@ export class CompareArrayComponent implements OnInit {
     @Input() newer;
     public compareArrayOption = [
         {
-            label: "Questions",
+            label: "Form Elements",
             isEqual: function (a, b) {
-                if (_.isEmpty(a.diff)) a.diff = [];
-                if (_.isEmpty(b.diff)) b.diff = [];
-                let result = _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
-                if (result) {
-                    if (!_.isEqual(a.label, b.label)) {
-                        a.diff.push("label");
-                        b.diff.push("label");
-                        a.display = true;
-                        b.display = true;
+                if (!a.skipLogic) a.skipLogic = {};
+                if (!b.skipLogic) b.skipLogic = {};
+                if (a.elementType === 'question' && b.elementType === 'question') {
+                    if (_.isEmpty(a.diff)) a.diff = [];
+                    if (_.isEmpty(b.diff)) b.diff = [];
+                    let result = _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
+                    if (result) {
+                        if (!_.isEqual(a.label, b.label)) {
+                            a.diff.push("label");
+                            b.diff.push("label");
+                            a.display = true;
+                            b.display = true;
+                        }
+                        if (!_.isEqual(a.instructions.value, b.instructions.value)) {
+                            a.diff.push("instructions.value");
+                            b.diff.push("instructions.value");
+                            a.display = true;
+                            b.display = true;
+                        }
+                        if (!_.isEqual(a.question.uoms, b.question.uoms)) {
+                            a.diff.push("question.uom");
+                            b.diff.push("question.uom");
+                            a.display = true;
+                            b.display = true;
+                        }
+                        if (!_.isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                            a.diff.push("skipLogic.condition");
+                            b.diff.push("skipLogic.condition");
+                            a.display = true;
+                            b.display = true;
+                        }
+                        if (!_.isEqual(a.question.answers, b.question.answers)) {
+                            a.diff.push("question.answers");
+                            b.diff.push("question.answers");
+                            a.display = true;
+                            b.display = true;
+                        }
                     }
-                    if (!_.isEqual(a.instructions.value, b.instructions.value)) {
-                        a.diff.push("instructions.value");
-                        b.diff.push("instructions.value");
-                        a.display = true;
-                        b.display = true;
-                    }
-                    if (!_.isEqual(a.question.uoms, b.question.uoms)) {
-                        a.diff.push("question.uom");
-                        b.diff.push("question.uom");
-                        a.display = true;
-                        b.display = true;
-                    }
-                    if (!_.isEqual(a.question.answers, b.question.answers)) {
-                        a.diff.push("question.answers");
-                        b.diff.push("question.answers");
-                        a.display = true;
-                        b.display = true;
-                    }
+                    return result;
                 }
-                return result;
+                if (a.elementType === 'form' && b.elementType === 'form') {
+                    if (_.isEmpty(a.diff)) a.diff = [];
+                    if (_.isEmpty(b.diff)) b.diff = [];
+                    let result = _.isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
+                    if (result) {
+                        if (!_.isEqual(a.instructions.value, b.instructions.value)) {
+                            a.diff.push("instructions.value");
+                            b.diff.push("instructions.value");
+                            a.display = true;
+                            b.display = true;
+                        }
+                        if (!_.isEqual(a.repeat, b.repeat)) {
+                            a.diff.push("repeat");
+                            b.diff.push("repeat");
+                            a.display = true;
+                            b.display = true;
+                        }
+                        if (!_.isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                            a.diff.push("skipLogic.condition");
+                            b.diff.push("skipLogic.condition");
+                            a.display = true;
+                            b.display = true;
+                        }
+                    }
+                    return result;
+                }
+                if (a.elementType === 'section' && b.elementType === 'section') {
+                    if (_.isEmpty(a.diff)) a.diff = [];
+                    if (_.isEmpty(b.diff)) b.diff = [];
+                    let result = _.isEqual(a.sectionId, b.sectionId);
+                    if (result) {
+                        if (!_.isEqual(a.instructions.value, b.instructions.value)) {
+                            a.diff.push("instructions.value");
+                            b.diff.push("instructions.value");
+                            a.display = true;
+                            b.display = true;
+                        }
+                        if (!_.isEqual(a.repeat, b.repeat)) {
+                            a.diff.push("repeat");
+                            b.diff.push("repeat");
+                            a.display = true;
+                            b.display = true;
+                        }
+                        if (!_.isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                            a.diff.push("skipLogic.condition");
+                            b.diff.push("skipLogic.condition");
+                            a.display = true;
+                            b.display = true;
+                        }
+                    }
+                    return result;
+                }
             },
             property: "questions",
             data: [
                 {label: 'Label', property: 'label'},
+                {label: 'Form', property: 'inForm.form.tinyId', url: '/formView/?tinyId='},
                 {label: 'CDE', property: 'question.cde.tinyId', url: '/deview/?tinyId='},
                 {label: 'Unit of Measurement', property: 'question.uoms'},
+                {label: 'repeat', property: 'repeat'},
+                {label: 'Skip Logic', property: 'skipLogic.condition'},
                 {label: 'Instruction', property: 'instructions.value'},
                 {label: 'Answer', property: 'question.answers'}
             ],
@@ -143,8 +208,7 @@ export class CompareArrayComponent implements OnInit {
             data: [
                 {label: 'Name', property: 'designation'},
                 {label: 'Definition', property: 'definition'},
-                {label: 'Tags', property: 'tags', array: true},
-                {label: 'Context', property: 'context'}
+                {label: 'Tags', property: 'tags', array: true}
             ]
         },
         {
@@ -217,11 +281,25 @@ export class CompareArrayComponent implements OnInit {
     }
 
     flatFormQuestions(fe, questions) {
+        let index = 0;
         if (fe.formElements !== undefined) {
             _.forEach(fe.formElements, e => {
-                if (e.elementType && e.elementType === 'question' || e.elementType && e.elementType === 'form') {
+                if (e.elementType && e.elementType === 'question') {
+                    let questionCopy = _.cloneDeep(e);
+                    if (questionCopy.hideLabel) questionCopy.label = "";
                     questions.push(_.cloneDeep(e));
-                } else this.flatFormQuestions(e, questions);
+                } else if (e.elementType && e.elementType === 'form') {
+                    questions.push(_.cloneDeep(e));
+                } else if (e.elementType && e.elementType === 'section') {
+                    let sectionCopy = _.cloneDeep(e);
+                    sectionCopy.elements = [];
+                    sectionCopy["sectionId"] = "section_" + index;
+                    index++;
+                    questions.push(sectionCopy);
+                    this.flatFormQuestions(e, questions);
+                } else {
+                    console.log("Unknown element type: " + e.elementType);
+                }
             });
         }
     };

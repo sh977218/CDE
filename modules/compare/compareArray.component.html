@@ -5,22 +5,49 @@
             <div class="col-xs-12" *ngIf="!r.match || r.display">
                 <div class="col-xs-12 arrayObj" *ngIf="r.reorder" style="border-left: 5px solid #fad000">
                     <div *ngFor="let d of property.data">
-                        <label>{{d.label}}:</label>
-                        <span>{{r.data[d.property]}}</span>
+                        <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
+                            <label>{{d.label}}:</label>
+                            <span>{{r.data[d.property]}}</span>
+<!--
+                            <pre semanticDiff [left]="r.newer[d.property]" [right]="r.older[d.property]"></pre>
+-->
+                        </ng-container>
+                        <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
+                            <label>{{d.label}}:</label>
+                            <span>{{r.data[d.property]}}</span>
+                        </ng-container>
                     </div>
                 </div>
                 <ng-container *ngIf="!r.reorder">
                     <div class="col-xs-12 arrayObj" *ngIf="r.add" style="border-left: 5px solid #008000">
-                        <div *ngFor="let d of property.data">
-                            <label>{{d.label}}:</label>
-                            <span>{{r.data[d.property]}}</span>
-                        </div>
+                        <ng-container *ngFor="let d of property.data">
+                            <div *ngIf="r.data[d.property]">
+                                <label>{{d.label}}:</label>
+                                <ng-container *ngIf="d.url">
+                                    <a target="_blank" [href]=d.url+r.data[d.property]>
+                                        {{r.data[d.property]</a>
+                                </ng-container>
+                                <ng-container *ngIf="!d.url">
+                                    <span>{{r.data[d.property]}}</span>
+                                </ng-container>
+
+                            </div>
+                        </ng-container>
                     </div>
                     <div class="col-xs-12 arrayObj" *ngIf="r.remove" style="border-left: 5px solid #a94442">
-                        <div *ngFor="let d of property.data">
-                            <label>{{d.label}}:</label>
-                            <span>{{r.data[d.property]}}</span>
-                        </div>
+                        <ng-container *ngFor="let d of property.data">
+                            <div *ngIf="r.data[d.property]">
+                                <label>{{d.label}}:</label>
+                                <ng-container *ngIf="d.url">
+                                    <a target="_blank" [href]=d.url+r.data[d.property]>
+                                        {{r.data[d.property]</a>
+                                </ng-container>
+                                <ng-container *ngIf="!d.url">
+                                    <span>{{r.data[d.property]}}</span>
+                                </ng-container>
+
+                            </div>
+                        </ng-container>
                     </div>
                     <div class="col-xs-12 arrayObj" *ngIf="r.edited" style="border-left: 5px solid #0000ff">
                         <div *ngFor="let d of property.data">
@@ -39,33 +66,3 @@
         </div>
     </div>
 </ng-container>
-
-
-<!--
-<div class="col-xs-6">
-    <div *ngIf="r.left" class="arrayObj">
-        <div *ngFor="let d of property.data" [ngClass]="r.diff?.indexOf(d.property) >= 0 ? 'diff':''">
-            <label>{{d.label}}:</label>
-            <ng-container *ngIf="d.url">
-                <ng-container *ngIf="r.left[d.property]">
-                    <a target="_blank" [href]=d.url+r.left[d.property]>
-                        {{r.left[d.property] | json}}</a>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf="!d.url">
-                <ng-container *ngIf="r.left[d.property]">
-                    <span>{{r.left[d.property] | json}}</span>
-                </ng-container>
-            </ng-container>
-        </div>
-    </div>
-</div>
-<div class="col-xs-6">
-    <div *ngIf="r.right" class="arrayObj">
-        <div *ngFor="let d of property.data" [ngClass]="r.diff?.indexOf(d.property) >= 0 ? 'diff':''">
-            <label>{{d.label}}:</label>
-            <span>{{r.right[d.property] | json}}</span>
-        </div>
-    </div>
-</div>
--->
