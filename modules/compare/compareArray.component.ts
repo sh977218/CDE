@@ -176,6 +176,10 @@ export class CompareArrayComponent implements OnInit {
                 if (_.isEmpty(b.diff)) b.diff = [];
                 let result = _.isEqual(a.designation, b.designation);
                 if (result) {
+                    if (!a || !b) {
+                        console.log('a');
+                    }
+
                     if (!_.isEqual(a.definition, b.definition)) {
                         a.diff.push("definition");
                         b.diff.push("definition");
@@ -288,9 +292,15 @@ export class CompareArrayComponent implements OnInit {
     ngOnInit(): void {
         this.older.questions = [];
         this.flatFormQuestions(this.older, this.older.questions);
+        if (!this.older.property) this.older.property = {concept: []};
+        if (!this.older.objectClass) this.older.objectClass = {concept: []};
+        if (!this.older.dataElementConcept) this.older.dataElementConcept = {concept: []};
         this.older.concepts = _.concat(_.concat(this.older.property.concepts, this.older.objectClass.concepts), this.older.dataElementConcept.concepts);
         this.newer.questions = [];
         this.flatFormQuestions(this.newer, this.newer.questions);
+        if (!this.newer.property) this.newer.property = {concept: []};
+        if (!this.newer.objectClass) this.newer.objectClass = {concept: []};
+        if (!this.newer.dataElementConcept) this.newer.dataElementConcept = {concept: []};
         this.newer.concepts = _.concat(_.concat(this.newer.property.concepts, this.newer.objectClass.concepts), this.newer.dataElementConcept.concepts);
         this.compareService.doCompareArray(this.newer, this.older, this.compareArrayOption);
         console.log('a');
