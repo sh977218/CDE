@@ -16,7 +16,7 @@ import * as _ from "lodash";
 export class CompareArrayComponent implements OnInit {
     @Input() older;
     @Input() newer;
-    public compareArrayOption = [
+    public compareArrayOption = [/*
         {
             label: "Form Elements",
             isEqual: function (a, b) {
@@ -25,6 +25,9 @@ export class CompareArrayComponent implements OnInit {
                     if (_.isEmpty(b.diff)) b.diff = [];
                     let result = _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
                     if (result) {
+                        if (!a || !b) {
+                            console.log('a');
+                        }
                         if (!_.isEqual(a.label, b.label)) {
                             a.diff.push("label");
                             b.diff.push("label");
@@ -65,6 +68,9 @@ export class CompareArrayComponent implements OnInit {
                     if (_.isEmpty(b.diff)) b.diff = [];
                     let result = _.isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                     if (result) {
+                        if (!a || !b) {
+                            console.log('a');
+                        }
                         if (!_.isEqual(a.instructions.value, b.instructions.value)) {
                             a.diff.push("instructions.value");
                             b.diff.push("instructions.value");
@@ -91,6 +97,9 @@ export class CompareArrayComponent implements OnInit {
                     if (_.isEmpty(b.diff)) b.diff = [];
                     let result = _.isEqual(a.sectionId, b.sectionId);
                     if (result) {
+                        if (!a || !b) {
+                            console.log('a');
+                        }
                         if (!_.isEqual(a.instructions.value, b.instructions.value)) {
                             a.diff.push("instructions.value");
                             b.diff.push("instructions.value");
@@ -133,6 +142,9 @@ export class CompareArrayComponent implements OnInit {
                 if (_.isEmpty(b.diff)) b.diff = [];
                 let result = _.isEqual(a.title, b.title);
                 if (result) {
+                    if (!a || !b) {
+                        console.log('a');
+                    }
                     if (!_.isEqual(a.uri, b.uri)) {
                         a.diff.push("uri");
                         b.diff.push("uri");
@@ -168,7 +180,7 @@ export class CompareArrayComponent implements OnInit {
                 {label: 'Language Code', property: 'languageCode'},
                 {label: 'Document', property: 'document'}
             ]
-        },
+        },*/
         {
             label: "Naming",
             isEqual: function (a, b) {
@@ -179,7 +191,6 @@ export class CompareArrayComponent implements OnInit {
                     if (!a || !b) {
                         console.log('a');
                     }
-
                     if (!_.isEqual(a.definition, b.definition)) {
                         a.diff.push("definition");
                         b.diff.push("definition");
@@ -215,7 +226,7 @@ export class CompareArrayComponent implements OnInit {
                 {label: 'Definition', property: 'definition'},
                 {label: 'Tags', property: 'tags', array: true}
             ]
-        },
+        }/*,
         {
             label: "Properties",
             isEqual: function (a, b) {
@@ -223,6 +234,9 @@ export class CompareArrayComponent implements OnInit {
                 if (_.isEmpty(b.diff)) b.diff = [];
                 let result = _.isEqual(a.key, b.key);
                 if (result) {
+                    if (!a || !b) {
+                        console.log('a');
+                    }
                     if (!_.isEqual(a.value, b.value)) {
                         a.diff.push("value");
                         b.diff.push("value");
@@ -245,6 +259,9 @@ export class CompareArrayComponent implements OnInit {
                 if (_.isEmpty(b.diff)) b.diff = [];
                 let result = _.isEqual(a.valueMeaningName, b.valueMeaningName);
                 if (result) {
+                    if (!a || !b) {
+                        console.log('a');
+                    }
                     if (!_.isEqual(a.permissibleValue, b.permissibleValue)) {
                         a.diff.push("permissibleValue");
                         b.diff.push("permissibleValue");
@@ -282,7 +299,7 @@ export class CompareArrayComponent implements OnInit {
                 {label: "Origin Id", property: 'originId'}
             ],
             diff: []
-        }
+        }*/
     ];
 
 
