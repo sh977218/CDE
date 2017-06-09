@@ -24,7 +24,7 @@ import { InlineAreaEditComponent } from "./components/inlineEdit/inlineAreaEdit.
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { TextTruncateComponent } from "./components/textTruncate/textTruncate.component";
 import { AlertComponent } from "./components/alert/alert.component";
-import {AlertService} from "./components/alert/alert.service";
+import { AlertService } from "./components/alert/alert.service";
 
 @NgModule({
     imports: [
