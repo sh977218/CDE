@@ -21,12 +21,13 @@ public class CustomDatatypeTest extends NlmCdeBaseTest {
         selectHistoryAndCompare(1, 2);
         textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
         textPresent(newDatatype, By.xpath("//*[@id='Data Type']//ins"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
+        goToCdeByName(cdeName);
         clickElement(By.id("pvs_tab"));
         changeDatatype(newDatatype2);
         newCdeVersion();
 
-        goToCdeByName(cdeName);
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent(newDatatype, By.xpath("//*[@id='Data Type']//del"));

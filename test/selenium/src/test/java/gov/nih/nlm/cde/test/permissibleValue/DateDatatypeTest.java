@@ -26,6 +26,7 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         textPresent("Date", By.xpath("//*[@id='Data Type']//ins"));
         textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
         textPresent("format1", By.xpath("//*[@id='Data Type Date Format']//ins"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id='datatypeDateFormat']//i"));

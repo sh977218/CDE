@@ -32,6 +32,7 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         textPresent("987", By.xpath("//*[@id='Data Type Text Maximal Length']//ins"));
         textPresent("Text", By.xpath("//*[@id='Data Type']//ins"));
         textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id='datatypeTextRegex']//i[contains(@class,'fa fa-edit')]"));

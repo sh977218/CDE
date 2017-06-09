@@ -30,6 +30,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         textPresent("456", By.xpath("//*[@id='Data Type Number Maximal Value']//ins"));
         textPresent("Number", By.xpath("//*[@id='Data Type']//ins"));
         textPresent("Text", By.xpath("//*[@id='Data Type']//del"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id='datatypeNumberMin']//i[contains(@class,'fa fa-edit')]"));

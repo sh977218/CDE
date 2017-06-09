@@ -41,11 +41,4 @@ public class FormHistoryTest extends BaseFormTest {
         driver.switchTo().window(wintabs.get(0));
         textNotPresent("View current form");
     }
-
-    protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]"));
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]"));
-        clickElement(By.id("historyCompareBtn"));
-        textPresent("Changes");
-    }
 }

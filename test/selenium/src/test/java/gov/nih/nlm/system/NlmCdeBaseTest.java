@@ -824,13 +824,6 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));
         clickElement(By.id("historyCompareBtn"));
-        textPresent("Changes");
-    }
-
-    protected void checkInHistory(String field, String oldValue, String newValue) {
-        textPresent(field, By.cssSelector("#modificationsList"));
-        textPresent(oldValue, By.cssSelector("#modificationsList"));
-        textPresent(newValue, By.cssSelector("#modificationsList"));
     }
 
     protected void openCdeAudit(String cdeName) {
