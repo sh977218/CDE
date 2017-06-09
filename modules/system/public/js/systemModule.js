@@ -233,7 +233,8 @@ angular.module('systemModule').filter('tagsToArray', [function () {
     };
 }]);
 
-angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {
+angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'AlertService',
+    function (userResource, $modal, $http, Alert) {
     return {
         new: function (type) {
             return {
@@ -476,3 +477,10 @@ angular.module('systemModule').directive('cdeAdminItemClassification', downgrade
 import {DiscussAreaComponent} from "../../../discuss/components/discussArea/discussArea.component";
 angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
     {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));
+
+import {AlertService} from "../components/alert/alert.service";
+angular.module('systemModule').factory('AlertService', downgradeInjectable(AlertService));
+
+import {AlertComponent} from "../components/alert/alert.component";
+angular.module('systemModule').directive('cdeAlert', downgradeComponent(
+    {component: AlertComponent, inputs: [], outputs: []}));

@@ -3,7 +3,7 @@ import * as formShared from "../../../../form/shared/formShared";
 
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-        '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'Alert',
+        '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'AlertService',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
               $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, Alert) {
 
@@ -243,7 +243,7 @@ angular.module('formModule').controller
                 setDefaultAnswer(wholeForm);
             });
         }, function () {
-            $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
+            Alert.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
     };
 
@@ -312,7 +312,7 @@ angular.module('formModule').controller
                                 getChildren(e);
                             });
                             BulkClassification.classifyTinyidList(ids, newClassification, function () {
-                                $scope.addAlert("success", "CDEs classified!");
+                                Alert.addAlert("success", "CDEs classified!");
                             });
                         }
                     };
@@ -385,10 +385,10 @@ angular.module('formModule').controller
                 formTinyId: $scope.elt.tinyId
             };
             $http.post('/pinFormCdes', data).then(function onSuccess() {
-                $scope.addAlert("success", "All elements pinned.");
+                Alert.addAlert("success", "All elements pinned.");
                 ElasticBoard.loadMyBoards(filter);
             }).catch(function onError() {
-                $scope.addAlert("danger", "Not all elements were not pinned!");
+                Alert.addAlert("danger", "Not all elements were not pinned!");
             });
         }, function () {
         });
@@ -399,11 +399,11 @@ angular.module('formModule').controller
     $scope.save = function () {
         $scope.elt.$save({}, function () {
             $scope.reload();
-            $scope.addAlert("success", "Saved.");
+            Alert.addAlert("success", "Saved.");
         }, function (err) {
             $log.error("Unable to save form. " + $scope.elt.tinyId);
             $log.error(JSON.stringify(err));
-            $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
+            Alert.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
     };
 

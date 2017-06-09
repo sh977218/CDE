@@ -1,4 +1,5 @@
-angular.module('cdeModule').controller('InboxCtrl', ['$scope', 'Mail', 'CdeList', function($scope, Mail, CdeList) {
+angular.module('cdeModule').controller('InboxCtrl', ['$scope', 'Mail', 'CdeList', 'AlertService',
+    function($scope, Mail, CdeList, Alert) {
 
     $scope.mailTypeReceived = "received";
     $scope.mailTypeSent = "sent";
@@ -46,10 +47,10 @@ angular.module('cdeModule').controller('InboxCtrl', ['$scope', 'Mail', 'CdeList'
             "comment" : ""
         });
         Mail.updateMessage(message, function() {
-            $scope.addAlert("success", "Message moved to archived.");   
+            Alert.addAlert("success", "Message moved to archived.");
             $scope.getAllMail();
         }, function () {
-            $scope.addAlert("danger", "Message couldn't be retired.");        
+            Alert.addAlert("danger", "Message couldn't be retired.");
         });        
     };
 

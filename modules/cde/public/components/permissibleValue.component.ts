@@ -3,6 +3,8 @@ import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-boots
 import { Http } from "@angular/http";
 
 import * as deValidator from "../../../cde/shared/deValidator";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
+
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
 
@@ -55,7 +57,7 @@ export class PermissibleValueComponent implements OnInit {
     constructor(public modalService: NgbModal,
                 public http: Http,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("Alert") private alert) {
+                private alert: AlertService) {
     }
 
     ngOnInit(): void {

@@ -5,6 +5,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, NgbProgressbar }
 import { LocalStorageService } from "angular-2-local-storage/dist";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 const actionMapping: IActionMapping = {
     mouse: {
         click: () => {
@@ -45,7 +46,7 @@ export class ClassifyCdesModalComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private localStorageService: LocalStorageService,
-                @Inject("Alert") private alert,
+                private alert: AlertService,
                 @Inject("userResource") public userService) {
     }
 
@@ -79,7 +80,7 @@ export class ClassifyCdesModalComponent implements OnInit {
                 if (result === "exists")
                     this.alert.addAlert("warning", "Classification already exists.");
             });
-        }, reason => {
+        }, () => {
         });
     }
 
@@ -103,17 +104,6 @@ export class ClassifyCdesModalComponent implements OnInit {
         } else {
             this.orgClassificationsTreeView = null;
         }
-    }
-
-    updateClassificationLocalStorage(item) {
-        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
-        if (!recentlyClassification) recentlyClassification = [];
-        recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) o.eltId = o.cdeId;
-            return JSON.stringify(o) !== JSON.stringify(item);
-        });
-        recentlyClassification.unshift(item);
-        this.localStorageService.set("classificationHistory", recentlyClassification);
     }
 
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
@@ -141,7 +131,7 @@ export class ClassifyCdesModalComponent implements OnInit {
                                     this.numberTotal = res.numberTotal;
                                     if (this.numberProcessed >= this.numberTotal) {
                                         this.http.get("/resetBulkClassifyCdesStatus/" + this.elt._id)
-                                            .subscribe(res => {
+                                            .subscribe(() => {
                                                 //noinspection TypeScriptUnresolvedFunction
                                                 clearInterval(fn);
                                                 this.modalRef.close("success");

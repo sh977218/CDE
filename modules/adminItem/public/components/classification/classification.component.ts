@@ -1,9 +1,10 @@
 import { Component, Input, ViewChild, Inject } from "@angular/core";
-import { Http, RequestOptions } from "@angular/http";
+import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { ClassifyItemModalComponent } from "./classifyItemModal.component";
 import { ClassifyCdesModalComponent } from "./classifyCdesModal.component";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -46,8 +47,7 @@ export class ClassificationComponent {
 
     constructor(public http: Http,
                 public modalService: NgbModal,
-                public activeModal: NgbActiveModal,
-                @Inject("Alert") private alert,
+                private alert: AlertService,
                 @Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel) {
     }
@@ -89,7 +89,7 @@ export class ClassificationComponent {
                 if (result === "success")
                     this.alert.addAlert("success", "Classification removed.");
             });
-        }, reason => {
+        }, () => {
         });
     }
 
@@ -103,7 +103,7 @@ export class ClassificationComponent {
             () => {
                 this.modalRef.close("success");
             },
-            err => {
+            () => {
                 this.modalRef.close("error");
             });
     }

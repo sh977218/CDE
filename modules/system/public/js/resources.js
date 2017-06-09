@@ -290,35 +290,16 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
-    .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "Alert",
+    .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
         var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
         result.restoreFromLocalStorage();
         return result;
     }])
-    .factory("FormQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "Alert",
+    .factory("FormQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
         var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService, Alert);
         result.restoreFromLocalStorage();
         return result;
-    }])
-    .factory("Alert", ["$interval", function($timeout){
-        var alerts = [];
-        var closeAlert = function (index) {
-            alerts.splice(index, 1);
-        };
-        var addAlert = function (type, msg) {
-            var id = (new Date()).getTime();
-            alerts.push({type: type, msg: msg, id: id});
-            $interval(function () {
-                for (var i = 0; i < alerts.length; i++) {
-                    if (alerts[i].id === id) {
-                        alerts.splice(i, 1);
-                    }
-                }
-            }, window.userAlertTime, 1);
-        };
-        var mapAlerts = function() {return alerts;};
-        return {closeAlert: closeAlert, addAlert: addAlert, mapAlerts: mapAlerts};
     }])
 ;

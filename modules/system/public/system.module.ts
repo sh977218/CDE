@@ -23,6 +23,8 @@ import { InlineEditComponent } from "./components/inlineEdit/inlineEdit.componen
 import { InlineAreaEditComponent } from "./components/inlineEdit/inlineAreaEdit.component";
 import { PlaceHoldEmptyPipe } from "./placeHoldEmpty.pipe";
 import { TextTruncateComponent } from "./components/textTruncate/textTruncate.component";
+import { AlertComponent } from "./components/alert/alert.component";
+import {AlertService} from "./components/alert/alert.service";
 
 @NgModule({
     imports: [
@@ -34,6 +36,7 @@ import { TextTruncateComponent } from "./components/textTruncate/textTruncate.co
         JsonpModule,
     ],
     declarations: [
+        AlertComponent,
         CdeAccordionListDirective,
         DailyUsageComponent,
         FormAccordionListDirective,
@@ -54,6 +57,7 @@ import { TextTruncateComponent } from "./components/textTruncate/textTruncate.co
         TextTruncateComponent,
     ],
     entryComponents: [
+        AlertComponent,
         DailyUsageComponent,
         HomeComponent,
         LinkedFormsComponent,
@@ -63,7 +67,7 @@ import { TextTruncateComponent } from "./components/textTruncate/textTruncate.co
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
-        UsersMgtComponent
+        UsersMgtComponent,
     ],
     exports: [
         LinkedFormsComponent,
@@ -74,6 +78,7 @@ import { TextTruncateComponent } from "./components/textTruncate/textTruncate.co
         TextTruncateComponent,
     ],
     providers: [
+        AlertService,
         OrgHelperService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

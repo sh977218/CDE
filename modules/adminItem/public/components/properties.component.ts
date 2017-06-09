@@ -2,6 +2,7 @@ import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { OrgHelperService } from "../../../system/orgHelper.service";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-admin-item-properties",
@@ -15,7 +16,7 @@ export class PropertiesComponent implements OnInit {
     public newProperty: any = {};
     public modalRef: NgbModalRef;
 
-    constructor(@Inject("Alert") private alert,
+    constructor(private alert: AlertService,
                 @Inject("isAllowedModel") public isAllowedModel,
                 public orgHelpers: OrgHelperService,
                 public modalService: NgbModal) {

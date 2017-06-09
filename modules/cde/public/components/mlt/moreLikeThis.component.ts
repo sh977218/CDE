@@ -3,6 +3,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-boots
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { PinModalComponent } from "../../../../board/public/components/pinModal/pinModal.component";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-mlt",
@@ -20,7 +21,7 @@ export class MoreLikeThisComponent {
     cdes: any[];
 
     constructor(private http: Http,
-                @Inject("Alert") private alert,
+                private alert: AlertService,
                 public modalService: NgbModal,
                 @Inject("QuickBoard") public quickBoard) {
     }
@@ -36,7 +37,7 @@ export class MoreLikeThisComponent {
         this.modalRef = this.modalService.open(this.mltModal, {size: "lg"});
     }
 
-    static view (cde, event) {
+    static view (cde) {
         window.open("deview?tinyId=" + cde.tinyId);
     };
 

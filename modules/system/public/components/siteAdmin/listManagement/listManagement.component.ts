@@ -1,7 +1,8 @@
 import { Http } from "@angular/http";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { OrgHelperService } from "../../../../orgHelper.service";
+import { AlertService } from "../../alert/alert.service";
 
 @Component({
     selector: "cde-list-management",
@@ -17,7 +18,7 @@ export class ListManagementComponent implements OnInit {
 
     constructor(
         private http: Http,
-        @Inject("Alert") private Alert,
+        private Alert: AlertService,
         public orgHelper: OrgHelperService
     ) {}
 

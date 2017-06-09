@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ClassificationCtrl',
-    ['$scope', '$uibModal', '$routeParams', '$q', 'CdeClassification', 'FormClassification', 'OrgHelpers', 'userResource',
-        function ($scope, $modal, $routeParams, $promise, CdeClassification, FormClassification, OrgHelpers, userResource) {
+    ['$scope', '$uibModal', '$routeParams', '$q', 'CdeClassification', 'FormClassification', 'OrgHelpers', 'userResource', 'AlertService',
+        function ($scope, $modal, $routeParams, $promise, CdeClassification, FormClassification, OrgHelpers, userResource, Alert) {
     $scope.initCache();
 
     $scope.openAddClassificationModal = function () {
@@ -28,7 +28,7 @@ angular.module('systemModule').controller('ClassificationCtrl',
                             if (module === 'form') classificationService = FormClassification;
                             classificationService.save(newClassification, function (res) {
                                 $scope.reload($routeParams);
-                                $scope.addAlert("success", res.msg);
+                                Alert.addAlert("success", res.msg);
                             });
 
                         }
@@ -47,7 +47,7 @@ angular.module('systemModule').controller('ClassificationCtrl',
             categories: elts
         }).$promise.then(function (res) {
             $scope.reload($routeParams);
-            $scope.addAlert("success", "Classification Deleted");
+            Alert.addAlert("success", "Classification Deleted");
         });
     };
 

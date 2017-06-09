@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org', 'pathArray', '$http', 'Alert', '$timeout',
+angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org', 'pathArray', '$http', 'AlertService', '$timeout',
     function ($scope, org, pathArray, $http, Alert, $timeout) {
 
         $scope.path = pathArray.join(" / ");

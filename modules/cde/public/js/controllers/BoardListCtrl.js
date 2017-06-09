@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', 'Alert',
+angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', 'AlertService',
     function ($scope, $http, ElasticBoard, Alert) {
 
     $scope.boards = [];

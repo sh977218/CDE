@@ -14,7 +14,6 @@ import { SharedService } from "./shared.service";
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 
-export function getAlertFactory(i: any) { return i.get("Alert"); }
 export function getUserResourceFactory(i: any) { return i.get("userResource"); }
 export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"); }
 export function getIsAllowedModelFactory(i: any) { return i.get("isAllowedModel"); }
@@ -38,7 +37,6 @@ export function getElasticFactory(i: any) { return i.get("Elastic"); }
         SharedService,
         // upgraded
         UpgradeModule,
-        {provide: "Alert", useFactory: getAlertFactory, deps: ["$injector"]},
         {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},
         {provide: "ViewingHistory", useFactory: getViewingHistoryFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
