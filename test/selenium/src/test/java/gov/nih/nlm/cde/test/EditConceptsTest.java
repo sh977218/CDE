@@ -38,23 +38,20 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0_0']//*[@data-title='name']"));
-        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0_0']//*[@data-title='originId']"));
+        textPresent(newDataElementConceptName, By.xpath("//*[@id='Concepts_7']"));
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='Concepts_7']"));
+        textPresent(newPropertyConceptName, By.xpath("//*[@id='Concepts_3']"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='Concepts_3']"));
+        textPresent(newObjectClassConceptName, By.xpath("//*[@id='Concepts_5']"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='Concepts_5]"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
-        textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompareLeft_Property Concepts_0_3']//*[@data-title='name']"));
-        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompareLeft_Property Concepts_0_3']//*[@data-title='originId']"));
-
-        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0_0']//*[@data-title='name']"));
-        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0_0']//*[@data-title='originId']"));
-
+        goToCdeByName(cdeName);
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("removedataElementConcept-0"));
         clickElement(By.id("removeobjectClass-1"));
         clickElement(By.id("removeproperty-3"));
-
         newCdeVersion();
-
-        goToCdeByName(cdeName);
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
@@ -64,6 +61,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         textPresent(newPropertyConceptId, By.xpath("//*[contains(@id, 'historyCompareRight_Property Concepts')]//*[@data-title='originId']"));
         textPresent(newObjectClassConceptName, By.xpath("//*[contains(@id,'historyCompareRight_ObjectClass Concepts')]//*[@data-title='name']"));
         textPresent(newObjectClassConceptId, By.xpath("//*[contains(@id, 'historyCompareRight_ObjectClass Concepts')]//*[@data-title='originId']"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
         openCdeAudit(cdeName);
         textPresent(newDataElementConceptId);
