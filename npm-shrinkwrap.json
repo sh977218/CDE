@@ -14,14 +14,6 @@
           }
         }
       }
-    },
-    "angular-tree-component": {
-      "version": "3.6.0",
-      "dependencies": {
-        "mobx": {
-          "version": "3.1.11"
-        }
-      }
     }
   }
 }
