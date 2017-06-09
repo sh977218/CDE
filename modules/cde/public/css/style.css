@@ -1736,9 +1736,11 @@ div.slider .ui-slider-handle {
     height: 50px;
 }
 
-.hugeModal > .modal-dialog > .modal-content {
-    max-width: 90% !important;
-    width: 90% !important;
+@media (min-width: 768px) {
+    .hugeModal > .modal-dialog {
+        width: 90%;
+        max-width: 1200px;
+    }
 }
 
 .progress-bar .bg-success {

@@ -59,7 +59,7 @@ export class CompareService {
                             data: o,
                             older: o
                         });
-                    })
+                    });
                 } else {
                     this.copyValue(l, option.data);
                     option.result.push({

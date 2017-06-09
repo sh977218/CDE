@@ -288,10 +288,10 @@ export class CompareArrayComponent implements OnInit {
     ngOnInit(): void {
         this.older.questions = [];
         this.flatFormQuestions(this.older, this.older.questions);
-        this.older.concepts = _.concat(_.concat(this.older.property.concepts, this.older.objectClass.concepts), this.older.dataElementConcept.concepts)
+        this.older.concepts = _.concat(_.concat(this.older.property.concepts, this.older.objectClass.concepts), this.older.dataElementConcept.concepts);
         this.newer.questions = [];
         this.flatFormQuestions(this.newer, this.newer.questions);
-        this.newer.concepts = _.concat(_.concat(this.newer.property.concepts, this.newer.objectClass.concepts), this.newer.dataElementConcept.concepts)
+        this.newer.concepts = _.concat(_.concat(this.newer.property.concepts, this.newer.objectClass.concepts), this.newer.dataElementConcept.concepts);
         this.compareService.doCompareArray(this.newer, this.older, this.compareArrayOption);
         console.log('a');
     }
