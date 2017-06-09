@@ -30,11 +30,11 @@
                         <i class="fa fa-square-o" *ngIf="!priorElement.selected" aria-hidden="true"></i>
                     </td>
                     <td>
-                        {{priorElement?.updated | date: 'MM/dd/yyyy @ h:mma'}}
+                        {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}
                     </td>
                     <td>{{priorElement.updatedBy?.username}}</td>
-                    <td>{{priorElement?.changeNote}}</td>
-                    <td>{{priorElement?.version}}</td>
+                    <td>{{priorElement.changeNode}}</td>
+                    <td>{{priorElement.version}}</td>
                     <td>
                         <ng-container *ngIf="priorElement.viewing">
                             Viewing
@@ -80,7 +80,7 @@
         <cde-compare-array [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-array>
     </div>
     <div class="modal-footer">
-        <button class="btn cancel" id="closeHistoryCompareModal"(click)="c('Close click')" type="button">Close
+        <button class="btn cancel" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">Close
         </button>
     </div>
 </ng-template>

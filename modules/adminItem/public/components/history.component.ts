@@ -50,6 +50,7 @@ export class HistoryComponent implements OnInit {
                 .subscribe(res => {
                     this.priorElements = res.reverse();
                     this.elt.viewing = true;
+                    this.elt.changeNode = this.elt._changeNote;
                     this.priorElements.splice(0, 0, this.elt);
                 }, err =>
                     this.alert.addAlert("danger", "Error retrieving history: " + err));
