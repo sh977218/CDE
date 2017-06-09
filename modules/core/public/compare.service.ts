@@ -109,7 +109,11 @@ export class CompareService {
             option.display = option.result.filter(p => p.display).length > 0;
             option.result.forEach(r => {
                 if (r.newer && r.add) {
-                    if (_.findIndex(older, o => option.isEqual(o, r.data)) !== -1) {
+                    if (_.findIndex(older, o => {
+                            let temp = option.isEqual(o, r.data);
+                            if (temp) r.older = _.cloneDeep(o);
+                            return temp;
+                        }) !== -1) {
                         delete r.add;
                         if (!r.match) r.diff = _.uniq(r.data.diff);
                         r.reorder = true;

@@ -16,7 +16,7 @@ import * as _ from "lodash";
 export class CompareArrayComponent implements OnInit {
     @Input() older;
     @Input() newer;
-    public compareArrayOption = [/*
+    public compareArrayOption = [
         {
             label: "Form Elements",
             isEqual: function (a, b) {
@@ -180,7 +180,7 @@ export class CompareArrayComponent implements OnInit {
                 {label: 'Language Code', property: 'languageCode'},
                 {label: 'Document', property: 'document'}
             ]
-        },*/
+        },
         {
             label: "Naming",
             isEqual: function (a, b) {
@@ -188,9 +188,6 @@ export class CompareArrayComponent implements OnInit {
                 if (_.isEmpty(b.diff)) b.diff = [];
                 let result = _.isEqual(a.designation, b.designation);
                 if (result) {
-                    if (!a || !b) {
-                        console.log('a');
-                    }
                     if (!_.isEqual(a.definition, b.definition)) {
                         a.diff.push("definition");
                         b.diff.push("definition");
@@ -226,7 +223,7 @@ export class CompareArrayComponent implements OnInit {
                 {label: 'Definition', property: 'definition'},
                 {label: 'Tags', property: 'tags', array: true}
             ]
-        }/*,
+        },
         {
             label: "Properties",
             isEqual: function (a, b) {
@@ -299,7 +296,7 @@ export class CompareArrayComponent implements OnInit {
                 {label: "Origin Id", property: 'originId'}
             ],
             diff: []
-        }*/
+        }
     ];
 
 
