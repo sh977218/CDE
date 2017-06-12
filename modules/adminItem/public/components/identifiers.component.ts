@@ -25,7 +25,7 @@ export class IdentifiersComponent {
 
     openNewIdentifierModal() {
         this.modalRef = this.modalService.open(this.newIdentifierContent, {size: "lg"});
-        this.modalRef.result.then(() => this.newIdentifier = {});
+        this.modalRef.result.then(() => this.newIdentifier = {}, () => {});
     }
 
     addNewIdentifier() {
