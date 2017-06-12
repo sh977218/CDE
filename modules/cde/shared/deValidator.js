@@ -53,6 +53,8 @@ exports.fixDatatype = function (elt) {
 };
 
 exports.wipeDatatype = function (elt) {
+    if (elt.elementType !== "cde")
+        return;
     exports.fixDatatype(elt);
     var valueDomain = {
         name: elt.valueDomain.name,
