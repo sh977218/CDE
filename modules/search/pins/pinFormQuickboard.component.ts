@@ -6,6 +6,7 @@ import { Component, Inject, Input } from "@angular/core";
 })
 export class PinFormQuickboardComponent {
     @Input() elt: any;
+    @Input() eltIndex: number;
 
     constructor(@Inject("FormQuickBoard") public quickBoard) {}
 

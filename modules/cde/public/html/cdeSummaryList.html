@@ -1,4 +1,4 @@
-<cde-cde-summary-list ng-if="!ejsPage" [cdes]="cdes"></cde-cde-summary-list>
+<cde-cde-summary-list ng-if="!ejsPage || ejsPage === 'list'" [cdes]="cdes"></cde-cde-summary-list>
 <cde-board-cde-summary-list ng-if="ejsPage === 'board'"
                             [board]="board" [cdes]="cdes" [current-page]="currentPage" [total-items]="totalItems"
                             (reload)="reload()"></cde-board-cde-summary-list>
