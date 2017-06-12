@@ -1,5 +1,7 @@
 <cde-form-summary-list ng-if="!ejsPage || ejsPage === 'list'" [forms]="forms"></cde-form-summary-list>
-<cde-board-form-summary-list ng-if="ejsPage === 'board'" [board]="board" [forms]="forms" [current-page]="currentPage" [total-items]="totalItems"></cde-board-form-summary-list>
+<cde-board-form-summary-list ng-if="ejsPage === 'board'"
+                             [board]="board" [forms]="forms" [current-page]="currentPage" [total-items]="totalItems"
+                             (reload)="reload()"></cde-board-form-summary-list>
 <div ng-if="ejsPage === 'quickboard'" ng-repeat="(eltIndex, elt) in forms track by elt.tinyId">
 
     <div ng-if="$index === cutoffIndex" style="margin-top:40px">
