@@ -5,6 +5,11 @@ import "rxjs/add/operator/map";
 import { CompareObjectComponent } from "../../../compare/compareObject.component";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
+const URL_MAP = {
+    "cde": "/deview?cdeId=",
+    "form": "/formView?formId="
+};
+
 @Component({
     selector: "cde-admin-item-history",
     templateUrl: "./history.component.html",
@@ -44,6 +49,7 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        let prefix_url = URL_MAP[this.elt.elementType];
         delete this.elt.selected;
         if (this.elt.history && this.elt.history.length > 0) {
             this.http.get('/priorElements/' + this.elt.elementType + '/' + this.elt._id).map(res => res.json())
@@ -52,6 +58,9 @@ export class HistoryComponent implements OnInit {
                     this.elt.viewing = true;
                     this.elt.changeNode = this.elt._changeNote;
                     this.priorElements.splice(0, 0, this.elt);
+                    this.priorElements.forEach(pe => {
+                        pe.url = prefix_url + pe._id;
+                    })
                 }, err =>
                     this.alert.addAlert("danger", "Error retrieving history: " + err));
         }

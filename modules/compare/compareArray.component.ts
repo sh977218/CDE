@@ -11,6 +11,18 @@ import * as _ from "lodash";
             border: 1px solid #ccc;
             padding: 9.5px;
             margin: 0 0 10px;
+        }
+        :host .arrayObjRemove {
+            border-left: 5px solid #a94442
+        }
+        :host .arrayObjAdd {
+            border-left: 5px solid #008000
+        }
+        :host .arrayObjEdit {
+            border-left: 5px solid #0000ff
+        }
+        :host .arrayObjReorder {
+            border-left: 5px solid #fad000
         }`]
 })
 export class CompareArrayComponent implements OnInit {

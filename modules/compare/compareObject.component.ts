@@ -14,7 +14,7 @@ export class CompareObjectComponent implements OnInit {
         "Text": "valueDomain.datatypeText"
     };
     public compareObjectProperties = [
-        {label: "Steward", match: false, property: "stewardOrg.name"},
+        {label: "Steward Org", match: false, property: "stewardOrg.name"},
         {label: "Version", match: false, property: "version"},
         {label: "Status", match: false, property: "registrationState.registrationStatus"},
         {label: "Unit Of Measurement", match: false, property: "valueDomain.uom"},

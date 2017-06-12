@@ -3,7 +3,7 @@
         <label>{{property.label}}:</label>
         <div *ngFor="let r of property.result;let i = index">
             <div class="col-xs-12" *ngIf="!r.match || r.display" id="{{property.label}}_{{i}}">
-                <div class="col-xs-12 arrayObj" *ngIf="r.reorder" style="border-left: 5px solid #fad000">
+                <div class="col-xs-12 arrayObj arrayObjReorder" *ngIf="r.reorder">
                     <div *ngFor="let d of property.data">
                         <ng-container *ngIf="r.diff">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <ng-container *ngIf="!r.reorder">
-                    <div class="col-xs-12 arrayObj" *ngIf="r.add" style="border-left: 5px solid #008000">
+                    <div class="col-xs-12 arrayObj arrayObjAdd" *ngIf="r.add">
                         <ng-container *ngFor="let d of property.data">
                             <div *ngIf="r.data[d.property]">
                                 <label>{{d.label}}:</label>
@@ -33,7 +33,7 @@
                             </div>
                         </ng-container>
                     </div>
-                    <div class="col-xs-12 arrayObj" *ngIf="r.remove" style="border-left: 5px solid #a94442">
+                    <div class="col-xs-12 arrayObj arrayObjRemove" *ngIf="r.remove">
                         <ng-container *ngFor="let d of property.data">
                             <div *ngIf="r.data[d.property]">
                                 <label>{{d.label}}:</label>
@@ -48,7 +48,7 @@
                             </div>
                         </ng-container>
                     </div>
-                    <div class="col-xs-12 arrayObj" *ngIf="r.edited" style="border-left: 5px solid #0000ff">
+                    <div class="col-xs-12 arrayObj arrayObjEdit" *ngIf="r.edited">
                         <div *ngFor="let d of property.data">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <label>{{d.label}}:</label>

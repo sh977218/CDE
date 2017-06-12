@@ -38,12 +38,12 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDataElementConceptName, By.xpath("//*[@id='Concepts_7']"));
-        textPresent(newDataElementConceptId, By.xpath("//*[@id='Concepts_7']"));
-        textPresent(newPropertyConceptName, By.xpath("//*[@id='Concepts_3']"));
-        textPresent(newPropertyConceptId, By.xpath("//*[@id='Concepts_3']"));
-        textPresent(newObjectClassConceptName, By.xpath("//*[@id='Concepts_5']"));
-        textPresent(newObjectClassConceptId, By.xpath("//*[@id='Concepts_5]"));
+        textPresent(newDataElementConceptName, By.xpath("//*[@id='Concepts_7']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='Concepts_7']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent(newPropertyConceptName, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjRemove')]"));
+        textPresent(newObjectClassConceptName, By.xpath("//*[@id='Concepts_5']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='Concepts_5']//div[contains(@class,'arrayObjAdd')]"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToCdeByName(cdeName);
@@ -55,12 +55,12 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("Patient Photograph Malignant Neoplasm Assessment", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_0_1']//*[@data-title='name']"));
-        textPresent("2640357v1", By.xpath("//*[contains(@id, 'historyCompareRight_Data Element Concepts')]//*[@data-title='originId']"));
-        textPresent(newPropertyConceptName, By.xpath("//*[contains(@id, 'historyCompareRight_Property Concepts')]//*[@data-title='name']"));
-        textPresent(newPropertyConceptId, By.xpath("//*[contains(@id, 'historyCompareRight_Property Concepts')]//*[@data-title='originId']"));
-        textPresent(newObjectClassConceptName, By.xpath("//*[contains(@id,'historyCompareRight_ObjectClass Concepts')]//*[@data-title='name']"));
-        textPresent(newObjectClassConceptId, By.xpath("//*[contains(@id, 'historyCompareRight_ObjectClass Concepts')]//*[@data-title='originId']"));
+        textPresent(newDataElementConceptName, By.xpath("//*[@id='Concepts_7']//div[contains(@class,'arrayObjRemove')]"));
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='Concepts_7']//div[contains(@class,'arrayObjRemove')]"));
+        textPresent(newPropertyConceptName, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjRemove')]"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjRemove')]"));
+        textPresent(newObjectClassConceptName, By.xpath("//*[@id='Concepts_5']//div[contains(@class,'arrayObjRemove')]"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='Concepts_5']//div[contains(@class,'arrayObjRemove')]"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         openCdeAudit(cdeName);

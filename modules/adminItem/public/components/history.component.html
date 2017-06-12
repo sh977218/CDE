@@ -36,19 +36,15 @@
                     <td>{{priorElement.changeNode}}</td>
                     <td>{{priorElement.version}}</td>
                     <td>
-                        <ng-container *ngIf="priorElement.viewing">
-                            Viewing
-                        </ng-container>
-                        <ng-container *ngIf="!priorElement.viewing">
-                            <ng-container *ngIf="elt.elementType === 'cde'">
-                                <a [href]="'/deview?cdeId='+priorElement._id" target="_blank">
+                        <div id="prior-{{i}}">
+                            <ng-container *ngIf="priorElement.viewing">
+                                Viewing
+                            </ng-container>
+                            <ng-container *ngIf="!priorElement.viewing">
+                                <a [href]="priorElement.url" target="_blank">
                                     <span class="fa fa-eye fa-2x gray"></span></a>
                             </ng-container>
-                            <ng-container *ngIf="elt.elementType === 'form'">
-                                <a [href]="'/formView?formId='+priorElement._id" target="_blank">
-                                    <span class="fa fa-eye fa-2x gray"></span></a>
-                            </ng-container>
-                        </ng-container>
+                        </div>
                     </td>
                 </tr>
             </ng-container>
