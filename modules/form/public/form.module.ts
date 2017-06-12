@@ -7,14 +7,19 @@ import { Select2Module } from "ng2-select2";
 import { SortableModule } from "ngx-bootstrap";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
+import { SearchModule } from "search";
+import { SystemModule } from "../../system/public/system.module";
 
 import { ArrayListPipe } from "./arrayList.pipe";
+
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
 import { FormDescriptionComponent } from "./tabs/description/formDescription.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
 import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
 import { FormSearchDirective, QuestionSearchDirective } from "./upgrade-components";
+import { FormSummaryListComponent } from "./components/searchResults/formSummaryList.component";
+import { FormSummaryListContentComponent } from "./components/searchResults/formSummaryListContent.component";
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
@@ -25,7 +30,6 @@ import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 
 import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
-import {SystemModule} from "../../system/public/system.module";
 
 @NgModule({
     imports: [
@@ -37,6 +41,7 @@ import {SystemModule} from "../../system/public/system.module";
         TreeModule,
         // internal
         AdminItemModule,
+        SearchModule,
         SystemModule,
     ],
     declarations: [
@@ -47,6 +52,8 @@ import {SystemModule} from "../../system/public/system.module";
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
         FormSearchDirective,
+        FormSummaryListComponent,
+        FormSummaryListContentComponent,
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
@@ -58,6 +65,8 @@ import {SystemModule} from "../../system/public/system.module";
     ],
     entryComponents: [
         FormDescriptionComponent,
+        FormSummaryListComponent,
+        FormSummaryListContentComponent,
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,

@@ -35,6 +35,10 @@ angular.module('cdeModule').directive('cdeAccordionList', function () {
 
 import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
+import {BoardCdeSummaryListComponent} from "../components/searchResults/boardCdeSummaryList.component";
+angular.module('cdeModule').directive('cdeBoardCdeSummaryList',
+    downgradeComponent({component: BoardCdeSummaryListComponent, inputs: ['board', 'cdes', 'currentPage', 'totalItems'], outputs: ['reload']}));
+
 import {LinkedFormsComponent} from "../../../system/public/components/linkedForms.component";
 angular.module('cdeModule').directive('cdeLinkedForms', downgradeComponent({component: LinkedFormsComponent, inputs: ['elt', 'eltType'], outputs: []}));
 
@@ -59,15 +63,14 @@ angular.module('systemModule').directive('cdeDeGeneralDetails', downgradeCompone
 import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
 angular.module('systemModule').directive('cdeValueDomainSummary', downgradeComponent({component: ValueDomainSummaryComponent, inputs: ['elt'], outputs: []}));
 
-import {CdeSummaryListComponent} from "../components/summary/cdeSummaryList.component";
-angular.module('systemModule').directive('cdeCdeSummaryList', downgradeComponent({component: CdeSummaryListComponent, inputs: ['cdes'], outputs: []}));
+import {CdeSummaryListComponent} from "../components/searchResults/cdeSummaryList.component";
+angular.module('cdeModule').directive('cdeCdeSummaryList', downgradeComponent({component: CdeSummaryListComponent, inputs: ['cdes'], outputs: []}));
 
 import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
 angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));
 
 import {PermissibleValueComponent} from "../components/permissibleValue.component";
-angular.module('cdeModule').directive('cdePermissibleValue', downgradeComponent({component: PermissibleValueComponent, inputs: ['elt'], outputs: []
-}));
+angular.module('cdeModule').directive('cdePermissibleValue', downgradeComponent({component: PermissibleValueComponent, inputs: ['elt'], outputs: []}));
 
 import {RegistrationValidatorService} from "../components/validationRules/registrationValidator.service";
 angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
