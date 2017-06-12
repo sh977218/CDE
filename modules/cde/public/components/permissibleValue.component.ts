@@ -61,7 +61,7 @@ export class PermissibleValueComponent implements OnInit {
     ngOnInit(): void {
         let isDatatypeDefined = _.indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
         if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
-        this.fixDatatype();
+        deValidator.fixDatatype(this.elt);
         this.elt.allValid = true;
         this.loadValueSet();
         this.initSrcOptions();
@@ -89,21 +89,6 @@ export class PermissibleValueComponent implements OnInit {
         this.containsKnownSystem = this.elt.valueDomain.permissibleValues
                 .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
     }
-
-    fixDatatype() {
-        if (!this.elt.valueDomain.datatype) this.elt.valueDomain.datatype = "";
-        if (this.elt.valueDomain.datatype.toLowerCase() === "value list" && !this.elt.valueDomain.datatypeValueList)
-            this.elt.valueDomain.datatypeValueList = {};
-        if (this.elt.valueDomain.datatype.toLowerCase() === "number" && !this.elt.valueDomain.datatypeNumber)
-            this.elt.valueDomain.datatypeNumber = {};
-        if (this.elt.valueDomain.datatype.toLowerCase() === "text" && !this.elt.valueDomain.datatypeText)
-            this.elt.valueDomain.datatypeText = {};
-        if (this.elt.valueDomain.datatype.toLowerCase() === "date" && !this.elt.valueDomain.datatypeDate)
-            this.elt.valueDomain.datatypeDate = {};
-        if (this.elt.valueDomain.datatype.toLowerCase() === "externally defined" && !this.elt.valueDomain.datatypeExternallyDefined)
-            this.elt.valueDomain.datatypeExternallyDefined = {};
-    }
-
 
     openNewPermissibleValueModal() {
         this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
@@ -341,7 +326,7 @@ export class PermissibleValueComponent implements OnInit {
 
     changedDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatype = data.value;
-        this.fixDatatype();
+        deValidator.fixDatatype(this.elt);
         this.elt.unsaved = true;
     }
 

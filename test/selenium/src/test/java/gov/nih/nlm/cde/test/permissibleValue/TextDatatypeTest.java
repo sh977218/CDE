@@ -23,8 +23,14 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys("987");
         clickElement(By.xpath("//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
-
         newCdeVersion();
+
+        // update cde has fixed datatype;
+        clickElement(By.id("export"));
+        clickElement(By.id("jsonExport"));
+        switchTab(1);
+        textNotPresent("permissibleValues");
+        switchTabAndClose(0);
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
