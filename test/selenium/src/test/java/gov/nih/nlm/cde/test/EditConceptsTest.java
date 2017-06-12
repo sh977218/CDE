@@ -48,7 +48,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         clickElement(By.id("concepts_tab"));
-        clickElement(By.id("removedataElementConcept-0"));
+        clickElement(By.id("removedataElementConcept-1"));
         clickElement(By.id("removeobjectClass-1"));
         clickElement(By.id("removeproperty-3"));
         newCdeVersion();

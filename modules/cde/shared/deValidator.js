@@ -68,22 +68,20 @@ exports.wipeDatatype = function (elt) {
         valueDomain.datatype = "Value List";
         valueDomain.permissibleValues = elt.valueDomain.permissibleValues;
         valueDomain.datatypeValueList = elt.valueDomain.datatypeValueList;
-    }
-    if (elt.valueDomain.datatype.toLowerCase() === "number") {
+    } else if (elt.valueDomain.datatype.toLowerCase() === "number") {
         valueDomain.datatype = "Number";
         valueDomain.datatypeNumber = elt.valueDomain.datatypeNumber;
-    }
-    if (elt.valueDomain.datatype.toLowerCase() === "text") {
+    } else if (elt.valueDomain.datatype.toLowerCase() === "text") {
         valueDomain.datatype = "Text";
         valueDomain.datatypeText = elt.valueDomain.datatypeText;
-    }
-    if (elt.valueDomain.datatype.toLowerCase() === "date") {
+    } else if (elt.valueDomain.datatype.toLowerCase() === "date") {
         valueDomain.datatype = "Date";
         valueDomain.datatypeDate = elt.valueDomain.datatypeDate;
-    }
-    if (elt.valueDomain.datatype.toLowerCase() === "externally defined") {
+    } else if (elt.valueDomain.datatype.toLowerCase() === "externally defined") {
         valueDomain.datatype = "Externally Defined";
         valueDomain.datatypeExternallyDefined = elt.valueDomain.datatypeExternallyDefined;
+    } else {
+        valueDomain.datatype = elt.valueDomain.datatype;
     }
     elt.valueDomain = valueDomain;
 };
