@@ -9,6 +9,9 @@ exports.config = {
     },
     maxSessions: 15,
     allScriptsTimeout: 30000,
+    jasmineNodeOpts: {
+        defaultTimeoutInterval: 30000
+    },
     onPrepare: function () {
         jasmine.getEnv().addReporter(
             new jasmineReporters.JUnitXmlReporter({savePath: './protractor/reports'})
