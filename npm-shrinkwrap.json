@@ -19,22 +19,6 @@
           }
         }
       }
-    },
-    "angular-tree-component": {
-      "version": "3.6.0",
-      "dependencies": {
-        "mobx": {
-          "version": "3.1.11"
-        },
-        "mobx-angular": {
-          "version": "1.5.0",
-          "dependencies": {
-            "mobx": {
-              "version": "3.1.11"
-            }
-          }
-        }
-      }
     }
   }
 }

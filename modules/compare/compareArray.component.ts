@@ -308,6 +308,30 @@ export class CompareArrayComponent implements OnInit {
                 {label: "Origin Id", property: 'originId'}
             ],
             diff: []
+        },
+        {
+            label: "Identifiers",
+            isEqual: function (a, b) {
+                if (_.isEmpty(a.diff)) a.diff = [];
+                if (_.isEmpty(b.diff)) b.diff = [];
+                let result = _.isEqual(a.source, b.source) && _.isEqual(a.id, b.id);
+                if (result) {
+                    if (!_.isEqual(a.version, b.version)) {
+                        a.diff.push("version");
+                        b.diff.push("version");
+                        a.display = true;
+                        b.display = true;
+                    }
+                }
+                return result;
+            },
+            property: "ids",
+            data: [
+                {label: "Source", property: 'source'},
+                {label: "ID", property: 'id'},
+                {label: "Version", property: 'version'}
+            ],
+            diff: []
         }
     ];
 

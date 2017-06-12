@@ -41,7 +41,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         textPresent(newDataElementConceptName, By.xpath("//*[@id='Concepts_7']//div[contains(@class,'arrayObjAdd')]"));
         textPresent(newDataElementConceptId, By.xpath("//*[@id='Concepts_7']//div[contains(@class,'arrayObjAdd')]"));
         textPresent(newPropertyConceptName, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjAdd')]"));
-        textPresent(newPropertyConceptId, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjRemove')]"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjAdd')]"));
         textPresent(newObjectClassConceptName, By.xpath("//*[@id='Concepts_5']//div[contains(@class,'arrayObjAdd')]"));
         textPresent(newObjectClassConceptId, By.xpath("//*[@id='Concepts_5']//div[contains(@class,'arrayObjAdd')]"));
         clickElement(By.id("closeHistoryCompareModal"));
