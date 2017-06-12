@@ -89,7 +89,9 @@ export class CompareService {
                 };
                 let lCopy = {};
                 let rCopy = {};
-                let diff = _.uniq(_.concat(l.diff, r.diff));
+                if (!l.diff) l.diff = [];
+                if (!r.diff) r.diff = [];
+                let diff = _.uniq(l.diff.concat(r.diff));
                 if (!_.isEmpty(diff)) {
                     option.data.forEach(d => {
                         lCopy[d.property] = _.get(l, d.property);
@@ -102,6 +104,19 @@ export class CompareService {
                 }
                 option.result.push(tempResult);
                 beginIndex++;
+            }
+            if (leftIndex === newer.length - 1) {
+                rightArrayCopy.forEach((o, i) => {
+                    if (i > 0) {
+                        this.copyValue(o, option.data);
+                        option.result.push({
+                            match: false,
+                            add: true,
+                            data: o,
+                            older: o
+                        });
+                    }
+                });
             }
         });
         if (option.result) {

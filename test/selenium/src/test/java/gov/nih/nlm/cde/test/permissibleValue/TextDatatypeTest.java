@@ -2,7 +2,10 @@ package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static com.jayway.restassured.RestAssured.get;
 
 public class TextDatatypeTest extends NlmCdeBaseTest {
 
@@ -25,12 +28,8 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
         newCdeVersion();
 
-        // update cde has fixed datatype;
-        clickElement(By.id("export"));
-        clickElement(By.id("jsonExport"));
-        switchTab(1);
-        textNotPresent("permissibleValues");
-        switchTabAndClose(0);
+        // check update cde has fixed datatype;
+        Assert.assertFalse(get(baseUrl + "/dataelement/593eff071acca22de85b0b29").asString().contains("valueMeaningName"));
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
