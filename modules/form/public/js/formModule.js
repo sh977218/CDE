@@ -87,7 +87,7 @@ angular.module('formModule').directive('questionSearch', [function () {
 
 import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
-import {BoardFormSummaryListComponent} from "../../../board/public/components/searchResults/boardFormSummaryList.component";
+import {BoardFormSummaryListComponent} from "../components/searchResults/boardFormSummaryList.component";
 angular.module('formModule').directive('cdeBoardFormSummaryList',
     downgradeComponent({component: BoardFormSummaryListComponent, inputs: ['board', 'forms', 'currentPage', 'totalItems'], outputs: ['reload']}));
 

@@ -5,29 +5,27 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { CdeModule } from "../../cde/public/cde.module";
 import { SearchModule } from "search";
 
-import { BoardFormSummaryListComponent } from "./components/searchResults/boardFormSummaryList.component";
-import { BoardFormSummaryListContentComponent } from "./components/searchResults/boardFormSummaryListContent.component";
 import { BoardService } from "./components/searchResults/board.service";
 import { CreateBoardComponent } from "./components/createBoard/createBoard.component";
 import { LinkedBoardsComponent } from "./components/linkedBoards/linkedBoards.component";
 import { ListSortComponent } from "./components/searchResults/listSort.component";
 import { MyBoardsService } from "./myBoards.service";
+import { PinAccordionComponent } from "./components/searchResults/pinAccordion.component";
 import { PinBoardAccordionComponent } from "./components/searchResults/pinBoardAccordion.component";
 import { PinModalComponent } from "./components/pinModal/pinModal.component";
+import { PinQuickboardComponent } from "./components/searchResults/pinQuickboard.component";
 
 @NgModule({
     declarations: [
-        BoardFormSummaryListComponent,
-        BoardFormSummaryListContentComponent,
         CreateBoardComponent,
         LinkedBoardsComponent,
         ListSortComponent,
+        PinAccordionComponent,
         PinBoardAccordionComponent,
         PinModalComponent,
+        PinQuickboardComponent,
     ],
     entryComponents: [
-        BoardFormSummaryListComponent,
-        BoardFormSummaryListContentComponent,
         CreateBoardComponent,
         LinkedBoardsComponent
     ],
@@ -36,8 +34,10 @@ import { PinModalComponent } from "./components/pinModal/pinModal.component";
     exports: [
         LinkedBoardsComponent,
         ListSortComponent,
+        PinAccordionComponent,
         PinBoardAccordionComponent,
         PinModalComponent,
+        PinQuickboardComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

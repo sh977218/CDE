@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
+import { BoardService } from "../../../../board/public/components/searchResults/board.service";
 import { SummaryComponent } from "search";
-import { BoardService } from "./board.service";
 
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { BoardFormSummaryListContentComponent } from "./boardFormSummaryListContent.component";
+import { BoardService } from "../../../../board/public/components/searchResults/board.service";
 import { CdeForm } from "../../../../form/public/form.model";
-import { BoardService } from "./board.service";
 
 @Component({
     selector: "cde-board-form-summary-list",
