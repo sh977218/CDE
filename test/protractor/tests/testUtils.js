@@ -14,6 +14,7 @@ module.exports = {
         element(by.id("passwd")).clear();
         element(by.id("passwd")).sendKeys(password);
         element(by.id("login_button")).click();
+        expect(element(by.id("login_link")).getText()).toContain(usernameStr);
     },
 
     mustBeLoggedInAs: function (username, password) {
