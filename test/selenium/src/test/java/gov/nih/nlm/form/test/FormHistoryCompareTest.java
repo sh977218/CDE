@@ -19,7 +19,8 @@ public class FormHistoryCompareTest extends BaseFormTest {
         textPresent("\"Neoadjuvant Therapy\" = \"Yes (specify type)\"", By.xpath("//*[@id='Form Elements_3']//ins"));
         clickElement(By.id("closeHistoryCompareModal"));
 
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[2]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][2]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][3]"));
         selectHistoryAndCompare(1, 2);
         textPresent("\"Neoadjuvant Therapy\" = \"Yes (specify type)\"", By.xpath("//*[@id='Form Elements_2']//div[contains(@class,'arrayObjReorder')]"));
     }

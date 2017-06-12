@@ -4,8 +4,6 @@ import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-
 public class FormHistoryTest extends BaseFormTest {
 
     @Test
@@ -33,13 +31,9 @@ public class FormHistoryTest extends BaseFormTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         clickElement(By.id("prior-1"));
-        ArrayList<String> wintabs = new ArrayList<String>(driver.getWindowHandles());
-        driver.switchTo().window(wintabs.get(1));
+        switchTab(1);
         textPresent("View current form");
         clickElement(By.id("viewCurrentEltLink"));
-        textNotPresent("View current form");
-        driver.close();
-        driver.switchTo().window(wintabs.get(0));
         textNotPresent("View current form");
     }
 }
