@@ -1,2 +1,44 @@
-<cde-form-summary-list ng-if="!ejsPage || ejsPage === 'quickboard'" [forms]="forms"></cde-form-summary-list>
+<cde-form-summary-list ng-if="!ejsPage" [forms]="forms"></cde-form-summary-list>
 <cde-board-form-summary-list ng-if="ejsPage === 'board'" [board]="board" [forms]="forms" [current-page]="currentPage" [total-items]="totalItems"></cde-board-form-summary-list>
+<div ng-if="ejsPage === 'quickboard'" ng-repeat="(eltIndex, elt) in forms track by elt.tinyId">
+
+    <div ng-if="$index === cutoffIndex" style="margin-top:40px">
+        <h3>More results</h3>
+    </div>
+
+    <div class="singleSearchResult" id="searchResult_{{$index}}">
+        <h4>
+            <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
+            <a ng-href="/formView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy"
+               id="linkToElt_{{$index}}" ng-click='$dismiss()'></a>
+            <small>{{elt.registrationState.registrationStatus}}</small>
+            <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
+            <small  class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
+                <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
+        </h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                <b>{{elt.numQuestions}} Questions</b> - <span ng-bind-html="elt.primaryDefinitionCopy"></span>
+                <dl class="dl-horizontal" style="margin: 5px 0 10px 0 ">
+                    <dt >Steward:</dt>
+                    <dd  ng-bind-html="elt.stewardOrg.name"></dd>
+                    <dt  ng-show="elt.classification.length > 0">Used By:</dt>
+                    <dd  ng-show="elt.classification.length > 0" id="dd_usedBy">
+                        <span ng-switch="elt.classification.length > 0">
+                            <span ng-switch-when="false">None</span>
+                            <span ng-switch-default>
+                                <span ng-repeat="cl in elt.classification">{{cl.stewardOrg.name}} </span>
+                            </span>
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-md-2">
+                <img ng-repeat="attachment in elt.attachments | filter:{isDefault:true}"
+                     alt="Image attached to the elt"
+                     ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+            </div>
+        </div>
+    </div>
+</div>
