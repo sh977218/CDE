@@ -143,7 +143,7 @@ export class CompareService {
                     }
                 }
                 return false;
-            })
+            });
         }
     }
 

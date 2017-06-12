@@ -54,7 +54,7 @@ exports.fixDatatype = function (elt) {
 
 exports.wipeDatatype = function (elt) {
     exports.fixDatatype(elt);
-    let valueDomain = {
+    var valueDomain = {
         name: elt.valueDomain.name,
         ids: elt.valueDomain.ids,
         identifiers: elt.valueDomain.identifiers,
