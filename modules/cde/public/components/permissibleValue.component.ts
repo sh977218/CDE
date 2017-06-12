@@ -14,7 +14,6 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 
-
 @Component({
     selector: "cde-permissible-value",
     providers: [NgbActiveModal],
@@ -93,25 +92,26 @@ export class PermissibleValueComponent implements OnInit {
 
     fixDatatype() {
         if (!this.elt.valueDomain.datatype) this.elt.valueDomain.datatype = "";
-        if (this.elt.valueDomain.datatype === "Value List" && !this.elt.valueDomain.datatypeValueList)
+        if (this.elt.valueDomain.datatype.toLowerCase() === "value list" && !this.elt.valueDomain.datatypeValueList)
             this.elt.valueDomain.datatypeValueList = {};
-        if (this.elt.valueDomain.datatype === "Number" && !this.elt.valueDomain.datatypeNumber)
+        if (this.elt.valueDomain.datatype.toLowerCase() === "number" && !this.elt.valueDomain.datatypeNumber)
             this.elt.valueDomain.datatypeNumber = {};
-        if (this.elt.valueDomain.datatype === "Text" && !this.elt.valueDomain.datatypeText)
+        if (this.elt.valueDomain.datatype.toLowerCase() === "text" && !this.elt.valueDomain.datatypeText)
             this.elt.valueDomain.datatypeText = {};
-        if (this.elt.valueDomain.datatype === "Date" && !this.elt.valueDomain.datatypeDate)
+        if (this.elt.valueDomain.datatype.toLowerCase() === "date" && !this.elt.valueDomain.datatypeDate)
             this.elt.valueDomain.datatypeDate = {};
-        if (this.elt.valueDomain.datatype === "Externally Defined" && !this.elt.valueDomain.datatypeExternallyDefined)
+        if (this.elt.valueDomain.datatype.toLowerCase() === "externally defined" && !this.elt.valueDomain.datatypeExternallyDefined)
             this.elt.valueDomain.datatypeExternallyDefined = {};
     }
 
 
     openNewPermissibleValueModal() {
         this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
-        this.modalRef.result.then(() => this.newPermissibleValue = {}, () => {});
+        this.modalRef.result.then(() => this.newPermissibleValue = {}, () => {
+        });
     }
 
-    lookupUmls () {
+    lookupUmls() {
         this.searchTerms.next(this.newPermissibleValue.valueMeaningName);
     }
 
