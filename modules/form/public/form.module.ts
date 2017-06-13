@@ -25,7 +25,7 @@ import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 
 import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
-import {SystemModule} from "../../system/public/system.module";
+import { SystemModule } from "../../system/public/system.module";
 
 @NgModule({
     imports: [
