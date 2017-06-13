@@ -38,7 +38,11 @@ function createSources(form, protocol) {
     if (protocolReleaseDate)
         form.sources = [{
             sourceName: 'PhenX',
-            updated: protocolReleaseDate
+            updated: protocolReleaseDate,
+            copyright: {
+                valueFormat: "html",
+                value: "<a href='http://www.phenxtoolkit.org' target='_blank'>Terms of Use</a>"
+            }
         }];
 }
 
@@ -47,7 +51,8 @@ function createIds(form, protocol) {
     if (formId)
         form.ids = [{
             source: 'PhenX',
-            id: formId
+            id: formId,
+            version: "21.0"
         }];
 }
 
@@ -57,6 +62,14 @@ function createReferenceDocuments(form, protocol) {
         form.referenceDocuments = [{
             document: generalReferences,
             source: 'PhenX'
+        }];
+}
+
+function createDisplayProfile(form, protocol) {
+    form.displayProfiles = [
+        {
+            name: "default",
+            displayValues: false
         }];
 }
 
@@ -121,6 +134,7 @@ function createForm(protocol) {
         registrationState: {registrationStatus: "Qualified"}
     };
     createNaming(form, protocol);
+    createDisplayProfile(form, protocol);
     createSources(form, protocol);
     createIds(form, protocol);
     createReferenceDocuments(form, protocol);

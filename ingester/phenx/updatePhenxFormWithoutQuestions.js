@@ -2,6 +2,7 @@
  This loader does NOT load questions in form or CDE.
  */
 let async = require('async');
+let _ = require('lodash');
 
 let MigrationForm = require('../createMigrationConnection').MigrationFormModel;
 let MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
@@ -13,7 +14,7 @@ let importDate = new Date().toJSON();
 let count = 0;
 let phenxOrg;
 
-function mergeForm(existingForm, newForm, cb) {
+function mergeForm(existingForm, newForm) {
     updateShare.mergeNaming(existingForm, newForm);
     updateShare.mergeReferenceDocument(existingForm, newForm);
     updateShare.mergeIds(existingForm, newForm);
@@ -60,10 +61,14 @@ function run() {
                         });
                     } else if (existingForms.length === 1) {
                         let existingForm = existingForms[0];
-                        let deepDiff = updateShare.compareObjects(existingForm, migrationForm);
-                        if (deepDiff.length > 0) mergeForm(existingForm, migrationForm, () => {
-                            stream.resume();
+                        _.forEach(existingForm.displayProfiles, dp => {
+                            dp.displayValues = false;
                         });
+                        let deepDiff = updateShare.compareObjects(existingForm, migrationForm);
+                        if (deepDiff.length > 0)
+                            mergeForm(existingForm, migrationForm, () => {
+                                stream.resume();
+                            });
                         else stream.resume();
                     } else {
                         console.log(existingForms.length + ' forms found, formId: ' + formId);
