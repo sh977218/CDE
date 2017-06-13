@@ -30,9 +30,9 @@ public class FormHistoryTest extends BaseFormTest {
         textPresent(newFormDef, By.xpath("//*[@id='Naming']//ins"));
         clickElement(By.id("closeHistoryCompareModal"));
 
-        clickElement(By.id("prior-1"));
+        clickElement(By.xpath("//*[@id='prior-1']//span"));
         switchTab(1);
-        textPresent("View current form");
+        textPresent("Warning: this form is archived");
         clickElement(By.id("viewCurrentEltLink"));
         textNotPresent("View current form");
     }
