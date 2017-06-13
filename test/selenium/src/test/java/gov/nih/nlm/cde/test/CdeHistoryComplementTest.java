@@ -33,14 +33,13 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("Alternative Name 1", By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='designation']"));
-        textPresent("Alternative Definition 1", By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='definition']"));
-        textPresent("Code Name 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0_0']//div[@data-title='name']"));
-        textPresent("Code ID 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0_0']//div[@data-title='originId']"));
+        textPresent("Alternative Name 1", By.xpath("//*[@id='Naming_2']"));
+        textPresent("Alternative Definition 1", By.xpath("//*[@id='Naming_2']"));
+        textPresent("Code Name 1", By.xpath("//*[@id='Concepts_6']"));
+        textPresent("Code ID 1", By.xpath("//*[@id='Concepts_6']"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
         goToCdeByName(cdeName);
-
-
         clickElement(By.xpath("//*[@id='editStatus']"));
         new Select(findElement(By.xpath("//label[text()='Registration Status']/following-sibling::select"))).selectByVisibleText(newStatus);
         clickElement(By.id("saveRegStatus"));
@@ -48,24 +47,24 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newStatus, By.xpath("//*[@id='historyCompareLeft_Status']"));
-        textPresent(oldStatus, By.xpath("//*[@id='historyCompareRight_Status']"));
+        textPresent(newStatus, By.xpath("//*[@id='Status']//ins"));
+        textPresent(oldStatus, By.xpath("//*[@id='Status']//del"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
+        goToCdeByName(cdeName);
         clickElement(By.id("ids_tab"));
-        closeAlert();
         clickElement(By.id("openNewIdentifierModalBtn"));
         findElement(By.xpath("//label[text()='Source']/following-sibling::input")).sendKeys("Origin 1");
         findElement(By.xpath("//label[text()='Identifier']/following-sibling::input")).sendKeys("Identifier 1");
         findElement(By.xpath("//label[text()='Version']/following-sibling::input")).sendKeys("Version 1");
         clickElement(By.id("createNewIdentifierBtn"));
         modalGone();
-        goToCdeByName(cdeName);
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("Origin 1", By.xpath("//*//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='source']"));
-        textPresent("Identifier 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='id']"));
-        textPresent("Version 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='version']"));
+        textPresent("Origin 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("Identifier 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("Version 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
     }
 
 }

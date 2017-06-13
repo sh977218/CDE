@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
-
+import * as _ from "lodash";
 import * as deValidator from "../../../cde/shared/deValidator";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
@@ -59,7 +59,9 @@ export class PermissibleValueComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.fixDatatype();
+        let isDatatypeDefined = _.indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
+        if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
+        deValidator.fixDatatype(this.elt);
         this.elt.allValid = true;
         this.loadValueSet();
         this.initSrcOptions();
@@ -88,27 +90,13 @@ export class PermissibleValueComponent implements OnInit {
                 .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
     }
 
-    fixDatatype() {
-        if (!this.elt.valueDomain.datatype) this.elt.valueDomain.datatype = "";
-        if (this.elt.valueDomain.datatype === "Value List" && !this.elt.valueDomain.datatypeValueList)
-            this.elt.valueDomain.datatypeValueList = {};
-        if (this.elt.valueDomain.datatype === "Number" && !this.elt.valueDomain.datatypeNumber)
-            this.elt.valueDomain.datatypeNumber = {};
-        if (this.elt.valueDomain.datatype === "Text" && !this.elt.valueDomain.datatypeText)
-            this.elt.valueDomain.datatypeText = {};
-        if (this.elt.valueDomain.datatype === "Date" && !this.elt.valueDomain.datatypeDate)
-            this.elt.valueDomain.datatypeDate = {};
-        if (this.elt.valueDomain.datatype === "Externally Defined" && !this.elt.valueDomain.datatypeExternallyDefined)
-            this.elt.valueDomain.datatypeExternallyDefined = {};
-    }
-
-
     openNewPermissibleValueModal() {
         this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
-        this.modalRef.result.then(() => this.newPermissibleValue = {}, () => {});
+        this.modalRef.result.then(() => this.newPermissibleValue = {}, () => {
+        });
     }
 
-    lookupUmls () {
+    lookupUmls() {
         this.searchTerms.next(this.newPermissibleValue.valueMeaningName);
     }
 
@@ -338,7 +326,7 @@ export class PermissibleValueComponent implements OnInit {
 
     changedDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatype = data.value;
-        this.fixDatatype();
+        deValidator.fixDatatype(this.elt);
         this.elt.unsaved = true;
     }
 

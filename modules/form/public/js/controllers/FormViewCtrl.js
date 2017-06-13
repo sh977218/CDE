@@ -113,7 +113,7 @@ angular.module('formModule').controller
         },
         history: {
             heading: "History",
-            includes: ['/form/public/html/formHistory.html'],
+            includes: ['/system/public/html/history.html'],
             select: function (thisTab) {
                 $scope.setCurrentTab(thisTab);
             }

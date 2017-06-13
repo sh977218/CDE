@@ -1,1 +1,1 @@
-angular.module("systemTemplates", []);
+angular.module("systemTemplates", [])

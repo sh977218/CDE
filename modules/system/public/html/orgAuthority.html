@@ -81,7 +81,9 @@
         </div>
 
         <div uib-tab heading="List Management">
-            <cde-list-management></cde-list-management>
+            <div ng-if="active === 2">
+                <cde-list-management></cde-list-management>
+            </div>
         </div>
         <uib-tab heading="Status Validation Rules">
             <div ng-controller="SaveValidRuleCtrl">

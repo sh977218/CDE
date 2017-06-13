@@ -178,7 +178,7 @@ function doTask(driver, task, obj, cb) {
     });
 }
 
-exports.parseProtocol = function (protocol, link, cb) {
+exports.parseProtocol = function (protocol, link, cb, loadLoinc) {
     driver.get(link);
     driver.findElement(By.id('button_showfull')).click().then(function () {
         async.forEach(tasks, function (task, doneOneTask) {
@@ -186,12 +186,14 @@ exports.parseProtocol = function (protocol, link, cb) {
         }, function doneAllTask() {
             async.forEachSeries(protocol['Standards'], function (standard, doneOneStandard) {
                 if (standard.Source === 'LOINC') {
-                    LoadFromLoincSite.runArray([standard.ID], 'PhenX', function (loinc, doneOneLoinc) {
-                        standard['LOINC'] = loinc;
-                        doneOneLoinc();
-                    }, function () {
-                        doneOneStandard();
-                    })
+                    if (loadLoinc) {
+                        LoadFromLoincSite.runArray([standard.ID], 'PhenX', function (loinc, doneOneLoinc) {
+                            standard['LOINC'] = loinc;
+                            doneOneLoinc();
+                        }, function () {
+                            doneOneStandard();
+                        })
+                    } else  doneOneStandard();
                 } else {
                     doneOneStandard();
                 }
@@ -203,7 +205,7 @@ exports.parseProtocol = function (protocol, link, cb) {
                             doneOneC();
                         });
                     }, function () {
-                        new MigrationProtocolModel(protocol).save((e)=> {
+                        new MigrationProtocolModel(protocol).save((e) => {
                             if (e) throw e;
                             else cb();
                         })
