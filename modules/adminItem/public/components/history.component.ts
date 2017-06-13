@@ -2,8 +2,8 @@ import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from '@angular/http';
 
 import "rxjs/add/operator/map";
-import { CompareObjectComponent } from "../../../compare/compareObject.component";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 const URL_MAP = {
     "cde": "/deview?cdeId=",
@@ -40,8 +40,7 @@ export class HistoryComponent implements OnInit {
     public priorElements = [];
     public numberSelected: number = 0;
 
-    constructor(@Inject("Alert")
-                private alert,
+    constructor(private alert: AlertService,
                 private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel")
@@ -60,7 +59,7 @@ export class HistoryComponent implements OnInit {
                     this.priorElements.splice(0, 0, this.elt);
                     this.priorElements.forEach(pe => {
                         pe.url = prefix_url + pe._id;
-                    })
+                    });
                 }, err =>
                     this.alert.addAlert("danger", "Error retrieving history: " + err));
         }
