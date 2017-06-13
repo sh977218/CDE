@@ -26,8 +26,7 @@ export class ListManagementComponent implements OnInit {
         this.getOrgs();
         this.options = {
             multiple: true,
-            tags: true,
-            allowClear: true
+            tags: true
         };
     }
 

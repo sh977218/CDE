@@ -18,17 +18,7 @@ module.exports = {
     },
 
     mustBeLoggedInAs: function (username, password) {
-        // findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        let loginLink = element(by.id("login_link"));
-        if (loginLink) {
-            this.loginAs(username, password);
-        } else {
-            // if (!isUsernameMatch(username)) {
-            //     logout();
-            //     loginAs(username, password);
-            // }
-        }
-
+        this.loginAs(username, password);
     },
 
     textPresent: function (text) {
