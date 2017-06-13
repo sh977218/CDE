@@ -110,15 +110,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
         },
         history: {
             heading: "History",
-            includes: ['/cde/public/html/cdeHistory.html'],
+            includes: ['/system/public/html/history.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                if ($scope.elt.history && $scope.elt.history.length > 0) {
-                    $http.get('/priorcdes/' + $scope.elt._id).then(function onSuccess(response) {
-                        $scope.priorCdes = response.data.reverse();
-                        $scope.priorCdes.splice(0, 0, $scope.elt);
-                    });
-                }
             }
         },
         derivationRules: {

@@ -10,6 +10,7 @@ import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
 import { SharedService } from "./shared.service";
+import { CompareService } from "./compare.service";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
@@ -37,6 +38,7 @@ export function getOrgHelpersFactory(i: any) { return i.get("OrgHelpers"); }
         MergeFormService,
         MergeShareService,
         SharedService,
+        CompareService,
         // upgraded
         UpgradeModule,
         {provide: "Alert", useFactory: getAlertFactory, deps: ["$injector"]},

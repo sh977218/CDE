@@ -2,7 +2,10 @@ package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static com.jayway.restassured.RestAssured.get;
 
 public class TextDatatypeTest extends NlmCdeBaseTest {
 
@@ -23,24 +26,26 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='datatypeTextMax']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys("987");
         clickElement(By.xpath("//*[@id='datatypeTextMax']//button[contains(@class,'fa fa-check')]"));
-
         newCdeVersion();
+
+        // check update cde has fixed datatype;
+        Assert.assertFalse(get(baseUrl + "/dataelement/593eff071acca22de85b0b29").asString().contains("valueMeaningName"));
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("789", By.xpath("//*[@id='historyCompareLeft_Text']"));
-        textPresent("987", By.xpath("//*[@id='historyCompareLeft_Text']"));
-
-        textPresent("Text", By.xpath("//*[@id='historyCompareLeft_Value Type']"));
-        textPresent("Value List", By.xpath("//*[@id='historyCompareRight_Value Type']"));
+        textPresent("789", By.xpath("//*[@id='Data Type Text Minimal Length']//ins"));
+        textPresent("987", By.xpath("//*[@id='Data Type Text Maximal Length']//ins"));
+        textPresent("Text", By.xpath("//*[@id='Data Type']//ins"));
+        textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id='datatypeTextRegex']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).sendKeys("newrule");
+        findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).sendKeys("newRegex");
         clickElement(By.xpath("//*[@id='datatypeTextRegex']//button[contains(@class,'fa fa-check')]"));
 
         clickElement(By.xpath("//*[@id='datatypeTextRule']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*[@id='datatypeTextRule']//input")).sendKeys("newre");
+        findElement(By.xpath("//*[@id='datatypeTextRule']//input")).sendKeys("newRule");
         clickElement(By.xpath("//*[@id='datatypeTextRule']//button[contains(@class,'fa fa-check')]"));
 
         clickElement(By.xpath("//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]"));
@@ -56,9 +61,12 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("123", By.xpath("//*[@id='historyCompareLeft_Data Type Text']//*[contains(@class,'minLength')]"));
-        textPresent("321", By.xpath("//*[@id='historyCompareLeft_Data Type Text']//*[contains(@class,'maxLength')]"));
-        textPresent("789", By.xpath("//*[@id='historyCompareRight_Data Type Text']//*[contains(@class,'minLength')]"));
-        textPresent("987", By.xpath("//*[@id='historyCompareRight_Data Type Text']//*[contains(@class,'maxLength')]"));
+        textPresent("123", By.xpath("//*[@id='Data Type Text Minimal Length']//ins"));
+        textPresent("789", By.xpath("//*[@id='Data Type Text Minimal Length']//del"));
+        textPresent("321", By.xpath("//*[@id='Data Type Text Maximal Length']//ins"));
+        textPresent("987", By.xpath("//*[@id='Data Type Text Maximal Length']//del"));
+        textPresent("newRegex", By.xpath("//*[@id='Data Type Text Regex']//ins"));
+        textPresent("newRule", By.xpath("//*[@id='Data Type Text Rule']//ins"));
+
     }
 }

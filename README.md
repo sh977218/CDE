@@ -35,15 +35,16 @@ This will establish your config environment
 **MongoDB** must run in **Replicate mode**. 
 In a separate terminal, run  
 
-
 ```sh
 $> mongod --replSet rs0
 ```
 
-Then, initiate MongoDB replica set:
-
 In another terminal, open up mongo. 
+```sh
+$> mongo
+```
 
+Then, initiate MongoDB replica set:
 ```javascript
 rs.initiate()
 ```
@@ -74,6 +75,8 @@ db.createUser({ user: "cdeuser", pwd: "password", roles: [ { role: "readWrite", 
 use migration;
 db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", db: "migration" } ] });
 ```
+
+## Restart mongo server with auth on.
 
 ## Preparing to run
 

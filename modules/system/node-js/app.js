@@ -26,7 +26,9 @@ var passport = require('passport')
     , async = require('async')
     , request = require('request')
     , CronJob = require('cron').CronJob
-    ;
+    , cdesvc = require('../../cde/node-js/cdesvc')
+    , formsvc = require('../../form/node-js/formsvc')
+;
 
 exports.init = function (app) {
     var getRealIp = function (req) {
@@ -254,7 +256,7 @@ exports.init = function (app) {
             res.send(result);
         });
     });
-    
+
     app.get('/usernamesByIp/:ip', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             return mongo_data_system.usernamesByIp(req.params.ip, function (result) {
@@ -997,5 +999,14 @@ exports.init = function (app) {
         adminItemSvc.updateCommentStatus(req, res, "active");
     });
     app.post('/comments/reply', adminItemSvc.replyToComment);
+
+    app.get('/priorElements/:type/:id', exportShared.nocacheMiddleware, function (req, res) {
+        let type = req.params.type;
+        let id = req.params.id;
+        if (!type || !id) return res.status(500).end();
+        else if (type.toLowerCase() === "cde") cdesvc.priorCdes(req, res);
+        else if (type.toLowerCase() === "form") formsvc.priorForms(req, res);
+        else return res.status(500).end();
+    });
 
 };
