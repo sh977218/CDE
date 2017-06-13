@@ -26,8 +26,8 @@ const urlMap = {
     templateUrl: "./classification.component.html"
 })
 export class ClassificationComponent {
-    @ViewChild("classifyItemModal") public classifyItemModal: ClassifyItemModalComponent;
-    @ViewChild("classifyCdesModal") public classifyCdesModal: ClassifyCdesModalComponent;
+    @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
+    @ViewChild("classifyCdesComponent") public classifyCdesComponent: ClassifyCdesModalComponent;
     @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
     @Input() public elt: any;
     public modalRef: NgbModalRef;
@@ -66,11 +66,11 @@ export class ClassificationComponent {
     };
 
     openClassifyItemModal() {
-        this.classifyItemModal.openItemModal();
+        this.classifyItemComponent.openItemModal();
     }
 
     openClassifyCdesModal() {
-        this.classifyCdesModal.openCdesModal();
+        this.classifyCdesComponent.openCdesModal();
     }
 
     openDeleteClassificationModal(node, orgName) {

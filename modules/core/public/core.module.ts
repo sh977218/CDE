@@ -10,6 +10,7 @@ import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
 import { SharedService } from "./shared.service";
+import { CompareService } from "./compare.service";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
@@ -35,6 +36,7 @@ export function getElasticFactory(i: any) { return i.get("Elastic"); }
         MergeFormService,
         MergeShareService,
         SharedService,
+        CompareService,
         // upgraded
         UpgradeModule,
         {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},

@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Injectable, Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({name: "cdeKeys", pure: false})
 export class KeysPipe implements PipeTransform {

@@ -3,11 +3,10 @@ const b = require('./boardUtils');
 
 describe('Pin All', () => {
 
-    it ('should pin more than 20', () => {
+    it ('should pin more than 20', (done) => {
 
-            browser.driver.manage().window().maximize();
-            browser.get("");
-
+        browser.driver.manage().window().maximize();
+        browser.get("");
 
         let board_name = "Pin All More Than 20 Test Board";
         u.mustBeLoggedInAs("pinAllBoardUser", "pass");
@@ -29,9 +28,10 @@ describe('Pin All', () => {
            u.closeAlert();
            b.goToMyBoards();
            element(by.xpath("//*[@data-id = 'boardDiv_"
-                + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText().then((text2) => {
+               + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText().then((text2) => {
                 expect(text).toEqual(text2);
-           })
+                done();
+           });
         });
     });
 });
