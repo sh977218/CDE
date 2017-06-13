@@ -39,7 +39,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
 
-        new Actions(driver).moveToElement(findElement(By.id("orgListName-TEST")));
+        new Actions(driver).moveToElement(findElement(By.id("orgListName-Training")));
         clickElement(By.xpath("//li[contains(.,'doYouSeeThis')]/span"));
         textPresent("Org Updated");
 
