@@ -9,7 +9,6 @@ let MigrationForm = require('../createMigrationConnection').MigrationFormModel;
 let MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
 let mongo_data = require('../../modules/system/node-js/mongo-data');
 
-let classificationShared = require('../../modules/system/shared/classificationShared');
 let updateShare = require('../updateShare');
 
 let importDate = new Date().toJSON();
@@ -56,24 +55,46 @@ function createReferenceDocuments(form, protocol) {
     let generalReferences = protocol.get('General References').trim();
     if (generalReferences)
         form.referenceDocuments = [{
-            title: generalReferences,
+            document: generalReferences,
             source: 'PhenX'
         }];
 }
 
 function createProperties(form, protocol) {
     let properties = [];
-    let prop = ['Specific Instructions', 'Protocol', 'Protocol Name From Source', 'Selection Rationale', 'Life Stage', 'Language', 'Participant', 'Personnel and Training Required', 'Equipment Needs', 'Mode of Administration', 'Derived Variables', 'Process and Review'];
-    _.forEach(prop, p => {
-        if (protocol.get(p)) {
-            properties.push({key: p, value: p.trim()});
+    let prop1 = ['Specific Instructions', 'Protocol', 'Protocol Name From Source', 'Selection Rationale', 'Life Stage', 'Language', 'Participant', 'Personnel and Training Required', 'Equipment Needs', 'Mode of Administration', 'Derived Variables', 'Process and Review'];
+    _.forEach(prop1, p => {
+        let value = protocol.get(p);
+        if (value) {
+            properties.push({key: p, value: value.trim()});
         }
     });
 
-    let variables = protocol.get('variables');
-    let standards = protocol.get('Standards');
-    let requirements = protocol.get('Requirements');
+    let prop2 = ['Variables', 'Standards', 'Requirements'];
+    _.forEach(prop2, p => {
+        let valueArray = protocol.get(p);
+        if (!_.isEmpty(valueArray)) {
+            let th = '';
+            _.forEach(_.keys(valueArray[0]), head => {
+                th = th + '<th>' + head.trim() + '</th>';
+            });
+            let thead = '<tr>' + th + '</tr>';
 
+            let tr = '';
+            _.forEach(valueArray, valueObj => {
+                let td = '';
+                _.forOwn(valueObj, value => {
+                    td = td + '<td>' + value.trim() + '</td>';
+                });
+                tr = '<tr>' + td + '</tr>';
+            });
+            let tbody = '<tr>' + tr + '</tr>';
+            let table = '<table>' + thead + tbody + '</table>';
+            properties.push({key: p.trim(), value: table, valueFormat: "html", source: "PhenX"});
+        }
+    });
+
+    form.properties = properties;
 }
 
 

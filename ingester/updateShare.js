@@ -69,25 +69,25 @@ exports.wipeUseless = function (toWipe) {
 
 
 exports.compareObjects = function (existingForm, newForm) {
-    existingForm = JSON.parse(JSON.stringify(existingForm));
+    let existingFormCopy = _.cloneDeep(existingForm);
     exports.wipeUseless(existingForm);
-    if (!existingForm.classification) existingForm.classification = [];
-    for (let i = existingForm.classification.length - 1; i > 0; i--) {
-        if (existingForm.classification[i].stewardOrg.name !== newForm.source) {
-            existingForm.classification.splice(i, 1);
+    if (!existingFormCopy.classification) existingFormCopy.classification = [];
+    for (let i = existingFormCopy.classification.length - 1; i > 0; i--) {
+        if (existingFormCopy.classification[i].stewardOrg.name !== newForm.source) {
+            existingFormCopy.classification.splice(i, 1);
         }
     }
-    if (_.isEmpty(existingForm.classification)) existingForm.classification = [];
+    if (_.isEmpty(existingFormCopy.classification)) existingFormCopy.classification = [];
     try {
-        if (existingForm.classification.length > 0) classificationShared.sortClassification(existingForm);
+        if (existingFormCopy.classification.length > 0) classificationShared.sortClassification(existingForm);
     } catch (e) {
-        console.log(existingForm);
+        console.log(existingFormCopy);
         throw e;
     }
-    classificationShared.sortClassification(newForm);
-    newForm = JSON.parse(JSON.stringify(newForm));
-    exports.wipeUseless(newForm);
-    return cdediff.diff(existingForm, newForm);
+    let newFormCopy = _.cloneDeep(newForm);
+    classificationShared.sortClassification(newFormCopy);
+    exports.wipeUseless(newFormCopy);
+    return cdediff.diff(existingFormCopy, newFormCopy);
 };
 
 exports.removeClassificationTree = function (element, org) {
@@ -159,4 +159,9 @@ exports.mergeReferenceDocument = function (eltMergeFrom, eltMergeTo) {
     eltMergeTo.referenceDocuments = eltMergeFrom.referenceDocuments.concat(_.differenceWith(eltMergeTo.referenceDocuments, eltMergeFrom.referenceDocuments,
         (a, b) => a.title === b.title && a.source && b.source));
 };
+exports.mergeClassification = function (eltMergeFrom, eltMergeTo) {
+    eltMergeTo.classification = eltMergeFrom.classification.concat(_.differenceWith(eltMergeTo.referenceDocuments, eltMergeFrom.classification,
+        (a, b) => a.stewardOrg.name === b.stewardOrg.name));
+};
+
 
