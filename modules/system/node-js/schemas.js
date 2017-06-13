@@ -193,10 +193,6 @@ schemas.namingSchema = new mongoose.Schema({
     definition: {type: String},
     definitionFormat: String,
     languageCode: String,
-    context: {
-        contextName: String,
-        acceptability: String
-    },
     tags: [new mongoose.Schema({
         tag: String
     }, {_id: false})],
