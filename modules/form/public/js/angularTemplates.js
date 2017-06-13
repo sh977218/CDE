@@ -1,1 +1,1 @@
-angular.module("formTemplates", []);
+angular.module("formTemplates", [])

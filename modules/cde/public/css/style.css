@@ -1537,7 +1537,7 @@ label.input-group-addon {
     margin-bottom: 0;
 }
 
-div.native-question-label{
+div.native-question-label {
     font-size: 14px;
     font-weight: 700;
 }
@@ -1738,11 +1738,23 @@ div.slider .ui-slider-handle {
     height: 50px;
 }
 
-.hugeModal > .modal-dialog {
-    max-width: 90% !important;
-    width: 90% !important;
+@media (min-width: 768px) {
+    .hugeModal > .modal-dialog {
+        width: 90%;
+        max-width: 1200px;
+    }
 }
 
 .progress-bar .bg-success {
     width: 100% !important;
+}
+
+ins {
+    color: black;
+    background: #bbffbb;
+}
+
+del {
+    color: black;
+    background: #ffbbbb;
 }

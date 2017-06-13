@@ -9,8 +9,7 @@ import "rxjs/add/operator/map";
 
 export class DailyUsageComponent {
 
-    constructor(
-        private http: Http
+    constructor(private http: Http
     ) {}
 
     entryLimit: number = 50;

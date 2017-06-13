@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -8,6 +8,7 @@ import { Select2Module } from "ng2-select2";
 import { WidgetModule } from "../../widget/widget.module";
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
+import { HistoryComponent } from "./components/history.component";
 import { ClassificationComponent } from "./components/classification/classification.component";
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
@@ -23,6 +24,7 @@ import { SourcesComponent } from "./components/sources/sources.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
 import { LocalStorageModule } from "angular-2-local-storage";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
+import { CompareModule } from "../../compare/compare.module";
 
 @NgModule({
     imports: [
@@ -37,6 +39,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
         TreeModule,
         // internal
         WidgetModule,
+        CompareModule
     ],
     declarations: [
         AttachmentsComponent,
@@ -48,6 +51,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
         InlineEditDirective,
         InlineSelectEditDirective,
         LinkedFormsComponent,
+        HistoryComponent,
         NamingComponent,
         PropertiesComponent,
         ReferenceDocumentComponent,
@@ -60,6 +64,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
         ClassificationComponent,
         IdentifiersComponent,
         LinkedFormsComponent,
+        HistoryComponent,
         NamingComponent,
         PropertiesComponent,
         ReferenceDocumentComponent,
@@ -72,6 +77,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
         InlineEditDirective,
         InlineSelectEditDirective,
         LinkedFormsComponent,
+        HistoryComponent,
         NamingComponent,
         PropertiesComponent,
         ReferenceDocumentComponent,

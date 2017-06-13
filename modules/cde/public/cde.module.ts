@@ -19,7 +19,7 @@ import { ConceptsComponent } from "./components/concepts.component";
 import { DatasetsComponent } from "./components/datasets/datasets.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
-import { KeysPipe } from "./components/KeysPipe";
+import { KeysPipe } from "../../core/public/KeysPipe";
 import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
 import { RegistrationValidatorService } from "./components/validationRules/registrationValidator.service";
