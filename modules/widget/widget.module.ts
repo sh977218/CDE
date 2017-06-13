@@ -7,6 +7,7 @@ import { CKEditorModule } from 'ng2-ckeditor';
 import { InlineEditComponent } from "./inlineEdit/inlineEdit.component";
 import { InlineAreaEditComponent } from "./inlineEdit/inlineAreaEdit.component";
 import { PlaceHoldEmptyPipe } from "./pipes/placeHoldEmpty.pipe";
+import { TextTruncateComponent } from "./text/textTruncate.component";
 
 @NgModule({
     imports: [
@@ -19,6 +20,7 @@ import { PlaceHoldEmptyPipe } from "./pipes/placeHoldEmpty.pipe";
         InlineAreaEditComponent,
         InlineEditComponent,
         PlaceHoldEmptyPipe,
+        TextTruncateComponent,
     ],
     entryComponents: [],
     exports: [

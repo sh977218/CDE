@@ -18,7 +18,6 @@ import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsag
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
-import { TextTruncateComponent } from "./components/textTruncate/textTruncate.component";
 
 @NgModule({
     imports: [
@@ -44,7 +43,6 @@ import { TextTruncateComponent } from "./components/textTruncate/textTruncate.co
         TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
-        TextTruncateComponent,
     ],
     entryComponents: [
         DailyUsageComponent,
