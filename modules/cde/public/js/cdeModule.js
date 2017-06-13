@@ -39,9 +39,6 @@ import {BoardCdeSummaryListComponent} from "../components/searchResults/boardCde
 angular.module('cdeModule').directive('cdeBoardCdeSummaryList',
     downgradeComponent({component: BoardCdeSummaryListComponent, inputs: ['board', 'cdes', 'currentPage', 'totalItems'], outputs: ['reload']}));
 
-import {LinkedFormsComponent} from "../../../system/public/components/linkedForms.component";
-angular.module('cdeModule').directive('cdeLinkedForms', downgradeComponent({component: LinkedFormsComponent, inputs: ['elt', 'eltType'], outputs: []}));
-
 import {DatasetsComponent} from "../components/datasets/datasets.component";
 angular.module('cdeModule').directive('cdeDatasets', downgradeComponent({component: DatasetsComponent, inputs: ['elt'], outputs: []}));
 
@@ -59,6 +56,9 @@ angular.module('systemModule').directive('cdeCdeGeneralDetails', downgradeCompon
 
 import {DeGeneralDetailsComponent} from "../components/deGeneralDetails/deGeneralDetails.component";
 angular.module('systemModule').directive('cdeDeGeneralDetails', downgradeComponent({component: DeGeneralDetailsComponent, inputs: ['elt'], outputs: []}));
+
+import {LinkedFormsComponent} from "../../../adminItem/public/components/linkedForms.component";
+angular.module('cdeModule').directive('cdeLinkedForms', downgradeComponent({component: LinkedFormsComponent, inputs: ['elt', 'eltType'], outputs: []}));
 
 import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
 angular.module('systemModule').directive('cdeValueDomainSummary', downgradeComponent({component: ValueDomainSummaryComponent, inputs: ['elt'], outputs: []}));

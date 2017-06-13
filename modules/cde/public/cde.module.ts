@@ -6,8 +6,9 @@ import { Select2Module } from "ng2-select2";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { BoardModule } from "../../board/public/board.module";
+import { FormModule } from "../../form/public/form.module";
 import { SearchModule } from "search";
-import { SystemModule } from "../../system/public/system.module";
+import { WidgetModule } from "../../widget/widget.module";
 
 import { BoardCdeSummaryListComponent } from "./components/searchResults/boardCdeSummaryList.component";
 import { BoardCdeSummaryListContentComponent } from "./components/searchResults/boardCdeSummaryListContent.component";
@@ -27,14 +28,16 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
 
 @NgModule({
     imports: [
-        AdminItemModule,
-        BoardModule,
         CommonModule,
         FormsModule,
         NgbModule,
-        SearchModule,
         Select2Module,
-        SystemModule,
+        // internal
+        AdminItemModule,
+        BoardModule,
+        FormModule,
+        SearchModule,
+        WidgetModule,
     ],
     declarations: [
         BoardCdeSummaryListComponent,
@@ -68,8 +71,6 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         ValueDomainSummaryComponent,
     ],
     exports: [
-        CdeGeneralDetailsComponent,
-        ValueDomainSummaryComponent,
     ],
     providers: [
         RegistrationValidatorService,

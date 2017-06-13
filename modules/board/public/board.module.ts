@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { CdeModule } from "../../cde/public/cde.module";
 import { SearchModule } from "search";
 
 import { BoardService } from "./components/searchResults/board.service";
@@ -16,6 +15,13 @@ import { PinModalComponent } from "./components/pinModal/pinModal.component";
 import { PinQuickboardComponent } from "./components/searchResults/pinQuickboard.component";
 
 @NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        NgbModule,
+        // internal
+        SearchModule,
+    ],
     declarations: [
         CreateBoardComponent,
         LinkedBoardsComponent,
@@ -29,8 +35,10 @@ import { PinQuickboardComponent } from "./components/searchResults/pinQuickboard
         CreateBoardComponent,
         LinkedBoardsComponent
     ],
-    providers: [BoardService, MyBoardsService],
-    imports: [CommonModule, FormsModule, NgbModule, SearchModule],
+    providers: [
+        BoardService,
+        MyBoardsService
+    ],
     exports: [
         LinkedBoardsComponent,
         ListSortComponent,

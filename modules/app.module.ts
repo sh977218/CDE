@@ -20,18 +20,19 @@ import { SystemModule } from "./system/public/system.module";
     ],
     providers: [],
     imports: [
-        NgbModule.forRoot(),
         BrowserModule,
         CommonModule,
         FormsModule,
         HttpModule,
+        NgbModule.forRoot(),
         UpgradeModule,
-        CoreModule,
+        // internal
+        BoardModule,
         CdeModule,
+        CoreModule,
+        DiscussModule,
         FormModule,
         SystemModule,
-        BoardModule,
-        DiscussModule
     ],
     bootstrap: [CdeAppComponent]
 })

@@ -9,10 +9,9 @@ import { SortableModule } from "ngx-bootstrap";
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { BoardModule } from "../../board/public/board.module";
 import { SearchModule } from "search";
-import { SystemModule } from "../../system/public/system.module";
+import { WidgetModule } from "../../widget/widget.module";
 
 import { ArrayListPipe } from "./arrayList.pipe";
-
 import { BoardFormSummaryListComponent } from "./components/searchResults/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "./components/searchResults/boardFormSummaryListContent.component";
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
@@ -46,7 +45,7 @@ import { SkipLogicService } from "./skipLogic.service";
         AdminItemModule,
         BoardModule,
         SearchModule,
-        SystemModule,
+        WidgetModule,
     ],
     declarations: [
         ArrayListPipe,
@@ -78,6 +77,8 @@ import { SkipLogicService } from "./skipLogic.service";
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
+    ],
+    exports: [
     ],
     providers: [
         FormService,
