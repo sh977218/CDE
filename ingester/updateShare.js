@@ -6,7 +6,9 @@ let mongo_data = require('../modules/system/node-js/mongo-data');
 let cdediff = require('../modules/cde/node-js/cdediff');
 let classificationShared = require('../modules/system/shared/classificationShared');
 
-exports.loaderUsername = 'batchloader';
+exports.loaderUser = {
+    username: 'batchloader'
+};
 
 exports.findEltIdVersion = function (elt, source) {
     let idVersions = [];
@@ -160,7 +162,7 @@ exports.mergeReferenceDocument = function (eltMergeFrom, eltMergeTo) {
         (a, b) => a.title === b.title && a.source && b.source));
 };
 exports.mergeClassification = function (eltMergeFrom, eltMergeTo) {
-    eltMergeTo.classification = eltMergeFrom.classification.concat(_.differenceWith(eltMergeTo.referenceDocuments, eltMergeFrom.classification,
+    eltMergeTo.classification = eltMergeFrom.classification.concat(_.differenceWith(eltMergeTo.classification, eltMergeFrom.classification,
         (a, b) => a.stewardOrg.name === b.stewardOrg.name));
 };
 

@@ -9,6 +9,7 @@ let MigrationForm = require('../createMigrationConnection').MigrationFormModel;
 let MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
 let mongo_data = require('../../modules/system/node-js/mongo-data');
 
+let classificationShared = require('../../modules/system/shared/classificationShared');
 let updateShare = require('../updateShare');
 
 let importDate = new Date().toJSON();
@@ -16,11 +17,12 @@ let count = 0;
 let phenxOrg;
 
 function createNaming(form, protocol) {
-    let protocolNameFomSource = protocol.get('Protocol Name From Source').trim();
+    let classification = protocol.get('classification');
+    let protocolName = classification[classification.length - 1];
     let descriptionOfProtocol = protocol.get('Description of Protocol').trim();
-    if (protocolNameFomSource || descriptionOfProtocol) {
+    if (protocolName || descriptionOfProtocol) {
         form.naming = [{
-            designation: protocolNameFomSource,
+            designation: protocolName,
             definition: descriptionOfProtocol,
             languageCode: "EN-US",
             context: {
@@ -65,7 +67,7 @@ function createReferenceDocuments(form, protocol) {
         }];
 }
 
-function createDisplayProfile(form, protocol) {
+function createDisplayProfile(form) {
     form.displayProfiles = [
         {
             name: "default",
@@ -112,7 +114,8 @@ function createProperties(form, protocol) {
 
 
 function createClassification(form, protocol) {
-    let uniqueClassifications = _.uniq(protocol.get('classification'));
+    let classificationArray = protocol.get('classification');
+    let uniqueClassifications = _.uniq(classificationArray.splice(-1, 1));
     let classification = [{stewardOrg: {name: 'PhenX'}, elements: []}];
     let elements = classification[0].elements;
     _.forEach(uniqueClassifications, c => {
@@ -122,6 +125,7 @@ function createClassification(form, protocol) {
         });
         elements = elements[0].elements;
     });
+    classificationShared.addCategory({elements: phenxOrg.classifications}, uniqueClassifications);
     form.classification = classification;
 }
 function createForm(protocol) {
@@ -134,7 +138,7 @@ function createForm(protocol) {
         registrationState: {registrationStatus: "Qualified"}
     };
     createNaming(form, protocol);
-    createDisplayProfile(form, protocol);
+    createDisplayProfile(form);
     createSources(form, protocol);
     createIds(form, protocol);
     createReferenceDocuments(form, protocol);
@@ -198,8 +202,14 @@ function run() {
                 if (err) throw err;
                 if (cb) cb();
             });
-
-        }], function () {
+        },
+        function (cb) {
+            phenxOrg.save(e => {
+                if (e)throw e;
+                else cb();
+            });
+        }
+    ], function () {
         console.log('Finished.');
         process.exit(0);
     });
