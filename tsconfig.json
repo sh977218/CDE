@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "allowUnreachableCode": true,
+    "baseUrl": "./modules",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
