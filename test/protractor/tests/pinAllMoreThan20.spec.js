@@ -3,7 +3,7 @@ const b = require('./boardUtils');
 
 describe('Pin All', () => {
 
-    it ('should pin more than 20', (done) => {
+    it ('should pin more than 20', done => {
 
         browser.driver.manage().window().maximize();
         browser.get("");
@@ -19,7 +19,7 @@ describe('Pin All', () => {
         element(by.id("li-blank-Classification")).click();
         element(by.id("li-blank-Core")).click();
 
-       element(by.id("searchResultNum")).getText().then((text) => {
+       element(by.id("searchResultNum")).getText().then(text => {
            expect(Number(text)).toBeGreaterThan(20);
            element(by.id("pinAll")).click();
            u.textPresent("Choose a Board to pin");
@@ -27,8 +27,8 @@ describe('Pin All', () => {
            u.textPresent("All elements pinned.");
            u.closeAlert();
            b.goToMyBoards();
-           element(by.xpath("//*[@data-id = 'boardDiv_"
-               + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText().then((text2) => {
+           element(by.xpath("//*[@data-id = 'boardDiv_" + board_name
+               + "']//*[contains(@id, 'board_num_cdes_')]")).getText().then(text2 => {
                 expect(text).toEqual(text2);
                 done();
            });
