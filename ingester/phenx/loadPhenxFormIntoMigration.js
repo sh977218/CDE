@@ -25,10 +25,6 @@ function createNaming(form, protocol) {
             designation: protocolName,
             definition: descriptionOfProtocol,
             languageCode: "EN-US",
-            context: {
-                contextName: "Health",
-                acceptability: "preferred"
-            },
             tags: [],
             source: 'PhenX'
         }];
@@ -59,8 +55,8 @@ function createIds(form, protocol) {
 }
 
 function createReferenceDocuments(form, protocol) {
-    let generalReferences = protocol.get('General References').trim();
-    if (generalReferences)
+    let generalReferences = protocol.get('General References');
+    if (generalReferences.trim())
         form.referenceDocuments = [{
             document: generalReferences,
             source: 'PhenX'
