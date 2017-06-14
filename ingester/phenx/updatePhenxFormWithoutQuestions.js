@@ -104,23 +104,24 @@ function run() {
                             }
                         });
                     } else if (existingForms.length === 1) {
-                        let existingForm = existingForms[0];
                         MigrationMeasureModel.find({'protocols.protocolId': formId}).exec((e, fs) => {
                             if (e) throw e;
                             else if (fs.length === 0) {
-                                console.log('stop');
-                            } else stream.resume();
-                        });/*
-                        _.forEach(existingForm.displayProfiles, dp => {
-                            dp.displayValues = false;
+                                throw ("this form " + formId + " does not appear in the latest measure. It should have been versioned with new id.");
+                            } else {
+                                let existingForm = existingForms[0];
+                                _.forEach(existingForm.displayProfiles, dp => {
+                                    dp.displayValues = false;
+                                });
+                                let deepDiff = updateShare.compareObjects(existingForm, migrationForm);
+                                if (deepDiff.length > 0) {
+                                    mergeForm(existingForm, migrationForm);
+                                    mongo_form.update(existingForm, updateShare.loaderUser, () => {
+                                        stream.resume();
+                                    });
+                                } else stream.resume();
+                            }
                         });
-                        let deepDiff = updateShare.compareObjects(existingForm, migrationForm);
-                        if (deepDiff.length > 0) {
-                            mergeForm(existingForm, migrationForm);
-                            mongo_form.update(existingForm, updateShare.loaderUser, () => {
-                                stream.resume();
-                            });
-                        } else stream.resume();*/
                     } else {
                         console.log(existingForms.length + ' forms found, formId: ' + formId);
                         process.exit(1);
