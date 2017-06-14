@@ -2,40 +2,13 @@
     <legend>Term Mapping:
         <button  title="Add" role="link" id="addTermMap"
                  *ngIf="isAllowedModel.isAllowed(elt) && !elt.unsaved" class="btn btn-default"
-                 (click)="openAddTermMap()"><span class="fa fa-edit"> Edit</span>
+                 (click)="openAddTermMap()"><span class="fa fa-edit"> Add</span>
         </button>
     </legend>
     <div class="row" *ngIf="elt.registrationState.effectiveDate">
-        <div class="col-sm-5 questionSectionLabel text-right">Effective Date:</div>
+        <div class="col-sm-5 questionSectionLabel">Effective Date:</div>
         <div class="col-sm-7" id="effectiveDate">
             {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.effectiveDate">
-        <div class="col-sm-5 questionSectionLabel text-right">Until Date:</div>
-        <div class="col-sm-7" id="untilDate">
-            {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.administrativeNote">
-        <div class="col-sm-5 questionSectionLabel text-right">Administrative Note:</div>
-        <div class="col-sm-7" id="administrativeNote">
-            {{elt.registrationState.administrativeNote | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.unresolvedIssue">
-        <div class="col-sm-5 questionSectionLabel text-right">Unresolved Issue:</div>
-        <div class="col-sm-7" id="unresolvedIssue">{{elt.registrationState.unresolvedIssue | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.registrationStatus">
-        <div class="col-sm-5 questionSectionLabel text-right">Registration Status:</div>
-        <div class="col-sm-7" id="registrationStatus">{{elt.registrationState.registrationStatus | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.administrativeStatus">
-        <div class="col-sm-5 questionSectionLabel text-right">Administrative Status:</div>
-        <div class="col-sm-7" id="administrativeStatus">{{elt.registrationState.administrativeStatus}}
         </div>
     </div>
 </fieldset>
