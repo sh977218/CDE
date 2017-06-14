@@ -25,17 +25,4 @@ export class FormAccordionListDirective extends UpgradeComponent {
         super("formAccordionList", elementRef, injector);
     }
 }
-
-@Directive({
-    selector: "form-summary-list"
-})
-export class FormSummaryListDirective extends UpgradeComponent {
-    @Input() forms: any;
-    @Input() ejsPage: any;
-    @Input() module: any;
-    @Input() includeInAccordion: any;
-    constructor(elementRef: ElementRef, injector: Injector) {
-        super("formSummaryList", elementRef, injector);
-    }
-}
 /* tslint:enable */

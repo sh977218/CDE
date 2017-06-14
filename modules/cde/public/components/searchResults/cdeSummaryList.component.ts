@@ -1,17 +1,14 @@
 import { Component, Input } from "@angular/core";
-import "rxjs/add/operator/map";
+import { CdeSummaryListContentComponent } from "./cdeSummaryListContent.component";
 
 @Component({
     selector: "cde-cde-summary-list",
     templateUrl: "./cdeSummaryList.component.html",
-    providers: []
 })
-
 export class CdeSummaryListComponent {
+    @Input() cdes: any[];
 
-    @Input() public cdes: any[];
+    summaryComponent: any = CdeSummaryListContentComponent;
 
-    constructor(
-    ) {}
-
+    constructor() {}
 }
