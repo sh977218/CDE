@@ -309,7 +309,7 @@ let formCompareArrayOption = [
             {label: 'repeat', property: 'repeat'},
             {label: 'Skip Logic', property: 'skipLogic.condition'},
             {label: 'Instruction', property: 'instructions.value'},
-            {label: 'Answer', property: 'question.answers'}
+            {label: 'Answer', property: 'question.answers', array: true}
         ],
         diff: []
     }

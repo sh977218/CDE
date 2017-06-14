@@ -56,7 +56,13 @@
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
                                 <label>{{d.label}}:</label>
-                                <span>{{r.older[d.property]}}</span>
+                                <ng-container *ngIf="d.url">
+                                    <a target="_blank" [href]=d.url+r.older[d.property]>
+                                        {{r.older[d.property]}}</a>
+                                </ng-container>
+                                <ng-container *ngIf="!d.url">
+                                    <span>{{r.older[d.property]}}</span>
+                                </ng-container>
                             </ng-container>
                         </div>
                     </div>
