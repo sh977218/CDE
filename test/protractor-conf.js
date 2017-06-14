@@ -4,6 +4,10 @@ exports.config = {
     capabilities: {
         browserName: 'chrome'
     },
+    jasmineNodeOpts: {
+        defaultTimeoutInterval: 20000
+    },
+    allScriptsTimeout: 30000,
     onPrepare: function () {
         let jasmineReporters = require('jasmine-reporters');
         jasmine.getEnv().addReporter(
