@@ -35,6 +35,7 @@ import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
 import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
+import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
 
 @NgModule({
     imports: [
@@ -65,6 +66,7 @@ import { DisplayProfileComponent } from "./components/displayProfile/displayProf
         FormSearchDirective,
         FormSummaryListComponent,
         FormSummaryListContentComponent,
+        FormTermMappingComponent,
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,

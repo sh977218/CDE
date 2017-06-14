@@ -146,6 +146,11 @@ exports.formJson = {
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
+    , termAnnotations: [{
+        terminology: {type: String, enum: ['MeSH'], default: 'Mesh'}
+        , code: {type: String}
+        , flatTrees: [String]
+    }]
 };
 
 exports.formSchema = new Schema(exports.formJson);
