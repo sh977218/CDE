@@ -4,6 +4,7 @@
 let async = require('async');
 let _ = require('lodash');
 
+let MigrationMeasureModel = require('../createMigrationConnection').MigrationMeasureModel;
 let MigrationForm = require('../createMigrationConnection').MigrationFormModel;
 let MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
 let mongo_form = require('../../modules/form/node-js/mongo-form');
@@ -19,12 +20,26 @@ let count = 0;
 let phenxOrg;
 
 function mergeForm(existingForm, newForm) {
-    updateShare.mergeNaming(existingForm, newForm);
-    updateShare.mergeReferenceDocument(existingForm, newForm);
-    updateShare.mergeIds(existingForm, newForm);
-    updateShare.mergeProperties(existingForm, newForm);
-    updateShare.mergeSources(existingForm, newForm);
-    updateShare.mergeClassification(existingForm, newForm);
+
+    let existingClassification = existingForm.classification.filter(p => p.stewardOrg.name && p.stewardOrg.name !== "PhenX");
+    existingForm.classification = newForm.classification.concat(existingClassification);
+
+    let existingNaming = existingForm.naming.filter(p => p.source && p.source !== "PhenX");
+    existingForm.naming = newForm.naming.concat(existingNaming);
+
+    let existingRefDoc = existingForm.referenceDocuments.filter(p => p.source && p.source !== "PhenX");
+    existingForm.referenceDocuments = newForm.referenceDocuments.concat(existingRefDoc);
+
+    let existingProperties = existingForm.properties.filter(p => p.source && p.source !== "PhenX");
+    existingForm.properties = newForm.properties.concat(existingProperties);
+
+    if (!existingForm.sources) existingForm.sources = [];
+    let existingSources = existingForm.sources.filter(p => p.source && p.source !== "PhenX");
+    existingForm.sources = newForm.sources.concat(existingSources);
+
+    let existingIds = existingForm.ids.filter(p => p.source && p.source !== "PhenX");
+    existingForm.ids = newForm.ids.concat(existingIds);
+
     existingForm.updateDate = importDate;
 }
 
@@ -32,7 +47,7 @@ function mergeForm(existingForm, newForm) {
 function run() {
     async.series([
         function (cb) {
-            MigrationOrgModel.find({
+            FormModel.find({
                 'stewardOrg.name': 'PhenX',
                 classification: {$size: 0},
                 archived: false
@@ -90,6 +105,12 @@ function run() {
                         });
                     } else if (existingForms.length === 1) {
                         let existingForm = existingForms[0];
+                        MigrationMeasureModel.find({'protocols.protocolId': formId}).exec((e, fs) => {
+                            if (e) throw e;
+                            else if (fs.length === 0) {
+                                console.log('stop');
+                            } else stream.resume();
+                        });/*
                         _.forEach(existingForm.displayProfiles, dp => {
                             dp.displayValues = false;
                         });
@@ -99,7 +120,7 @@ function run() {
                             mongo_form.update(existingForm, updateShare.loaderUser, () => {
                                 stream.resume();
                             });
-                        } else stream.resume();
+                        } else stream.resume();*/
                     } else {
                         console.log(existingForms.length + ' forms found, formId: ' + formId);
                         process.exit(1);
@@ -122,7 +143,7 @@ function run() {
                 if (e) throw e;
                 else {
                     console.log("There are " + fs.length + " forms need to be retired after load");
-                    async.forEach(fs, function (f, doneOneF) {
+                    async.forEachSeries(fs, function (f, doneOneF) {
                         f.registrationState.registrationStatus = 'Retired';
                         f.registrationState.administrativeNote = "Not present in import from " + new Date();
                         f.save(error => {
@@ -142,6 +163,7 @@ function run() {
                 if (err) throw err;
                 else if (org) {
                     org.classifications = phenxOrg.classifications;
+                    org.markModified("classifications");
                     org.save(e => {
                         if (e) throw e;
                         else cb();

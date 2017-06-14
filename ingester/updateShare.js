@@ -72,10 +72,13 @@ exports.wipeUseless = function (toWipe) {
 
 exports.compareObjects = function (existingForm, newForm) {
     let existingFormCopy = _.cloneDeep(existingForm);
+    let newFormCopy = _.cloneDeep(newForm);
     exports.wipeUseless(existingForm);
+    exports.wipeUseless(newFormCopy);
+    classificationShared.sortClassification(newFormCopy);
     if (!existingFormCopy.classification) existingFormCopy.classification = [];
     for (let i = existingFormCopy.classification.length - 1; i > 0; i--) {
-        if (existingFormCopy.classification[i].stewardOrg.name !== newForm.source) {
+        if (existingFormCopy.classification[i].stewardOrg.name !== newFormCopy.source) {
             existingFormCopy.classification.splice(i, 1);
         }
     }
@@ -86,9 +89,6 @@ exports.compareObjects = function (existingForm, newForm) {
         console.log(existingFormCopy);
         throw e;
     }
-    let newFormCopy = _.cloneDeep(newForm);
-    classificationShared.sortClassification(newFormCopy);
-    exports.wipeUseless(newFormCopy);
     return cdediff.diff(existingFormCopy, newFormCopy);
 };
 
@@ -105,18 +105,6 @@ exports.removeArrayOfSource = function (Array, source) {
     return Array.filter(function (p) {
         return !p.source || p.source !== source;
     });
-};
-
-exports.mergeSources = function (sources, migrationSources) {
-    for (let i = 0; i < migrationSources.length; i++) {
-        let migrationSource = migrationSources[i];
-        for (let j = 0; j < sources.length; j++) {
-            let source = sources[j];
-            if (source.sourceName === migrationSource.sourceName) {
-                sources[j] = migrationSource;
-            }
-        }
-    }
 };
 
 exports.mergeNaming = function (eltMergeFrom, eltMergeTo) {

@@ -1,11 +1,11 @@
-var webdriver = require('selenium-webdriver');
-var By = webdriver.By;
-var async = require('async');
-var driver = new webdriver.Builder().forBrowser('chrome').build();
-var LoadFromLoincSite = require('../../loinc/Website/LOINCLoader');
-var MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
+let webdriver = require('selenium-webdriver');
+let By = webdriver.By;
+let async = require('async');
+let driver = new webdriver.Builder().forBrowser('chrome').build();
+let LoadFromLoincSite = require('../../loinc/Website/LOINCLoader');
+let MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
 
-var tasks = [{
+let tasks = [{
     sectionName: 'Protocol Release Date',
     function: parseTextContent,
     xpath: "//*[@id='element_RELEASE_DATE']"
@@ -91,39 +91,39 @@ function parseTextContent(obj, task, element, cb) {
 }
 
 function parseTableContent(obj, task, element, cb) {
-    var records = [];
+    let records = [];
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
-        var keys = [];
+        let keys = [];
         async.series([function getTableHeader(doneGetTableHeader) {
             trs[0].findElements(By.xpath('th')).then(function (ths) {
                 async.forEachSeries(ths, function (th, doneOneTh) {
                     th.getText().then(function (keyText) {
                         keys.push(keyText.trim());
                         doneOneTh();
-                    })
+                    });
                 }, function doneAllThs() {
                     trs.shift();
                     doneGetTableHeader();
-                })
-            })
+                });
+            });
         }, function getTableContent(doneGetTableContent) {
             async.forEachSeries(trs, function (tr, doneOneTr) {
-                var record = {};
+                let record = {};
                 tr.findElements(By.xpath('td')).then(function (tds) {
-                    var i = 0;
+                    let i = 0;
                     async.forEachSeries(tds, function (td, doneOneTd) {
                         td.getText().then(function (tdText) {
                             record[keys[i]] = tdText.trim();
                             i++;
                             doneOneTd();
-                        })
+                        });
                     }, function doneAllTds() {
                         i = 0;
                         records.push(record);
                         record = {};
                         doneOneTr();
-                    })
-                })
+                    });
+                });
             }, function doneAllTrs() {
                 doneGetTableContent();
             });
@@ -131,39 +131,17 @@ function parseTableContent(obj, task, element, cb) {
             obj[task.sectionName] = records;
             cb();
         });
-    })
-}
-
-function parseOneSection(protocol, key, id, done) {
-    if (id.indexOf('STANDARDS') > -1) {
-    }
-    else if (id.indexOf('PROTOCOL_TEXT') > -1 || newId.indexOf('Requirements') > -1 || newId.indexOf('SPECIFIC_INSTRUCTIONS') > -1) {
-        driver.findElements(webdriver.By.xpath("//*[@id='" + newId + "']")).then(function (temp) {
-            if (temp.length > 0) {
-                temp[0].getOuterHtml().then(function (html) {
-                    protocol[key.trim()] = html;
-                    done();
-                });
-            }
-            else
-                done();
-        });
-    }
-    else {
-        driver.findElement(webdriver.By.id(newId)).getText().then(function (text) {
-            protocol[key.trim()] = text;
-            done();
-        });
-    }
+    });
 }
 
 function doTask(driver, task, obj, cb) {
     driver.findElements(By.xpath(task.xpath)).then(function (elements) {
+        let message;
         if (elements && elements.length === 0) {
-            var message = 'Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId;
+            message = 'Cannot find ' + task.sectionName + ' for loinc: ' + obj.loincId;
             cb();
         } else if (elements && elements.length > 1) {
-            var message = 'find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId;
+            message = 'find ' + elements.length + ' ' + task.sectionName + ' for loinc: ' + obj.loincId;
             cb();
         } else if (elements && elements.length === 1) {
             elements[0].getAttribute('outerHTML').then(function (html) {
@@ -192,7 +170,7 @@ exports.parseProtocol = function (protocol, link, cb, loadLoinc) {
                             doneOneLoinc();
                         }, function () {
                             doneOneStandard();
-                        })
+                        });
                     } else  doneOneStandard();
                 } else {
                     doneOneStandard();
@@ -208,10 +186,10 @@ exports.parseProtocol = function (protocol, link, cb, loadLoinc) {
                         new MigrationProtocolModel(protocol).save((e) => {
                             if (e) throw e;
                             else cb();
-                        })
-                    })
+                        });
+                    });
                 });
             });
-        })
+        });
     });
 };

@@ -77,7 +77,7 @@ function createProperties(form, protocol) {
     _.forEach(prop1, p => {
         let value = protocol.get(p);
         if (value) {
-            properties.push({key: p, value: value.trim()});
+            properties.push({key: p, value: value.trim(), source: 'PhenX'});
         }
     });
 
@@ -100,7 +100,7 @@ function createProperties(form, protocol) {
                 tr = '<tr>' + td + '</tr>';
             });
             let tbody = '<tr>' + tr + '</tr>';
-            let table = '<table>' + thead + tbody + '</table>';
+            let table = "<table class='table table-striped'>" + thead + tbody + "</table>";
             properties.push({key: p.trim(), value: table, valueFormat: "html", source: "PhenX"});
         }
     });

@@ -11,14 +11,14 @@ function parsingIntroduction(driver, measure, done) {
         measure.introduction = text.trim();
         done();
     });
-};
+}
 function parsingKeywords(driver, measure, done) {
     var instructionXpath = "//p[./b[normalize-space(text())='Keywords']]/following-sibling::p";
     driver.findElement(By.xpath(instructionXpath)).getText().then(function (text) {
         measure.keywords = text.trim();
         done();
     });
-};
+}
 
 function parsingClassification(driver, measure, done) {
     var classificationXpath = "//p[@class='back'][1]/a";
@@ -34,7 +34,7 @@ function parsingClassification(driver, measure, done) {
             done();
         });
     });
-};
+}
 
 function parsingProtocolLinks(driver, measure, done, loadLoinc) {
     var protocolLinksXpath = "//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]";
@@ -54,19 +54,20 @@ function parsingProtocolLinks(driver, measure, done, loadLoinc) {
                 function (cb) {
                     protocolLink.getAttribute('href').then(function (linkText) {
                         ParseOneProtocol.parseProtocol(protocol, linkText.trim(), function () {
+                            protocol.keywords = measure.keywords;
                             cb();
                         }, loadLoinc);
                     });
                 }
             ], function () {
                 doneOneProtocolLink();
-            })
+            });
         }, function doneAllProtocolLinks() {
             measure.protocols = protocols;
             done();
         });
-    })
-};
+    });
+}
 
 exports.parseOneMeasure = function (measure, cb, loadLoinc) {
     driver.get(measure.href);
@@ -78,7 +79,7 @@ exports.parseOneMeasure = function (measure, cb, loadLoinc) {
             parsingKeywords(driver, measure, doneKeywords);
         },
         function (doneClassification) {
-            parsingClassification(driver, measure, doneClassification)
+            parsingClassification(driver, measure, doneClassification);
         },
         function (doneProtocol) {
             parsingProtocolLinks(driver, measure, doneProtocol, loadLoinc);

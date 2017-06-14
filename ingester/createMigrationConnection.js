@@ -1,13 +1,13 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var config = require('../modules/system/node-js/parseConfig');
-var cde_schemas = require('../modules/cde/node-js/schemas');
-var form_schemas = require('../modules/form/node-js/schemas');
-var sharedSchemas = require('../modules/system/node-js/schemas.js');
+let config = require('../modules/system/node-js/parseConfig');
+let cde_schemas = require('../modules/cde/node-js/schemas');
+let form_schemas = require('../modules/form/node-js/schemas');
+let sharedSchemas = require('../modules/system/node-js/schemas.js');
 
-var mongoMigrationUri = config.mongoMigrationUri;
-var migrationConn = mongoose.createConnection(mongoMigrationUri);
+let mongoMigrationUri = config.mongoMigrationUri;
+let migrationConn = mongoose.createConnection(mongoMigrationUri);
 migrationConn.once('open', function callback() {
     console.log('mongodb ' + config.database.migration.db + ' connection open');
 });
