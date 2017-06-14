@@ -40,6 +40,8 @@ public class InlineEditTest extends BaseAttachmentTest {
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
 
+        hangon(2);
+
         clickElement(By.cssSelector(".cke_button__image"));
         findElement(By.xpath("//div[label[. = 'URL']]//input")).sendKeys("www.google.com");
         clickElement(By.linkText("OK"));
