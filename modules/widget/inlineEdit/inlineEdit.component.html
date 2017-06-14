@@ -19,7 +19,7 @@
         <ng-container *ngIf="inputType.toLowerCase() === 'textarea'" name="inlineTextarea">
             <textarea class="form-control" autocomplete="off" [(ngModel)]="value"></textarea>
         </ng-container>
-        <button class="fa fa-check" (click)="save()" [disabled]="!inlineForm.form.valid">Confirm</button>
-        <button class="fa fa-times" (click)="discard()"> Discard</button>
+        <button type="button" class="fa fa-check" (click)="save()" [disabled]="!inlineForm.form.valid">Confirm</button>
+        <button type="button" class="fa fa-times" (click)="discard()"> Discard</button>
     </form>
 </div>
