@@ -16,7 +16,9 @@ let updateShare = require('../updateShare');
 let importDate = new Date().toJSON();
 let lastEightHours = new Date();
 lastEightHours.setHours(new Date().getHours() - 8);
-let count = 0;
+let sameCount = 0;
+let modifiedCount = 0;
+let newCount = 0;
 let phenxOrg;
 
 function mergeForm(existingForm, newForm) {
@@ -98,8 +100,8 @@ function run() {
                         new FormModel(newForm.toObject()).save(function (err) {
                             if (err) throw err;
                             else {
-                                count++;
-                                console.log('count: ' + count);
+                                newCount++;
+                                console.log('newCount: ' + newCount);
                                 stream.resume();
                             }
                         });
@@ -117,9 +119,15 @@ function run() {
                                 if (deepDiff.length > 0) {
                                     mergeForm(existingForm, migrationForm);
                                     mongo_form.update(existingForm, updateShare.loaderUser, () => {
+                                        modifiedCount++;
+                                        console.log("modifiedCount: " + modifiedCount);
                                         stream.resume();
                                     });
-                                } else stream.resume();
+                                } else {
+                                    sameCount++;
+                                    console.log("sameCount: " + sameCount);
+                                    stream.resume();
+                                }
                             }
                         });
                     } else {
@@ -174,6 +182,7 @@ function run() {
         }
     ], function () {
         console.log('Finished loader.');
+        console.log('modifiedCount: ' + modifiedCount + ' sameCount: ' + sameCount + ' newCount: ' + newCount);
         process.exit(0);
     });
 }
