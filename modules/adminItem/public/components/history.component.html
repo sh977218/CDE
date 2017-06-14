@@ -1,0 +1,82 @@
+<div id="historyDiv">
+    <h4>History</h4>
+    <ng-container *ngIf="priorElements.length === 0">
+        This Element has no history.
+    </ng-container>
+    <ng-container *ngIf="priorElements.length > 0">
+        <div style="line-height:40px;">
+            <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
+            <label for="showVersionedHistory">Only show versioned revisions.</label>
+            <button *ngIf="numberSelected===2" class="btn btn-default" id="historyCompareBtn"
+                    (click)="openCompareSideBySideModal()">
+                <i class="fa fa-files-o"></i> Compare
+            </button>
+        </div>
+        <table class="table table-hover" id="historyTable">
+            <caption>List of previous versions. Click rows to select them.</caption>
+            <tr>
+                <th width="30px"></th>
+                <th>Updated</th>
+                <th>Updated by</th>
+                <th>Change Note</th>
+                <th>Version</th>
+                <th>View</th>
+            </tr>
+            <ng-container *ngFor="let priorElement of priorElements; let i = index">
+                <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
+                    (click)="selectRow(priorElement)">
+                    <td>
+                        <i class="fa fa-check-square-o" *ngIf="priorElement.selected" aria-hidden="true"></i>
+                        <i class="fa fa-square-o" *ngIf="!priorElement.selected" aria-hidden="true"></i>
+                    </td>
+                    <td>
+                        {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}
+                    </td>
+                    <td>{{priorElement.updatedBy?.username}}</td>
+                    <td>{{priorElement.changeNode}}</td>
+                    <td>{{priorElement.version}}</td>
+                    <td>
+                        <div id="prior-{{i}}">
+                            <ng-container *ngIf="priorElement.viewing">
+                                Viewing
+                            </ng-container>
+                            <ng-container *ngIf="!priorElement.viewing">
+                                <a [href]="priorElement.url" target="_blank">
+                                    <span class="fa fa-eye fa-2x gray"></span></a>
+                            </ng-container>
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </ng-container>
+</div>
+
+<ng-template #compareContent let-c="close" let-d="dismiss" class="hugeModal">
+    <div class="modal-header">
+        <div class="input-color">
+            <div class="color-box" style="background-color: #fad000;"></div>
+            <span>Reorder</span>
+        </div>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #008000;"></div>
+            <span>Add</span>
+        </div>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #a94442;"></div>
+            <span>Remove</span>
+        </div>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #0000ff;"></div>
+            <span>Edit</span>
+        </div>
+    </div>
+    <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
+        <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>
+        <cde-compare-array [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-array>
+    </div>
+    <div class="modal-footer">
+        <button class="btn cancel" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">Close
+        </button>
+    </div>
+</ng-template>

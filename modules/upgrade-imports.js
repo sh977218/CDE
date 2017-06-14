@@ -59,7 +59,6 @@ import "./system/public/js/controllers/AccordionCtrl";
 import "./system/public/js/controllers/ApproveAttachmentCtrl";
 import "./system/public/js/controllers/SwitchListViewCtrl";
 import "./system/public/js/controllers/DatepickerCtrl";
-import "./system/public/js/controllers/DiffConfigCtrl";
 import "./system/public/js/controllers/ExportCtrl";
 import "./system/public/js/controllers/HasCommentsCtrl";
 import "./system/public/js/controllers/ValidationRules/SaveValidRuleCtrl";

@@ -4,7 +4,7 @@ var config = require('../../system/node-js/parseConfig')
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
     , elastic = require('./elastic')
-    ;
+;
 
 exports.type = "form";
 exports.name = "forms";
@@ -43,10 +43,9 @@ exports.count = function (condition, callback) {
 exports.priorForms = function (formId, callback) {
     Form.findById(formId).exec(function (err, form) {
         if (form !== null) {
-            return Form.find({}, "updated updatedBy changeNote version")
-                .where("_id").in(form.history).exec(function (err, forms) {
-                    callback(err, forms);
-                });
+            return Form.find({}).where("_id").in(form.history).exec(function (err, forms) {
+                callback(err, forms);
+            });
         }
     });
 };

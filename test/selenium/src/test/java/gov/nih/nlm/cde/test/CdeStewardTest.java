@@ -32,7 +32,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newStewardOrgName, By.xpath("//*[@id='historyCompareLeft_StewardOrg Name']"));
-        textPresent(oldStewardOrgName, By.xpath("//*[@id='historyCompareRight_StewardOrg Name']"));
+        textPresent(newStewardOrgName, By.xpath("//*[@id='Steward Org']//ins"));
+        textPresent(oldStewardOrgName, By.xpath("//*[@id='Steward Org']//del"));
     }
 }

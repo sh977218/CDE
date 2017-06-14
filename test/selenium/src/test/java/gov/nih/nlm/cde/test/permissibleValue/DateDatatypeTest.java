@@ -23,9 +23,10 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("Date", By.xpath("//*[@id='historyCompareLeft_Date']"));
-        textPresent("Value List", By.xpath("//*[@id='historyCompareRight_Value Type']"));
-        textPresent("format1", By.xpath("//*[@id='historyCompareLeft_Date']"));
+        textPresent("Date", By.xpath("//*[@id='Data Type']//ins"));
+        textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
+        textPresent("format1", By.xpath("//*[@id='Data Type Date Format']//ins"));
+        clickElement(By.id("closeHistoryCompareModal"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id='datatypeDateFormat']//i"));
@@ -37,7 +38,7 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("format2", By.xpath("//*[@id='historyCompareLeft_Data Type Date']//*[contains(@class,'format')]"));
-        textPresent("format1", By.xpath("//*[@id='historyCompareRight_Data Type Date']//*[contains(@class,'format')]"));
+        textPresent("format2", By.xpath("//*[@id='Data Type Date Format']//ins"));
+        textPresent("format1", By.xpath("//*[@id='Data Type Date Format']//del"));
     }
 }
