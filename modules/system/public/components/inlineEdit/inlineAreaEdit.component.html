@@ -17,7 +17,7 @@
         <textarea *ngIf="localFormat != 'html'" [(ngModel)]="value" class="form-control"></textarea>
 
 
-        <ckeditor *ngIf="localFormat === 'html'"
+        <ckeditor *ngIf="localFormat === 'html'" [config]="{extraPlugins: 'divarea'}"
                 [(ngModel)]="value">
         </ckeditor>
 
