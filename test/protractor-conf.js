@@ -8,9 +8,9 @@ exports.config = {
         browserName: 'chrome'
     },
     maxSessions: 15,
-    allScriptsTimeout: 30000,
+    allScriptsTimeout: 20000,
     jasmineNodeOpts: {
-        defaultTimeoutInterval: 30000
+        defaultTimeoutInterval: 60000
     },
     onPrepare: function () {
         jasmine.getEnv().addReporter(
