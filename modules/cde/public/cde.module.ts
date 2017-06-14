@@ -6,10 +6,15 @@ import { Select2Module } from "ng2-select2";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { BoardModule } from "../../board/public/board.module";
-import { SystemModule } from "../../system/public/system.module";
+import { FormModule } from "../../form/public/form.module";
+import { SearchModule } from "search";
+import { WidgetModule } from "../../widget/widget.module";
 
+import { BoardCdeSummaryListComponent } from "./components/searchResults/boardCdeSummaryList.component";
+import { BoardCdeSummaryListContentComponent } from "./components/searchResults/boardCdeSummaryListContent.component";
 import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
-import { CdeSummaryListComponent } from "./components/summary/cdeSummaryList.component";
+import { CdeSummaryListComponent } from "./components/searchResults/cdeSummaryList.component";
+import { CdeSummaryListContentComponent } from "./components/searchResults/cdeSummaryListContent.component";
 import { ConceptsComponent } from "./components/concepts.component";
 import { DatasetsComponent } from "./components/datasets/datasets.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
@@ -23,17 +28,23 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
 
 @NgModule({
     imports: [
-        AdminItemModule,
-        BoardModule,
         CommonModule,
         FormsModule,
         NgbModule,
         Select2Module,
-        SystemModule,
+        // internal
+        AdminItemModule,
+        BoardModule,
+        FormModule,
+        SearchModule,
+        WidgetModule,
     ],
     declarations: [
+        BoardCdeSummaryListComponent,
+        BoardCdeSummaryListContentComponent,
         CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
+        CdeSummaryListContentComponent,
         ConceptsComponent,
         DeGeneralDetailsComponent,
         DerivationRulesComponent,
@@ -48,7 +59,11 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         PermissibleValueComponent,
     ],
     entryComponents: [
+        BoardCdeSummaryListComponent,
+        BoardCdeSummaryListContentComponent,
         CdeGeneralDetailsComponent,
+        CdeSummaryListComponent,
+        CdeSummaryListContentComponent,
         ConceptsComponent,
         DatasetsComponent,
         DeGeneralDetailsComponent,
@@ -59,11 +74,12 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         ValueDomainSummaryComponent,
         PermissibleValueComponent,
     ],
+    exports: [
+    ],
     providers: [
         RegistrationValidatorService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-
 export class CdeModule {
 }

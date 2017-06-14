@@ -1577,7 +1577,9 @@ div.row .native-question-oneline-r {
 }
 
 .native-value {
-    font-weight: bold;
+    color: #999;
+    font-style: italic;
+    font-weight: 900;
 }
 
 .radio-inline,

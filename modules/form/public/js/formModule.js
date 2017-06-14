@@ -87,11 +87,18 @@ angular.module('formModule').directive('questionSearch', [function () {
 
 import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
+import {BoardFormSummaryListComponent} from "../components/searchResults/boardFormSummaryList.component";
+angular.module('formModule').directive('cdeBoardFormSummaryList',
+    downgradeComponent({component: BoardFormSummaryListComponent, inputs: ['board', 'forms', 'currentPage', 'totalItems'], outputs: ['reload']}));
+
 import {FormDescriptionComponent} from "../tabs/description/formDescription.component";
 angular.module('formModule').directive('cdeFormDescription', downgradeComponent({component: FormDescriptionComponent, inputs: ['elt', 'inScoreCdes', 'cache'], outputs: ['isFormValid', 'stageElt', 'cachePut']}));
 
 import {DisplayProfileComponent} from "../components/displayProfile/displayProfile.component";
 angular.module('formModule').directive('cdeFormDisplayProfile', downgradeComponent({component: DisplayProfileComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));
+
+import {FormSummaryListComponent} from "../components/searchResults/formSummaryList.component";
+angular.module('formModule').directive('cdeFormSummaryList', downgradeComponent({component: FormSummaryListComponent, inputs: ['forms'], outputs: []}));
 
 import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
 angular.module('formModule').directive('cdeMergeForm', downgradeComponent({component: MergeFormComponent, inputs: ['left', 'right'], outputs: []}));
