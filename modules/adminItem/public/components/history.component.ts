@@ -60,7 +60,7 @@ export class HistoryComponent implements OnInit {
                     this.priorElements.splice(0, 0, this.elt);
                     this.priorElements.forEach(pe => {
                         pe.url = prefix_url + pe._id;
-                    })
+                    });
                 }, err =>
                     this.alert.addAlert("danger", "Error retrieving history: " + err));
         }
