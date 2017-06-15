@@ -2,9 +2,9 @@ import * as authShared from "../../../../system/shared/authorizationShared";
 
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', 'Alert',
+        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
         function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                  $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, Alert) {
+                  $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard) {
 
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
@@ -28,14 +28,6 @@ angular.module('systemModule').controller('MainCtrl',
                     $scope.myOrgs = userResource.userOrgs;
                 });
             };
-
-            //TODO: Don't use the following methods. Use $scope.Alert instead.
-            $scope.addAlert = Alert.addAlert;
-            $scope.closeAlert = Alert.closeAlert;
-            $scope.alerts = Alert.mapAlerts();
-
-            $scope.Alert = Alert;
-
 
             $scope.isOrgAdmin = function () {
                 return authShared.isOrgAdmin(userResource.user);

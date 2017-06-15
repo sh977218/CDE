@@ -5,6 +5,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-boots
 import { LocalStorageService } from "angular-2-local-storage/dist";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 const actionMapping: IActionMapping = {
     mouse: {
         click: () => {
@@ -43,7 +44,7 @@ export class ClassifyItemModalComponent {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private localStorageService: LocalStorageService,
-                @Inject("Alert") private alert,
+                private alert: AlertService,
                 @Inject("userResource") public userService) {
     }
 
@@ -59,7 +60,7 @@ export class ClassifyItemModalComponent {
                 if (result === "exists")
                     this.alert.addAlert("warning", "Classification already exists.");
             });
-        }, reason => {
+        }, () => {
         });
     }
 

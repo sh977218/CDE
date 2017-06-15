@@ -3,6 +3,7 @@ import { Http } from "@angular/http";
 
 
 import "rxjs/add/operator/map";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-admin-item-attachments",
@@ -21,7 +22,7 @@ export class AttachmentsComponent {
         private http: Http,
         private ref: ChangeDetectorRef,
         @Inject("isAllowedModel") public isAllowedModel,
-        @Inject("Alert") private alert
+        private alert: AlertService
     ) {}
 
     upload (event) {

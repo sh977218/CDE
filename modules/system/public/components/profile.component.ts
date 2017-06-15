@@ -2,6 +2,7 @@ import { Component, Inject } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { User } from "../../../core/public/models.model";
+import { AlertService } from "./alert/alert.service";
 
 @Component({
     selector: "cde-profile",
@@ -16,7 +17,7 @@ export class ProfileComponent {
     user: User;
 
     constructor(private http: Http,
-                @Inject("Alert") private alert,
+                private alert: AlertService,
                 @Inject("userResource") private userService,
                 @Inject("ViewingHistory") private viewingHistoryService) {
         viewingHistoryService.getViewingHistory();

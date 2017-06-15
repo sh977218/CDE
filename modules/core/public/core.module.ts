@@ -11,11 +11,11 @@ import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
 import { SharedService } from "./shared.service";
 import { CompareService } from "./compare.service";
+import { OrgHelperService } from "./orgHelper.service";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 
-export function getAlertFactory(i: any) { return i.get("Alert"); }
 export function getUserResourceFactory(i: any) { return i.get("userResource"); }
 export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"); }
 export function getIsAllowedModelFactory(i: any) { return i.get("isAllowedModel"); }
@@ -24,7 +24,6 @@ export function getAccountManagementFactory(i: any) { return i.get("AccountManag
 export function getFormQuickBoardFactory(i: any) { return i.get("FormQuickBoard"); }
 export function getPinModalFactory(i: any) { return i.get("PinModal"); }
 export function getElasticFactory(i: any) { return i.get("Elastic"); }
-export function getOrgHelpersFactory(i: any) { return i.get("OrgHelpers"); }
 
 @NgModule({
     imports: [
@@ -39,9 +38,9 @@ export function getOrgHelpersFactory(i: any) { return i.get("OrgHelpers"); }
         MergeShareService,
         SharedService,
         CompareService,
+        OrgHelperService,
         // upgraded
         UpgradeModule,
-        {provide: "Alert", useFactory: getAlertFactory, deps: ["$injector"]},
         {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},
         {provide: "ViewingHistory", useFactory: getViewingHistoryFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
@@ -50,7 +49,6 @@ export function getOrgHelpersFactory(i: any) { return i.get("OrgHelpers"); }
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
         {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
         {provide: "Elastic", useFactory: getElasticFactory, deps: ["$injector"]},
-        {provide: "OrgHelpers", useFactory: getOrgHelpersFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,

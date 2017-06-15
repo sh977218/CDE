@@ -10,6 +10,7 @@ import "rxjs/add/operator/distinctUntilChanged";
 //noinspection TypeScriptCheckImport
 import * as authShared from "../../../../shared/authorizationShared";
 import { Observable } from "rxjs/Rx";
+import { AlertService } from "../../alert/alert.service";
 
 @Component({
     selector: "cde-users-mgt",
@@ -33,11 +34,10 @@ export class UsersMgtComponent {
     };
 
     constructor(private http: Http,
-                @Inject("Alert") private Alert,
+                private Alert: AlertService,
                 @Inject("AccountManagement") private AccountManagement,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
-    }
+                public modalService: NgbModal
+                ) {}
 
     formatter = (result: any) => result.username;
 
@@ -91,7 +91,7 @@ export class UsersMgtComponent {
         this.modalRef.close();
     }
 
-    getEltLink(c) {
+    getEltLink (c) {
         return {
                 cde: "/deview?tinyId=",
                 form: "/formView?tinyId=",

@@ -468,10 +468,10 @@ angular.module('systemModule').controller('ListCtrl',
                 };
                 data.query.resultPerPage = window.maxPin;
                 $http.post('/pinEntireSearchToBoard', data).then(function onSuccess() {
-                    $scope.addAlert("success", "All elements pinned.");
+                    Alert.addAlert("success", "All elements pinned.");
                     ElasticBoard.loadMyBoards(filter);
                 }).catch(function onError() {
-                    $scope.addAlert("danger", "Not all elements were not pinned!");
+                    Alert.addAlert("danger", "Not all elements were not pinned!");
                 });
             }, function () {
             });

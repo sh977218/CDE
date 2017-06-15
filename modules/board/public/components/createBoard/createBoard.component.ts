@@ -1,8 +1,9 @@
 import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Component, Inject, ViewChild } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MyBoardsService } from "../../myBoards.service";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-create-board",
@@ -15,7 +16,7 @@ export class CreateBoardComponent {
     constructor(
         private http: Http,
         public modalService: NgbModal,
-        @Inject("Alert") private alert,
+        private alert: AlertService,
         private myBoardsSvc: MyBoardsService,
     ) {}
 

@@ -1,8 +1,8 @@
 import * as classificationShared from "../../../../system/shared/classificationShared";
 
 angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
-    ['$scope', '$location', '$timeout', '$uibModal', 'DataElement', 'Elastic', 'userResource',
-        function($scope, $location, $timeout, $modal, DataElement, Elastic, userResource) {
+    ['$scope', '$location', '$timeout', '$uibModal', 'DataElement', 'Elastic', 'userResource', 'AlertService',
+        function($scope, $location, $timeout, $modal, DataElement, Elastic, userResource, Alert) {
             $scope.openCdeInNewTab = true;
             $scope.currentPage = 1;
             $scope.totalItems = 0;
@@ -88,7 +88,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                             return undefined;
                         }
                         , addAlert: function() {
-                            return $scope.addAlert;
+                            return Alert.addAlert;
                         }
                         , addClassification: function() {
                             return {

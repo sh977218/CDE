@@ -2,6 +2,7 @@ import { Http } from "@angular/http";
 import { Component, Inject, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import * as moment from "moment";
+import { AlertService } from "../../alert/alert.service";
 
 const SORT_MAP = {
     date: {
@@ -52,7 +53,7 @@ export class LogAuditComponent {
     sortMap = SORT_MAP;
 
     constructor(private http: Http,
-                @Inject("Alert") private Alert) {
+                private Alert: AlertService) {
     }
 
     setOppositeSort(m) {

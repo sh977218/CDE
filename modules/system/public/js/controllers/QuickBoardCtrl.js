@@ -2,8 +2,8 @@ import * as exportShared from "../../../../system/shared/exportShared";
 import {saveAs} from "../../../../cde/public/assets/js/FileSaver";
 
 angular.module('cdeModule').controller('QuickBoardCtrl',
-    ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
-        function ($scope, CdeList, OrgHelpers, userResource, QuickBoard, FormQuickBoard, localStorageService) {
+    ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard', 'FormQuickBoard', 'localStorageService', 'AlertService',
+        function ($scope, CdeList, OrgHelpers, userResource, QuickBoard, FormQuickBoard, localStorageService, Alert) {
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
             $scope.forms = FormQuickBoard.elts;
@@ -38,10 +38,10 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                         type: "text/csv"
                     });
                     saveAs(blob, 'QuickBoardExport' + '.csv');
-                    $scope.addAlert("success", "Export downloaded.");
+                    Alert.addAlert("success", "Export downloaded.");
                     $scope.feedbackClass = ["fa-download"];
                 } else {
-                    $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
+                    Alert.addAlert("danger", "Something went wrong, please try again in a minute.");
                 }
             };
             $scope.eltsToCompareMap = {};
