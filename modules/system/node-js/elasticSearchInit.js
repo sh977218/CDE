@@ -31,6 +31,7 @@ exports.createIndexJson = {
                 , "origin": {"type": "string", "index": "not_analyzed"}
                 , "valueDomain": {
                     properties: {
+                        "datatype": {"type": "string", "index": "not_analyzed"},
                         "permissibleValues": {
                             properties: {
                                 "codeSystemName": {"type": "string", "index": "not_analyzed"}

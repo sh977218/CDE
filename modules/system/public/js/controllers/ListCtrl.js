@@ -2,9 +2,9 @@ import * as regStatusShared from "../../../../system/shared/regStatusShared";
 
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'AutoCompleteResource', '$location', '$route', '$controller', 'ElasticBoard',
+        'Alert', 'AutoCompleteResource', '$location', '$route', '$controller', 'ElasticBoard',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  AutoCompleteResource, $location, $route, $controller, ElasticBoard)
+                  Alert, AutoCompleteResource, $location, $route, $controller, ElasticBoard)
 
 {
 
@@ -28,6 +28,7 @@ angular.module('systemModule').controller('ListCtrl',
             , page: 1
             , classification: []
             , classificationAlt: []
+            , datatypes: []
             , regStatuses: []
             , resultPerPage: $scope.resultPerPage
         };
@@ -243,7 +244,7 @@ angular.module('systemModule').controller('ListCtrl',
             //$window.scrollTo(0, 0);
             if (err) {
                 $scope.accordionListStyle = "";
-                $scope.addAlert("danger", "There was a problem with your query");
+                Alert.addAlert("danger", "There was a problem with your query");
                 $scope[type + 's'] = [];
                 return;
             }
@@ -341,6 +342,8 @@ angular.module('systemModule').controller('ListCtrl',
         if ($scope.searchSettings.regStatuses.length > 0) {
             searchLink += "&regStatuses=" + $scope.searchSettings.regStatuses.join(';');
         }
+        if ($scope.searchSettings.datatypes.length > 0)
+            searchLink += "&datatypes=" + $scope.searchSettings.datatypes.join(';');
         if ($scope.searchSettings.selectedOrg) searchLink += "&selectedOrg=" + encodeURIComponent($scope.searchSettings.selectedOrg);
         if ($scope.searchSettings.classification && $scope.searchSettings.classification.length > 0) {
             searchLink += "&classification=" + encodeURIComponent($scope.searchSettings.classification.join(';'));
@@ -370,6 +373,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.searchSettings.classification = $routeParams.classification?$routeParams.classification.split(';'):[];
         $scope.searchSettings.classificationAlt = $routeParams.classificationAlt?$routeParams.classificationAlt.split(';'):[];
         $scope.searchSettings.regStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(';'):[];
+        $scope.searchSettings.datatypes = $routeParams.datatypes?$routeParams.datatypes.split(';'):[];
         $scope.searchSettings.meshTree = $routeParams.topic;
         $scope.reload(type);
     };
@@ -411,6 +415,13 @@ angular.module('systemModule').controller('ListCtrl',
         var index = $scope.searchSettings.regStatuses.indexOf(status);
         if (index > -1) $scope.searchSettings.regStatuses.splice(index, 1);
         else $scope.searchSettings.regStatuses.push(status);
+        doSearch();
+    };
+
+    $scope.addDatatypeFilter = function (datatype) {
+        var index = $scope.searchSettings.datatypes.indexOf(datatype);
+        if (index > -1) $scope.searchSettings.datatypes.splice(index, 1);
+        else $scope.searchSettings.datatypes.push(datatype);
         doSearch();
     };
 

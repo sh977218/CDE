@@ -27,6 +27,13 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope',
             $scope.reload();
         };
 
+        $scope.addDatatypeFilter = function (datatype) {
+            var index = $scope.searchSettings.datatypes.indexOf(datatype);
+            if (index > -1) $scope.searchSettings.datatypes.splice(index, 1);
+            else $scope.searchSettings.datatypes.push(datatype);
+            $scope.reload();
+        };
+
         $scope.alterOrgFilter = function (orgName) {
             $scope._alterOrgFiler(orgName);
             $scope.reload();

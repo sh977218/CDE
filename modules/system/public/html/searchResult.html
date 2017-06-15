@@ -194,8 +194,7 @@
                     </div>
                 </div>
                 <br/>
-                <strong  ng-show="aggregations.statuses.statuses.buckets" id="status_filter">Registration
-                    Status</strong>
+                <strong ng-show="aggregations.statuses.statuses.buckets" id="status_filter">Registration Status</strong>
 
                 <div class="pl5" id="registrationStatusListHolder">
                     <span class="hand-cursor"
@@ -208,6 +207,23 @@
                             <i ng-switch-default class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                             <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
                             <small id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                        </a>
+                    </span>
+                </div>
+
+                <br/>
+                <strong ng-show="aggregations.datatype.datatype.buckets.length" id="datatype_filter">Data Types</strong>
+                <div class="pl5" id="datatypeListHolder">
+                    <span class="hand-cursor"
+                          ng-repeat="t in aggregations.datatype.datatype.buckets"
+                          uib-tooltip-html-unsafe="'a'"
+                          tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
+                        <a href class="nonLinkAnchor displayBlock"  ng-if="t.doc_count > 0"
+                           style="margin-right: 0" ng-switch="searchSettings.datatypes.indexOf(t.key) > -1"
+                           ng-click="addDatatypeFilter(t.key)">
+                            <i ng-switch-default class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
+                            <i ng-switch-when="true" class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
+                            <small id="datatype-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
                         </a>
                     </span>
                 </div>
