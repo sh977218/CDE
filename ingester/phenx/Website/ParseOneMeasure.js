@@ -13,9 +13,10 @@ function parsingIntroduction(driver, measure, done) {
     });
 }
 function parsingKeywords(driver, measure, done) {
-    var instructionXpath = "//p[./b[normalize-space(text())='Keywords']]/following-sibling::p";
-    driver.findElement(By.xpath(instructionXpath)).getText().then(function (text) {
-        measure.keywords = text.trim();
+    var instructionXpath = "//p[./b[normalize-space(text())='Keywords']]";
+    driver.findElement(By.xpath(instructionXpath)).getText().then(function (keywoardsText) {
+        let keyWords = keywoardsText.replace(/keywords:/ig, "").trim();
+        measure.keywords = keyWords.split(",");
         done();
     });
 }
@@ -54,7 +55,7 @@ function parsingProtocolLinks(driver, measure, done, loadLoinc) {
                 function (cb) {
                     protocolLink.getAttribute('href').then(function (linkText) {
                         ParseOneProtocol.parseProtocol(protocol, linkText.trim(), function () {
-                            protocol.keywords = measure.keywords;
+                            protocol.Keywords = measure.keywords;
                             cb();
                         }, loadLoinc);
                     });
