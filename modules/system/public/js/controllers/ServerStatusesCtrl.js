@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$http', '$upload', '$uibModal', 'Alert',
+angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$http', '$upload', '$uibModal', 'AlertService',
     function ($scope, $http, $upload, $uibModal, Alert) {
 
         $scope.statuses = [];

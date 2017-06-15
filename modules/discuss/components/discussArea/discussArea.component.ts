@@ -5,6 +5,7 @@ import { Comment } from "../../discuss.model";
 import "rxjs/add/operator/map";
 import * as io from "socket.io-client";
 import { TimerObservable } from "rxjs/observable/TimerObservable";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-discuss-area",
@@ -15,7 +16,7 @@ import { TimerObservable } from "rxjs/observable/TimerObservable";
 export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     constructor(private http: Http,
-                @Inject("Alert") private alert,
+                private alert: AlertService,
                 @Inject("isAllowedModel") private isAllowedModel,
                 @Inject("userResource") public userService
     ) {};

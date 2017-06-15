@@ -1,8 +1,8 @@
 import * as classificationShared from "../../../../system/shared/classificationShared";
 
 angular.module('formModule').controller('CreateFormAbstractCtrl',
-    ['$scope', '$location', '$uibModal', 'userResource', 'Form',
-        function ($scope, $location, $modal, userResource, Form) {
+    ['$scope', '$location', '$uibModal', 'userResource', 'Form', 'AlertService',
+        function ($scope, $location, $modal, userResource, Form, Alert) {
             $scope.openCdeInNewTab = true;
             $scope.module = "form";
             $scope.searchForm = {};
@@ -73,7 +73,7 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                             return undefined;
                         },
                         addAlert: function () {
-                            return $scope.addAlert;
+                            return Alert.addAlert;
                         },
                         addClassification: function () {
                             return {

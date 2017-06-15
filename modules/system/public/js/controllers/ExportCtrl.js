@@ -4,8 +4,8 @@ import {saveAs} from "../../../../cde/public/assets/js/FileSaver";
 import * as formShared from "../../../../form/shared/formShared";
 
 angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http',
-    'RegStatusValidator', 'userResource', '$uibModal', '$httpParamSerializer', '$window',
-    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $httpParamSerializer, $window) {
+    'RegStatusValidator', 'userResource', '$uibModal', '$httpParamSerializer', '$window', 'AlertService',
+    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $httpParamSerializer, $window, Alert) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
@@ -18,14 +18,14 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             try {
                 !!new Blob; //jshint ignore:line
             } catch (e) {
-                return $scope.addAlert("danger", "Export feature is not supported in this browser. Please try " +
+                return Alert.addAlert("danger", "Export feature is not supported in this browser. Please try " +
                     "Google Chrome or Mozilla FireFox.");
             }
             $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
-            if (type !== 'validationRules') $scope.addAlert("warning", "Your export is being generated, please wait.");
+            if (type !== 'validationRules') Alert.addAlert("warning", "Your export is being generated, please wait.");
             Elastic.getExport(Elastic.buildElasticQuerySettings(exportSettings.searchSettings), $scope.module?$scope.module:'cde',
                 function (err, result) {
-                if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
+                if (err) return Alert.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
                 var exporters =
                 {
                     'csv': function (result) {
@@ -82,14 +82,14 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                 if (result) {
                     var exporter = exporters[type];
                     if (!exporter) {
-                        $scope.addAlert("danger", "This export format is not supported.");
+                        Alert.addAlert("danger", "This export format is not supported.");
                     } else {
                         exporter(result);
-                        if (type !== 'validationRules') $scope.addAlert("success", "Export downloaded.");
+                        if (type !== 'validationRules') Alert.addAlert("success", "Export downloaded.");
                         $scope.feedbackClass = ["fa-download"];
                     }
                 } else {
-                    $scope.addAlert("danger", "There was no data to export.");
+                    Alert.addAlert("danger", "There was no data to export.");
                 }
             });
         };
@@ -106,10 +106,10 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                         type: "text/csv"
                     });
                     saveAs(blob, 'QuickBoardExport' + '.csv'); // jshint ignore:line
-                    $scope.addAlert("success", "Export downloaded.");
+                    Alert.addAlert("success", "Export downloaded.");
                     $scope.feedbackClass = ["fa-download"];
                 } else {
-                    $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
+                    Alert.addAlert("danger", "Something went wrong, please try again in a minute.");
                 }
             });
         };

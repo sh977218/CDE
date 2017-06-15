@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('AccountManagementCtrl',
-    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource', 'Alert', '$uibModal', 'OrgHelpers',
+    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource', 'AlertService', '$uibModal', 'OrgHelpers',
         function($scope, $http, $timeout, $location, AccountManagement, userResource, Alert, $modal, OrgHelpers)
 {
     $scope.admin = {};

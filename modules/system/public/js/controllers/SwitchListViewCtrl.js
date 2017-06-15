@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('SwitchListViewCtrl',
-    ['$scope', '$location', '$window', '$timeout', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
-        function ($scope, $location, $window, $timeout, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService) {
+    ['$scope', '$location', '$window', '$timeout', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService', 'AlertService',
+        function ($scope, $location, $window, $timeout, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService, Alert) {
 
 
         $scope.setViewTypes = function (module) {
@@ -74,7 +74,7 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
 
             });
             if ($scope.eltsToCompare.length !== 2) {
-                $scope.addAlert("danger", "You may only compare 2 elements side by side.");
+                Alert.addAlert("danger", "You may only compare 2 elements side by side.");
             } else {
                 $scope.listViewType = "sideBySide";
             }

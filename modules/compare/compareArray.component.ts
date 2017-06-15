@@ -13,7 +13,6 @@ let compareArrayOption = [
             let result = _.isEqual(a.title, b.title);
             if (result) {
                 if (!a || !b) {
-                    console.log('a');
                 }
                 if (!_.isEqual(a.uri, b.uri)) {
                     a.diff.push("uri");
@@ -102,7 +101,6 @@ let compareArrayOption = [
             let result = _.isEqual(a.key, b.key);
             if (result) {
                 if (!a || !b) {
-                    console.log('a');
                 }
                 if (!_.isEqual(a.value, b.value)) {
                     a.diff.push("value");
@@ -153,7 +151,6 @@ let cdeCompareArrayOption = [
             let result = _.isEqual(a.valueMeaningName, b.valueMeaningName);
             if (result) {
                 if (!a || !b) {
-                    console.log('a');
                 }
                 if (!_.isEqual(a.permissibleValue, b.permissibleValue)) {
                     a.diff.push("permissibleValue");
@@ -204,7 +201,6 @@ let formCompareArrayOption = [
                 let result = _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
                 if (result) {
                     if (!a || !b) {
-                        console.log('a');
                     }
                     if (!_.isEqual(a.label, b.label)) {
                         a.diff.push("label");
@@ -247,7 +243,6 @@ let formCompareArrayOption = [
                 let result = _.isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                 if (result) {
                     if (!a || !b) {
-                        console.log('a');
                     }
                     if (!_.isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push("instructions.value");
@@ -276,7 +271,6 @@ let formCompareArrayOption = [
                 let result = _.isEqual(a.sectionId, b.sectionId);
                 if (result) {
                     if (!a || !b) {
-                        console.log('a');
                     }
                     if (!_.isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push("instructions.value");
@@ -309,7 +303,7 @@ let formCompareArrayOption = [
             {label: 'repeat', property: 'repeat'},
             {label: 'Skip Logic', property: 'skipLogic.condition'},
             {label: 'Instruction', property: 'instructions.value'},
-            {label: 'Answer', property: 'question.answers'}
+            {label: 'Answer', property: 'question.answers', array: true}
         ],
         diff: []
     }
@@ -365,7 +359,6 @@ export class CompareArrayComponent implements OnInit {
             this.compareArrayOption = compareArrayOption.concat(formCompareArrayOption);
         }
         this.compareService.doCompareArray(this.newer, this.older, this.compareArrayOption);
-        console.log('a');
     }
 
     fixFormElement(f) {

@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Http } from "@angular/http";
 import { BoardService } from "./board.service";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-list-sort",
@@ -14,7 +15,10 @@ export class ListSortComponent {
 
     pinModal: any;
 
-    constructor(private boardService: BoardService, private http: Http, @Inject("Alert") private alert) {}
+    constructor(private boardService: BoardService,
+                private http: Http,
+                private alert: AlertService
+    ) {}
 
     moveUp(id) {
         this.movePin("/board/pin/move/up", id);

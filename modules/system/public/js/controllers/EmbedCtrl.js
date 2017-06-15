@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('EmbedCtrl', ["$scope", "OrgHelpers", "$http", "Alert",
+angular.module('systemModule').controller('EmbedCtrl', ["$scope", "OrgHelpers", "$http", "AlertService",
     function($scope, OrgHelpers, $http, Alert) {
 
     var defaultCommon = {

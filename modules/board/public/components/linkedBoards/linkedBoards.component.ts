@@ -1,6 +1,7 @@
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-linked-boards",
@@ -16,9 +17,8 @@ export class LinkedBoardsComponent {
     boards: any[];
 
     constructor(private http: Http,
-                @Inject("Alert") private alert,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
+                private alert: AlertService,
+                public modalService: NgbModal) {
     };
 
     openLinkedBoardsModal() {

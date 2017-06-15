@@ -14,20 +14,19 @@ module.exports = {
         element(by.id("passwd")).clear();
         element(by.id("passwd")).sendKeys(password);
         element(by.id("login_button")).click();
+        expect(element(by.id("username_link")).getText()).toContain(usernameStr);
     },
 
     mustBeLoggedInAs: function (username, password) {
-        // findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        let loginLink = element(by.id("login_link"));
-        if (loginLink) {
-            this.loginAs(username, password);
-        } else {
-            // if (!isUsernameMatch(username)) {
-            //     logout();
-            //     loginAs(username, password);
-            // }
-        }
+        this.loginAs(username, password);
+    },
 
+    textPresent: function (text) {
+        expect(element(by.css("body")).getText()).toContain(text);
+    },
+
+    closeAlert: function () {
+        element(by.css("button.close")).click();
     }
 
 };

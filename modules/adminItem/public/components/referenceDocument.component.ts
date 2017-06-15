@@ -1,7 +1,7 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { Select2OptionData } from "ng2-select2";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-admin-item-reference-document",
@@ -14,15 +14,14 @@ export class ReferenceDocumentComponent {
     public newReferenceDocument: any = {};
     public modalRef: NgbModalRef;
 
-    constructor(@Inject("Alert") private alert,
+    constructor(private alert: AlertService,
                 @Inject("isAllowedModel") public isAllowedModel,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
+                public modalService: NgbModal) {
     }
 
     openNewReferenceDocumentModal() {
         this.modalRef = this.modalService.open(this.newReferenceDocumentContent, {size: "lg"});
-        this.modalRef.result.then(result => {
+        this.modalRef.result.then(() => {
             this.newReferenceDocument = {};
         }, () => {
         });
@@ -53,12 +52,5 @@ export class ReferenceDocumentComponent {
             });
         }
     }
-
-    saveReferenceDocument() {
-        this.elt.$save(newElt => {
-            this.elt = newElt;
-            this.alert.addAlert("success", "Saved");
-        });
-    };
 
 }

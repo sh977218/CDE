@@ -1,7 +1,6 @@
 {
   "port": 3001,
   "logBufferSize": 2,
-  "userAlertTime": 6000,
   "publicUrl": "http://localhost:3001",
   "debugEnabled": true,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.5.4-windows/bin/kibana.bat"],

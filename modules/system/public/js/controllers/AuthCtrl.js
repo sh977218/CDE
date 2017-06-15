@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('AuthCtrl',
-    ['$scope', 'Auth', '$http', 'LoginRedirect', '$location', 'Alert', 'userResource',
-    function($scope, Auth, $http, LoginRedirect, $location, Alert, userResource)
+    ['$scope', 'Auth', '$http', 'LoginRedirect', '$location', 'AlertService',
+    function($scope, Auth, $http, LoginRedirect, $location, Alert)
 {
 
     $scope.getCsrf = function () {

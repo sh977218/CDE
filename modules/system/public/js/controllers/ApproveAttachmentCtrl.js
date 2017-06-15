@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$http', 'Alert',
+angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$http', 'AlertService',
     function($scope, $http, Alert) {
 
     $scope.approveAttachment = function(msg) {
