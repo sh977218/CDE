@@ -4,7 +4,7 @@ import * as formShared from "../../../form/shared/formShared";
 angular.module("printModule", ['systemModule', 'cdeModule', 'formModule'])
 
 .controller('PrintCtrl',
-        ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'Alert',
+        ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'AlertService',
 function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
     function fetchWholeForm(form, callback) {
         var maxDepth = 8;

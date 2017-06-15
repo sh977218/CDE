@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from "@angular/core";
 import { Http } from "@angular/http";
 import { BoardService } from "./board.service";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-board-pin-accordion",
@@ -14,7 +15,7 @@ export class PinBoardAccordionComponent {
 
     constructor(private http: Http,
                 private boardService: BoardService,
-                @Inject("Alert") private alert,
+                private alert: AlertService,
                 @Inject("userResource") public userService) {}
 
     unpin(pin) {

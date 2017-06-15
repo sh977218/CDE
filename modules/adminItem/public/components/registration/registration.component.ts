@@ -3,6 +3,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-boots
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-registration",
@@ -22,7 +23,7 @@ export class RegistrationComponent implements OnInit {
 
     constructor (private http: Http,
                  private parserFormatter: NgbDateParserFormatter,
-                 @Inject("Alert") private alert,
+                 private alert: AlertService,
                  @Inject("isAllowedModel") public isAllowedModel,
                  @Inject("userResource") private userService,
                  public modalService: NgbModal

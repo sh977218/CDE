@@ -18,6 +18,8 @@ import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsag
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
+import { AlertComponent } from "./components/alert/alert.component";
+import { AlertService } from "./components/alert/alert.service";
 
 @NgModule({
     imports: [
@@ -31,6 +33,7 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         WidgetModule,
     ],
     declarations: [
+        AlertComponent,
         CdeAccordionListDirective,
         DailyUsageComponent,
         FormAccordionListDirective,
@@ -45,6 +48,7 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         UsersMgtComponent,
     ],
     entryComponents: [
+        AlertComponent,
         DailyUsageComponent,
         HomeComponent,
         ListManagementComponent,
@@ -52,10 +56,12 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
-        UsersMgtComponent
+        UsersMgtComponent,
     ],
     exports: [],
-    providers: [],
+    providers: [
+        AlertService,
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

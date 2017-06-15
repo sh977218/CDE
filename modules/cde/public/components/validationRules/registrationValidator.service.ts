@@ -1,8 +1,9 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
+import { OrgHelperService } from "../../../../core/public/orgHelper.service";
 
 @Injectable()
 export class RegistrationValidatorService {
-    constructor (@Inject("OrgHelpers") private orgHelpers) {}
+    constructor (public orgHelpers: OrgHelperService) {}
 
     evalCde(cde, orgName, status, cdeOrgRules) {
         let orgRules = cdeOrgRules[orgName];

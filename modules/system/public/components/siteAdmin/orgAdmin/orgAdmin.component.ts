@@ -4,6 +4,7 @@ import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
 
 import { Observable } from "rxjs/Rx";
+import { AlertService } from "../../alert/alert.service";
 
 @Component({
     selector: "cde-org-admin",
@@ -17,14 +18,15 @@ export class OrgAdminComponent implements OnInit {
 
     constructor(
         private http: Http,
-        @Inject("Alert") private Alert,
+        private Alert: AlertService,
         @Inject("userResource") private userService,
         @Inject("isAllowedModel") public isAllowedModel
     ) {
     }
 
     searchTypeahead = (text$: Observable<string>) =>
-        text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 || !this.isAllowedModel.hasRole("OrgAuthority") ? [] :
+        text$.debounceTime(300).distinctUntilChanged()
+            .switchMap(term => term.length < 3 || !this.isAllowedModel.hasRole("OrgAuthority") ? [] :
             this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
                 .catch(() => {
                     //noinspection TypeScriptUnresolvedFunction
@@ -65,7 +67,7 @@ export class OrgAdminComponent implements OnInit {
                 if (this.userService.user._id === userId) {
                     location.assign("/");
                 }
-            }, () => this.Alert.alert("An error occured."));
+            }, () => this.Alert.addAlert("danger", "An error occured."));
         }
     }
 

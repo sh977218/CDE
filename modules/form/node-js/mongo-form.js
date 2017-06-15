@@ -61,9 +61,6 @@ exports.findForms = function (request, callback) {
 };
 
 exports.update = function (elt, user, callback, special) {
-    if (elt.tinyId === '7yDEGJBrYl') {
-        console.log("a");
-    }
     if (elt.toObject) elt = elt.toObject();
     return Form.findOne({_id: elt._id}).exec(function (err, form) {
         delete elt._id;

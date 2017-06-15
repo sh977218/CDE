@@ -1,5 +1,5 @@
 angular.module('cdeModule').controller('BoardExportCtrl',
-    ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams)
+    ['$scope', '$http', '$routeParams', 'AlertService', function($scope, $http, $routeParams, Alert)
 {
 
     $http.get("/board/" + $routeParams.boardId + "/0/500").then(function onSuccess(response) {
@@ -16,14 +16,14 @@ angular.module('cdeModule').controller('BoardExportCtrl',
                 }
             }
             if ($scope.gridCdes.length === 500) {
-                $scope.addAlert("info", "limit of 500 documents returned");
+                Alert.addAlert("info", "limit of 500 documents returned");
             }
         }
     }).catch(function onError(response) {
         if (response.status === 404)
-            $scope.addAlert("danger", "Board not found");
+            Alert.addAlert("danger", "Board not found");
         if (response.status === 403)
-            $scope.addAlert("danger", "Board too large");
+            Alert.addAlert("danger", "Board too large");
     });
 }
 ]);
