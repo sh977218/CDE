@@ -1,16 +1,16 @@
-angular.module('systemModule').controller('SearchSettingsCtrl', ['$scope', 'SearchSettings', '$window', '$rootScope',
-    function ($scope, SearchSettings, $window, $rootScope) {
+angular.module('systemModule').controller('SearchSettingsCtrl', ['$scope', 'SearchSettings', '$window', 'AlertService',
+    function ($scope, SearchSettings, $window, Alert) {
 
         SearchSettings.getPromise().then(function (settings) {
             $scope.searchSettings = settings;
         });
         $scope.saveSettings = function () {
             SearchSettings.saveConfiguration($scope.searchSettings);
-            $scope.addAlert("success", "Settings saved!");
+            Alert.addAlert("success", "Settings saved!");
             $scope.goBack();
         };
         $scope.cancelSettings = function () {
-            $scope.addAlert("warning", "Cancelled...");
+            Alert.addAlert("warning", "Cancelled...");
             $scope.goBack();
         };
         $scope.loadDefault = function () {
@@ -18,7 +18,7 @@ angular.module('systemModule').controller('SearchSettingsCtrl', ['$scope', 'Sear
             Object.keys(defaultSettings).forEach(function (key) {
                 $scope.searchSettings[key] = defaultSettings[key];
             });
-            $scope.addAlert("info", "Default settings loaded. Press Save to persist them.");
+            Alert.addAlert("info", "Default settings loaded. Press Save to persist them.");
         };
         $scope.goBack = function () {
             $window.history.back();

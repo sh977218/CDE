@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('ClassificationManagementCtrl',
-    ['$scope', '$http', '$uibModal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log', 'Alert',
+    ['$scope', '$http', '$uibModal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log', 'AlertService',
         function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings, $log, Alert)
 {
 
@@ -36,7 +36,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
             , categories: elts
         }, function (org) {
             $scope.org = org;
-            $scope.addAlert("success", "Classification Deleted");
+            Alert.addAlert("success", "Classification Deleted");
         });
     };
 
@@ -58,11 +58,11 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                 newClassification.orgName = $scope.orgToManage;
                 OrgClassification.resource.save(newClassification, function(response) {
                     if (response.error) {
-                        $scope.addAlert("danger", response.error.message);
+                        Alert.addAlert("danger", response.error.message);
                     }
                     else {
                         $scope.org = response;
-                        $scope.addAlert("success", "Classification Added");
+                        Alert.addAlert("success", "Classification Added");
                     }
                 });
             }
@@ -180,14 +180,14 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
             , itemType: $scope.module
         };
         var timeout = $timeout(function() {
-            $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+            Alert.addAlert("warning", "Classification task is still in progress. Please hold on.");
         }, 3000);
         $http({method: 'post', url: '/classifyEntireSearch', data: data}).then(function onSuccess(response) {
             $timeout.cancel(timeout);
-            if (response.status === 200) $scope.addAlert("success", "Elements classified.");
-            else $scope.addAlert("danger", response.data.error.message);
+            if (response.status === 200) Alert.addAlert("success", "Elements classified.");
+            else Alert.addAlert("danger", response.data.error.message);
         }).catch(function onError() {
-            $scope.addAlert("danger", "Task not performed completely!");
+            Alert.addAlert("danger", "Task not performed completely!");
             $timeout.cancel(timeout);
         });
     };

@@ -6,12 +6,12 @@ import * as async from "async";
 
 @Injectable()
 export class MergeFormService {
+
     public error: any = {
         error: "",
         ownTargetForm: false,
         ownSourceForm: false
     };
-
 
     constructor(private http: Http,
                 private mergeCdeService: MergeCdeService,

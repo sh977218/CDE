@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'ClassificationUtil',
-    function ($scope, ClassificationUtil) {
+angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'ClassificationUtil', 'AlertService',
+    function ($scope, ClassificationUtil, Alert) {
         $scope.showVersioned = false;
         $scope.showHistory = false;
         $scope.selectedObjs = {length: 0, selected: {}};
@@ -91,7 +91,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
 
         $scope.viewDiff = function () {
             if ($scope.selectedIds.length === 0) {
-                $scope.addAlert("danger", "Select two to compare.");
+                Alert.addAlert("danger", "Select two to compare.");
             } else {
                 $scope.priorCdes.forEach(function (o) {
                     if (o._id === $scope.selectedIds[0]) {

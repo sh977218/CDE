@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$uibModal',
-    function($scope, $http, Mail, $modal) {
+angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$uibModal', 'AlertService',
+    function($scope, $http, Mail, $modal, Alert) {
 
     $scope.approveComment = function(msg) {
         $http.post('/comments/approve', {
@@ -7,11 +7,11 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
             replyIndex: msg.typeCommentApproval.comment.replyIndex
         })
             .then(function onSuccess(response) {
-                $scope.addAlert("success", response.data);
+                Alert.addAlert("success", response.data);
                 $scope.archiveMessage(msg);
             })
             .catch(function onError(response) {
-                $scope.addAlert("danger", response.data);
+                Alert.addAlert("danger", response.data);
             });
     };
     
@@ -19,10 +19,10 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
         var request = {username: msg.author.name, role: "CommentAuthor"};
         $http.post('/addUserRole', request)
             .then(function onSuccess(response) {
-                $scope.addAlert("success", response.data);
+                Alert.addAlert("success", response.data);
             })
             .catch(function onError(response) {
-                $scope.addAlert("danger", response.data);
+                Alert.addAlert("danger", response.data);
             });
     };
     
@@ -40,10 +40,10 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
             commentId: msg.typeCommentApproval.comment.commentId,
             replyIndex: msg.typeCommentApproval.comment.replyIndex
         }).then(function onSuccess(response) {
-            $scope.addAlert("success", response.data);
+            Alert.addAlert("success", response.data);
             $scope.archiveMessage(msg);
         }).catch(function onError(response) {
-            $scope.addAlert("danger", response.data);
+            Alert.addAlert("danger", response.data);
         });
     };
 

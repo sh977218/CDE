@@ -1,5 +1,6 @@
 <div id="namingDiv">
     <h4>Namings</h4>
+
     <div *ngIf="elt.naming.length === 0">There are no namings.</div>
     <div *ngFor="let name of elt.naming;let i = index">
         <div class="row">
@@ -29,17 +30,19 @@
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Tags:</div>
                     <div class="col-xs-10" id="tags_{{i}}">
-                        <select2 [data]="orgNamingTags" [value]="name.currentTags" [options]="options"
-                                 [disabled]="!isAllowedModel.isAllowed(elt)" width="100%"
-                                 (valueChanged)="changedTags(name,$event)">
-                        </select2>
+                        <span *ngIf="loaded">
+                            <select2 [data]="orgNamingTags" [value]="name.currentTags" [options]="options"
+                                     [disabled]="!isAllowedModel.isAllowed(elt)" width="100%"
+                                     (valueChanged)="changedTags(name,$event)">
+                            </select2>
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
         <hr>
     </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt)" id="openNewNamingModalBtn"
+    <button *ngIf="isAllowedModel.isAllowed(elt) && onInitDone" id="openNewNamingModalBtn"
             class="btn btn-small btn-default" (click)="openNewNamingModal();">
         <i class="fa fa-plus"></i> Add Naming
     </button>

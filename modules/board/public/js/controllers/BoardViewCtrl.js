@@ -2,7 +2,7 @@ import * as exportShared from "../../../../system/shared/exportShared";
 import {saveAs} from "../../../../cde/public/assets/js/FileSaver";
 
 angular.module('cdeModule').controller('BoardViewCtrl',
-    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert', '$q',
+    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'AlertService', '$q',
         function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout, Alert, $q) {
 
             $scope.elts = [];
@@ -77,7 +77,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         $scope.deferredEltLoaded.resolve();
                     }
                 }).catch(function onError() {
-                    $scope.addAlert("danger", "Board not found");
+                    Alert.addAlert("danger", "Board not found");
                 });
             };
 
@@ -169,7 +169,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             return {
                                 addClassification: function (newClassification) {
                                     var _timeout = $timeout(function () {
-                                        $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+                                        Alert.addAlert("warning", "Classification task is still in progress. Please hold on.");
                                     }, 3000);
                                     $http({
                                         method: 'post',
@@ -180,10 +180,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                         }
                                     }).then(function onSuccess(response) {
                                         $timeout.cancel(_timeout);
-                                        if (response.status === 200) $scope.addAlert("success", "All Elements classified.");
-                                        else $scope.addAlert("danger", response.data.error.message);
+                                        if (response.status === 200) Alert.addAlert("success", "All Elements classified.");
+                                        else Alert.addAlert("danger", response.data.error.message);
                                     }).catch(function onError() {
-                                        $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
+                                        Alert.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
                                         $timeout.cancel(_timeout);
                                     });
                                     $modalInstance.close();

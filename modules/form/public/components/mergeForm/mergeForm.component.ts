@@ -1,7 +1,8 @@
-import { Component, Inject, Input, ViewChild, OnInit, SimpleChanges } from "@angular/core";
+import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MergeFormService } from "../../../../core/public/mergeForm.service";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-merge-form",
@@ -38,11 +39,10 @@ export class MergeFormComponent {
     public showProgressBar: boolean = false;
     public doneMerge: boolean = false;
 
-    constructor(@Inject("Alert") private alert,
+    constructor(private alert: AlertService,
                 public mergeFormService: MergeFormService,
                 @Inject("isAllowedModel") private isAllowedModel,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
+                public modalService: NgbModal) {
     }
 
     selectAllFormMergerFields() {

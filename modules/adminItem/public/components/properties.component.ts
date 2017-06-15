@@ -1,6 +1,8 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { OrgHelperService } from "../../../core/public/orgHelper.service";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-admin-item-properties",
@@ -14,14 +16,19 @@ export class PropertiesComponent implements OnInit {
     public newProperty: any = {};
     public modalRef: NgbModalRef;
 
-    constructor(@Inject("Alert") private alert,
+    public onInitDone: boolean;
+
+    constructor(private alert: AlertService,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("OrgHelpers") private orgHelpers,
+                public orgHelpers: OrgHelperService,
                 public modalService: NgbModal) {
     }
 
-    ngOnInit(): void {
-        this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+    ngOnInit() {
+        this.orgHelpers.orgDetails.subscribe(() => {
+            this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+            this.onInitDone = true;
+        });
     }
 
     openNewPropertyModal() {
@@ -29,7 +36,7 @@ export class PropertiesComponent implements OnInit {
             this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
         } else {
             this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-            this.modalRef.result.then(() => this.newProperty = {});
+            this.modalRef.result.then(() => this.newProperty = {}, () => {});
         }
     }
 
