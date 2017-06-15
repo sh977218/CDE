@@ -22,14 +22,9 @@
                         <ng-container *ngFor="let d of property.data">
                             <div *ngIf="r.data[d.property]">
                                 <label>{{d.label}}:</label>
-                                <ng-container *ngIf="d.url">
-                                    <a target="_blank" [href]=d.url+r.data[d.property]>
-                                        {{r.data[d.property]</a>
-                                </ng-container>
-                                <ng-container *ngIf="!d.url">
-                                    <span>{{r.data[d.property]}}</span>
-                                </ng-container>
-
+                                <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
+                                    {{r.data[d.property]</a>
+                                <span *ngIf="!d.url">{{r.data[d.property]}}</span>
                             </div>
                         </ng-container>
                     </div>
@@ -37,14 +32,9 @@
                         <ng-container *ngFor="let d of property.data">
                             <div *ngIf="r.data[d.property]">
                                 <label>{{d.label}}:</label>
-                                <ng-container *ngIf="d.url">
-                                    <a target="_blank" [href]=d.url+r.data[d.property]>
-                                        {{r.data[d.property]}}</a>
-                                </ng-container>
-                                <ng-container *ngIf="!d.url">
-                                    <span>{{r.data[d.property]}}</span>
-                                </ng-container>
-
+                                <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
+                                    {{r.data[d.property]}}</a>
+                                <span *ngIf="!d.url">{{r.data[d.property]}}</span>
                             </div>
                         </ng-container>
                     </div>
@@ -56,7 +46,9 @@
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
                                 <label>{{d.label}}:</label>
-                                <span>{{r.older[d.property]}}</span>
+                                <a *ngIf="d.url" target="_blank" [href]=d.url+r.older[d.property]>
+                                    {{r.older[d.property]}}</a>
+                                <span *ngIf="!d.url">{{r.older[d.property]}}</span>
                             </ng-container>
                         </div>
                     </div>
