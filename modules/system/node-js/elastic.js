@@ -303,14 +303,14 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must[0].dis_max.queries.push({
             function_score: {
                 boost: "2.5",
+                query: { // Boost rank if matches are on designation or definition
+                    query_string: {
+                        fields: ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
+                        analyze_wildcard: true,
+                        query: settings.searchTerm
+                    }
+                },
                 script_score: {script: script}
-            },
-            query: { // Boost rank if matches are on designation or definition
-                query_string: {
-                    fields: ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
-                    analyze_wildcard: true,
-                    query: settings.searchTerm
-                }
             }
         });
 
