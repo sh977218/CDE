@@ -1,9 +1,9 @@
+let async = require('async');
 let webdriver = require('selenium-webdriver');
 let By = webdriver.By;
-let async = require('async');
 let driver = new webdriver.Builder().forBrowser('chrome').build();
+
 let LoadFromLoincSite = require('../../loinc/Website/LOINCLoader');
-let MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
 
 let tasks = [{
     sectionName: 'Protocol Release Date',
@@ -63,7 +63,7 @@ let tasks = [{
     xpath: "//*[@id='element_STANDARDS']//table"
 }, {
     sectionName: 'General References',
-    function: parseTextContent,
+    function: parseGeneralReferences,
     xpath: "//*[@id='element_REFERENCES']"
 }, {
     sectionName: 'Mode of Administration',
@@ -87,6 +87,20 @@ function parseTextContent(obj, task, element, cb) {
     element.getText().then(function (text) {
         obj[task.sectionName] = text.trim();
         cb();
+    });
+}
+function parseGeneralReferences(obj, task, element, cb) {
+    var generalReferences = [];
+    element.findElements(By.xpath('p')).then(function (pElements) {
+        async.forEachSeries(pElements, (pElement, doneOneP) => {
+            pElement.getText().then(function (text) {
+                generalReferences.push(text.trim());
+                doneOneP();
+            });
+        }, function doneAllPs() {
+            obj[task.sectionName] = generalReferences;
+            cb();
+        });
     });
 }
 
@@ -183,10 +197,7 @@ exports.parseProtocol = function (protocol, link, cb, loadLoinc) {
                             doneOneC();
                         });
                     }, function () {
-                        new MigrationProtocolModel(protocol).save((e) => {
-                            if (e) throw e;
-                            else cb();
-                        });
+                        cb();
                     });
                 });
             });
