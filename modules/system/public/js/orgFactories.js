@@ -36,20 +36,20 @@ angular.module('OrgFactories', ['ngResource']).factory('OrgHelpers', ["$http", "
         }
         , getOrgsDetailedInfoAPI: function (cb) {
             var OrgHelpers = this;
-            // $http.get('/listOrgsDetailedInfo').then(function onSuccess(response) {
-            //     // Transforms response to object literal notation
-            //     response.data.forEach(function (org) {
-            //         if (org) {
-            //             if (!org.propertyKeys) org.propertyKeys = [];
-            //             if (!org.nameTags) org.nameTags = [];
-            //             OrgHelpers.orgsDetailedInfo[org.name] = org;
-            //         }
-            //     });
-            //     OrgHelpers.deferred.resolve();
-            //     if (cb) cb();
-            // }, function onError() {
-            //     console.log("Cannot get org detailed info.");
-            // });
+            $http.get('/listOrgsDetailedInfo').then(function onSuccess(response) {
+                // Transforms response to object literal notation
+                response.data.forEach(function (org) {
+                    if (org) {
+                        if (!org.propertyKeys) org.propertyKeys = [];
+                        if (!org.nameTags) org.nameTags = [];
+                        OrgHelpers.orgsDetailedInfo[org.name] = org;
+                    }
+                });
+                OrgHelpers.deferred.resolve();
+                if (cb) cb();
+            }, function onError() {
+                console.log("Cannot get org detailed info.");
+            });
         }
         , showWorkingGroup: function(orgToHide, user) {
             var OrgHelpers = this;
