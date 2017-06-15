@@ -36,13 +36,15 @@ function mergeForm(existingForm, newForm) {
     existingForm.properties = newForm.properties.concat(existingProperties);
 
     if (!existingForm.sources) existingForm.sources = [];
-    let existingSources = existingForm.sources.filter(p => p.source && p.source !== "PhenX");
+    let existingSources = existingForm.sources.filter(p => p.sourceName && p.sourceName !== "PhenX");
     existingForm.sources = newForm.sources.concat(existingSources);
 
     let existingIds = existingForm.ids.filter(p => p.source && p.source !== "PhenX");
     existingForm.ids = newForm.ids.concat(existingIds);
 
-    existingForm.updateDate = importDate;
+    existingForm.changeNote = "Load from version 21.0";
+    existingForm.updated = importDate;
+    existingForm.imported = importDate;
 }
 
 

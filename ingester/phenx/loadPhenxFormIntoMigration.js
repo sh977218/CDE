@@ -63,14 +63,6 @@ function createReferenceDocuments(form, protocol) {
         }];
 }
 
-function createDisplayProfile(form) {
-    form.displayProfiles = [
-        {
-            name: "default",
-            displayValues: false
-        }];
-}
-
 function createProperties(form, protocol) {
     let properties = [];
     let prop1 = ['Specific Instructions', 'Protocol', 'Protocol Name From Source', 'Selection Rationale', 'Life Stage', 'Language', 'Participant', 'Personnel and Training Required', 'Equipment Needs', 'Mode of Administration', 'Derived Variables', 'Process and Review'];
@@ -78,6 +70,15 @@ function createProperties(form, protocol) {
         let value = protocol.get(p);
         if (value) {
             properties.push({key: p, value: value.trim(), source: 'PhenX'});
+        }
+    });
+
+    let prop3 = ["Keywords"];
+    _.forEach(prop3, p => {
+        let valueArray = protocol.get(p);
+        if (!_.isEmpty(valueArray)) {
+            let value = valueArray.join(",");
+            properties.push({key: p.trim(), value: value, source: "PhenX"});
         }
     });
 
@@ -97,21 +98,21 @@ function createProperties(form, protocol) {
                 _.forOwn(valueObj, value => {
                     td = td + '<td>' + value.trim() + '</td>';
                 });
-                tr = '<tr>' + td + '</tr>';
+                tr = tr + '<tr>' + td + '</tr>';
             });
             let tbody = '<tr>' + tr + '</tr>';
             let table = "<table class='table table-striped'>" + thead + tbody + "</table>";
             properties.push({key: p.trim(), value: table, valueFormat: "html", source: "PhenX"});
         }
     });
-
     form.properties = properties;
 }
 
 
 function createClassification(form, protocol) {
+    protocol.get('classification').pop();
     let classificationArray = protocol.get('classification');
-    let uniqueClassifications = _.uniq(classificationArray.splice(-1, 1));
+    let uniqueClassifications = _.uniq(classificationArray);
     let classification = [{stewardOrg: {name: 'PhenX'}, elements: []}];
     let elements = classification[0].elements;
     _.forEach(uniqueClassifications, c => {
@@ -131,10 +132,10 @@ function createForm(protocol) {
         created: importDate,
         imported: importDate,
         stewardOrg: {name: 'PhenX'},
-        registrationState: {registrationStatus: "Qualified"}
+        changeNote: "Load from version 21.0",
+        registrationState: {registrationStatus: "Candidate"}
     };
     createNaming(form, protocol);
-    createDisplayProfile(form);
     createSources(form, protocol);
     createIds(form, protocol);
     createReferenceDocuments(form, protocol);
