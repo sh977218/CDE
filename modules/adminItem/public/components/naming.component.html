@@ -42,7 +42,7 @@
         </div>
         <hr>
     </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt)" id="openNewNamingModalBtn"
+    <button *ngIf="isAllowedModel.isAllowed(elt) && onInitDone" id="openNewNamingModalBtn"
             class="btn btn-small btn-default" (click)="openNewNamingModal();">
         <i class="fa fa-plus"></i> Add Naming
     </button>

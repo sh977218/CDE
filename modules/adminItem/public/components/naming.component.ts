@@ -18,6 +18,8 @@ export class NamingComponent implements OnInit {
 
     loaded: boolean;
 
+    public onInitDone: boolean;
+
     //noinspection TypeScriptUnresolvedVariable
     public options: Select2Options = {
         multiple: true,
@@ -51,6 +53,7 @@ export class NamingComponent implements OnInit {
                 if (!this.orgNamingTags.find((elt) => nt === elt.text)) {
                     this.orgNamingTags.push({"id": nt, "text": nt});
                 }
+                this.onInitDone = true;
             });
             this.loaded = true;
         });
