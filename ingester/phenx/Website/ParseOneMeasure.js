@@ -15,12 +15,27 @@ function parsingIntroduction(driver, measure, done) {
     });
 }
 function parsingKeywords(driver, measure, done) {
-    let instructionXpath = "//p[./b[normalize-space(text())='Keywords']]";
-    driver.findElement(By.xpath(instructionXpath)).getText().then(function (keywoardsText) {
-        let keyWords = keywoardsText.replace(/keywords:/ig, "").trim();
-        measure.keywords = keyWords.split(",");
-        measure.keywords.forEach(k => k.trim());
-        done();
+    let keywordsXpath1 = "//p[./b[normalize-space(text())='Keywords']]";
+    driver.findElement(By.xpath(keywordsXpath1)).getText().then(function (keywoardsText1) {
+        let keyWords1 = keywoardsText1.replace(/keywords:/ig, "").trim();
+        if (_.isEmpty(keyWords1)) {
+            let keywordsXpath2 = "//p[./b[normalize-space(text())='Keywords']]/following-sibling::p[1]";
+            driver.findElement(By.xpath(keywordsXpath2)).getText().then(function (keywoardsText2) {
+                let keyWords2 = keywoardsText2.trim();
+                if (_.isEmpty(keyWords2)) {
+                    measure.keywords = [];
+                    done();
+                } else {
+                    measure.keywords = keyWords2.split(",");
+                    measure.keywords.forEach(k => k.trim());
+                    done();
+                }
+            });
+        } else {
+            measure.keywords = keyWords1.split(",");
+            measure.keywords.forEach(k => k.trim());
+            done();
+        }
     });
 }
 

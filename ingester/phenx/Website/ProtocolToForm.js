@@ -246,7 +246,7 @@ function createProperties(form, protocol) {
                 return v.trim();
             });
             let value = valueArray.join(",");
-            properties.push({key: p.trim(), value: value, source: "PhenX"});
+            properties.push({key: p, value: value, source: "PhenX"});
         }
     });
 
