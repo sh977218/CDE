@@ -94,6 +94,7 @@
         </h3>
 
         <uib-tabset ng-if="elt" active="currentTab">
+
             <uib-tab id="general_tab" index="'general'" select="setCurrentTab('general')">
                 <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
                     General Details
@@ -103,7 +104,7 @@
                 </div>
             </uib-tab>
 
-            <uib-tab id="description_tab" index="'description'" select="setCurrentTab('naming')">
+            <uib-tab id="description_tab" index="'description'" select="setCurrentTab('description')">
                 <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
                     Form Description
                 </uib-tab-heading>
@@ -177,13 +178,15 @@
                 </div>
             </uib-tab>
 
-            <uib-tab ng-repeat="(tabName, tab) in tabs" ng-if="tab.if?tab.if():true"
-                     id="{{tabName}}_tab" select="tab.select(tabName)" index="tabName">
+            <uib-tab id="attachments_tab" index="'history'" select="setCurrentTab('history')">
                 <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
-                    {{tab.heading}}
+                    History
                 </uib-tab-heading>
-                <div ng-repeat="incl in tab.includes" ng-if="currentTab == tabName" ng-include="incl"/>
+                <div ng-if="currentTab === 'history'">
+                    <cde-admin-item-history [elt]="elt"></cde-admin-item-history>
+                </div>
             </uib-tab>
+
         </uib-tabset>
     </div>
     <div ng-if="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"

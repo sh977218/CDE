@@ -44,16 +44,6 @@ angular.module('formModule').controller
         $scope.currentTab = thisTab;
     };
 
-    $scope.tabs = {
-        history: {
-            heading: "History",
-            includes: ['/system/public/html/history.html'],
-            select: function (thisTab) {
-                $scope.setCurrentTab(thisTab);
-            }
-        }
-    };
-
     $scope.setToAddCdeMode = function () {
         $scope.addMode = $scope.addMode === 'cde' ? undefined : 'cde';
     };
@@ -165,12 +155,6 @@ angular.module('formModule').controller
                 areDerivationRulesSatisfied();
                 //setDefaultValues();
                 $scope.deferredEltLoaded.resolve();
-                if (route.tab) {
-                    $scope.tabs.more.select();
-                    $timeout(function () {
-                        $scope.tabs[route.tab].active = true;
-                    }, 0);
-                }
                 $scope.formElements = [];
                 $scope.formElement = wholeForm;
                 $scope.$broadcast('eltReloaded');

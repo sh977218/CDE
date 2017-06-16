@@ -1,8 +1,9 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { OrgHelperService } from "../../../core/public/orgHelper.service";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
+
+import "rxjs/add/operator/map";
 
 @Component({
     selector: "cde-admin-item-properties",
