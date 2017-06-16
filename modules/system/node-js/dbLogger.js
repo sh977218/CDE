@@ -52,6 +52,7 @@ exports.storeQuery = function (settings, callback) {
         searchTerm: settings.searchTerm ? settings.searchTerm : ""
         , date: new Date()
         , regStatuses: settings.selectedStatuses
+        , datatypes: settings.selectedDatatypes
         , selectedElements1: settings.selectedElements.slice(0)
         , selectedElements2: settings.selectedElementsAlt.slice(0)
     };

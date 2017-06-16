@@ -321,6 +321,7 @@ exports.createStoredQueryIndexJson = {
                 , "selectedElements1": {"type": "string", "index": "not_analyzed"}
                 , "selectedElements2": {"type": "string", "index": "not_analyzed"}
                 , "regStatuses": {"type": "string", "index": "not_analyzed"}
+                , "datatypes": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel0": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel1": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel2": {"type": "string", "index": "not_analyzed"}

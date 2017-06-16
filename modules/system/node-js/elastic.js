@@ -245,7 +245,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
 
         // Filter by selected Datatypes
-        let filterDatatypeTerms = settings.selectedDatatypes.map(datatype => {
+        let filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
             return {"term": {"valueDomain.datatype": datatype}};
         });
 
