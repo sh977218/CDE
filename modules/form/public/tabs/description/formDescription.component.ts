@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { Http, Response } from "@angular/http";
+import { Http } from "@angular/http";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 

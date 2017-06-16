@@ -15,7 +15,6 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() elt: CdeForm;
     @Input() node: TreeNode;
     @Input() inScoreCdes: any;
-    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("updateCdeVersionTmpl") updateCdeVersionTmpl: NgbModalModule;
 
@@ -52,7 +51,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
-        this.stageElt.emit();
+        this.elt.unsaved = true;
     }
 
     openUpdateCdeVersion(question) {

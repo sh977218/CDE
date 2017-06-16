@@ -18,7 +18,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() inScoreCdes: any;
     @Input() node: TreeNode;
-    @Input() preId: string;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
