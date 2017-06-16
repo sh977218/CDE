@@ -87,7 +87,7 @@ export class FormDescriptionComponent implements OnInit {
 
     @ViewChild("descToolbox") descToolbox: ElementRef;
 
-    @HostListener('window:scroll', ['$event']) doSomething() {
+    @HostListener('window:scroll', ['$event']) doIt() {
         this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
     }
 
