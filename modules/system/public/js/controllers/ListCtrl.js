@@ -2,9 +2,9 @@ import * as regStatusShared from "../../../../system/shared/regStatusShared";
 
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'Alert', 'AutoCompleteResource', '$location', '$route', '$controller', 'ElasticBoard',
+        'AutoCompleteResource', '$location', '$route', '$controller', 'ElasticBoard', 'AlertService',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  Alert, AutoCompleteResource, $location, $route, $controller, ElasticBoard)
+                  AutoCompleteResource, $location, $route, $controller, ElasticBoard, alert)
 
 {
 
@@ -244,7 +244,7 @@ angular.module('systemModule').controller('ListCtrl',
             //$window.scrollTo(0, 0);
             if (err) {
                 $scope.accordionListStyle = "";
-                Alert.addAlert("danger", "There was a problem with your query");
+                alert.addAlert("danger", "There was a problem with your query");
                 $scope[type + 's'] = [];
                 return;
             }
@@ -468,10 +468,10 @@ angular.module('systemModule').controller('ListCtrl',
                 };
                 data.query.resultPerPage = window.maxPin;
                 $http.post('/pinEntireSearchToBoard', data).then(function onSuccess() {
-                    Alert.addAlert("success", "All elements pinned.");
+                    alert.addAlert("success", "All elements pinned.");
                     ElasticBoard.loadMyBoards(filter);
                 }).catch(function onError() {
-                    Alert.addAlert("danger", "Not all elements were not pinned!");
+                    alert.addAlert("danger", "Not all elements were not pinned!");
                 });
             }, function () {
             });
