@@ -6,8 +6,8 @@ import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 
 import { FormService } from "../../form.service";
-import { FormElement, FormSection, SkipLogic } from "../../form.model";
-import { FormattedValue, Instruction } from "../../../../core/public/models.model";
+import { FormElement, SkipLogic } from "../../form.model";
+import { FormattedValue } from "../../../../core/public/models.model";
 import { SkipLogicService } from "../../skipLogic.service";
 
 @Component({
@@ -19,6 +19,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() inScoreCdes: any;
     @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
@@ -62,7 +63,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
-        this.elt.unsaved = true;
+        this.stageElt.emit();
     }
 
     getRepeatOption(section) {
@@ -112,7 +113,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     validateSkipLogic(skipLogic, previousQuestions, item) {
         if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
-            this.elt.unsaved = true;
+            this.stageElt.emit();
         else
             this.isFormValid.emit(false);
     }

@@ -20,6 +20,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() elt: CdeForm;
     @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("formDescriptionNameSelectTmpl") formDescriptionNameSelectTmpl: NgbModalModule;
     @ViewChild("formDescriptionQuestionTmpl") formDescriptionQuestionTmpl: TemplateRef<any>;
@@ -111,7 +112,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (!_.isEqual(this.answersSelected, newAnswers)) {
             this.question.question.answers = this.question.question.cde.permissibleValues.filter(a => newAnswers.indexOf(a.permissibleValue) > -1);
             this.answersSelected = this.question.question.answers.map(a => a.permissibleValue);
-            this.elt.unsaved = true;
+            this.stageElt.emit();
         }
     }
 
@@ -119,7 +120,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         let newUoms = (Array.isArray(uoms.value) ? uoms.value.filter(uom => uom !== "") : []);
         if (!_.isEqual(this.question.question.uoms, newUoms)) {
             this.question.question.uoms = newUoms;
-            this.elt.unsaved = true;
+            this.stageElt.emit();
         }
     }
 
@@ -174,7 +175,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
         this.nameSelectModalRef = this.modalService.open(this.formDescriptionNameSelectTmpl, {size: "lg"});
         this.nameSelectModalRef.result.then(result => {
-            this.elt.unsaved = true;
+            this.stageElt.emit();
         }, () => {
         });
     }
@@ -182,7 +183,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     removeNode(node) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
-        this.elt.unsaved = true;
+        this.stageElt.emit();
     }
 
     slOptionsRetrigger() {
@@ -193,7 +194,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     validateSkipLogic(skipLogic, previousQuestions, item) {
         if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
-            this.elt.unsaved = true;
+            this.stageElt.emit();
         else
             this.isFormValid.emit(false);
     }

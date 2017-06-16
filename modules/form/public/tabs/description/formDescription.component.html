@@ -53,12 +53,14 @@
                                                 [elt]="elt"
                                                 [node]="node"
                                                 [inScoreCdes]="inScoreCdes"
-                                                (isFormValid)="isFormValid.emit($event)"></cde-form-description-section>
+                                                (isFormValid)="isFormValid.emit($event)"
+                                                (stageElt)="stageElt.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
                                                 [elt]="elt"
                                                 [inScoreCdes]="inScoreCdes"
-                                                [node]="node"></cde-form-description-question>
+                                                [node]="node"
+                                                (stageElt)="stageElt.emit()"></cde-form-description-question>
                                     </div>
                                 </div>
                             </div>
@@ -68,7 +70,7 @@
                                                                       [elt]="elt"
                                                                       [node]="node"
                                                                       (isFormValid)="isFormValid.emit($event)"
-                                                                      ></cde-form-description-question-detail>
+                                                                      (stageElt)="stageElt.emit()"></cde-form-description-question-detail>
                             </div>
                         </div>
                         <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>

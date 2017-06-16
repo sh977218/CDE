@@ -87,19 +87,19 @@
     <div class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Required:</div>
         <div class="col-xs-1">
-            <input type="checkbox" title="Required" [(ngModel)]="question.question.required" (click)="elt.unsaved = true"/>
+            <input type="checkbox" title="Required" [(ngModel)]="question.question.required" (click)="stageElt.emit()"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Invisible:</div>
         <div class="col-xs-1">
-            <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible" (click)="elt.unsaved = true">
+            <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible" (click)="stageElt.emit()">
         </div>
     </div>
     <div class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Repeats:</div>
         <div class="col-sm-2 col-xs-12 mb-1">
-            <select class="form-control" title="Repeats" [(ngModel)]="question.cardinality" (change)="elt.unsaved = true">
+            <select class="form-control" title="Repeats" [(ngModel)]="question.cardinality" (change)="stageElt.emit()">
                     <option *ngFor="let item of cardinalityOptions" value="item.value" [textContent]="item.label"></option>
             </select>
         </div>
@@ -162,7 +162,7 @@
     <div *ngIf="question.question.datatype === 'Value List'" class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Multiple Selections:</div>
         <div class="col-xs-1">
-            <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect" (change)="elt.unsaved = true"/>
+            <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect" (change)="stageElt.emit()"/>
         </div>
         <div class="clear"></div>
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Answer List:</div>
@@ -176,20 +176,20 @@
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Default Answer:</div>
         <div *ngIf="question.question.datatype === 'Value List'" class="col-sm-10 col-xs-12">
             <select title="Default" class="form-control defaultAnswer"
-                    [(ngModel)]="question.question.defaultAnswer" (change)="elt.unsaved = true">
+                    [(ngModel)]="question.question.defaultAnswer" (change)="stageElt.emit()">
                 <option value=""></option>
                 <option *ngFor="let pv of question.question.answers " [value]="pv.permissibleValue"
                         [textContent]="pv?.valueMeaningName"></option>
             </select>
         </div>
         <div *ngIf="question.question.datatype !== 'Value List'" class="col-sm-10 col-xs-12 defaultAnswer">
-            <inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true" (onOk)="elt.unsaved = true"></inline-edit>
+            <inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true" (onOk)="stageElt.emit()"></inline-edit>
         </div>
     </div>
     <div *ngIf="question.question.defaultAnswer" class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Editable:</div>
         <div class="col-xs-1">
-            <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable" (click)="elt.unsaved = true"/>
+            <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable" (click)="stageElt.emit()"/>
         </div>
     </div>
 </ng-template>

@@ -111,6 +111,7 @@
                 <div ng-if="currentTab === 'description'">
                     <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
                                           (cachePut)="cachePut($event)" (isFormValid)="setIsValid($event)"
+                                          (stage-elt)="stageElt()"
                                           ></cde-form-description>
                 </div>
             </uib-tab>

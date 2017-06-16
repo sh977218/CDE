@@ -14,12 +14,12 @@
     <inline-edit *ngIf="section.elementType === 'section'"
                  class="section_title ib" style="margin-left: 5px; width: 62%"
                  [(model)]="section.label" [isAllowed]="canEdit()"
-                 (onOk)="elt.unsaved = true"></inline-edit>
+                 (onOk)="stageElt.emit()"></inline-edit>
     <span *ngIf="section.elementType === 'form'"
           class="section_title ib" style="margin-left: 5px; width: 62%">
         Embedded Form:
         <inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"
-                     [isAllowed]="canEdit()" (onOk)="elt.unsaved = true">{{section.label}}</inline-edit>
+                     [isAllowed]="canEdit()" (onOk)="stageElt.emit()">{{section.label}}</inline-edit>
     </span>
 
     <span *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="pull-right editIconDiv">
@@ -65,7 +65,7 @@
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
                     <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                            (change)="setRepeat(section);elt.unsaved = true">
+                            (change)="setRepeat(section);stageElt.emit()">
                         <option *ngFor="let item of repeatOptions" [value]="item.value"
                                 [textContent]="item.label"></option>
                     </select>
@@ -73,7 +73,7 @@
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
                     <input type="number" title="Repeat Maximum Times" class="form-control" [(ngModel)]="section.repeatNumber"
-                           (change)="setRepeat(section);elt.unsaved = true"/>
+                           (change)="setRepeat(section);stageElt.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
                     <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
@@ -126,7 +126,7 @@
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
                     <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                            (change)="setRepeat(section);elt.unsaved = true">
+                            (change)="setRepeat(section);stageElt.emit()">
                         <option *ngFor="let item of repeatOptions" [value]="item.value"
                                 [textContent]="item.label"></option>
                     </select>
@@ -134,7 +134,7 @@
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
                     <input type="number" title="Repeats Maximum Times" class="form-control" [(ngModel)]="section.repeatNumber"
-                           (change)="setRepeat(section);elt.unsaved = true"/>
+                           (change)="setRepeat(section);stageElt.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
                     <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
