@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+    Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, TemplateRef,
+    ViewChild, ViewRef
+} from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
@@ -81,6 +84,12 @@ export class FormDescriptionComponent implements OnInit {
     @ViewChild(TreeComponent) public tree: TreeComponent;
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
     @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
+
+    @ViewChild("descToolbox") descToolbox: ElementRef;
+
+    @HostListener('window:scroll', ['$event']) doSomething() {
+        this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
+    }
 
     addIndex = function (elems, elem, i) { return elems.splice(i, 0, elem); };
     toolDropTo: {index: number, parent: any};

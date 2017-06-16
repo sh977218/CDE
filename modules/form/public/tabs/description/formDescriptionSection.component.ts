@@ -28,6 +28,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     isSubForm = false;
     parent: FormElement;
     section: any;
+
     repeatOptions = [
         {label: "", value: ""},
         {label: "Set Number of Times", value: "N"},
@@ -40,7 +41,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     ngOnInit() {
         this.section = this.node.data;
         this.parent = this.node.parent.data;
-        this.section.repeatOption = this.getRepeatOption(this.section);
+        this.section.repeatOption = FormDescriptionSectionComponent.getRepeatOption(this.section);
         this.section.repeatNumber = this.getRepeatNumber(this.section);
         if (!this.section.instructions)
             this.section.instructions = new FormattedValue;
@@ -66,7 +67,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.stageElt.emit();
     }
 
-    getRepeatOption(section) {
+    static getRepeatOption(section) {
         if (!section.repeat)
             return "";
         if (section.repeat[0] === "F")
