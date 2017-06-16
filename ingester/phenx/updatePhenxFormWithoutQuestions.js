@@ -26,7 +26,15 @@ function mergeForm(existingForm, newForm) {
     let existingClassification = existingForm.classification.filter(p => p.stewardOrg.name && p.stewardOrg.name !== "PhenX");
     existingForm.classification = newForm.classification.concat(existingClassification);
 
-    let existingNaming = existingForm.naming.filter(p => p.source && p.source !== "PhenX");
+    existingForm.naming.forEach(n => {
+        if (n.tags.length === 1) {
+            if (n.tags[0].tag === "") {
+                n.tags = [];
+            }
+        }
+        if (!n.source) n.source = "LOINC";
+    });
+    let existingNaming = existingForm.naming.filter(p => !p.source || p.source !== "PhenX");
     existingForm.naming = newForm.naming.concat(existingNaming);
 
     let existingRefDoc = existingForm.referenceDocuments.filter(p => p.source && p.source !== "PhenX");
@@ -36,8 +44,11 @@ function mergeForm(existingForm, newForm) {
     existingForm.properties = newForm.properties.concat(existingProperties);
 
     if (!existingForm.sources) existingForm.sources = [];
-    let existingSources = existingForm.sources.filter(p => p.sourceName && p.sourceName !== "PhenX");
+    let existingSources = existingForm.sources.filter(p => {
+        return p.sourceName && p.sourceName !== "PhenX";
+    });
     existingForm.sources = newForm.sources.concat(existingSources);
+    existingForm.markModified("sources");
 
     let existingIds = existingForm.ids.filter(p => p.source && p.source !== "PhenX");
     existingForm.ids = newForm.ids.concat(existingIds);
@@ -120,10 +131,14 @@ function run() {
                                 let deepDiff = updateShare.compareObjects(existingForm, migrationForm);
                                 if (deepDiff.length > 0) {
                                     mergeForm(existingForm, migrationForm);
-                                    mongo_form.update(existingForm, updateShare.loaderUser, () => {
+                                    let sourcesCopy = _.cloneDeep(existingForm.get("sources"));
+                                    mongo_form.update(existingForm, updateShare.loaderUser, (e) => {
+                                        if (e) throw e;
                                         modifiedCount++;
                                         console.log("modifiedCount: " + modifiedCount);
                                         stream.resume();
+                                    }, f => {
+                                        f.sources = sourcesCopy;
                                     });
                                 } else {
                                     sameCount++;
