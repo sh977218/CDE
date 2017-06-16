@@ -2,7 +2,7 @@ let _ = require('lodash');
 
 let mongo_data = require('../../../modules/system/node-js/mongo-data');
 let classificationShare = require('../../../modules/system/shared/classificationShared');
-let updateShare = require('../updateShare');
+let updateShare = require('../../updateShare');
 
 let importDate = new Date().toJSON();
 
@@ -214,12 +214,18 @@ function createIds(form, protocol) {
 }
 
 function createReferenceDocuments(form, protocol) {
+    form.referenceDocuments = [];
     let generalReferences = protocol.get('General References');
-    if (generalReferences.trim())
-        form.referenceDocuments = [{
-            document: generalReferences,
-            source: 'PhenX'
-        }];
+    if (!_.isEmpty(generalReferences)) {
+        _.forEach(generalReferences, generalReference => {
+            let gr = generalReference.trim();
+            if (!_.isEmpty(gr))
+                form.referenceDocuments.push({
+                    document: generalReference.trim(),
+                    source: 'PhenX'
+                });
+        });
+    }
 }
 
 function createProperties(form, protocol) {
@@ -236,6 +242,9 @@ function createProperties(form, protocol) {
     _.forEach(prop3, p => {
         let valueArray = protocol.get(p);
         if (!_.isEmpty(valueArray)) {
+            valueArray = valueArray.map(v => {
+                return v.trim();
+            });
             let value = valueArray.join(",");
             properties.push({key: p.trim(), value: value, source: "PhenX"});
         }
