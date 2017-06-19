@@ -1,10 +1,10 @@
 import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
-import "rxjs/add/operator/map";
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { Subject } from "rxjs/Subject";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs/Observable";
-import { Alert } from "selenium-webdriver";
+import "rxjs/add/operator/map";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-form-term-mapping",
@@ -17,7 +17,7 @@ export class FormTermMappingComponent implements OnInit {
                 @Inject("userResource") public userService,
                 public modalService: NgbModal,
                 private http: Http,
-                private Alert: Alert
+                private alert: AlertService
     ) {}
 
     @Input() elt: any;
@@ -26,8 +26,9 @@ export class FormTermMappingComponent implements OnInit {
 
     private searchTerms = new Subject<string>();
     meshTerm: string;
-
     descriptor: {name: string, id: string};
+    flatMeshSimpleTrees: any[] = [];
+    mapping: any = {meshDescriptors: []};
 
     openAddTermMap () {
         this.modalService.open(this.newTermMap, {size: "lg"}).result.then(() => {}, () => {});
@@ -51,28 +52,41 @@ export class FormTermMappingComponent implements OnInit {
                     this.descriptor = null;
                 }
             });
+
+        this.reloadMeshTerms();
+    }
+
+    reloadMeshTerms () {
+        this.mapping.eltId = this.elt.tinyId;
+        this.http.get('/meshByEltId/' + this.elt.tinyId).map(r => r.json()).subscribe(response => {
+            if (response.eltId) this.mapping = response;
+            if (response.flatTrees) {
+                response.flatTrees.forEach(t => {
+                    if (this.flatMeshSimpleTrees.indexOf(t.split(";").pop()) === -1)
+                        this.flatMeshSimpleTrees.push(t.split(";").pop());
+                });
+            }
+        }, function () {});
     }
 
     addMeshDescriptor () {
-        $scope.mapping.meshDescriptors.push($scope.descriptorID);
-        $scope.descToName[$scope.descriptorID] = $scope.descriptorName;
-        delete $scope.descriptorID;
-        delete $scope.descriptorName;
+        this.mapping.meshDescriptors.push(this.descriptor.id);
+        this.descriptor = null;
 
-        $http.post("/meshClassification", $scope.mapping).then(function onSuccess(response) {
-            Alert.addAlert("success", "Saved");
-            $scope.mapping = response.data;
-        }).catch(function onError() {
-            Alert.addAlert("danger", "There was an issue saving this record.");
+        this.http.post("/meshClassification", this.mapping).subscribe(response => {
+            this.alert.addAlert("success", "Saved");
+            this.mapping = response;
+            this.reloadMeshTerms();
+        }, () => {
+            this.alert.addAlert("danger", "There was an issue saving this record.");
         });
     };
 
     isDescriptorAlreadyMapped (desc) {
-        // return this.elt.termAnnotations.findIndex(e => e.code === desc) > -1;
+        return this.mapping.meshDescriptors.findIndex(e => e === desc) > -1;
     };
 
     loadDescriptor  () {
         this.searchTerms.next(this.meshTerm);
     };
-
 }

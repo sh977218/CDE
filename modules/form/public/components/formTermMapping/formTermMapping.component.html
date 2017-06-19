@@ -1,22 +1,15 @@
 <fieldset class="cdeFieldset" id="formTermMapping">
-    <legend>Term Mapping:
+    <legend>Mesh Descriptors:
         <button  title="Add" role="link" id="addTermMap"
                  *ngIf="isAllowedModel.isAllowed(elt) && !elt.unsaved" class="btn btn-default"
                  (click)="openAddTermMap()"><span class="fa fa-edit"> Add</span>
         </button>
     </legend>
-    <div *ngFor="let annot of elt.termAnnotations">
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel">Code:</div>
-            <div class="col-sm-7" id="mapTermCode">{{annot.code}}</div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel">Name:</div>
-            <div class="col-sm-7" id="mapTermName">{{annot.codeName}}</div>
-        </div>
-    </div>
-</fieldset>
+    <ul>
+        <li *ngFor="let t of flatMeshSimpleTrees">{{t}} <br></li>
+    </ul>
 
+</fieldset>
 
 <ng-template #newTermMap id="newTermMapModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
