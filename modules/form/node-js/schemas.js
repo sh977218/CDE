@@ -63,8 +63,8 @@ var formElementTreeRoot = {
     },
     _id: false
 };
-var currentLevel = formElementTreeRoot.formElements;
-for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
+let currentLevel = formElementTreeRoot.formElements;
+for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
     currentLevel.push({
         elementType: {type: String, enum: ['section', 'question', 'form']}
         , label: String
@@ -87,7 +87,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
 }
 currentLevel.push(new mongoose.Schema({}, {strict: false}));
 
-var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
+let formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
 exports.formJson = {
     elementType: {type: String, default: 'form'}
@@ -146,11 +146,6 @@ exports.formJson = {
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
-    , termAnnotations: [{
-        terminology: {type: String, enum: ['MeSH'], default: 'Mesh'}
-        , code: {type: String}
-        , flatTrees: [String]
-    }]
 };
 
 exports.formSchema = new Schema(exports.formJson);

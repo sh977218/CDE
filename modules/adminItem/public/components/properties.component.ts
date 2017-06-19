@@ -1,5 +1,5 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { OrgHelperService } from "../../../core/public/orgHelper.service";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
@@ -7,7 +7,7 @@ import "rxjs/add/operator/map";
 
 @Component({
     selector: "cde-admin-item-properties",
-    providers: [NgbActiveModal],
+    providers: [],
     templateUrl: "./properties.component.html"
 })
 export class PropertiesComponent implements OnInit {
