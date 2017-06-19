@@ -29,6 +29,7 @@ export class FormTermMappingComponent implements OnInit {
     descriptor: {name: string, id: string};
     flatMeshSimpleTrees: any[] = [];
     mapping: any = {meshDescriptors: []};
+    descToName: any = {};
 
     openAddTermMap () {
         this.modalService.open(this.newTermMap, {size: "lg"}).result.then(() => {}, () => {});
@@ -58,6 +59,7 @@ export class FormTermMappingComponent implements OnInit {
 
     reloadMeshTerms () {
         this.mapping.eltId = this.elt.tinyId;
+        this.flatMeshSimpleTrees = [];
         this.http.get('/meshByEltId/' + this.elt.tinyId).map(r => r.json()).subscribe(response => {
             if (response.eltId) this.mapping = response;
             if (response.flatTrees) {
@@ -66,7 +68,16 @@ export class FormTermMappingComponent implements OnInit {
                         this.flatMeshSimpleTrees.push(t.split(";").pop());
                 });
             }
+            this.mapping.meshDescriptors.forEach(desc => {
+                this.http.get((window as any).meshUrl + "/api/record/ui/" + desc).map(r => r.json()).subscribe(res => {
+                    this.descToName[desc] = res.DescriptorName.String.t;
+                });
+            });
+
         }, function () {});
+
+
+
     }
 
     addMeshDescriptor () {
@@ -81,6 +92,17 @@ export class FormTermMappingComponent implements OnInit {
             this.alert.addAlert("danger", "There was an issue saving this record.");
         });
     };
+
+    removeMeshDescriptor (i) {
+        this.mapping.meshDescriptors.splice(i, 1);
+        this.http.post("/meshClassification", this.mapping).subscribe(response => {
+            this.alert.addAlert("success", "Saved");
+            this.mapping = response;
+            this.reloadMeshTerms();
+        }, () => {
+            this.alert.addAlert("danger", "There was an issue saving this record.");
+        });
+    }
 
     isDescriptorAlreadyMapped (desc) {
         return this.mapping.meshDescriptors.findIndex(e => e === desc) > -1;
