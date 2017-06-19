@@ -29,6 +29,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , includeAggregations: true
                 , meshTree: queryParams.meshTree
                 , selectedStatuses: regStatuses
+                , selectedDatatypes: queryParams.datatypes
                 , visibleStatuses: SearchSettings.getUserDefaultStatuses()
                 , searchToken: this.searchToken
             };
