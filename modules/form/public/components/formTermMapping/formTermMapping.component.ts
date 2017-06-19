@@ -45,7 +45,7 @@ export class FormTermMappingComponent implements OnInit {
                 : Observable.of<string[]>([])
             )
             .subscribe((res) => {
-                if (res.hits.hits.length === 1) {
+                if (res && res.hits && res.hits.hits.length === 1) {
                     let desc = res.hits.hits[0]._source;
                     this.descriptor = {name: desc.DescriptorName.String.t, id: desc.DescriptorUI.t};
                 }

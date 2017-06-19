@@ -3,7 +3,7 @@ const jasmineReporters = require('jasmine-reporters');
 
 exports.config = {
     framework: 'jasmine',
-    specs: ['./protractor/tests/**/*.spec.js'],
+    specs: ['./protractor/tests/**/*.spec.js', '../modules/**/*.spec.ts'],
     capabilities: {
         browserName: 'chrome'
     },
@@ -19,9 +19,7 @@ exports.config = {
         jasmine.getEnv().addReporter(
             new Jasmine2HtmlReporter({savePath: './test/report'})
         );
-        // setTimeout(() => {
-        //     browser.driver.manage().window().maximize();
-        //     browser.get("");
-        // });
+
+        browser.driver.manage().window().maximize();
     }
 };
