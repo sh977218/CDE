@@ -63,8 +63,32 @@ function run() {
     async.series([
         function (cb) {
             FormModel.find({
+                'stewardOrg.name': 'NLM',
+                'classification.stewardOrg.name': 'PhenX',
+                "registrationState.registrationStatus": {$not: /Retired/},
+                archived: false
+            }).exec(function (err, wrongStewardOrgForms) {
+                if (err) throw err;
+                else {
+                    console.log("There are " + wrongStewardOrgForms.length + " wrong steward org phenx form need to be fixed.");
+                    async.forEachSeries(wrongStewardOrgForms, (wrongStewardOrgForm, doneOneForm) => {
+                        wrongStewardOrgForm.stewardOrg.name = "PhenX";
+                        wrongStewardOrgForm.markModified("stewardOrg");
+                        wrongStewardOrgForm.save(() => {
+                            doneOneForm();
+                        });
+                    }, function doneAllForms() {
+                        console.log("Finished fixing wrong steward org phenx forms.");
+                        cb();
+                    });
+                }
+            });
+        },
+        function (cb) {
+            FormModel.find({
                 'stewardOrg.name': 'PhenX',
                 classification: {$size: 0},
+                "registrationState.registrationStatus": {$not: /Retired/},
                 archived: false
             }).exec(function (err, unclassifiedPhenxForms) {
                 if (err) throw err;
@@ -132,6 +156,7 @@ function run() {
                                 if (deepDiff.length > 0) {
                                     mergeForm(existingForm, migrationForm);
                                     let sourcesCopy = _.cloneDeep(existingForm.get("sources"));
+                                    existingForm = existingForm.toObject();
                                     mongo_form.update(existingForm, updateShare.loaderUser, (e) => {
                                         if (e) throw e;
                                         modifiedCount++;
@@ -141,9 +166,16 @@ function run() {
                                         f.sources = sourcesCopy;
                                     });
                                 } else {
-                                    sameCount++;
-                                    console.log("sameCount: " + sameCount);
-                                    stream.resume();
+                                    existingForm.imported = importDate;
+                                    existingForm.updated = importDate;
+                                    existingForm.save(e => {
+                                        if (e) throw e;
+                                        else {
+                                            sameCount++;
+                                            console.log("sameCount: " + sameCount);
+                                            stream.resume();
+                                        }
+                                    });
                                 }
                             }
                         });
