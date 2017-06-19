@@ -131,6 +131,22 @@ exports.elasticsearch = function (user, settings, cb) {
             }
         });
     }
+    if (settings.includeAggregations)
+        query.aggregations.datatype = {
+            "filter": settings.filterDatatype,
+            "aggs": {
+                "datatype": {
+                    "terms": {
+                        "field": "valueDomain.datatype",
+                        "size": 500,
+                        "order": {
+                            "_term": "desc"
+                        }
+                    }
+                }
+            }
+        };
+
     sharedElastic.elasticsearch(query, 'cde', function (err, result) {
         if (result && result.cdes && result.cdes.length > 0) {
             dbLogger.storeQuery(settings);
