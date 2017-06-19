@@ -22,7 +22,6 @@ let newCount = 0;
 let phenxOrg;
 
 function mergeForm(existingForm, newForm) {
-
     let existingClassification = existingForm.classification.filter(p => p.stewardOrg.name && p.stewardOrg.name !== "PhenX");
     existingForm.classification = newForm.classification.concat(existingClassification);
 
@@ -54,8 +53,6 @@ function mergeForm(existingForm, newForm) {
     existingForm.ids = newForm.ids.concat(existingIds);
 
     existingForm.changeNote = "Load from version 21.0";
-    existingForm.updated = importDate;
-    existingForm.imported = importDate;
 }
 
 
@@ -152,6 +149,18 @@ function run() {
                                 _.forEach(existingForm.displayProfiles, dp => {
                                     dp.displayValues = false;
                                 });
+                                existingForm.imported = importDate;
+                                existingForm.updated = importDate;
+                                existingForm.ids.forEach(o => {
+                                    if (o.source === "PhenX") {
+                                        o.version = "21.0";
+                                    }
+                                });
+                                _.forEach(existingForm.naming, n => {
+                                    if (n.tags && n.tags.length === 1 && n.tags[0].tag === "") {
+                                        n.tags = [];
+                                    }
+                                });
                                 let deepDiff = updateShare.compareObjects(existingForm, migrationForm);
                                 if (deepDiff.length > 0) {
                                     mergeForm(existingForm, migrationForm);
@@ -166,8 +175,6 @@ function run() {
                                         f.sources = sourcesCopy;
                                     });
                                 } else {
-                                    existingForm.imported = importDate;
-                                    existingForm.updated = importDate;
                                     existingForm.save(e => {
                                         if (e) throw e;
                                         else {
@@ -194,7 +201,6 @@ function run() {
         function (cb) {
             FormModel.find({
                 'imported': {$lt: lastEightHours},
-                'sources.sourceName': "PhenX",
                 'classification.stewardOrg.name': "PhenX",
                 'archived': false
             }).exec(function (e, fs) {
