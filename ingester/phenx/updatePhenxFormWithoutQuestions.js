@@ -70,7 +70,7 @@ function run() {
                 if (err) throw err;
                 else {
                     console.log("There are " + unclassifiedPhenxForms.length + " unclassified phenx form need to be retired.");
-                    async.forEach(unclassifiedPhenxForms, (unclassifiedPhenxForm, doneOneForm) => {
+                    async.forEachSeries(unclassifiedPhenxForms, (unclassifiedPhenxForm, doneOneForm) => {
                         unclassifiedPhenxForm.registrationState.registrationStatus = "Retired";
                         unclassifiedPhenxForm.markModified("registrationState");
                         unclassifiedPhenxForm.save(() => {
