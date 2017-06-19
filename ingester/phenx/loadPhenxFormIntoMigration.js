@@ -21,19 +21,17 @@ function run() {
             });
         },
         function (cb) {
-            MigrationOrgModel.findOne({name: 'PhenX'}).exec(function (err, org) {
+            MigrationOrgModel.remove({name: 'PhenX'}).exec(function (err) {
                 if (err) throw err;
-                else if (org) {
+                else cb();
+            });
+        },
+        function (cb) {
+            new MigrationOrgModel({name: "PhenX", classification: []}).save(function (e, org) {
+                if (e) throw e;
+                else {
                     phenxOrg = org;
                     cb();
-                } else {
-                    new MigrationOrgModel({name: "PhenX", classification: []}).save(function (e, o) {
-                        if (o) throw o;
-                        else {
-                            phenxOrg = org;
-                            cb();
-                        }
-                    });
                 }
             });
         },
