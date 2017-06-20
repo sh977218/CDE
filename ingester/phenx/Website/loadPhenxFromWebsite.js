@@ -1,19 +1,20 @@
-var webdriver = require('selenium-webdriver');
-var async = require('async');
-var baseUrl = require('../../createMigrationConnection').PhenxURL;
-var MigrationMeasureModel = require('../../createMigrationConnection').MigrationMeasureModel;
-var MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
-var ParseOneMeasure = require('./ParseOneMeasure');
+let async = require('async');
+let webdriver = require('selenium-webdriver');
 
-var measureCount = 0;
+let baseUrl = require('../../createMigrationConnection').PhenxURL;
+let MigrationMeasureModel = require('../../createMigrationConnection').MigrationMeasureModel;
+let MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
+let ParseOneMeasure = require('./ParseOneMeasure');
+
+let measureCount = 0;
 
 function doLoadPhenxMeasure(done, loadLoinc) {
-    var driver = new webdriver.Builder().forBrowser('chrome').build();
+    let driver = new webdriver.Builder().forBrowser('chrome').build();
     driver.get(baseUrl);
-    var measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
+    let measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
     driver.findElements(webdriver.By.xpath(measureXpath)).then(function (measureLinks) {
         async.forEachSeries(measureLinks, function (measureLink, doneOneMeasureLink) {
-            var measure = {protocols: []};
+            let measure = {protocols: []};
             async.series([
                 function parsingMeasureBrowseId(doneParsingMeasureBrowserId) {
                     measureLink.findElement(webdriver.By.css('span')).getText().then(function (browserIdText) {
@@ -38,10 +39,10 @@ function doLoadPhenxMeasure(done, loadLoinc) {
                         console.log('measureCount: ' + measureCount);
                         doneOneMeasureLink();
                     }
-                })
+                });
             });
-        })
-    })
+        });
+    });
 }
 
 exports.run = function (loadLoinc, cb) {
@@ -67,7 +68,7 @@ exports.run = function (loadLoinc, cb) {
             console.log('Finished grab all measures from PhenX website');
             if (cb) cb();
             else process.exit(1);
-        }])
+        }]);
 };
 
 exports.run(false);
