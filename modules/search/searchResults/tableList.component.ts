@@ -1,10 +1,10 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
     selector: 'cde-table-list',
     templateUrl: './tableList.component.html',
 })
-export class TableListComponent {
+export class TableListComponent implements OnChanges {
     @Input() elts: any[];
     @Input() module: string;
 
@@ -16,15 +16,27 @@ export class TableListComponent {
         searchSettings.getPromise().then(settings => {
             if (settings && settings.tableViewFields) {
                 this.tableSetup = settings.tableViewFields;
-                if (this.module === 'cde') {
-                    this.renderCde();
-                } else if (this.module === 'form') {
-                    this.renderForm();
-                } else if (this.module === 'board') {
-                    this.renderBoard();
-                }
+                this.render();
             }
         });
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.elts)
+            this.render();
+    }
+
+    render() {
+        if (!this.tableSetup)
+            return;
+
+        if (this.module === 'cde') {
+            this.renderCde();
+        } else if (this.module === 'form') {
+            this.renderForm();
+        } else if (this.module === 'board') {
+            this.renderBoard();
+        }
     }
 
     renderBoard() {}
@@ -80,16 +92,17 @@ export class TableListComponent {
             if (this.tableSetup.permissibleValues)
                 row.push({
                     css: 'permissibleValues multiline-ellipsis',
-                    html: TableListComponent.previewList(e.valueDomain.permissibleValues, pv => pv.permissibleValue)
+                    html: '<div>' + e.valueDomain.datatype + (e.valueDomain.datatype === 'Value List' ? ':' : '')
+                    + '</div>' + TableListComponent.previewList(e.valueDomain.permissibleValues, pv => pv.permissibleValue)
                 });
             if (this.tableSetup.nbOfPVs)
                 row.push({
-                    css: 'permissibleValues multiline-ellipsis',
+                    css: 'nbOfPVs',
                     html: e.valueDomain.nbOfPVs
                 });
             if (this.tableSetup.uom)
                 row.push({
-                    css: 'permissibleValues multiline-ellipsis',
+                    css: 'uom',
                     html: e.valueDomain.uom
                 });
             if (this.tableSetup.stewardOrg)
@@ -229,7 +242,7 @@ export class TableListComponent {
     }
 
     static readonly maxLines = 5;
-    static readonly lineLength = 50;
+    static readonly lineLength = 62;
 
     static lineClip(line): string {
         return line.length > this.lineLength
