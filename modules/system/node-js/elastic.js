@@ -217,74 +217,118 @@ exports.completionSuggest = function (term, cb) {
 };
 
 exports.buildElasticSearchQuery = function (user, settings) {
-    this.escapeRegExp = function (str) {
+    function escapeRegExp(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-    };
-
-    let queryStuff = {size: settings.resultPerPage ? settings.resultPerPage : 20};
-    let searchQ = settings.searchTerm;
-
-    // Do not retrieve items marked as forks.
-    queryStuff.query =
-    {
-        "bool": {
-            "must_not": [{
-                "term": {
-                    "isFork": "true"
-                }
-            }],
-            "must": []
-        }
-    };
-
-
-    // last resort, we sort.
-    let sort = true;
+    }
 
     // Increase ranking score for high registration status
     let script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
-    queryStuff.query.bool.must.push({
-        "dis_max": {
-            "queries": [
-                {"function_score": {"script_score": {"script": script}}}
-            ]
+
+    // Search for the query term given by user
+    let hasSearchTerm = settings.searchTerm !== undefined && settings.searchTerm !== "";
+
+    // last resort, we sort.
+    let sort = !hasSearchTerm;
+
+    (function setFilters() {
+        // Filter by selected Statuses
+        let filterRegStatusTerms = settings.selectedStatuses.map(regStatus => {
+            return {"term": {"registrationState.registrationStatus": regStatus}};
+        });
+
+        // Filter by Steward
+        if (user) {
+            let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
+            filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
+                return {"term": {"stewardOrg": o}};
+            }));
         }
-    });
 
-    if (searchQ !== undefined && searchQ !== "") {
-        sort = false;
+        // Filter by selected Datatypes
+        let filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
+            return {"term": {"valueDomain.datatype": datatype}};
+        });
 
-        // Search for the query term given by user
-        queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
-        {
-            "query_string": {
-                "analyze_wildcard": true,
-                "query": searchQ
+        settings.filter = {
+            bool: {
+                filter: [
+                    {bool: {should: filterDatatypeTerms}},
+                    {bool: {should: filterRegStatusTerms}}
+                ]
             }
         };
-        queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
-        // Boost rank if matches are on designation or definition
-        queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
-        {
-            "query_string": {
-                "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
-                "analyze_wildcard": true,
-                "query": searchQ
-            }
+        settings.filterDatatype = {
+            bool: {should: filterRegStatusTerms}
         };
+    })();
+
+
+    let queryStuff = {
+        post_filter: settings.filter,
+        query: {
+            // Do not retrieve items marked as forks.
+            bool: {
+                must_not: [{
+                    term: {
+                        isFork: "true"
+                    }
+                }],
+                must: [
+                    {
+                        dis_max: {
+                            queries: [
+                                {
+                                    function_score: {
+                                        query: hasSearchTerm
+                                            ? {
+                                                query_string: {
+                                                    analyze_wildcard: true,
+                                                    query: settings.searchTerm
+                                                }
+                                            }
+                                            : undefined,
+                                        script_score: {script: script}
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        size: settings.resultPerPage ? settings.resultPerPage : 20
+    };
+
+    if (hasSearchTerm) {
+        queryStuff.query.bool.must[0].dis_max.queries.push({
+            function_score: {
+                boost: "2.5",
+                query: { // Boost rank if matches are on designation or definition
+                    query_string: {
+                        fields: ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
+                        analyze_wildcard: true,
+                        query: settings.searchTerm
+                    }
+                },
+                script_score: {script: script}
+            }
+        });
+
         // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
-        queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2.5";
-        if (searchQ.indexOf("\"") < 0) {
-            queryStuff.query.bool.must[0].dis_max.queries.push({function_score: {script_score: {script: script}}});
-            queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
-            {
-                "query_string": {
-                    "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
-                    "analyze_wildcard": true,
-                    "query": "\"" + searchQ + "\"~4"
-                }
-            };
+        if (settings.searchTerm.indexOf("\"") < 0) {
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
+            queryStuff.query.bool.must[0].dis_max.queries.push({
+                function_score: {
+                    query: {
+                        "query_string": {
+                            "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
+                            "analyze_wildcard": true,
+                            "query": "\"" + settings.searchTerm + "\"~4"
+                        }
+                    },
+                    script_score: {script: script}
+                }
+            });
         }
     }
 
@@ -300,56 +344,33 @@ exports.buildElasticSearchQuery = function (user, settings) {
     if (settings.meshTree) {
         sort = false;
         // boost for those with fewer mesh trees
-        let flatMeshScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatMeshTrees'].values.size() + 1) ";
         queryStuff.query.bool.must.push({
-            "dis_max": {
-                "queries": [
-                    {"function_score": {"script_score": {"script": flatMeshScript}}}
-                ]
+            dis_max: {
+                queries: [{
+                    function_score: {
+                        script_score: {
+                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatMeshTrees'].values.size() + 1)"
+                        }
+                    }
+                }]
             }
         });
-        queryStuff.query.bool.must.push({term: {"flatMeshTrees": settings.meshTree}});
+        queryStuff.query.bool.must.push({term: {flatMeshTrees: settings.meshTree}});
     }
 
-    // Filter by selected Statuses
-    let buildFilter = function (selectedStatuses) {
-        let regStatusFilter = {"bool": {"should": []}};
-        selectedStatuses.forEach(function(regStatus) {
-            regStatusFilter.bool.should.push({"term": {"registrationState.registrationStatus": regStatus}});
-        });
-
-        if (user) {
-            let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
-            curatorOf.forEach(function (o) {
-                regStatusFilter.bool.should.push({"term": {"stewardOrg": o}});
-            });
-        }
-
-        if (regStatusFilter.bool.should.length === 0)
-            regStatusFilter = undefined;
-        else if (regStatusFilter.bool.should.length === 1)
-            regStatusFilter = regStatusFilter.bool.should[0];
-
-        return regStatusFilter;
-    };
-    settings.filter = buildFilter(settings.selectedStatuses);
-
-    if (settings.filter === undefined)
-        delete settings.filter;
-    else
-        queryStuff.post_filter = settings.filter;
-
-    let queryBuilder = this;
     let flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
     if (flatSelection !== "") {
         sort = false;
         // boost for those elts classified fewer times
-        let flatClassifScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1) ";
         queryStuff.query.bool.must.push({
-            "dis_max": {
-                "queries": [
-                    {"function_score": {"script_score": {"script": flatClassifScript}}}
-                ]
+            dis_max: {
+                queries: [{
+                    function_score: {
+                        script_score: {
+                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1)"
+                        }
+                    }
+                }]
             }
         });
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ";" + flatSelection}});
@@ -360,32 +381,23 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
-    if (!settings.visibleStatuses || settings.visibleStatuses.length === 0) {
+    if (!settings.visibleStatuses || settings.visibleStatuses.length === 0)
         settings.visibleStatuses = regStatusShared.orderedList;
-    }
 
     // show statuses that either you selected, or it's your org and it's not retired.
-    let regStatusAggFilter = {"bool": {"should": []}};
-
-    if (settings.visibleStatuses.length) {
-        let regStates = {"bool": {"should": []}};
-        settings.visibleStatuses.forEach(function(regStatus) {
-            regStates.bool.should.push({"term": {"registrationState.registrationStatus": regStatus}});
-        });
-        regStatusAggFilter.bool.should.push(regStates);
-    }
-    if (usersvc.myOrgs(user).length > 0) {
-        let stewards = {
+    let regStatusAggFilter = {"bool": {"should": [
+        {
+            "bool": {
+                "should": settings.visibleStatuses.map(regStatus => {return {"term": {"registrationState.registrationStatus": regStatus}};})
+            }
+        },
+        {
             "bool": {
                 "must_not": {term: {"registrationState.registrationStatus": "Retired"}},
-                "should": []
+                "should": usersvc.myOrgs(user).map(org => {return {"term": {"stewardOrg.name": org}};})
             }
-        };
-        usersvc.myOrgs(user).forEach(function(myOrg) {
-            stewards.bool.should.push({"term": {"stewardOrg.name": myOrg}});
-        });
-        regStatusAggFilter.bool.should.push(stewards);
-    }
+        }
+    ]}};
 
     if (sort) {
         //noinspection JSAnnotator
@@ -436,7 +448,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
             if (selectionString === "") {
                 flatClassifications.terms.include = settings[orgVariableName] + ";[^;]+";
             } else {
-                flatClassifications.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
+                flatClassifications.terms.include = settings[orgVariableName] + ';' + escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
                 "filter": settings.filter,
@@ -465,7 +477,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         };
 
         if (settings.meshTree && settings.meshTree.length > 0) {
-            queryStuff.aggregations.meshTrees.aggs.meshTrees.terms.include = queryBuilder.escapeRegExp(settings.meshTree) + ";[^;]+";
+            queryStuff.aggregations.meshTrees.aggs.meshTrees.terms.include = escapeRegExp(settings.meshTree) + ";[^;]+";
         }
 
         queryStuff.aggregations.twoLevelMesh = {

@@ -1,5 +1,6 @@
-import { Component, Inject, Input, OnInit } from "@angular/core";
+import { Component, Inject, Input } from "@angular/core";
 import "rxjs/add/operator/map";
+import { OrgHelperService } from "../../../../core/public/orgHelper.service";
 
 @Component({
     selector: "cde-de-general-details",
@@ -7,11 +8,10 @@ import "rxjs/add/operator/map";
 })
 export class DeGeneralDetailsComponent  {
 
-    constructor(@Inject("Alert") private alert,
-                @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("OrgHelpers") private orgHelpers,
-                @Inject("userResource") public userService
-               ) {
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
+                @Inject("userResource") public userService,
+                public orgHelpers: OrgHelperService
+    ) {
     }
 
     @Input() elt: any;

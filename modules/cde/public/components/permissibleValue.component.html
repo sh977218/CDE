@@ -92,9 +92,10 @@
         </div>
         <div class="col-xs-2 text-right text_label">Description:</div>
         <div class="col-xs-10">
-            <inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
-                              [isAllowed]="isAllowedModel.isAllowed(elt)"
-                              [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat"></inline-area-edit>
+            <cde-inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
+                                  [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                  [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat">
+            </cde-inline-area-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'value list'">
@@ -164,7 +165,7 @@
                         {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode].meaning}}
                     </td>
                     <td id="pvMeaningDefinition_{{i}}">
-                        <cde-inline-edit [model]="pv.valueMeaningDefinition"
+                        <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
                                          [isAllowed]="isAllowedModel.isAllowed(elt)"
                                          (modelChange)="stageElt()"></cde-inline-edit>
                     </td>
@@ -190,12 +191,12 @@
                 <button class="btn btn-small btn-default" role="button" id="openAddPermissibleValueModelBtn"
                         title="Add Permissible Value"
                         (click)="openNewPermissibleValueModal()">
-                    <i class="fa fa-plus"></i>Add Permissible Value
+                    <i class="fa fa-plus"></i> Add Permissible Value
                 </button>
                 <button class="btn btn-small btn-default" role="button" id="removeAllPermissibleValueBtn"
                         title="Remove All Values"
                         (click)="removeAllPermissibleValues()">
-                    <i class="fa fa-trash-o"></i>Remove All Values
+                    <i class="fa fa-trash-o"></i> Remove All Values
                 </button>
             </ng-container>
         </div>
@@ -277,7 +278,7 @@
             <div class="form-group">
                 <label for="valueMeaningNameInput">Code Name</label>
                 <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningName"
-                       id="valueMeaningNameInput" name="valueMeaningNameInput" (ngModelChange)="lookupUmls()"
+                       id="valueMeaningNameInput" name="valueMeaningNameInput" (keyup)="lookupUmls()"
                        Placeholder="Code Name" (ngModelChange)="lookupUmls()"/>
             </div>
             <div class="form-group">

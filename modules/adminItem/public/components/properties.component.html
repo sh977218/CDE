@@ -24,16 +24,17 @@
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Value:</div>
                     <div class="col-xs-10 ng-binding" id="value_{{i}}">
-                        <inline-area-edit [(model)]="prop.value" (onOk)="saveProperty()"
-                                          [(defFormat)]="prop.valueFormat"
-                                          [isAllowed]="isAllowedModel.isAllowed(elt)"></inline-area-edit>
+                        <cde-inline-area-edit [(model)]="prop.value" (modelChange)="saveProperty()"
+                                              [(defFormat)]="prop.valueFormat"
+                                              [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-area-edit>
                     </div>
                 </div>
             </div>
         </div>
         <hr>
     </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-small btn-default" id="openNewPropertyModalBtn"
+    <button *ngIf="isAllowedModel.isAllowed(elt) && this.onInitDone"
+            class="btn btn-small btn-default" id="openNewPropertyModalBtn"
             (click)="openNewPropertyModal();">
         <i class="fa fa-plus"></i> Add Property
     </button>

@@ -1,8 +1,20 @@
 import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
-
+import * as _ from "lodash";
 import * as deValidator from "../../../cde/shared/deValidator";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
+
+import { Subject } from "rxjs/Subject";
+import { Observable } from "rxjs/Observable";
+
+// Observable class extensions
+import 'rxjs/add/observable/of';
+// Observable operators
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+
 
 @Component({
     selector: "cde-permissible-value",
@@ -11,8 +23,9 @@ import * as deValidator from "../../../cde/shared/deValidator";
 })
 export class PermissibleValueComponent implements OnInit {
     @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
-    public modalRef: NgbModalRef;
     @Input() public elt: any;
+
+    public modalRef: NgbModalRef;
     vsacValueSet = [];
     editMode;
     vsac = {};
@@ -23,8 +36,11 @@ export class PermissibleValueComponent implements OnInit {
     dataTypeValueListOptions = ["Text", "Date", "Number"];
 
     public containsKnownSystem: boolean = false;
+
     umlsTerms = [];
-    newPermissibleValue = {};
+    private searchTerms = new Subject<string>();
+
+    newPermissibleValue: any = {};
     SOURCES = {
         "NCI Thesaurus": {source: "NCI", termType: "PT", codes: {}, selected: false, disabled: false},
         "UMLS": {source: "UMLS", termType: "PT", codes: {}, selected: false, disabled: false},
@@ -41,11 +57,13 @@ export class PermissibleValueComponent implements OnInit {
     constructor(public modalService: NgbModal,
                 public http: Http,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("Alert") private alert) {
+                private alert: AlertService) {
     }
 
     ngOnInit(): void {
-        this.fixDatatype();
+        let isDatatypeDefined = _.indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
+        if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
+        deValidator.fixDatatype(this.elt);
         this.elt.allValid = true;
         this.loadValueSet();
         this.initSrcOptions();
@@ -54,42 +72,35 @@ export class PermissibleValueComponent implements OnInit {
             this.elt.dataElementConcept.conceptualDomain = {
                 vsac: {}
             };
-    }
 
-    initSrcOptions() {
-        this.containsKnownSystem = this.elt.valueDomain.permissibleValues.filter(pv => {
-                return this.SOURCES[pv.codeSystemName];
-            }).length > 0;
-    }
-
-    fixDatatype() {
-        if (!this.elt.valueDomain.datatype) this.elt.valueDomain.datatype = "";
-        if (this.elt.valueDomain.datatype === "Value List" && !this.elt.valueDomain.datatypeValueList)
-            this.elt.valueDomain.datatypeValueList = {};
-        if (this.elt.valueDomain.datatype === "Number" && !this.elt.valueDomain.datatypeNumber)
-            this.elt.valueDomain.datatypeNumber = {};
-        if (this.elt.valueDomain.datatype === "Text" && !this.elt.valueDomain.datatypeText)
-            this.elt.valueDomain.datatypeText = {};
-        if (this.elt.valueDomain.datatype === "Date" && !this.elt.valueDomain.datatypeDate)
-            this.elt.valueDomain.datatypeDate = {};
-        if (this.elt.valueDomain.datatype === "Externally Defined" && !this.elt.valueDomain.datatypeExternallyDefined)
-            this.elt.valueDomain.datatypeExternallyDefined = {};
-    }
-
-
-    openNewPermissibleValueModal() {
-        this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
-        this.modalRef.result.then(() => this.newPermissibleValue = {});
-    }
-
-    lookupUmls = function () {
-        this.http.get("/searchUmls?searchTerm=" + this.newPermissibleValue.valueMeaningName).map(res => res.json())
-            .subscribe(res => {
+        this.searchTerms
+            .debounceTime(300)
+            .distinctUntilChanged()
+            .switchMap(term => term
+                ? this.http.get("/searchUmls?searchTerm=" + term).map(res => res.json())
+                : Observable.of<string[]>([])
+            )
+            .subscribe((res) => {
                 if (res.result && res.result.results)
                     this.umlsTerms = res.result.results;
                 else this.umlsTerms = [];
             });
-    };
+    }
+
+    initSrcOptions() {
+        this.containsKnownSystem = this.elt.valueDomain.permissibleValues
+                .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
+    }
+
+    openNewPermissibleValueModal() {
+        this.modalRef = this.modalService.open(this.newPermissibleValueContent, {size: "lg"});
+        this.modalRef.result.then(() => this.newPermissibleValue = {}, () => {
+        });
+    }
+
+    lookupUmls() {
+        this.searchTerms.next(this.newPermissibleValue.valueMeaningName);
+    }
 
     removePv(index) {
         this.elt.valueDomain.permissibleValues.splice(index, 1);
@@ -317,7 +328,7 @@ export class PermissibleValueComponent implements OnInit {
 
     changedDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatype = data.value;
-        this.fixDatatype();
+        deValidator.fixDatatype(this.elt);
         this.elt.unsaved = true;
     }
 

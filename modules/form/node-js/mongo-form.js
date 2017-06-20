@@ -4,7 +4,7 @@ var config = require('../../system/node-js/parseConfig')
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
     , elastic = require('./elastic')
-    ;
+;
 
 exports.type = "form";
 exports.name = "forms";
@@ -43,10 +43,9 @@ exports.count = function (condition, callback) {
 exports.priorForms = function (formId, callback) {
     Form.findById(formId).exec(function (err, form) {
         if (form !== null) {
-            return Form.find({}, "updated updatedBy changeNote version")
-                .where("_id").in(form.history).exec(function (err, forms) {
-                    callback(err, forms);
-                });
+            return Form.find({}).where("_id").in(form.history).exec(function (err, forms) {
+                callback(err, forms);
+            });
         }
     });
 };
@@ -62,9 +61,6 @@ exports.findForms = function (request, callback) {
 };
 
 exports.update = function (elt, user, callback, special) {
-    if (elt.tinyId === '7yDEGJBrYl') {
-        console.log("a");
-    }
     if (elt.toObject) elt = elt.toObject();
     return Form.findOne({_id: elt._id}).exec(function (err, form) {
         delete elt._id;
@@ -78,11 +74,9 @@ exports.update = function (elt, user, callback, special) {
         };
         elt.sources = form.sources;
         elt.comments = form.comments;
+        if (special) special(elt, form);
         var newForm = new Form(elt);
         form.archived = true;
-        if (special) {
-            special(form, form);
-        }
         if (newForm.naming.length < 1) {
             logging.errorLogger.error("Error: Cannot save form without names", {
                 origin: "cde.mongo-form.update.1",

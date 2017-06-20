@@ -7,14 +7,21 @@ import { Select2Module } from "ng2-select2";
 import { SortableModule } from "ngx-bootstrap";
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
+import { BoardModule } from "../../board/public/board.module";
+import { SearchModule } from "search";
+import { WidgetModule } from "../../widget/widget.module";
 
 import { ArrayListPipe } from "./arrayList.pipe";
+import { BoardFormSummaryListComponent } from "./components/searchResults/boardFormSummaryList.component";
+import { BoardFormSummaryListContentComponent } from "./components/searchResults/boardFormSummaryListContent.component";
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
 import { FormDescriptionComponent } from "./tabs/description/formDescription.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
 import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
 import { FormSearchDirective, QuestionSearchDirective } from "./upgrade-components";
+import { FormSummaryListComponent } from "./components/searchResults/formSummaryList.component";
+import { FormSummaryListContentComponent } from "./components/searchResults/formSummaryListContent.component";
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
@@ -35,16 +42,23 @@ import { SkipLogicService } from "./skipLogic.service";
         SortableModule.forRoot(),
         TreeModule,
         // internal
-        AdminItemModule
+        AdminItemModule,
+        BoardModule,
+        SearchModule,
+        WidgetModule,
     ],
     declarations: [
         ArrayListPipe,
+        BoardFormSummaryListComponent,
+        BoardFormSummaryListContentComponent,
         CdeSortableComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
         FormSearchDirective,
+        FormSummaryListComponent,
+        FormSummaryListContentComponent,
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
@@ -55,10 +69,16 @@ import { SkipLogicService } from "./skipLogic.service";
         QuestionSearchDirective
     ],
     entryComponents: [
+        BoardFormSummaryListComponent,
+        BoardFormSummaryListContentComponent,
         FormDescriptionComponent,
+        FormSummaryListComponent,
+        FormSummaryListContentComponent,
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
+    ],
+    exports: [
     ],
     providers: [
         FormService,

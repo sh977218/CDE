@@ -1,19 +1,46 @@
-var webdriver = require('selenium-webdriver');
-var By = webdriver.By;
-var async = require('async');
-var ParseOneProtocol = require('./ParseOneProtocol');
-var driver = new webdriver.Builder().forBrowser('chrome').build();
+let _ = require('lodash');
+let async = require('async');
+let webdriver = require('selenium-webdriver');
+let By = webdriver.By;
+let ParseOneProtocol = require('./ParseOneProtocol');
+let driver = new webdriver.Builder().forBrowser('chrome').build();
+
+let MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
 
 function parsingIntroduction(driver, measure, done) {
-    var instructionXpath = '/html/body/center/table/tbody/tr[3]/td/div/div[5]/div[1]';
+    let instructionXpath = '/html/body/center/table/tbody/tr[3]/td/div/div[5]/div[1]';
     driver.findElement(By.xpath(instructionXpath)).getText().then(function (text) {
         measure.introduction = text.trim();
         done();
     });
-};
+}
+function parsingKeywords(driver, measure, done) {
+    let keywordsXpath1 = "//p[./b[normalize-space(text())='Keywords']]";
+    driver.findElement(By.xpath(keywordsXpath1)).getText().then(function (keywoardsText1) {
+        let keyWords1 = keywoardsText1.replace(/keywords:/ig, "").trim();
+        if (_.isEmpty(keyWords1)) {
+            let keywordsXpath2 = "//p[./b[normalize-space(text())='Keywords']]/following-sibling::p[1]";
+            driver.findElement(By.xpath(keywordsXpath2)).getText().then(function (keywoardsText2) {
+                let keyWords2 = keywoardsText2.trim();
+                if (_.isEmpty(keyWords2)) {
+                    measure.keywords = [];
+                    done();
+                } else {
+                    measure.keywords = keyWords2.split(",");
+                    measure.keywords.forEach(k => k.trim());
+                    done();
+                }
+            });
+        } else {
+            measure.keywords = keyWords1.split(",");
+            measure.keywords.forEach(k => k.trim());
+            done();
+        }
+    });
+}
 
 function parsingClassification(driver, measure, done) {
-    var classificationXpath = "//p[@class='back'][1]/a";
+    let classificationXpath = "//p[@class='back'][1]/a";
     driver.findElements(By.xpath(classificationXpath)).then(function (classificationArr) {
         measure.classification = [];
         async.eachSeries(classificationArr, function (c, doneOneClassification) {
@@ -22,21 +49,22 @@ function parsingClassification(driver, measure, done) {
                 doneOneClassification();
             });
         }, function doneAllClassification() {
+            measure.measureName = _.last(measure.classification);
             done();
         });
     });
-};
+}
 
-function parsingProtocolLinks(driver, measure, done) {
-    var protocolLinksXpath = "//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]";
+function parsingProtocolLinks(driver, measure, done, loadLoinc) {
+    let protocolLinksXpath = "//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]";
     driver.findElements(By.xpath(protocolLinksXpath)).then(function (protocolLinks) {
-        var protocols = [];
+        let protocols = [];
         async.eachSeries(protocolLinks, function (protocolLink, doneOneProtocolLink) {
-            var protocol = {classification: []};
+            let protocol = {classification: []};
             async.series([
                 function (cb) {
                     protocolLink.findElement(webdriver.By.css('span')).getText().then(function (browserIdText) {
-                        var protocolId = browserIdText.replace('#', '').trim();
+                        let protocolId = browserIdText.replace('#', '').trim();
                         protocol.protocolId = protocolId;
                         protocols.push({protocolId: protocolId});
                         cb();
@@ -46,30 +74,38 @@ function parsingProtocolLinks(driver, measure, done) {
                     protocolLink.getAttribute('href').then(function (linkText) {
                         ParseOneProtocol.parseProtocol(protocol, linkText.trim(), function () {
                             cb();
-                        });
+                        }, loadLoinc);
                     });
                 }
             ], function () {
-                doneOneProtocolLink();
-            })
+                protocol.Keywords = measure.keywords;
+                new MigrationProtocolModel(protocol).save((e) => {
+                    if (e) throw e;
+                    else doneOneProtocolLink();
+
+                });
+            });
         }, function doneAllProtocolLinks() {
             measure.protocols = protocols;
             done();
         });
-    })
-};
+    });
+}
 
-exports.parseOneMeasure = function (measure, cb) {
+exports.parseOneMeasure = function (measure, cb, loadLoinc) {
     driver.get(measure.href);
     async.series([
         function (doneIntroduction) {
             parsingIntroduction(driver, measure, doneIntroduction);
         },
+        function (doneKeywords) {
+            parsingKeywords(driver, measure, doneKeywords);
+        },
         function (doneClassification) {
-            parsingClassification(driver, measure, doneClassification)
+            parsingClassification(driver, measure, doneClassification);
         },
         function (doneProtocol) {
-            parsingProtocolLinks(driver, measure, doneProtocol);
+            parsingProtocolLinks(driver, measure, doneProtocol, loadLoinc);
         }
     ], function doneOneMeasure() {
         cb();

@@ -1,6 +1,7 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModalRef, NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-admin-item-ids",
@@ -16,20 +17,16 @@ export class IdentifiersComponent {
     public modalRef: NgbModalRef;
 
     public newIdentifier: any = {};
-    constructor(@Inject("Alert") private alert,
+    constructor(private alert: AlertService,
                 @Inject("isAllowedModel") public isAllowedModel,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
+                public modalService: NgbModal
+               ) {
     }
 
     openNewIdentifierModal() {
         this.modalRef = this.modalService.open(this.newIdentifierContent, {size: "lg"});
-        this.modalRef.result.then(result => {
-            this.newIdentifier = {};
-        }, () => {
-        });
+        this.modalRef.result.then(() => this.newIdentifier = {}, () => {});
     }
-
 
     addNewIdentifier() {
         this.elt.ids.push(this.newIdentifier);

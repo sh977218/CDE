@@ -1,5 +1,5 @@
 angular.module('formModule').controller('MyBoardsCtrl',
-    ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard', '$timeout', 'Alert',
+    ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard', '$timeout', 'AlertService',
     function ($scope, $modal, $http, SearchSettings, ElasticBoard, $timeout, Alert) {
 
         if (!$scope.filter) {

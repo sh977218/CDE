@@ -1,5 +1,5 @@
 angular.module('formModule').controller('ShareBoardCtrl',
-    ['$scope', '$location', '$http', '$uibModalInstance', 'board', 'userResource', 'Alert',
+    ['$scope', '$location', '$http', '$uibModalInstance', 'board', 'userResource', 'AlertService',
         function ($scope, $location, $http, $modalInstance, board, userResource, Alert) {
             $scope.url = $location.absUrl();
             $scope.searchString = '';

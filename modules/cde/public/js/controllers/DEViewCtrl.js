@@ -3,10 +3,10 @@ import * as deValidator from "../../../../cde/shared/deValidator";
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal',
+        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal', 'AlertService',
         function ($scope, $routeParams, $modal, $window, $http, $timeout, DataElement, DataElementTinyId,
                   isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                  $q, QuickBoard, $log, userResource, PinModal)
+                  $q, QuickBoard, $log, userResource, PinModal, Alert)
 {
 
     $scope.module = 'cde';
@@ -110,15 +110,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
         },
         history: {
             heading: "History",
-            includes: ['/cde/public/html/cdeHistory.html'],
+            includes: ['/system/public/html/history.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                if ($scope.elt.history && $scope.elt.history.length > 0) {
-                    $http.get('/priorcdes/' + $scope.elt._id).then(function onSuccess(response) {
-                        $scope.priorCdes = response.data.reverse();
-                        $scope.priorCdes.splice(0, 0, $scope.elt);
-                    });
-                }
             }
         },
         derivationRules: {
@@ -198,7 +192,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }, function (err) {
             $log.error("Unable to retrieve element.");
             $log.error(err);
-            $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
+            Alert.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
     };
 
@@ -216,10 +210,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
         };
         $http.post('/mail/messages/new', message)
             .then(function onSuccess() {
-                $scope.addAlert("success", "Notification sent.");
+                Alert.addAlert("success", "Notification sent.");
             })
             .catch(function onError() {
-                $scope.addAlert("danger", "Unable to notify user. ");
+                Alert.addAlert("danger", "Unable to notify user. ");
             });
     };
 
@@ -235,9 +229,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.elt._changeNote = $scope.elt.changeNote;
             delete $scope.elt.changeNote;
             $scope.$broadcast("elementReloaded");
-            $scope.addAlert("success", "Saved.");
+            Alert.addAlert("success", "Saved.");
         }, function() {
-            $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
+            Alert.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
     };
 
@@ -339,14 +333,14 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     }
                     $scope.getPVTypeheadVsacNameList();
                 } else {
-                    $scope.addAlert("Error: No data retrieved from VSAC.");
+                    Alert.addAlert("Error: No data retrieved from VSAC.");
                 }
             }).catch(function onError(response) {
                 if (response.status === 404) {
-                    $scope.addAlert("warning", "Invalid VSAC OID");
+                    Alert.addAlert("warning", "Invalid VSAC OID");
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";
                 } else {
-                    $scope.addAlert("danger", "Error quering VSAC");
+                    Alert.addAlert("danger", "Error quering VSAC");
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";
                 }
             });

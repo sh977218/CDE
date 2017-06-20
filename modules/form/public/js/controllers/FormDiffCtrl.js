@@ -1,5 +1,5 @@
-angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'PriorForms', 'ClassificationUtil',
-    function ($scope, $http, PriorForms, ClassificationUtil) {
+angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'PriorForms', 'ClassificationUtil', 'AlertService',
+    function ($scope, $http, PriorForms, ClassificationUtil, Alert) {
         $scope.showVersioned = false;
         $scope.showHistory = false;
         $scope.selectedObjs = {length: 0, selected: {}};
@@ -146,7 +146,7 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
 
         $scope.viewDiff = function () {
             if ($scope.selectedIds.length !== 2 || !$scope.selectedIds[0] || !$scope.selectedIds[1]) {
-                $scope.addAlert("danger", "Select two to compare.");
+                Alert.addAlert("danger", "Select two to compare.");
             } else {
                 $scope.leftCopy = $scope.rightCopy = {};
                 $http.get('/formById/' + $scope.selectedIds[0]).then(function (result) {

@@ -1,0 +1,27 @@
+<div>
+    <div *ngIf="!editMode" class="wordwrap">
+        <i  title="Edit" role="link" *ngIf="isAllowed" class="fa fa-edit" (click)="edit()"></i>
+        <span *ngIf="localFormat !== 'html'">
+            <cde-text-truncate [text]="value" [threshold]="500"></cde-text-truncate>
+        </span>
+        <span *ngIf="localFormat === 'html'">
+            <cde-text-truncate [threshold]="500" [text]="value" [textType]="'html'"></cde-text-truncate>
+        </span>
+    </div>
+    <div *ngIf="editMode">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-xs" (click)="setHtml(false)">Plain Text</button>
+            <button type="button" class="btn btn-default btn-xs" (click)="setHtml(true)">Rich Text</button>
+        </div>
+
+        <textarea *ngIf="localFormat != 'html'" [(ngModel)]="value" class="form-control"></textarea>
+
+
+        <ckeditor *ngIf="localFormat === 'html'" [config]="{extraPlugins: 'divarea'}"
+                [(ngModel)]="value">
+        </ckeditor>
+
+        <button class="fa fa-check" (click)="save()">Confirm</button>
+        <button class="fa fa-times" (click)="discard()">Cancel</button>
+    </div>
+</div>

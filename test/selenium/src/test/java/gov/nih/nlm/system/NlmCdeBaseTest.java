@@ -100,27 +100,6 @@ public class NlmCdeBaseTest {
 
     ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
 
-
-    private void countElasticElements(Method m) {
-        int totalCdes = 11700;
-        int totalForms = 815;
-
-        int nbOfCde = 0, nbOfForms = 0, waitTimeCdes = 0, waitTimeForms = 0;
-        for (int i = 0; i < 15 && nbOfCde < totalCdes; i++) {
-            hangon(waitTimeCdes);
-            nbOfCde = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
-            System.out.println("nb of cdes: " + nbOfCde);
-            waitTimeCdes = 10;
-        }
-        for (int j = 0; j < 5 && nbOfForms < totalForms; j++) {
-            hangon(waitTimeForms);
-            nbOfForms = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
-            System.out.println("nb of forms: " + nbOfForms);
-            waitTimeForms = 10;
-        }
-        System.out.println("Starting " + m.getName() + " in Fork: " + (int) (Math.random() * 1000));
-    }
-
     private void setDriver(String b) {
         if (b == null) b = browser;
 
@@ -186,7 +165,6 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     public void setUp(Method m) {
         filePerms = new HashSet();
-        countElasticElements(m);
 
         if (m.getAnnotation(SelectBrowser.class) != null) {
             setDriver("internet explorer");
@@ -821,16 +799,9 @@ public class NlmCdeBaseTest {
     }
 
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]"));
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));
         clickElement(By.id("historyCompareBtn"));
-        textPresent("Changes");
-    }
-
-    protected void checkInHistory(String field, String oldValue, String newValue) {
-        textPresent(field, By.cssSelector("#modificationsList"));
-        textPresent(oldValue, By.cssSelector("#modificationsList"));
-        textPresent(newValue, By.cssSelector("#modificationsList"));
     }
 
     protected void openCdeAudit(String cdeName) {
@@ -904,41 +875,6 @@ public class NlmCdeBaseTest {
         textNotPresent("Confirm");
     }
 
-    protected void switchDefinitionFormatByIndex(int index, String newDefinition, boolean html) {
-        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
-        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
-        String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
-        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-check')]";
-        clickElement(By.xpath(definitionEditIconXpath));
-        if (html) {
-            clickElement(By.xpath(richTextBtnXpath));
-            textPresent("Characters:");
-        }
-        if (newDefinition != null)
-            findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
-        hangon(2);
-        clickElement(By.xpath(definitionConfirmBtnXpath));
-        textNotPresent("Confirm");
-    }
-
-    protected void switchValueFormatByIndex(int index, String newValue, boolean html) {
-        String valueEditIconXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-edit')]";
-        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[contains(text(),'Rich Text')]";
-        String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
-        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//*[contains(@class,'fa-check')]";
-        clickElement(By.xpath(valueEditIconXpath));
-        if (html) {
-            clickElement(By.xpath(richTextBtnXpath));
-            textPresent("Characters:");
-        }
-        if (newValue != null)
-            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
-        hangon(2);
-        clickElement(By.xpath(valueConfirmBtnXpath));
-        textNotPresent("Confirm");
-    }
-
-
     protected void editTagByIndex(int index, String[] tags) {
         String tagsInputXpath = "//*[@id='tags_" + index + "']//input";
         for (String tag : tags) {
@@ -957,10 +893,9 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath(valueEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
-            textPresent("Characters:");
         }
-        if (newValue != null)
-            findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
+        if (newValue != null) findElement(By.xpath(valueTextareaXpath)).sendKeys(newValue);
+
         hangon(2);
         clickElement(By.xpath(valueConfirmBtnXpath));
         textNotPresent("Confirm");

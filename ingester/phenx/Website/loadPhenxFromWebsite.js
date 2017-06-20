@@ -1,19 +1,20 @@
-var webdriver = require('selenium-webdriver');
-var async = require('async');
-var baseUrl = require('../../createMigrationConnection').PhenxURL;
-var MigrationMeasureModel = require('../../createMigrationConnection').MigrationMeasureModel;
-var MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
-var ParseOneMeasure = require('./ParseOneMeasure');
+let async = require('async');
+let webdriver = require('selenium-webdriver');
 
-var measureCount = 0;
+let baseUrl = require('../../createMigrationConnection').PhenxURL;
+let MigrationMeasureModel = require('../../createMigrationConnection').MigrationMeasureModel;
+let MigrationProtocolModel = require('../../createMigrationConnection').MigrationProtocolModel;
+let ParseOneMeasure = require('./ParseOneMeasure');
 
-function doLoadPhenxMeasure(done) {
-    var driver = new webdriver.Builder().forBrowser('chrome').build();
+let measureCount = 0;
+
+function doLoadPhenxMeasure(done, loadLoinc) {
+    let driver = new webdriver.Builder().forBrowser('chrome').build();
     driver.get(baseUrl);
-    var measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
+    let measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
     driver.findElements(webdriver.By.xpath(measureXpath)).then(function (measureLinks) {
         async.forEachSeries(measureLinks, function (measureLink, doneOneMeasureLink) {
-            var measure = {protocols: []};
+            let measure = {protocols: []};
             async.series([
                 function parsingMeasureBrowseId(doneParsingMeasureBrowserId) {
                     measureLink.findElement(webdriver.By.css('span')).getText().then(function (browserIdText) {
@@ -28,7 +29,7 @@ function doLoadPhenxMeasure(done) {
                     });
                 },
                 function parseOneMeasure(doneParseOneMeasure) {
-                    ParseOneMeasure.parseOneMeasure(measure, doneParseOneMeasure);
+                    ParseOneMeasure.parseOneMeasure(measure, doneParseOneMeasure, loadLoinc);
                 }
             ], function () {
                 new MigrationMeasureModel(measure).save(function (e) {
@@ -38,13 +39,13 @@ function doLoadPhenxMeasure(done) {
                         console.log('measureCount: ' + measureCount);
                         doneOneMeasureLink();
                     }
-                })
+                });
             });
-        })
-    })
+        });
+    });
 }
 
-exports.run = function (cb) {
+exports.run = function (loadLoinc, cb) {
     async.series([
         function removeMeasureCollection(doneRemoveMigrationMeasure) {
             MigrationMeasureModel.remove({}, function (err) {
@@ -61,13 +62,13 @@ exports.run = function (cb) {
             });
         },
         function (doneLoadPhenxMeasure) {
-            doLoadPhenxMeasure(doneLoadPhenxMeasure);
+            doLoadPhenxMeasure(doneLoadPhenxMeasure, loadLoinc);
         },
         function () {
             console.log('Finished grab all measures from PhenX website');
             if (cb) cb();
             else process.exit(1);
-        }])
+        }]);
 };
 
-exports.run();
+exports.run(false);

@@ -290,127 +290,16 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
-    .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "Alert",
+    .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
         var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
         result.restoreFromLocalStorage();
         return result;
     }])
-    .factory("FormQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "Alert",
+    .factory("FormQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
         var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService, Alert);
         result.restoreFromLocalStorage();
         return result;
-    }])
-    .factory("Alert", ["$timeout", function($timeout){
-        var alerts = [];
-        var closeAlert = function (index) {
-            alerts.splice(index, 1);
-        };
-        var addAlert = function (type, msg) {
-            var id = (new Date()).getTime();
-            alerts.push({type: type, msg: msg, id: id});
-            $timeout(function () {
-                for (var i = 0; i < alerts.length; i++) {
-                    if (alerts[i].id === id) {
-                        alerts.splice(i, 1);
-                    }
-                }
-            }, window.userAlertTime);
-        };
-        var mapAlerts = function() {return alerts;};
-        return {closeAlert: closeAlert, addAlert: addAlert, mapAlerts: mapAlerts};
-    }])
-    .factory("RegStatusValidator", ["OrgHelpers", function(OrgHelpers){
-        var evalCde = function (cde, orgName, status, cdeOrgRules) {
-            var orgRules = cdeOrgRules[orgName];
-            var rules = orgRules.filter(function (r) {
-                var s = r.targetStatus;
-                if (status === 'Incomplete') return s === 'Incomplete';
-                if (status === 'Candidate') return s === 'Incomplete' || s === 'Candidate';
-                if (status === 'Recorded') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded';
-                if (status === 'Qualified') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified';
-                if (status === 'Standard') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified' || s === 'Standard';
-                return true;
-            });
-            if (rules.length === 0) return [];
-            return rules.map(function (r) {
-                return {ruleName: r.ruleName, cdePassingRule: cdePassingRule(cde, r)};
-            });
-        };
-
-        var conditionsMetForStatusWithinOrg = function (cde, orgName, status, cdeOrgRules) {
-            if (!cdeOrgRules[orgName]) return true;
-            var results = evalCde(cde, orgName, status, cdeOrgRules);
-            return results.every(function (x) {
-                return x.passing;
-            });
-        };
-
-        var cdePassingRule = function (cde, rule) {
-            function checkRe(field, rule) {
-                return new RegExp(rule.rule.regex).test(field);
-            }
-            function lookForPropertyInNestedObject(object, rule, level) {
-                var key = rule.field.split(".")[level];
-                if (!object[key]) return false;
-                if (level === rule.field.split(".").length - 1) return checkRe(object[key], rule);
-                if (!Array.isArray(object[key])) return lookForPropertyInNestedObject(object[key], rule, level + 1);
-                if (Array.isArray(object[key])) {
-                    var result;
-                    if (rule.occurence === "atLeastOne") {
-                        result = false;
-                        object[key].forEach(function (subTree) {
-                            result = result || lookForPropertyInNestedObject(subTree, rule, level + 1);
-                        });
-                        return result;
-                    }
-                    if (rule.occurence === "all") {
-                        result = true;
-                        object[key].forEach(function (subTree) {
-                            result = result && lookForPropertyInNestedObject(subTree, rule, level + 1);
-                        });
-                        return result;
-                    }
-                }
-            }
-            return lookForPropertyInNestedObject(cde, rule, 0);
-        };
-
-        var getOrgRulesForCde = function(cde){
-            var result = {};
-            cde.classification.forEach(function(org){
-                result[org.stewardOrg.name] = OrgHelpers.getStatusValidationRules(org.stewardOrg.name);
-            });
-            return result;
-        };
-
-        var getStatusRules = function(cdeOrgRules){
-            var cdeStatusRules = {
-                Incomplete: {},
-                Candidate: {},
-                Recorded: {},
-                Qualified: {},
-                Standard: {},
-                "Preferred Standard": {}
-            };
-
-            Object.keys(cdeOrgRules).forEach(function (orgName) {
-                cdeOrgRules[orgName].forEach(function (rule) {
-                    if (!cdeStatusRules[rule.targetStatus][orgName]) cdeStatusRules[rule.targetStatus][orgName] = [];
-                    cdeStatusRules[rule.targetStatus][orgName].push(rule);
-                });
-            });
-            return cdeStatusRules;
-        };
-
-        return {
-            conditionsMetForStatusWithinOrg: conditionsMetForStatusWithinOrg
-            , cdePassingRule: cdePassingRule
-            , getOrgRulesForCde: getOrgRulesForCde
-            , getStatusRules: getStatusRules
-            , evalCde: evalCde
-        };
-
     }])
 ;

@@ -20,6 +20,7 @@ public class RandomDatatypeTest extends NlmCdeBaseTest {
         textPresent(datatype);
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(datatype);
+        textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
+        textPresent(datatype, By.xpath("//*[@id='Data Type']//ins"));
     }
 }

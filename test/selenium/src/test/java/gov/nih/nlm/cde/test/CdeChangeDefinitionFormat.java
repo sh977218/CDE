@@ -19,8 +19,18 @@ public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-        switchDefinitionFormatByIndex(0, null, true);
+
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-edit')]"));
+        clickElement(By.xpath( "//*[@id='definition_0']//button[contains(text(),'Rich Text')]"));
+
+        hangon(2);
+        clickElement(By.xpath("//*[@id='definition_0']//*[contains(@class,'fa-check')]"));
+        textNotPresent("Confirm");
+
         newCdeVersion();
+
+        textPresent("html characters][bold]");
+
     }
 
 }

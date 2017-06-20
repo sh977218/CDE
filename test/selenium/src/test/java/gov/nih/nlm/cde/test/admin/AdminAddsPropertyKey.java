@@ -29,6 +29,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
         try {
             findElement(By.xpath("//option[@value='doYouSeeThis']"));
+            findElement(By.xpath("//option[@value='propKey0']"));
         } catch (TimeoutException e) {
             Assert.fail("Failed to find doYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
         }
@@ -39,9 +40,10 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
 
-        new Actions(driver).moveToElement(findElement(By.id("orgListName-Training")));
+        new Actions(driver).moveToElement(findElement(By.id("orgListName-Training"))).perform();
         clickElement(By.xpath("//li[contains(.,'doYouSeeThis')]/span"));
         textPresent("Org Updated");
+        closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
 

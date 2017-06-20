@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('MergeRequestCtrl',
-    ['$scope', '$uibModal', '$location', '$http', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel',
-        function ($scope, $modal, $location, $http, MergeRequest, DataElement, MergeCdes, isAllowedModel) {
+    ['$scope', '$uibModal', '$location', '$http', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'AlertService',
+        function ($scope, $modal, $location, $http, MergeRequest, DataElement, MergeCdes, isAllowedModel, Alert) {
             $scope.openMergeModal = function (retiredIndex) {
                 $scope.retiredIndex = retiredIndex;
                 $modal.open({
@@ -24,16 +24,16 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                             dat.mergeRequest.source.object.registrationState.replacedBy = {tinyId: $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId};
                             DataElement.save(dat.mergeRequest.source.object, function (cde) {
                                 $location.url("deCompare");
-                                $scope.addAlert("success", "Merge request sent");
+                                Alert.addAlert("success", "Merge request sent");
                             });
                         }, function () {
-                            $scope.addAlert("danger", "There was an error creating this merge request.")
+                            Alert.addAlert("danger", "There was an error creating this merge request.")
                         });
                     } else {
                         var gotoNewElement = function (mr) {
                             MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function (cde) {
                                 $location.url("deview?tinyId=" + cde.tinyId);
-                                $scope.addAlert("success", "CDEs successfully merged");
+                                Alert.addAlert("success", "CDEs successfully merged");
                             });
                         };
                         if (dat.approval.ownDestinationCde) {

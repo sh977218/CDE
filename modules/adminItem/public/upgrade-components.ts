@@ -31,22 +31,6 @@ export class InlineEditDirective extends UpgradeComponent {
 }
 
 @Directive({
-    selector: "inline-area-edit"
-})
-export class InlineAreaEditDirective extends UpgradeComponent {
-    @Input() model: any;
-    @Output() modelChange: EventEmitter<void>;
-    @Input() isAllowed: any;
-    @Output() onOk: EventEmitter<void>;
-    @Output() onErr: EventEmitter<void>;
-    @Input() defFormat: any;
-    @Output() defFormatChange: EventEmitter<void>;
-    constructor(elementRef: ElementRef, injector: Injector) {
-        super("inlineAreaEdit", elementRef, injector);
-    }
-}
-
-@Directive({
     selector: "sortable-array"
 })
 export class SortableArrayDirective extends UpgradeComponent {
@@ -55,6 +39,19 @@ export class SortableArrayDirective extends UpgradeComponent {
     @Output() cb: EventEmitter<void>;
     constructor(elementRef: ElementRef, injector: Injector) {
         super("sortableArray", elementRef, injector);
+    }
+}
+
+@Directive({
+    selector: "form-summary-list"
+})
+export class FormSummaryListDirective extends UpgradeComponent {
+    @Input() forms: any;
+    @Input() ejsPage: any;
+    @Input() module: any;
+    @Input() includeInAccordion: any;
+    constructor(elementRef: ElementRef, injector: Injector) {
+        super("formSummaryList", elementRef, injector);
     }
 }
 /* tslint:enable */

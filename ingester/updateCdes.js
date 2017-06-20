@@ -200,7 +200,7 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                 }, function doneAllAttachments() {
                     existingCdes[0].attachments = migrationCde.attachments;
                     processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
-                })
+                });
             }
         } else {
             console.log(cdeId);

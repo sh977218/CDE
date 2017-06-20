@@ -1,8 +1,9 @@
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, Inject, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MyBoardsService } from "../../myBoards.service";
 import { Http } from "@angular/http";
+import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-pin-modal",
@@ -22,7 +23,7 @@ export class PinModalComponent {
     constructor(
         public myBoardsSvc: MyBoardsService,
         public modalService: NgbModal,
-        @Inject("Alert") private alert,
+        private alert: AlertService,
         private http: Http,
         @Inject("userResource") private userService
     ) {}

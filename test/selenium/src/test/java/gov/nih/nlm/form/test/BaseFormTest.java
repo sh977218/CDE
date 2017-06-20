@@ -56,14 +56,15 @@ public class BaseFormTest extends FormCommentTest {
         String sectionId = "section_" + sectionNumber;
 
         hangon(2);
-        String searchString;
-        if (driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-drop-slot")).size() > 0)
-            searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
-        else
-            searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
 
         // drag and drop selenium is buggy, try 5 times.
         for (int i = 0; i < 5; i++) {
+            String searchString;
+            if (driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-drop-slot")).size() > 0)
+                searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+            else
+                searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
+
             try {
                 WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
                 WebElement targetElt = findElement(By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]"));

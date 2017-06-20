@@ -22,7 +22,7 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
 
 
         clickElement(By.id("history_tab"));
-        clickElement(By.id("prior-1"));
+        clickElement(By.xpath("//*[@id='prior-1']//span"));
         switchTab(1);
 
         clickElement(By.id("export"));
