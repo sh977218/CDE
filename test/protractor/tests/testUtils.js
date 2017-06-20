@@ -2,7 +2,6 @@ module.exports = {
 
     utils: this,
 
-
     loginAs(username, password) {
         element(by.id("login_link")).click();
         let usernameStr = username;
@@ -23,6 +22,10 @@ module.exports = {
 
     textPresent: function (text) {
         expect(element(by.css("body")).getText()).toContain(text);
+    },
+
+    textPresent: function (text) {
+        expect(element(by.css("body")).getText()).not.toContain(text);
     },
 
     closeAlert: function () {

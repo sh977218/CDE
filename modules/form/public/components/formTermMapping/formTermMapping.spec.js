@@ -1,4 +1,4 @@
-const u = require('./testUtils');
+const u = require('../../../../../test/protractor/tests/testUtils');
 
 describe('formTermMapping', () => {
 
@@ -18,19 +18,5 @@ describe('formTermMapping', () => {
            });
         });
     });
-
-
-    it ('should let me add desc', () => {
-        u.mustBeLoggedInAs('nlm, nlm');
-
-        // Written Verbal Fluency Test
-        browser.get("/formView?tinyId=QklqIkSrKx");
-        element(by.id("addTermMap")).click();
-        element(by.id("mesh.search")).sendKeys();
-
-
-    });
-
-
 
 });

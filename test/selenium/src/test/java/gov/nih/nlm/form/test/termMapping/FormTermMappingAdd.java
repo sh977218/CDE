@@ -1,0 +1,36 @@
+package gov.nih.nlm.form.test.termMapping;
+
+import gov.nih.nlm.system.NlmCdeBaseTest;
+import org.openqa.selenium.By;
+import org.testng.annotations.Test;
+
+public class FormTermMappingAdd extends NlmCdeBaseTest{
+
+    @Test
+    public void addMapping() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+
+        goToCdeByName("Written Verbal Fluency Test");
+        clickElement(By.id("addTermMap"));
+        findElement(By.id("mesh.search")).sendKeys("fingers");
+        // get rid of autocomplete
+        clickElement(By.xpath("//label[@for='mesh.search']"));
+        textPresent("D005385 -- Fingers");
+        clickElement(By.id("addMeshDescButton"));
+        clickElement(By.id("closeModal"));
+        textPresent("Saved");
+        closeAlert();
+        textPresent("D005385 -- Fingers");
+
+        // check can't add dups
+        clickElement(By.id("addTermMap"));
+        findElement(By.id("mesh.search")).sendKeys("fingers");
+        // get rid of autocomplete
+        clickElement(By.xpath("//label[@for='mesh.search']"));
+        textPresent("D005385 -- Fingers");
+
+        // verify it's disabled
+        findElement(By.xpath("//button[@disabled and @id='addMeshDescButton']"));
+    }
+
+}
