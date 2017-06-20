@@ -17,8 +17,6 @@ var express = require('express')
     , usersrvc = require('../../system/node-js/usersrvc')
     , dns = require('dns')
     , os = require('os')
-    , elastic = require('./elastic')
-
 ;
 
 exports.init = function (app, daoManager) {
