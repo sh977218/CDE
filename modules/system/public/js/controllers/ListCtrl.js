@@ -190,6 +190,15 @@ angular.module('systemModule').controller('ListCtrl',
         }
     };
 
+    // Create string representation of what status filters are selected
+    $scope.getSelectedDatatypes = function() {
+        if ($scope.searchSettings.datatypes.length > 0) {
+            return $scope.searchSettings.datatypes.join(", ");
+        } else {
+            return "All Datatypes";
+        }
+    };
+
     $scope.selectedTopicsAsString = function() {
         if ($scope.searchSettings.meshTree && $scope.searchSettings.meshTree.length > 0) {
             var res = $scope.searchSettings.meshTree.split(";").join(" > ");

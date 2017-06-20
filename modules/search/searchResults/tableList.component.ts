@@ -30,13 +30,12 @@ export class TableListComponent implements OnChanges {
         if (!this.tableSetup)
             return;
 
-        if (this.module === 'cde') {
+        if (this.module === 'cde')
             this.renderCde();
-        } else if (this.module === 'form') {
+        else if (this.module === 'form')
             this.renderForm();
-        } else if (this.module === 'board') {
+        else if (this.module === 'board')
             this.renderBoard();
-        }
     }
 
     renderBoard() {}
