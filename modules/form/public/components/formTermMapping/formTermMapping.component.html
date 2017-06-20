@@ -8,7 +8,7 @@
     <ul>
         <li *ngFor="let desc of mapping.meshDescriptors; let i = index">
                 {{desc}} - {{descToName[desc]}}
-                <i *ngIf="!confirm" (click)="confirm = i"
+                <i *ngIf="!confirm && isAllowedModel.isAllowed(elt) && !elt.unsaved" (click)="confirm = i"
                    class="fa fa-trash-o hand-cursor" title="Remove Mesh Term"></i>
                 <span *ngIf="confirm === i" class="badge">Confirm Delete
                     <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="confirm = false; removeMeshDescriptor(i)"

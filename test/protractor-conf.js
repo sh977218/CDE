@@ -1,9 +1,11 @@
 const Jasmine2HtmlReporter = require('protractor-jasmine2-html-reporter');
 const jasmineReporters = require('jasmine-reporters');
+const { SpecReporter } = require('jasmine-spec-reporter');
+
 
 exports.config = {
     framework: 'jasmine',
-    specs: ['./protractor/tests/**/*.spec.js', '../modules/**/*.spec.ts'],
+    specs: ['./protractor/tests/**/*.spec.js', '../modules/**/*.spec.js'],
     capabilities: {
         browserName: 'chrome'
     },
@@ -17,7 +19,10 @@ exports.config = {
             new jasmineReporters.JUnitXmlReporter({savePath: './protractor/reports'})
         );
         jasmine.getEnv().addReporter(
-            new Jasmine2HtmlReporter({savePath: './test/report'})
+            new Jasmine2HtmlReporter({
+                savePath: './test/report',
+                takeScreenshotsOnlyOnFailures: true
+            })
         );
 
         browser.driver.manage().window().maximize();
