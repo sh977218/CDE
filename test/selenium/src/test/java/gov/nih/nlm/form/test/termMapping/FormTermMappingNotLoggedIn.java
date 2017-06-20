@@ -9,7 +9,7 @@ public class FormTermMappingNotLoggedIn extends NlmCdeBaseTest {
 
     @Test
     public void checkNotLoggedIn() {
-        goToCdeByName("Socioeconomic Status");
+        goToFormByName("Socioeconomic Status");
 
         textPresent("D003710 - Demography");
         textPresent("D000328 - Adult");

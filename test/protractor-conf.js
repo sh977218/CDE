@@ -5,7 +5,7 @@ const { SpecReporter } = require('jasmine-spec-reporter');
 
 exports.config = {
     framework: 'jasmine',
-    specs: ['./protractor/tests/**/*.spec.js', '../modules/**/*.spec.js'],
+    specs: ['./protractor/tests/**/*.spec.js'],
     capabilities: {
         browserName: 'chrome'
     },

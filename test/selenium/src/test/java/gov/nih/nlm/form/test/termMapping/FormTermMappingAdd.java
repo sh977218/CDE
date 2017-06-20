@@ -10,7 +10,7 @@ public class FormTermMappingAdd extends NlmCdeBaseTest{
     public void addMapping() {
         mustBeLoggedInAs(nlm_username, nlm_password);
 
-        goToCdeByName("Written Verbal Fluency Test");
+        goToFormByName("Written Verbal Fluency Test");
         clickElement(By.id("addTermMap"));
         findElement(By.id("mesh.search")).sendKeys("fingers");
         // get rid of autocomplete

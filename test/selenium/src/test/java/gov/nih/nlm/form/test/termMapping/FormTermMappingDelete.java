@@ -11,7 +11,7 @@ public class FormTermMappingDelete extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(nlm_username, nlm_password);
 
-        goToCdeByName("Socioeconomic Status");
+        goToFormByName("Socioeconomic Status");
 
         textPresent("D003710 - Demography");
         textPresent("D000328 - Adult");
