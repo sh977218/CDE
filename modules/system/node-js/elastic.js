@@ -385,7 +385,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         settings.visibleStatuses = regStatusShared.orderedList;
 
     // show statuses that either you selected, or it's your org and it's not retired.
-    let regStatusAggFilter = {"bool": {"filter": [
+    let regStatusAggFilter = {"bool": {"should": [
         {
             "bool": {
                 "should": settings.visibleStatuses.map(regStatus => {return {"term": {"registrationState.registrationStatus": regStatus}};})
