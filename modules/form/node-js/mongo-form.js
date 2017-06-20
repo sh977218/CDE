@@ -74,11 +74,9 @@ exports.update = function (elt, user, callback, special) {
         };
         elt.sources = form.sources;
         elt.comments = form.comments;
+        if (special) special(elt, form);
         var newForm = new Form(elt);
         form.archived = true;
-        if (special) {
-            special(form, form);
-        }
         if (newForm.naming.length < 1) {
             logging.errorLogger.error("Error: Cannot save form without names", {
                 origin: "cde.mongo-form.update.1",
