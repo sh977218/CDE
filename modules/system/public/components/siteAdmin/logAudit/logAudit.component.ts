@@ -4,34 +4,6 @@ import "rxjs/add/operator/map";
 import * as moment from "moment";
 import { AlertService } from "../../alert/alert.service";
 
-const SORT_MAP = {
-    date: {
-        title: "Date",
-        sort: "desc",
-        class: "fa fa-fw fa-sort"
-    }, ip: {
-        title: "IP",
-        sort: "desc",
-        class: "fa fa-fw fa-sort"
-    }, url: {
-        title: "URL",
-        sort: "desc",
-        class: "fa fa-fw fa-sort"
-    }, method: {
-        title: "Method",
-        sort: "desc",
-        class: "fa fa-fw fa-sort"
-    }, status: {
-        title: "Status",
-        sort: "desc",
-        class: "fa fa-fw fa-sort"
-    }, respTime: {
-        title: "Resp. Time",
-        sort: "desc",
-        class: "fa fa-fw fa-sort"
-    }
-};
-
 @Component({
     selector: "cde-log-audit",
     templateUrl: "./logAudit.component.html",
@@ -50,49 +22,85 @@ export class LogAuditComponent {
     totalItems: number;
     itemsPerPage: number;
     propertiesArray = ["date", "ip", "url", "method", "status", "respTime"];
-    sortMap = SORT_MAP;
+    sortMap = {
+        date: {
+            title: "Date",
+            property: "date",
+            css: "fa fa-fw fa-sort"
+        },
+        ip: {
+            title: "IP",
+            property: "remoteAddr",
+            sort: "desc",
+            css: "fa fa-fw fa-sort"
+        },
+        url: {
+            title: "URL",
+            property: "url",
+            css: "fa fa-fw fa-sort"
+        },
+        method: {
+            title: "Method",
+            property: "method",
+            css: "fa fa-fw fa-sort"
+        },
+        status: {
+            title: "Status",
+            property: "httpStatus",
+            css: "fa fa-fw fa-sort"
+        },
+        respTime: {
+            title: "Resp. Time",
+            property: "responseTime",
+            css: "fa fa-fw fa-sort"
+        }
+    };
 
     constructor(private http: Http,
                 private Alert: AlertService) {
     }
 
-    setOppositeSort(m) {
-        if (m.sort === "desc") {
-            m.sort = "asc";
-            m.class = "fa fa-fw fa-sort-asc";
-        } else {
-            m.sort = "desc";
-            m.class = "fa fa-fw fa-sort-desc";
+    getSortObj() {
+        let sort = {};
+        for (let p in this.sortMap) {
+            if (this.sortMap.hasOwnProperty(p) && this.sortMap[p].sort)
+                sort[this.sortMap[p].property] = this.sortMap[p].sort;
         }
+
+        return sort;
     }
 
     sort(p) {
-        let sort = {};
-        sort[p] = this.sortMap[p].sort;
-        if (sort[p] === "desc") sort[p] = "asc";
-        if (sort[p] === "asc") sort[p] = "desc";
-        this.searchLogs(sort, () => {
+        if (this.sortMap[p].sort === "asc") {
+            this.sortMap[p].sort = "desc";
+            this.sortMap[p].css = "fa fa-fw fa-sort-desc";
+        } else {
+            this.sortMap[p].sort = "asc";
+            this.sortMap[p].css = "fa fa-fw fa-sort-asc";
+        }
+        this.currentPage = 1;
+        this.searchLogs(false);
+    }
+
+    searchLogs(newSearch = false) {
+        if (newSearch) {
             this.currentPage = 1;
-            this.sortMap = SORT_MAP;
-            this.setOppositeSort(this.sortMap[p]);
-        });
-    }
+            for (let p in this.sortMap) {
+                if (this.sortMap.hasOwnProperty(p)) {
+                    this.sortMap[p].sort = null;
+                    this.sortMap[p].css = 'fa fa-fw fa-sort';
+                }
+            }
+        }
 
-    parseDate(inDate) {
-        if (inDate) return moment(inDate + moment().format("Z")).toISOString();
-        else return;
-    }
-
-    searchLogs(sort = null, cb = () => {
-    }) {
         let postBody = {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,
             totalItems: this.totalItems,
             itemsPerPage: this.itemsPerPage,
-            fromDate: this.parseDate(this.fromDate),
-            toDate: this.parseDate(this.toDate),
-            sort: sort
+            fromDate: LogAuditComponent.parseDate(this.fromDate),
+            toDate: LogAuditComponent.parseDate(this.toDate),
+            sort: this.getSortObj()
         };
         //noinspection TypeScriptValidateTypes
         this.http.post("/logs", postBody).map(res => res.json())
@@ -109,7 +117,11 @@ export class LogAuditComponent {
                         respTime: log.responseTime
                     };
                 });
-                if (cb) cb();
             });
     };
+
+    static parseDate(inDate) {
+        if (inDate) return moment(inDate + moment().format("Z")).toISOString();
+        else return;
+    }
 }

@@ -10,20 +10,20 @@
             <label class="sr-only" for="toDate">Until Date</label>
             <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="toDate" name="toDate" type="datetime-local"
                    [(ngModel)]="toDate" placeholder="Until Date">
-            <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs()">Submit</button>
+            <button type="submit" class="btn btn-default" id="searchBtn" (click)="searchLogs(true)">Submit</button>
         </form>
         <table class="table table-striped table-bordered table-condensed table-responsive">
             <tr>
                 <ng-container *ngFor="let property of propertiesArray">
                     <th (click)="sort(property)">{{sortMap[property].title}}
-                        <i [ngClass]="sortMap[property].class"></i>
+                        <i [ngClass]="sortMap[property].css"></i>
                     </th>
                 </ng-container>
             </tr>
             <tr *ngFor="let log of gridLogEvents">
                 <td>{{log.date}}</td>
                 <td>{{log.ip}}</td>
-                <td>{{log.url}}</td>
+                <td style="max-width: 500px; overflow-wrap: break-word">{{log.url}}</td>
                 <td>{{log.method}}</td>
                 <td>{{log.status}}</td>
                 <td>{{log.respTime}}</td>
