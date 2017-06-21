@@ -20,7 +20,7 @@ public class FormTermMappingAdd extends NlmCdeBaseTest{
         clickElement(By.id("closeModal"));
         textPresent("Saved");
         closeAlert();
-        textPresent("D005385 -- Fingers");
+        textPresent("D005385 - Fingers");
 
         // check can't add dups
         clickElement(By.id("addTermMap"));
