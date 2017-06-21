@@ -85,7 +85,8 @@
             </span>
         </span>
         | <span class="label label-success" id="topic_crumb" ng-bind="selectedTopicsAsString()"></span>
-        | {{getSelectedStatuses()}}
+        | <span class="label label-success" id="status_crumb" ng-bind="getSelectedStatuses()"></span>
+        | <span class="label label-success" id="datatype_crumb" ng-if="module === 'cde'" ng-bind="getSelectedDatatypes()"></span>
     </span>
         <small> ({{took / 1000}} secs)</small>
     </div>
