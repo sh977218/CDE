@@ -9,7 +9,7 @@
 	<meta name="keywords"
 	      content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine"/>
 	<meta name=viewport content="width=device-width, initial-scale=1">
-	<meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk" />
+	<meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk"/>
 
 	<!--[if lt IE 9]>
 	<script type="text/javascript">
@@ -21,10 +21,10 @@
 
 	<script type="text/javascript">
         (function () {
-            function CustomEvent ( event, params ) {
-                params = params || { bubbles: false, cancelable: false, detail: undefined };
-                var evt = document.createEvent( 'CustomEvent' );
-                evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+            function CustomEvent(event, params) {
+                params = params || {bubbles: false, cancelable: false, detail: undefined};
+                var evt = document.createEvent('CustomEvent');
+                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
                 return evt;
             }
 
@@ -52,8 +52,6 @@
 	<link rel='stylesheet' href='/components/angular-ui-select/dist/select.css' />
 	<link rel='stylesheet' href='/components/textAngular/dist/textAngular.css' />
 	<link rel='stylesheet' href='/components/bootstrap-css-only/css/bootstrap.css' />
-	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour.css' />
-	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css' />
 	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
 	<!-- endbower -->
 
@@ -70,12 +68,10 @@
 
 	<%- include googleAnalytics.html %>
 
-    <div ng-controller="AuthCtrl">
-        <div ng-controller="TakeATourCtrl">
-            <cde-navigation [quick-board-count]="quickBoard.elts.length + formQuickBoard.elts.length"
-                            (take-a-tour)="restartTour()" (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
-        </div>
-    </div>
+	<div ng-controller="AuthCtrl">
+		<cde-navigation [quick-board-count]="quickBoard.elts.length + formQuickBoard.elts.length"
+		                (take-a-tour)="restartTour()" (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
+	</div>
 
 	<!-- Main content area -->
 	<div ng-view>
@@ -98,7 +94,7 @@
 
 <!-- build:js /system/public/assets/js/vendor.js -->
 <!-- bower:js -->
-<script src="/components/jquery/jquery.js"></script>
+<script src="/components/jquery/dist/jquery.js"></script>
 <script src="/components/angular/angular.js"></script>
 <script src="/components/angular-route/angular-route.js"></script>
 <script src="/components/angular-resource/angular-resource.js"></script>
@@ -122,8 +118,6 @@
 <script src="/components/textAngular/dist/textAngular-sanitize.js"></script>
 <script src="/components/textAngular/dist/textAngularSetup.js"></script>
 <script src="/components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="/components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
-<script src="/components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
 <script src="/components/angularjs-camelCase-human/camelcase-browser.js"></script>
 <script src="/components/html2canvas/build/html2canvas.js"></script>
 <script src="/components/angular-send-feedback/dist/angular-send-feedback.js"></script>
@@ -163,6 +157,7 @@
           "url": "https://cde.nlm.nih.gov",
           "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
           }
+
 </script>
 
 <script type="application/ld+json">
@@ -173,6 +168,7 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
+
 </script>
 
 </body>

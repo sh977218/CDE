@@ -48,7 +48,6 @@ import "./system/public/js/controllers/AuditServerErrorListCtrl";
 import "./system/public/js/controllers/AuditClientErrorListCtrl";
 import "./system/public/js/controllers/TriggerClientExceptionCtrl";
 import "./system/public/js/controllers/AuditErrorListCtrl";
-import "./system/public/js/controllers/TakeATourCtrl";
 import "./system/public/js/controllers/ApproveCommentCtrl";
 import "./system/public/js/controllers/RemoveClassificationModalCtrl";
 import "./system/public/js/controllers/AuditLogCtrl";
