@@ -17,6 +17,7 @@ export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 
 export function getUserResourceFactory(i: any) { return i.get("userResource"); }
+export function getSearchSettingsFactory(i: any) { return i.get("SearchSettings"); }
 export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"); }
 export function getIsAllowedModelFactory(i: any) { return i.get("isAllowedModel"); }
 export function getQuickBoardFactory(i: any) { return i.get("QuickBoard"); }
@@ -42,6 +43,7 @@ export function getElasticFactory(i: any) { return i.get("Elastic"); }
         // upgraded
         UpgradeModule,
         {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},
+        {provide: "SearchSettings", useFactory: getSearchSettingsFactory, deps: ["$injector"]},
         {provide: "ViewingHistory", useFactory: getViewingHistoryFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},

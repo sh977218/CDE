@@ -468,6 +468,9 @@ angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgr
 import {RegistrationComponent} from "../../../adminItem/public/components/registration/registration.component";
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
 
+import {TableListComponent} from "../../../search/searchResults/tableList.component";
+angular.module('systemModule').directive('cdeTableList', downgradeComponent({component: TableListComponent, inputs: ['elts', 'module'], outputs: []}))
+
 import {SourcesComponent} from "../../../adminItem/public/components/sources/sources.component";
 angular.module('systemModule').directive('cdeAdminItemSources', downgradeComponent({component: SourcesComponent, inputs: ['elt'], outputs: []}));
 

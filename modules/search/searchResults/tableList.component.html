@@ -1,0 +1,15 @@
+<table id="gridList" class="gridListView table table-condensed table-striped table-bordered">
+    <thead>
+    <tr>
+        <th *ngFor="let heading of headings">{{heading}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let row of rows">
+        <td *ngFor="let prop of row"
+            [class]="prop.css"
+            [innerHtml]="prop.html">
+        </td>
+    </tr>
+    </tbody>
+</table>
