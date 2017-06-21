@@ -21,6 +21,15 @@ var LogErrorModel = conn.model('DbErrorLogger', schemas_system.logErrorSchema);
 var ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.clientErrorSchema);
 var StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 var FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
+var consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
+
+exports.consoleLog = function (message, level) {
+    new consoleLogModel({
+        message: message, level: level
+    }).save(err => {
+        // TODO;
+    });
+};
 
 function sqEsUpdate(elt) {
     if (elt) {

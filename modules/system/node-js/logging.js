@@ -24,10 +24,11 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
         var logEvent = JSON.parse(msg);
         logEvent.level = level;
         dbLogger.log(logEvent, function (err) {
-            if (err) console.log("CANNOT LOG: " + err);
+            if (err) dbLogger.consoleLog("CANNOT LOG: " + err, 'error');
             callback(null, true);    
         });
     } catch (e) {
+        // TODO
         console.log("unable to log error to DB: " + msg);
     }
 };
@@ -63,9 +64,11 @@ MongoErrorLogger.prototype.log = function (level, msg, meta) {
         };
         if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
         dbLogger.logError(message, function (err) {
+            // TODO
             if (err) console.log("CANNOT LOG: ");  
         });
     } catch (e) {
+        // TODO
         console.log("unable to log error to DB: " + msg);
     }
 };

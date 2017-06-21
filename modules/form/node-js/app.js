@@ -204,7 +204,6 @@ exports.init = function (app, daoManager) {
 
     // This is for tests only
     app.post('/sendMockFormData', function (req, res) {
-        console.log(JSON.stringify(req.body));
         if (
             req.body.q1 === "1"
             && req.body.q2 === "2"
