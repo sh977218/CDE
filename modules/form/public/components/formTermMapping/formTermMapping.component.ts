@@ -32,6 +32,8 @@ export class FormTermMappingComponent implements OnInit {
     descToName: any = {};
 
     openAddTermMap () {
+        this.meshTerm = "";
+        this.descriptor = null;
         this.modalService.open(this.newTermMap, {size: "lg"}).result.then(() => {}, () => {});
     }
 
