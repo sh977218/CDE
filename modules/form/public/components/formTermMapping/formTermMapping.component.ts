@@ -78,7 +78,6 @@ export class FormTermMappingComponent implements OnInit {
 
     addMeshDescriptor () {
         this.mapping.meshDescriptors.push(this.descriptor.id);
-        // this.descriptor = {name: "", id: ""};
 
         this.http.post("/meshClassification", this.mapping).subscribe(response => {
             this.alert.addAlert("success", "Saved");

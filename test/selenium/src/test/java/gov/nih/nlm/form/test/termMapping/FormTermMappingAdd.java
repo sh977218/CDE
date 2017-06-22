@@ -22,11 +22,12 @@ public class FormTermMappingAdd extends NlmCdeBaseTest{
 
         // check can't add dups
         clickElement(By.id("addTermMap"));
-        findElement(By.id("mesh.search")).sendKeys("fingers");
-        textPresent("D005385 -- Fingers");
+        findElement(By.id("mesh.search")).sendKeys("toes");
+        textPresent("D014034 -- Toes");
 
         // verify it's disabled
         findElement(By.xpath("//button[@disabled and @id='addMeshDescButton']"));
+        clickElement(By.id("closeModal"));
     }
 
 }
