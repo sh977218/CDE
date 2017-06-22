@@ -61,9 +61,7 @@ export class NavigationComponent implements OnInit {
 
     takeATour() {
         this.tour.init();
-    }
-
-    startTour() {
         this.tour.start();
     }
+
 }
