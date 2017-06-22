@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
-      config = require('config')
+      config = require('config'),
+      logger = require('./noDbLogger')
 ;
 
 let establishedConns = {};
@@ -19,8 +20,10 @@ exports.establishConnection = function(dbConfig) {
     let dbName = /[^/]*$/.exec(uri)[0];
 
     conn.once('open', function () {
+        logger.noDbLogger.info("Connection open to " + dbConfig.db);
     });
     conn.on('reconnected', function () {
+        logger.noDbLogger.info("Connection open to " + dbConfig.db);
     });
 
     return establishedConns[uri];

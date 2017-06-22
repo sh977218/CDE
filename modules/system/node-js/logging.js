@@ -2,7 +2,8 @@ var winston = require('winston')
     , util = require('util')
     , dbLogger = require('./dbLogger.js')
     , config = require('./parseConfig')
-    ;
+    , noDbLogger = require('./noDbLogger')
+;
 
 var MongoLogger = winston.transports.MongoLogger = function (options) {
     this.name = 'mongoLogger';
@@ -24,12 +25,11 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
         var logEvent = JSON.parse(msg);
         logEvent.level = level;
         dbLogger.log(logEvent, function (err) {
-            if (err) dbLogger.consoleLog("CANNOT LOG: " + err, 'error');
+            if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + err);
             callback(null, true);    
         });
     } catch (e) {
-        // TODO
-        console.log("unable to log error to DB: " + msg);
+        noDbLogger.noDbLogger.error("Cannot log to DB: " + e);
     }
 };
   
@@ -64,12 +64,10 @@ MongoErrorLogger.prototype.log = function (level, msg, meta) {
         };
         if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
         dbLogger.logError(message, function (err) {
-            // TODO
-            if (err) console.log("CANNOT LOG: ");  
+            if (err) {noDbLogger.noDbLogger.error("Cannot log to DB: " + msg);}
         });
     } catch (e) {
-        // TODO
-        console.log("unable to log error to DB: " + msg);
+        noDbLogger.noDbLogger.error("Cannot log to DB: " + e);
     }
 };
 
@@ -98,6 +96,9 @@ if (config.expressToStdout) {
     expressLoggerCnf.transports.push(new winston.transports.Console(consoleLogCnf));
     expressErrorLoggerCnf.transports.push(new winston.transports.Console(consoleLogCnf));
 }
+
+
+
 exports.expressLogger = new (winston.Logger)(expressLoggerCnf);
 exports.errorLogger = new (winston.Logger)(expressErrorLoggerCnf);
 

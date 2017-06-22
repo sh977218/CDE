@@ -9,6 +9,7 @@ var mongoose = require('mongoose')
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
     , moment = require('moment')
+    , noDbLogger = require('./noDbLogger')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -81,7 +82,7 @@ exports.storeQuery = function (settings, callback) {
                         storedQuery,
                         function (err, newObject) {
                             sqEsUpdate(newObject);
-                            if (err) console.log(err);
+                            if (err) noDbLogger.noDbLogger.info(err);
                             if (callback) callback(err);
                         }
                     );
@@ -102,7 +103,7 @@ exports.log = function (message, callback) {
     if (message.httpStatus !== "304") {
         var logEvent = new LogModel(message);
         logEvent.save(function (err) {
-            if (err) console.log("ERROR: " + err);
+            if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
             callback(err);
         });
     }
@@ -112,7 +113,7 @@ exports.logError = function (message, callback) {
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
     logEvent.save(function (err) {
-        if (err) console.log("ERROR: ");
+        if (err) noDbLogger.noDbLogger.info("ERROR: ");
         if (callback) callback(err);
     });
 };
@@ -129,7 +130,7 @@ exports.logClientError = function (req, callback) {
     if (req.user) exc.username = req.user.username;
     var logEvent = new ClientErrorModel(exc);
     logEvent.save(function (err) {
-        if (err) console.log("ERROR: " + err);
+        if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
         callback(err);
     });
 };
