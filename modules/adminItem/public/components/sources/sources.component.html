@@ -1,32 +1,32 @@
 <fieldset *ngFor="let eltSource of elt.sources; let $index = index" class="cdeFieldset" id="sources_{{$index}}">
     <legend>Source: {{eltSource.sourceName}}</legend>
     <div class="row" *ngIf="eltSource.sourceName">
-        <div class="col-sm-5 questionSectionLabel text-right">Name:</div>
+        <div class="col-sm-5 questionSectionLabel">Name:</div>
         <div class="col-sm-7 sourceName">{{eltSource.sourceName}}
         </div>
     </div>
     <div class="row" *ngIf="eltSource.created">
-        <div class="col-sm-5 questionSectionLabel text-right">Created:</div>
+        <div class="col-sm-5 questionSectionLabel">Created:</div>
         <div class="col-sm-7 created">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}
         </div>
     </div>
     <div class="row" *ngIf="eltSource.updated">
-        <div class="col-sm-5 questionSectionLabel text-right">Updated:</div>
+        <div class="col-sm-5 questionSectionLabel">Updated:</div>
         <div class="col-sm-7 updated">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </div>
     </div>
     <div class="row" *ngIf="eltSource.registrationStatus">
-        <div class="col-sm-5 questionSectionLabel text-right">Registration Status:</div>
+        <div class="col-sm-5 questionSectionLabel">Registration Status:</div>
         <div class="col-sm-7 registrationStatus">{{eltSource.registrationStatus}}
         </div>
     </div>
     <div class="row" *ngIf="eltSource.datatype">
-        <div class="col-sm-5 questionSectionLabel text-right">Datatype:</div>
+        <div class="col-sm-5 questionSectionLabel">Datatype:</div>
         <div class="col-sm-7 datatype">{{eltSource.datatype}}
         </div>
     </div>
     <div class="row" *ngIf="eltSource.copyright">
-        <div class="col-sm-5 questionSectionLabel text-right">Copyright:</div>
+        <div class="col-sm-5 questionSectionLabel">Copyright:</div>
         <div class="col-sm-7">
             <div *ngIf="eltSource.copyright.valueFormat === 'html'" [innerHtml]="eltSource.copyright.value"></div>
             <div *ngIf="!(eltSource.copyright.valueFormat === 'html')">{{eltSource.copyright.value}}</div>

@@ -2,12 +2,12 @@
     <br/>
     <div  *ngIf="!(userService.user?._id)">Please <a  href="/login">log in</a> to comment.</div>
     <div *ngIf="userService.user?._id">
-        <form role="form" name="commentForm" id="commentForm" novalidate>
+        <form #commentForm="ngForm" name="commentForm" id="commentForm" novalidate>
             <label  class="sr-only" for="commentTextArea">Comments</label>
             <textarea  name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
                        [(ngModel)]="newComment.text" placeholder="Join the discussion..." required></textarea>
             <input  name="postComment" id="postComment" class="btn btn-primary" type="button"
-                    value="Post Comment" (click)="addComment()" ng-disabled="commentForm.commentTextArea.$invalid"/>
+                    value="Post Comment" (click)="addComment()" [disabled]="!commentForm.form.valid"/>
         </form>
     </div>
     <br/>
@@ -163,7 +163,7 @@
                         Show all {{comment.replies.length}} replies
                     </a>
                 </div>
-                <div ng-if="replyIndex >= comment.replies.length - 2">
+                <div *ngIf="replyIndex >= comment.replies.length - 2">
                     <div class="reply">
                         <div class="commentHeader">
                             <table style="width: 100%;">
@@ -211,7 +211,7 @@
             </div>
         </div>
         <span class="replying padding10" *ngIf="comment.currentlyReplying">Someone is typing</span>
-        <div data-type="reply" class="replyInputDiv" ng-if="user._id">
+        <div data-type="reply" class="replyInputDiv" *ngIf="userService.user?._id">
             <textarea class="replyInputTextarea" id="replyTextarea_{{commentIndex}}" name="replyTextArea"
                       rows="1" msd-elastic [(ngModel)]="tempReplies[comment._id]"
                       placeholder="Reply to this comment" (ngModelChange)="changeOnReply(comment)">

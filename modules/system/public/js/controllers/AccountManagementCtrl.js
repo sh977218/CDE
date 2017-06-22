@@ -75,9 +75,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     };
     
     $scope.removeSiteAdmin = function(byId) {
-       AccountManagement.removeSiteAdmin({
-            id: byId
-            },
+       AccountManagement.removeSiteAdmin(
+           {id: byId},
             function(res) {
                   Alert.addAlert("success", res);
                   $scope.siteAdmins = $scope.getSiteAdmins();

@@ -112,11 +112,13 @@ public class EltIdMaps {
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("PROMIS SF v2.0 - Companionship 6a", "m1BxH3_tIe");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
+        eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
         eltMap.put("Two Dimensional Speckle Tracking Echocardiography Imaging", "7kKLUkHBtl");
+        eltMap.put("Written Verbal Fluency Test", "QklqIkSrKx");
         eltMap.put("Vessel Imaging Angiography", "XJDPIySHtx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("Vital Signs", "m1j_L1HHte");

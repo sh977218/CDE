@@ -3,7 +3,6 @@ import {
     CdeId, Classification, DataSource, Instruction, Naming, ObjectId, PermissibleValue, Property, ReferenceDocument,
     RegistrationState, UserReference
 } from "../../core/public/models.model";
-import { ReferenceDocumentComponent } from "../../adminItem/public/components/referenceDocument.component";
 
 export class CdeForm {
     archived: boolean = false;

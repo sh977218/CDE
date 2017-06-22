@@ -54,6 +54,9 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         PermissibleValueComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
+        CdeSummaryListComponent,
+        DeGeneralDetailsComponent,
+        PermissibleValueComponent,
     ],
     entryComponents: [
         BoardCdeSummaryListComponent,
@@ -69,6 +72,7 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         PermissibleValueComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
+        PermissibleValueComponent,
     ],
     exports: [
     ],

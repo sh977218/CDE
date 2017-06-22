@@ -102,7 +102,7 @@
             <input #slInput type="text" title="Show if"
                    (focus)="slOptionsRetrigger()"
                    [ngModel]="question.skipLogic.condition"
-                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event)"
+                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event); stageElt.emit()"
                    class="form-control skipLogicCondition"
                    [ngbTypeahead]="getSkipLogicOptions"
                    (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>

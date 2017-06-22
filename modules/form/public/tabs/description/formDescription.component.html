@@ -1,6 +1,6 @@
 <div class="row" *ngIf="elt">
     <div class="col-xs-12">
-        <div class="descriptionToolbox" *ngIf="isAllowedModel.isAllowed(elt)">
+        <div class="descriptionToolbox" *ngIf="isAllowedModel.isAllowed(elt)" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
             <button id="addSectionTop" class="btn btn-default formDescriptionTool" style="width: 74px"
                     [treeDrag]="toolSection" [treeDragEnabled]="true">
