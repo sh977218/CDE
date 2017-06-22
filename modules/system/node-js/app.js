@@ -863,6 +863,15 @@ exports.init = function (app) {
         });
     });
 
+    app.get('/meshByEltId/:id', function (req, res) {
+        if (!req.params.id) return res.status(400).send("Missing Id parameter");
+        mongo_data_system.findMeshClassification({eltId: req.params.id}, function (err, mm) {
+            if (err) return res.status(500).send();
+            return res.send(mm[0]);
+        });
+    });
+
+
     app.get('/meshClassifications', function (req, res) {
         mongo_data_system.findMeshClassification({}, function (err, mm) {
             if (err) return res.status(500).send();

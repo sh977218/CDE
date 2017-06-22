@@ -92,12 +92,4 @@ export class NamingComponent implements OnInit {
             this.elt.unsaved = true;
     }
 
-    saveNaming() {
-        this.elt.$save(newElt => {
-            this.elt = newElt;
-            this.getCurrentTags();
-            this.alert.addAlert("success", "Saved");
-        });
-    };
-
 }

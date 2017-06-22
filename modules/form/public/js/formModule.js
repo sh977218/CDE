@@ -94,6 +94,9 @@ angular.module('formModule').directive('cdeBoardFormSummaryList',
 import {FormDescriptionComponent} from "../tabs/description/formDescription.component";
 angular.module('formModule').directive('cdeFormDescription', downgradeComponent({component: FormDescriptionComponent, inputs: ['elt', 'inScoreCdes', 'cache'], outputs: ['isFormValid', 'stageElt', 'cachePut']}));
 
+import {DisplayProfileComponent} from "../components/displayProfile/displayProfile.component";
+angular.module('formModule').directive('cdeFormDisplayProfile', downgradeComponent({component: DisplayProfileComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));
+
 import {FormSummaryListComponent} from "../components/searchResults/formSummaryList.component";
 angular.module('formModule').directive('cdeFormSummaryList', downgradeComponent({component: FormSummaryListComponent, inputs: ['forms'], outputs: []}));
 
@@ -105,3 +108,6 @@ angular.module('formModule').directive('cdeNativeRender', downgradeComponent({co
 
 import {NativeRenderFullComponent} from "../nativeRender/nativeRenderFull.component";
 angular.module('formModule').directive('cdeNativeRenderFull', downgradeComponent({component: NativeRenderFullComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));
+
+import {FormGeneralDetailsComponent} from "../components/formGeneralDetails/formGeneralDetails.component";
+angular.module('formModule').directive('cdeFormGeneralDetails', downgradeComponent({component: FormGeneralDetailsComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));

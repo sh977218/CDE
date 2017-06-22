@@ -1,0 +1,48 @@
+<fieldset class="cdeFieldset" id="formTermMapping">
+    <legend>Mesh Descriptors:
+        <button  title="Add" role="link" id="addTermMap"
+                 *ngIf="isAllowedModel.isAllowed(elt) && !elt.unsaved" class="btn btn-default"
+                 (click)="openAddTermMap()"><span class="fa fa-edit"> Add</span>
+        </button>
+    </legend>
+    <ul>
+        <li *ngFor="let desc of mapping.meshDescriptors; let i = index">
+                {{desc}} - {{descToName[desc]}}
+                <i *ngIf="!confirm && isAllowedModel.isAllowed(elt) && !elt.unsaved" (click)="confirm = i"
+                   class="fa fa-trash-o hand-cursor" title="Remove Mesh Term"></i>
+                <span *ngIf="confirm === i" class="badge">Confirm Delete
+                    <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="confirm = false; removeMeshDescriptor(i)"
+                          id="confirmRemoveMesh-{{i}}" title="Delete" href=""></span>
+                    <span class="btn-default fa fa-times panel-badge-btn hand-cursor" (click)="confirm = false"
+                          id="cancelRemoveMesh-{{i}}" title="Cancel" href=""></span>
+                </span>
+        </li>
+    </ul>
+
+</fieldset>
+
+<ng-template #newTermMap id="newTermMapModal" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Mesh Mappings</h3>
+    </div>
+    <div class="modal-body" id="addClassificationModalBody">
+        <form #newMeshDescForm="ngForm" class="form-inline pt20">
+            <div class="form-group">
+                <label for="mesh.search">MeSH Descriptor: </label>
+                <input [(ngModel)]="meshTerm" name="mesh.search" id="mesh.search" class="form-control" required
+                       (ngModelChange)="loadDescriptor()" autocomplete="off">
+            </div>
+            <div *ngIf="descriptor">
+                {{descriptor.id}} -- {{descriptor.name}}
+                <button type="submit" class="btn btn-default btn-sm"
+                        id="addMeshDescButton" (click)="addMeshDescriptor()"
+                        *ngIf="descriptor.name.length > 0"
+                        [disabled]="isDescriptorAlreadyMapped(descriptor.id)">Add</button>
+
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default done" (click)="d()" id="closeModal">Close</button>
+    </div>
+</ng-template>

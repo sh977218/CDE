@@ -1,5 +1,8 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { Http, Response } from "@angular/http";
+import {
+    Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, TemplateRef,
+    ViewChild, ViewRef
+} from "@angular/core";
+import { Http } from "@angular/http";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 
@@ -82,6 +85,12 @@ export class FormDescriptionComponent implements OnInit {
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
     @ViewChild("questionSearchTmpl") questionSearchTmpl: TemplateRef<any>;
 
+    @ViewChild("descToolbox") descToolbox: ElementRef;
+
+    @HostListener('window:scroll', ['$event']) doIt() {
+        this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
+    }
+
     addIndex = function (elems, elem, i) { return elems.splice(i, 0, elem); };
     toolDropTo: {index: number, parent: any};
     toolSection: {insert: 'section', data: FormElement};
@@ -125,7 +134,6 @@ export class FormDescriptionComponent implements OnInit {
     };
 
     constructor(private formService: FormService,
-                private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel) {
         this.toolSection = {insert: "section", data: this.getNewSection()};
@@ -173,13 +181,13 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     openFormSearch() {
-        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(result => {
+        this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {
         }, () => {
         });
     }
 
     openQuestionSearch() {
-        this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(result => {
+        this.modalService.open(this.questionSearchTmpl, {size: "lg"}).result.then(() => {
         }, () => {
         });
     }
