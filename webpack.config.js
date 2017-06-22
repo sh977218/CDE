@@ -52,6 +52,11 @@ module.exports = {
                 compressor: {
                     warnings: false
                 }
+            }),
+            // remove this after remove bower
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery"
             })
         ] : [
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
@@ -64,6 +69,11 @@ module.exports = {
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
             new webpack.ProgressPlugin(), // show progress in ConEmu window
+            // remove this after remove bower
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery"
+            })
         ],
     resolve: {
         unsafeCache: false,
