@@ -17,7 +17,6 @@ export class NamingComponent implements OnInit {
     public orgNamingTags: {id: string; text: string}[] = [];
 
     loaded: boolean;
-
     public onInitDone: boolean;
 
     //noinspection TypeScriptUnresolvedVariable
@@ -66,6 +65,7 @@ export class NamingComponent implements OnInit {
             n.currentTags = n.tags.map(t => t.tag);
         });
     }
+
     openNewNamingModal() {
         this.modalRef = this.modalService.open(this.newNamingContent, {size: "lg"});
         this.modalRef.result.then(() => this.newNaming = {}, () => {});
