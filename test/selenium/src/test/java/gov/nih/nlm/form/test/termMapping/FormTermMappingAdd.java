@@ -24,6 +24,9 @@ public class FormTermMappingAdd extends NlmCdeBaseTest{
         clickElement(By.id("addTermMap"));
         findElement(By.id("mesh.search")).sendKeys("toes");
         textPresent("D014034 -- Toes");
+        findElement(By.id("mesh.search")).clear();
+        findElement(By.id("mesh.search")).sendKeys("fingers");
+        textPresent("D005385 -- Fingers");
 
         // verify it's disabled
         findElement(By.xpath("//button[@disabled and @id='addMeshDescButton']"));
