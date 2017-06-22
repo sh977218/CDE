@@ -29,38 +29,64 @@ export class NavigationComponent {
     }
 
     takeATour() {
-        var tour = new Tour({
+        localStorage.clear();
+        let tour = new Tour({
             name: "CDE-Tour",
-            backdrop: true,
-            debug: true,
             steps: [
-                /*            {
-                 element: "#menu_cdes_link",
-                 title: "Search Board",
-                 content: "This button will take you to search CDE page."
-                 },
-                 {
-                 element: "#menu_forms_link",
-                 title: "Search Form",
-                 content: "This button will take you to search Form page."
-                 },*/
-                {
-                    element: "#boardsMenu",
-                    title: "Search Board",
-                    content: "This button will take you to search Board page."
-                },
-                {
-                    element: "#createEltLink",
-                    title: "Create ELT",
-                    content: "This button will take you to create ELT."
-                },
                 {
                     element: "#menu_cdes_link",
-                    title: "Create ELT",
-                    content: "This button will take you to create ELT.",
-                    path: '/cde/search'
+                    title: "CDEs",
+                    content: "This menu will take you back to the CDE search page"
+                },
+                {
+                    element: "#menu_forms_link",
+                    title: "Forms",
+                    content: "This menu will take you to the Form search page"
+                },
+                {
+                    element: "#boardsMenu",
+                    title: "Boards",
+                    content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
+                },
+                {
+                    element: "#menu_qb_link",
+                    title: "Quick Board",
+                    content: "The quick board is a volatile board for doing quick comparisons or CDE downloads. "
+                },
+                {
+                    element: "#menu_help_link",
+                    title: "Help",
+                    content: "Here's where you can find more documentation about this site or start this tour again."
+                },
+                {
+                    element: "#search_by_classification_AECC",
+                    title: "Search by organization"
+                },
+                {
+                    element: "#resultList",
+                    title: "Search Result",
+                    content: "This section shows the search result.",
+                    placement: "top"
+                },
+                {
+                    element: "#classif_filter_title",
+                    content: "This section shows classification filter",
+                    title: "Classification Filter"
+                },
+                {
+                    element: "#status_filter",
+                    content: "This section shows status filter",
+                    title: "Status Filter"
+                },
+                {
+                    element: "#datatype_filter",
+                    content: "This section shows data type filter",
+                    title: "Data Type Filter"
+                }, {
+                    element: "#linkToElt_0",
+                    content: "This is element name",
+                    title: "Element Name"
                 }
-
             ]
         });
         tour.init();

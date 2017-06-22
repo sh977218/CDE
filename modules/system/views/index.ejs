@@ -53,8 +53,6 @@
 	<link rel='stylesheet' href='/components/textAngular/dist/textAngular.css' />
 	<link rel='stylesheet' href='/components/bootstrap-css-only/css/bootstrap.css' />
 	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
-	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour.css'/>
-	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css'/>
 	<!-- endbower -->
 
 	<link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css'/>
@@ -94,14 +92,9 @@
 	</div>
 </div>
 
-<script src="http://bootstraptour.com/components/jquery/dist/jquery.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
-<script src="http://bootstraptour.com/components/bootstrap/dist/js/bootstrap.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
-<script src="http://bootstraptour.com/components/blueimp-md5/js/md5.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
-<script src="http://bootstraptour.com/assets/vendor/jquery.smoothscroll.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
-<script src="http://bootstraptour.com/assets/js/bootstrap-tour.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
-<script src="http://bootstraptour.com/assets/js/bootstrap-tour.docs.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
 <!-- build:js /system/public/assets/js/vendor.js -->
 <!-- bower:js -->
+<script src="/components/jquery/dist/jquery.js"></script>
 <script src="/components/angular/angular.js"></script>
 <script src="/components/angular-route/angular-route.js"></script>
 <script src="/components/angular-resource/angular-resource.js"></script>
@@ -124,6 +117,7 @@
 <script src="/components/textAngular/dist/textAngular.js"></script>
 <script src="/components/textAngular/dist/textAngular-sanitize.js"></script>
 <script src="/components/textAngular/dist/textAngularSetup.js"></script>
+<script src="/components/bootstrap/dist/js/bootstrap.js"></script>
 <script src="/components/angularjs-camelCase-human/camelcase-browser.js"></script>
 <script src="/components/html2canvas/build/html2canvas.js"></script>
 <script src="/components/angular-send-feedback/dist/angular-send-feedback.js"></script>
@@ -174,41 +168,6 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
-
-</script>
-
-<script>
-    function takeATour() {
-        localStorage.clear();
-        let tour = new Tour({
-            name: "CDE Tour",
-            debug: true,
-            steps: [
-				/*            {
-				 element: "#menu_cdes_link",
-				 title: "Search Board",
-				 content: "This button will take you to search CDE page."
-				 },
-				 {
-				 element: "#menu_forms_link",
-				 title: "Search Form",
-				 content: "This button will take you to search Form page."
-				 },*/
-                {
-                    element: "#boardsMenu",
-                    title: "Search Board",
-                    content: "This button will take you to search Board page."
-                },
-                {
-                    element: "#createEltLink",
-                    title: "Create ELT",
-                    content: "This button will take you to create ELT."
-                }
-            ]
-        });
-        tour.init();
-        tour.start();
-    }
 
 </script>
 
