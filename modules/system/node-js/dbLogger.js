@@ -157,6 +157,25 @@ exports.getLogs = function (body, callback) {
     });
 };
 
+exports.appLogs = function (body, callback) {
+    let currentPage = 1;
+    if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
+    let itemsPerPage = 500;
+    if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
+    let skip = (currentPage - 1) * itemsPerPage;
+    let query = {};
+    let modal = consoleLogModel.find();
+    if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
+    if (body.toDate) modal.where("date").lte(moment(body.toDate));
+    consoleLogModel.count({}, function (err, count) {
+        modal.sort({date: -1}).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
+            let result = {itemsPerPage: itemsPerPage, logs: logs};
+            if (!body.totalItems) result.totalItems = count;
+            callback(err, result);
+        });
+    });
+};
+
 exports.getServerErrors = function (params, callback) {
     if (!params.limit) params.limit = 20;
     if (!params.skip) params.skip = 0;

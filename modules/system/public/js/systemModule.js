@@ -435,6 +435,9 @@ angular.module('systemModule').directive('user-comments', downgradeComponent({co
 import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
 angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
 
+import {AppLogComponent} from "../components/siteAdmin/appLogs/appLog.component";
+angular.module('systemModule').directive('cdeAppLog', downgradeComponent({component: AppLogComponent, inputs: [], outputs: []}));
+
 import {ListManagementComponent} from "../components/siteAdmin/listManagement/listManagement.component";
 angular.module('systemModule').directive('cdeListManagement', downgradeComponent({component: ListManagementComponent, inputs: [], outputs: []}));
 
