@@ -13,10 +13,10 @@ public class DisplayProfilesTest extends BaseFormTest {
                                       boolean numbering, String dispType, int numberOfColumns, boolean displayInvisible) {
         textPresent("Add Profile");
         clickElement(By.id("addDisplayProfile"));
-        clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
-        findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
-        findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
-        clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//button[contains(@class, 'fa-check')]"));
+        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
+        findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
+        findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
+        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//button[contains(@class, 'fa-check')]"));
         if (!matrix) clickElement(By.id("displayAsMatrix_" + index));
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));

@@ -4,8 +4,7 @@ const b = require('./boardUtils');
 describe('Pin All', () => {
 
     it ('should pin more than 20', done => {
-
-        browser.driver.manage().window().maximize();
+        // browser.driver.manage().window().maximize();
         browser.get("");
 
         let board_name = "Pin All More Than 20 Test Board";

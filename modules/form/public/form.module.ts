@@ -5,6 +5,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
 import { SortableModule } from "ngx-bootstrap";
+import { NouisliderModule } from 'ng2-nouislider';
 
 import { AdminItemModule } from "../../adminItem/public/adminItem.module";
 import { BoardModule } from "../../board/public/board.module";
@@ -32,12 +33,16 @@ import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 
 import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
+import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
+import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
+import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        NouisliderModule,
         Select2Module,
         SortableModule.forRoot(),
         TreeModule,
@@ -52,13 +57,16 @@ import { SkipLogicService } from "./skipLogic.service";
         BoardFormSummaryListComponent,
         BoardFormSummaryListContentComponent,
         CdeSortableComponent,
+        DisplayProfileComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
+        FormGeneralDetailsComponent,
         FormSearchDirective,
         FormSummaryListComponent,
         FormSummaryListContentComponent,
+        FormTermMappingComponent,
         MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
@@ -69,6 +77,9 @@ import { SkipLogicService } from "./skipLogic.service";
         QuestionSearchDirective
     ],
     entryComponents: [
+        DisplayProfileComponent,
+        FormDescriptionComponent,
+        FormGeneralDetailsComponent,
         BoardFormSummaryListComponent,
         BoardFormSummaryListContentComponent,
         FormDescriptionComponent,

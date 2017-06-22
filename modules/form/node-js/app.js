@@ -17,7 +17,7 @@ var express = require('express')
     , usersrvc = require('../../system/node-js/usersrvc')
     , dns = require('dns')
     , os = require('os')
-    ;
+;
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);

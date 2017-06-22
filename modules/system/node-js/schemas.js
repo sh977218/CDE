@@ -392,6 +392,7 @@ schemas.classificationAudit = new mongoose.Schema({
 
 schemas.meshClassification = new mongoose.Schema({
     flatClassification: String,
+    eltId: String,
     meshDescriptors: [String],
     flatTrees: [String]
 });

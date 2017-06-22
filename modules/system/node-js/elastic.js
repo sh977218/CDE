@@ -613,7 +613,6 @@ exports.syncWithMesh = function(allMappings) {
                                 }
                             });
                             if (trees.size > 0) {
-
                                 request.body.push({
                                     update: {
                                         _index: s.index,
