@@ -28,7 +28,7 @@ exports.consoleLog = function (message, level) {
     new consoleLogModel({
         message: message, level: level
     }).save(err => {
-        // TODO;
+        if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + err);
     });
 };
 
