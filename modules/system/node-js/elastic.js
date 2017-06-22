@@ -390,14 +390,15 @@ exports.buildElasticSearchQuery = function (user, settings) {
             "bool": {
                 "should": settings.visibleStatuses.map(regStatus => {return {"term": {"registrationState.registrationStatus": regStatus}};})
             }
-        },
-        {
+        }
+    ]}};
+    if (usersvc.myOrgs(user).length > 0)
+        regStatusAggFilter.bool.should.push({
             "bool": {
                 "must_not": {term: {"registrationState.registrationStatus": "Retired"}},
                 "should": usersvc.myOrgs(user).map(org => {return {"term": {"stewardOrg.name": org}};})
             }
-        }
-    ]}};
+        });
 
     if (sort) {
         //noinspection JSAnnotator
@@ -612,7 +613,6 @@ exports.syncWithMesh = function(allMappings) {
                                 }
                             });
                             if (trees.size > 0) {
-
                                 request.body.push({
                                     update: {
                                         _index: s.index,

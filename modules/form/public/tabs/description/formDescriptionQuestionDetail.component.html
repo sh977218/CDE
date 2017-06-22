@@ -96,21 +96,13 @@
             <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible" (click)="stageElt.emit()">
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Repeats:</div>
-        <div class="col-sm-2 col-xs-12 mb-1">
-            <select class="form-control" title="Repeats" [(ngModel)]="question.cardinality" (change)="stageElt.emit()">
-                    <option *ngFor="let item of cardinalityOptions" value="item.value" [textContent]="item.label"></option>
-            </select>
-        </div>
-    </div>
     <div class="row" *ngIf="parent">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Show if:</div>
         <div class="col-sm-10 col-xs-12 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
             <input #slInput type="text" title="Show if"
                    (focus)="slOptionsRetrigger()"
                    [ngModel]="question.skipLogic.condition"
-                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event)"
+                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event); stageElt.emit()"
                    class="form-control skipLogicCondition"
                    [ngbTypeahead]="getSkipLogicOptions"
                    (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>

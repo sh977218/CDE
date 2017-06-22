@@ -2,7 +2,6 @@ module.exports = {
 
     utils: this,
 
-
     loginAs(username, password) {
         element(by.id("login_link")).click();
         let usernameStr = username;

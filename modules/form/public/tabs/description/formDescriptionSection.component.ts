@@ -6,8 +6,8 @@ import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 
 import { FormService } from "../../form.service";
-import { FormElement, FormSection, SkipLogic } from "../../form.model";
-import { FormattedValue, Instruction } from "../../../../core/public/models.model";
+import { FormElement, SkipLogic } from "../../form.model";
+import { FormattedValue } from "../../../../core/public/models.model";
 import { SkipLogicService } from "../../skipLogic.service";
 
 @Component({
@@ -18,7 +18,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() inScoreCdes: any;
     @Input() node: TreeNode;
-    @Input() preId: string;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
@@ -29,6 +28,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     isSubForm = false;
     parent: FormElement;
     section: any;
+
     repeatOptions = [
         {label: "", value: ""},
         {label: "Set Number of Times", value: "N"},
@@ -41,7 +41,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     ngOnInit() {
         this.section = this.node.data;
         this.parent = this.node.parent.data;
-        this.section.repeatOption = this.getRepeatOption(this.section);
+        this.section.repeatOption = FormDescriptionSectionComponent.getRepeatOption(this.section);
         this.section.repeatNumber = this.getRepeatNumber(this.section);
         if (!this.section.instructions)
             this.section.instructions = new FormattedValue;
@@ -67,7 +67,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.stageElt.emit();
     }
 
-    getRepeatOption(section) {
+    static getRepeatOption(section) {
         if (!section.repeat)
             return "";
         if (section.repeat[0] === "F")
