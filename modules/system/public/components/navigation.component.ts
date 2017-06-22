@@ -12,7 +12,7 @@ import * as Tour from "../../../../node_modules/bootstrap-tour/build/js/bootstra
         }
     `]
 })
-export class NavigationComponent implements OnInit {
+export class NavigationComponent {
     @Input() quickBoardCount: number;
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
@@ -22,9 +22,6 @@ export class NavigationComponent implements OnInit {
     largeContext = {$implicit: ""};
 
     constructor(@Inject("userResource") public userService) {
-    }
-
-    ngOnInit(): void {
     }
 
     isPageActive(viewLocation) {
