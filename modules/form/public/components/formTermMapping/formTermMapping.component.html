@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label for="mesh.search">MeSH Descriptor: </label>
                 <input [(ngModel)]="meshTerm" name="mesh.search" id="mesh.search" class="form-control" required
-                       (ngModelChange)="loadDescriptor()">
+                       (ngModelChange)="loadDescriptor()" autocomplete="off">
             </div>
             <div *ngIf="descriptor">
                 {{descriptor.id}} -- {{descriptor.name}}

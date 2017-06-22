@@ -13,8 +13,6 @@ public class FormTermMappingAdd extends NlmCdeBaseTest{
         goToFormByName("Written Verbal Fluency Test");
         clickElement(By.id("addTermMap"));
         findElement(By.id("mesh.search")).sendKeys("fingers");
-        // get rid of autocomplete
-        clickElement(By.xpath("//label[@for='mesh.search']"));
         textPresent("D005385 -- Fingers");
         clickElement(By.id("addMeshDescButton"));
         clickElement(By.id("closeModal"));
@@ -25,8 +23,6 @@ public class FormTermMappingAdd extends NlmCdeBaseTest{
         // check can't add dups
         clickElement(By.id("addTermMap"));
         findElement(By.id("mesh.search")).sendKeys("fingers");
-        // get rid of autocomplete
-        clickElement(By.xpath("//label[@for='mesh.search']"));
         textPresent("D005385 -- Fingers");
 
         // verify it's disabled

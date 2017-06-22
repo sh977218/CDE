@@ -21,7 +21,6 @@ export class FormTermMappingComponent implements OnInit {
     ) {}
 
     @Input() elt: any;
-
     @ViewChild("newTermMap") public newTermMap: NgbModalModule;
 
     private searchTerms = new Subject<string>();
@@ -74,13 +73,12 @@ export class FormTermMappingComponent implements OnInit {
                     this.descToName[desc] = res.DescriptorName.String.t;
                 });
             });
-
         }, function () {});
     }
 
     addMeshDescriptor () {
         this.mapping.meshDescriptors.push(this.descriptor.id);
-        this.descriptor = {name: "", id: ""};
+        // this.descriptor = {name: "", id: ""};
 
         this.http.post("/meshClassification", this.mapping).subscribe(response => {
             this.alert.addAlert("success", "Saved");

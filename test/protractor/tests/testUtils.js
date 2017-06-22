@@ -24,10 +24,6 @@ module.exports = {
         expect(element(by.css("body")).getText()).toContain(text);
     },
 
-    textPresent: function (text) {
-        expect(element(by.css("body")).getText()).not.toContain(text);
-    },
-
     closeAlert: function () {
         element(by.css("button.close")).click();
     }
