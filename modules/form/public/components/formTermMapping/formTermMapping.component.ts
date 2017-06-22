@@ -55,7 +55,6 @@ export class FormTermMappingComponent implements OnInit {
                     this.descriptor = null;
                 }
             });
-
         this.reloadMeshTerms();
     }
 
@@ -77,14 +76,11 @@ export class FormTermMappingComponent implements OnInit {
             });
 
         }, function () {});
-
-
-
     }
 
     addMeshDescriptor () {
         this.mapping.meshDescriptors.push(this.descriptor.id);
-        this.descriptor = null;
+        this.descriptor = {name: "", id: ""};
 
         this.http.post("/meshClassification", this.mapping).subscribe(response => {
             this.alert.addAlert("success", "Saved");

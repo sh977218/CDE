@@ -16,7 +16,7 @@ public class FormTermMappingNotLoggedIn extends NlmCdeBaseTest {
 
         Assert.assertEquals(driver.findElements(By.id("addTermMap")).size(), 0);
 
-        Assert.assertEquals(findElements(By.xpath("//i[@title='Remove Mesh Term']")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//i[@title='Remove Mesh Term']")).size(), 0);
     }
 
 }
