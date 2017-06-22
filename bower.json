@@ -12,6 +12,7 @@
     "angular-local-storage": "0.5.2",
     "angular-timeago": "0.4.4",
     "font-awesome": "4.7.0",
+    "jquery": "~1.10.2",
     "select2": "4.0.3",
     "selectize": "~0.8.5",
     "angular-ui-select": "0.19.6",
