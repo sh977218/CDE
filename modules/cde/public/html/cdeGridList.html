@@ -1,4 +1,6 @@
-<span ng-class="accordionListStyle" ng-controller="TableViewCtrl" id="gridList">
+<span ng-if="module === 'cde'" ng-class="accordionListStyle">
+    <cde-table-list [elts]="cdes" [module]="module"></cde-table-list></span>
+<span ng-if="module !== 'cde'" ng-class="accordionListStyle" ng-controller="TableViewCtrl" id="gridList">
     <table class="gridListView table table-condensed table-striped table-bordered" ng-class="accordionListStyle">
         <thead>
         <tr>
