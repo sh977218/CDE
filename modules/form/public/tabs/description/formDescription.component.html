@@ -2,20 +2,20 @@
     <div class="col-xs-12">
         <div class="descriptionToolbox" *ngIf="isAllowedModel.isAllowed(elt)" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
-            <button id="addSectionTop" class="btn btn-default formDescriptionTool" style="width: 74px"
-                    [treeDrag]="toolSection" [treeDragEnabled]="true">
+            <span role="button" id="addSectionTop" class="btn btn-default formDescriptionTool" style="width: 74px"
+                  [treeDrag]="toolSection" [treeDragEnabled]="true">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
-            </button>
-            <button id="startAddingQuestions" class="btn btn-default formDescriptionTool" style="width: 87px"
-                    *ngIf="elt.formElements.length > 0"
-                    [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true">
+            </span>
+            <span role="button" id="startAddingQuestions" class="btn btn-default formDescriptionTool" style="width: 87px"
+                  *ngIf="elt.formElements.length > 0"
+                  [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
-            </button>
-            <button id="startAddingForms" class="btn btn-default formDescriptionTool" style="width: 68px"
-                    *ngIf="elt.formElements.length > 0"
-                    [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true">
+            </span>
+            <span role="button" id="startAddingForms" class="btn btn-default formDescriptionTool" style="width: 68px"
+                  *ngIf="elt.formElements.length > 0"
+                  [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true">
                 <i class="fa fa-cubes"></i><span class="toolForm"></span>
-            </button>
+            </span>
         </div>
         <div *ngIf="elt.formElements.length === 0">
             <i class="fa fa-exclamation-triangle"></i>

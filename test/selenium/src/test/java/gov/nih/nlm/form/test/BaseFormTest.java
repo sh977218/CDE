@@ -66,7 +66,7 @@ public class BaseFormTest extends FormCommentTest {
                 searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
 
             try {
-                WebElement sourceElt = findElement(By.xpath("//button[@id='addSectionTop']"));
+                WebElement sourceElt = findElement(By.xpath("//*[@id='addSectionTop']"));
                 WebElement targetElt = findElement(By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]"));
 
                 (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
