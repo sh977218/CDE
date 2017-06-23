@@ -20,6 +20,7 @@ import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
 import { AlertComponent } from "./components/alert/alert.component";
 import { AlertService } from "./components/alert/alert.service";
+import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component";
 
 @NgModule({
     imports: [
@@ -34,6 +35,7 @@ import { AlertService } from "./components/alert/alert.service";
     ],
     declarations: [
         AlertComponent,
+        AppLogComponent,
         CdeAccordionListDirective,
         DailyUsageComponent,
         FormAccordionListDirective,
@@ -49,6 +51,7 @@ import { AlertService } from "./components/alert/alert.service";
     ],
     entryComponents: [
         AlertComponent,
+        AppLogComponent,
         DailyUsageComponent,
         HomeComponent,
         ListManagementComponent,

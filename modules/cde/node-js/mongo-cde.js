@@ -5,6 +5,7 @@ var config = require('../../system/node-js/parseConfig')
     , mongo_form = require('../../form/node-js/mongo-form')
     , mongo_board = require('../../board/node-js/mongo-board')
     , connHelper = require('../../system/node-js/connections')
+    , dbLogger = require('../../system/node-js/dbLogger')
     , logging = require('../../system/node-js/logging')
     , cdediff = require("./cdediff")
     , async = require('async')
@@ -444,7 +445,7 @@ new CronJob({
     cronTime: '00 00 4 * * *',
     //noinspection JSUnresolvedFunction
     onTick: function () {
-        console.log("Repairing Board <-> CDE references.");
+        dbLogger.consoleLog("Repairing Board <-> CDE references.");
         var dayBeforeYesterday = new Date();
         dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
         mongo_board.PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
@@ -456,7 +457,7 @@ new CronJob({
                     });
                 });
             }, function () {
-                console.log("Board <-> CDE reference repair done!");
+                dbLogger.consoleLog("Board <-> CDE reference repair done!");
             });
         });
     },

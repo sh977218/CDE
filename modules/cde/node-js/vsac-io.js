@@ -69,12 +69,12 @@ exports.getTGT = function (cb) {
         res.on('end', function () {
             vsacTGT = output;
             ticketOptions.path = config.vsac.ticket.path + '/' + vsacTGT;
-            cb(vsacTGT);
+            if (cb) cb(vsacTGT);
         });
     });
 
     req.on('error', function (e) {
-        console.log('getTgt: ERROR with request: ' + e);
+        dbLogger.consoleLog('getTgt: ERROR with request: ' + e, 'error');
     });
 
     req.write(authData);
@@ -94,7 +94,7 @@ exports.getTicket = function (cb) {
     });
 
     req.on('error', function (e) {
-        console.log('getTicket: ERROR with request ' + e);
+        dbLogger.consoleLog('getTicket: ERROR with request ' + e, 'error');
     });
 
     req.write(ticketData);

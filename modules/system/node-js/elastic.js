@@ -92,12 +92,12 @@ function EsInjector(esClient, indexName, documentType) {
                             cb();
                         } else {
                             cb();
-                            console.log("ingested: " + request.body.length / 2);
+                            dbLogger.consoleLog("ingested: " + request.body.length / 2);
                         }
                     });
                 }, 2000);
             } else {
-                console.log("ingested: " + request.body.length / 2);
+                dbLogger.consoleLog("ingested: " + request.body.length / 2);
                 cb();
             }
         });
@@ -139,9 +139,9 @@ exports.reIndex = function (index, cb) {
     index.count = 0;
     exports.daoMap[index.name].dao.count(condition, function (err, totalCount) {
         if (err) {
-            console.log("Error getting count: " + err);
+            dbLogger.consoleLog("Error getting count: " + err, 'error');
         }
-        console.log("Total count for " + index.name + " is " + totalCount);
+        dbLogger.consoleLog("Total count for " + index.name + " is " + totalCount);
         index.totalCount = totalCount;
         let stream = exports.daoMap[index.name].dao.getStream(condition);
         stream.on('data', function (elt) {
@@ -155,12 +155,12 @@ exports.reIndex = function (index, cb) {
         });
         stream.on('end', function () {
             injector.inject(function () {
-                console.log("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                dbLogger.consoleLog("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
                 if (cb) cb();
             });
         });
         stream.on('error', function(err) {
-           console.log("Error getting stream: " + err);
+            dbLogger.consoleLog("Error getting stream: " + err);
         });
     });
 };
@@ -170,16 +170,16 @@ function createIndex(index, cb) {
     let indexMapping = index.indexJson;
     esClient.indices.exists({index: indexName}, function (error, doesIt) {
         if (doesIt) {
-            console.log("index already exists.");
+            dbLogger.consoleLog("index already exists.");
         }
         if (!doesIt) {
-            console.log("creating index: " + indexName);
+            dbLogger.consoleLog("creating index: " + indexName);
             esClient.indices.create({index: indexName, timeout: "10s", body: indexMapping},
                 function (error) {
                     if (error) {
-                        console.log("error creating index. " + error);
+                        dbLogger.consoleLog("error creating index. " + error, 'error');
                     } else {
-                         console.log("index Created");
+                        dbLogger.consoleLog("index Created");
                         exports.reIndex(index, cb);
                     }
                 });
@@ -628,11 +628,11 @@ exports.syncWithMesh = function(allMappings) {
                             exports.meshSyncStatus[s.type].done++;
                         });
                         esClient.bulk(request, err => {
-                            if (err) console.log("ERR: " + err);
+                            if (err) dbLogger.consoleLog("ERR: " + err, 'error');
                             scrollThrough(newScrollId, s);
                         });
                     } else {
-                        console.log("done syncing " + s.index + " with MeSH");
+                        dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
                     }
                 }
             });
@@ -686,8 +686,7 @@ exports.elasticsearch = function (query, type, cb) {
             }
         } else {
             if (response.hits.total === 0 && config.name.indexOf("Production") === -1) {
-                console.log("No response. QUERY: " + JSON.stringify(query));
-                console.log("----");
+                dbLogger.consoleLog("No response. QUERY: " + JSON.stringify(query), 'debug');
             }
 
             let result = {
