@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output, OnInit } from "@angular/core";
 import { SharedService } from "../../../core/public/shared.service";
 import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
 import * as Tour from "../../../../node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.js";
@@ -33,14 +33,18 @@ const navigationSteps: Array<any> = [
 
 const searchResultSteps: Array<any> = [
     {
+        path: "/cde/search",
         element: "#search_by_classification_AECC",
-        title: "Search by organization"
+        title: "Search by Organization",
+        reflex: true
     },
     {
+        path: "/cde/search?selectedOrg=ACRIN",
         element: "#resultList",
         title: "Search Result",
         content: "This section shows the search result.",
-        placement: "top"
+        placement: "top",
+        reflex: true
     },
     {
         element: "#classif_filter_title",
@@ -200,7 +204,7 @@ const cdeSteps: Array<any> = [
         }
     `]
 })
-export class NavigationComponent {
+export class NavigationComponent implements OnInit {
     @Input() quickBoardCount: number;
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
@@ -209,7 +213,12 @@ export class NavigationComponent {
     smallContext = {$implicit: "collapse"};
     largeContext = {$implicit: ""};
 
+    tour;
+
     constructor(@Inject("userResource") public userService) {
+    }
+
+    ngOnInit(): void {
     }
 
     isPageActive(viewLocation) {
@@ -217,13 +226,16 @@ export class NavigationComponent {
     }
 
     takeATour() {
-        localStorage.clear();
-        let tour = new Tour({
+        let steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps);
+        this.tour = new Tour({
             name: "CDE-Tour",
-            steps: navigationSteps.concat(searchResultSteps).concat(cdeSteps)
+            debug: true,
+            steps: steps
         });
-        tour.init();
-        tour.start();
+        if (!this.tour.end()) {
+            this.tour.init();
+            this.tour.start();
+        }
     }
 
 }
