@@ -9,6 +9,9 @@ import { CdeAppModule } from "./app.module";
 
 import "./upgrade-imports";
 
+// required for ng2-select2
+require('expose-loader?select2!select2');
+
 import { enableProdMode } from "@angular/core";
 if (PRODUCTION) {
     enableProdMode();
