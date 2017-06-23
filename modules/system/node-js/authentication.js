@@ -172,7 +172,6 @@ var oauthStrategy = new OAuth2Strategy({
         callbackURL: config.oauth.callbackURL
     },
     function (accessToken, refreshToken, profile, done) {
-        //console.log("Auth Completed :) | accessToken[" + accessToken + "] refreshToken[" + refreshToken + "] profile[", profile, "]");
         process.nextTick(function () {
             auth.findAddUserLocally({
                 username: profile.username,
@@ -190,7 +189,6 @@ oauthStrategy.userProfile = function (accessToken, done) {
         if (err) return done(new InternalOAuthError('failed to fetch user profile', err));
         try {
             var json = JSON.parse(body);
-            //console.log(" * userProfile body[" + body + "]");
             var profile = {provider: 'nlmauth'};
 
             profile.name = json.name;

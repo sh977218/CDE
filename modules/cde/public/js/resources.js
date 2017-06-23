@@ -16,7 +16,7 @@ angular.module('resourcesCde', ['ngResource'])
             byTinyIdList: function (ids, cb) {
                 $http.post("/cdesByTinyIdList", ids).then(function (response) {
                     cb(response.data);
-                }, function (err) {console.log(err)});
+                }, function (err) {});
             }
         };
     }])

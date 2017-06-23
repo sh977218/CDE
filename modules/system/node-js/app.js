@@ -240,6 +240,15 @@ exports.init = function (app) {
         res.status(401).send();
     });
 
+    app.post('/appLogs', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin)
+            return dbLogger.appLogs(req.body, function (err, result) {
+                if (err) return res.send({error: err});
+                res.send(result);
+            });
+        res.status(401).send();
+    });
+
     app.get('/logUsageDailyReport', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             dbLogger.usageByDay(function (result) {
