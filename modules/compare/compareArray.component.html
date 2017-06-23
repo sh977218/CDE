@@ -1,5 +1,5 @@
 <ng-container *ngFor="let property of compareArrayOption;">
-    <div *ngIf="!property.match || property.display" class="col-xs-12" id="{{property.label}}">
+    <div *ngIf="!property.match || property.display" id="{{property.label}}">
         <label>{{property.label}}:</label>
         <div *ngFor="let r of property.result;let i = index">
             <div class="col-xs-12" *ngIf="!r.match || r.display" id="{{property.label}}_{{i}}">
@@ -23,7 +23,7 @@
                             <div *ngIf="r.data[d.property]">
                                 <label>{{d.label}}:</label>
                                 <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
-                                    {{r.data[d.property]</a>
+                                    {{r.data[d.property]}}</a>
                                 <span *ngIf="!d.url">{{r.data[d.property]}}</span>
                             </div>
                         </ng-container>
