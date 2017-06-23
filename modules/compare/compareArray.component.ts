@@ -12,8 +12,6 @@ let compareArrayOption = [
             if (_.isEmpty(b.diff)) b.diff = [];
             let result = _.isEqual(a.title, b.title);
             if (result) {
-                if (!a || !b) {
-                }
                 if (!_.isEqual(a.uri, b.uri)) {
                     a.diff.push("uri");
                     b.diff.push("uri");
@@ -78,8 +76,6 @@ let compareArrayOption = [
                 if (!_.isEqual(a.tags, b.tags)) {
                     a.diff.push("tags");
                     b.diff.push("tags");
-                    a.tags = a.tags.map(t => t.tag).join(", ");
-                    b.tags = b.tags.map(t => t.tag).join(", ");
                     a.display = true;
                     b.display = true;
                 }
@@ -100,8 +96,6 @@ let compareArrayOption = [
             if (_.isEmpty(b.diff)) b.diff = [];
             let result = _.isEqual(a.key, b.key);
             if (result) {
-                if (!a || !b) {
-                }
                 if (!_.isEqual(a.value, b.value)) {
                     a.diff.push("value");
                     b.diff.push("value");
@@ -150,8 +144,6 @@ let cdeCompareArrayOption = [
             if (_.isEmpty(b.diff)) b.diff = [];
             let result = _.isEqual(a.valueMeaningName, b.valueMeaningName);
             if (result) {
-                if (!a || !b) {
-                }
                 if (!_.isEqual(a.permissibleValue, b.permissibleValue)) {
                     a.diff.push("permissibleValue");
                     b.diff.push("permissibleValue");
@@ -242,8 +234,6 @@ let formCompareArrayOption = [
                 if (_.isEmpty(b.diff)) b.diff = [];
                 let result = _.isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                 if (result) {
-                    if (!a || !b) {
-                    }
                     if (!_.isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push("instructions.value");
                         b.diff.push("instructions.value");
@@ -270,8 +260,6 @@ let formCompareArrayOption = [
                 if (_.isEmpty(b.diff)) b.diff = [];
                 let result = _.isEqual(a.sectionId, b.sectionId);
                 if (result) {
-                    if (!a || !b) {
-                    }
                     if (!_.isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push("instructions.value");
                         b.diff.push("instructions.value");
@@ -297,6 +285,7 @@ let formCompareArrayOption = [
         property: "questions",
         data: [
             {label: 'Label', property: 'label'},
+            {label: 'Element Type', property: 'elementType'},
             {label: 'Form', property: 'inForm.form.tinyId', url: '/formView/?tinyId='},
             {label: 'CDE', property: 'question.cde.tinyId', url: '/deview/?tinyId='},
             {label: 'Unit of Measurement', property: 'question.uoms'},
