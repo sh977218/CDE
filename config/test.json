@@ -5,7 +5,6 @@
   "debugEnabled": true,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.5.4-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
-  "logFile": null,
   "database": {
     "local": {
       "db": "local",
