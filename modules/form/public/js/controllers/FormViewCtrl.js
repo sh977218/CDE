@@ -140,8 +140,6 @@ angular.module('formModule').controller
             var formCopy = angular.copy(form);
             fetchWholeForm(formCopy, function (wholeForm) {
                 $scope.elt = wholeForm;
-                $scope.elt._changeNote = $scope.elt.changeNote;
-                delete $scope.elt.changeNote;
                 $scope.formLoading = false;
                 userResource.getPromise().then(function () {
                     if (authShared.hasRole(userResource.user, "FormEditor")) {
