@@ -358,7 +358,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.loadBoards = function() {
         $http.get("/deBoards/" + $scope.elt.tinyId).then(function(response) {
             $scope.boards = response.data;
-        }, function (err) {console.log(err)});
+        }, function (err) {
+            Alert.addAlert("danger", "Unable to load board");
+        });
     };
 
     $scope.getPVTypeheadVsacNameList = function() {
@@ -371,7 +373,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
         $http.get("/permissibleValueCodeSystemList").then(function(response) {
             $scope.pVTypeaheadCodeSystemNameList = response.data;
         }, function (err) {
-            console.log(err);
+            Alert.addAlert("danger", "Unable to get list of Permissible Values");
         });
     };
 

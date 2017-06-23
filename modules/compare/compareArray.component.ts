@@ -375,8 +375,6 @@ export class CompareArrayComponent implements OnInit {
                     index++;
                     questions.push(sectionCopy);
                     this.flatFormQuestions(e, questions);
-                } else {
-                    console.log("Unknown element type: " + e.elementType);
                 }
             });
         }

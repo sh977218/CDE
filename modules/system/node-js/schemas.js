@@ -397,6 +397,12 @@ schemas.meshClassification = new mongoose.Schema({
     flatTrees: [String]
 });
 
+schemas.consoleLogSchema = new mongoose.Schema({
+    date: {type: Date, index: true, default: Date.now()},
+    message: String,
+    level: {type: String, enum: ['debug', 'info', 'warning', 'error'], default: 'info'}
+}, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+
 schemas.logSchema = new mongoose.Schema(
     {
         level: String

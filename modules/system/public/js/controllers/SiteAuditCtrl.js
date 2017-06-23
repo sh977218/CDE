@@ -11,7 +11,8 @@ angular.module('systemModule').controller('SiteAuditCtrl', ['$scope', function($
         {title: "Client Errors"},
         {title: "CDE Audit Log"},
         {title: "Classification Audit Log"},
-        {title: "Reported Issues"}
+        {title: "Reported Issues"},
+        {title: "App Logs"}
     ];
 
     $scope.showLogsForIP = function(IP) {
