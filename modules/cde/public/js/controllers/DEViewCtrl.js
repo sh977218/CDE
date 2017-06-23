@@ -158,6 +158,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
         service.get(query, function(de) {
             $scope.elt = de;
+            $scope.elt._changeNote = $scope.elt.changeNote;
+            delete $scope.elt.changeNote;
             $scope.elt.allValid = true;
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
