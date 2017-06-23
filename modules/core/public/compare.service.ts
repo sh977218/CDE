@@ -92,21 +92,17 @@ export class CompareService {
                     match: true,
                     display: l.display && r.display
                 };
-                let lCopy = {};
-                let rCopy = {};
                 if (!l.diff) l.diff = [];
                 if (!r.diff) r.diff = [];
                 let diff = _.uniq(l.diff.concat(r.diff));
                 if (!_.isEmpty(diff)) {
-                    option.data.forEach(d => {
-                        lCopy[d.property] = _.get(l, d.property);
-                        rCopy[d.property] = _.get(r, d.property);
-                    });
-                    tempResult["older"] = lCopy;
-                    tempResult["newer"] = rCopy;
-                    tempResult["diff"] = diff;
-                    tempResult["edited"] = true;
+                    this.copyValue(l, option.data);
+                    this.copyValue(r, option.data);
                 }
+                tempResult["older"] = l;
+                tempResult["newer"] = r;
+                tempResult["diff"] = diff;
+                tempResult["edited"] = true;
                 option.result.push(tempResult);
                 beginIndex++;
             }
