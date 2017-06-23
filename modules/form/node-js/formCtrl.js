@@ -8,6 +8,7 @@ var mongo_data_form = require('./mongo-form'),
     archiver = require('archiver'),
     async = require('async'),
     authorization = require('../../system/node-js/authorization'),
+    dbLogger = require('../../system/node-js/dbLogger'),
     fs = require("fs"),
     mongo_data_system = require('../../system/node-js/mongo-data'),
     md5_file = require("md5-file"),
@@ -156,7 +157,7 @@ function getFormForPublishing (form, req, res) {
                 fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";" +
                         "window.endpointUrl = '" + req.body.endpointUrl + "';</script>");
                 fs.readFile("modules/form/public/assets/css/" + cssFileName, "UTF-8", function (err, cssStr) {
-                    if (err) console.log(err);
+                    if (err) dbLogger.consoleLog(err, 'error');
                     fileStr = fileStr.replace("<!-- ICSSH -->", "<style>" + cssStr + "</style>");
                     var filePath = "modules/form/public/assets/js/" + jsFileName;
                     var filePrintPath = "modules/system/public/assets/js/" + jsPrintFileName;
@@ -362,9 +363,7 @@ var getFormRedCap = function (form, response) {
         });
 
         //on stream closed we can end the request
-        zip.on('end', function () {
-            console.log('Archive wrote %d bytes', zip.pointer());
-        });
+        zip.on('end', function () {});
         zip.pipe(response);
         zip.append('NLM', {name: 'AuthorID.txt'})
             .append(form.tinyId, {name: 'InstrumentID.txt'})

@@ -1,4 +1,4 @@
-var mongo_data_system = require('../../system/node-js/mongo-data')
+const mongo_data_system = require('../../system/node-js/mongo-data')
     , async = require('async')
     , auth = require('./authorization')
     , authorizationShared = require('../../system/shared/authorizationShared')
@@ -11,6 +11,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , streamifier = require('streamifier')
     , ioServer = require("./ioServer")
     , usersrvc = require('./usersrvc')
+    , dbLogger = require('./dbLogger')
     , classificationNode = require('./classificationNode')
     , classificationShared = require('../shared/classificationShared.js')
     , mongo_cde = require('../../cde/node-js/mongo-cde')
@@ -589,7 +590,11 @@ exports.orgComments = function (req, res) {
         ]
     ).exec(function (err, results) {
         if (err) {
-            console.log(err);
+            dbLogger.logError({
+                message: "Unable to retrieve comments",
+                stack: err,
+                details: "user: " + u.username + " in board: " + board._id
+            });
             return res.status(500).send("Unable to retrieve comments");
         }
         return res.send(results);

@@ -230,10 +230,7 @@ exports.init = function (app, daoManager) {
     });
 
     var fetchRemoteData = function () {
-        vsac.getTGT(function () {
-            console.log("Got TGT");
-        });
-
+        vsac.getTGT();
         elastic.fetchPVCodeSystemList();
     };
 

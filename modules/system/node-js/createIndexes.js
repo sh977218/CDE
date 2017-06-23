@@ -1,6 +1,7 @@
 var config = require('./parseConfig')
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
+    , dbLogger = require('./dbLogger')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -9,7 +10,7 @@ var esClient = new elasticsearch.Client({
 
 exports.deleteIndices = function() {
     esInit.indices.forEach(function (index) {
-        console.log("deleting: " + index.indexName);
+        dbLogger.consoleLog("deleting: " + index.indexName);
         esClient.indices.delete({index: index.indexName, timeout: "2s"}, function () {
         });
     });
