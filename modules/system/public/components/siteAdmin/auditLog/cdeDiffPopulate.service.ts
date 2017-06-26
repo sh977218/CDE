@@ -1,6 +1,9 @@
-angular.module('cdeModule').factory('CdeDiffPopulate', function () {
-    var CdeDiffPopulate = this;
-    CdeDiffPopulate.pathFieldMap = {
+import { Injectable } from "@angular/core";
+
+@Injectable()
+export class CdeDiffPopulateService {
+
+    pathFieldMap = {
         1: [
             {fieldName: "Naming", path: ["naming"]}
             , {fieldName: "Properties", path: ["properties"]}
@@ -119,14 +122,10 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function () {
         ]
     };
 
-    CdeDiffPopulate.nullsToBottom = function (obj) {
-        return (angular.isDefined(obj.updated) ? 0 : 1);
-    };
-
-    CdeDiffPopulate.comparePaths = function (patternPath, realPath) {
-        var equal = true;
+    comparePaths (patternPath, realPath) {
+        let equal = true;
         if (patternPath)
-            patternPath.forEach(function (el, i) {
+            patternPath.forEach((el, i) => {
                 if (typeof el === "number" && el === -1) return;
                 if (el === realPath[i]) equal = equal && true;
                 else equal = false;
@@ -134,25 +133,26 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function () {
         return equal;
     };
 
-    CdeDiffPopulate.makeHumanReadable = function (change) {
+    stringify (obj) {
+        try {
+            if (typeof obj === "string") return obj;
+            if (typeof obj === "number") return obj;
+            else if (typeof obj === "object") {
+                return Object.keys(obj).map(f => f + ": " + obj[f]).join(", ");
+            } else return "";
+        } catch (e) {
+            return "";
+        }
+    };
+
+    stringifyClassif (obj) {
+        if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);
+        else return "";
+    };
+
+    public makeHumanReadable (change) {
         if (!change) return;
-        this.stringify = function (obj) {
-            try {
-                if (typeof obj === "string") return obj;
-                if (typeof obj === "number") return obj;
-                else if (typeof obj === "object") {
-                    return Object.keys(obj).map(function (f) {
-                        return f + ": " + obj[f];
-                    }).join(", ");
-                } else return "";
-            } catch (e) {
-                return "";
-            }
-        };
-        this.stringifyClassif = function (obj) {
-            if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);
-            else return "";
-        };
+
         if (change.kind === "E") {
             change.modificationType = "Modified Field";
             change.newValue = change.rhs;
@@ -180,11 +180,10 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function () {
             if (change.item && change.item.rhs) change.newValue = this.stringifyClassif(change.item.rhs);
             return;
         }
-        if (CdeDiffPopulate.pathFieldMap[change.path.length])
-            CdeDiffPopulate.pathFieldMap[change.path.length].forEach(function (pathPair) {
-                if (CdeDiffPopulate.comparePaths(pathPair.path, change.path)) change.fieldName = pathPair.fieldName;
+        if (this.pathFieldMap[change.path.length])
+            this.pathFieldMap[change.path.length].forEach(pathPair => {
+                if (this.comparePaths(pathPair.path, change.path)) change.fieldName = pathPair.fieldName;
             });
     };
 
-    return CdeDiffPopulate;
-});
+}

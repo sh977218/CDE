@@ -14,9 +14,7 @@
         </div>
 
         <div uib-tab heading="{{tabs[4].title}}">
-            <div class="table" ng-controller="AuditLogCtrl">
-                <div ng-include="'/system/public/html/auditLog.html'" ng-init="module='cde'"></div>
-            </div>
+            <cde-audit-log></cde-audit-log>
         </div>
 
         <div uib-tab heading="{{tabs[5].title}}">
