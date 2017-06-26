@@ -1,4 +1,5 @@
-import { Component } from "@angular/core";
+import { Component, Inject } from "@angular/core";
+import { TourService } from "../../../../core/public/tour.service";
 
 @Component({
     selector: "cde-home",
@@ -7,4 +8,10 @@ import { Component } from "@angular/core";
 
 export class HomeComponent {
 
+    constructor(@Inject("TourService") TourService) {
+    }
+
+    takeATour() {
+        TourService.takeATour();
+    }
 }
