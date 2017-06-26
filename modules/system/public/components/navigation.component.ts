@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Inject, Input, Output, OnInit, AfterViewInit, AfterViewChecked } from "@angular/core";
-import { SharedService } from "../../../core/public/shared.service";
+import {Component, EventEmitter, Inject, Input, Output, OnInit, AfterViewInit, AfterViewChecked} from "@angular/core";
+import {SharedService} from "../../../core/public/shared.service";
 import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
 import * as Tour from "../../../../node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.js";
 
@@ -27,13 +27,19 @@ const navigationSteps: Array<any> = [
     {
         element: "#menu_help_link",
         title: "Help",
-        content: "Here's where you can find more documentation about this site or start this tour again."
+        content: "Here's where you can find more documentation about this site or start this tour again.",
+        onNext: function (tour) {
+            document.getElementById("menu_cdes_link").click();
+            // setTimeout(() => {
+            //     tour.goTo(6);
+            //     }
+            //     , 5000);
+        }
     }
 ];
 
 const searchResultSteps: Array<any> = [
     {
-        path: "/cde/search",
         element: "#browseByClassification",
         title: "Search by Classification"
     },
@@ -220,7 +226,6 @@ export class NavigationComponent implements OnInit, AfterViewInit, AfterViewChec
     authShared = SharedService.auth;
     smallContext = {$implicit: "collapse"};
     largeContext = {$implicit: ""};
-
     tour;
 
     constructor(@Inject("userResource") public userService) {
@@ -234,18 +239,22 @@ export class NavigationComponent implements OnInit, AfterViewInit, AfterViewChec
             debug: true,
             steps: steps
         });
-        this.tour.init();
     }
 
     ngAfterViewInit(): void {
-        let tourEnd = localStorage.getItem("CDE-Tour_end");
-        let currentStep = Number.parseInt(localStorage.getItem("CDE-Tour_current_step"));
-        let numSteps = this.tour._options.steps.length;
-        if (tourEnd === "no" || (!tourEnd && currentStep < numSteps)) {
-            console.log("tourEnd:" + tourEnd);
-            console.log("currentStep:" + currentStep);
-            console.log("numSteps:" + numSteps);
-        }
+        // let tourEnd = localStorage.getItem("CDE-Tour_end");
+        // let currentStep = Number.parseInt(localStorage.getItem("CDE-Tour_current_step"));
+        // let numSteps = this.tour._options.steps.length;
+        /*
+         if (tourEnd === "no" || (!tourEnd && currentStep < numSteps)) {
+         console.log("tourEnd:" + tourEnd);
+         console.log("currentStep:" + currentStep);
+         console.log("numSteps:" + numSteps);
+         }
+         */
+        console.log("tour init");
+//        setTimeout(this.tour.init, 2000);
+        console.log("init done");
     }
 
     ngAfterViewChecked(): void {
@@ -256,6 +265,9 @@ export class NavigationComponent implements OnInit, AfterViewInit, AfterViewChec
     }
 
     takeATour() {
+        let tourEnd = localStorage.getItem("CDE-Tour_end");
+//        if (tourEnd !== "yes") this.tour.end();
+        this.tour.init();
         this.tour.restart();
     }
 
