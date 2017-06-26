@@ -46,7 +46,7 @@ exports.init = function (app) {
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards", "/sdcview",
-        "/cdeStatusReport", "/deview", "/sdcview", "/triggerClientException",
+        "/cdeStatusReport", "/api", "/sdcview", "/triggerClientException",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, function (req, res) {

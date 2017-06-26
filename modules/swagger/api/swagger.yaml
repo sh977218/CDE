@@ -1,0 +1,860 @@
+---
+swagger: "2.0"
+info:
+  description: "Try out API to Common Data Elements"
+  version: "0.0.1"
+  title: "CDE API"
+host: "localhost:3001"
+basePath: "/"
+schemes:
+- "http"
+produces:
+- "application/json"
+paths:
+  /debytinyid/{tinyId}:
+    get:
+      tags:
+      - "CDE"
+      summary: "CDE element"
+      description: "One question.\n"
+      operationId: "debytinyidTinyIdVersionGET"
+      parameters:
+      - name: "tinyId"
+        in: "path"
+        description: "identifier"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "CDE"
+          schema:
+            $ref: "#/definitions/De"
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "CDE"
+  /debytinyid/{tinyId}/{version}:
+    get:
+      tags:
+      - "CDE"
+      summary: "CDE element"
+      description: "One question.\n"
+      operationId: "debytinyidTinyIdVersionGET"
+      parameters:
+      - name: "tinyId"
+        in: "path"
+        description: "identifier"
+        required: true
+        type: "string"
+      - name: "version"
+        in: "path"
+        description: "version"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "CDE"
+          schema:
+            $ref: "#/definitions/De"
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "CDE"
+  /formById/{tinyId}:
+    get:
+      tags:
+      - "Form"
+      summary: "CDE Form"
+      description: "CDE Form for filling out.\n"
+      operationId: "formViewTinyIdGET"
+      parameters:
+      - name: "tinyId"
+        in: "path"
+        description: "identifier"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "CDE Form"
+          schema:
+            $ref: "#/definitions/Form"
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "CDE"
+  /formByTinyIdAndVersion/{tinyId}/{version}:
+    get:
+      tags:
+      - "Form"
+      summary: "CDE Form"
+      description: "CDE Form for filling out.\n"
+      operationId: "formViewTinyIdGET"
+      parameters:
+      - name: "tinyId"
+        in: "path"
+        description: "identifier"
+        required: true
+        type: "string"
+      - name: "version"
+        in: "path"
+        description: "version"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "CDE Form"
+          schema:
+            $ref: "#/definitions/Form"
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "CDE"
+definitions:
+  De:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        example: "57112ebf3245ae3033584c5a"
+      archived:
+        type: "boolean"
+      attachments:
+        $ref: "#/definitions/Attachments"
+      classification:
+        type: "array"
+        items:
+          $ref: "#/definitions/Classification"
+      comments:
+        $ref: "#/definitions/Comments"
+      created:
+        type: "string"
+        format: "date-time"
+      createdBy:
+        $ref: "#/definitions/UserRef"
+      dataSets:
+        $ref: "#/definitions/DataSets"
+      derivationRules:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            formula:
+              type: "string"
+              example: "sumAll"
+            inputs:
+              type: "array"
+              items:
+                type: "string"
+                example: "5h29ApPjjzE"
+            name:
+              type: "string"
+              example: "ALSSS Score"
+            outputs:
+              type: "array"
+              items:
+                type: "string"
+                example: "10"
+            ruleType:
+              type: "string"
+              example: "score"
+      elementType:
+        type: "string"
+        example: "cde"
+      history:
+        $ref: "#/definitions/History"
+      ids:
+        $ref: "#/definitions/Ids"
+      imported:
+        type: "string"
+        format: "date-time"
+      lastMigrationScript:
+        type: "string"
+        example: "mergeNamingWithTags"
+      naming:
+        $ref: "#/definitions/Naming"
+      origin:
+        type: "string"
+        example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
+      properties:
+        $ref: "#/definitions/Properties"
+      referenceDocuments:
+        $ref: "#/definitions/ReferenceDocuments"
+      registrationState:
+        $ref: "#/definitions/RegistrationState"
+      sources:
+        $ref: "#/definitions/Source"
+      stewardOrg:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            example: "NINDS"
+      tinyId:
+        type: "string"
+        example: "QF7dUNkbNEv"
+      updated:
+        type: "string"
+        format: "date-time"
+      updatedBy:
+        $ref: "#/definitions/UserRef"
+      usedByOrgs:
+        type: "array"
+        items:
+          type: "string"
+          example: "CTEP"
+      valueDomain:
+        type: "object"
+        properties:
+          datatype:
+            type: "string"
+            example: "Date"
+          datatypeDate:
+            type: "object"
+            description: "object appearing only on Date datatypes"
+            properties:
+              format:
+                type: "string"
+                example: "YY-MM-DD"
+          datatypeExternallyDefined:
+            type: "object"
+            description: "object appearing only on Other datatypes"
+            properties:
+              description:
+                type: "string"
+                example: "java datatype"
+              descriptionFormat:
+                type: "string"
+                example: "html"
+              link:
+                type: "string"
+          datatypeNumber:
+            type: "object"
+            description: "object appearing only on Number datatypes"
+            properties:
+              maxValue:
+                type: "number"
+                format: "double"
+              minValue:
+                type: "number"
+                format: "double"
+              precision:
+                type: "number"
+                format: "double"
+          datatypeText:
+            type: "object"
+            description: "object appearing only on Text datatypes"
+            properties:
+              maxLength:
+                type: "integer"
+                format: "int32"
+              minLength:
+                type: "integer"
+                format: "int32"
+              regex:
+                type: "string"
+                example: ".*:.*:.*"
+              rule:
+                type: "string"
+                example: ""
+          datatypeTime:
+            type: "object"
+            description: "object appearing only on Time datatypes"
+            properties:
+              format:
+                type: "string"
+                example: "hh:MM:SS"
+          datatypeValueList:
+            type: "object"
+            description: "object appearing only on Value List datatypes"
+            properties:
+              datatype:
+                type: "string"
+                example: "Text"
+          definition:
+            type: "string"
+            example: "to the nearest day"
+          identifiers:
+            $ref: "#/definitions/Ids"
+          ids:
+            $ref: "#/definitions/Ids"
+          name:
+            type: "string"
+            example: "Starting Date"
+          permissibleValues:
+            $ref: "#/definitions/PermissibleValues"
+          uom:
+            type: "string"
+            example: "each"
+          vsacOid:
+            type: "string"
+            example: "1401340134"
+      version:
+        type: "string"
+        example: "1.0"
+      views:
+        type: "integer"
+        format: "int32"
+  Form:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        example: "57112ebf3245ae3033584c5a"
+      archived:
+        type: "boolean"
+      attachments:
+        $ref: "#/definitions/Attachments"
+      changeNote:
+        type: "string"
+        example: "updated naming"
+      classification:
+        type: "array"
+        items:
+          $ref: "#/definitions/Classification"
+      comments:
+        $ref: "#/definitions/Comments"
+      copyright:
+        type: "object"
+        properties:
+          authority:
+            type: "string"
+            example: "copyright NCI 2015"
+          text:
+            type: "string"
+            example: "to be printed with permission only"
+      created:
+        type: "string"
+        format: "date-time"
+      createdBy:
+        $ref: "#/definitions/UserRef"
+      displayProfiles:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            displayInstructions:
+              type: "boolean"
+            displayInvisible:
+              type: "boolean"
+            displayNumbering:
+              type: "boolean"
+            displayType:
+              type: "string"
+              example: "Follow-up"
+            displayValues:
+              type: "boolean"
+            name:
+              type: "string"
+              example: "print"
+            numberOfColumns:
+              type: "integer"
+              format: "int32"
+              example: "5"
+            repeatFormat:
+              type: "string"
+              example: "#."
+            sectionsAsMatrix:
+              type: "boolean"
+      elementType:
+        type: "string"
+        example: "form"
+      formElements:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            elementType:
+              type: "string"
+              example: "section"
+            hideLabel:
+              type: "boolean"
+            instructions:
+              $ref: "#/definitions/Instructions"
+            inForm:
+              type: "object"
+              properties:
+                form:
+                  type: "object"
+                  properties:
+                    name:
+                      type: "string"
+                      example: "SubForm 1"
+                    tinyId:
+                      type: "string"
+                      example: "QF7dUNkbNEv"
+                    version:
+                      type: "string"
+                      example: "1.0"
+            label:
+              type: "string"
+              example: "Clinical Section"
+            question:
+              type: "object"
+              properties:
+                answers:
+                  $ref: "#/definitions/PermissibleValues"
+                cde:
+                  type: "object"
+                  properties:
+                    ids:
+                      $ref: "#/definitions/Ids"
+                    name:
+                      type: "string"
+                      example: "Starting Date"
+                    permissibleValues:
+                      $ref: "#/definitions/PermissibleValues"
+                    tinyId:
+                      type: "string"
+                      example: "QF7dUNkbNEv"
+                    version:
+                      type: "string"
+                      example: "1.0"
+                datatype:
+                  type: "string"
+                  example: "Date"
+                datatypeDate:
+                  type: "object"
+                  description: "object appearing only on Date datatypes"
+                  properties:
+                    format:
+                      type: "string"
+                      example: "YY-MM-DD"
+                datatypeNumber:
+                  type: "object"
+                  description: "object appearing only on Number datatypes"
+                  properties:
+                    maxValue:
+                      type: "number"
+                      format: "double"
+                    minValue:
+                      type: "number"
+                      format: "double"
+                    precision:
+                      type: "number"
+                      format: "double"
+                datatypeText:
+                  type: "object"
+                  description: "object appearing only on Text datatypes"
+                  properties:
+                    maxLength:
+                      type: "integer"
+                      format: "int32"
+                    minLength:
+                      type: "integer"
+                      format: "int32"
+                    regex:
+                      type: "string"
+                      example: ".*:.*:.*"
+                    rule:
+                      type: "string"
+                      example: ""
+                    showAsTextArea:
+                      type: "boolean"
+                defaultAnswer:
+                  type: "string"
+                  example: "05/30/2014"
+                editable:
+                  type: "boolean"
+                invisible:
+                  type: "boolean"
+                multiselect:
+                  type: "boolean"
+                required:
+                  type: "boolean"
+                uoms:
+                  type: "array"
+                  items:
+                      type: "string"
+                      example: "each"
+            repeat:
+              type: "string"
+              example: "5"
+            section:
+              type: "object"
+            skipLogic:
+              type: "object"
+              properties:
+                action:
+                  type: "string"
+                  example: "show"
+                condition:
+                  type: "string"
+                  example: '"Starting Date" < 1/1/2015'
+      history:
+        $ref: "#/definitions/History"
+      ids:
+        $ref: "#/definitions/Ids"
+      imported:
+        type: "string"
+        format: "date-time"
+      isCopyrighted:
+        type: "boolean"
+      lastMigrationScript:
+        type: "string"
+        example: "mergeNamingWithTags"
+      naming:
+        $ref: "#/definitions/Naming"
+      noRenderAllowed:
+        type: "boolean"
+      origin:
+        type: "string"
+        example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
+      properties:
+        $ref: "#/definitions/Properties"
+      referenceDocuments:
+        $ref: "#/definitions/ReferenceDocuments"
+      registrationState:
+        $ref: "#/definitions/RegistrationState"
+      sources:
+        $ref: "#/definitions/Source"
+      stewardOrg:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            example: "NINDS"
+      tinyId:
+        type: "string"
+        example: "QF7dUNkbNEv"
+      updated:
+        type: "string"
+        format: "date-time"
+      updatedBy:
+        $ref: "#/definitions/UserRef"
+      version:
+        type: "string"
+        example: "1.0"
+  Attachments:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        comment:
+          type: "string"
+          example: "Figure 1: Illustration"
+        fileid:
+          type: "string"
+          example: "1"
+        filename:
+          type: "string"
+          example: "1.jpeg"
+        filesize:
+          type: "integer"
+          format: "int64"
+        filetype:
+          type: "string"
+          example: "jpeg"
+        isDefault:
+          type: "boolean"
+        pendingApproval:
+          type: "boolean"
+        scanned:
+          type: "boolean"
+        uploadedBy:
+          $ref: "#/definitions/UserRef"
+        uploadDate:
+          type: "string"
+          format: "date-time"
+  Classification:
+    type: "object"
+    properties:
+      elements:
+        type: "array"
+        items:
+          $ref: "#/definitions/ClassificationElements"
+      stewardOrg:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            example: "NINDS"
+      workingGroup:
+        type: boolean
+  ClassificationElements:
+    type: "object"
+    properties:
+      elements:
+        type: "array"
+        items:
+          $ref: "#/definitions/ClassificationElements"
+      name:
+        type: "string"
+        example: "Disease"
+  Comments:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        created:
+          type: "string"
+          format: "date-time"
+        element:
+          type: "object"
+          properties:
+            eltId:
+              type: "string"
+              example: "dd_views"
+            eltType:
+              type: "string"
+              example: "cde"
+        linkedTab:
+          type: "string"
+          example: "descriptionTab"
+        pendingApproval:
+          type: "boolean"
+        replies:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              created:
+                type: "string"
+                format: "date-time"
+              pendingApproval:
+                type: "boolean"
+              status:
+                type: "string"
+                example: "resolved"
+              text:
+                type: "string"
+                example: "update value"
+              user:
+                type: "string"
+                example: "jdoe"
+              usename:
+                type: "string"
+                example: "jdoe"
+        status:
+          type: "string"
+          example: "resolved"
+        text:
+          type: "string"
+          example: "update value"
+        user:
+          type: "string"
+          example: "jdoe"
+        usename:
+          type: "string"
+          example: "jdoe"
+  DataSets:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "15232523"
+        notes:
+          type: "string"
+          example: "trial 152"
+        source:
+          type: "string"
+          example: "NINDS"
+        studyUri:
+          type: "string"
+          example: "http://www.ninds.org/15232523"
+  History:
+    type: "array"
+    items:
+      type: "string"
+      example: "57112ebf3245ae3033584c5a"
+  Ids:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "Qd4_a8FZqrX"
+        source:
+          type: "string"
+          example: "NLM"
+        version:
+          type: "string"
+          example: "3"
+  Instructions:
+    type: "object"
+    properties:
+      value:
+        type: "string"
+        example: "Part of the clinical trials."
+      valueFormat:
+        type: "string"
+        example: "html"
+  Naming:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        definition:
+          type: "string"
+          example: "This is a description of purpose"
+        definitionFormat:
+          type: "string"
+          example: "html"
+        designation:
+          type: "string"
+          example: "Title Name"
+        languageCode:
+          type: "string"
+          example: "EN-US"
+        source:
+          type: "string"
+          example: "NINDS"
+        tags:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              tag:
+                type: "string"
+                example: "Health"
+  PermissibleValues:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        codeSystemName:
+          type: "string"
+          example: "NCI Thesaurus"
+        codeSystemVersion:
+          type: "string"
+          example: "1.0"
+        permissibleValue:
+          type: "string"
+          example: "yes"
+        valueMeaningCode:
+          type: "string"
+          example: "C46110"
+        valueMeaningDefinition:
+          type: "string"
+          example: "affirmative declaration"
+        valueMeaningName:
+          type: "string"
+          example: "Yes"
+  Properties:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        key:
+          type: "string"
+          example: "custom1"
+        source:
+          example: "NINDS"
+          type: "string"
+        value:
+          type: "string"
+          example: "10"
+        valueFormat:
+          type: "string"
+          example: "html"
+  ReferenceDocuments:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        document:
+          type: "string"
+          example: "rd1"
+        docType:
+          type: "string"
+          example: "rd1"
+        languageCode:
+          type: "string"
+          example: "EN-US"
+        providerOrg:
+          type: "string"
+          example: "NINDS"
+        referenceDocumentId:
+          type: "string"
+          example: "ref1"
+        source:
+          type: "string"
+          example: "NINDS"
+        text:
+          type: "string"
+          example: "rd1"
+        title:
+          type: "string"
+          example: "rd1"
+        uri:
+          type: "string"
+          example: "http://www.ninds.com/125123u"
+  RegistrationState:
+    type: "object"
+    properties:
+      administrativeNote:
+        type: "string"
+        example: "approved"
+      administrativeStatus:
+        type: "string"
+        example: "Nominal"
+      effectiveDate:
+        type: "string"
+        format: "date-time"
+      registrationStatus:
+        type: "string"
+        example: "Qualified"
+      replacedBy:
+        type: "object"
+        properties:
+          tinyId:
+            type: "string"
+            example: "Qd4_a8FZqrX"
+      unresolvedIssue:
+        type: "string"
+        example: "none"
+      untilDate:
+        type: "string"
+        format: "date-time"
+  Source:
+    type: "object"
+    properties:
+      sourceName:
+        type: "string"
+        example: "caDSR"
+      created:
+        type: "string"
+        format: "date"
+      updated:
+        type: "string"
+        format: "date"
+      registrationStatus:
+        type: "string"
+        example: "Qualified"
+      datatype:
+        type: "string"
+        example: "Number"
+      copyright:
+        type: "object"
+        properties:
+          value:
+            type: "string"
+            example: "MIT license"
+          valueFormat:
+            type: "string"
+            example: "html"
+  UserRef:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        example: "jdoe"
+      userId:
+        type: "string"
+        example: 'ObjectId("5711293936f82f59878e9c27")'
+  Error:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+      fields:
+        type: "string"

@@ -17,6 +17,7 @@ import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.comp
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
 import { NavigationComponent } from "./components/navigation.component";
+import { SwaggerComponent } from "./components/swagger.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
 import { AlertComponent } from "./components/alert/alert.component";
 import { AlertService } from "./components/alert/alert.service";
@@ -48,6 +49,7 @@ import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffP
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
+        SwaggerComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
@@ -63,6 +65,7 @@ import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffP
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
+        SwaggerComponent,
         UsersMgtComponent,
     ],
     exports: [],

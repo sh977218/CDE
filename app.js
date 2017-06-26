@@ -212,6 +212,8 @@ try {
     var boardModule = require(path.join(__dirname, './modules/board/node-js/app.js'));
     boardModule.init(app, daoManager);
 
+    var swaggerModule = require(path.join(__dirname, './modules/swagger/index.js'));
+    swaggerModule.init(app);
 } catch (e) {
     console.log(e.stack);
     process.exit();
