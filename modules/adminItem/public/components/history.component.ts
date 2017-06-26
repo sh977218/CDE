@@ -55,7 +55,7 @@ export class HistoryComponent implements OnInit {
                 .subscribe(res => {
                     this.priorElements = res.reverse();
                     this.elt.viewing = true;
-                    this.elt.changeNode = this.elt._changeNote;
+                    this.elt.changeNote = this.elt._changeNote;
                     this.priorElements.splice(0, 0, this.elt);
                     this.priorElements.forEach(pe => {
                         pe.url = prefix_url + pe._id;
