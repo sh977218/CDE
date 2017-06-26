@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output, OnInit } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output, OnInit, AfterViewInit, AfterViewChecked } from "@angular/core";
 import { SharedService } from "../../../core/public/shared.service";
 import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
 import * as Tour from "../../../../node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.js";
@@ -34,37 +34,45 @@ const navigationSteps: Array<any> = [
 const searchResultSteps: Array<any> = [
     {
         path: "/cde/search",
+        element: "#browseByClassification",
+        title: "Search by Classification"
+    },
+    {
+        element: "#browseByTopic",
+        title: "Search by Topic"
+    },
+    {
         element: "#search_by_classification_AECC",
-        title: "Search by Organization",
-        reflex: true
-    },
-    {
-        path: "/cde/search?selectedOrg=ACRIN",
-        element: "#resultList",
-        title: "Search Result",
-        content: "This section shows the search result.",
-        placement: "top",
-        reflex: true
-    },
-    {
-        element: "#classif_filter_title",
-        content: "This section shows classification filter",
-        title: "Classification Filter"
-    },
-    {
-        element: "#status_filter",
-        content: "This section shows status filter",
-        title: "Status Filter"
-    },
-    {
-        element: "#datatype_filter",
-        content: "This section shows data type filter",
-        title: "Data Type Filter"
-    }, {
-        element: "#linkToElt_0",
-        content: "This is element name",
-        title: "Element Name"
+        title: "Search by Organization"
     }
+    /*,
+     {
+     path: "/cde/search?selectedOrg=ACRIN",
+     element: "#resultList",
+     title: "Search Result",
+     content: "This section shows the search result.",
+     placement: "top",
+     reflex: true
+     },
+     {
+     element: "#classif_filter_title",
+     content: "This section shows classification filter",
+     title: "Classification Filter"
+     },
+     {
+     element: "#status_filter",
+     content: "This section shows status filter",
+     title: "Status Filter"
+     },
+     {
+     element: "#datatype_filter",
+     content: "This section shows data type filter",
+     title: "Data Type Filter"
+     }, {
+     element: "#linkToElt_0",
+     content: "This is element name",
+     title: "Element Name"
+     }*/
 ];
 
 const cdeSteps: Array<any> = [
@@ -204,7 +212,7 @@ const cdeSteps: Array<any> = [
         }
     `]
 })
-export class NavigationComponent implements OnInit {
+export class NavigationComponent implements OnInit, AfterViewInit, AfterViewChecked {
     @Input() quickBoardCount: number;
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
@@ -219,6 +227,28 @@ export class NavigationComponent implements OnInit {
     }
 
     ngOnInit(): void {
+//        let steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps);
+        let steps = navigationSteps.concat(searchResultSteps);
+        this.tour = new Tour({
+            name: "CDE-Tour",
+            debug: true,
+            steps: steps
+        });
+        this.tour.init();
+    }
+
+    ngAfterViewInit(): void {
+        let tourEnd = localStorage.getItem("CDE-Tour_end");
+        let currentStep = Number.parseInt(localStorage.getItem("CDE-Tour_current_step"));
+        let numSteps = this.tour._options.steps.length;
+        if (tourEnd === "no" || (!tourEnd && currentStep < numSteps)) {
+            console.log("tourEnd:" + tourEnd);
+            console.log("currentStep:" + currentStep);
+            console.log("numSteps:" + numSteps);
+        }
+    }
+
+    ngAfterViewChecked(): void {
     }
 
     isPageActive(viewLocation) {
@@ -226,16 +256,7 @@ export class NavigationComponent implements OnInit {
     }
 
     takeATour() {
-        let steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps);
-        this.tour = new Tour({
-            name: "CDE-Tour",
-            debug: true,
-            steps: steps
-        });
-        if (!this.tour.end()) {
-            this.tour.init();
-            this.tour.start();
-        }
+        this.tour.restart();
     }
 
 }
