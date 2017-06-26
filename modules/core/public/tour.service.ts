@@ -28,10 +28,8 @@ const navigationSteps: Array<any> = [
         title: "Help",
         content: "Here's where you can find more documentation about this site or start this tour again.",
         onNext: function (t) {
-            t.pause();
-            $("#menu_cdes_link").click(function () {
-                t.resume();
-            });
+            document.getElementById("menu_cdes_link").click();
+            t.goTo(6);
         }
     }
 ];
@@ -54,15 +52,16 @@ const searchResultSteps: Array<any> = [
     {
         element: "#search_by_classification_NLM",
         title: "Search by Organization",
-        onNext: function () {
+        onNext: function (t) {
+            document.getElementById("search_by_classification_NLM").click();
+            t.goTo(9);
         }
     },
     {
         element: "#resultList",
         title: "Search Result",
         content: "This section shows the search result.",
-        placement: "top",
-        reflex: true
+        placement: "top"
     },
     {
         element: "#classif_filter_title",
@@ -81,7 +80,11 @@ const searchResultSteps: Array<any> = [
     }, {
         element: "#linkToElt_0",
         content: "This is element name",
-        title: "Element Name"
+        title: "Element Name",
+        onNext: function (t) {
+            document.getElementById("linkToElt_0").click();
+            t.goTo(14);
+        }
     }
 ];
 
@@ -217,11 +220,12 @@ const cdeSteps: Array<any> = [
 export class TourService {
 
     static takeATour() {
-        let steps = navigationSteps.concat(searchResultSteps);
+        let steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps);
         let tour = new Tour({
             name: "CDE-Tour",
             debug: true,
             duration: 2000,
+            delay: 2000,
             storage: false,
             steps: steps
         });

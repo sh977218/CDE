@@ -43,10 +43,10 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"
-                         ng-repeat="org in orgs | orderBy:'name' track by $index"
-                         id="search_by_classification_{{org.name}}">
-                        <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor" ng-click="browseOrg(org.name)">
-                            <legend>
+                         ng-repeat="org in orgs | orderBy:'name' track by $index">
+                        <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
+                                  id="search_by_classification_{{org.name}}" ng-click="browseOrg(org.name)">
+                        <legend>
                             <span ng-if="!embedded">
                                 <a ng-href="search?selectedOrg={{org.name}}" ng-bind="org.name"
                                    id="browseOrg-{{org.name}}">
