@@ -21,6 +21,8 @@ import { TruncateLongNamePipe } from "./truncateLongName.pipe";
 import { AlertComponent } from "./components/alert/alert.component";
 import { AlertService } from "./components/alert/alert.service";
 import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component";
+import { AuditLogComponent } from "./components/siteAdmin/auditLog/auditLog.component";
+import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffPopulate.service";
 
 @NgModule({
     imports: [
@@ -36,6 +38,7 @@ import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component
     declarations: [
         AlertComponent,
         AppLogComponent,
+        AuditLogComponent,
         CdeAccordionListDirective,
         DailyUsageComponent,
         FormAccordionListDirective,
@@ -52,6 +55,7 @@ import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component
     entryComponents: [
         AlertComponent,
         AppLogComponent,
+        AuditLogComponent,
         DailyUsageComponent,
         HomeComponent,
         ListManagementComponent,
@@ -64,6 +68,7 @@ import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component
     exports: [],
     providers: [
         AlertService,
+        CdeDiffPopulateService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
