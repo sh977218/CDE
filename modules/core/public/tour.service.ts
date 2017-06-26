@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as Tour from "../../../node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.js";
+import * as $ from "../../../node_modules/jquery/dist/jquery.js";
 
 const navigationSteps: Array<any> = [
     {
@@ -26,8 +27,11 @@ const navigationSteps: Array<any> = [
         element: "#menu_help_link",
         title: "Help",
         content: "Here's where you can find more documentation about this site or start this tour again.",
-        onNext: function (tour) {
-            document.getElementById("menu_cdes_link").click();
+        onNext: function (t) {
+            t.pause();
+            $("#menu_cdes_link").click(function () {
+                t.resume();
+            });
         }
     }
 ];
@@ -35,44 +39,50 @@ const navigationSteps: Array<any> = [
 const searchResultSteps: Array<any> = [
     {
         element: "#browseByClassification",
-        title: "Search by Classification"
+        title: "Search by Classification",
+        onNext: function () {
+            console.log("on next browser by classification");
+        }
     },
     {
         element: "#browseByTopic",
-        title: "Search by Topic"
+        title: "Search by Topic",
+        onNext: function () {
+            console.log("on next browser by topic");
+        }
     },
     {
-        element: "#search_by_classification_AECC",
-        title: "Search by Organization"
+        element: "#search_by_classification_NLM",
+        title: "Search by Organization",
+        onNext: function () {
+        }
+    },
+    {
+        element: "#resultList",
+        title: "Search Result",
+        content: "This section shows the search result.",
+        placement: "top",
+        reflex: true
+    },
+    {
+        element: "#classif_filter_title",
+        content: "This section shows classification filter",
+        title: "Classification Filter"
+    },
+    {
+        element: "#status_filter",
+        content: "This section shows status filter",
+        title: "Status Filter"
+    },
+    {
+        element: "#datatype_filter",
+        content: "This section shows data type filter",
+        title: "Data Type Filter"
+    }, {
+        element: "#linkToElt_0",
+        content: "This is element name",
+        title: "Element Name"
     }
-    /*,
-     {
-     path: "/cde/search?selectedOrg=ACRIN",
-     element: "#resultList",
-     title: "Search Result",
-     content: "This section shows the search result.",
-     placement: "top",
-     reflex: true
-     },
-     {
-     element: "#classif_filter_title",
-     content: "This section shows classification filter",
-     title: "Classification Filter"
-     },
-     {
-     element: "#status_filter",
-     content: "This section shows status filter",
-     title: "Status Filter"
-     },
-     {
-     element: "#datatype_filter",
-     content: "This section shows data type filter",
-     title: "Data Type Filter"
-     }, {
-     element: "#linkToElt_0",
-     content: "This is element name",
-     title: "Element Name"
-     }*/
 ];
 
 const cdeSteps: Array<any> = [
@@ -205,19 +215,22 @@ const cdeSteps: Array<any> = [
 
 @Injectable()
 export class TourService {
-    static steps = navigationSteps.concat(searchResultSteps);
-    static tour = new Tour({
-        name: "CDE-Tour",
-        debug: true,
-        steps: steps
-    });
-
-    orgsDetailedInfo: any = {};
 
     static takeATour() {
-        let tourEnd = localStorage.getItem("CDE-Tour_end");
-        this.tour.init();
-        this.tour.start();
+        let steps = navigationSteps.concat(searchResultSteps);
+        let tour = new Tour({
+            name: "CDE-Tour",
+            debug: true,
+            duration: 2000,
+            storage: false,
+            steps: steps
+        });
+        if (localStorage.getItem("CDE-Tour_end") === "yes") {
+            tour.restart();
+        } else {
+            tour.init();
+            tour.start();
+        }
     }
 
 }

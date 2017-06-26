@@ -13,12 +13,13 @@ import { CoreModule } from "./core/public/core.module";
 import { DiscussModule } from "./discuss/discuss.module";
 import { FormModule } from "./form/public/form.module";
 import { SystemModule } from "./system/public/system.module";
+import { TourService } from "./core/public/tour.service";
 
 @NgModule({
     declarations: [
         CdeAppComponent
     ],
-    providers: [],
+    providers: [TourService],
     imports: [
         BrowserModule,
         CommonModule,
