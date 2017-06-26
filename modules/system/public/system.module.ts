@@ -23,6 +23,9 @@ import { AlertService } from "./components/alert/alert.service";
 import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component";
 import { AuditLogComponent } from "./components/siteAdmin/auditLog/auditLog.component";
 import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffPopulate.service";
+import { ClassificationAuditLogComponent } from "./components/siteAdmin/classificationAuditLog/classificationAuditLog.component";
+
+import { CamelCaseToHumanPipe } from "../../core/public/camelCaseToHumanPipe";
 
 @NgModule({
     imports: [
@@ -40,6 +43,8 @@ import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffP
         AppLogComponent,
         AuditLogComponent,
         CdeAccordionListDirective,
+        CamelCaseToHumanPipe,
+        ClassificationAuditLogComponent,
         DailyUsageComponent,
         FormAccordionListDirective,
         HomeComponent,
@@ -56,6 +61,7 @@ import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffP
         AlertComponent,
         AppLogComponent,
         AuditLogComponent,
+        ClassificationAuditLogComponent,
         DailyUsageComponent,
         HomeComponent,
         ListManagementComponent,
