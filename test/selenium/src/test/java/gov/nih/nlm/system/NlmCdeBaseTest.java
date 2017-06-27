@@ -813,14 +813,14 @@ public class NlmCdeBaseTest {
             hangon(1);
             try {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                        By.cssSelector("uib-accordion"), cdeName));
+                        By.cssSelector("ngb-accordion"), cdeName));
                 break;
             } catch (Exception e) {
                 clickElement(By.linkText("Next"));
             }
 
         }
-        clickElement(By.xpath("//uib-accordion//span[contains(text(),'" + cdeName + "')]"));
+        clickElement(By.xpath("//ngb-accordion//a[contains (., '" + cdeName + "')]"));
     }
 
     protected void setVisibleStatus(String id) {
