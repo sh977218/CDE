@@ -49,7 +49,6 @@ export class CompareService {
             let rightIndex = _.findIndex(rightArrayCopy, o => option.isEqual(o, l));
             if (rightIndex === -1) {
                 if (leftIndex === newer.length - 1) {
-                    this.copyValue(l, option.data);
                     option.result.push({
                         match: false,
                         add: true,
@@ -57,7 +56,6 @@ export class CompareService {
                         newer: l
                     });
                     rightArrayCopy.forEach(o => {
-                        this.copyValue(o, option.data);
                         option.result.push({
                             match: false,
                             add: true,
@@ -66,7 +64,6 @@ export class CompareService {
                         });
                     });
                 } else {
-                    this.copyValue(l, option.data);
                     option.result.push({
                         match: false,
                         add: true,
@@ -79,7 +76,6 @@ export class CompareService {
             else {
                 let r = rightArrayCopy[rightIndex];
                 for (let k = 0; k < rightIndex; k++) {
-                    this.copyValue(rightArrayCopy[k], option.data);
                     option.result.push({
                         match: false,
                         add: true,
@@ -95,10 +91,6 @@ export class CompareService {
                 if (!l.diff) l.diff = [];
                 if (!r.diff) r.diff = [];
                 let diff = _.uniq(l.diff.concat(r.diff));
-                if (!_.isEmpty(diff)) {
-                    this.copyValue(l, option.data);
-                    this.copyValue(r, option.data);
-                }
                 tempResult["older"] = l;
                 tempResult["newer"] = r;
                 tempResult["diff"] = diff;
@@ -109,7 +101,6 @@ export class CompareService {
             if (leftIndex === newer.length - 1) {
                 rightArrayCopy.forEach((o, i) => {
                     if (i > 0) {
-                        this.copyValue(o, option.data);
                         option.result.push({
                             match: false,
                             add: true,
@@ -160,6 +151,11 @@ export class CompareService {
                 }
                 return false;
             });
+            option.result.forEach(r => {
+                if (r.data) this.copyValue(r.data, option.data);
+                if (r.newer) this.copyValue(r.newer, option.data);
+                if (r.older) this.copyValue(r.older, option.data);
+            })
         }
     }
 
