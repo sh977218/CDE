@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import * as Tour from "../../../node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.js";
-import * as $ from "../../../node_modules/jquery/dist/jquery.js";
 
 const navigationSteps: Array<any> = [
     {
@@ -228,10 +227,12 @@ export class TourService {
                 if (path === "/cde/search") {
                     document.getElementById("menu_cdes_link").click();
                     tour.goTo(7);
+                    return;
                 }
                 if (path === "/cde/search?selectedOrg=NLM") {
                     document.getElementById("search_by_classification_NLM").click();
                     tour.goTo(10);
+                    return;
                 }
             }
         });
