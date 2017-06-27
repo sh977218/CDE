@@ -1,0 +1,25 @@
+<div class="container-fluid" itemscope="http://schema.org/MedicalCode">
+    <div class="alert alert-warning mt20" role="alert" *ngIf="elt.archived">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this data element is archived. You can
+        <a href="/deview?tinyId={{elt.tinyId}}">view the current version here</a>.
+    </div>
+    <div class="alert alert-warning mt20" role="alert" *ngIf="elt.registrationState.registrationStatus=='Retired'">
+        <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired.
+        <span ng-show="elt.registrationState.replacedBy">
+            <a href="/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
+    <div class="alert alert-warning mt20" role="alert"
+         *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'">
+        <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired.
+        <span *ngIf="elt.registrationState.replacedBy">
+            <a href="/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a></span></div>
+    <div class="alert alert-info mt20" role="alert" *ngIf="displayStatusWarning"><i
+            class="fa fa-exclamation-triangle"></i>
+        <strong>Note:</strong> You may not edit this CDE because it is standard.
+    </div>
+    <div class="alert alert-info mt20" role="alert" ng-show="elt.forkOf">
+        <i class="fa fa-exclamation-triangle"></i>
+        You are editing a fork. <a href="/deview?cdeId={{rootFork._id}}">
+        <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
+    </div>
+</div>
