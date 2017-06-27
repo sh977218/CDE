@@ -46,6 +46,10 @@ select.form-control:not([size]):not([multiple]) {
     display: none;
 }
 
+.swagger-section #swagger-ui-container {
+    padding-top: 50px;
+}
+
 /*fixes an issue in bootstrap #1078 */
 .modal-body {
     overflow-y: inherit;

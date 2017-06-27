@@ -17,7 +17,6 @@ paths:
       - "CDE"
       summary: "CDE element"
       description: "One question.\n"
-      operationId: "debytinyidTinyIdVersionGET"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -40,7 +39,6 @@ paths:
       - "CDE"
       summary: "CDE element"
       description: "One question.\n"
-      operationId: "debytinyidTinyIdVersionGET"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -68,7 +66,6 @@ paths:
       - "Form"
       summary: "CDE Form"
       description: "CDE Form for filling out.\n"
-      operationId: "formViewTinyIdGET"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -91,7 +88,6 @@ paths:
       - "Form"
       summary: "CDE Form"
       description: "CDE Form for filling out.\n"
-      operationId: "formViewTinyIdGET"
       parameters:
       - name: "tinyId"
         in: "path"

@@ -8,7 +8,6 @@ var path = require('path');
 // swaggerRouter configuration
 var options = {
   swaggerUi: '/swagger.json',
-  controllers: path.join(__dirname, '/controllers'),
   useStubs: process.env.NODE_ENV === 'development' ? true : false // Conditionally turn on stubs (mock mode)
 };
 
