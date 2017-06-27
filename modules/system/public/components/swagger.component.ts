@@ -16,7 +16,7 @@ export class SwaggerComponent implements AfterViewInit {
                 return;
 
             let cssLink = window.document.createElement("link");
-            cssLink.href = "/cde/public/css/style.css";
+            cssLink.href = "/swagger/public/swagger.css";
             cssLink.rel = "stylesheet";
             cssLink.type = "text/css";
             window.frames['swaggerFrame'].contentDocument.body.appendChild(cssLink);
