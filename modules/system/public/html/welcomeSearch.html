@@ -5,7 +5,8 @@
              src="/cde/public/assets/img/NIH-CDE.png"/>
     </div>
     <div class="text-center center-block" id="searchDiv">
-        <form name="quickSearchForm" id="quickSearchForm" novalidate method="GET" style="width: 80%; min-width: 300px; margin: auto">
+        <form name="quickSearchForm" id="quickSearchForm" novalidate method="GET"
+              style="width: 80%; min-width: 300px; margin: auto">
             <div class="input-group input-group-lg">
                 <label class="sr-only" for="ftsearch-input">Search Terms</label>
                 <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
@@ -46,23 +47,23 @@
                          ng-repeat="org in orgs | orderBy:'name' track by $index">
                         <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
                                   id="search_by_classification_{{org.name}}" ng-click="browseOrg(org.name)">
-                        <legend>
+                            <legend>
                             <span ng-if="!embedded">
                                 <a ng-href="search?selectedOrg={{org.name}}" ng-bind="org.name"
                                    id="browseOrg-{{org.name}}">
                                 </a></span>
-                            <span ng-if="embedded">
+                                <span ng-if="embedded">
                                 <a href ng-bind="org.name" id="browseOrg-{{org.name}}"></a>
                             </span>
                             </legend>
                             <div ng-if="org.longName" ng-bind="org.longName"></div>
-                            <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span> elements</div>
+                            <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span> elements
+                            </div>
                             <div ng-if="org.extraInfo" ng-bind="org.extraInfo"></div>
                             <div ng-if="org.source"><a href="{{org.source}}" target="_blank">Source</a></div>
                         </fieldset>
-                        <i class="fa fa-info welcomeDetailIcon hand-cursor"
-                           ng-click="openOrgDetails(org)"
-                           ng-if="org.htmlOverview">
+                        <i ng-if="org.htmlOverview" class="fa fa-info welcomeDetailIcon hand-cursor"
+                           id="search_by_classification_info_{{org.name}}" ng-click="openOrgDetails(org)">
                         </i>
                     </div>
                 </div>
