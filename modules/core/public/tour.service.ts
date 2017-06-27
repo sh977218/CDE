@@ -1,5 +1,6 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import * as Tour from "../../../node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.js";
+
 
 const navigationSteps: Array<any> = [
     {
@@ -30,13 +31,17 @@ const navigationSteps: Array<any> = [
     {
         element: "#menu_help_link",
         title: "Help",
-        content: "Here's where you can find more documentation about this site or start this tour again."
+        content: "Here's where you can find more documentation about this site or start this tour again.",
+        onNext: tour => {
+            tour.end();
+            document.getElementById("menu_cdes_link").click();
+            TourService.waitForEltId('browseByClassification', () => TourService.takeATour(6));
+        }
     }
 ];
 
 const searchResultSteps: Array<any> = [
     {
-        path: "/cde/search",
         element: "#browseByClassification",
         title: "Search by Classification"
     },
@@ -47,10 +52,14 @@ const searchResultSteps: Array<any> = [
     {
         element: "#search_by_classification_NLM",
         title: "Search by Organization",
-        placement: "left"
+        placement: "left",
+        onNext: tour => {
+            tour.end();
+            document.getElementById("search_by_classification_NLM").click();
+            $(document).ready(() => TourService.takeATour(9));
+        }
     },
     {
-        path: "/cde/search?selectedOrg=NLM",
         element: "#resultList",
         title: "Search Result",
         content: "This section shows the search result.",
@@ -215,33 +224,26 @@ const formSteps = [
 @Injectable()
 export class TourService {
 
-    static takeATour() {
-        let steps = navigationSteps.concat(searchResultSteps).concat(btnSteps).concat(cdeSteps).concat(formSteps);
-        let tour = new Tour({
-            name: "CDE-Tour",
-            debug: true,
-            //duration: 2000,
-            storage: false,
-            steps: steps,
-            redirect: function (path) {
-                if (path === "/cde/search") {
-                    document.getElementById("menu_cdes_link").click();
-                    tour.goTo(7);
-                    return;
-                }
-                if (path === "/cde/search?selectedOrg=NLM") {
-                    document.getElementById("search_by_classification_NLM").click();
-                    tour.goTo(10);
-                    return;
-                }
+    static waitForEltId(eltId: string, cb) {
+        let checkExist = setInterval(() => {
+            if (document.getElementById(eltId)) {
+                clearInterval(checkExist);
+                cb();
             }
+        }, 100);
+    }
+
+    static takeATour(from: number = 0) {
+        let steps = navigationSteps.concat(searchResultSteps).concat(btnSteps).concat(cdeSteps).concat(formSteps);
+        steps.splice(0, from);
+        let tour = new Tour({
+            name: "CDE-Tour" + from,
+            debug: true,
+            storage: false,
+            steps: steps
         });
-        if (localStorage.getItem("CDE-Tour_end") === "yes") {
-            tour.restart();
-        } else {
-            tour.init();
-            tour.start();
-        }
+        tour.init();
+        tour.start();
     }
 
 }
