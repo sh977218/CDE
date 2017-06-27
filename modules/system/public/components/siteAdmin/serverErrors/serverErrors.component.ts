@@ -15,6 +15,7 @@ export class ServerErrorsComponent implements OnInit {
     excludeFilters: any[] = [];
     records: any[] = [];
     error: any = {};
+    excludeFilterToAdd: any[] = [];
 
     ngOnInit () {
         this.gotoPage();
