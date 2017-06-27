@@ -32,10 +32,7 @@ export class CompareService {
     copyValue(obj, data) {
         _.forEach(data, d => {
             let value = _.get(obj, d.property);
-            if (d.array) {
-                if (_.isEmpty(value)) value = "";
-                else value = JSON.stringify(value);
-            }
+            if (_.isEmpty(value)) value = "";
             obj[d.property] = value;
         });
     }

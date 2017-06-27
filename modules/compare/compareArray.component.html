@@ -8,11 +8,12 @@
                         <ng-container *ngIf="r.diff">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <label>{{d.label}}:</label>
-                                <pre semanticDiff [left]="r.newer[d.property]" [right]="r.older[d.property]"></pre>
+                                <pre semanticDiff [left]="r.newer[d.property] | json"
+                                     [right]="r.older[d.property] | json"></pre>
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
                                 <label>{{d.label}}:</label>
-                                <span>{{r.data[d.property]}}</span>
+                                <span>{{r.data[d.property] | json}}</span>
                             </ng-container>
                         </ng-container>
                     </div>
@@ -24,7 +25,7 @@
                                 <label>{{d.label}}:</label>
                                 <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
                                     {{r.data[d.property]}}</a>
-                                <span *ngIf="!d.url">{{r.data[d.property]}}</span>
+                                <span *ngIf="!d.url">{{r.data[d.property] | json}}</span>
                             </div>
                         </ng-container>
                     </div>
@@ -34,7 +35,7 @@
                                 <label>{{d.label}}:</label>
                                 <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
                                     {{r.data[d.property]}}</a>
-                                <span *ngIf="!d.url">{{r.data[d.property]}}</span>
+                                <span *ngIf="!d.url">{{r.data[d.property] | json}}</span>
                             </div>
                         </ng-container>
                     </div>
@@ -42,13 +43,14 @@
                         <div *ngFor="let d of property.data">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <label>{{d.label}}:</label>
-                                <pre semanticDiff [left]="r.newer[d.property]" [right]="r.older[d.property]"></pre>
+                                <pre semanticDiff [left]="r.newer[d.property] | json"
+                                     [right]="r.older[d.property] | json"></pre>
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
                                 <label>{{d.label}}:</label>
                                 <a *ngIf="d.url" target="_blank" [href]=d.url+r.older[d.property]>
                                     {{r.older[d.property]}}</a>
-                                <span *ngIf="!d.url">{{r.older[d.property]}}</span>
+                                <span *ngIf="!d.url">{{r.older[d.property] | json}}</span>
                             </ng-container>
                         </div>
                     </div>
