@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import {Http} from "@angular/http";
+import { Http } from "@angular/http";
+
+import "rxjs/add/operator/map";
 
 @Component({
     selector: "cde-classification-audit-log",
@@ -14,12 +16,12 @@ export class ClassificationAuditLogComponent implements OnInit {
     records: any[] = [];
 
     ngOnInit () {
-        this.gotoPage(0);
+        this.gotoPage();
     }
 
-    gotoPage (page) {
+    gotoPage () {
         this.http.post("/getClassificationAuditLog", {
-            skip: (page - 1) * 50,
+            skip: (this.currentPage - 1) * 50,
             limit: 50
         }).map(r => r.json()).subscribe(response => {
             this.records = response;

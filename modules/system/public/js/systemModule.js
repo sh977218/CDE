@@ -436,7 +436,7 @@ import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.compo
 angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
 
 import {ClassificationAuditLogComponent} from "../components/siteAdmin/classificationAuditLog/classificationAuditLog.component";
-angular.module('systemModule').directive('cdeClassificationAuditComponent', downgradeComponent({component: ClassificationAuditLogComponent, inputs: [], outputs: []}));
+angular.module('systemModule').directive('cdeClassificationAuditLog', downgradeComponent({component: ClassificationAuditLogComponent, inputs: [], outputs: []}));
 
 import {AppLogComponent} from "../components/siteAdmin/appLogs/appLog.component";
 angular.module('systemModule').directive('cdeAppLog', downgradeComponent({component: AppLogComponent, inputs: [], outputs: []}));

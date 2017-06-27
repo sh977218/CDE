@@ -18,9 +18,7 @@
         </div>
 
         <div uib-tab heading="{{tabs[5].title}}">
-            <div class="table" ng-controller="ClassificationAuditLogCtrl" id="ClassificationAudit">
-                <div ng-include="'/system/public/html/classificationAuditLog.html'"></div>
-            </div>
+            <cde-classification-audit-log></cde-classification-audit-log>
         </div>
 
         <div uib-tab heading="{{tabs[6].title}}" select="tabSelect(tabs[6].title)">

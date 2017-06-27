@@ -51,7 +51,6 @@ import "./system/public/js/controllers/AuditErrorListCtrl";
 import "./system/public/js/controllers/TakeATourCtrl";
 import "./system/public/js/controllers/ApproveCommentCtrl";
 import "./system/public/js/controllers/RemoveClassificationModalCtrl";
-import "./system/public/js/controllers/ClassificationAuditLogCtrl";
 import "./system/public/js/controllers/SiteAuditCtrl";
 import "./system/public/js/controllers/ServerStatusesCtrl";
 import "./system/public/js/controllers/AccordionCtrl";
