@@ -72,29 +72,30 @@
         </div>
     </div>
     <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
-        <div class="col-xs-2">
+        <div class="col-xs-2 noLeftRightPadding">
             <div class="form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" [(ngModel)]="reorder">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="filter.reorder.select">
                     Reorder
                 </label>
                 <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" [(ngModel)]="add">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="filter.add.select">
                     Add
                 </label>
                 <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" [(ngModel)]="remove">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="filter.remove.select">
                     Remove
                 </label>
                 <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" [(ngModel)]="edit">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="filter.edited.select">
                     Edit
                 </label>
             </div>
         </div>
-        <div class="col-xs-10">
+        <div class="col-xs-10 noLeftPadding">
             <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>
-            <cde-compare-array [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-array>
+            <cde-compare-array [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"
+                               [(filter)]="filter"></cde-compare-array>
         </div>
     </div>
     <div class="modal-footer">

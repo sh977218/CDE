@@ -39,11 +39,20 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorElements = [];
     public numberSelected: number = 0;
-
-    reorder = false;
-    add = false;
-    remove = false;
-    edit = false;
+    public filter = {
+        reorder: {
+            select: true
+        },
+        add: {
+            select: true
+        },
+        remove: {
+            select: true
+        },
+        edited: {
+            select: true
+        }
+    };
 
     constructor(private alert: AlertService,
                 private http: Http,

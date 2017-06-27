@@ -323,6 +323,7 @@ let formCompareArrayOption = [
 export class CompareArrayComponent implements OnInit {
     @Input() older;
     @Input() newer;
+    @Input() filter;
     public compareArrayOption = [];
 
 
