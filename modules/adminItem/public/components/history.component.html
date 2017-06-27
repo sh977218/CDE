@@ -72,8 +72,30 @@
         </div>
     </div>
     <div class="modal-body" *ngIf="getSelectedElt() && getSelectedElt().length == 2">
-        <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>
-        <cde-compare-array [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-array>
+        <div class="col-xs-2">
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="reorder">
+                    Reorder
+                </label>
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="add">
+                    Add
+                </label>
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="remove">
+                    Remove
+                </label>
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="edit">
+                    Edit
+                </label>
+            </div>
+        </div>
+        <div class="col-xs-10">
+            <cde-compare-object [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-object>
+            <cde-compare-array [newer]="getSelectedElt()[0]" [older]="getSelectedElt()[1]"></cde-compare-array>
+        </div>
     </div>
     <div class="modal-footer">
         <button class="btn cancel" id="closeHistoryCompareModal" (click)="c('Close click')" type="button">Close

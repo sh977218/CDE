@@ -40,6 +40,11 @@ export class HistoryComponent implements OnInit {
     public priorElements = [];
     public numberSelected: number = 0;
 
+    reorder = false;
+    add = false;
+    remove = false;
+    edit = false;
+
     constructor(private alert: AlertService,
                 private http: Http,
                 public modalService: NgbModal,
