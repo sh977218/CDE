@@ -7,7 +7,7 @@ public class SwaggerTest extends NlmCdeBaseTest {
     @Test
     public void swaggerTest() {
         clickElement(By.id("dropdownMenu_help"));
-        clickElement(By.partialLinkText("Swagger API Documentation"));
+        clickElement(By.partialLinkText("API Documentation"));
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
         clickElement(By.partialLinkText("Form"));
