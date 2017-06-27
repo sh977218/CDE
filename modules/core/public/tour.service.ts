@@ -280,7 +280,6 @@ export class TourService {
         steps.splice(0, from);
         let tour = new Tour({
             name: "CDE-Tour",
-            debug: true,
             storage: false,
             steps: steps
         });
