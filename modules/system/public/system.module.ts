@@ -26,6 +26,10 @@ import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffP
 import { ClassificationAuditLogComponent } from "./components/siteAdmin/classificationAuditLog/classificationAuditLog.component";
 
 import { CamelCaseToHumanPipe } from "../../core/public/camelCaseToHumanPipe";
+import { ClientErrorsComponent } from "./components/siteAdmin/clientErrors/clientErrors.component";
+import { ServerErrorsComponent } from "./components/siteAdmin/serverErrors/serverErrors.component";
+import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.component";
+import {FeedbackIssuesComponent} from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
 
 @NgModule({
     imports: [
@@ -45,7 +49,9 @@ import { CamelCaseToHumanPipe } from "../../core/public/camelCaseToHumanPipe";
         CdeAccordionListDirective,
         CamelCaseToHumanPipe,
         ClassificationAuditLogComponent,
+        ClientErrorsComponent,
         DailyUsageComponent,
+        FeedbackIssuesComponent,
         FormAccordionListDirective,
         HomeComponent,
         ListManagementComponent,
@@ -53,22 +59,20 @@ import { CamelCaseToHumanPipe } from "../../core/public/camelCaseToHumanPipe";
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
+        ServerErrorsComponent,
+        SiteAuditComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
     ],
     entryComponents: [
         AlertComponent,
-        AppLogComponent,
-        AuditLogComponent,
-        ClassificationAuditLogComponent,
-        DailyUsageComponent,
         HomeComponent,
         ListManagementComponent,
-        LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
+        SiteAuditComponent,
         UsersMgtComponent,
     ],
     exports: [],

@@ -1,0 +1,49 @@
+<ngb-tabset class="container-fluid" >
+    <ngb-tab title="Logs">
+        <ng-template ngbTabContent>
+            <cde-log-audit></cde-log-audit>
+        </ng-template>
+    </ngb-tab>
+
+    <ngb-tab title="App Logs">
+       <ng-template ngbTabContent>
+            <cde-app-log></cde-app-log>
+       </ng-template>
+    </ngb-tab>
+
+    <ngb-tab title="Usage">
+        <ng-template ngbTabContent>
+            <cde-daily-usage></cde-daily-usage>
+        </ng-template>
+    </ngb-tab>
+
+    <ngb-tab title="CDE Audit Log">
+        <ng-template ngbTabContent>
+            <cde-audit-log></cde-audit-log>
+        </ng-template>
+    </ngb-tab>
+
+    <ngb-tab title="Classification Audit Log">
+        <ng-template ngbTabContent>
+            <cde-classification-audit-log></cde-classification-audit-log>
+        </ng-template>
+    </ngb-tab>
+
+    <ngb-tab title="Reported Issues">
+        <ng-template ngbTabContent>
+            <cde-feedback-issues></cde-feedback-issues>
+        </ng-template>
+    </ngb-tab>
+
+    <ngb-tab title="Server Errors">
+        <ng-template ngbTabContent>
+            <cde-server-errors></cde-server-errors>
+        </ng-template>
+    </ngb-tab>
+
+    <ngb-tab title="Client Errors">
+        <ng-template ngbTabContent>
+            <cde-client-errors></cde-client-errors>
+        </ng-template>
+    </ngb-tab>
+</ngb-tabset>

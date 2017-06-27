@@ -432,26 +432,14 @@ angular.module('systemModule').directive('cdeProfile', downgradeComponent({compo
 import {UserCommentsComponent} from "../components/userComments.component";
 angular.module('systemModule').directive('user-comments', downgradeComponent({component: UserCommentsComponent, inputs: ['user'], outputs: []}));
 
-import {LogAuditComponent} from "../components/siteAdmin/logAudit/logAudit.component";
-angular.module('systemModule').directive('cdeLogAudit', downgradeComponent({component: LogAuditComponent, inputs: [], outputs: []}));
-
-import {ClassificationAuditLogComponent} from "../components/siteAdmin/classificationAuditLog/classificationAuditLog.component";
-angular.module('systemModule').directive('cdeClassificationAuditLog', downgradeComponent({component: ClassificationAuditLogComponent, inputs: [], outputs: []}));
-
-import {AppLogComponent} from "../components/siteAdmin/appLogs/appLog.component";
-angular.module('systemModule').directive('cdeAppLog', downgradeComponent({component: AppLogComponent, inputs: [], outputs: []}));
+import {SiteAuditComponent} from "../components/siteAdmin/siteAudit/siteAudit.component";
+angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({component: SiteAuditComponent, inputs: [], outputs: []}));
 
 import {ListManagementComponent} from "../components/siteAdmin/listManagement/listManagement.component";
 angular.module('systemModule').directive('cdeListManagement', downgradeComponent({component: ListManagementComponent, inputs: [], outputs: []}));
 
 import {OrgAdminComponent} from "../components/siteAdmin/orgAdmin/orgAdmin.component";
 angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({component: OrgAdminComponent, inputs: [], outputs: []}));
-
-import {AuditLogComponent} from "../components/siteAdmin/auditLog/auditLog.component";
-angular.module('systemModule').directive('cdeAuditLog', downgradeComponent({component: AuditLogComponent, inputs: [], outputs: []}));
-
-import {DailyUsageComponent} from "../components/siteAdmin/dailyUsage/dailyUsage.component";
-angular.module('systemModule').directive('cdeDailyUsage', downgradeComponent({component: DailyUsageComponent, inputs: [], outputs: []}));
 
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
