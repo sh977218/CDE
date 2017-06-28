@@ -20,6 +20,16 @@ import { NavigationComponent } from "./components/navigation.component";
 import { TruncateLongNamePipe } from "./truncateLongName.pipe";
 import { AlertComponent } from "./components/alert/alert.component";
 import { AlertService } from "./components/alert/alert.service";
+import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component";
+import { AuditLogComponent } from "./components/siteAdmin/auditLog/auditLog.component";
+import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffPopulate.service";
+import { ClassificationAuditLogComponent } from "./components/siteAdmin/classificationAuditLog/classificationAuditLog.component";
+
+import { CamelCaseToHumanPipe } from "../../core/public/camelCaseToHumanPipe";
+import { ClientErrorsComponent } from "./components/siteAdmin/clientErrors/clientErrors.component";
+import { ServerErrorsComponent } from "./components/siteAdmin/serverErrors/serverErrors.component";
+import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.component";
+import {FeedbackIssuesComponent} from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
 
 @NgModule({
     imports: [
@@ -34,8 +44,14 @@ import { AlertService } from "./components/alert/alert.service";
     ],
     declarations: [
         AlertComponent,
+        AppLogComponent,
+        AuditLogComponent,
         CdeAccordionListDirective,
+        CamelCaseToHumanPipe,
+        ClassificationAuditLogComponent,
+        ClientErrorsComponent,
         DailyUsageComponent,
+        FeedbackIssuesComponent,
         FormAccordionListDirective,
         HomeComponent,
         ListManagementComponent,
@@ -43,24 +59,26 @@ import { AlertService } from "./components/alert/alert.service";
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
+        ServerErrorsComponent,
+        SiteAuditComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
     ],
     entryComponents: [
         AlertComponent,
-        DailyUsageComponent,
         HomeComponent,
         ListManagementComponent,
-        LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
+        SiteAuditComponent,
         UsersMgtComponent,
     ],
     exports: [],
     providers: [
         AlertService,
+        CdeDiffPopulateService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -13,7 +13,7 @@ var gulp = require('gulp'),
     fs = require('fs'),
     fstream = require('fstream'),
     spawn = require('child_process').spawn,
-    elastic = require('./modules/system/node-js/createIndexes'),
+    esInit = require('./modules/system/node-js/elasticSearchInit'),
     git = require('gulp-git'),
     templateCache = require('gulp-angular-templatecache'),
     run = require('gulp-run')
@@ -193,8 +193,16 @@ gulp.task('emptyTemplates', ['usemin'], function () {
 });
 
 gulp.task('es', function () {
-    elastic.deleteIndices();
+    const elasticsearch = require('elasticsearch');
 
+    let esClient = new elasticsearch.Client({
+        hosts: config.elastic.hosts
+    });
+
+    esInit.indices.forEach(function (index) {
+        esClient.indices.delete({index: index.indexName, timeout: "2s"}, function () {
+        });
+    });
     /* don't know why but gulp wont exit this. Kill it.*/
     setTimeout(function () {
         process.exit(0);

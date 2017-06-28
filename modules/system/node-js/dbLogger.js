@@ -9,6 +9,7 @@ var mongoose = require('mongoose')
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
     , moment = require('moment')
+    , noDbLogger = require('./noDbLogger')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -21,6 +22,15 @@ var LogErrorModel = conn.model('DbErrorLogger', schemas_system.logErrorSchema);
 var ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.clientErrorSchema);
 var StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 var FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
+var consoleLogModel = conn.model('consoleLogs', schemas_system.consoleLogSchema);
+
+exports.consoleLog = function (message, level) {
+    new consoleLogModel({
+        message: message, level: level
+    }).save(err => {
+        if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + err);
+    });
+};
 
 function sqEsUpdate(elt) {
     if (elt) {
@@ -72,7 +82,7 @@ exports.storeQuery = function (settings, callback) {
                         storedQuery,
                         function (err, newObject) {
                             sqEsUpdate(newObject);
-                            if (err) console.log(err);
+                            if (err) noDbLogger.noDbLogger.info(err);
                             if (callback) callback(err);
                         }
                     );
@@ -93,7 +103,7 @@ exports.log = function (message, callback) {
     if (message.httpStatus !== "304") {
         var logEvent = new LogModel(message);
         logEvent.save(function (err) {
-            if (err) console.log("ERROR: " + err);
+            if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
             callback(err);
         });
     }
@@ -103,7 +113,7 @@ exports.logError = function (message, callback) {
     message.date = new Date();
     var logEvent = new LogErrorModel(message);
     logEvent.save(function (err) {
-        if (err) console.log("ERROR: ");
+        if (err) noDbLogger.noDbLogger.info("ERROR: ");
         if (callback) callback(err);
     });
 };
@@ -120,7 +130,7 @@ exports.logClientError = function (req, callback) {
     if (req.user) exc.username = req.user.username;
     var logEvent = new ClientErrorModel(exc);
     logEvent.save(function (err) {
-        if (err) console.log("ERROR: " + err);
+        if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
         callback(err);
     });
 };
@@ -141,6 +151,25 @@ exports.getLogs = function (body, callback) {
     LogModel.count({}, function (err, count) {
         modal.sort(sort).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
             let result = {itemsPerPage: itemsPerPage, logs: logs, sort: sort};
+            if (!body.totalItems) result.totalItems = count;
+            callback(err, result);
+        });
+    });
+};
+
+exports.appLogs = function (body, callback) {
+    let currentPage = 1;
+    if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
+    let itemsPerPage = 500;
+    if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
+    let skip = (currentPage - 1) * itemsPerPage;
+    let query = {};
+    let modal = consoleLogModel.find();
+    if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
+    if (body.toDate) modal.where("date").lte(moment(body.toDate));
+    consoleLogModel.count({}, function (err, count) {
+        modal.sort({date: -1}).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
+            let result = {itemsPerPage: itemsPerPage, logs: logs};
             if (!body.totalItems) result.totalItems = count;
             callback(err, result);
         });

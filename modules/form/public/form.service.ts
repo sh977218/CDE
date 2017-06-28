@@ -137,8 +137,6 @@ export class FormService {
                         });
                     }
                 }
-            } else {
-                console.log('Unknown CDE datatype: ' + cde.valueDomain.datatype);
             }
             return cb(question);
         }

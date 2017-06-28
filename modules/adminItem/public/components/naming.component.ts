@@ -14,10 +14,9 @@ export class NamingComponent implements OnInit {
     @Input() public elt: any;
     public newNaming: any = {};
     public modalRef: NgbModalRef;
-    public orgNamingTags: {id: string; text: string}[] = [];
+    public orgNamingTags: { id: string; text: string }[] = [];
 
     loaded: boolean;
-
     public onInitDone: boolean;
 
     //noinspection TypeScriptUnresolvedVariable
@@ -42,7 +41,7 @@ export class NamingComponent implements OnInit {
     ngOnInit(): void {
         this.getCurrentTags();
         this.elt.naming.forEach(n => {
-            n.currentTags.forEach (ct => {
+            n.currentTags.forEach(ct => {
                 if (!this.orgNamingTags.find((elt) => ct === elt.text)) {
                     this.orgNamingTags.push({"id": ct, "text": ct});
                 }
@@ -66,9 +65,11 @@ export class NamingComponent implements OnInit {
             n.currentTags = n.tags.map(t => t.tag);
         });
     }
+
     openNewNamingModal() {
         this.modalRef = this.modalService.open(this.newNamingContent, {size: "lg"});
-        this.modalRef.result.then(() => this.newNaming = {}, () => {});
+        this.modalRef.result.then(() => this.newNaming = {}, () => {
+        });
     }
 
     addNewNaming() {
@@ -83,7 +84,7 @@ export class NamingComponent implements OnInit {
         this.elt.unsaved = true;
     }
 
-    changedTags(name, data: {value: string[]}, needToSave = true) {
+    changedTags(name, data: { value: string[] }, needToSave = true) {
         if (!data.value) data.value = [];
         name.tags = data.value.map(d => {
             return {tag: d};
