@@ -12,8 +12,10 @@
                                      [right]="r.older[d.property] | json"></pre>
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
-                                <label>{{d.label}}:</label>
-                                <span>{{r.data[d.property] | json}}</span>
+                                <ng-container *ngIf="r.data[d.property]">
+                                    <label>{{d.label}}:</label>
+                                    <span>{{r.data[d.property] | json}}</span>
+                                </ng-container>
                             </ng-container>
                         </ng-container>
                     </div>
@@ -47,10 +49,12 @@
                                      [right]="r.older[d.property] | json"></pre>
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
-                                <label>{{d.label}}:</label>
-                                <a *ngIf="d.url" target="_blank" [href]=d.url+r.older[d.property]>
-                                    {{r.older[d.property]}}</a>
-                                <span *ngIf="!d.url">{{r.older[d.property] | json}}</span>
+                                <ng-container *ngIf="r.older[d.property]">
+                                    <label>{{d.label}}:</label>
+                                    <a *ngIf="d.url" target="_blank" [href]=d.url+r.older[d.property]>
+                                        {{r.older[d.property]}}</a>
+                                    <span *ngIf="!d.url">{{r.older[d.property] | json}}</span>
+                                </ng-container>
                             </ng-container>
                         </div>
                     </div>
