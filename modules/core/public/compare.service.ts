@@ -146,6 +146,24 @@ export class CompareService {
                         return true;
                     }
                 }
+                if (willRemove.add && willStay.add) {
+                    let aData = _.cloneDeep(willRemove.data);
+                    delete aData.diff;
+                    let bData = _.cloneDeep(willStay.data);
+                    delete bData.diff;
+                    if (option.isEqual(aData, bData)) {
+                        return true;
+                    }
+                }
+                if (willRemove.remove && willStay.remove) {
+                    let aData = _.cloneDeep(willRemove.data);
+                    delete aData.diff;
+                    let bData = _.cloneDeep(willStay.data);
+                    delete bData.diff;
+                    if (option.isEqual(aData, bData)) {
+                        return true;
+                    }
+                }
                 return false;
             });
             option.result.forEach(r => {
