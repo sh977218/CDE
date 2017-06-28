@@ -1,25 +1,106 @@
 <div class="container-fluid" itemscope="http://schema.org/MedicalCode">
-    <div class="alert alert-warning mt20" role="alert" *ngIf="elt.archived">
+    <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this data element is archived. You can
         <a href="/deview?tinyId={{elt.tinyId}}">view the current version here</a>.
     </div>
-    <div class="alert alert-warning mt20" role="alert" *ngIf="elt.registrationState.registrationStatus=='Retired'">
-        <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired.
-        <span ng-show="elt.registrationState.replacedBy">
+    <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this data element is retired.
+        <span *ngIf="elt.registrationState.replacedBy">
             <a href="/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
-    <div class="alert alert-warning mt20" role="alert"
-         *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'">
+    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
+         role="alert">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired.
         <span *ngIf="elt.registrationState.replacedBy">
             <a href="/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a></span></div>
-    <div class="alert alert-info mt20" role="alert" *ngIf="displayStatusWarning"><i
-            class="fa fa-exclamation-triangle"></i>
+    <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
         <strong>Note:</strong> You may not edit this CDE because it is standard.
     </div>
-    <div class="alert alert-info mt20" role="alert" ng-show="elt.forkOf">
+    <div *ngIf="elt.forkOf" class="alert alert-info mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         You are editing a fork. <a href="/deview?cdeId={{rootFork._id}}">
         <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
     </div>
+
+    <h1 *ngIf="!elt" class="pt60 pb40 text-center">
+        <i class="fa fa-spinner fa-pulse"></i>Loading...
+    </h1>
+
+    <div *ngIf="elt" class="row">
+        <div ngClass="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+            <h1 class="page-header">
+                {{elt.naming[0].designation}}
+                <a *ngIf="quickBoard.canAddElt(elt)" class="btn btn-small btn-default" role="button"
+                   (click)="quickBoard.add(elt)" title="Add to Compare List" id="addToQuickBoard">
+                    <i class="fa fa-plus"></i> Add to Quick Board</a>
+                <a class="btn btn-small btn-default" role="button"
+                   (click)="PinModal.openPinModal(elt)" title="Add to Board" id="addToBoard">
+                    <i class="fa fa-thumb-tack"></i> Add to Board</a>
+
+                <div class="btn-group">
+                    <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-download"></i>
+                        Export <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a id='jsonExport' href="dataelement/{{elt._id}}" target="_blank">JSON File, NIH/CDE
+                            Schema</a></li>
+                        <li><a id='xmlExport' href="dataelement/{{elt._id}}?type=xml" target="_blank">XML File,
+                            NIH/CDE Schema</a></li>
+                    </ul>
+                </div>
+
+                <button *ngIf="user._id && user.orgAdmin.length > 0" class="btn btn-small btn-default" role="button"
+                        (click)="copyElt()" title="Copy CDE" id="copyCdeBtn">
+                    <i class="fa fa-clone"></i> Copy
+                </button>
+
+                <button class="btn btn-small btn-default" role="button" (click)="switchCommentMode()"
+                        title="Discuss CDE" id="discussBtn">
+                    <i class="fa fa-comment" ngClass="{discussWrench: hasComments && !commentMode}"></i> Discuss
+                </button>
+            </h1>
+
+            <uib-tabset active="currentTab">
+                <uib-tab id="general_tab" index="'general'">
+                    <uib-tab-heading
+                            ngClass="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                        General Details
+                    </uib-tab-heading>
+                    <div *ngIf="currentTab === 'general'">
+                        <cde-de-general-details [elt]="elt"></cde-de-general-details>
+                    </div>
+                </uib-tab>
+
+                <uib-tab ng-repeat="(tabName, tab) in tabs" *ngIf="tab.if?tab.if():true"
+                         id="{{tabName}}_tab" select="tab.select(tabName)" index="tabName">
+                    <uib-tab-heading
+                            ngClass="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
+                        {{tab.heading}}
+                    </uib-tab-heading>
+                    <div *ngIf="tab.includes" ng-repeat="incl in tab.includes">
+                        <div *ngIf="currentTab == tabName">
+                            <div ng-include="incl"></div>
+                        </div>
+                    </div>
+                </uib-tab>
+            </uib-tabset>
+        </div>
+
+        <div *ngIf="commentMode" ngClass="{'col-sm-3':commentMode,'':!commentMode}"
+             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+            <cde-discuss-area [selected-elt]="currentTab" [elt-id]="elt.tinyId" [elt]="elt"
+                              [elt-name]="elt.naming[0].designation"></cde-discuss-area>
+        </div>
+
+        <div *ngIf="elt.unsaved && elt.allValid" class="mt20">
+            <button class="btn cancel" (click)="revert(elt)" id="discardChanges">Discard Changes</button>
+            <button class="btn btn-primary" (click)="openSave(elt, 'deview?tinyId=')" id="openSave">Save Changes
+            </button>
+        </div>
+    </div>
+
 </div>
