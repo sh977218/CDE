@@ -25,6 +25,8 @@ import { PermissibleValueComponent } from "./components/permissibleValue.compone
 import { RegistrationValidatorService } from "./components/validationRules/registrationValidator.service";
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
+import { DataElementService } from "./dataElement.service";
+import { DataElementViewComponent } from "./components/dataElementView.component";
 
 @NgModule({
     imports: [
@@ -57,6 +59,7 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         CdeSummaryListComponent,
         DeGeneralDetailsComponent,
         PermissibleValueComponent,
+        DataElementViewComponent
     ],
     entryComponents: [
         BoardCdeSummaryListComponent,
@@ -73,11 +76,13 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         ValidRulesComponent,
         ValueDomainSummaryComponent,
         PermissibleValueComponent,
+        DataElementViewComponent
     ],
     exports: [
     ],
     providers: [
         RegistrationValidatorService,
+        DataElementService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
