@@ -10,6 +10,6 @@ import { TourService } from "../../../../core/public/tour.service";
 export class HomeComponent {
 
     takeATour() {
-        TourService.takeATour();
+        TourService.newTour();
     }
 }
