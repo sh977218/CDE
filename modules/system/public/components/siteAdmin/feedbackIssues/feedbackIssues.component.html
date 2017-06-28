@@ -1,0 +1,39 @@
+<table class="table">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>User</th>
+        <th>Message</th>
+        <th>URL</th>
+        <th>Screenshot</th>
+        <th>Browser</th>
+        <th>HTML</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let err of records">
+            <td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
+            <td>{{err.user?.username?err.user.username:"Anonymous"}}</td>
+            <td>{{err.userMessage}}</td>
+            <td>{{err.reportedUrl}}</td>
+            <td><a href="" (click)="showScreenshot(err.screenshot.content)">Show Screenshot</a></td>
+            <td>{{err.browser}}</td>
+            <td><a href="" (click)="showRawHtml(err.rawHtml)">Show HTML</a></td>
+        </tr>
+    </tbody>
+</table>
+
+<ngb-pagination [collectionSize]="1000" [(page)]="currentPage" (pageChange)="gotoPage()" [maxSize]="10">
+</ngb-pagination>
+
+<ng-template #screenshotModal id="screenshotModal">
+    <div class="modal-body">
+        <a target="_blank" href='{{screenshot}}'><img src="{{screenshot}}" style="max-width: 780px;"></a>
+    </div>
+</ng-template>
+
+<ng-template #rawHtmlModal id="rawHtmlModal">
+    <div class="modal-body">
+        <span>{{rawHtml}}</span>
+    </div>
+</ng-template>

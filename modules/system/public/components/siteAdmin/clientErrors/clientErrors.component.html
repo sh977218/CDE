@@ -1,0 +1,61 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let err of records">
+        <td class="fake-link" (click)="openErrorDetail(err);" id="{{errorType}}Error_{{errIndex}}">
+            {{err.date | date:'MM/dd/yyyy @h:mma'}}
+        </td>
+        <td> {{err.name | slice:0:80 }}</td>
+        <td> {{err.message | slice:0:80 }}</td>
+    </tr>
+    </tbody>
+</table>
+
+<ngb-pagination [collectionSize]="1000" [(page)]="currentPage" (pageChange)="gotoPage()" [maxSize]="10">
+</ngb-pagination>
+
+<ng-template #errorDetailModal id="errorDetailModal">
+    <div class="modal-header">
+        <h4 class="modal-title">Error Detail</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <label>Date:</label>
+            <div>{{error.date | date:'MM/dd/yyyy @h:mma'}}</div>
+        </div>
+        <div class="row">
+            <label>Name:</label>
+            <div>{{error.name}}</div>
+        </div>
+        <div class="row">
+            <label>Message:</label>
+            <div>{{error.message}}</div>
+        </div>
+        <div class="row">
+            <label>User:</label>
+            <div>{{error.user}}</div>
+        </div>
+        <div class="row">
+            <label>IP:</label>
+            <div>{{error.ip}}</div>
+        </div>
+        <div class="row">
+            <label>Browser:</label>
+            <div>{{error.browser}}</div>
+        </div>
+        <div class="row">
+            <label>URL:</label>
+            <div>{{error.URL}}</div>
+        </div>
+        <div class="row">
+            <label>Stack:</label>
+            <div>{{error.stack}}</div>
+        </div>
+    </div>
+</ng-template>
