@@ -1,14 +1,11 @@
 angular.module('cdeModule').controller('SDCViewCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
-    
-    var load = function(cdeId, cb) {
-        if (cdeId) {
-            $http.get("/sdc/" + cdeId).then(function (result) {
-                $scope.sdcCde = result.data;
-            });
-        }
-    };
-    
-    load($routeParams.cdeId);
-    
-    
+    if ($routeParams.cdeId) {
+        $http.get("/sdc/" + $routeParams.cdeId).then(function (result) {
+            $scope.sdcCde = result.data;
+        });
+    } else {
+        $http.get("/sdc/" + $routeParams.tinyId + "/" + $routeParams.version).then(function (result) {
+            $scope.sdcCde = result.data;
+        });
+    }
 }]);

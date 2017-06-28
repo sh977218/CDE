@@ -1,12 +1,10 @@
 import {
-    Attachment,
-    CdeId, Classification, DataSource, Instruction, Naming, ObjectId, PermissibleValue, Property, ReferenceDocument,
-    RegistrationState, UserReference
-} from "../../core/public/models.model";
+    CdeId, Classification, DataSource, Elt, Instruction, Naming, ObjectId, PermissibleValue, Property,
+    ReferenceDocument, RegistrationState, UserReference
+} from 'core/public/models.model';
 
-export class CdeForm {
+export class CdeForm extends Elt {
     archived: boolean = false;
-    attachments: Attachment[];
     changeNote: string;
     classification: Classification[];
     comments: Comment[];
@@ -27,6 +25,7 @@ export class CdeForm {
     lastMigrationScript: string;
     naming: Naming[];
     noRenderAllowed: boolean;
+    numQuestions: number; // calculated, Elastic
     origin: string;
     properties: Property[];
     referenceDocuments: ReferenceDocument[];
@@ -36,15 +35,22 @@ export class CdeForm {
     };
     source: string;
     sources: DataSource;
-    tinyId: string;
     unsaved: boolean = false;
     updated: Date;
     updatedBy: UserReference;
     version: string;
+
+    getEltUrl() {
+        return '/formView?tinyId=' + this.tinyId;
+    }
+
+    getLabel() {
+        return this.naming[0].designation;
+    }
 }
 
 export class DisplayProfile {
-    _id: boolean = false;
+    _id: ObjectId = null;
     displayInstructions: boolean;
     displayInvisible: boolean;
     displayNumbering: boolean;
@@ -57,7 +63,7 @@ export class DisplayProfile {
 }
 
 export interface FormElement {
-    _id: boolean;
+    _id: ObjectId;
     readonly elementType: string;
     formElements: FormElement[];
     instructions: Instruction;
@@ -67,9 +73,9 @@ export interface FormElement {
 }
 
 export class FormSection implements FormElement {
-    _id: boolean;
+    _id: ObjectId;
     edit: boolean = false;
-    elementType = "section";
+    elementType = 'section';
     instructions: Instruction;
     formElements = [];
     label = "";
@@ -81,8 +87,8 @@ export class FormSection implements FormElement {
 }
 
 export class FormInForm implements FormElement {
-    _id: boolean;
-    elementType = "form";
+    _id: ObjectId;
+    elementType = 'form';
     formElements = [];
     instructions: Instruction;
     inForm: InForm;
@@ -92,8 +98,8 @@ export class FormInForm implements FormElement {
 }
 
 export class FormQuestion implements FormElement {
-    _id: boolean;
-    elementType = "question";
+    _id: ObjectId;
+    elementType = 'question';
     edit: boolean = false;
     formElements = [];
     hideLabel: boolean = false;

@@ -7,22 +7,24 @@ import { Select2Module } from "ng2-select2";
 import { SortableModule } from "ngx-bootstrap";
 import { NouisliderModule } from 'ng2-nouislider';
 
-import { AdminItemModule } from "../../adminItem/public/adminItem.module";
-import { BoardModule } from "../../board/public/board.module";
-import { SearchModule } from "search";
-import { WidgetModule } from "../../widget/widget.module";
+import { AdminItemModule } from "adminItem/public/adminItem.module";
+import { BoardModule } from "board/public/board.module";
+import { CdeModule } from "cde/public/cde.module";
+import { SearchModule } from "search/search.module";
+import { WidgetModule } from "widget/widget.module";
 
+import {  } from "./upgrade-components";
 import { ArrayListPipe } from "./arrayList.pipe";
-import { BoardFormSummaryListComponent } from "./components/searchResults/boardFormSummaryList.component";
-import { BoardFormSummaryListContentComponent } from "./components/searchResults/boardFormSummaryListContent.component";
+import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
+import { BoardFormSummaryListContentComponent } from "./components/listView/boardFormSummaryListContent.component";
 import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
+import { FormAccordionListComponent } from "./components/listView/formAccordionList.component";
 import { FormDescriptionComponent } from "./tabs/description/formDescription.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
 import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
-import { FormSearchDirective, QuestionSearchDirective } from "./upgrade-components";
-import { FormSummaryListComponent } from "./components/searchResults/formSummaryList.component";
-import { FormSummaryListContentComponent } from "./components/searchResults/formSummaryListContent.component";
+import { FormSearchComponent } from "./components/search/formSearch.component";
+import { FormSummaryListContentComponent } from "./components/listView/formSummaryListContent.component";
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
@@ -30,6 +32,7 @@ import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
 import { NativeTableComponent } from "./nativeRender/nativeTable.component";
+import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 
 import { FormService } from "./form.service";
 import { SkipLogicService } from "./skipLogic.service";
@@ -49,6 +52,7 @@ import { FormTermMappingComponent } from "./components/formTermMapping/formTermM
         // internal
         AdminItemModule,
         BoardModule,
+        CdeModule,
         SearchModule,
         WidgetModule,
     ],
@@ -58,13 +62,13 @@ import { FormTermMappingComponent } from "./components/formTermMapping/formTermM
         BoardFormSummaryListContentComponent,
         CdeSortableComponent,
         DisplayProfileComponent,
+        FormAccordionListComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
         FormGeneralDetailsComponent,
-        FormSearchDirective,
-        FormSummaryListComponent,
+        FormSearchComponent,
         FormSummaryListContentComponent,
         FormTermMappingComponent,
         MergeFormComponent,
@@ -74,22 +78,25 @@ import { FormTermMappingComponent } from "./components/formTermMapping/formTermM
         NativeSectionMatrixComponent,
         NativeQuestionComponent,
         NativeTableComponent,
-        QuestionSearchDirective,
+        QuickBoardFormSummaryListContentComponent,
     ],
     entryComponents: [
         DisplayProfileComponent,
+        FormAccordionListComponent,
         FormDescriptionComponent,
         FormGeneralDetailsComponent,
         BoardFormSummaryListComponent,
         BoardFormSummaryListContentComponent,
         FormDescriptionComponent,
-        FormSummaryListComponent,
+        FormSearchComponent,
         FormSummaryListContentComponent,
         MergeFormComponent,
         NativeRenderComponent,
+        QuickBoardFormSummaryListContentComponent,
         NativeRenderFullComponent,
     ],
     exports: [
+        FormAccordionListComponent,
         NativeRenderComponent,
     ],
     providers: [

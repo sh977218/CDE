@@ -74,10 +74,8 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
     `]
 })
 export class FormDescriptionComponent implements OnInit {
-    @Input() cache: any;
     @Input() elt: CdeForm;
     @Input() inScoreCdes: any;
-    @Output() cachePut: EventEmitter<any> = new EventEmitter<any>();
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 

@@ -2,7 +2,7 @@ import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import { PinModalComponent } from "../../../../board/public/components/pinModal/pinModal.component";
+import { PinModalComponent } from "../../../../board/public/components/pins/pinModal.component";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({

@@ -7,16 +7,11 @@ import { OrgHelperService } from "../../../../core/public/orgHelper.service";
     templateUrl: "./deGeneralDetails.component.html"
 })
 export class DeGeneralDetailsComponent  {
-
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                @Inject("userResource") public userService,
-                public orgHelpers: OrgHelperService
-    ) {
-    }
-
     @Input() elt: any;
 
     editDtMode: boolean;
 
-
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
+                @Inject("userResource") public userService,
+                public orgHelpers: OrgHelperService) {}
 }

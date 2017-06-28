@@ -265,15 +265,6 @@ angular.module('resourcesSystem', ['ngResource'])
 
         return this;
     }])
-    .factory("AutoCompleteResource", ["$http", function ($http) {
-        return {
-            suggest: function (searchTerm) {
-                return $http.get('/cdeCompletion/' + encodeURIComponent(searchTerm), {}).then(function (response) {
-                    return response.data;
-                });
-            }
-        };
-    }])
     .factory("SearchResultResource", [function () {
         return {
             elts: []

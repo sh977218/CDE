@@ -26,7 +26,7 @@
                             </a>
                             <a href="#" class="nonLinkAnchor" (click)="$event.stopPropagation()">
                                 <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
-                                   title="Attach to Board" role="link" (click)="$event.stopPropagation(); mltPinModal.open(cde, 'cde')"></i>
+                                   title="Attach to Board" role="link" (click)="$event.stopPropagation(); mltPinModal.pinOne('cde', cde, mltPinModal.open())"></i>
                             </a>
                             <a href="#"  class="nonLinkAnchor" *ngIf="quickBoard.canAddElt(cde)"
                                (click)="$event.stopPropagation(); quickBoard.add(cde)">

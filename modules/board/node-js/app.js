@@ -50,20 +50,18 @@ exports.init = function (app, daoManager) {
 
     function boardMove(req, res, moveFunc) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
-            var index = -1;
-            board.get('pins').find(function (p, i) {
-                    index = i;
-                    return p.get('deTinyId') === req.body.tinyId;
-                });
+            let match = board.get('pins').find(function (p, i) {
+                return (p.get('deTinyId') ? p.get('deTinyId') : p.get('formTinyId')) === req.body.tinyId;
+            });
+            let index = match ? match.__index : -1;
             if (index !== -1) {
                 moveFunc(board, index);
                 board.save(function (err) {
                     if (err) res.status(500).send();
                     else res.send();
                 });
-            } else {
+            } else
                 res.status(400).send("Nothing to move");
-            }
         });
     }
 

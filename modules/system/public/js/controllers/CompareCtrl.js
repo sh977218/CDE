@@ -1,8 +1,16 @@
-angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', 'isAllowedModel',
-    function ($scope, QuickBoard, isAllowedModel) {
+angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', 'isAllowedModel', '$cacheFactory',
+    function ($scope, QuickBoard, isAllowedModel, $cacheFactory) {
         $scope.compareView = true;
         $scope.pvLimit = 30;
 
+        if (!$scope.initCache)
+            $scope.initCache = function () {
+                if ($cacheFactory.get("deListCache") === undefined) {
+                    $scope.cache = $cacheFactory("deListCache");
+                } else {
+                    $scope.cache = $cacheFactory.get("deListCache");
+                }
+            };
         $scope.initCache();
         $scope.openAllCompareModel = $scope.cache.get("openAllCompare");
         $scope.quickBoard = QuickBoard;

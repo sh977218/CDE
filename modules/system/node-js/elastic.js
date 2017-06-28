@@ -504,7 +504,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     queryStuff.from = (settings.page - 1) * settings.resultPerPage;
-    if (!queryStuff.from)
+    if (!queryStuff.from || queryStuff.from < 0)
         queryStuff.from = 0;
 
     // highlight search results if part of the following fields.

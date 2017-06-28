@@ -145,7 +145,7 @@ export class ClassificationComponent {
                 this.reloadElt(() => {
                     this.modalRef.close("success");
                     this.alert.addAlert("success", "Classified.");
-                })
+                });
             }, err => {
                 this.alert.addAlert("danger", err._body);
                 this.modalRef.close("error");

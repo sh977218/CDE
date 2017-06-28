@@ -1,0 +1,32 @@
+<h4>
+    <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/deview/?tinyId=">
+        <span class="summary-list-before">
+            <input id="qb_elt_compare_{{eltIndex}}" type="checkbox" title="Select Elt"
+                   [checked]="elt.checked" (click)="checkboxClick(elt, $event)"/>
+        </span>
+        <span class="summary-list-after">
+            <a href class="nonLinkAnchor" (click)="removeElt(eltIndex,$event)">
+                <i class="fa fa-trash-o hand-cursor" title="remove" id="remove_{{eltIndex}}" role="link"></i></a>
+        </span>
+    </cde-summary-heading>
+</h4>
+
+<div class="row">
+    <div class="col-md-6">
+        <b>{{elt.numQuestions}} Questions</b> - <span [innerHtml]="elt.primaryDefinitionCopy"></span>
+        <dl class="dl-horizontal" style="margin: 5px 0 10px 0 ">
+            <dt>Steward:</dt>
+            <dd [innerHtml]="elt.stewardOrg.name"></dd>
+            <ng-container *ngIf="elt.classification.length > 0">
+                <dt>Used By:</dt>
+                <dd id="dd_usedBy">
+                    <span *ngFor="let cl of elt.classification">{{cl.stewardOrg.name}} </span>
+                </dd>
+            </ng-container>
+        </dl>
+    </div>
+    <div class="col-md-2">
+        <img *ngFor="let attachment of elt.attachments.filter(defaultAttachmentsFilter)" alt="Image attached to the elt"
+             src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+    </div>
+</div>

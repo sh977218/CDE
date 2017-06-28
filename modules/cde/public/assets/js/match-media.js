@@ -6,7 +6,6 @@
  * Includes matchMedia polyfill for backward compatibility.
  * Copyright � 2013-2014 Jack Tarantino.
 **/
-
 angular.module('matchMedia', [])
 
 

@@ -1,0 +1,10 @@
+<button *ngIf="!embedded && listView !== 'table'" (click)="listViewChange.emit('table')" id="{{module}}_gridView" value="Table View"
+        class="btn btn-default navbar-btn">
+    <i class="fa fa-table"></i>
+    Table View
+</button>
+<button *ngIf="!embedded && listView !== 'summary'" (click)="listViewChange.emit('summary')" id="{{module}}_summaryView"
+        value="Summary View" class="btn btn-default navbar-btn">
+    <i class="fa fa-bars"></i>
+    Summary View
+</button>

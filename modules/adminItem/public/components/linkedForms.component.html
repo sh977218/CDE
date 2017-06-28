@@ -15,9 +15,8 @@
             <hr/>
             <div *ngIf="forms && forms.length > 0">
                 <h4>Preview: </h4>
-                <form-summary-list id="linkedFormsAccordionList" [forms]="forms" ejsPage="list" module="elt.elementType"
-                                   [includeInAccordion]="['/cde/public/html/accordion/pinAccordionActions.html','/system/public/html/accordion/addToQuickBoardActions.html']">
-                </form-summary-list>
+                <cde-summary-list id="linkedFormsAccordionList" [contentComponent]="formSummaryContentComponent"
+                                  [elts]="forms" (select)="d()"></cde-summary-list>
             </div>
         </div>
         <div class="modal-footer" id="linkedFormsModalFooter">

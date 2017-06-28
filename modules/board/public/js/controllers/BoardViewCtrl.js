@@ -11,8 +11,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             // @TODO what is this?
             $scope.ejsPage = 'board';
 
-            $scope.includeInQuickBoard = ["/cde/public/html/accordion/sortCdes.html"];
-
             $scope.setPage = function (p) {
                 $scope.currentPage = p;
                 $scope.reload();
@@ -46,12 +44,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         if ($scope.board.type === "form") { $scope.quickBoard = $scope.formQuickBoard; }
                         var elts = $scope[$scope.board.type + 's'] = [];
                         $scope.module = $scope.board.type;
-                        $scope.setViewTypes($scope.module);
-                        $scope.includeInAccordion =
-                            [
-                                "/system/public/html/accordion/boardAccordionActions.html",
-                                "/system/public/html/accordion/addToQuickBoardActions.html"
-                            ];
                         $scope.totalItems = response.data.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
                         var pins = $scope.board.pins;

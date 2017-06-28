@@ -1216,6 +1216,11 @@ div + .questionPlaceholder {
     div .col-sm-2-4 {
         width: 20%;
     }
+
+    .modal-xl, .modal-dialog.modal-lg {
+        width: 90%;
+        max-width: 1200px;
+    }
 }
 
 @media (min-width: 769px) and (max-width: 992px) {

@@ -1,0 +1,29 @@
+<h4>
+    <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/formView/?tinyId=" (select)="select.emit($event)">
+        <span class="summary-list-before"></span>
+        <span class="summary-list-after">
+            <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
+            <cde-pin-quickboard [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-quickboard>
+        </span>
+    </cde-summary-heading>
+</h4>
+
+<div class="row">
+    <div class="col-md-6">
+        <b>{{elt.numQuestions}} Questions</b><ng-container *ngIf="elt.primaryDefinitionCopy"> - {{elt.primaryDefinitionCopy}}</ng-container>
+        <dl class="dl-horizontal" style="margin: 5px 0 10px 0 ">
+            <dt>Steward:</dt>
+            <dd [innerHtml]="elt.stewardOrg.name"></dd>
+            <dt [hidden]="!(elt.classification.length > 0)">Used By:</dt>
+            <dd [hidden]="!(elt.classification.length > 0)" id="dd_usedBy">
+                <span *ngIf="!(elt.classification.length > 0)">None</span>
+                <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-2">
+        <img *ngFor="let attachment of elt.attachments.filter(defaultAttachmentsFilter)"
+             alt="Image attached to the elt"
+             src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+    </div>
+</div>

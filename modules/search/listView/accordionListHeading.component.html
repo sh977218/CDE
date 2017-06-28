@@ -1,0 +1,19 @@
+<a href class="nonLinkAnchor" *ngIf="addMode">
+    <i class="fa fa-arrows question-move-handle"></i></a>
+<button *ngIf="addMode === 0"
+        (click)="BrowserService.interruptEvent($event);add.emit(elt)"
+        class="btn btn-default btn-xs ml-0">
+    <i class="fa fa-plus"></i> Add
+</button>
+
+<ng-content select=".accordion-list-before"></ng-content>
+
+<a href class="nonLinkAnchor">
+                <span role="link" [innerHtml]="elt.getLabel()"
+                      id="acc_link_{{eltIndex}}" class="hand-cursor"></span></a>
+<a [href]="elt.getEltUrl()" class="nonLinkAnchor" *ngIf="!openInNewTab"
+   (click)="BrowserService.openUrl(elt.getEltUrl(), $event);BrowserService.interruptEvent($event);">
+    <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link"
+       id="eyeLink_{{eltIndex}}"></i></a>
+
+<ng-content select=".accordion-list-after"></ng-content>

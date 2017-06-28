@@ -6,8 +6,6 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-boot
     providers: [NgbActiveModal],
     templateUrl: "./concepts.component.html"
 })
-
-
 export class ConceptsComponent {
 
     @ViewChild("newConceptContent") public newConceptContent: NgbModalModule;
@@ -27,34 +25,6 @@ export class ConceptsComponent {
         {type: "property", details: {display: "Property", path: "property.concepts.name"}
     }];
 
-    openNewConceptModal() {
-        this.modalRef = this.modalService.open(this.newConceptContent, {size: "lg"});
-        this.newConcept = {origin: "LOINC", type: "dec"};
-    };
-
-    dataElementConceptRemoveConcept (index) {
-        this.elt.dataElementConcept.concepts.splice(index, 1);
-        this.elt.unsaved = true;
-    };
-
-    objectClassRemoveConcept (index) {
-        this.elt.objectClass.concepts.splice(index, 1);
-        this.elt.unsaved = true;
-    };
-
-    propertyRemoveConcept (index) {
-        this.elt.property.concepts.splice(index, 1);
-        this.elt.unsaved = true;
-    };
-
-    removeConcept (type, i) {
-        this[type + "RemoveConcept"](i);
-    };
-
-    relatedCdes (concept, config) {
-        window.location.href = "/cde/search?q=" + config.details.path + `:"` + concept + `"`;
-    };
-
     addNewConcept() {
         if (!this.elt.dataElementConcept) this.elt.dataElementConcept = {};
         if (this.newConcept.type === "dec") {
@@ -69,7 +39,33 @@ export class ConceptsComponent {
         }
         this.elt.unsaved = true;
         this.modalRef.close();
-    };
+    }
 
+    dataElementConceptRemoveConcept (index) {
+        this.elt.dataElementConcept.concepts.splice(index, 1);
+        this.elt.unsaved = true;
+    }
 
+    objectClassRemoveConcept (index) {
+        this.elt.objectClass.concepts.splice(index, 1);
+        this.elt.unsaved = true;
+    }
+
+    openNewConceptModal() {
+        this.modalRef = this.modalService.open(this.newConceptContent, {size: "lg"});
+        this.newConcept = {origin: "LOINC", type: "dec"};
+    }
+
+    propertyRemoveConcept (index) {
+        this.elt.property.concepts.splice(index, 1);
+        this.elt.unsaved = true;
+    }
+
+    relatedCdes (concept, config) {
+        window.location.href = "/cde/search?q=" + config.details.path + `:"` + concept + `"`;
+    }
+
+    removeConcept (type, i) {
+        this[type + "RemoveConcept"](i);
+    }
 }

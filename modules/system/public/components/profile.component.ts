@@ -1,8 +1,9 @@
-import { Component, Inject } from "@angular/core";
-import { Http } from "@angular/http";
-import "rxjs/add/operator/map";
-import { User } from "../../../core/public/models.model";
-import { AlertService } from "./alert/alert.service";
+import { Component, Inject } from '@angular/core';
+import { Http } from '@angular/http';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { CdeForm } from 'form/public/form.model';
+import { DataElement } from 'cde/public/dataElement.model';
+import { User } from 'core/public/models.model';
 
 @Component({
     selector: "cde-profile",
@@ -22,14 +23,18 @@ export class ProfileComponent {
                 @Inject("ViewingHistory") private viewingHistoryService) {
         viewingHistoryService.getViewingHistory();
         viewingHistoryService.getCdes().then((response) => {
-            this.cdes = [];
+            this.cdes = response;
             if (Array.isArray(response))
-                this.cdes = response;
+                this.cdes.forEach((elt, i, elts) => elts[i] = Object.assign(new DataElement, elt));
+            else
+                this.cdes = [];
         });
         viewingHistoryService.getForms().then((response) => {
-            this.forms = [];
+            this.forms = response;
             if (Array.isArray(response))
-                this.forms = response;
+                this.forms.forEach((elt, i, elts) => elts[i] = Object.assign(new CdeForm, elt));
+            else
+                this.forms = [];
         });
         this.reloadUser();
     }

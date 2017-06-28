@@ -11,7 +11,7 @@
                    ng-href="/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[0].tinyId}}">
                     <i class="fa fa-eye"></i> View Full Detail</a>
             </span>
-            <span class="leftObj" ng-controller="MergeRequestCtrl" ng-if="cdes">
+            <span class="leftObj" ng-controller="MergeRequestCtrl" ng-if="module === 'cde'">
                 <a class='btn btn-small btn-default fa fa-clipboard'
                    ng-show="isMergeRequestPossible(eltsToCompare[0], eltsToCompare[1])" ng-click="openMergeModal(0)"
                    title="Merge {{eltsToCompare[0].naming[0].designation}}" id="retireMerge-0"> Retire & Merge</a>
@@ -30,7 +30,7 @@
                    ng-href="/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[1].tinyId}}">
                     <i class="fa fa-eye"></i> View Full Detail</a>
             </span>
-            <span class="rightObj" ng-controller="MergeRequestCtrl" ng-if="cdes">
+            <span class="rightObj" ng-controller="MergeRequestCtrl" ng-if="module === 'cde'">
                 <a class='btn btn-small btn-default fa fa-clipboard'
                    ng-show="isMergeRequestPossible(eltsToCompare[1], eltsToCompare[0])" ng-click="openMergeModal(1)"
                    title="Merge {{eltsToCompare[1].naming[0].designation}}" id="retireMerge-1"> Retire & Merge</a>
@@ -103,7 +103,7 @@
         </div>
     </div>
     <hr class="divider compare-divider">
-    <div ng-repeat="elt in cdes" class="col-md-6 noLeftRightPadding">
+    <div ng-if="module === 'cde'" ng-repeat="elt in eltsToCompare" class="col-md-6 noLeftRightPadding">
         <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
     </div>
 </div>

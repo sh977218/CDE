@@ -6,6 +6,8 @@ import { Select2Module } from "ng2-select2";
 
 import { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 import { ClassificationService } from "./classification.service";
+import { ElasticService } from 'core/public/elastic.service';
+import { ExportService } from "./export.service";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
@@ -17,15 +19,15 @@ import { TourService } from "./tour.service";
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 
-export function getUserResourceFactory(i: any) { return i.get("userResource"); }
-export function getSearchSettingsFactory(i: any) { return i.get("SearchSettings"); }
-export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"); }
 export function getIsAllowedModelFactory(i: any) { return i.get("isAllowedModel"); }
-export function getQuickBoardFactory(i: any) { return i.get("QuickBoard"); }
+export function getUserResourceFactory(i: any) { return i.get("userResource"); }
 export function getAccountManagementFactory(i: any) { return i.get("AccountManagement"); }
+export function getElasticBoardFactory(i: any) { return i.get("ElasticBoard"); }
 export function getFormQuickBoardFactory(i: any) { return i.get("FormQuickBoard"); }
 export function getPinModalFactory(i: any) { return i.get("PinModal"); }
-export function getElasticFactory(i: any) { return i.get("Elastic"); }
+export function getQuickBoardFactory(i: any) { return i.get("QuickBoard"); }
+export function getSearchSettingsFactory(i: any) { return i.get("SearchSettings"); }
+export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"); }
 
 @NgModule({
     imports: [
@@ -35,23 +37,24 @@ export function getElasticFactory(i: any) { return i.get("Elastic"); }
     providers: [
         {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
         ClassificationService,
+        ElasticService,
+        ExportService,
         MergeCdeService,
         MergeFormService,
         MergeShareService,
-        SharedService,
         CompareService,
         OrgHelperService,
         // upgraded
         UpgradeModule,
-        {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},
-        {provide: "SearchSettings", useFactory: getSearchSettingsFactory, deps: ["$injector"]},
-        {provide: "ViewingHistory", useFactory: getViewingHistoryFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
-        {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
+        {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},
         {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
+        {provide: "ElasticBoard", useFactory: getElasticBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
         {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
-        {provide: "Elastic", useFactory: getElasticFactory, deps: ["$injector"]},
+        {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
+        {provide: "SearchSettings", useFactory: getSearchSettingsFactory, deps: ["$injector"]},
+        {provide: "ViewingHistory", useFactory: getViewingHistoryFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,

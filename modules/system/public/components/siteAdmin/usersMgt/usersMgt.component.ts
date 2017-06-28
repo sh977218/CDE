@@ -2,15 +2,9 @@ import { Http } from "@angular/http";
 import { Component, Inject, ViewChild } from "@angular/core";
 import { Select2OptionData } from "ng2-select2";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-
-import "rxjs/add/operator/map";
-import "rxjs/add/operator/debounceTime";
-import "rxjs/add/operator/distinctUntilChanged";
-
-//noinspection TypeScriptCheckImport
-import * as authShared from "../../../../shared/authorizationShared";
 import { Observable } from "rxjs/Rx";
 import { AlertService } from "../../alert/alert.service";
+import { SharedService } from "../../../../../core/public/shared.service";
 
 @Component({
     selector: "cde-users-mgt",
@@ -20,18 +14,18 @@ import { AlertService } from "../../alert/alert.service";
 
 export class UsersMgtComponent {
     @ViewChild("newUserContent") public newUserContent: NgbModalModule;
-    public modalRef: NgbModalRef;
-    search: any = {username: ""};
-    newUsername: string;
+    formatter = (result: any) => result.username;
     foundUsers: any[] = [];
-    //noinspection TypeScriptValidateTypes
-    rolesEnum: Array<Select2OptionData> = authShared.rolesEnum.map(r => {
+    modalRef: NgbModalRef;
+    newUsername: string;
+    rolesEnum: Select2OptionData[] = SharedService.auth.rolesEnum.map(r => {
         return {"id": r, "text": r};
     });
-    //noinspection TypeScriptUnresolvedVariable
     s2Options: Select2Options = {
         multiple: true
     };
+
+    search: any = {username: ""};
 
     constructor(private http: Http,
                 private Alert: AlertService,
@@ -39,21 +33,34 @@ export class UsersMgtComponent {
                 public modalService: NgbModal
                 ) {}
 
-    formatter = (result: any) => result.username;
+    addNewUser() {
+        this.http.put("/user", {username: this.newUsername}).subscribe(
+            () => this.Alert.addAlert("success", "User created"),
+            () => this.Alert.addAlert("danger", "Cannot create user. Does it already exist?")
+        );
+        this.modalRef.close();
+    }
 
-    //noinspection TypeScriptValidateTypes
+    static getEltLink (c) {
+        return {
+                cde: "/deview?tinyId=",
+                form: "/formView?tinyId=",
+                board: "/board/"
+            }[c.element.eltType] + c.element.eltId;
+    }
+
+    openNewUserModal() {
+        this.modalRef = this.modalService.open(this.newUserContent, {size: "lg"});
+    }
+
     searchTypeahead = (text$: Observable<string>) =>
-        text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 ? [] :
-            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
-                .catch(() => {
-                    //noinspection TypeScriptUnresolvedFunction
-                    return Observable.of([]);
-                })
-        )
+        text$.debounceTime(300).distinctUntilChanged().switchMap(term =>
+            term.length < 3 ? [] : this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
+                .catch(() => Observable.of([]))
+        );
 
     searchUsers() {
         let uname = this.search.username.username ? this.search.username.username : this.search.username;
-        //noinspection TypeScriptValidateTypes
         this.http.get("/searchUsers/" + uname).map(res => res.json()).subscribe(
             result => {
                 this.foundUsers = result.users;
@@ -81,25 +88,5 @@ export class UsersMgtComponent {
             () => {
                 this.Alert.addAlert("success", "Roles saved.");
             });
-    }
-
-    addNewUser() {
-        this.http.put("/user", {username: this.newUsername}).subscribe(
-            () => this.Alert.addAlert("success", "User created"),
-            () => this.Alert.addAlert("danger", "Cannot create user. Does it already exist?")
-        );
-        this.modalRef.close();
-    }
-
-    getEltLink (c) {
-        return {
-                cde: "/deview?tinyId=",
-                form: "/formView?tinyId=",
-                board: "/board/"
-            }[c.element.eltType] + c.element.eltId;
-    }
-
-    openNewUserModal() {
-        this.modalRef = this.modalService.open(this.newUserContent, {size: "lg"});
     }
 }

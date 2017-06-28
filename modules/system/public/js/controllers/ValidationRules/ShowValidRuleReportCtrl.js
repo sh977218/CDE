@@ -30,6 +30,7 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
 
     }]);
 
+// PORTED INTO SearchResultComponent Valid Rules Modal
 angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibModalInstance',
     function ($scope, $modalInstance) {
         $scope.status = "Incomplete";

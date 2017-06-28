@@ -35,6 +35,15 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
         Elastic.generalSearchQuery(Elastic.buildElasticQuerySettings($scope.searchSettings), "cde", function(err, result) {
             if (err) return;
             $scope.cdes = result.cdes;
+            $scope.cdes.forEach(function (cde) {
+                cde.getEltUrl = function () {
+                    return "/deview?tinyId=" + this.tinyId;
+                };
+                cde.getLabel = function () {
+                    return this.primaryNameCopy;
+                };
+            });
+
         });
     };
 }]);

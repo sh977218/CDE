@@ -167,6 +167,28 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }])
+    .directive('cdeSelectBoard', [function () {
+        return {
+            restrict: 'AE',
+            controller: 'SelectBoardModalCtrl',
+            templateUrl: '/system/public/html/selectBoardModal.html',
+        };
+    }])
+    .directive('cdeEltsCompare', [function () {
+        return {
+            restrict: 'AE',
+            scope: {
+                module: '=',
+                eltsToCompare: '=',
+            },
+            templateUrl: '/system/public/html/eltsCompare.html',
+            controller: ["$scope", "userResource", function ($scope, userResource) {
+                userResource.getPromise().then(function () {
+                    $scope.user = userResource.user;
+                });
+            }]
+        };
+    }])
     .directive('sortableArray', [function () {
         return {
             restrict: 'AE',
@@ -472,7 +494,10 @@ angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgr
 import {RegistrationComponent} from "../../../adminItem/public/components/registration/registration.component";
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
 
-import {TableListComponent} from "../../../search/searchResults/tableList.component";
+import {RegistrationValidatorService} from "../components/registrationValidator.service";
+angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
+
+import {TableListComponent} from "../../../search/listView/tableList.component";
 angular.module('systemModule').directive('cdeTableList', downgradeComponent({component: TableListComponent, inputs: ['elts', 'module'], outputs: []}));
 
 import {SourcesComponent} from "../../../adminItem/public/components/sources/sources.component";

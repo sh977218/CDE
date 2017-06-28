@@ -1,0 +1,80 @@
+<ng-template #pinModal id="pinModal" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Choose a Board to pin this element to
+            <cde-create-board></cde-create-board>
+        </h3>
+    </div>
+    <div style="margin-top: 10px">
+        <i *ngIf="myBoardsSvc.reloading" class="fa fa-spinner fa-spin"></i>
+        <i *ngIf="!myBoardsSvc.boards" class="fa fa-spinner fa-spin"></i>
+        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0">
+            <div style="margin-left: 10px"> You don't have any boards</div>
+        </div>
+        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">
+            <div style="padding-left: 10px" *ngIf="myBoardsSvc.filter">
+                <div *ngIf="myBoardsSvc.filter.tags.length > 0">
+                    <h4>Tags</h4>
+                    <label *ngFor="let tag of myBoardsSvc.filter.tags" class="my-board-tag">
+                        <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()">
+                        <small>{{tag.key}} ({{tag.doc_count}})</small>
+                    </label>
+                </div>
+                <div *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
+                    <h4>Share Status</h4>
+                    <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="my-board-tag">
+                        <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()">
+                        <small>{{ss.key}} ({{ss.doc_count}})</small>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-md-6">
+                    <div class="pinToBoard-card my-board-card" data-id="boardDiv_{{board.name}}">
+                        <h5 class="myBoardName" id="board_name_{{$index}}">
+                            <span>
+                                <i class="fa"
+                                   [ngClass]="board.shareStatus === 'Public' ? 'fa-globe' : 'fa-lock'"></i>
+                            </span>
+                            <a href="" id="viewBoard_{{board.name}}" (click)="selectBoard(board);c()">{{board.name}}</a>
+                        </h5>
+                        <div>
+                            <span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span>
+                            {{board.type==='form'
+                            ? (board.pins.length && board.pins.length > 0?'Forms':'Form')
+                            : (board.pins.length && board.pins.length > 0?'CDEs':'CDE')}}
+                        </div>
+                        <div id="board_tag_{{$index}}" class="myBoardTags">
+                            <span *ngFor="let tag of board.tags">
+                                <span class="label label-default"><i class="fa fa-hashtag"></i>{{tag}}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="d()" id="cancelSelect">Cancel</button>
+    </div>
+</ng-template>
+
+<ng-template #ifYouLoginModal id="ifYouLoginModal" let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Sign up for an account</h3>
+    </div>
+    <div class="modal-body">
+        With an account, you will be able to:
+        <ul>
+            <li>Create Boards and attach CDEs to them</li>
+            <li>Remember your preferences on all your devices</li>
+            <li>Comment on CDEs and Forms</li>
+            <li>Become a curator and create your own CDEs and Forms</li>
+        </ul>
+        <br>
+        <div style="text-align: center">
+            <a id="signUpLink" href="/login" class="btn btn-lg btn-info" (click)="c()">Sign up or Log In</a></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="c()" id="cancelSelect2">Cancel</button>
+    </div>
+</ng-template>
