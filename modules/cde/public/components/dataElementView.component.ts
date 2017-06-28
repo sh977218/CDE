@@ -1,12 +1,9 @@
 import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
-import { Router, ActivatedRoute, Params } from '@angular/router';
 import * as _ from "lodash";
 
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/observable/map';
 import { DataElementService } from "../dataElement.service";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 
 @Component({
@@ -19,14 +16,29 @@ export class DataElementViewComponent implements OnInit {
 
     loaded: boolean = true;
 
-    constructor(private activatedRoute: ActivatedRoute,
-                @Inject("isAllowedModel") public isAllowedModel) {
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
+                private dataElementService,
+                private alert: AlertService) {
+    }
+
+    // remove it once has angular2 route
+    getParameterByName(name, url = null) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
     ngOnInit(): void {
-        this.activatedRoute.params.subscribe((params: Params) => {
-            let userId = params['tinyId'];
-            console.log(userId);
+        let tinyId = this.getParameterByName("tinyId");
+
+        this.dataElementService.get(tinyId).subscribe(res => {
+            this.elt = res;
+        }, err => {
+            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
     }
 }

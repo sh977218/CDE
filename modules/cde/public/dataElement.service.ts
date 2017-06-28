@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
+import "rxjs/add/operator/map";
+
 import * as _ from "lodash";
 
 @Injectable()
@@ -13,8 +15,8 @@ export class DataElementService {
     }
 
     get(tinyId) {
-        let url = "";
-        return this.http.get(url);
+        let url = "/debytinyid/" + tinyId;
+        return this.http.get(url).map(res => res.json());
     }
 
 }
