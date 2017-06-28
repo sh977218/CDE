@@ -1,12 +1,10 @@
 'use strict';
 
+const config = require('config');
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 var fs = require('fs');
 var path = require('path');
-
-process.env.NODE_CONFIG_DIR = path.resolve('../../config');
-const config = require('config');
 
 // swaggerRouter configuration
 var options = {
@@ -17,7 +15,7 @@ var options = {
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
 var spec = fs.readFileSync(path.join(__dirname, '/api/swagger.yaml'), 'utf8');
 var swaggerDoc = jsyaml.safeLoad(spec);
-swaggerDoc.host = config.hostname + ':' + config.port;
+swaggerDoc.host = config.publicUrl.substr(config.publicUrl.indexOf('//') + 2);
 
 exports.init = function(app) {
     // Initialize the Swagger middleware
