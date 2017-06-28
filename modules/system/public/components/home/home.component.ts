@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core";
+import { Component } from "@angular/core";
 import { TourService } from "../../../../core/public/tour.service";
 
 @Component({
@@ -8,4 +8,8 @@ import { TourService } from "../../../../core/public/tour.service";
 })
 
 export class HomeComponent {
+
+    takeATour() {
+        TourService.takeATour();
+    }
 }
