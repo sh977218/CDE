@@ -1,20 +1,19 @@
 import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import * as _ from "lodash";
 
-import 'rxjs/add/observable/map';
-import { DataElementService } from "../dataElement.service";
+import { Observable } from "rxjs/Rx";
+import "rxjs/add/observable/forkJoin";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 
 @Component({
     selector: "cde-data-element-view",
-    providers: [DataElementService],
     templateUrl: "dataElementView.component.html"
 })
 export class DataElementViewComponent implements OnInit {
     @Input() elt: any;
 
-    loaded: boolean = true;
+    eltLoaded: boolean = true;
 
     constructor(@Inject("isAllowedModel") public isAllowedModel,
                 private dataElementService,
@@ -25,7 +24,7 @@ export class DataElementViewComponent implements OnInit {
     getParameterByName(name, url = null) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
-        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
             results = regex.exec(url);
         if (!results) return null;
         if (!results[2]) return '';
