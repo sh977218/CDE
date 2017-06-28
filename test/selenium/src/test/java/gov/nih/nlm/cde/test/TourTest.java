@@ -58,7 +58,6 @@ public class TourTest extends NlmCdeBaseTest {
 
     @Test
     public void tourTest() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
         goHome();
         clickElement(By.id("takeATourBtn"));
 
