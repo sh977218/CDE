@@ -717,6 +717,7 @@ exports.init = function (app) {
     app.post('/getClassificationAuditLog', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             mongo_data_system.getClassificationAuditLog(req.body, function (err, result) {
+                if (err) return res.status(500).send();
                 res.send(result);
             });
         } else {
