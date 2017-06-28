@@ -5,6 +5,7 @@ var jsyaml = require('js-yaml');
 var fs = require('fs');
 var path = require('path');
 
+process.env.NODE_CONFIG_DIR = path.resolve('../../config');
 const config = require('config');
 
 // swaggerRouter configuration
