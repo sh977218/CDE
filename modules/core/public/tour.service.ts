@@ -83,16 +83,6 @@ const searchResultSteps: Array<any> = [
     }
 ];
 
-const btnSteps: Array<any> = [
-    {
-        element: "#discussBtn",
-        title: "Discuss",
-        content: "With an account, anyone can interactively discuss an element. Users can reply to comment or resolve them.",
-        placement: "bottom"
-    }
-
-];
-
 const cdeSteps: Array<any> = [
     {
         element: "#general_tab",
@@ -282,13 +272,12 @@ const formSteps = [
         content: "Thank you for taking this tour. Consider creating a free UMLS account to get access to the full suite of features this repository has to offer.",
         placement: "bottom"
     }
-
 ];
 
 @Injectable()
 export class TourService {
 
-    static steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps).concat(btnSteps).concat(formSteps);
+    static steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps).concat(formSteps);
     static currentSteps = _.cloneDeep(TourService.steps);
 
     static clickAndGoNext(tour, clickWhat: string, waitForWhat: string) {
@@ -320,7 +309,7 @@ export class TourService {
     }
 
     static newTour() {
-        TourService. currentSteps = _.cloneDeep(TourService.steps);
+        TourService.currentSteps = _.cloneDeep(TourService.steps);
         TourService.takeATour();
     }
 
