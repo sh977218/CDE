@@ -301,7 +301,6 @@ export class TourService {
         let tour = new Tour({
             name: "CDE-Tour",
             storage: false,
-            debug: true,
             steps: TourService.currentSteps
         });
         tour.init();
