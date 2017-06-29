@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
@@ -63,6 +64,7 @@ public class TourTest extends NlmCdeBaseTest {
     }
 
     @Test
+    @RecordVideo
     public void tourTest() {
         goHome();
         clickElement(By.id("takeATourBtn"));
