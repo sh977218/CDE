@@ -64,7 +64,6 @@ public class TourTest extends NlmCdeBaseTest {
     }
 
     @Test
-    @RecordVideo
     public void tourTest() {
         goHome();
         clickElement(By.id("takeATourBtn"));
