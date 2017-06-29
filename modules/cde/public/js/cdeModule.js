@@ -76,4 +76,4 @@ import {RegistrationValidatorService} from "../components/validationRules/regist
 angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
 
 import {ValidRulesComponent} from "../components/validationRules/validRules.component";
-angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], ouputs: []}));
+angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], outputs: []}));

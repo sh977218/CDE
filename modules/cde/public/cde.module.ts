@@ -25,6 +25,8 @@ import { PermissibleValueComponent } from "./components/permissibleValue.compone
 import { RegistrationValidatorService } from "./components/validationRules/registrationValidator.service";
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
+import { DataElementService } from "./dataElement.service";
+
 
 @NgModule({
     imports: [
