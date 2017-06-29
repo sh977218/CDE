@@ -21,6 +21,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 if (!window.loggedIn) return "/home";
                 return "/cde/search";
             }
+        }).when('/api', {
+            template: '<cde-swagger></cde-swagger>'
         }).when('/home', {
             template: '<cde-home></cde-home>'
         }).when('/login', {
@@ -466,10 +468,13 @@ import {RegistrationComponent} from "../../../adminItem/public/components/regist
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
 
 import {TableListComponent} from "../../../search/searchResults/tableList.component";
-angular.module('systemModule').directive('cdeTableList', downgradeComponent({component: TableListComponent, inputs: ['elts', 'module'], outputs: []}))
+angular.module('systemModule').directive('cdeTableList', downgradeComponent({component: TableListComponent, inputs: ['elts', 'module'], outputs: []}));
 
 import {SourcesComponent} from "../../../adminItem/public/components/sources/sources.component";
 angular.module('systemModule').directive('cdeAdminItemSources', downgradeComponent({component: SourcesComponent, inputs: ['elt'], outputs: []}));
+
+import {SwaggerComponent} from "../components/swagger.component";
+angular.module('systemModule').directive('cdeSwagger', downgradeComponent({component: SwaggerComponent, inputs: [], outputs: []}));
 
 import {LinkedBoardsComponent} from "../../../board/public/components/linkedBoards/linkedBoards.component";
 angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({component: LinkedBoardsComponent, inputs: ['elt'], outputs: []}));

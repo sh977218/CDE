@@ -99,6 +99,13 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
     gulp.src('./modules/processManager/pmApp.js')
         .pipe(gulp.dest(config.node.buildDir + "/modules/processManager/"));
 
+    gulp.src('./modules/swagger/index.js')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/"));
+    gulp.src('./modules/swagger/api/swagger.yaml')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/api/"));
+    gulp.src('./modules/swagger/public/swagger.css')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/public"));
+
     gulp.src('./modules/system/public/robots.txt')
         .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/"));
 

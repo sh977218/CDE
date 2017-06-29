@@ -152,7 +152,7 @@ app.use("/modules/components", express.static(path.join(__dirname, '/modules/com
 app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));
 app.use("/system/public", express.static(path.join(__dirname, '/modules/system/public')));
 app.use("/board/public", express.static(path.join(__dirname, '/modules/board/public')));
-
+app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger/public')));
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 app.use("/static", express.static(path.join(__dirname, '/modules/static'))); // TODO: temporary until gulp stops packaging vendor.js, then use /dist
 
@@ -212,6 +212,8 @@ try {
     var boardModule = require(path.join(__dirname, './modules/board/node-js/app.js'));
     boardModule.init(app, daoManager);
 
+    var swaggerModule = require(path.join(__dirname, './modules/swagger/index.js'));
+    swaggerModule.init(app);
 } catch (e) {
     console.log(e.stack);
     process.exit();

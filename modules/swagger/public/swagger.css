@@ -1,0 +1,12 @@
+body {
+    padding-bottom: 20px;
+    background-color: #fff;
+}
+
+.swagger-section #header {
+    display: none;
+}
+
+.swagger-section #swagger-ui-container {
+    padding-top: 50px;
+}
