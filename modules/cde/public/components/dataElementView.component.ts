@@ -11,7 +11,7 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
     templateUrl: "dataElementView.component.html"
 })
 export class DataElementViewComponent implements OnInit {
-    @Input() elt: any;
+    elt: any;
 
     eltLoaded: boolean = true;
 
