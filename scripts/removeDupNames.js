@@ -8,17 +8,16 @@ let stream = mongo_cde.getStream({archived: false,
 });
 
 let count = 0;
+let changedCount = 0;
 
 stream.on('data', cde => {
-    if (count++ % 100 === 0) console.log(count);
+    if (count++ % 100 === 0) console.log(count + " -- Changed " + changedCount);
     stream.pause();
-
-    let changed = false;
 
     let flatNames = cde.naming.map(n => n.designation + "<<==>>" + (n.definition?n.definition:""));
 
+    let changed = false;
     flatNames.forEach((fn, i) => {
-        let changed = false;
         if (flatNames.indexOf(fn) !== i) {
             // console.log("found dup: " + fn);
             let dupInd = flatNames.indexOf(fn);
@@ -32,17 +31,24 @@ stream.on('data', cde => {
             }
 
             if (mergeTags) {
-                cde.naming[dupInd].tags = _.uniq(cde.naming[dupInd].tags.concat(cde.naming[i].tags));
+                cde.naming[dupInd].tags = _.uniq(cde.naming[dupInd].tags.concat(cde.naming[i].tags)
+                    .map(t => t.tag)).map(t => {return {tag: t}});
                 cde.naming[i] = "";
-                changed = false;
+                changed = true;
             }
         }
     });
 
     if (changed) {
-        console.log("CDE: " + cde.naming[0].designation);
         cde.naming = cde.naming.filter(n => n !== "");
-        cde.save(stream.resume);
+        cde.save((err) => {
+            if (err) {
+                console.log(err);
+                process.exit(1);
+            }
+            changedCount++;
+            stream.resume();
+        });
     } else {
         stream.resume();
     }
