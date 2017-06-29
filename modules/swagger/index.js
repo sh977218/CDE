@@ -16,7 +16,7 @@ var options = {
 var spec = fs.readFileSync(path.join(__dirname, '/api/swagger.yaml'), 'utf8');
 var swaggerDoc = jsyaml.safeLoad(spec);
 swaggerDoc.host = config.publicUrl.substr(config.publicUrl.indexOf('//') + 2);
-swaggerDoc.schemes = config.publicUrl.substr(0, config.publicUrl.indexOf('://'));
+swaggerDoc.schemes = [config.publicUrl.substr(0, config.publicUrl.indexOf('://'))];
 
 exports.init = function(app) {
     // Initialize the Swagger middleware
