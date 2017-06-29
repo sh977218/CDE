@@ -15,7 +15,7 @@ export class DataElementViewComponent implements OnInit {
     @Input() elt: any;
 
 
-    eltLoaded: boolean = true;
+    eltLoaded: boolean = false;
 
     constructor(@Inject("isAllowedModel") public isAllowedModel,
                 private dataElementService: DataElementService,
@@ -35,11 +35,11 @@ export class DataElementViewComponent implements OnInit {
 
     ngOnInit(): void {
         let tinyId = this.getParameterByName("tinyId");
-
         this.dataElementService.get(tinyId).subscribe(res => {
             this.elt = res;
-        }, err => {
-            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element.");
-        });
+            this.eltLoaded = true;
+        }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element."));
     }
+
+
 }

@@ -25,6 +25,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { LocalStorageModule } from "angular-2-local-storage";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { CompareModule } from "../../compare/compare.module";
+import { CopyElementComponent } from "./components/copyElement.component";
 
 @NgModule({
     imports: [
@@ -46,6 +47,7 @@ import { CompareModule } from "../../compare/compare.module";
         ClassificationComponent,
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
+        CopyElementComponent,
         FormSummaryListDirective,
         IdentifiersComponent,
         InlineEditDirective,
@@ -62,6 +64,7 @@ import { CompareModule } from "../../compare/compare.module";
     entryComponents: [
         AttachmentsComponent,
         ClassificationComponent,
+        CopyElementComponent,
         IdentifiersComponent,
         LinkedFormsComponent,
         HistoryComponent,
