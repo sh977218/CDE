@@ -4,6 +4,7 @@ import * as _ from "lodash";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/observable/forkJoin";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { DataElementService } from "../dataElement.service";
 
 
 @Component({
@@ -11,12 +12,13 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
     templateUrl: "dataElementView.component.html"
 })
 export class DataElementViewComponent implements OnInit {
-    elt: any;
+    @Input() elt: any;
+
 
     eltLoaded: boolean = true;
 
     constructor(@Inject("isAllowedModel") public isAllowedModel,
-                private dataElementService,
+                private dataElementService: DataElementService,
                 private alert: AlertService) {
     }
 
