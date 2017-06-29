@@ -29,6 +29,10 @@ const URL_MAP = {
             left: 5px;
             top: 5px;
         }
+        .isSelected {
+            background-color:#f5f5f5;
+        }
+        
     `],
     providers: [NgbActiveModal]
 })
