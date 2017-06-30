@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 public class TourTest extends NlmCdeBaseTest {
 
-    String[] steps = new String[]{
+    private String[] steps = new String[]{
             "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here.",
             "Click here to start browsing CDEs",
             "Or here to browse forms",
@@ -24,7 +24,7 @@ public class TourTest extends NlmCdeBaseTest {
             "Finally, we can narrow our results down by datatype. For example, only see CDEs that represent a number.",
             "The tour will now take us to an individual record by clicking its name.",
             "This section shows an overview of the CDE attributes.",
-            "CDEs may have a date when they were last imported. If they were updatedy",
+            "CDEs may have a date when they were last imported. If they were updated",
             "Many elements were imported from external sources. This section can give useful details about the source, such as copyright, status or created date.",
             "The registration status represents the maturity level of an element, with Standard and Preferred Standard being highest. Only qualified and above are retrieved in search results by default. When elements are first created, they get an incomplete status.",
             "This tab will tell us if a CDE is based on a number, text, value list or other datatype.",
@@ -53,8 +53,7 @@ public class TourTest extends NlmCdeBaseTest {
             "Thank you for taking this tour. Consider creating a free UMLS account to get access to the full suite of features this repository has to offer."
     };
 
-    void getNext(String expectedText) {
-        hangon(2);
+    private void getNext(String expectedText) {
         findElement(By.xpath("//button[@data-role='next']")).click();
         textPresent(expectedText);
     }
