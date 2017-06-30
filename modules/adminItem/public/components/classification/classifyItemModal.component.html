@@ -10,7 +10,7 @@
                     <select class="form-control" id="selectClassificationOrg" name="selectClassifyItemOrg"
                             (change)="onChangeOrg($event.target.value)" required>
                         <option value="">Start by selecting an organization...</option>
-                        <option *ngFor="let myOrg of myOrgs" value="{{myOrg}}">{{myOrg}}</option>
+                        <option *ngFor="let myOrg of userService.userOrgs" value="{{myOrg}}">{{myOrg}}</option>
                     </select>
                     <div class="smallSpace"></div>
                     <div *ngIf="orgClassificationsTreeView">

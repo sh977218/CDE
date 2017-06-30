@@ -5,6 +5,8 @@ import { IActionMapping } from "angular-tree-component/dist/models/tree-options.
 import { ClassifyItemModalComponent } from "./classifyItemModal.component";
 import { ClassifyCdesModalComponent } from "./classifyCdesModal.component";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { LocalStorageService } from "angular-2-local-storage/dist";
+import * as _ from "lodash";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -18,6 +20,11 @@ const actionMapping: IActionMapping = {
 const urlMap = {
     "cde": "/removeCdeClassification/",
     "form": "/removeFormClassification/"
+};
+
+const addClassificationUrlMap = {
+    "cde": "/addCdeClassification/",
+    "form": "/addFormClassification/"
 };
 
 @Component({
@@ -47,6 +54,7 @@ export class ClassificationComponent {
 
     constructor(public http: Http,
                 public modalService: NgbModal,
+                private localStorageService: LocalStorageService,
                 private alert: AlertService,
                 @Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel) {
@@ -66,7 +74,7 @@ export class ClassificationComponent {
     };
 
     openClassifyItemModal() {
-        this.classifyItemComponent.openItemModal();
+        this.classifyItemComponent.openModal();
     }
 
     openClassifyCdesModal() {
@@ -122,6 +130,31 @@ export class ClassificationComponent {
 
     updateThisElt(event) {
         this.elt = event;
+    }
+
+
+    afterClassified(postBody) {
+        this.http.post(addClassificationUrlMap[this.elt.elementType], postBody).subscribe(
+            () => {
+                this.updateClassificationLocalStorage(postBody);
+                this.reloadElt(() => {
+                    this.modalRef.close("success");
+                })
+            }, err => {
+                this.alert.addAlert("danger", err._body);
+                this.modalRef.close("error");
+            });
+    }
+
+    updateClassificationLocalStorage(item) {
+        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
+        if (!recentlyClassification) recentlyClassification = [];
+        recentlyClassification = recentlyClassification.filter(o => {
+            if (o.cdeId) o.eltId = o.cdeId;
+            return _.isEqual(o, item);
+        });
+        recentlyClassification.unshift(item);
+        this.localStorageService.set("classificationHistory", recentlyClassification);
     }
 
 }
