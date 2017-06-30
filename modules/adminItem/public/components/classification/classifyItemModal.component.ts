@@ -45,9 +45,9 @@ export class ClassifyItemModalComponent {
     }
 
     openModal() {
-        this.modalRef = this.modalService.open(this.classifyItemContent, {size: "lg"});
         this.orgClassificationsTreeView = null;
         this.orgClassificationsRecentlyAddView = null;
+        return this.modalService.open(this.classifyItemContent, {size: "lg"});
     }
 
     onChangeOrg(value) {

@@ -18,13 +18,16 @@ const actionMapping: IActionMapping = {
 };
 
 const urlMap = {
-    "cde": "/removeCdeClassification/",
-    "form": "/removeFormClassification/"
-};
-
-const addClassificationUrlMap = {
-    "cde": "/addCdeClassification/",
-    "form": "/addFormClassification/"
+    "cde": {
+        delete: "/removeCdeClassification/",
+        add: "/addCdeClassification/",
+        get: "debytinyid/",
+    },
+    "form": {
+        delete: "/removeFormClassification/",
+        add: "/addFormClassification/",
+        get: "formById/"
+    }
 };
 
 @Component({
@@ -74,7 +77,7 @@ export class ClassificationComponent {
     };
 
     openClassifyItemModal() {
-        this.classifyItemComponent.openModal();
+        this.modalRef = this.classifyItemComponent.openModal();
     }
 
     openClassifyCdesModal() {
@@ -107,18 +110,14 @@ export class ClassificationComponent {
             eltId: this.elt._id,
             orgName: this.deleteOrgName
         };
-        this.http.post(urlMap[this.elt.elementType], deleteBody).subscribe(
-            () => {
-                this.modalRef.close("success");
-            },
-            () => {
-                this.modalRef.close("error");
-            });
+        this.http.post(urlMap[this.elt.elementType].delete, deleteBody)
+            .subscribe(
+                () => this.modalRef.close("success"),
+                () => this.modalRef.close("error"));
     }
 
     reloadElt(cb) {
-        let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
-        //noinspection TypeScriptValidateTypes
+        let url = urlMap[this.elt.elementType].get + this.elt.tinyId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
             this.elt = res;
             if (cb) cb();
@@ -134,11 +133,12 @@ export class ClassificationComponent {
 
 
     afterClassified(postBody) {
-        this.http.post(addClassificationUrlMap[this.elt.elementType], postBody).subscribe(
+        this.http.post(urlMap[this.elt.elementType].add, postBody).subscribe(
             () => {
                 this.updateClassificationLocalStorage(postBody);
                 this.reloadElt(() => {
                     this.modalRef.close("success");
+                    this.alert.addAlert("success", "Classified.");
                 })
             }, err => {
                 this.alert.addAlert("danger", err._body);
