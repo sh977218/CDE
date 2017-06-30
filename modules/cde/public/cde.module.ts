@@ -26,6 +26,7 @@ import { RegistrationValidatorService } from "./components/validationRules/regis
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { DataElementService } from "./dataElement.service";
+import { CreateDataElementComponent } from "./components/createDataElement.component";
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import { DataElementService } from "./dataElement.service";
         CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
+        CreateDataElementComponent,
         ConceptsComponent,
         DeGeneralDetailsComponent,
         DerivationRulesComponent,
@@ -66,6 +68,7 @@ import { DataElementService } from "./dataElement.service";
         CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
+        CreateDataElementComponent,
         ConceptsComponent,
         DatasetsComponent,
         DeGeneralDetailsComponent,

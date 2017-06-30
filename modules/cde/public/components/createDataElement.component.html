@@ -1,0 +1,55 @@
+<div class="container-fluid" *ngIf="isAllowedModel.loggedIn()">
+    <div class="col-md-5">
+        <form #dataElementForm="ngForm">
+            <h1>Create Data Element</h1>
+            <hr>
+            <div class="form-group">
+                <label for="eltName">Name</label>
+                <input type="text" class="form-control" id="eltName" [(ngModel)]="elt.naming[0].designation"
+                       name="eltName"
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="eltDefinition">Definition</label>
+                <input type="text" class="form-control" id="eltDefinition" [(ngModel)]="elt.naming[0].definition"
+                       name="eltDefinition" required>
+            </div>
+
+            <div class="form-group">
+                <label for="eltStewardOrgName">Steward Organization</label>
+                <select class="form-control" id="eltStewardOrgName"
+                        required [(ngModel)]="elt.stewardOrg.name" name="eltStewardOrgName">
+                    <option value="">Select One</option>
+                    <option *ngFor="let o of myOrgs" [value]="o">{{o}}</option>
+                </select>
+            </div>
+            <div class="form-group" *ngIf="elt.stewardOrg.name">
+                <button class="btn btn-small btn-default" id="openClassificationModalBtn"
+                        value="add" (click)="openClassifyItemModal()">
+                    <i class="fa fa-folder-open-o"> </i> Classify this {{ elt.elementType | uppercase}}
+                </button>
+            </div>
+            <div *ngIf="validationErrors(elt) !== null" class="text-danger">
+                <i class="fa fa-warning"></i> {{validationErrors(elt)}}
+            </div>
+
+            <a href="/" class="btn btn-warning ml-sm-5 mb-1"> Cancel</a>
+            <input id="submit" type="submit" (click)="save()" class="btn btn-small btn-success"
+                   [disabled]="!dataElementForm.form.valid"/>
+            <hr/>
+        </form>
+    </div>
+
+    <!--
+        <div class="col-md-7" ng-show="cdes">
+            <h4>Possible Matches</h4>
+            <div class="panel-group" id="accordion">
+                <div ng-include="'/cde/public/html/cdeAccordionList.html'" ng-init="ejsPage = 'createcde';"></div>
+            </div>
+        </div>
+    -->
+</div>
+
+
+<cde-classify-item-modal #classifyItemComponent [elt]="elt"
+                         (updateElt)="updateThisElt($event)"></cde-classify-item-modal>

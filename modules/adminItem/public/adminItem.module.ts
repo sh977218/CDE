@@ -73,6 +73,7 @@ import { CompareModule } from "../../compare/compare.module";
     ],
     exports: [
         ClassificationComponent,
+        ClassifyItemModalComponent,
         IdentifiersComponent,
         InlineEditDirective,
         InlineSelectEditDirective,
