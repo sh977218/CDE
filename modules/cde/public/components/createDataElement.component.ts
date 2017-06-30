@@ -11,7 +11,7 @@ import { ClassifyItemModalComponent } from "../../../adminItem/public/components
 export class CreateDataElementComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @Input() elt;
-    myOrgs: any;
+    modalRef: NgbModalRef;
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
@@ -25,7 +25,6 @@ export class CreateDataElementComponent implements OnInit {
                 designation: "", definition: "", tags: []
             }]
         };
-        this.myOrgs = this.userService.userOrgs;
     }
 
     updateThisElt(event) {
@@ -33,7 +32,11 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     openClassifyItemModal() {
-        this.classifyItemComponent.openItemModal();
+        this.modalRef = this.classifyItemComponent.openModal();
+    }
+
+    afterClassified(classificationBody) {
+        this.modalRef.close();
     }
 
     validationErrors(elt) {
