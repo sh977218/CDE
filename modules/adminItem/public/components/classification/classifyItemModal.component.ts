@@ -87,11 +87,9 @@ export class ClassifyItemModalComponent {
             if (!_treeNode.data.virtual)
                 classificationArray.unshift(_treeNode.data.name);
         }
-        let postBody = {
-            categories: classificationArray,
-            eltId: this.elt._id,
-            orgName: this.selectedOrg
-        };
-        this.afterClassified.emit(postBody);
+        this.afterClassified.emit({
+            classificationArray: classificationArray,
+            selectedOrg: this.selectedOrg
+        });
     }
 }
