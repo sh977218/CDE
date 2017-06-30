@@ -67,6 +67,15 @@ export class ClassificationComponent {
 
     openClassifyItemModal() {
         this.classifyItemComponent.openItemModal();
+        this.classifyItemComponent.modalRef.result.then(result => {
+            this.reloadElt(() => {
+                if (result === "success")
+                    this.alert.addAlert("success", "Classification added.");
+                if (result === "exists")
+                    this.alert.addAlert("warning", "Classification already exists.");
+            });
+        }, () => {
+        });
     }
 
     openClassifyCdesModal() {

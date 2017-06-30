@@ -25,6 +25,7 @@ export class ClassifyItemModalComponent {
     @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
     @Input() elt: any;
     @Output() updateElt = new EventEmitter();
+    @Output() classifyItem = new EventEmitter();
 
     public modalRef: NgbModalRef;
     selectedOrg: any;
@@ -53,15 +54,6 @@ export class ClassifyItemModalComponent {
         this.myOrgs = this.userService.userOrgs;
         this.orgClassificationsTreeView = null;
         this.orgClassificationsRecentlyAddView = null;
-        this.modalRef.result.then(result => {
-            this.reloadElt(() => {
-                if (result === "success")
-                    this.alert.addAlert("success", "Classification added.");
-                if (result === "exists")
-                    this.alert.addAlert("warning", "Classification already exists.");
-            });
-        }, () => {
-        });
     }
 
     onChangeOrg(value) {
@@ -128,17 +120,5 @@ export class ClassifyItemModalComponent {
                 this.alert.addAlert("danger", err._body);
                 this.modalRef.close("error");
             });
-    }
-
-    reloadElt(cb) {
-        let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
-        //noinspection TypeScriptValidateTypes
-        this.http.get(url).map(res => res.json()).subscribe(res => {
-            this.updateElt.emit(res);
-            if (cb) cb();
-        }, err => {
-            if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
-            if (cb) cb();
-        });
     }
 }
