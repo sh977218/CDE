@@ -27,7 +27,7 @@ import { ValidRulesComponent } from "./components/validationRules/validRules.com
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { DataElementService } from "./dataElement.service";
 import { CreateDataElementComponent } from "./components/createDataElement.component";
-
+import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 
 @NgModule({
     imports: [
@@ -41,6 +41,7 @@ import { CreateDataElementComponent } from "./components/createDataElement.compo
         FormModule,
         SearchModule,
         WidgetModule,
+        TreeModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,

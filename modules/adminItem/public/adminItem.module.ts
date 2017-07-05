@@ -25,6 +25,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { LocalStorageModule } from "angular-2-local-storage";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { CompareModule } from "../../compare/compare.module";
+import { ClassificationViewComponent } from "./components/classification/classificationView.component";
 
 @NgModule({
     imports: [
@@ -36,14 +37,15 @@ import { CompareModule } from "../../compare/compare.module";
             prefix: "nlmcde",
             storageType: "localStorage"
         }),
-        TreeModule,
         // internal
         WidgetModule,
-        CompareModule
+        CompareModule,
+        TreeModule
     ],
     declarations: [
         AttachmentsComponent,
         ClassificationComponent,
+        ClassificationViewComponent,
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
         FormSummaryListDirective,
@@ -73,6 +75,7 @@ import { CompareModule } from "../../compare/compare.module";
     ],
     exports: [
         ClassificationComponent,
+        ClassificationViewComponent,
         ClassifyItemModalComponent,
         IdentifiersComponent,
         InlineEditDirective,

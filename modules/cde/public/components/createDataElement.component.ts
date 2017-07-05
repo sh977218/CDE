@@ -1,7 +1,10 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, Inject, Input, OnInit, ViewChild, QueryList, ViewChildren } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
+
 import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
+import * as ClassificationShared from "../../../system/shared/classificationShared.js"
 
 @Component({
     selector: "cde-create-data-element",
@@ -10,6 +13,7 @@ import { ClassifyItemModalComponent } from "../../../adminItem/public/components
 })
 export class CreateDataElementComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
+    @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
     modalRef: NgbModalRef;
 
@@ -35,7 +39,11 @@ export class CreateDataElementComponent implements OnInit {
         this.modalRef = this.classifyItemComponent.openModal();
     }
 
-    afterClassified(classificationBody) {
+    afterClassified(event) {
+        ClassificationShared.classifyItem(this.elt, event.selectedOrg, event.classificationArray);
+        this.classificationView.forEach(t => {
+            t.treeModel.update();
+        });
         this.modalRef.close();
     }
 

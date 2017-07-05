@@ -182,23 +182,23 @@ exports.init = function (app, daoManager) {
     });
 
     app.post("/removeFormClassification/", function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send();
-        else classificationNode_system.removeClassification(req.body, mongo_form, function (err) {
-            if (err) return res.status(202).send({error: {message: "Classification does not exists."}});
-            else {
-                res.end();
-                mongo_data_system.addToClassifAudit({
-                    date: new Date(),
-                    user: {
-                        username: req.user.username
-                    },
-                    elements: [{
-                        _id: req.body.eltId
-                    }],
-                    action: "delete",
-                    path: [req.body.orgName].concat(req.body.categories)
-                });
-            }
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
+        let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
+        if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
+        classificationNode_system.removeClassification(req.body, mongo_form, function (err, elt) {
+            if (err) return res.status(500).send({error: err});
+            else res.send(elt);
+            mongo_data_system.addToClassifAudit({
+                date: new Date(),
+                user: {
+                    username: req.user.username
+                },
+                elements: [{
+                    _id: req.body.eltId
+                }],
+                action: "delete",
+                path: [req.body.orgName].concat(req.body.categories)
+            });
         });
     });
 
