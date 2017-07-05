@@ -111,3 +111,7 @@ angular.module('formModule').directive('cdeNativeRenderFull', downgradeComponent
 
 import {FormGeneralDetailsComponent} from "../components/formGeneralDetails/formGeneralDetails.component";
 angular.module('formModule').directive('cdeFormGeneralDetails', downgradeComponent({component: FormGeneralDetailsComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));
+
+import {CreateFormComponent} from "../components/createForm.component";
+angular.module('formModule').directive('cdeCreateForm', downgradeComponent({component: CreateFormComponent, inputs: ['elt'], outputs: []}));
+

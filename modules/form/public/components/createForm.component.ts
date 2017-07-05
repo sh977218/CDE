@@ -4,34 +4,30 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-boots
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 
 import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
-import * as ClassificationShared from "../../../system/shared/classificationShared.js"
+import * as ClassificationShared from "../../../system/shared/classificationShared.js";
 import * as _ from "lodash";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
-    selector: "cde-create-data-element",
+    selector: "cde-create-form",
     providers: [NgbActiveModal],
-    templateUrl: "./createDataElement.component.html"
+    templateUrl: "./createForm.component.html"
 })
-export class CreateDataElementComponent implements OnInit {
+export class CreateFormComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
     modalRef: NgbModalRef;
 
-    cdes = [];
-
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
                 private http: Http,
-                private alert: AlertService,
-                @Inject("Elastic") private elasticService,
-                @Inject("SearchSettings") private searchSettings) {
+                private alert: AlertService) {
     }
 
     ngOnInit(): void {
         if (!this.elt) this.elt = {
-            elementType: "cde",
+            elementType: "form",
             classification: [], stewardOrg: {}, naming: [{
                 designation: "", definition: "", tags: []
             }]
@@ -89,17 +85,7 @@ export class CreateDataElementComponent implements OnInit {
         });
     }
 
-    showSuggestions = function () {
-        if (!this.elt.naming[0].designation || this.elt.naming[0].designation.length < 3) return;
-        let searchSettings = this.elasticService.defaultSearchSettings;
-        searchSettings.q = this.elt.naming[0].designation;
-        this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), "cde", (err, result) => {
-            this.cdes = result.cdes;
-        });
-    };
-
-
-    createDataElement() {
+    createForm() {
 
     }
 }

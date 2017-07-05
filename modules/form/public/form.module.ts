@@ -36,6 +36,7 @@ import { SkipLogicService } from "./skipLogic.service";
 import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
+import { CreateFormComponent } from "./components/createForm.component";
 
 @NgModule({
     imports: [
@@ -57,6 +58,7 @@ import { FormTermMappingComponent } from "./components/formTermMapping/formTermM
         BoardFormSummaryListComponent,
         BoardFormSummaryListContentComponent,
         CdeSortableComponent,
+        CreateFormComponent,
         DisplayProfileComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
@@ -77,6 +79,7 @@ import { FormTermMappingComponent } from "./components/formTermMapping/formTermM
         QuestionSearchDirective
     ],
     entryComponents: [
+        CreateFormComponent,
         DisplayProfileComponent,
         FormDescriptionComponent,
         FormGeneralDetailsComponent,
