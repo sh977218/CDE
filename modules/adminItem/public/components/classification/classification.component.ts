@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild, Inject } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ClassifyItemModalComponent } from "./classifyItemModal.component";
 import { ClassifyCdesModalComponent } from "./classifyCdesModal.component";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
@@ -47,19 +47,10 @@ export class ClassificationComponent {
     }
 
     confirmDelete(event) {
-        let node = event.node;
-        let deleteClassificationArray = [node.data.name];
-        let deleteOrgName = event.selectedOrg;
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                deleteClassificationArray.unshift(_treeNode.data.name);
-        }
         let deleteBody = {
-            categories: deleteClassificationArray,
+            categories: event.deleteClassificationArray,
             eltId: this.elt._id,
-            orgName: deleteOrgName
+            orgName: event.deleteOrgName
         };
         this.http.post(urlMap[this.elt.elementType].delete, deleteBody)
             .map(res => res.json()).subscribe(res => {

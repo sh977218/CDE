@@ -56,7 +56,10 @@ export class ClassificationViewComponent {
         }
         this.modalRef = this.modalService.open(this.deleteClassificationContent);
         this.modalRef.result.then(result => {
-            if (result === "confirm") this.confirmDelete.emit({node: node, selectedOrg: deleteOrgName});
+            if (result === "confirm") this.confirmDelete.emit({
+                deleteClassificationArray: deleteClassificationArray,
+                deleteOrgName: deleteOrgName
+            });
         }, () => {
         });
     }

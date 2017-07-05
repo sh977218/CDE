@@ -120,7 +120,7 @@ exports.removeClassification = function (body, dao, cb) {
         if (err) return cb(err);
         if (!elt) return cb("Can not find elt with _id: " + body.eltId);
         let steward = classificationShared.findSteward(elt, body.orgName);
-        classificationShared.removeCategory(steward.object, body.categories, function (e, result) {
+        classificationShared.removeCategory(steward.object, body.categories, function (e) {
             if (e) return cb(e);
             for (var i = elt.classification.length - 1; i >= 0; i--) {
                 if (elt.classification[i].elements.length === 0) {

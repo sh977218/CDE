@@ -5,6 +5,8 @@ import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 
 import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
 import * as ClassificationShared from "../../../system/shared/classificationShared.js"
+import * as _ from "lodash";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-create-data-element",
@@ -19,7 +21,8 @@ export class CreateDataElementComponent implements OnInit {
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
-                private http: Http) {
+                private http: Http,
+                private alert: AlertService) {
     }
 
     ngOnInit(): void {
@@ -40,10 +43,9 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     afterClassified(event) {
-        ClassificationShared.classifyItem(this.elt, event.selectedOrg, event.classificationArray);
-        this.classificationView.forEach(t => {
-            t.treeModel.update();
-        });
+        let eltCopy = _.cloneDeep(this.elt);
+        ClassificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
+        this.elt = eltCopy;
         this.modalRef.close();
     }
 
@@ -70,4 +72,16 @@ export class CreateDataElementComponent implements OnInit {
         }
         return null;
     };
+
+    confirmDelete(event) {
+        let eltCopy = _.cloneDeep(this.elt);
+        let steward = ClassificationShared.findSteward(eltCopy, event.deleteOrgName);
+        ClassificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
+            if (err) this.alert.addAlert("danger", err);
+            else {
+                this.elt = eltCopy;
+                this.alert.addAlert("success", "Classification removed.");
+            }
+        });
+    }
 }

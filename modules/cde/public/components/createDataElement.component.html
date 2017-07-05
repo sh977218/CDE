@@ -28,15 +28,14 @@
                         value="add" (click)="openClassifyItemModal()">
                     <i class="fa fa-folder-open-o"> </i> Classify this {{ elt.elementType | uppercase}}
                 </button>
-                <div id="classificationBody">
+                <div id="classificationBody" class="overflowHidden">
                     <cde-classification-view [elt]="elt"
-                                             (clickDeleteIcon)="openDeleteClassificationModal($event);"></cde-classification-view>
+                                             (confirmDelete)="confirmDelete($event);"></cde-classification-view>
                 </div>
             </div>
             <div *ngIf="validationErrors(elt) !== null" class="form-group text-danger">
                 <i class="fa fa-warning"></i> {{validationErrors(elt)}}
             </div>
-
             <div class="form-group">
                 <a href="/" class="btn btn-warning ml-sm-5 mb-1"> Cancel</a>
                 <input id="submit" type="submit" (click)="save()" class="btn btn-small btn-success"
