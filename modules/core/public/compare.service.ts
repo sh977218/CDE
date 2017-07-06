@@ -32,8 +32,7 @@ export class CompareService {
     copyValue(obj, data) {
         _.forEach(data, d => {
             let value = _.get(obj, d.property);
-            if (d.array)
-                value = JSON.stringify(value);
+            if (_.isEmpty(value)) value = "";
             obj[d.property] = value;
         });
     }
@@ -47,7 +46,6 @@ export class CompareService {
             let rightIndex = _.findIndex(rightArrayCopy, o => option.isEqual(o, l));
             if (rightIndex === -1) {
                 if (leftIndex === newer.length - 1) {
-                    this.copyValue(l, option.data);
                     option.result.push({
                         match: false,
                         add: true,
@@ -55,7 +53,6 @@ export class CompareService {
                         newer: l
                     });
                     rightArrayCopy.forEach(o => {
-                        this.copyValue(o, option.data);
                         option.result.push({
                             match: false,
                             add: true,
@@ -64,7 +61,6 @@ export class CompareService {
                         });
                     });
                 } else {
-                    this.copyValue(l, option.data);
                     option.result.push({
                         match: false,
                         add: true,
@@ -77,7 +73,6 @@ export class CompareService {
             else {
                 let r = rightArrayCopy[rightIndex];
                 for (let k = 0; k < rightIndex; k++) {
-                    this.copyValue(rightArrayCopy[k], option.data);
                     option.result.push({
                         match: false,
                         add: true,
@@ -90,28 +85,19 @@ export class CompareService {
                     match: true,
                     display: l.display && r.display
                 };
-                let lCopy = {};
-                let rCopy = {};
                 if (!l.diff) l.diff = [];
                 if (!r.diff) r.diff = [];
                 let diff = _.uniq(l.diff.concat(r.diff));
-                if (!_.isEmpty(diff)) {
-                    option.data.forEach(d => {
-                        lCopy[d.property] = _.get(l, d.property);
-                        rCopy[d.property] = _.get(r, d.property);
-                    });
-                    tempResult["older"] = lCopy;
-                    tempResult["newer"] = rCopy;
-                    tempResult["diff"] = diff;
-                    tempResult["edited"] = true;
-                }
+                tempResult["older"] = l;
+                tempResult["newer"] = r;
+                tempResult["diff"] = diff;
+                tempResult["edited"] = true;
                 option.result.push(tempResult);
                 beginIndex++;
             }
             if (leftIndex === newer.length - 1) {
                 rightArrayCopy.forEach((o, i) => {
                     if (i > 0) {
-                        this.copyValue(o, option.data);
                         option.result.push({
                             match: false,
                             add: true,
@@ -160,8 +146,31 @@ export class CompareService {
                         return true;
                     }
                 }
+                if (willRemove.add && willStay.add) {
+                    let aData = _.cloneDeep(willRemove.data);
+                    delete aData.diff;
+                    let bData = _.cloneDeep(willStay.data);
+                    delete bData.diff;
+                    if (option.isEqual(aData, bData)) {
+                        return true;
+                    }
+                }
+                if (willRemove.remove && willStay.remove) {
+                    let aData = _.cloneDeep(willRemove.data);
+                    delete aData.diff;
+                    let bData = _.cloneDeep(willStay.data);
+                    delete bData.diff;
+                    if (option.isEqual(aData, bData)) {
+                        return true;
+                    }
+                }
                 return false;
             });
+            option.result.forEach(r => {
+                if (r.data) this.copyValue(r.data, option.data);
+                if (r.newer) this.copyValue(r.newer, option.data);
+                if (r.older) this.copyValue(r.older, option.data);
+            })
         }
     }
 
