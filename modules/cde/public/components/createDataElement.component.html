@@ -17,8 +17,8 @@
 
             <div class="form-group">
                 <label for="eltStewardOrgName">Steward Organization</label>
-                <select class="form-control" id="eltStewardOrgName"
-                        required [(ngModel)]="elt.stewardOrg.name" name="eltStewardOrgName">
+                <select class="form-control" id="eltStewardOrgName" [(ngModel)]="elt.stewardOrg.name"
+                        name="eltStewardOrgName" required>
                     <option value="">Select One</option>
                     <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
                 </select>
@@ -39,7 +39,7 @@
             <div class="form-group">
                 <a href="/" class="btn btn-warning ml-sm-5 mb-1"> Cancel</a>
                 <input id="submit" type="submit" (click)="createDataElement()" class="btn btn-small btn-success"
-                       [disabled]="!dataElementForm.form.valid"/>
+                       [disabled]="!dataElementForm.form.valid || validationErrors(elt)"/>
             </div>
             <hr/>
         </form>

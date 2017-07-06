@@ -15,7 +15,6 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 })
 export class CreateDataElementComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
-    @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
     modalRef: NgbModalRef;
 
@@ -60,7 +59,7 @@ export class CreateDataElementComponent implements OnInit {
         if (elt.classification.length === 0) {
             return "Please select at least one classification";
         } else {
-            var found = false;
+            let found = false;
             for (let i = 0; i < elt.classification.length; i++) {
                 if (elt.classification[i].stewardOrg.name === elt.stewardOrg.name) {
                     found = true;
@@ -79,6 +78,11 @@ export class CreateDataElementComponent implements OnInit {
         ClassificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
             if (err) this.alert.addAlert("danger", err);
             else {
+                for (let i = eltCopy.classification.length - 1; i >= 0; i--) {
+                    if (eltCopy.classification[i].elements.length === 0) {
+                        eltCopy.classification.splice(i, 1);
+                    }
+                }
                 this.elt = eltCopy;
                 this.alert.addAlert("success", "Classification removed.");
             }

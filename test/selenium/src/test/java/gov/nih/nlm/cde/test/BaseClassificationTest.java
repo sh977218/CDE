@@ -23,29 +23,19 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         } catch (Exception ignored) {
         }
-
         textPresent(categories[1]);
-
+        String classifyBtnId = "";
         for (int i = 1; i < categories.length - 1; i++) {
-            clickElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link"));
+            clickElement(By.xpath("//*[@id='" + categories[i] + "-expander']//span"));
+            classifyBtnId = classifyBtnId + categories[i] + ",";
         }
-        clickElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button"));
+        classifyBtnId = classifyBtnId + categories[categories.length - 1];
+        clickElement(By.xpath("//*[@id='" + classifyBtnId + "-classifyBtn']"));
         try {
             closeAlert();
         } catch (Exception ignored) {
         }
-
-        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
-        hangon(3);
-        String selector = "";
-        for (int i = 1; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length - 1) {
-                selector += ",";
-            }
-        }
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-" + selector + "'] .name"))
-                .getText().equals(categories[categories.length - 1]));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='" + classifyBtnId + "']")).getText().equals(categories[categories.length - 1]));
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
