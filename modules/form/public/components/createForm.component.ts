@@ -18,7 +18,6 @@ export class CreateFormComponent implements OnInit {
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
     modalRef: NgbModalRef;
-    forms = [];
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,

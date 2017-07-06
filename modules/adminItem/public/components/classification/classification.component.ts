@@ -87,7 +87,7 @@ export class ClassificationComponent {
                 this.updateClassificationLocalStorage(postBody);
                 this.reloadElt(() => {
                     this.modalRef.close("success");
-                    this.alert.addAlert("success", "Classified.");
+                    this.alert.addAlert("success", "Classification added.");
                 })
             }, err => {
                 this.alert.addAlert("danger", err._body);

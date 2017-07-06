@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input, Output, EventEmitter } from "@angular/core";
+import { Component, ViewChild, Inject, Input, Output, EventEmitter } from "@angular/core";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
@@ -21,6 +21,7 @@ export class ClassificationViewComponent {
     @Input() isAllowed;
     @Output() confirmDelete = new EventEmitter();
     public modalRef: NgbModalRef;
+    deleteClassificationString;
 
     public options = {
         idField: "name",
@@ -31,7 +32,8 @@ export class ClassificationViewComponent {
         actionMapping: actionMapping
     };
 
-    constructor(public modalService: NgbModal) {
+    constructor(public modalService: NgbModal,
+                @Inject("isAllowedModel") public isAllowedModel) {
     };
 
     searchByClassification(node, orgName) {
@@ -47,6 +49,7 @@ export class ClassificationViewComponent {
     };
 
     openDeleteClassificationModal(node, deleteOrgName) {
+        this.deleteClassificationString = node.data.name;
         let deleteClassificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {

@@ -106,19 +106,11 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         clickElement(By.id("createEltLink"));
         clickElement(By.id("createCDELink"));
         textPresent("Create Data Element");
-        findElement(By.name("elt.designation")).sendKeys(name);
-        findElement(By.name("elt.definition")).sendKeys(definition);
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
+        findElement(By.name("eltName")).sendKeys(name);
+        findElement(By.name("eltDefinition")).sendKeys(definition);
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(org);
         hangon(1);
         addClassificationMethod(new String[]{org, classification, subClassification});
-    }
-
-    public void openClassificationAudit(String name) {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
-        clickElement(By.linkText("Classification Audit Log"));
-        clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
     }
 
     public void _classifyCdesMethod(String[] categories) {
@@ -141,6 +133,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         textPresent("By recently added");
         _addExistClassificationMethodDo(categories);
     }
+
     public void _addClassificationMethod(String[] categories) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");

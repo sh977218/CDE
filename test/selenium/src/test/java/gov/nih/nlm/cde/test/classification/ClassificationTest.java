@@ -44,45 +44,4 @@ public class ClassificationTest extends BaseClassificationTest {
         Assert.assertTrue(response.contains("cGx6UmQnY8G"), "Actual: " + response);
     }
 
-    private void removeClassificationMethod(String[] categories) {
-        String selector = "";
-        for (int i = 0; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length - 1)
-                selector += ",";
-        }
-        clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
-        textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
-        clickElement(By.id("confirmDeleteClassificationBtn"));
-        closeAlert();
-        Assert.assertTrue(checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']")));
-    }
-
-    @Test
-    public void deleteClassification() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
-        goToCdeByName("Spectroscopy geometry location not applicable indicator");
-        clickElement(By.id("classification_tab"));
-        findElement(By.xpath("//*[@id='Domain,Assessments and Examinations,Imaging Diagnostics']"));
-        removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});
-
-        findElement(By.xpath("//*[@id='Domain,Assessments and Examinations']"));
-        removeClassificationMethod(new String[]{"Disease", "Myasthenia Gravis"});
-        textNotPresent("Myasthenia Gravis");
-        openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
-        textPresent("classMgtUser");
-        textPresent("delete NINDS > Disease > Myasthenia Gravis");
-    }
-
-    @Test
-    public void classificationLink() {
-        goToCdeByName("Spectroscopy water signal removal filter text");
-        clickElement(By.id("classification_tab"));
-        clickElement(By.xpath("//*[@id='Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics']"));
-        showSearchFilters();
-        textPresent("Classification");
-        textPresent("NINDS (114)");
-        textPresent("Imaging Diagnostics");
-    }
-
 }

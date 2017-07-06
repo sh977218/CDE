@@ -1,5 +1,5 @@
 <div *ngFor="let classification of elt.classification;let i = index">
-    <div class="floatLeft boxed-div">
+    <div *ngIf="isAllowedModel.showWorkingGroups(classification)" class="floatLeft boxed-div">
         <h4>{{classification.stewardOrg.name}}</h4>
         <hr/>
         <tree-root #treeRoot [nodes]="classification.elements" [options]="options">

@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.jayway.restassured.RestAssured.get;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
@@ -980,5 +979,26 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void removeClassificationMethod(String[] categories) {
+        String selector = "";
+        for (int i = 0; i < categories.length; i++) {
+            selector += categories[i];
+            if (i < categories.length - 1)
+                selector += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
+        textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
+        clickElement(By.id("confirmDeleteClassificationBtn"));
+        closeAlert();
+        Assert.assertTrue(checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']")));
+    }
+
+    protected void openClassificationAudit(String name) {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
+        clickElement(By.linkText("Classification Audit Log"));
+        clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
+    }
 
 }

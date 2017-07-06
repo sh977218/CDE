@@ -17,10 +17,10 @@ public class CreateCdeTest extends BaseClassificationTest {
         textPresent("Submission and Reporting");
         textPresent("Breast Cancer Data Mart");
 
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("Select One");
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("Select One");
         textPresent("Please select a steward for the new CDE");
 
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("NINDS");
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
         modalGone();
         textPresent("Traumatic Brain Injury");

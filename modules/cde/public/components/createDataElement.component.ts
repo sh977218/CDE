@@ -19,7 +19,7 @@ export class CreateDataElementComponent implements OnInit {
     @Input() elt;
     modalRef: NgbModalRef;
 
-    cdes = [];
+    cdes;
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
