@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, ViewChild, QueryList, ViewChildren } from "@angular/core";
+import { Component, Inject, Input, Output, OnInit, ViewChild, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
@@ -17,7 +17,7 @@ export class CreateDataElementComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @Input() elt;
     modalRef: NgbModalRef;
-
+    @Output() cancel = new EventEmitter();
     cdes;
 
     constructor(@Inject("userResource") public userService,
@@ -103,5 +103,9 @@ export class CreateDataElementComponent implements OnInit {
         this.http.post("/dataelement", this.elt).map(res => res.json())
             .subscribe(res => window.location.href = "/deview?tinyId=" + res.tinyId,
                 err => this.alert.addAlert("danger", err));
+    }
+
+    cancelCreateDataElement() {
+        this.cancel.emit('cancel');
     }
 }

@@ -771,14 +771,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void deleteClassification(String classificationId) {
-        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
-        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
+        clickElement(By.xpath("//*[@id='" + classificationId + "-unclassifyBtn']"));
+        clickElement(By.id("confirmDeleteClassificationBtn"));
         modalGone();
         closeAlert();
     }
 
-    protected void deleteMgtClassification(String classificationId,
-                                           String classificationName) {
+    protected void deleteMgtClassification(String classificationId, String classificationName) {
         clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
         clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));

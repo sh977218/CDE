@@ -21,11 +21,12 @@ public class CreateCdeTest extends BaseClassificationTest {
         textPresent("Please select a steward for the new CDE");
 
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("NINDS");
-        addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
+        addClassificationMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
         modalGone();
         textPresent("Traumatic Brain Injury");
-        deleteClassification("classification-Disease,Traumatic Brain Injury");
-        addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Headache"});
+
+        deleteClassification("Disease,Traumatic Brain Injury");
+        addClassificationMethod(new String[]{"NINDS", "Disease", "Headache"});
         checkRecentlyUsedClassificationsForNewCde(new String[]{"NINDS", "Disease", "Headache"});
 
         clickElement(By.id("submit"));

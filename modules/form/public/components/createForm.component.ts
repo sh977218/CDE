@@ -1,4 +1,14 @@
-import { Component, Inject, Input, OnInit, ViewChild, QueryList, ViewChildren } from "@angular/core";
+import {
+    Component,
+    Inject,
+    Input,
+    Output,
+    OnInit,
+    ViewChild,
+    QueryList,
+    ViewChildren,
+    EventEmitter
+} from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
@@ -17,6 +27,7 @@ export class CreateFormComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
+    @Output() cancel = new EventEmitter();
     modalRef: NgbModalRef;
 
     constructor(@Inject("userResource") public userService,
@@ -53,16 +64,16 @@ export class CreateFormComponent implements OnInit {
 
     validationErrors(elt) {
         if (!elt.naming[0].designation) {
-            return "Please enter a name for the new CDE";
+            return "Please enter a name for the new Form";
         } else if (!elt.naming[0].definition) {
-            return "Please enter a definition for the new CDE";
+            return "Please enter a definition for the new Form";
         } else if (!elt.stewardOrg.name) {
-            return "Please select a steward for the new CDE";
+            return "Please select a steward for the new Form";
         }
         if (elt.classification.length === 0) {
             return "Please select at least one classification";
         } else {
-            var found = false;
+            let found = false;
             for (let i = 0; i < elt.classification.length; i++) {
                 if (elt.classification[i].stewardOrg.name === elt.stewardOrg.name) {
                     found = true;
@@ -89,7 +100,16 @@ export class CreateFormComponent implements OnInit {
 
     createForm() {
         this.http.post("/form", this.elt).map(res => res.json())
-            .subscribe(res => window.location.href = "/formView?tinyId=" + res.tinyId,
-                err => this.alert.addAlert("danger", err));
+            .subscribe(res => {
+                    window.location.href = "/formView?tinyId=" + res.tinyId;
+                },
+                err => {
+                    this.alert.addAlert("danger", err);
+                });
     }
+
+    cancelCreateForm() {
+        this.cancel.emit('cancel');
+    }
+
 }

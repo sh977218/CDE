@@ -37,7 +37,7 @@
                 <i class="fa fa-warning"></i> {{validationErrors(elt)}}
             </div>
             <div class="form-group">
-                <a href="/" class="btn btn-warning ml-sm-5 mb-1"> Cancel</a>
+                <button class="btn btn-warning ml-sm-5 mb-1" (click)="cancelCreateDataElement();"> Cancel</button>
                 <input id="submit" type="submit" (click)="createDataElement()" class="btn btn-small btn-success"
                        [disabled]="!dataElementForm.form.valid || validationErrors(elt)"/>
             </div>

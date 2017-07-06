@@ -1,1 +1,8 @@
-<cde-create-form></cde-create-form>
+<div class="container-fluid" *ngIf="isAllowedModel.loggedIn()">
+    <div class="col-md-5">
+        <h1>Create Form</h1>
+        <hr>
+        <cde-create-form (cancel)="redirectToHome();"></cde-create-form>
+    </div>
+</div>
+

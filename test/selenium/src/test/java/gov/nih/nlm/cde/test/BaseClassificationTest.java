@@ -13,11 +13,6 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         addClassificationMethodDo(categories);
     }
 
-    public void addClassificationToNewCdeMethod(String[] categories) {
-        clickElement(By.id("addClassification-createElt"));
-        addClassificationMethodDo(categories);
-    }
-
     private void addClassificationMethodDo(String[] categories) {
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);

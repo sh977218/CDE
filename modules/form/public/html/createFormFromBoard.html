@@ -2,10 +2,5 @@
     <h3>Create form from board</h3>
 </div>
 <div class="modal-body">
-    <div ng-include="'/system/public/html/createCdeForm.html'"></div>
-    <input id="submit" type="submit" ng-click="save()" class="btn btn-success"
-           value="Save" ng-disabled="isClean() || createCde.$invalid || validationErrors() !== null">
-    </input>
-    <button class="btn btn-default done" ng-click="$dismiss('cancel')" id="closeModal">Cancel</button>
-
+    <cde-create-form [(elt)]="elt" (cancel)="closeModal($event);"></cde-create-form>
 </div>

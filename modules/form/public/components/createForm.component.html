@@ -1,54 +1,46 @@
-<div class="container-fluid" *ngIf="isAllowedModel.loggedIn()">
-    <div class="col-md-5">
-        <form #dataElementForm="ngForm">
-            <h1>Create Form</h1>
-            <hr>
-            <div class="form-group">
-                <label for="eltName">Name</label>
-                <input type="text" class="form-control" id="eltName" [(ngModel)]="elt.naming[0].designation"
-                       name="eltName" (ngModelChange)="showSuggestions();" required>
-            </div>
-            <div class="form-group">
-                <label for="eltDefinition">Definition</label>
-                <input type="text" class="form-control" id="eltDefinition" [(ngModel)]="elt.naming[0].definition"
-                       name="eltDefinition" required>
-            </div>
-            <div class="form-group ng-scope" ng-if="module==='form'">
-                <label for="formVersion">Version</label>
-                <input type="text" class="form-control" id="formVersion" [(ngModel)]="elt.version"
-                       name="formVersion" placeholder="Version">
-            </div>
-            <div class="form-group">
-                <label for="eltStewardOrgName">Steward Organization</label>
-                <select class="form-control" id="eltStewardOrgName"
-                        required [(ngModel)]="elt.stewardOrg.name" name="eltStewardOrgName">
-                    <option value="">Select One</option>
-                    <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
-                </select>
-            </div>
-            <div class="form-group" *ngIf="elt.stewardOrg.name">
-                <button class="btn btn-small btn-default" id="openClassificationModalBtn"
-                        value="add" (click)="openClassifyItemModal()">
-                    <i class="fa fa-folder-open-o"> </i> Classify this {{ elt.elementType | uppercase}}
-                </button>
-                <div id="classificationBody" class="overflowHidden">
-                    <cde-classification-view [elt]="elt"
-                                             (confirmDelete)="confirmDelete($event);"></cde-classification-view>
-                </div>
-            </div>
-            <div *ngIf="validationErrors(elt) !== null" class="form-group text-danger">
-                <i class="fa fa-warning"></i> {{validationErrors(elt)}}
-            </div>
-            <div class="form-group">
-                <a href="/" class="btn btn-warning ml-sm-5 mb-1"> Cancel</a>
-                <input id="submit" type="submit" (click)="createForm();" class="btn btn-small btn-success"
-                       [disabled]="!dataElementForm.form.valid"/>
-            </div>
-            <hr/>
-        </form>
+<form #dataElementForm="ngForm">
+    <div class="form-group">
+        <label for="eltName">Name</label>
+        <input type="text" class="form-control" id="eltName" [(ngModel)]="elt.naming[0].designation"
+               name="eltName" required>
     </div>
-</div>
-
-
+    <div class="form-group">
+        <label for="eltDefinition">Definition</label>
+        <input type="text" class="form-control" id="eltDefinition" [(ngModel)]="elt.naming[0].definition"
+               name="eltDefinition" required>
+    </div>
+    <div class="form-group ng-scope" ng-if="module==='form'">
+        <label for="formVersion">Version</label>
+        <input type="text" class="form-control" id="formVersion" [(ngModel)]="elt.version"
+               name="formVersion" placeholder="Version">
+    </div>
+    <div class="form-group">
+        <label for="eltStewardOrgName">Steward Organization</label>
+        <select class="form-control" id="eltStewardOrgName"
+                required [(ngModel)]="elt.stewardOrg.name" name="eltStewardOrgName">
+            <option value="">Select One</option>
+            <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
+        </select>
+    </div>
+    <div class="form-group" *ngIf="elt.stewardOrg.name">
+        <button class="btn btn-small btn-default" id="openClassificationModalBtn"
+                value="add" (click)="openClassifyItemModal()">
+            <i class="fa fa-folder-open-o"> </i> Classify this {{ elt.elementType | uppercase}}
+        </button>
+        <div id="classificationBody" class="overflowHidden">
+            <cde-classification-view [elt]="elt"
+                                     (confirmDelete)="confirmDelete($event);"></cde-classification-view>
+        </div>
+    </div>
+    <div *ngIf="validationErrors(elt) !== null" class="form-group text-danger">
+        <i class="fa fa-warning"></i> {{validationErrors(elt)}}
+    </div>
+    <div class="form-group">
+        <button class="btn btn-warning ml-sm-5 mb-1" (click)="cancelCreateForm();"> Cancel</button>
+        <input id="submit" type="submit" (click)="createForm();" class="btn btn-small btn-success"
+               [disabled]="!dataElementForm.form.valid"/>
+    </div>
+    <hr/>
+</form>
 <cde-classify-item-modal #classifyItemComponent [elt]="elt"
                          (afterClassified)="afterClassified($event)"></cde-classify-item-modal>

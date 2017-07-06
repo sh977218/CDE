@@ -37,4 +37,8 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
             $scope.cdes = result.cdes;
         });
     };
+
+    $scope.redirectToHome = function () {
+        window.location.href = "/";
+    };
 }]);
