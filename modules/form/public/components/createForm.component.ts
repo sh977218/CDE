@@ -10,8 +10,9 @@ import {
     EventEmitter
 } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
+import { NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { TreeComponent } from "angular-tree-component";
+import { LocalStorageService } from "angular-2-local-storage/dist";
 
 import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
 import * as ClassificationShared from "../../../system/shared/classificationShared.js";
@@ -32,6 +33,7 @@ export class CreateFormComponent implements OnInit {
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
+                private localStorageService: LocalStorageService,
                 private http: Http,
                 private alert: AlertService,
                 @Inject("Elastic") private elasticService,
@@ -56,8 +58,14 @@ export class CreateFormComponent implements OnInit {
     }
 
     afterClassified(event) {
+        let postBody = {
+            categories: event.classificationArray,
+            eltId: this.elt._id,
+            orgName: event.selectedOrg
+        };
         let eltCopy = _.cloneDeep(this.elt);
         ClassificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
+        this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
     }
@@ -97,6 +105,17 @@ export class CreateFormComponent implements OnInit {
             }
         });
     };
+
+    updateClassificationLocalStorage(item) {
+        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
+        if (!recentlyClassification) recentlyClassification = [];
+        recentlyClassification = recentlyClassification.filter(o => {
+            if (o.cdeId) o.eltId = o.cdeId;
+            return _.isEqual(o, item);
+        });
+        recentlyClassification.unshift(item);
+        this.localStorageService.set("classificationHistory", recentlyClassification);
+    }
 
     createForm() {
         this.http.post("/form", this.elt).map(res => res.json())

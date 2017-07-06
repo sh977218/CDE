@@ -44,12 +44,12 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     public void checkRecentlyUsedClassificationsForNewCde(String[] categories) {
-        clickElement(By.id("addClassification-createElt"));
-        clickElement(By.id("addClass.byRecentlyAdded"));
+        clickElement(By.id("openClassificationModalBtn"));
+        clickElement(By.id("recentlyAddViewTab"));
         for (String category : categories) {
-            textPresent(category, By.id("addClassificationModalBody"));
+            textPresent(category, By.id("recentlyAddViewTab-panel"));
         }
-        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
         modalGone();
     }
 
