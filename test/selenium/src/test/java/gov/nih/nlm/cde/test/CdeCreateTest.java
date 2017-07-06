@@ -15,13 +15,13 @@ public class CdeCreateTest extends BaseClassificationTest {
         findElement(By.linkText("CDE")).click();
         textPresent("Please enter a name");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        findElement(By.name("elt.designation")).sendKeys("abc");
+        findElement(By.name("eltName")).sendKeys("abc");
         textPresent("Please enter a definition");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        findElement(By.name("elt.definition")).sendKeys("abc");
+        findElement(By.name("eltDefinition")).sendKeys("abc");
         textPresent("Please select a steward");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("NINDS");
         textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());
         addClassificationToNewCdeMethod(new String[]{"CTEP", "DISEASE", "Gynecologic"});

@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
-        clickElement(By.cssSelector("[id^=addClassification]"));
+        clickElement(By.id("openClassificationModalBtn"));
         addClassificationMethodDo(categories);
     }
 
