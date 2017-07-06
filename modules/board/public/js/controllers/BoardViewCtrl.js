@@ -201,7 +201,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
 
             $scope.createFormFromBoard = function () {
-                let elt = {
+                var elt = {
                     naming: [
                         {designation: $scope.board.name}],
                     elementType: "form",
@@ -216,7 +216,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         formElements: []
                     });
                     $http.get('/board/' + $scope.board._id + "/0/500").then(function onSuccess(response) {
-                        response.data.elts.forEach(p => {
+                        response.data.elts.forEach(function (p) {
                             elt.formElements[0].formElements.push({
                                 elementType: 'question',
                                 label: p.naming[0].designation,
@@ -237,10 +237,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             templateUrl: '/form/public/html/createFormFromBoard.html',
                             controller: 'CreateFormFromBoardModalCtrl',
                             resolve: {
-                                elt: () => elt
+                                elt: function () {
+                                    return elt;
+                                }
                             }
-                        }).result.then(function (r) {
-                            console.log(r);
+                        }).result.then(function () {
                         }, function () {
                         });
                     });
@@ -251,10 +252,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         templateUrl: '/form/public/html/createFormFromBoard.html',
                         controller: 'CreateFormFromBoardModalCtrl',
                         resolve: {
-                            elt: () => elt
+                            elt: function () {
+                                return elt;
+                            }
                         }
-                    }).result.then(function (r) {
-                        console.log(r);
+                    }).result.then(function () {
                     }, function () {
                     });
             };
