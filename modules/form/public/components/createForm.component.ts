@@ -18,11 +18,14 @@ export class CreateFormComponent implements OnInit {
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
     modalRef: NgbModalRef;
+    forms = [];
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
                 private http: Http,
-                private alert: AlertService) {
+                private alert: AlertService,
+                @Inject("Elastic") private elasticService,
+                @Inject("SearchSettings") private searchSettings) {
     }
 
     ngOnInit(): void {
@@ -83,9 +86,11 @@ export class CreateFormComponent implements OnInit {
                 this.alert.addAlert("success", "Classification removed.");
             }
         });
-    }
+    };
 
     createForm() {
-
+        this.http.post("/form", this.elt).map(res => res.json())
+            .subscribe(res => window.location.href = "/formView?tinyId=" + res.tinyId,
+                err => this.alert.addAlert("danger", err));
     }
 }

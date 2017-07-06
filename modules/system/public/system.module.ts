@@ -78,7 +78,9 @@ import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/f
         SwaggerComponent,
         UsersMgtComponent,
     ],
-    exports: [],
+    exports: [
+        CdeAccordionListDirective
+    ],
     providers: [
         AlertService,
         CdeDiffPopulateService

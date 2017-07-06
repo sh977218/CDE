@@ -6,7 +6,7 @@
             <div class="form-group">
                 <label for="eltName">Name</label>
                 <input type="text" class="form-control" id="eltName" [(ngModel)]="elt.naming[0].designation"
-                       name="eltName" required>
+                       name="eltName" (ngModelChange)="showSuggestions();" required>
             </div>
             <div class="form-group">
                 <label for="eltDefinition">Definition</label>
@@ -47,15 +47,6 @@
             <hr/>
         </form>
     </div>
-
-    <!--
-        <div class="col-md-7" ng-show="cdes">
-            <h4>Possible Matches</h4>
-            <div class="panel-group" id="accordion">
-                <div ng-include="'/cde/public/html/cdeAccordionList.html'" ng-init="ejsPage = 'createcde';"></div>
-            </div>
-        </div>
-    -->
 </div>
 
 

@@ -26,6 +26,7 @@ import { LocalStorageModule } from "angular-2-local-storage";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { CompareModule } from "../../compare/compare.module";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
+import { SystemModule } from "../../system/public/system.module";
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { ClassificationViewComponent } from "./components/classification/classif
         // internal
         WidgetModule,
         CompareModule,
-        TreeModule
+        TreeModule,
+        SystemModule
     ],
     declarations: [
         AttachmentsComponent,
@@ -87,7 +89,8 @@ import { ClassificationViewComponent } from "./components/classification/classif
         ReferenceDocumentComponent,
         RegistrationComponent,
         SortableArrayDirective,
-        SourcesComponent
+        SourcesComponent,
+        SystemModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

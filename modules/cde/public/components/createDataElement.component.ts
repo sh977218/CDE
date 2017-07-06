@@ -38,10 +38,6 @@ export class CreateDataElementComponent implements OnInit {
         };
     }
 
-    updateThisElt(event) {
-        console.log(event);
-    }
-
     openClassifyItemModal() {
         this.modalRef = this.classifyItemComponent.openModal();
     }
@@ -100,6 +96,8 @@ export class CreateDataElementComponent implements OnInit {
 
 
     createDataElement() {
-
+        this.http.post("/dataelement", this.elt).map(res => res.json())
+            .subscribe(res => window.location.href = "/deview?tinyId=" + res.tinyId,
+                err => this.alert.addAlert("danger", err));
     }
 }
