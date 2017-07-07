@@ -1,13 +1,11 @@
 package gov.nih.nlm.form.test.boards;
 
-import gov.nih.nlm.cde.test.BaseClassificationTest;
-import gov.nih.nlm.cde.test.boards.BoardTest;
+import gov.nih.nlm.cde.test.classification.ClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
-public class CreateFormFromBoardTest extends BoardTest {
-    BaseClassificationTest baseClassificationTest = new BaseClassificationTest();
+public class CreateFormFromBoardTest extends ClassificationTest {
 
     @Test
     public void createFormFromBoard() {
@@ -18,7 +16,7 @@ public class CreateFormFromBoardTest extends BoardTest {
         findElement(By.id("eltDefinition")).sendKeys("New form from boards definition");
         findElement(By.id("formVersion")).sendKeys("1.0");
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("TEST");
-        baseClassificationTest.addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
+        addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         clickElement(By.id("submit"));
         textPresent("Incomplete");
         textNotPresent("have newer version");

@@ -1000,4 +1000,27 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
     }
 
+    protected void goToBoard(String boardName) {
+        String boardId = EltIdMaps.eltMap.get(boardName);
+        if (boardId != null) {
+            driver.get(baseUrl + "/board/" + boardId);
+            textPresent(boardName);
+        } else {
+            gotoMyBoards();
+            textPresent(boardName);
+            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']//a"));
+            switchTab(1);
+            textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
+        }
+    }
+
+    protected void gotoMyBoards() {
+        clickElement(By.id("boardsMenu"));
+        textPresent("My Boards");
+        clickElement(By.id("myBoardsLink"));
+        textPresent("Add Board");
+        hangon(2);
+    }
+
+
 }
