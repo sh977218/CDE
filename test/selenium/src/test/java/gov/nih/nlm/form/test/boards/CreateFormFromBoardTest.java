@@ -19,6 +19,7 @@ public class CreateFormFromBoardTest extends BoardTest {
         findElement(By.id("formVersion")).sendKeys("1.0");
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("TEST");
         baseClassificationTest.addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
+        clickElement(By.id("submit"));
         textPresent("Incomplete");
         textNotPresent("have newer version");
         textPresent("Form Description");

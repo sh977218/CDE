@@ -19,7 +19,7 @@ public class CreateForm extends BaseClassificationTest {
         goHome();
         clickElement(By.id("createEltLink"));
         clickElement(By.id("createFormLink"));
-        textPresent("Please enter a name for the new form");
+        textPresent("Please enter a name for the new Form");
 
         findElement(By.id("eltName")).sendKeys(formName);
         findElement(By.id("eltDefinition")).sendKeys(formDef);
