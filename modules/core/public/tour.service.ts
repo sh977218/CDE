@@ -290,8 +290,8 @@ export class TourService {
     static waitForEltId(eltId: string, cb) {
         let checkExist = setInterval(() => {
             if (document.getElementById(eltId)) {
-                clearInterval(checkExist);
                 cb();
+                clearInterval(checkExist);
             }
         }, 100);
     }
