@@ -55,6 +55,7 @@ public class TourTest extends NlmCdeBaseTest {
 
     private void getNext(String expectedText) {
         findElement(By.xpath("//button[@data-role='next']")).click();
+        hangon(4);
         textPresent(expectedText);
     }
 
