@@ -21,7 +21,7 @@ const navigationSteps: Array<any> = [
     {
         element: "#boardsMenu",
         title: "Boards",
-        content: "Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
+        content: "Boards allow registered users to group CDEs or Forms. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
     },
     {
         element: "#menu_qb_link",
@@ -39,7 +39,7 @@ const navigationSteps: Array<any> = [
 const searchResultSteps: Array<any> = [
     {
         element: "#browseByClassification",
-        content: "CDEs or Forms can be browsed by Classification",
+        content: "CDEs or Forms can be browsed by Classifications. Classifications are ways for content owners to organize their CDEs.",
         title: "Browse by Classification"
     },
     {
@@ -68,7 +68,7 @@ const searchResultSteps: Array<any> = [
     },
     {
         element: "#status_filter",
-        content: "By default, only Qualified and above statuses will be returned. This can be changed in your preferences.",
+        content: "By default, only Qualified and above statuses will be returned. This can be changed in your preferences (the wheel in the upper right corner).",
         title: "Registration Status"
     },
     {
@@ -93,7 +93,7 @@ const cdeSteps: Array<any> = [
     {
         element: "#dd_updated",
         title: "Dates",
-        content: "CDEs may have a date when were last imported. If they were updated during that import, updated will show that date. Manual changes also show under updated. Created shows the date that the CDE was created in the NLM repository. If they were created or updated in a external repository, this information will show under Source.",
+        content: "CDEs may have a date when they were last imported. If they were updated during that import, updated will show that date. Manual changes also show under updated. Created shows the date that the CDE was created in the NLM repository. If they were created or updated in a external repository, this information will show under Source.",
         placement: "bottom"
     },
     {
@@ -126,14 +126,14 @@ const cdeSteps: Array<any> = [
     {
         element: "#classification_tab",
         title: "Classifications",
-        content: "Classifications describe the way in which an organization may use a CDE or Form. Any CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it.",
+        content: "Classifications describe the way in which an organization may use a CDE or Form. A CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it.",
         placement: "top",
         onNext: tour => TourService.clickAndGoNext(tour, "#concepts_tab a", "conceptsDiv")
     },
     {
         element: "#concepts_tab",
         title: "Concepts",
-        content: "Data Elements are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC.",
+        content: "CDEs are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC.",
         placement: "top",
         onNext: tour => TourService.clickAndGoNext(tour, "#referenceDocument_tab a", "referenceDocumentsDiv")
     },
@@ -203,7 +203,7 @@ const cdeSteps: Array<any> = [
     {
         element: "#openLinkedBoardsModalBtn",
         title: "Boards",
-        content: "If a CDE is used public boards, the boards will be shown in this section.",
+        content: "If a CDE is used in public boards, the boards will be shown in this section.",
         placement: "bottom"
     },
     {
@@ -215,7 +215,7 @@ const cdeSteps: Array<any> = [
     {
         element: "#openLinkedFormsModalBtn",
         title: "Forms",
-        content: "If an element is used Forms, they will be displayed here. ",
+        content: "If a CDE is used in Forms, they will be displayed here. ",
         placement: "bottom"
     },
     {
@@ -250,7 +250,7 @@ const formSteps = [
     {
         element: "#general_tab",
         title: "General Details",
-        content: "Forms have similar administrative details to CDE. When rendering is allowed, a preview of the form will display in this tab.",
+        content: "Forms have similar administrative details to CDE. When rendering is allowed, a preview of the form will display in this tab. There are multiple form rending types including: skip logic, printable forms, tables, and hidden questions. More detail about these features can be found on the Display Profiles tab.",
         placement: "top",
         onNext: tour => TourService.clickAndGoNext(tour, "#description_tab a", "addToQuickBoard")
     },
