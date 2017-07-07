@@ -29,6 +29,10 @@ const URL_MAP = {
             left: 5px;
             top: 5px;
         }
+        .isSelected {
+            background-color:#f5f5f5;
+        }
+        
     `],
     providers: [NgbActiveModal]
 })
@@ -39,6 +43,20 @@ export class HistoryComponent implements OnInit {
     showVersioned: boolean = false;
     public priorElements = [];
     public numberSelected: number = 0;
+    public filter = {
+        reorder: {
+            select: true
+        },
+        add: {
+            select: true
+        },
+        remove: {
+            select: true
+        },
+        edited: {
+            select: true
+        }
+    };
 
     constructor(private alert: AlertService,
                 private http: Http,
