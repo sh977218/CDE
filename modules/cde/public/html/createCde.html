@@ -1,1 +1,12 @@
-<cde-create-data-element (cancel)="redirectToHome($event);"></cde-create-data-element>
+<div class="container-fluid">
+    <div class="col-md-5">
+        <h1>Create Data Element</h1>
+        <hr>
+        <cde-create-data-element [(elt)]="elt" (cancel)="redirectToHome($event);"></cde-create-data-element>
+    </div>
+
+    <div class="col-md-7" ng-if="cdes">
+        <h4>Possible Matches</h4>
+        <cde-accordion-list id="accordionList" [cdes]="cdes" [ejsPage]="list" [module]="cde"></cde-accordion-list>
+    </div>
+</div>

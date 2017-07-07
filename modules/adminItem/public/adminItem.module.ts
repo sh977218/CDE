@@ -29,7 +29,6 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { CompareModule } from "../../compare/compare.module";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
 import { SystemModule } from "../../system/public/system.module";
-import { CopyElementComponent } from "./components/copyElement.component";
 
 @NgModule({
     imports: [
@@ -53,7 +52,6 @@ import { CopyElementComponent } from "./components/copyElement.component";
         ClassificationViewComponent,
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
-        CopyElementComponent,
         FormSummaryListDirective,
         IdentifiersComponent,
         InlineEditDirective,
@@ -70,7 +68,6 @@ import { CopyElementComponent } from "./components/copyElement.component";
     entryComponents: [
         AttachmentsComponent,
         ClassificationComponent,
-        CopyElementComponent,
         IdentifiersComponent,
         LinkedFormsComponent,
         HistoryComponent,

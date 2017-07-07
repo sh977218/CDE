@@ -1,4 +1,5 @@
 import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { Observable } from "rxjs/Rx";
@@ -12,12 +13,16 @@ import { DataElementService } from "../dataElement.service";
     templateUrl: "dataElementView.component.html"
 })
 export class DataElementViewComponent implements OnInit {
+    @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @Input() elt: any;
+    public eltCopy = {};
+    public modalRef: NgbModalRef;
 
 
     eltLoaded: boolean = false;
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
+    constructor(public modalService: NgbModal,
+                @Inject("isAllowedModel") public isAllowedModel,
                 private dataElementService: DataElementService,
                 private alert: AlertService) {
     }
@@ -39,6 +44,13 @@ export class DataElementViewComponent implements OnInit {
             this.elt = res;
             this.eltLoaded = true;
         }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element."));
+    }
+
+    openCopyElementModal() {
+        this.eltCopy = _.cloneDeep(this.elt);
+        delete this.eltCopy["_id"];
+        delete this.eltCopy["tinyId"];
+        this.modalRef = this.modalService.open(this.copyDataElementContent);
     }
 
 

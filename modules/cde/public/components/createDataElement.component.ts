@@ -18,6 +18,7 @@ export class CreateDataElementComponent implements OnInit {
     @Input() elt;
     modalRef: NgbModalRef;
     @Output() cancel = new EventEmitter();
+    @Output() modelChange = new EventEmitter();
     cdes;
 
     constructor(@Inject("userResource") public userService,
@@ -30,12 +31,13 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (!this.elt) this.elt = {
-            elementType: "cde",
-            classification: [], stewardOrg: {}, naming: [{
-                designation: "", definition: "", tags: []
-            }]
-        };
+        if (!this.elt)
+            this.elt = {
+                elementType: "cde",
+                classification: [], stewardOrg: {}, naming: [{
+                    designation: "", definition: "", tags: []
+                }]
+            };
     }
 
     openClassifyItemModal() {
@@ -96,13 +98,12 @@ export class CreateDataElementComponent implements OnInit {
         });
     }
 
-    showSuggestions = function () {
+    elementNameChanged() {
         if (!this.elt.naming[0].designation || this.elt.naming[0].designation.length < 3) return;
-        let searchSettings = this.elasticService.defaultSearchSettings;
-        searchSettings.q = this.elt.naming[0].designation;
-        this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), "cde", (err, result) => {
-            this.cdes = result.cdes;
-        });
+        else {
+            console.log("emit: " + this.elt.naming[0].designation);
+            this.modelChange.emit(this.elt.naming[0].designation);
+        }
     };
 
     updateClassificationLocalStorage(item) {
