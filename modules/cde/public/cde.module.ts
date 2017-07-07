@@ -27,6 +27,8 @@ import { ValidRulesComponent } from "./components/validationRules/validRules.com
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { DataElementService } from "./dataElement.service";
 import { DataElementViewComponent } from "./components/dataElementView.component";
+import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import { CreateDataElementComponent } from "./components/createDataElement.component";
 
 @NgModule({
     imports: [
@@ -40,6 +42,7 @@ import { DataElementViewComponent } from "./components/dataElementView.component
         FormModule,
         SearchModule,
         WidgetModule,
+        TreeModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,
@@ -47,6 +50,7 @@ import { DataElementViewComponent } from "./components/dataElementView.component
         CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
+        CreateDataElementComponent,
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
@@ -64,6 +68,7 @@ import { DataElementViewComponent } from "./components/dataElementView.component
         CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
+        CreateDataElementComponent,
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,

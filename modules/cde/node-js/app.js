@@ -22,7 +22,7 @@ var cdesvc = require('./cdesvc')
     , exportShared = require('../../system/shared/exportShared')
     , js2xml = require('js2xmlparser')
     , usersrvc = require('../../system/node-js/usersrvc')
-    ;
+;
 
 exports.init = function (app, daoManager) {
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
@@ -502,13 +502,12 @@ exports.init = function (app, daoManager) {
         });
     });
     app.post("/removeCdeClassification/", function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("You do not permission to do this.");
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send({error: "You do not permission to do this."});
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
-        if (invalidateRequest) return res.status(400).send(invalidateRequest);
-        classificationNode_system.removeClassification(req.body, mongo_cde, function (err, result) {
-            if (err) return res.status(500).send(err);
-            if (result === "Did not find match classifications.") return res.status(409).send(result);
-            else res.send(result);
+        if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
+        classificationNode_system.removeClassification(req.body, mongo_cde, function (err, elt) {
+            if (err) return res.status(500).send({error: err});
+            else res.send(elt);
             mongo_data_system.addToClassifAudit({
                 date: new Date(),
                 user: {

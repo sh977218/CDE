@@ -14,7 +14,9 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
 import {
-    FormSummaryListDirective, InlineEditDirective, InlineSelectEditDirective,
+    FormSummaryListDirective,
+    InlineEditDirective,
+    InlineSelectEditDirective,
     SortableArrayDirective
 } from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
@@ -25,6 +27,8 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { LocalStorageModule } from "angular-2-local-storage";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { CompareModule } from "../../compare/compare.module";
+import { ClassificationViewComponent } from "./components/classification/classificationView.component";
+import { SystemModule } from "../../system/public/system.module";
 import { CopyElementComponent } from "./components/copyElement.component";
 
 @NgModule({
@@ -37,14 +41,16 @@ import { CopyElementComponent } from "./components/copyElement.component";
             prefix: "nlmcde",
             storageType: "localStorage"
         }),
-        TreeModule,
         // internal
         WidgetModule,
-        CompareModule
+        CompareModule,
+        TreeModule,
+        SystemModule
     ],
     declarations: [
         AttachmentsComponent,
         ClassificationComponent,
+        ClassificationViewComponent,
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
         CopyElementComponent,
@@ -76,6 +82,8 @@ import { CopyElementComponent } from "./components/copyElement.component";
     ],
     exports: [
         ClassificationComponent,
+        ClassificationViewComponent,
+        ClassifyItemModalComponent,
         IdentifiersComponent,
         InlineEditDirective,
         InlineSelectEditDirective,
@@ -86,7 +94,8 @@ import { CopyElementComponent } from "./components/copyElement.component";
         ReferenceDocumentComponent,
         RegistrationComponent,
         SortableArrayDirective,
-        SourcesComponent
+        SourcesComponent,
+        SystemModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

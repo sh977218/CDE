@@ -9,12 +9,7 @@ import java.util.Arrays;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
-        clickElement(By.cssSelector("[id^=addClassification]"));
-        addClassificationMethodDo(categories);
-    }
-
-    public void addClassificationToNewCdeMethod(String[] categories) {
-        clickElement(By.id("addClassification-createElt"));
+        clickElement(By.id("openClassificationModalBtn"));
         addClassificationMethodDo(categories);
     }
 
@@ -23,29 +18,19 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         } catch (Exception ignored) {
         }
-
         textPresent(categories[1]);
-
+        String classifyBtnId = "";
         for (int i = 1; i < categories.length - 1; i++) {
-            clickElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link"));
+            clickElement(By.xpath("//*[@id='" + categories[i] + "-expander']//span"));
+            classifyBtnId = classifyBtnId + categories[i] + ",";
         }
-        clickElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button"));
+        classifyBtnId = classifyBtnId + categories[categories.length - 1];
+        clickElement(By.xpath("//*[@id='" + classifyBtnId + "-classifyBtn']"));
         try {
             closeAlert();
         } catch (Exception ignored) {
         }
-
-        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
-        hangon(3);
-        String selector = "";
-        for (int i = 1; i < categories.length; i++) {
-            selector += categories[i];
-            if (i < categories.length - 1) {
-                selector += ",";
-            }
-        }
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-" + selector + "'] .name"))
-                .getText().equals(categories[categories.length - 1]));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='" + classifyBtnId + "']")).getText().equals(categories[categories.length - 1]));
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
@@ -59,12 +44,12 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     public void checkRecentlyUsedClassificationsForNewCde(String[] categories) {
-        clickElement(By.id("addClassification-createElt"));
-        clickElement(By.id("addClass.byRecentlyAdded"));
+        clickElement(By.id("openClassificationModalBtn"));
+        clickElement(By.id("recentlyAddViewTab"));
         for (String category : categories) {
-            textPresent(category, By.id("addClassificationModalBody"));
+            textPresent(category, By.id("recentlyAddViewTab-panel"));
         }
-        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
         modalGone();
     }
 
@@ -106,19 +91,11 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         clickElement(By.id("createEltLink"));
         clickElement(By.id("createCDELink"));
         textPresent("Create Data Element");
-        findElement(By.name("elt.designation")).sendKeys(name);
-        findElement(By.name("elt.definition")).sendKeys(definition);
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(org);
+        findElement(By.name("eltName")).sendKeys(name);
+        findElement(By.name("eltDefinition")).sendKeys(definition);
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(org);
         hangon(1);
         addClassificationMethod(new String[]{org, classification, subClassification});
-    }
-
-    public void openClassificationAudit(String name) {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
-        clickElement(By.linkText("Classification Audit Log"));
-        clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
     }
 
     public void _classifyCdesMethod(String[] categories) {
@@ -141,6 +118,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         textPresent("By recently added");
         _addExistClassificationMethodDo(categories);
     }
+
     public void _addClassificationMethod(String[] categories) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");

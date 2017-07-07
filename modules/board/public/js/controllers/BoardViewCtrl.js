@@ -43,7 +43,9 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     $scope.accordionListStyle = "";
                     if (response.data.board) {
                         $scope.board = response.data.board;
-                        if ($scope.board.type === "form") { $scope.quickBoard = $scope.formQuickBoard; }
+                        if ($scope.board.type === "form") {
+                            $scope.quickBoard = $scope.formQuickBoard;
+                        }
                         var elts = $scope[$scope.board.type + 's'] = [];
                         $scope.module = $scope.board.type;
                         $scope.setViewTypes($scope.module);
@@ -91,7 +93,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $http['delete'](url).then(function onSuccess() {
                     $scope.reload();
                     Alert.addAlert("success", "Unpinned.");
-                }).catch(function onError() {});
+                }).catch(function onError() {
+                });
             };
 
             $scope.exportBoard = function () {
@@ -191,34 +194,83 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             };
                         }
                     }
-                    });
-                $modalInstance.result.then(function () {}, function() {});
+                });
+                $modalInstance.result.then(function () {
+                }, function () {
+                });
             };
 
             $scope.createFormFromBoard = function () {
-                $modal.open({
-                    animation: false,
-                    templateUrl: '/form/public/html/createFormFromBoard.html',
-                    controller: 'CreateFormFromBoardModalCtrl',
-                    resolve: {
-                        board: function () {
-                            return $scope.board;
+                var elt = {
+                    naming: [
+                        {designation: $scope.board.name}],
+                    elementType: "form",
+                    stewardOrg: {},
+                    classification: [],
+                    formElements: []
+                };
+                if ($scope.board.pins && $scope.board.pins.length > 0) {
+                    elt.formElements.push({
+                        elementType: 'section',
+                        label: "",
+                        formElements: []
+                    });
+                    $http.get('/board/' + $scope.board._id + "/0/500").then(function onSuccess(response) {
+                        response.data.elts.forEach(function (p) {
+                            elt.formElements[0].formElements.push({
+                                elementType: 'question',
+                                label: p.naming[0].designation,
+                                formElements: [],
+                                question: {
+                                    cde: {
+                                        tinyId: p.tinyId,
+                                        name: p.naming[0].designation,
+                                        version: p.version ? p.version : null,
+                                        permissibleValues: p.valueDomain.permissibleValues,
+                                        ids: p.ids
+                                    }
+                                }
+                            });
+                        });
+                        $modal.open({
+                            animation: false,
+                            templateUrl: '/form/public/html/createFormFromBoard.html',
+                            controller: 'CreateFormFromBoardModalCtrl',
+                            resolve: {
+                                elt: function () {
+                                    return elt;
+                                }
+                            }
+                        }).result.then(function () {
+                        }, function () {
+                        });
+                    });
+                }
+                else
+                    $modal.open({
+                        animation: false,
+                        templateUrl: '/form/public/html/createFormFromBoard.html',
+                        controller: 'CreateFormFromBoardModalCtrl',
+                        resolve: {
+                            elt: function () {
+                                return elt;
+                            }
                         }
-                    }
-                }).result.then(function () {}, function() {});
+                    }).result.then(function () {
+                    }, function () {
+                    });
             };
             $scope.getReviewers = function () {
                 return $scope.board.users.filter(function (u) {
                     return u.role === 'reviewer';
-                })
+                });
             };
             $scope.modifiedSinceReview = function () {
                 var isModifiedSinceReview = false;
                 if (userResource.user) {
                     $scope.board.users.forEach(function (u) {
                         if (u.username === userResource.user.username &&
-                            u.role === 'reviewer' && u.status.approval === 'approved'
-                            && new Date($scope.board.updatedDate) >= new Date(u.status.reviewedDate)) {
+                            u.role === 'reviewer' && u.status.approval === 'approved' && new Date($scope.board.updatedDate) >= new Date(u.status.reviewedDate)) {
                             isModifiedSinceReview = true;
                         }
                     });
@@ -270,7 +322,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 }).result.then(function (users) {
                     $scope.board.users = users;
-                }, function () {});
+                }, function () {
+                });
             };
             $scope.boardApproval = function (approval) {
                 $http.post('/board/approval', {

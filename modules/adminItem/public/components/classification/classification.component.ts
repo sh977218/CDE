@@ -1,23 +1,23 @@
 import { Component, Input, ViewChild, Inject } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
-import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
+import { NgbModalRef, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ClassifyItemModalComponent } from "./classifyItemModal.component";
 import { ClassifyCdesModalComponent } from "./classifyCdesModal.component";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
-
-const actionMapping: IActionMapping = {
-    mouse: {
-        click: () => {
-        },
-        expanderClick: () => {
-        }
-    }
-};
+import { LocalStorageService } from "angular-2-local-storage/dist";
+import * as _ from "lodash";
 
 const urlMap = {
-    "cde": "/removeCdeClassification/",
-    "form": "/removeFormClassification/"
+    "cde": {
+        delete: "/removeCdeClassification/",
+        add: "/addCdeClassification/",
+        get: "debytinyid/",
+    },
+    "form": {
+        delete: "/removeFormClassification/",
+        add: "/addFormClassification/",
+        get: "formById/"
+    }
 };
 
 @Component({
@@ -28,89 +28,39 @@ const urlMap = {
 export class ClassificationComponent {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChild("classifyCdesComponent") public classifyCdesComponent: ClassifyCdesModalComponent;
-    @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
     @Input() public elt: any;
     public modalRef: NgbModalRef;
 
-    public deleteClassificationString: any;
-    public deleteOrgName: any;
-    public deleteClassificationArray: any;
-
-    public options = {
-        idField: "name",
-        childrenField: "elements",
-        displayField: "name",
-        useVirtualScroll: false,
-        isExpandedField: "elements",
-        actionMapping: actionMapping
-    };
-
     constructor(public http: Http,
-                public modalService: NgbModal,
+                private localStorageService: LocalStorageService,
                 private alert: AlertService,
                 @Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel) {
     }
 
-    searchByClassification(node, orgName) {
-        let classificationArray = [node.data.name];
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                classificationArray.unshift(_treeNode.data.name);
-        }
-        return "/" + this.elt.elementType + "/search?selectedOrg=" + encodeURIComponent(orgName) +
-            "&classification=" + encodeURIComponent(classificationArray.join(";"));
-
-    };
-
     openClassifyItemModal() {
-        this.classifyItemComponent.openItemModal();
+        this.modalRef = this.classifyItemComponent.openModal();
     }
 
     openClassifyCdesModal() {
         this.classifyCdesComponent.openCdesModal();
     }
 
-    openDeleteClassificationModal(node, orgName) {
-        this.deleteClassificationString = node.data.name;
-        this.deleteClassificationArray = [node.data.name];
-        this.deleteOrgName = orgName;
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                this.deleteClassificationArray.unshift(_treeNode.data.name);
-        }
-        this.modalRef = this.modalService.open(this.deleteClassificationContent);
-        this.modalRef.result.then(result => {
-            this.reloadElt(() => {
-                if (result === "success")
-                    this.alert.addAlert("success", "Classification removed.");
-            });
-        }, () => {
-        });
-    }
-
-    deleteClassification() {
+    confirmDelete(event) {
         let deleteBody = {
-            categories: this.deleteClassificationArray,
+            categories: event.deleteClassificationArray,
             eltId: this.elt._id,
-            orgName: this.deleteOrgName
+            orgName: event.deleteOrgName
         };
-        this.http.post(urlMap[this.elt.elementType], deleteBody).subscribe(
-            () => {
-                this.modalRef.close("success");
-            },
-            () => {
-                this.modalRef.close("error");
-            });
+        this.http.post(urlMap[this.elt.elementType].delete, deleteBody)
+            .map(res => res.json()).subscribe(res => {
+            this.elt = res;
+            this.alert.addAlert("success", "Classification removed.");
+        }, err => this.alert.addAlert("danger", err));
     }
 
     reloadElt(cb) {
-        let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
-        //noinspection TypeScriptValidateTypes
+        let url = urlMap[this.elt.elementType].get + this.elt.tinyId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
             this.elt = res;
             if (cb) cb();
@@ -122,6 +72,38 @@ export class ClassificationComponent {
 
     updateThisElt(event) {
         this.elt = event;
+    }
+
+
+    afterClassified(event) {
+        let postBody = {
+            categories: event.classificationArray,
+            eltId: this.elt._id,
+            orgName: event.selectedOrg
+        };
+
+        this.http.post(urlMap[this.elt.elementType].add, postBody).subscribe(
+            () => {
+                this.updateClassificationLocalStorage(postBody);
+                this.reloadElt(() => {
+                    this.modalRef.close("success");
+                    this.alert.addAlert("success", "Classification added.");
+                })
+            }, err => {
+                this.alert.addAlert("danger", err._body);
+                this.modalRef.close("error");
+            });
+    }
+
+    updateClassificationLocalStorage(item) {
+        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
+        if (!recentlyClassification) recentlyClassification = [];
+        recentlyClassification = recentlyClassification.filter(o => {
+            if (o.cdeId) o.eltId = o.cdeId;
+            return _.isEqual(o, item);
+        });
+        recentlyClassification.unshift(item);
+        this.localStorageService.set("classificationHistory", recentlyClassification);
     }
 
 }

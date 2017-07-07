@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.jayway.restassured.RestAssured.get;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
@@ -772,14 +771,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void deleteClassification(String classificationId) {
-        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
-        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
+        clickElement(By.xpath("//*[@id='" + classificationId + "-unclassifyBtn']"));
+        clickElement(By.id("confirmDeleteClassificationBtn"));
         modalGone();
         closeAlert();
     }
 
-    protected void deleteMgtClassification(String classificationId,
-                                           String classificationName) {
+    protected void deleteMgtClassification(String classificationId, String classificationName) {
         clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
         clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
@@ -978,6 +976,50 @@ public class NlmCdeBaseTest {
             findElement(By.xpath("//*[contains(@class,'select2-dropdown')]//*[contains(@class,'elect2-search--dropdown')]//input")).sendKeys(newDatatype);
             clickElement(By.xpath("(//*[contains(@class,'select2-dropdown')]//*[contains(@class,'select2-results')]//ul//li)[1]"));
         }
+    }
+
+    protected void removeClassificationMethod(String[] categories) {
+        String selector = "";
+        for (int i = 0; i < categories.length; i++) {
+            selector += categories[i];
+            if (i < categories.length - 1)
+                selector += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
+        textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
+        clickElement(By.id("confirmDeleteClassificationBtn"));
+        closeAlert();
+        Assert.assertTrue(checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']")));
+    }
+
+    protected void openClassificationAudit(String name) {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
+        clickElement(By.linkText("Classification Audit Log"));
+        clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
+    }
+
+    protected void goToBoard(String boardName) {
+        String boardId = EltIdMaps.eltMap.get(boardName);
+        if (boardId != null) {
+            driver.get(baseUrl + "/board/" + boardId);
+            textPresent(boardName);
+        } else {
+            gotoMyBoards();
+            textPresent(boardName);
+            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']//a"));
+            switchTab(1);
+            textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
+        }
+    }
+
+    protected void gotoMyBoards() {
+        clickElement(By.id("boardsMenu"));
+        textPresent("My Boards");
+        clickElement(By.id("myBoardsLink"));
+        textPresent("Add Board");
+        hangon(2);
     }
 
 

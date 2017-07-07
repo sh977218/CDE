@@ -1,17 +1,8 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-5">
-            <form name="createForm" role="form">
-                <fieldset>
-                    <legend>Create Form</legend>
-                    <div ng-include="'/system/public/html/createCdeForm.html'"></div>
-                    <hr/>
-                    <a href="/" class="btn btn-warning">Cancel</a>
-                    <input id="submit" type="submit" ng-click="save()" class="btn btn-success"
-                           value="Save" ng-disabled="isClean() || createCde.$invalid || validationErrors() !== null">
-                    </input>
-                </fieldset>
-            </form>
-        </div>
+<div class="container-fluid" ng-if="isAllowedModel.loggedIn()">
+    <div class="col-md-5">
+        <h1>Create Form</h1>
+        <hr>
+        <cde-create-form (cancel)="redirectToHome();"></cde-create-form>
     </div>
 </div>
+

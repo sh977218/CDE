@@ -30,7 +30,7 @@ import { CamelCaseToHumanPipe } from "../../core/public/camelCaseToHumanPipe";
 import { ClientErrorsComponent } from "./components/siteAdmin/clientErrors/clientErrors.component";
 import { ServerErrorsComponent } from "./components/siteAdmin/serverErrors/serverErrors.component";
 import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.component";
-import {FeedbackIssuesComponent} from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
+import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
 
 @NgModule({
     imports: [
@@ -78,7 +78,9 @@ import {FeedbackIssuesComponent} from "./components/siteAdmin/feedbackIssues/fee
         SwaggerComponent,
         UsersMgtComponent,
     ],
-    exports: [],
+    exports: [
+        CdeAccordionListDirective
+    ],
     providers: [
         AlertService,
         CdeDiffPopulateService

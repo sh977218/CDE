@@ -19,14 +19,14 @@ public class CreateForm extends BaseClassificationTest {
         goHome();
         clickElement(By.id("createEltLink"));
         clickElement(By.id("createFormLink"));
-        textPresent("Please enter a name for the new form.");
+        textPresent("Please enter a name for the new Form");
 
         findElement(By.id("eltName")).sendKeys(formName);
         findElement(By.id("eltDefinition")).sendKeys(formDef);
         fillInput("Version", formV);
 
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(formOrg);
-        addClassificationToNewCdeMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(formOrg);
+        addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         modalGone();
         clickElement(By.id("submit"));
 

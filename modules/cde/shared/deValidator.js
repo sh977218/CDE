@@ -39,7 +39,8 @@ exports.checkPvUnicity = function (valueDomain) {
 };
 
 exports.fixDatatype = function (elt) {
-    if (!elt.valueDomain.datatype) elt.valueDomain.datatype = "";
+    if (!elt.valueDomain) elt.valueDomain = {datatype: "Text"};
+    if (!elt.valueDomain.datatype) elt.valueDomain.datatype = "Text";
     if (elt.valueDomain.datatype.toLowerCase() === "value list" && !elt.valueDomain.datatypeValueList)
         elt.valueDomain.datatypeValueList = {};
     if (elt.valueDomain.datatype.toLowerCase() === "number" && !elt.valueDomain.datatypeNumber)
@@ -53,8 +54,7 @@ exports.fixDatatype = function (elt) {
 };
 
 exports.wipeDatatype = function (elt) {
-    if (elt.elementType !== "cde")
-        return;
+    if (elt.elementType !== "cde")return;
     exports.fixDatatype(elt);
     var valueDomain = {
         name: elt.valueDomain.name,
