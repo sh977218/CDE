@@ -29,6 +29,8 @@ import { DataElementService } from "./dataElement.service";
 import { DataElementViewComponent } from "./components/dataElementView.component";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { CreateDataElementComponent } from "./components/createDataElement.component";
+import { SystemModule } from "../../system/public/system.module";
+import { CdeAccordionListDirective } from "../../system/public/upgrade-components";
 
 @NgModule({
     imports: [
@@ -42,7 +44,8 @@ import { CreateDataElementComponent } from "./components/createDataElement.compo
         FormModule,
         SearchModule,
         WidgetModule,
-        TreeModule
+        TreeModule,
+        SystemModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,
@@ -60,7 +63,8 @@ import { CreateDataElementComponent } from "./components/createDataElement.compo
         ValidRulesComponent,
         ValueDomainSummaryComponent,
         PermissibleValueComponent,
-        KeysPipe,
+        CdeAccordionListDirective,
+        KeysPipe
     ],
     entryComponents: [
         BoardCdeSummaryListComponent,
@@ -77,10 +81,9 @@ import { CreateDataElementComponent } from "./components/createDataElement.compo
         MoreLikeThisComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
-        PermissibleValueComponent,
+        PermissibleValueComponent
     ],
-    exports: [
-    ],
+    exports: [],
     providers: [
         RegistrationValidatorService,
         DataElementService

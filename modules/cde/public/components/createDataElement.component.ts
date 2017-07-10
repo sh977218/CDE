@@ -17,8 +17,8 @@ export class CreateDataElementComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @Input() elt;
     modalRef: NgbModalRef;
-    @Output() cancel = new EventEmitter();
-    @Output() modelChange = new EventEmitter();
+    @Output() cancel = new EventEmitter<string>();
+    @Output() modelChange = new EventEmitter<string>();
     cdes;
 
     constructor(@Inject("userResource") public userService,
@@ -100,10 +100,7 @@ export class CreateDataElementComponent implements OnInit {
 
     elementNameChanged() {
         if (!this.elt.naming[0].designation || this.elt.naming[0].designation.length < 3) return;
-        else {
-            console.log("emit: " + this.elt.naming[0].designation);
-            this.modelChange.emit(this.elt.naming[0].designation);
-        }
+        else this.modelChange.emit(this.elt.naming[0].designation);
     };
 
     updateClassificationLocalStorage(item) {

@@ -79,7 +79,7 @@ import {ValidRulesComponent} from "../components/validationRules/validRules.comp
 angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], outputs: []}));
 
 import {CreateDataElementComponent} from "../components/createDataElement.component";
-angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent({component: CreateDataElementComponent, inputs: ['elt'], outputs: []}));
+angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent({component: CreateDataElementComponent, inputs: ['elt'], outputs: ['cancel','modelChange']}));
 
 import {DataElementViewComponent} from "../components/dataElementView.component";
 angular.module('cdeModule').directive('cdeDataElementView', downgradeComponent({component: DataElementViewComponent, inputs: ['elt'], outputs: []}));

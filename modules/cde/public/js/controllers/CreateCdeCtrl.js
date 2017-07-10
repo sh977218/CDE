@@ -8,7 +8,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
             }]
         };
 
-        $scope.name = $scope.elt.naming[0].designation;
+        $scope.cdes = [];
 
         $controller('CreateCdeAbstractCtrl', {$scope: $scope});
         $scope.openCdeInNewTab = true;
@@ -22,25 +22,16 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
             , resultPerPage: $scope.resultPerPage
         };
 
-        $scope.$watch("name", function () {
-            console.log("name: " + $scope.name);
-            if ($scope.name.length > 3) {
-                $scope.showSuggestions();
-            }
-        });
-
-        $scope.showSuggestions = function () {
-            if (!$scope.elt.naming[0].designation || $scope.elt.naming[0].designation.length < 3) {
-                return;
-            }
+        $scope.showSuggestions = function (event) {
+            if (event.length < 3) return;
             $scope.classificationFilters = [{
-                org: $scope.searchSettings.selectedOrg
-                , elements: $scope.searchSettings.selectedElements
+                org: $scope.searchSettings.selectedOrg,
+                elements: $scope.searchSettings.selectedElements
             }, {
-                org: $scope.searchSettings.selectedOrgAlt
-                , elements: $scope.searchSettings.selectedElementsAlt
+                org: $scope.searchSettings.selectedOrgAlt,
+                elements: $scope.searchSettings.selectedElementsAlt
             }];
-            $scope.searchSettings.q = $scope.elt.naming[0].designation;
+            $scope.searchSettings.q = event.trim();
             Elastic.generalSearchQuery(Elastic.buildElasticQuerySettings($scope.searchSettings), "cde", function (err, result) {
                 if (err) return;
                 $scope.cdes = result.cdes;
