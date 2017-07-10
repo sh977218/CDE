@@ -1,12 +1,9 @@
 import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
-import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { Observable } from "rxjs/Rx";
-import "rxjs/add/observable/forkJoin";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DataElementService } from "../dataElement.service";
-
 
 @Component({
     selector: "cde-data-element-view",
@@ -50,7 +47,7 @@ export class DataElementViewComponent implements OnInit {
         this.eltCopy = _.cloneDeep(this.elt);
         delete this.eltCopy["_id"];
         delete this.eltCopy["tinyId"];
-        this.eltCopy["naming"][0].designation = "Copy of " + this.eltCopy["naming"][0].designation
+        this.eltCopy["naming"][0].designation = "Copy of " + this.eltCopy["naming"][0].designation;
         this.modalRef = this.modalService.open(this.copyDataElementContent, {size: "lg"});
     }
 }

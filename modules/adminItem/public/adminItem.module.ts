@@ -29,6 +29,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { CompareModule } from "../../compare/compare.module";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
 import { SystemModule } from "../../system/public/system.module";
+import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 
 @NgModule({
     imports: [
@@ -52,6 +53,7 @@ import { SystemModule } from "../../system/public/system.module";
         ClassificationViewComponent,
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
+        CdeUpdateElementComponent,
         FormSummaryListDirective,
         IdentifiersComponent,
         InlineEditDirective,
@@ -81,6 +83,7 @@ import { SystemModule } from "../../system/public/system.module";
         ClassificationComponent,
         ClassificationViewComponent,
         ClassifyItemModalComponent,
+        CdeUpdateElementComponent,
         IdentifiersComponent,
         InlineEditDirective,
         InlineSelectEditDirective,
