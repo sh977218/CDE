@@ -16,6 +16,7 @@ import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetai
 import { CdeSummaryListComponent } from "./components/searchResults/cdeSummaryList.component";
 import { CdeSummaryListContentComponent } from "./components/searchResults/cdeSummaryListContent.component";
 import { ConceptsComponent } from "./components/concepts.component";
+import { CdeAccordionListComponent } from "./components/cdeAccordionList.component";
 import { DatasetsComponent } from "./components/datasets/datasets.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
@@ -30,7 +31,6 @@ import { DataElementViewComponent } from "./components/dataElementView.component
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { CreateDataElementComponent } from "./components/createDataElement.component";
 import { SystemModule } from "../../system/public/system.module";
-import { CdeAccordionListDirective } from "../../system/public/upgrade-components";
 
 @NgModule({
     imports: [
@@ -54,6 +54,7 @@ import { CdeAccordionListDirective } from "../../system/public/upgrade-component
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
         CreateDataElementComponent,
+        CdeAccordionListComponent,
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
@@ -63,7 +64,6 @@ import { CdeAccordionListDirective } from "../../system/public/upgrade-component
         ValidRulesComponent,
         ValueDomainSummaryComponent,
         PermissibleValueComponent,
-        CdeAccordionListDirective,
         KeysPipe
     ],
     entryComponents: [
@@ -72,6 +72,7 @@ import { CdeAccordionListDirective } from "../../system/public/upgrade-component
         CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
+        CdeAccordionListComponent,
         CreateDataElementComponent,
         ConceptsComponent,
         DerivationRulesComponent,

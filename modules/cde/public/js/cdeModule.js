@@ -27,7 +27,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
     }]);
 
 // Angular 2 upgraded
-angular.module('cdeModule').directive('cdeAccordionList', function () {
+angular.module('cdeModule').directive('cdeAccordionListDirective', function () {
     return {
         scope: {cdes: '=', ejsPage: '=', module: '='},
         template: require('../html/cdeAccordionList.html')};
@@ -83,3 +83,6 @@ angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent
 
 import {DataElementViewComponent} from "../components/dataElementView.component";
 angular.module('cdeModule').directive('cdeDataElementView', downgradeComponent({component: DataElementViewComponent, inputs: ['elt'], outputs: []}));
+
+import {CdeAccordionListComponent} from "../components/cdeAccordionList.component";
+angular.module('cdeModule').directive('cdeAccordionList', downgradeComponent({component: CdeAccordionListComponent, inputs: ['cdes'], outputs: []}));
