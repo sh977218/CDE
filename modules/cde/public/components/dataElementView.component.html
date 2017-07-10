@@ -32,45 +32,103 @@
             You are editing a fork. <a href="/deview?cdeId={{rootFork._id}}">
             <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
         </div>
-
         <div class="row">
             <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
                 <h1 class="page-header">{{elt.naming[0].designation}}
-                    <!--
-                                        <a *ngIf="quickBoard.canAddElt(elt)" class="btn btn-small btn-default" role="button"
-                                           (click)="quickBoard.add(elt)" title="Add to Compare List" id="addToQuickBoard">
-                                            <i class="fa fa-plus"></i> Add to Quick Board</a>
-                    -->
-                    <!--
-                                        <a class="btn btn-small btn-default" role="button"
-                                           (click)="PinModal.openPinModal(elt)" title="Add to Board" id="addToBoard">
-                                            <i class="fa fa-thumb-tack"></i> Add to Board</a>
-                    -->
-
-                    <div class="btn-group">
+                    <button id="addToQuickBoard" class="btn btn-small btn-default" role="button"
+                            title="Add to Compare List" type="button">
+                        <i class="fa fa-plus"></i> Add to Quick Board
+                    </button>
+                    <button id="addToBoard" class="btn btn-small btn-default" role="button" title="Add to Board"
+                            type="button">
+                        <i class="fa fa-thumb-tack"></i> Add to Board
+                    </button>
+                    <div class="btn-group" role="group">
                         <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-download"></i>
-                            Export <span class="caret"></span>
+                            <i class="fa fa-download"></i> Export
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><a id='jsonExport' href="dataelement/{{elt._id}}" target="_blank">JSON File, NIH/CDE
-                                Schema</a></li>
-                            <li><a id='xmlExport' href="dataelement/{{elt._id}}?type=xml" target="_blank">XML File,
-                                NIH/CDE Schema</a></li>
-                        </ul>
+                        <div class="dropdown-menu" aria-labelledby="export">
+                            <a class="dropdown-item" href="dataelement/{{elt._id}}" target="_blank">JSON File,
+                                NIH/CDE Schema</a>
+                            <a class="dropdown-item" href="dataelement/{{elt._id}}?type=xml" target="_blank">XML
+                                File, NIH/CDE Schema</a>
+                        </div>
                     </div>
 
-                    <button *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-small btn-default" role="button"
-                            (click)="openCopyElementModal()" title="Copy CDE" id="copyCdeBtn">
+                    <button id="copyCdeBtn" class="btn btn-small btn-default" role="button"
+                            (click)="openCopyElementModal()" title="Copy CDE" type="button">
                         <i class="fa fa-clone"></i> Copy
                     </button>
 
-                    <button class="btn btn-small btn-default" role="button" (click)="switchCommentMode()"
-                            title="Discuss CDE" id="discussBtn">
-                        <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
+                    <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
+                            type="button">
+                        <i class="fa fa-comment"></i> Discuss
                     </button>
                 </h1>
+                <ngb-tabset>
+                    <ngb-tab title="General Details">
+                        <ng-template ngbTabContent>
+                            <cde-de-general-details [elt]="elt"></cde-de-general-details>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Permissible Values">
+                        <ng-template ngbTabContent>
+                            <cde-permissible-value [elt]="elt"></cde-permissible-value>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Naming">
+                        <ng-template ngbTabContent>
+                            <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Classification">
+                        <ng-template ngbTabContent>
+                            <cde-admin-item-classification [elt]="elt"></cde-admin-item-classification>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Concepts">
+                        <ng-template ngbTabContent>
+                            <cde-concepts [elt]="elt"></cde-concepts>
+
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Reference Documents">
+                        <cde-admin-item-reference-document [elt]="elt"></cde-admin-item-reference-document>
+                        <ng-template ngbTabContent>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Properties">
+                        <ng-template ngbTabContent>
+                            <cde-admin-item-properties [elt]="elt"></cde-admin-item-properties>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Identifiers">
+                        <ng-template ngbTabContent>
+                            <cde-admin-item-ids [elt]="elt"></cde-admin-item-ids>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Attachments">
+                        <ng-template ngbTabContent>
+                            <cde-admin-item-attachments [elt]="elt"></cde-admin-item-attachments>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="History">
+                        <ng-template ngbTabContent>
+                            <cde-admin-item-history [elt]="elt"></cde-admin-item-history>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Score Derivations">
+                        <ng-template ngbTabContent>
+                            <cde-derivation-rules [elt]="elt"></cde-derivation-rules>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab title="Validation Rules">
+                        <ng-template ngbTabContent>
+                            <cde-valid-rules [elt]="elt"></cde-valid-rules>
+                        </ng-template>
+                    </ngb-tab>
+                </ngb-tabset>
             </div>
         </div>
     </ng-container>

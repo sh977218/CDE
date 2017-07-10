@@ -53,83 +53,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
     };
     $scope.getCtrlType = function () {return "cde";};
 
-    $scope.tabs = {
-        pvs: {
-            heading: "Permissible Values", includes: ['/cde/public/html/permissibleValue.html'],
-            select: function (thisTab) {
-                // setCurrentTab(thisTab);
-            }
-        },
-        naming: {
-            heading: "Naming", includes: ['/system/public/html/naming.html'],
-            select: function () {
-                OrgHelpers.deferred.promise.then(function () {
-                    $scope.allTags = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
-                });
-            }
-        },
-        classification: {
-            heading: "Classification", includes: ['/system/public/html/classification.html'],
-            select: function (thisTab) {
-                // setCurrentTab(thisTab);
-            }
-        },
-        concepts: {
-            heading: "Concepts", includes: ['/cde/public/html/concepts.html'],
-            select: function (thisTab) {
-                // setCurrentTab(thisTab);
-            }
-        },
-        referenceDocument: {
-            heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html'],
-            select: function (thisTab) {
-                // setCurrentTab(thisTab);
-            }
-        },
-        properties: {
-            heading: "Properties", includes: ['/system/public/html/properties.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-                OrgHelpers.deferred.promise.then(function () {
-                    $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
-                });
-            }
-        },
-        ids: {
-            heading: "Identifiers",
-            includes: ['/system/public/html/identifiers.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
-        attachments: {
-            heading: "Attachments", includes: ['/system/public/html/attachments.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
-        history: {
-            heading: "History",
-            includes: ['/system/public/html/history.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
-        derivationRules: {
-            heading: "Score / Derivations",
-            includes: ['/cde/public/html/derivationRules.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
-        validRules: {
-            heading: "Validation Rules", includes: ['/system/public/html/validRules.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        }
-    };
-
     $scope.deferredEltLoaded = $q.defer();
 
     $scope.$on('$locationChangeStart', function( event ) {
@@ -312,8 +235,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
         return allVsacMatch;
     };
 
-
-
     $scope.loadValueSet = function() {
         var dec = $scope.elt.dataElementConcept;
         if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac) {
@@ -354,11 +275,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
         $scope.canLinkPv = ($scope.canCurate && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
     };
 
-
     $scope.loadBoards = function() {
         $http.get("/deBoards/" + $scope.elt.tinyId).then(function(response) {
             $scope.boards = response.data;
-        }, function (err) {
+        }, function () {
             Alert.addAlert("danger", "Unable to load board");
         });
     };
@@ -377,142 +297,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
         });
     };
 
-    TourContent.steps = [
-        {
-            element: "#discussBtn",
-            title: "Discussions",
-            content: "This button allow users to post comments on any given CDEs. ",
-            placement: "bottom"
-        },
-        {
-            element: "#copyCdeBtn",
-            title: "Copy",
-            content: "This button can make a copy of this CDE.",
-            placement: "bottom"
-        },
-        {
-            element: "#general_tab",
-            title: "General Details",
-            content: "This section shows an overview of the CDE attributes."
-        },
-        {
-            element: "#pvs_tab",
-            title: "Permissible Values",
-            placement: "bottom",
-            content: "Click here to see what type of value are allowed by this CDE."
-        },
-        {
-            element: "#naming_tab",
-            title: "Names",
-            placement: "bottom",
-            content: "Any CDE may have multiple names, often given within a particular context."
-        },
-        {
-            element: "#classification_tab",
-            title: "Classifications",
-            placement: "bottom",
-            content: "Classifications describe the way in which an organization may use a CDE. Any CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it."
-        },
-        {
-            element: "#concepts_tab",
-            title: "Concepts",
-            placement: "bottom",
-            content: "Data Elements are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC."
-        },
-        {
-            element: "#referenceDocument_tab",
-            title: "Reference Document",
-            placement: "bottom",
-            content: "This section contains reference documents for the CDE."
-        },
-        {
-            element: "#properties_tab",
-            title: "Properties",
-            placement: "bottom",
-            content: "This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process."
-        },
-        {
-            element: "#ids_tab",
-            title: "Identifiers",
-            placement: "bottom",
-            content: "CDE may be identified multiple times across CDE users. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here."
-        },
-        {
-            element: "#attachments_tab",
-            title: "Attachments",
-            content: "If a file is attached to a CDE, it can be view or downloaded here.",
-            placement: "bottom"
-        },
-        {
-            element: "#history_tab",
-            title: "History",
-            content: "This section shows all prior states of the CDE.",
-            placement: "bottom"
-        },
-        {
-            element: "#derivationRules_tab",
-            title: "Derivation Rules",
-            content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score.",
-            placement: "bottom"
-        },
-        {
-            element: "#validRules_tab",
-            title: "Validation Rules",
-            content: "Validation Rules are used to validate CDE. ",
-            placement: "bottom"
-        },
-        {
-            element: "#sources_0",
-            placement: "top",
-            title: "Sources",
-            content: "This section shows the where this CDE load from."
-        },
-        {
-            element: "#registrationStateDiv",
-            title: "Status",
-            placement: "top",
-            content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
-        },
-        {
-            element: "#openLinkedBoardsModalBtn",
-            title: "Boards",
-            content: "If a CDE is used in a public board, the board will be shown in this section.",
-            placement: "top"
-        },
-        {
-            element: "#mltButton",
-            title: "More Like This",
-            content: "This section lists CDEs that are most similar to the CDE currently viewed.",
-            placement: "top"
-        },
-        {
-            element: "#openLinkedFormsModalBtn",
-            title: "Forms",
-            placement: "top",
-            content: "If an element is used in a Form, it will be displayed here. "
-        },
-        {
-            element: "#openDataSetModalBtn",
-            title: "Data Sets",
-            content: "This section lists all data sets this CDE has.",
-            placement: "top"
-        }
-    ];
-
     $scope.$on("$destroy", function handler() {
         TourContent.stop();
     });
-
-    $scope.copyElt = function() {
-        $modal.open({
-            animation: false,
-            templateUrl: '/system/public/html/copyModal.html',
-            controller: 'CdeCopyModalCtrl',
-            resolve: {
-                elt: function() {return $scope.elt;}
-            }
-        }).result.then(function () {}, function() {});
-    };
 
     $scope.validateAndStageElt = function (elt) {
         if (elt.valueDomain.datatype === 'Value List'

@@ -3,7 +3,7 @@
 
     <div *ngIf="hasRules()">
         The <b>Registration Status</b> of this CDE is <b>{{elt.registrationState.registrationStatus}}</b>.<br>
-        This CDE is used by the following <b>Stewards</b>: {{elt.usedBy.join(', ')}}<br>
+        This CDE is used by the following <b>Stewards</b>: {{elt.usedBy?.join(', ')}}<br>
         In order to promote this CDE to a different registration status, it must obey the following validation rules:
         <div>
             <div *ngFor="let statusName of cdeStatusRules | cdeKeys" [hidden]="!showStatus(cdeStatusRules[statusName])">
@@ -11,7 +11,8 @@
                 <div *ngFor="let orgName of cdeStatusRules[statusName] | cdeKeys">
                     <h5>Steward <b>{{orgName}}</b> requires the following conditions to be met, in order to promote this
                         CDE to <b>{{statusName}}</b> status:</h5>
-                    <div *ngFor="let rule of cdeStatusRules[statusName][orgName]; let i=index" id="rule_{{statusName}}_{{i}}">
+                    <div *ngFor="let rule of cdeStatusRules[statusName][orgName]; let i=index"
+                         id="rule_{{statusName}}_{{i}}">
                         <i [ngClass]="{'fa-check btn-success':cdePassingRule(elt, rule), 'fa-times btn-danger': !cdePassingRule(elt, rule)}"
                            class="fa btn-xs"></i> {{rule.ruleName}}
                     </div>
