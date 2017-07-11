@@ -71,9 +71,12 @@ exports.init = function (app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_cde);
     });
 
-    app.get('/deExists/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
-            res.send(result);
+    app.get('/deLatestVersionByTinyId/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
+        if (!req.params.tinyId || req.params.tinyId.length === 0) res.status(400).send();
+        else mongo_cde.latestVersionByTinyId(req.params.tinyId, function (err, result) {
+            if (err) res.status(500).send();
+            else if (result) res.send(result.version);
+            else res.status(500).send();
         });
     });
 

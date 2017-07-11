@@ -52,9 +52,9 @@ exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
 };
 
-exports.exists = function (condition, callback) {
-    DataElement.count(condition, function (err, result) {
-        callback(err, result > 0);
+exports.latestVersionByTinyId = function (tinyId, callback) {
+    DataElement.findOne({tinyId: tinyId, archived: false}).exec(function (err, result) {
+        callback(err, result);
     });
 };
 

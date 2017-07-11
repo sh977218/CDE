@@ -215,3 +215,9 @@ exports.fileUsed = function (id, cb) {
         cb(err, count > 0);
     });
 };
+
+exports.exists = function (condition, callback) {
+    Form.count(condition, function (err, result) {
+        callback(err, result > 0);
+    });
+};

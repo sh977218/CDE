@@ -237,4 +237,12 @@ exports.init = function (app, daoManager) {
 
     app.get('/schema/form', (req, res) => res.send(mongo_form.Form.jsonSchema()));
 
+
+    app.get('/formExists/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
+        mongo_form.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
+            res.send(result);
+        });
+    });
+
+
 };
