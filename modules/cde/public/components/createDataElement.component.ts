@@ -60,17 +60,17 @@ export class CreateDataElementComponent implements OnInit {
     validationErrors(elt) {
         if (!elt.naming[0].designation) {
             this.validationMessage = "Please enter a name for the new CDE";
-            return;
+            return true;
         } else if (!elt.naming[0].definition) {
             this.validationMessage = "Please enter a definition for the new CDE";
-            return;
+            return true;
         } else if (!elt.stewardOrg.name) {
             this.validationMessage = "Please select a steward for the new CDE";
-            return;
+            return true;
         }
         if (elt.classification.length === 0) {
             this.validationMessage = "Please select at least one classification";
-            return;
+            return true;
         } else {
             let found = false;
             for (let i = 0; i < elt.classification.length; i++) {
@@ -80,10 +80,10 @@ export class CreateDataElementComponent implements OnInit {
             }
             if (!found) {
                 this.validationMessage = "Please select at least one classification owned by " + elt.stewardOrg.name;
-                return;
+                return true;
             }
         }
-        return;
+        return false;
     };
 
     confirmDelete(event) {
