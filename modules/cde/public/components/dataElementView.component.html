@@ -132,7 +132,7 @@
             </div>
         </div>
         <div class="row">
-            <cde-update-element [elt]="elt"></cde-update-element>
+            <cde-update-element [elt]="elt" (discard)="reload($event);"></cde-update-element>
         </div>
     </ng-container>
 </div>

@@ -50,4 +50,8 @@ export class DataElementViewComponent implements OnInit {
         this.eltCopy["naming"][0].designation = "Copy of " + this.eltCopy["naming"][0].designation;
         this.modalRef = this.modalService.open(this.copyDataElementContent, {size: "lg"});
     }
+
+    reload(elt = null) {
+        if (elt) this.elt = elt;
+    }
 }
