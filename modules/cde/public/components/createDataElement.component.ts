@@ -17,9 +17,9 @@ export class CreateDataElementComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @Input() elt;
     modalRef: NgbModalRef;
-    @Output() cancel = new EventEmitter<string>();
-    @Output() modelChange = new EventEmitter<string>();
-    cdes;
+    @Output() cancel = new EventEmitter();
+    @Output() modelChange = new EventEmitter();
+    validationMessage = "";
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
@@ -59,14 +59,18 @@ export class CreateDataElementComponent implements OnInit {
 
     validationErrors(elt) {
         if (!elt.naming[0].designation) {
-            return "Please enter a name for the new CDE";
+            this.validationMessage = "Please enter a name for the new CDE";
+            return;
         } else if (!elt.naming[0].definition) {
-            return "Please enter a definition for the new CDE";
+            this.validationMessage = "Please enter a definition for the new CDE";
+            return;
         } else if (!elt.stewardOrg.name) {
-            return "Please select a steward for the new CDE";
+            this.validationMessage = "Please select a steward for the new CDE";
+            return;
         }
         if (elt.classification.length === 0) {
-            return "Please select at least one classification";
+            this.validationMessage = "Please select at least one classification";
+            return;
         } else {
             let found = false;
             for (let i = 0; i < elt.classification.length; i++) {
@@ -75,10 +79,11 @@ export class CreateDataElementComponent implements OnInit {
                 }
             }
             if (!found) {
-                return "Please select at least one classification owned by " + elt.stewardOrg.name;
+                this.validationMessage = "Please select at least one classification owned by " + elt.stewardOrg.name;
+                return;
             }
         }
-        return null;
+        return;
     };
 
     confirmDelete(event) {
@@ -99,7 +104,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     elementNameChanged() {
-        if (!this.elt.naming[0].designation || this.elt.naming[0].designation.length < 3) return;
+        if (!(this.elt.naming[0].designation) || this.elt.naming[0].designation.length < 3) return;
         else this.modelChange.emit(this.elt.naming[0].designation);
     };
 
@@ -122,6 +127,6 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     cancelCreateDataElement() {
-        this.cancel.emit('cancel');
+        this.cancel.emit("cancel");
     }
 }

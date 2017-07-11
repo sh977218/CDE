@@ -8,8 +8,8 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        main:'./modules/main.ts',
-        print:'./modules/form/public/nativeRenderStandalone.ts',
+        main: './modules/main.ts',
+        print: './modules/form/public/nativeRenderStandalone.ts',
         embed: './modules/embedded/public/js/embeddedApp.js'
     },
     output: {
@@ -19,7 +19,10 @@ module.exports = {
     module: {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
-            {test: /\.ts$/, use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']},
+            {
+                test: /\.ts$/,
+                use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
+            },
             {test: /\.css$/, use: ['style-loader?insertAt=top', 'raw-loader']},
             {test: /\.html$/, use: ['raw-loader']}
         ]
@@ -67,7 +70,8 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
         modules: ["modules", "modules/components", "node_modules"]
     },
-    devtool: prod ? '#source-map' : '#eval-source-map',
+    devtool: prod ? '#source-map' : '#source-map',
+//    devtool: prod ? '#source-map' : '#cheap-eval-source-map',
     watch: !prod,
     watchOptions: prod ? undefined : {
         aggregateTimeout: 1000,

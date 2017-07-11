@@ -51,6 +51,14 @@ export class DataElementViewComponent implements OnInit {
         this.modalRef = this.modalService.open(this.copyDataElementContent, {size: "lg"});
     }
 
+    closeCopyElementModal() {
+        this.modalRef.close();
+    }
+
+    nothing() {
+
+    }
+
     reload(elt = null) {
         if (elt) this.elt = elt;
     }
