@@ -70,8 +70,7 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
         modules: ["modules", "modules/components", "node_modules"]
     },
-    devtool: prod ? '#source-map' : '#source-map',
-//    devtool: prod ? '#source-map' : '#cheap-eval-source-map',
+    devtool: prod ? '#source-map' : '#cheap-eval-source-map',
     watch: !prod,
     watchOptions: prod ? undefined : {
         aggregateTimeout: 1000,

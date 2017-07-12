@@ -172,4 +172,10 @@ export class FormService {
         }
         return n.data.elementType === "form";
     }
+
+    get(tinyId) {
+        let url = "/formByTinyId/" + tinyId;
+        return this.http.get(url).map(res => res.json());
+    }
+
 }

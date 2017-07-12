@@ -37,6 +37,7 @@ import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/for
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
 import { CreateFormComponent } from "./components/createForm.component";
+import { FormViewComponent } from "./components/formView.component";
 
 @NgModule({
     imports: [
@@ -60,6 +61,7 @@ import { CreateFormComponent } from "./components/createForm.component";
         CdeSortableComponent,
         CreateFormComponent,
         DisplayProfileComponent,
+        FormViewComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,
@@ -81,6 +83,7 @@ import { CreateFormComponent } from "./components/createForm.component";
     entryComponents: [
         CreateFormComponent,
         DisplayProfileComponent,
+        FormViewComponent,
         FormDescriptionComponent,
         FormGeneralDetailsComponent,
         BoardFormSummaryListComponent,
@@ -92,8 +95,7 @@ import { CreateFormComponent } from "./components/createForm.component";
         NativeRenderFullComponent,
         NativeRenderComponent,
     ],
-    exports: [
-    ],
+    exports: [],
     providers: [
         FormService,
         SkipLogicService
