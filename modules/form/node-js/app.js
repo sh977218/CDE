@@ -63,7 +63,7 @@ exports.init = function (app, daoManager) {
                 else res.send(form);
             });
         } else {
-            mongo_form.byTinyIdAndVersion(req.params.tinyId, function (err, form) {
+            mongo_form.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
                 if (err) res.status(500).send(err);
                 else res.send(form);
             });
@@ -194,7 +194,7 @@ exports.init = function (app, daoManager) {
                 action: "add",
                 path: [req.body.orgName].concat(req.body.categories)
             });
-            
+
         });
     });
 

@@ -4,7 +4,7 @@ import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstra
 import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
-import { formService } from "../form.service";
+import { FormService } from "../form.service";
 
 @Component({
     selector: "cde-form-view",
@@ -21,7 +21,7 @@ export class FormViewComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
-                private formService: formService,
+                private formService: FormService,
                 private alert: AlertService) {
     }
 
@@ -41,7 +41,8 @@ export class FormViewComponent implements OnInit {
         this.formService.get(tinyId).subscribe(res => {
             this.elt = res;
             this.eltLoaded = true;
-        }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element."));
+        }, err =>
+            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element." + err));
     }
 
     openCopyElementModal() {
@@ -49,17 +50,17 @@ export class FormViewComponent implements OnInit {
         delete this.eltCopy["_id"];
         delete this.eltCopy["tinyId"];
         this.eltCopy["naming"][0].designation = "Copy of " + this.eltCopy["naming"][0].designation;
-        this.modalRef = this.modalService.open(this.copyformContent, {size: "lg"});
+        this.modalRef = this.modalService.open(this.copyFormContent, {size: "lg"});
     }
 
-    closeCopyElementModal() {
+    closeCopyFormModal() {
         this.modalRef.close();
     }
 
     reload() {
-        let url = "/deByTinyId/" + this.elt.tinyId;
+        let url = "/formByTinyId/" + this.elt.tinyId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
-            if (res && res.elementType === "cde") {
+            if (res && res.elementType === "form") {
                 this.elt = res;
                 this.alert.addAlert("success", "Changes discarded.");
             }
@@ -71,8 +72,14 @@ export class FormViewComponent implements OnInit {
         this.http.post(url, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
-                this.alert.addAlert("success", "Data Element saved.");
+                this.alert.addAlert("success", "Form saved.");
             }
         }, err => this.alert.addAlert("danger", err));
+    }
+
+    isIe() {
+        let userAgent = window.navigator.userAgent;
+        if (/internet explorer/i.test(userAgent))return true;
+        else return false;
     }
 }
