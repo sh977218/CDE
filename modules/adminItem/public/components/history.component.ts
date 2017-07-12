@@ -6,7 +6,7 @@ import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 const URL_MAP = {
-    "cde": "/deview?cdeId=",
+    "cde": "/deView?cdeId=",
     "form": "/formView?formId="
 };
 

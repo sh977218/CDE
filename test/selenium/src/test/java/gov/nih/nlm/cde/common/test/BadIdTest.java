@@ -7,7 +7,7 @@ public class BadIdTest extends NlmCdeBaseTest {
 
     @Test(priority = 5)
     public void badCdeId() {
-        driver.get(baseUrl + "/deview?tinyId=thisisabogusid");
+        driver.get(baseUrl + "/deView?tinyId=thisisabogusid");
         textPresent("Sorry, we are unable to retrieve this element.");
     }
 

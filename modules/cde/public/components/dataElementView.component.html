@@ -8,19 +8,19 @@
         <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this data element is archived. You can
-            <a href="/deview?tinyId={{elt.tinyId}}">view the current version here</a>.
+            <a href="/deView?tinyId={{elt.tinyId}}">view the current version here</a>.
         </div>
         <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this data element is retired.
             <span *ngIf="elt.registrationState.replacedBy">
-                    <a href="/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
+                    <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
         <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
              role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this data element is about to be retired.
             <span *ngIf="elt.registrationState.replacedBy">
-                    <a href="/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
+                    <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
             </span>
         </div>
         <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
@@ -29,7 +29,7 @@
         </div>
         <div *ngIf="elt.forkOf" class="alert alert-info mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
-            You are editing a fork. <a href="/deview?cdeId={{rootFork._id}}">
+            You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
             <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
         </div>
         <div class="row">

@@ -18,7 +18,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/board/:boardId', {controller: 'SwitchListViewCtrl', templateUrl: '/board/public/html/boardView.html'}).
         when('/boardList', {controller: 'BoardListCtrl', templateUrl: '/cde/public/html/boardList.html'}).
         when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/cde/public/html/createCde.html'}).
-        when('/deview', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
+        when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
         when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'}).
