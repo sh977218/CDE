@@ -2,6 +2,7 @@ import "core-js/client/shim";
 import "zone.js";
 import "../node_modules/zone.js/dist/long-stack-trace-zone.js";
 import "reflect-metadata";
+import "classlist-polyfill";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
 import { UpgradeModule } from "@angular/upgrade/static";
