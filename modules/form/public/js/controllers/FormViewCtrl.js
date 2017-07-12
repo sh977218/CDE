@@ -341,19 +341,6 @@ angular.module('formModule').controller
         loopFormElements($scope.elt);
     };
 
-    $scope.copyElt = function() {
-        $modal.open({
-            animation: false,
-            templateUrl: '/system/public/html/copyModal.html',
-            controller: 'FormCopyModalCtrl',
-            resolve: {
-                elt: function() {return $scope.elt;}
-            }
-        }).result.then(function () {
-        }, function () {
-        });
-    };
-
     $scope.preparePublishExport = function () {
         $modal.open({
             animation: false,
