@@ -1,4 +1,4 @@
-<div *ngIf="elt.unsaved">
+<div>
     <button id="discardChanges" class="btn cancel" (click)="discardChange()">Discard Changes</button>
     <button id="openSave" class="btn btn-primary" (click)="openSaveModal()">Save Changes</button>
 
@@ -29,8 +29,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn cancel" (click)="c('cancel')" id="cancelSaveModal" type="button">Cancel</button>
-                <button class="btn btn-warning" id="confirmNewVersion"
+                <button class="btn cancel" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
+                <button class="btn btn-warning" id="confirmSaveBtn" (click)="confirmSave();"
                         [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
                 </button>
             </div>

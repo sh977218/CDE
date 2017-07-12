@@ -1,4 +1,5 @@
 import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
@@ -15,10 +16,10 @@ export class DataElementViewComponent implements OnInit {
     public eltCopy = {};
     public modalRef: NgbModalRef;
 
-
     eltLoaded: boolean = false;
 
-    constructor(public modalService: NgbModal,
+    constructor(private http: Http,
+                public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
                 private dataElementService: DataElementService,
                 private alert: AlertService) {
@@ -55,11 +56,23 @@ export class DataElementViewComponent implements OnInit {
         this.modalRef.close();
     }
 
-    nothing() {
-
+    reload() {
+        let url = "/deByTinyId/" + this.elt.tinyId;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+            if (res && res.elementType === "cde") {
+                this.elt = res;
+                this.alert.addAlert("success", "Changes discarded.");
+            }
+        }, err => this.alert.addAlert("danger", err));
     }
 
-    reload(elt = null) {
-        if (elt) this.elt = elt;
+    saveDataElement() {
+        let url = "/deByTinyId/" + this.elt.tinyId + "/" + this.elt.version;
+        this.http.post(url, this.elt).map(res => res.json()).subscribe(res => {
+            if (res) {
+                this.elt = res;
+                this.alert.addAlert("success", "Data Element saved.");
+            }
+        }, err => this.alert.addAlert("danger", err));
     }
 }

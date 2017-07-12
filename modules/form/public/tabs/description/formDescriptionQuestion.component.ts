@@ -74,11 +74,11 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         newQuestion.question.skipLogic = currentQuestion.question.skipLogic;
                         newQuestion.repeat = currentQuestion.repeat;
 
-                        this.http.get("/debytinyid/" + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
+                        this.http.get("/deByTinyId/" + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
                             .subscribe((newCde) => {
                                 let cdeUrl = currentQuestion.question.cde.tinyId +
                                     (currentQuestion.question.cde.version ? "/" + currentQuestion.question.cde.version : "");
-                                this.http.get("/debytinyid/" + cdeUrl).map((res: Response) => res.json())
+                                this.http.get("/deByTinyId/" + cdeUrl).map((res: Response) => res.json())
                                     .subscribe((oldCde) => {
                                         modal.bLabel = !_.isEqual(newCde.naming, oldCde.naming);
                                     });

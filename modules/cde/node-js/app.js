@@ -113,7 +113,7 @@ exports.init = function (app, daoManager) {
     });
 
 
-    app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/deByTinyId/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.params.version) {
             mongo_cde.eltByTinyId(req.params.tinyId, new CdeServe(req, res).serveCde);
         } else {
@@ -121,7 +121,7 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.post('/debytinyid/:tinyId/:version?', cdesvc.save);
+    app.post('/deByTinyId/:tinyId/:version?', cdesvc.save);
 
     app.post('/dataelement', cdesvc.save);
 

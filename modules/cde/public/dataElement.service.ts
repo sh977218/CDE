@@ -12,7 +12,7 @@ export class DataElementService {
     }
 
     get(tinyId) {
-        let url = "/debytinyid/" + tinyId;
+        let url = "/deByTinyId/" + tinyId;
         return this.http.get(url).map(res => res.json());
     }
 

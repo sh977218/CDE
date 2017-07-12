@@ -7,7 +7,7 @@ import * as _  from "lodash";
 
 const urlMap = {
     cde: {
-        save: "/debytinyid/",
+        save: "/deByTinyId/",
         exist: "/deLatestVersionByTinyId/"
     },
     form: {
@@ -27,6 +27,7 @@ export class CdeUpdateElementComponent {
     public duplicatedVersion = false;
     public overrideVersion: false;
     @Output() discard = new EventEmitter();
+    @Output() save = new EventEmitter();
 
     constructor(public modalService: NgbModal, public http: Http, private alert: AlertService) {
     }
@@ -37,12 +38,12 @@ export class CdeUpdateElementComponent {
     }
 
     discardChange() {
-        let url = urlMap[this.elt.elementType].save + this.elt.tinyId + "/" + this.elt.version;
-        this.http.post(url, this.elt).map(res => res.json()).subscribe(res => {
-            this.discard.emit(res);
-        }, err => {
-            this.alert.addAlert("danger", err);
-        })
+        this.discard.emit();
+    }
+
+    confirmSave() {
+        this.save.emit();
+        this.modalRef.close();
     }
 
     newVersionVersionUnicity(newVersion = null) {

@@ -9,7 +9,7 @@ angular.module('resourcesCde', ['ngResource'])
         });
     }])
     .factory('DataElementTinyId', ["$resource", function ($resource) {
-        return $resource('/debytinyid/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
+        return $resource('/deByTinyId/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
     }])
     .factory('CdeList', ["$http", function ($http) {
         return {
