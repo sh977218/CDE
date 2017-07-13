@@ -64,7 +64,7 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
         }
     } else {
         _getElt = function(id, cb) {
-            $http.get("/form/" + id).then(function (res) {
+            $http.get("/formById/" + id).then(function (res) {
                 cb(res.data);
             }, function () {
                 cb()

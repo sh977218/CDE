@@ -25,7 +25,7 @@ exports.init = function (app, daoManager) {
     app.post('/findForms', formCtrl.findForms);
 
     app.post('/form', formCtrl.save);
-    app.get('/form/:id', exportShared.nocacheMiddleware, formCtrl.formById);
+    app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
     app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);
 
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
