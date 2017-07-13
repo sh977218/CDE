@@ -1,7 +1,10 @@
 var mongo_data = require('./mongo-cde')
     , mongo_cde = require('./mongo-cde')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
     , elastic = require('../../cde/node-js/elastic')
+    , deValidator = require('../../cde/shared/deValidator')
+
 ;
 exports.versionByTinyId = function (req, res) {
     let tinyId = req.params.id;
@@ -25,20 +28,101 @@ exports.byId = function (req, res) {
     if (!id) res.status(500).send();
     else mongo_cde.byId(id, function (err, dataElement) {
         if (err) res.status(500).send(err);
-        else res.send(dataElement);
+        else {
+            mongo_data_system.addToViewHistory(dataElement, req.user);
+            mongo_cde.incDeView(dataElement);
+            res.send(dataElement);
+        }
     });
 };
-
-exports.update = function (req, res) {
+exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) res.status(500).send();
-    else res.send();
+    else mongo_cde.byTinyId(tinyId, function (err, dataElement) {
+        if (err) res.status(500).send(err);
+        else {
+            mongo_data_system.addToViewHistory(dataElement, req.user);
+            mongo_cde.incDeView(dataElement);
+            res.send(dataElement);
+        }
+    });
 };
 
-exports.create = function (req, res) {
-    adminSvc.save(req, res, mongo_data, function () {
-        elastic.fetchPVCodeSystemList();
-    });
+function allowUpdate(user, item, cb) {
+    if (item.archived === true) {
+        return cb("Element is archived.");
+    } else if (user.orgCurator.indexOf(item.stewardOrg.name) < 0 &&
+        user.orgAdmin.indexOf(item.stewardOrg.name) < 0 &&
+        !user.siteAdmin) {
+        cb("Not authorized");
+    } else if ((item.registrationState.registrationStatus === "Standard" ||
+        item.registrationState.registrationStatus === "Preferred Standard") &&
+        !user.siteAdmin) {
+        cb("This record is already standard.");
+    } else if ((item.registrationState.registrationStatus !== "Standard" &&
+        item.registrationState.registrationStatus !== " Preferred Standard") &&
+        (item.registrationState.registrationStatus === "Standard" ||
+        item.registrationState.registrationStatus === "Preferred Standard") &&
+        !user.siteAdmin
+    ) cb("Not authorized");
+    else cb();
+}
+
+exports.updateDataElement = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(500).send();
+    else {
+        if (req.isAuthenticated()) {
+            let user = req.user;
+            mongo_cde.eltByTinyId(tinyId, function (err, item) {
+                if (err) return res.status(500).send();
+                else if (item) {
+                    allowUpdate(user, item, function (err) {
+                        if (err) res.status(500).send();
+                        else mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
+                            let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+                            if (org && org.workingGroupOf &&
+                                org.workingGroupOf.length > 0 &&
+                                allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)
+                                return res.status(403).send("Not authorized");
+                            else {
+                                let elt = req.body;
+                                deValidator.wipeDatatype(elt);
+                                mongo_cde.update(elt, req.user, function (err, response) {
+                                    if (err) res.status(500).send();
+                                    else res.send(response);
+                                });
+                            }
+                        });
+                    });
+                } else return res.status(500).send("Element not exist.");
+            });
+        } else res.status(403).send("You are not authorized to do this.");
+    }
+};
+
+
+exports.createDataElement = function (req, res) {
+    if (req.params.id) return res.status(500).send("bad request");
+    else {
+        if (req.isAuthenticated()) {
+            let elt = req.body;
+            let user = req.user;
+            if (!elt.stewardOrg.name) return res.send("Missing Steward");
+            else if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
+                user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !user.siteAdmin)
+                return res.status(403).send("not authorized");
+            else if (elt.registrationState && elt.registrationState.registrationStatus &&
+                ((elt.registrationState.registrationStatus === "Standard" ||
+                elt.registrationState.registrationStatus === " Preferred Standard") &&
+                !user.siteAdmin))
+                return res.status(403).send("Not authorized");
+            else mongo_cde.create(elt, user, function (err, dataElement) {
+                    if (err) res.status(500).send();
+                    else res.send(dataElement);
+                });
+        } else res.status(403).send("You are not authorized to do this.");
+    }
 };
 
 

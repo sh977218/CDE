@@ -31,11 +31,26 @@ exports.init = function (app, daoManager) {
     app.get("/dataElementById/:id/fork", exportShared.nocacheMiddleware, cdesvc.forks);
     app.get("/dataElementById/:id/history", exportShared.nocacheMiddleware, cdesvc.priorCdes);
     app.get("/dataElementById/:id/version", exportShared.nocacheMiddleware, cdesvc.versionByTinyId);
+    app.get("/dataElementById/:id/xml", exportShared.nocacheMiddleware, function (req, res) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.setHeader("Content-Type", "application/xml");
+        mongo_cde.byId(req.params.id, function (err, dataElement) {
+            if (err) return res.status(500).send();
+            else {
+                mongo_data_system.addToViewHistory(dataElement, req.user);
+                mongo_cde.incDeView(dataElement);
+                let cde = cdesvc.hideProprietaryCodes(dataElement.toObject(), req.user);
+                res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
+            }
+        });
+    });
 
-    app.get("/dataElement/:tinyId/version/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
+    app.get("/dataElement/:tinyId/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
+    app.get("/dataElement/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
 
-    app.post("/dataElement/", exportShared.nocacheMiddleware, cdesvc.create);
-    app.put("/dataElement/:tinyId", exportShared.nocacheMiddleware, cdesvc.update);
+    app.post("/dataElement/", exportShared.nocacheMiddleware, cdesvc.createDataElement);
+    app.put("/dataElement/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
 
     /* ---------- PUT NEW REST API above ---------- */
 
@@ -63,8 +78,6 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/priorcdes/:id', exportShared.nocacheMiddleware, cdesvc.priorCdes);
-
     app.get('/cdeById/:id', exportShared.nocacheMiddleware, cdesvc.byId);
 
     app.get('/forks/:id', exportShared.nocacheMiddleware, cdesvc.forks);
@@ -89,51 +102,6 @@ exports.init = function (app, daoManager) {
             else res.status(500).send();
         });
     });
-
-    function CdeServe(req, res) {
-        var _this = this;
-        this.req = req;
-        this.res = res;
-        this.sendNativeXml = function (cde, res) {
-            res.setHeader("Content-Type", "application/xml");
-            var exportCde = cde.toObject();
-            exportCde = exportShared.stripBsonIds(exportCde);
-            res.send(js2xml("dataElement", exportCde));
-        };
-        this.serveCde = function (err, cde) {
-            if (!cde) return res.status(404).send();
-            cde = cdesvc.hideProprietaryCodes(cde, req.user);
-            if (!req.query.type) res.send(cde);
-            else if (req.query.type === 'json') _this.sendNativeJson(cde, res);
-            else if (req.query.type === 'xml') _this.sendNativeXml(cde, res);
-            else return res.status(404).send("Cannot recognize export type.");
-
-            if (req.isAuthenticated()) {
-                mongo_data_system.addToViewHistory(cde, req.user);
-            }
-            mongo_cde.incDeView(cde);
-        }
-    }
-
-    app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
-        mongo_cde.byId(req.params.id, new CdeServe(req, res).serveCde);
-    });
-
-
-    app.get('/deByTinyId/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.params.version) {
-            mongo_cde.eltByTinyId(req.params.tinyId, new CdeServe(req, res).serveCde);
-        } else {
-            mongo_cde.byTinyIdAndVersion(req.params.tinyId, req.params.version, new CdeServe(req, res).serveCde);
-        }
-    });
-
-    app.post('/deByTinyId/:tinyId/:version?', cdesvc.save);
-
-    app.post('/dataelement', cdesvc.save);
 
     app.get('/viewingHistory', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {

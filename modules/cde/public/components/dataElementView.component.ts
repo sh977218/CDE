@@ -21,7 +21,6 @@ export class DataElementViewComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
-                private dataElementService: DataElementService,
                 private alert: AlertService) {
     }
 
@@ -38,9 +37,11 @@ export class DataElementViewComponent implements OnInit {
 
     ngOnInit(): void {
         let tinyId = this.getParameterByName("tinyId");
-        this.dataElementService.get(tinyId).subscribe(res => {
-            this.elt = res;
-            this.eltLoaded = true;
+        this.http.get("/dataElement/" + tinyId).map(res => res.json()).subscribe(res => {
+            if (res) {
+                this.elt = res;
+                this.eltLoaded = true;
+            } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element.")
         }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element."));
     }
 
@@ -57,18 +58,16 @@ export class DataElementViewComponent implements OnInit {
     }
 
     reload() {
-        let url = "/deByTinyId/" + this.elt.tinyId;
-        this.http.get(url).map(res => res.json()).subscribe(res => {
-            if (res && res.elementType === "cde") {
+        this.http.get("/dataElement/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
+            if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Changes discarded.");
-            }
+            } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element.")
         }, err => this.alert.addAlert("danger", err));
     }
 
     saveDataElement() {
-        let url = "/deByTinyId/" + this.elt.tinyId + "/" + this.elt.version;
-        this.http.post(url, this.elt).map(res => res.json()).subscribe(res => {
+        this.http.put("/dataElement/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Data Element saved.");

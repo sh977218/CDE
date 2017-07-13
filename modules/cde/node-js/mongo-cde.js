@@ -55,8 +55,18 @@ exports.byTinyIdVersion = function (tinyId, version, cb) {
     DataElement.findOne(cond).exec(function (err, cde) {
         cb(err, cde);
     });
-}
-;
+};
+
+exports.byId = function (id, callback) {
+    DataElement.findOne({'_id': id}, function (err, cde) {
+        callback(err, cde);
+    });
+};
+exports.byTinyId = function (tinyId, callback) {
+    DataElement.findOne({'tinyId': tinyId, archived: false}, function (err, cde) {
+        callback(err, cde);
+    });
+};
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
@@ -198,11 +208,6 @@ exports.forks = function (cdeId, callback) {
     });
 };
 
-exports.byId = function (cdeId, callback) {
-    DataElement.findOne({'_id': cdeId}, function (err, cde) {
-        callback(err, cde);
-    });
-};
 
 var viewedCdes = {};
 var threshold = config.viewsIncrementThreshold || 50;

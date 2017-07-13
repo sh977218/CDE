@@ -69,17 +69,22 @@ export class HistoryComponent implements OnInit {
         let prefix_url = URL_MAP[this.elt.elementType];
         delete this.elt.selected;
         if (this.elt.history && this.elt.history.length > 0) {
-            this.http.get('/priorElements/' + this.elt.elementType + '/' + this.elt._id).map(res => res.json())
-                .subscribe(res => {
-                    this.priorElements = res.reverse();
-                    this.elt.viewing = true;
-                    this.elt.changeNote = this.elt._changeNote;
-                    this.priorElements.splice(0, 0, this.elt);
-                    this.priorElements.forEach(pe => {
-                        pe.url = prefix_url + pe._id;
-                    });
-                }, err =>
-                    this.alert.addAlert("danger", "Error retrieving history: " + err));
+            let url;
+            if (this.elt.elementType === "cde") {
+                url = "/dataElementById/" + this.elt._id + "/history";
+            } else {
+                url = '/priorElements/' + this.elt.elementType + '/' + this.elt._id;
+            }
+            this.http.get(url).map(res => res.json()).subscribe(res => {
+                this.priorElements = res.reverse();
+                this.elt.viewing = true;
+                this.elt.changeNote = this.elt._changeNote;
+                this.priorElements.splice(0, 0, this.elt);
+                this.priorElements.forEach(pe => {
+                    pe.url = prefix_url + pe._id;
+                });
+            }, err =>
+                this.alert.addAlert("danger", "Error retrieving history: " + err));
         }
 
     }
