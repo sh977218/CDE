@@ -68,7 +68,7 @@ export class FormViewComponent implements OnInit {
     }
 
     saveForm() {
-        let url = "/deByTinyId/" + this.elt.tinyId + "/" + this.elt.version;
+        let url = "/dataElement/" + this.elt.tinyId + "/" + this.elt.version;
         this.http.post(url, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;

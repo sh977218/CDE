@@ -85,7 +85,6 @@ import "./cde/public/js/controllers/DEListCtrl";
 import "./cde/public/js/controllers/MoreLikeThisModalCtrl";
 import "./cde/public/js/controllers/CdeHistoryCtrl";
 import "./cde/public/js/controllers/CdeCopyModalCtrl";
-import "./cde/public/js/controllers/CreateCdeAbstractCtrl";
 import "./cde/shared/deValidator";
 import "./form/public/js/controllers/FormListCtrl";
 import "./form/public/js/controllers/FormDEListCtrl";

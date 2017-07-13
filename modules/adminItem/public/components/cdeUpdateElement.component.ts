@@ -7,7 +7,7 @@ import * as _  from "lodash";
 
 const urlMap = {
     cde: {
-        save: "/deByTinyId/",
+        save: "/dataElement/",
         exist: "/deLatestVersionByTinyId/"
     },
     form: {

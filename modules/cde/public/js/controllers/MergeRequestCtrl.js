@@ -9,10 +9,10 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                     controller: 'MergeModalCtrl',
                     resolve: {
                         cdeSource: function () {
-                            return $http.get('/deByTinyId/' + $scope.cdes[$scope.retiredIndex].tinyId);
+                            return $http.get('/dataElement/' + $scope.cdes[$scope.retiredIndex].tinyId);
                         },
                         cdeTarget: function () {
-                            return $http.get('/deByTinyId/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);
+                            return $http.get('/dataElement/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);
                         }
                     }
                 }).result.then(function (dat) {

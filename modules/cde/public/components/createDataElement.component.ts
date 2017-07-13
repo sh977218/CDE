@@ -19,7 +19,7 @@ export class CreateDataElementComponent implements OnInit {
     modalRef: NgbModalRef;
     @Output() cancel = new EventEmitter();
     @Output() modelChange = new EventEmitter();
-    validationMessage = "";
+    validationMessage;
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
