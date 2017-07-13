@@ -8,7 +8,7 @@ import * as _  from "lodash";
 const urlMap = {
     cde: {
         save: "/dataElement/",
-        exist: "/deLatestVersionByTinyId/"
+        exist: "/dataElement/tinyId/"
     },
     form: {
         get: "",
@@ -48,12 +48,17 @@ export class CdeUpdateElementComponent {
 
     newVersionVersionUnicity(newVersion = null) {
         if (newVersion === null) newVersion = this.elt.version;
-        let url = urlMap[this.elt.elementType].exist + this.elt.tinyId;
+        let url = urlMap[this.elt.elementType].exist + this.elt.tinyId + "/version/";
         if (!url) return this.alert.addAlert("danger", "Unknown element type " + this.elt.elementType);
-        this.http.get(url).map(res => res.json()).subscribe(
+        this.http.get(url).subscribe(
             res => {
-                if (_.isEqual(res.toString(), newVersion.toString())) {
-                    this.duplicatedVersion = true;
+                if (res && newVersion) {
+                    if (_.isEqual(res.toString(), newVersion.toString())) {
+                        this.duplicatedVersion = true;
+                    } else {
+                        this.duplicatedVersion = false;
+                        this.overrideVersion = false;
+                    }
                 } else {
                     this.duplicatedVersion = false;
                     this.overrideVersion = false;

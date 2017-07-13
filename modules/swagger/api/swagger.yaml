@@ -11,7 +11,7 @@ schemes:
 produces:
 - "application/json"
 paths:
-  /dataElement/{tinyId}:
+  /dataElement/tinyId/{tinyId}:
     get:
       tags:
       - "CDE"
@@ -33,7 +33,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /dataElement/{tinyId}/{version}:
+  /dataElement/tinyId/{tinyId}/version/{version}:
     get:
       tags:
       - "CDE"

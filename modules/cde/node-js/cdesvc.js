@@ -7,8 +7,15 @@ var mongo_data = require('./mongo-cde')
 
 ;
 exports.versionByTinyId = function (req, res) {
-    let tinyId = req.params.id;
-    mongo_cde.latestVersionByTinyId(tinyId, function (err, dataElement) {
+    let tinyId = req.params.tinyId;
+    mongo_cde.versionByTinyId(tinyId, function (err, dataElement) {
+        if (err) res.status(500).send();
+        else res.send(dataElement.version);
+    });
+};
+exports.versionById = function (req, res) {
+    let id = req.params.id;
+    mongo_cde.versionById(id, function (err, dataElement) {
         if (err) res.status(500).send();
         else res.send(dataElement.version);
     });

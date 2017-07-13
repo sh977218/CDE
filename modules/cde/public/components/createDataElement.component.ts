@@ -38,6 +38,7 @@ export class CreateDataElementComponent implements OnInit {
                     designation: "", definition: "", tags: []
                 }]
             };
+        this.validationErrors(this.elt);
     }
 
     openClassifyItemModal() {

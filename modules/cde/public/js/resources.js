@@ -3,7 +3,7 @@ angular.module('resourcesCde', ['ngResource'])
         return $resource('/listboards');
     }])
     .factory('DataElement', ["$resource", function ($resource) {
-        return $resource('/dataelement/:deId', {deId: '@deId'}, {
+        return $resource('/dataelement/id/:deId', {deId: '@deId'}, {
             update: {method: 'PUT'},
             save: {method: 'POST', params: {type: null}}
         });

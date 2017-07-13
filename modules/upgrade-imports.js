@@ -72,7 +72,6 @@ import "./cde/public/js/controllers/AddForkModalCtrl";
 import "./cde/public/js/controllers/BoardListCtrl";
 import "./system/public/js/controllers/CompareCtrl";
 import "./cde/public/js/controllers/CreateCdeCtrl";
-import "./cde/public/js/controllers/deViewCtrl";
 import "./cde/public/js/controllers/BoardExportCtrl";
 import "./cde/public/js/controllers/MyBoardsCtrl";
 import "./cde/public/js/controllers/MergeModalCtrl";

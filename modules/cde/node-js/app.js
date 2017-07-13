@@ -27,11 +27,11 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_cde);
 
-    app.get("/dataElementById/:id", exportShared.nocacheMiddleware, cdesvc.byId);
-    app.get("/dataElementById/:id/fork", exportShared.nocacheMiddleware, cdesvc.forks);
-    app.get("/dataElementById/:id/history", exportShared.nocacheMiddleware, cdesvc.priorCdes);
-    app.get("/dataElementById/:id/version", exportShared.nocacheMiddleware, cdesvc.versionByTinyId);
-    app.get("/dataElementById/:id/xml", exportShared.nocacheMiddleware, function (req, res) {
+    app.get("/dataElement/id/:id", exportShared.nocacheMiddleware, cdesvc.byId);
+    app.get("/dataElement/id/:id/fork/", exportShared.nocacheMiddleware, cdesvc.forks);
+    app.get("/dataElement/id/:id/history/", exportShared.nocacheMiddleware, cdesvc.priorCdes);
+    app.get("/dataElement/id/:id/version/", exportShared.nocacheMiddleware, cdesvc.versionById);
+    app.get("/dataElement/id/:id/xml/", exportShared.nocacheMiddleware, function (req, res) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "X-Requested-With");
         res.setHeader("Content-Type", "application/xml");
@@ -46,11 +46,12 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get("/dataElement/:tinyId/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
-    app.get("/dataElement/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
+    app.get("/dataElement/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
+    app.get("/dataElement/tinyId/:tinyId/version/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
+    app.get("/dataElement/tinyId/:tinyId/version/", exportShared.nocacheMiddleware, cdesvc.versionByTinyId);
 
     app.post("/dataElement/", exportShared.nocacheMiddleware, cdesvc.createDataElement);
-    app.put("/dataElement/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
+    app.put("/dataElement/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
 
     /* ---------- PUT NEW REST API above ---------- */
 

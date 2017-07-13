@@ -56,7 +56,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     }
 
     openUpdateCdeVersion(question) {
-        this.http.get('/dataElement/' + question.question.cde.tinyId).map((res: Response) => res.json())
+        this.http.get('/dataElement/tinyId/' + question.question.cde.tinyId).map((res: Response) => res.json())
             .subscribe((response) => {
                 this.formService.convertCdeToQuestion(response, (newQuestion) => {
                     this.updateCdeVersion = (() => {

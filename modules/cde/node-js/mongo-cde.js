@@ -67,6 +67,17 @@ exports.byTinyId = function (tinyId, callback) {
         callback(err, cde);
     });
 };
+exports.versionById = function (id, callback) {
+    DataElement.findOne({_id: id}).exec(function (err, result) {
+        callback(err, result);
+    });
+};
+exports.versionByTinyId = function (tinyId, callback) {
+    DataElement.findOne({tinyId: tinyId, archived: false}).exec(function (err, result) {
+        callback(err, result);
+    });
+};
+
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 

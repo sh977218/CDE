@@ -9,9 +9,9 @@ angular.module('CdeMerge', [])
         });
     };
     service.approveMerge = function(source, destination, fields, callback) {
-        $http.get('/dataElement/' + source.tinyId).then(function (result) {
+        $http.get('/dataElement/tinyId/' + source.tinyId).then(function (result) {
             service.source = result.data;
-            return $http.get('/dataElement/' + destination.tinyId);
+            return $http.get('/dataElement/tinyId/' + destination.tinyId);
         }).then(function (result) {
             service.destination = result.data;
             Object.keys(fields).forEach(function(field) {

@@ -37,7 +37,7 @@ export class DataElementViewComponent implements OnInit {
 
     ngOnInit(): void {
         let tinyId = this.getParameterByName("tinyId");
-        this.http.get("/dataElement/" + tinyId).map(res => res.json()).subscribe(res => {
+        this.http.get("/dataElement/tinyId/" + tinyId).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.eltLoaded = true;
@@ -58,7 +58,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     reload() {
-        this.http.get("/dataElement/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
+        this.http.get("/dataElement/tinyId/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Changes discarded.");
@@ -67,7 +67,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDataElement() {
-        this.http.put("/dataElement/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+        this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Data Element saved.");
