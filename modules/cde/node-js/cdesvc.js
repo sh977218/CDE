@@ -1,55 +1,86 @@
 var mongo_data = require('./mongo-cde')
+    , mongo_cde = require('./mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
     , elastic = require('../../cde/node-js/elastic')
-    ;
+;
+exports.versionByTinyId = function (req, res) {
+    let tinyId = req.params.id;
+    mongo_cde.latestVersionByTinyId(tinyId, function (err, dataElement) {
+        if (err) res.status(500).send();
+        else res.send(dataElement.version);
+    });
+};
 
-exports.forks = function(req, res) {
+exports.byTinyIdVersion = function (req, res) {
+    let tinyId = req.params.tinyId;
+    let version = req.params.version;
+    mongo_cde.byTinyIdVersion(tinyId, version, function (err, dataElement) {
+        if (err) res.status(500).send();
+        else res.send(dataElement);
+    });
+};
+
+exports.byId = function (req, res) {
+    let id = req.params.id;
+    if (!id) res.status(500).send();
+    else mongo_cde.byId(id, function (err, dataElement) {
+        if (err) res.status(500).send(err);
+        else res.send(dataElement);
+    });
+};
+
+exports.update = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) res.status(500).send();
+    else res.send();
+};
+
+exports.create = function (req, res) {
+    adminSvc.save(req, res, mongo_data, function () {
+        elastic.fetchPVCodeSystemList();
+    });
+};
+
+
+/* ---------- PUT NEW REST API Implementation above  ---------- */
+
+exports.forks = function (req, res) {
     var cdeId = req.params.id;
 
     if (!cdeId) {
         res.send("No Element Id");
     }
-    mongo_data.forks(cdeId, function(err, forks) {
-       if (err) {
-           res.send("ERROR");
-       } else {
-           res.send(forks);
-       }
+    mongo_data.forks(cdeId, function (err, forks) {
+        if (err) {
+            res.send("ERROR");
+        } else {
+            res.send(forks);
+        }
     });
 };
 
 
-exports.priorCdes = function(req, res) {
+exports.priorCdes = function (req, res) {
     var cdeId = req.params.id;
 
     if (!cdeId) {
         res.send("No Data Element Id");
     }
-    mongo_data.priorCdes(cdeId, function(err, priorCdes) {
-       if (err) {
-           res.send("ERROR");
-       } else {
-           res.send(priorCdes);
-       }
+    mongo_data.priorCdes(cdeId, function (err, priorCdes) {
+        if (err) {
+            res.send("ERROR");
+        } else {
+            res.send(priorCdes);
+        }
     });
 };
-
-exports.byId = function (req, res) {
-    mongo_data.byId(req.params.id, function (err, de) {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.send(de);
-        }
-    })
-};
-exports.show = function(req, res, cb) {
+exports.show = function (req, res, cb) {
     var cdeId = req.params.id;
     if (!cdeId) {
         res.send("No Data Element Id");
         return;
     }
-    mongo_data.byId(cdeId, function(err, cde) {
+    mongo_data.byId(cdeId, function (err, cde) {
         cb(cde);
         // Following have no callback because it's no big deal if it fails.
         if (cde) {
@@ -62,12 +93,12 @@ exports.show = function(req, res, cb) {
 };
 
 exports.save = function (req, res) {
-    adminSvc.save(req, res, mongo_data, function() {
+    adminSvc.save(req, res, mongo_data, function () {
         elastic.fetchPVCodeSystemList();
     });
 };
 
-exports.hideProprietaryCodes = function(cdes, user) {
+exports.hideProprietaryCodes = function (cdes, user) {
     var hiddenFieldMessage = 'Login to see the value.';
     this.systemWhitelist = [
         "RXNORM"
@@ -80,11 +111,11 @@ exports.hideProprietaryCodes = function(cdes, user) {
         , "NCI"
         , "UMLS"
     ];
-    this.censorPv = function(pvSet) {
+    this.censorPv = function (pvSet) {
         var toBeCensored = true;
-        this.systemWhitelist.forEach(function(system) {
+        this.systemWhitelist.forEach(function (system) {
             if (!pvSet.codeSystemName) toBeCensored = false;
-            else if (pvSet.codeSystemName.indexOf(system)>=0) toBeCensored = false;
+            else if (pvSet.codeSystemName.indexOf(system) >= 0) toBeCensored = false;
         });
         if (toBeCensored) {
             pvSet.valueMeaningName = hiddenFieldMessage;
@@ -93,11 +124,11 @@ exports.hideProprietaryCodes = function(cdes, user) {
             pvSet.codeSystemVersion = hiddenFieldMessage;
         }
     };
-    this.checkCde = function(cde) {
+    this.checkCde = function (cde) {
         adminSvc.hideProprietaryIds(cde);
         if (cde.valueDomain.datatype !== "Value List") return cde;
         var self = this;
-        cde.valueDomain.permissibleValues.forEach(function(pvSet) {
+        cde.valueDomain.permissibleValues.forEach(function (pvSet) {
             self.censorPv(pvSet);
         });
         return cde;
@@ -108,7 +139,7 @@ exports.hideProprietaryCodes = function(cdes, user) {
         return this.checkCde(cdes);
     }
     var self = this;
-    cdes.forEach(function(cde) {
+    cdes.forEach(function (cde) {
         self.checkCde(cde);
     });
     return cdes;

@@ -2,7 +2,6 @@ var config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
-    , mongo_form = require('../../form/node-js/mongo-form')
     , mongo_board = require('../../board/node-js/mongo-board')
     , connHelper = require('../../system/node-js/connections')
     , dbLogger = require('../../system/node-js/dbLogger')
@@ -48,6 +47,19 @@ exports.DataElement = DataElement;
 
 exports.elastic = elastic;
 
+
+exports.byTinyIdVersion = function (tinyId, version, cb) {
+    let cond = {'tinyId': tinyId};
+    if (version) cond["registrationState.registrationStatus"] = {$ne: "Retired"};
+    else cond.version = version;
+    DataElement.findOne(cond).exec(function (err, cde) {
+        cb(err, cde);
+    });
+}
+;
+
+/* ---------- PUT NEW REST API Implementation above  ---------- */
+
 exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
 };
@@ -88,11 +100,12 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    DataElement.find({
+    let cond = {
         'tinyId': tinyId,
         "version": version,
         "registrationState.registrationStatus": {$ne: "Retired"}
-    }).sort({"updated": -1}).limit(1).exec(function (err, des) {
+    };
+    DataElement.find(cond).sort({"updated": -1}).limit(1).exec(function (err, des) {
         callback(err, des[0]);
     });
 };
@@ -186,9 +199,7 @@ exports.forks = function (cdeId, callback) {
 };
 
 exports.byId = function (cdeId, callback) {
-    if (!cdeId) callback("Not found", null);
     DataElement.findOne({'_id': cdeId}, function (err, cde) {
-        if (!cde) err = "Cannot find CDE";
         callback(err, cde);
     });
 };

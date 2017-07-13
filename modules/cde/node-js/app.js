@@ -15,8 +15,6 @@ var cdesvc = require('./cdesvc')
     , express = require('express')
     , sdc = require("./sdc.js")
     , appStatus = require('./../../system/node-js/status')
-    , authorizationShared = require("../../system/shared/authorizationShared")
-    , authorization = require("../../system/node-js/authorization")
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
@@ -28,6 +26,18 @@ exports.init = function (app, daoManager) {
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
 
     daoManager.registerDao(mongo_cde);
+
+    app.get("/dataElementById/:id", exportShared.nocacheMiddleware, cdesvc.byId);
+    app.get("/dataElementById/:id/fork", exportShared.nocacheMiddleware, cdesvc.forks);
+    app.get("/dataElementById/:id/history", exportShared.nocacheMiddleware, cdesvc.priorCdes);
+    app.get("/dataElementById/:id/version", exportShared.nocacheMiddleware, cdesvc.versionByTinyId);
+
+    app.get("/dataElement/:tinyId/version/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
+
+    app.post("/dataElement/", exportShared.nocacheMiddleware, cdesvc.create);
+    app.put("/dataElement/:tinyId", exportShared.nocacheMiddleware, cdesvc.update);
+
+    /* ---------- PUT NEW REST API above ---------- */
 
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
@@ -528,5 +538,4 @@ exports.init = function (app, daoManager) {
     require('mongoose-schema-jsonschema')(require('mongoose'));
 
     app.get('/schema/cde', (req, res) => res.send(mongo_cde.DataElement.jsonSchema()));
-
 };
