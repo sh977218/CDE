@@ -5,6 +5,7 @@ if (PRODUCTION) {
 import "core-js/client/shim";
 import "zone.js";
 import "reflect-metadata";
+import "classlist-polyfill";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
 import { UpgradeModule } from "@angular/upgrade/static";
