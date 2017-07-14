@@ -71,7 +71,7 @@ export class HistoryComponent implements OnInit {
         if (this.elt.history && this.elt.history.length > 0) {
             let url;
             if (this.elt.elementType === "cde") {
-                url = "/dataElementById/" + this.elt._id + "/history";
+                url = "/dataElement/id/" + this.elt._id + "/history";
             } else {
                 url = '/priorElements/' + this.elt.elementType + '/' + this.elt._id;
             }

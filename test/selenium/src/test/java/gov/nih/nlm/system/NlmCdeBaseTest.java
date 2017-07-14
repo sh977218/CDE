@@ -505,17 +505,16 @@ public class NlmCdeBaseTest {
     }
 
     protected void newCdeVersion(String changeNote) {
-        scrollToEltByCss("#openSave");
         clickElement(By.id("openSave"));
         textPresent("has already been used");
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         }
-        findElement(By.name("version")).sendKeys(".1");
+        findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
-        clickElement(By.id("confirmNewVersion"));
-        textPresent("Saved.");
+        clickElement(By.id("confirmSaveBtn"));
+        textPresent("Data Element saved.");
         closeAlert();
         wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         modalGone();
@@ -1020,6 +1019,26 @@ public class NlmCdeBaseTest {
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
         hangon(2);
+    }
+
+    protected void addIdentifier(String source, String id, String version) {
+        clickElement(By.id("ids_tab"));
+        clickElement(By.id("openNewIdentifierModalBtn"));
+        findElement(By.id("newSource")).sendKeys(source);
+        findElement(By.id("newId")).sendKeys(id);
+        if (version != null)
+            findElement(By.name("version")).sendKeys(version);
+        clickElement(By.id("createNewIdentifierBtn"));
+        textPresent("Identifier Added");
+        closeAlert();
+        hangon(1);
+    }
+
+    protected void removeIdentifier(int index) {
+        clickElement(By.id("ids_tab"));
+        clickElement(By.xpath("removeIdentifier" + index));
+        clickElement(By.xpath("confirmRemoveIdentifier" + index));
+        closeAlert();
     }
 
 

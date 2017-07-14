@@ -37,7 +37,6 @@ exports.byId = function (req, res) {
         if (err) res.status(500).send(err);
         else {
             mongo_data_system.addToViewHistory(dataElement, req.user);
-            mongo_cde.incDeView(dataElement);
             res.send(dataElement);
         }
     });

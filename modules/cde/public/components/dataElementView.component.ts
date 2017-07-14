@@ -37,7 +37,15 @@ export class DataElementViewComponent implements OnInit {
 
     ngOnInit(): void {
         let tinyId = this.getParameterByName("tinyId");
-        this.http.get("/dataElement/tinyId/" + tinyId).map(res => res.json()).subscribe(res => {
+        let cdeId = this.getParameterByName("cdeId");
+        let url;
+        if (tinyId) {
+            url = "/dataElement/tinyId/" + tinyId;
+        }
+        if (cdeId) {
+            url = "/dataElement/id/" + cdeId;
+        }
+        this.http.get(url).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.eltLoaded = true;
@@ -46,6 +54,8 @@ export class DataElementViewComponent implements OnInit {
             this.eltLoaded = true;
             this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element.")
         });
+
+
     }
 
     openCopyElementModal() {

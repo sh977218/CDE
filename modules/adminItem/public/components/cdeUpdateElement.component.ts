@@ -50,7 +50,7 @@ export class CdeUpdateElementComponent {
         if (newVersion === null) newVersion = this.elt.version;
         let url = urlMap[this.elt.elementType].exist + this.elt.tinyId + "/version/";
         if (!url) return this.alert.addAlert("danger", "Unknown element type " + this.elt.elementType);
-        this.http.get(url).subscribe(
+        this.http.get(url).map(res => res.text()).subscribe(
             res => {
                 if (res && newVersion) {
                     if (_.isEqual(res.toString(), newVersion.toString())) {
@@ -63,7 +63,8 @@ export class CdeUpdateElementComponent {
                     this.duplicatedVersion = false;
                     this.overrideVersion = false;
                 }
-            }, err => this.alert.addAlert("danger", err));
+            }, err =>
+                this.alert.addAlert("danger", err));
     }
 
 }
