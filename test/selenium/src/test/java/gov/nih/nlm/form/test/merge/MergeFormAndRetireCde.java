@@ -43,7 +43,7 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         goToFormByName(form2);
         clickElement(By.id("naming_tab"));
         textPresent(form1);
-        clickElement(By.id("referenceDocument_tab"));
+        clickElement(By.id("referenceDocuments_tab"));
         textPresent("Description: Kroenke K, Spitzer RL, Williams JB. The PHQ-9: validity of a brief depression severity measure. J Gen Intern Med. 2001 Sep;16(9):606-13.");
         clickElement(By.id("properties_tab"));
         textPresent("CopyrightStarted");

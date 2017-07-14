@@ -18,7 +18,7 @@ public class CdeAddRemoveReferenceDocumentTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("referenceDocument_tab"));
+        clickElement(By.id("referenceDocuments_tab"));
         addNewReferenceDocument(id, title, uri, providerOrg, languageCode, document);
 
         clickElement(By.id("removeReferenceDocument-0"));

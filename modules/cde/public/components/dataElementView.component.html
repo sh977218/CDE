@@ -67,63 +67,63 @@
                     </button>
                 </h1>
                 <ngb-tabset>
-                    <ngb-tab title="General Details">
+                    <ngb-tab id="_tab" title="General Details">
                         <ng-template ngbTabContent>
                             <cde-de-general-details [elt]="elt"></cde-de-general-details>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Permissible Values">
+                    <ngb-tab id="pvs_tab" title="Permissible Values">
                         <ng-template ngbTabContent>
                             <cde-permissible-value [elt]="elt"></cde-permissible-value>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Naming">
+                    <ngb-tab id="naming_tab" title="Naming">
                         <ng-template ngbTabContent>
                             <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Classification">
+                    <ngb-tab id="classification_tab" title="Classification">
                         <ng-template ngbTabContent>
                             <cde-admin-item-classification [elt]="elt"></cde-admin-item-classification>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Concepts">
+                    <ngb-tab id="concepts_tab" title="Concepts">
                         <ng-template ngbTabContent>
                             <cde-concepts [elt]="elt"></cde-concepts>
 
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Reference Documents">
+                    <ngb-tab id="referenceDocuments_tab" title="Reference Documents">
                         <cde-admin-item-reference-document [elt]="elt"></cde-admin-item-reference-document>
                         <ng-template ngbTabContent>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Properties">
+                    <ngb-tab id="properties_tab" title="Properties">
                         <ng-template ngbTabContent>
                             <cde-admin-item-properties [elt]="elt"></cde-admin-item-properties>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Identifiers">
+                    <ngb-tab id="ids_tab" title="Identifiers">
                         <ng-template ngbTabContent>
                             <cde-admin-item-ids [elt]="elt"></cde-admin-item-ids>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Attachments">
+                    <ngb-tab id="attachments_tab" title="Attachments">
                         <ng-template ngbTabContent>
                             <cde-admin-item-attachments [elt]="elt"></cde-admin-item-attachments>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="History">
+                    <ngb-tab id="history_tab" title="History">
                         <ng-template ngbTabContent>
                             <cde-admin-item-history [elt]="elt"></cde-admin-item-history>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Score Derivations">
+                    <ngb-tab id="derivationRules_tab" title="Score Derivations">
                         <ng-template ngbTabContent>
                             <cde-derivation-rules [elt]="elt"></cde-derivation-rules>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Validation Rules">
+                    <ngb-tab id="validRules_tab" title="Validation Rules">
                         <ng-template ngbTabContent>
                             <cde-valid-rules [elt]="elt"></cde-valid-rules>
                         </ng-template>
