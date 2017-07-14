@@ -170,7 +170,7 @@ export class CompareService {
                 if (r.data) this.copyValue(r.data, option.data);
                 if (r.newer) this.copyValue(r.newer, option.data);
                 if (r.older) this.copyValue(r.older, option.data);
-            })
+            });
         }
     }
 

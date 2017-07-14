@@ -1,11 +1,7 @@
-import { enableProdMode } from "@angular/core";
-if (PRODUCTION) {
-    enableProdMode();
-}
-import "core-js/client/shim";
 import "zone.js";
+import "../../../node_modules/zone.js/dist/long-stack-trace-zone.js";
+// reflect-metadata needed before enableProdMode for IE
 import "reflect-metadata";
-import "classlist-polyfill";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
 import { UpgradeModule } from "@angular/upgrade/static";
@@ -13,6 +9,11 @@ import { CdeAppModule } from "../../app.module";
 
 import "../../upgrade-imports";
 import "./js/printModule";
+
+import { enableProdMode } from "@angular/core";
+if (PRODUCTION) {
+    enableProdMode();
+}
 
 platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/).then(platformRef => {
     const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;

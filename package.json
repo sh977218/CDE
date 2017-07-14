@@ -3,12 +3,17 @@
   "version": "0.0.1",
   "scripts": {
     "build": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
+    "install": "napa",
     "start": "node app.js",
     "dev": "rm -f modules/static/main.js.map modules/static/print.js.map modules/static/embed.js.map && node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js"
   },
   "engines": {
     "node": "0.12.x",
     "npm": "1.2.x"
+  },
+  "napa": {
+    "Blob.js": "https://github.com/eligrey/Blob.js",
+    "html5-formdata": "https://github.com/francois2metz/html5-formdata.git"
   },
   "dependencies": {
     "JSONStream": "0.10.0",
@@ -90,7 +95,7 @@
     "babel-polyfill": "6.22.0",
     "bootstrap": "4.0.0-alpha.6",
     "capitalize": "1.0.0",
-    "classlist-polyfill": "^1.2.0",
+    "classlist.js": "github:eligrey/classList.js",
     "codelyzer": "2.0.0",
     "core-js": "2.4.1",
     "cross-env": "3.1.4",
@@ -113,10 +118,13 @@
     "gulp-uglify": "1.5.1",
     "gulp-usemin": "0.3.27",
     "gulp-wiredep": "0.0.0",
+    "intl": "1.2.5",
     "jasmine-reporters": "2.2.1",
     "jasmine-spec-reporter": "4.1.0",
+    "js-polyfills": "^0.1.33",
     "json-beautify": "1.0.1",
     "lodash": "4.17.4",
+    "napa": "3.0.0",
     "ng-diff-match-patch": "https://github.com/sh977218/ng-diff-match-patch.git",
     "ng2-ckeditor": "1.1.7",
     "ng2-nouislider": "1.6.1",
