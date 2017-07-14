@@ -10,7 +10,6 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
 
         $scope.cdes = [];
 
-        $controller('CreateCdeAbstractCtrl', {$scope: $scope});
         $scope.openCdeInNewTab = true;
 
         $scope.searchSettings = {

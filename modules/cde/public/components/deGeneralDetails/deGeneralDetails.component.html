@@ -93,7 +93,7 @@
         </div>
 
         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-        <cde-registration [elt]="elt"></cde-registration>
+        <cde-registration [elt]="elt" (save)="saveDataElement();"></cde-registration>
         <div role="group" aria-label="More Info">
             <cde-linked-forms [elt]="elt"></cde-linked-forms>
             <cde-mlt [elt]="elt"></cde-mlt>

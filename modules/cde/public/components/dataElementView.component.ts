@@ -42,7 +42,10 @@ export class DataElementViewComponent implements OnInit {
                 this.elt = res;
                 this.eltLoaded = true;
             } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element.")
-        }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element."));
+        }, err => {
+            this.eltLoaded = true;
+            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element.")
+        });
     }
 
     openCopyElementModal() {

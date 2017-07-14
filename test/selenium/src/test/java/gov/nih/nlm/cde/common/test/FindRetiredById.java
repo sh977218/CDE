@@ -22,7 +22,6 @@ public class FindRetiredById extends NlmCdeBaseTest {
     public void retiredCdeById() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Skull fracture anatomic site");
-
         changeStatusAndCheckVisibility();
         textPresent("this data element is retired.");
     }

@@ -5,13 +5,13 @@ import org.testng.annotations.Test;
 
 public class BadIdTest extends NlmCdeBaseTest {
 
-    @Test(priority = 5)
+    @Test
     public void badCdeId() {
         driver.get(baseUrl + "/deView?tinyId=thisisabogusid");
         textPresent("Sorry, we are unable to retrieve this element.");
     }
 
-    @Test(priority = 5)
+    @Test
     public void badFormId() {
         driver.get(baseUrl + "/formView?tinyId=thisisabogusid");
         textPresent("Sorry, we are unable to retrieve this element.");

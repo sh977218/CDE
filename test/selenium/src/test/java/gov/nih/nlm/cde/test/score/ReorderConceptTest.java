@@ -1,14 +1,16 @@
-package gov.nih.nlm.common.test;
+package gov.nih.nlm.cde.test.score;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
-public abstract class ConceptTest extends NlmCdeBaseTest {
-
-    public void reorderConceptTest(String eltName) {
+public class ReorderConceptTest extends NlmCdeBaseTest {
+    @Test
+    public void reorderConceptTest() {
+        String cdeName = "cde for test cde reorder detail tabs";
         mustBeLoggedInAs(testAdmin_username, password);
-        goToCdeByName(eltName);
+        goToCdeByName(cdeName);
         clickElement(By.id("concepts_tab"));
 
         clickElement(By.id("moveDown-0"));
