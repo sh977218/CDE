@@ -23,4 +23,3 @@ public class CdeAddIdentifierTest extends NlmCdeBaseTest {
         textPresent("MyId2");
     }
 }
-}
