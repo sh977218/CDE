@@ -65,7 +65,7 @@ export class CreateDataElementComponent implements OnInit {
         } else if (!elt.naming[0].definition) {
             this.validationMessage = "Please enter a definition for the new CDE";
             return true;
-        } else if (!elt.stewardOrg.name) {
+        } else if (!elt.stewardOrg.name || elt.stewardOrg.name === "Select One") {
             this.validationMessage = "Please select a steward for the new CDE";
             return true;
         }
@@ -84,6 +84,7 @@ export class CreateDataElementComponent implements OnInit {
                 return true;
             }
         }
+        this.validationMessage = null;
         return false;
     };
 

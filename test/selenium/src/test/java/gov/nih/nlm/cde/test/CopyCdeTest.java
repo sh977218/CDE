@@ -13,7 +13,7 @@ public class CopyCdeTest extends BaseClassificationTest {
         clickElement(By.id("copyCdeBtn"));
         textPresent("Create a copy");
         textPresent("The International SCI Data Sets");
-        clickElement(By.id("saveCopy"));
+        clickElement(By.id("submit"));
         hangon(1);
         textPresent("Incomplete", By.id("registrationStatus"));
         textPresent("Copy of: Medication affecting cardiovascular function type exam day indicator", By.id("dd_general_name"));

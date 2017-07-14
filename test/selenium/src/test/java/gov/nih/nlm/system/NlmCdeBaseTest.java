@@ -516,8 +516,8 @@ public class NlmCdeBaseTest {
         clickElement(By.id("confirmSaveBtn"));
         textPresent("Data Element saved.");
         closeAlert();
-        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         modalGone();
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
     }
 
     public void hangon(double i) {
@@ -1036,8 +1036,8 @@ public class NlmCdeBaseTest {
 
     protected void removeIdentifier(int index) {
         clickElement(By.id("ids_tab"));
-        clickElement(By.xpath("removeIdentifier" + index));
-        clickElement(By.xpath("confirmRemoveIdentifier" + index));
+        clickElement(By.xpath("removeIdentifier-" + index));
+        clickElement(By.xpath("confirmRemoveIdentifier-" + index));
         closeAlert();
     }
 

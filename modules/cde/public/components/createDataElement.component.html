@@ -15,7 +15,7 @@
         <label for="eltStewardOrgName">Steward Organization</label>
         <select class="form-control" id="eltStewardOrgName" [(ngModel)]="elt.stewardOrg.name"
                 name="eltStewardOrgName" required>
-            <option value="">Select One</option>
+            <option>Select One</option>
             <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
         </select>
     </div>
@@ -29,7 +29,7 @@
                                      (confirmDelete)="confirmDelete($event);"></cde-classification-view>
         </div>
     </div>
-    <div *ngIf="validationMessage" class="form-group text-danger">
+    <div *ngIf="validationErrors(elt)" class="form-group text-danger">
         <i class="fa fa-warning"></i> {{validationMessage}}
     </div>
 
@@ -41,7 +41,6 @@
     <hr/>
 
 </form>
-
 
 <cde-classify-item-modal #classifyItemComponent [elt]="elt"
                          (afterClassified)="afterClassified($event)"></cde-classify-item-modal>
