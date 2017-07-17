@@ -69,6 +69,7 @@ import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.compone
     ],
     entryComponents: [],
     exports: [
+        AttachmentsComponent,
         ClassificationComponent,
         ClassificationViewComponent,
         ClassifyItemModalComponent,

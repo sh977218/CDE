@@ -69,20 +69,11 @@ import { SystemModule } from "../../system/public/system.module";
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
-        CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
         CdeAccordionListComponent,
         CreateDataElementComponent,
-        ConceptsComponent,
-        DerivationRulesComponent,
-        DatasetsComponent,
-        DeGeneralDetailsComponent,
-        DataElementViewComponent,
-        MoreLikeThisComponent,
-        ValidRulesComponent,
-        ValueDomainSummaryComponent,
-        PermissibleValueComponent
+        DataElementViewComponent
     ],
     exports: [],
     providers: [
