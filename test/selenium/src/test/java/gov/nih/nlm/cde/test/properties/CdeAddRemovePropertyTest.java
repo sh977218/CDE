@@ -22,7 +22,7 @@ public class CdeAddRemovePropertyTest extends NlmCdeBaseTest {
         addNewProperty(key0, value0);
         addNewProperty(key1, value1);
         addNewProperty(key2, value2);
-        removeProperty(0);
+        removeProperty(1);
 
         goToCdeByName(cdeName);
         clickElement(By.id("properties_tab"));

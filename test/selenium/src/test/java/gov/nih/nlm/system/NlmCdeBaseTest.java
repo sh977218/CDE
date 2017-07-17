@@ -1065,8 +1065,8 @@ public class NlmCdeBaseTest {
      */
     protected void removeIdentifier(int index) {
         clickElement(By.id("ids_tab"));
-        clickElement(By.xpath("removeIdentifier-" + index));
-        clickElement(By.xpath("confirmRemoveIdentifier-" + index));
+        clickElement(By.id("removeIdentifier-" + index));
+        clickElement(By.id("confirmRemoveIdentifier-" + index));
         closeAlert();
     }
 

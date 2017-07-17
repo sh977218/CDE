@@ -67,18 +67,7 @@ import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.compone
         SortableArrayDirective,
         SourcesComponent
     ],
-    entryComponents: [
-        AttachmentsComponent,
-        ClassificationComponent,
-        IdentifiersComponent,
-        LinkedFormsComponent,
-        HistoryComponent,
-        NamingComponent,
-        PropertiesComponent,
-        ReferenceDocumentComponent,
-        RegistrationComponent,
-        SourcesComponent
-    ],
+    entryComponents: [],
     exports: [
         ClassificationComponent,
         ClassificationViewComponent,

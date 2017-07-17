@@ -36,47 +36,13 @@ angular.module('cdeModule').directive('cdeAccordionListDirective', function () {
 import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
 import {BoardCdeSummaryListComponent} from "../components/searchResults/boardCdeSummaryList.component";
-angular.module('cdeModule').directive('cdeBoardCdeSummaryList',
-    downgradeComponent({component: BoardCdeSummaryListComponent, inputs: ['board', 'cdes', 'currentPage', 'totalItems'], outputs: ['reload']}));
-
-import {DatasetsComponent} from "../components/datasets/datasets.component";
-angular.module('cdeModule').directive('cdeDatasets', downgradeComponent({component: DatasetsComponent, inputs: ['elt'], outputs: []}));
-
-import {MoreLikeThisComponent} from "../components/mlt/moreLikeThis.component";
-angular.module('cdeModule').directive('cdeMlt', downgradeComponent({component: MoreLikeThisComponent, inputs: ['elt'], outputs: []}));
-
-import {ConceptsComponent} from "../components/concepts.component";
-angular.module('cdeModule').directive('cdeConcepts', downgradeComponent({component: ConceptsComponent, inputs: ['elt'], outputs: []}));
-
-import {DerivationRulesComponent} from "../components/derivationRules.component";
-angular.module('cdeModule').directive('cdeDerivationRules', downgradeComponent({component: DerivationRulesComponent, inputs: ['elt'], outputs: []}));
-
-import {CdeGeneralDetailsComponent} from "../components/summary/cdeGeneralDetails.component";
-angular.module('systemModule').directive('cdeCdeGeneralDetails', downgradeComponent({component: CdeGeneralDetailsComponent, inputs: ['elt'], outputs: []}));
-
-import {DeGeneralDetailsComponent} from "../components/deGeneralDetails/deGeneralDetails.component";
-angular.module('systemModule').directive('cdeDeGeneralDetails', downgradeComponent({component: DeGeneralDetailsComponent, inputs: ['elt'], outputs: []}));
-
-import {LinkedFormsComponent} from "../../../adminItem/public/components/linkedForms.component";
-angular.module('cdeModule').directive('cdeLinkedForms', downgradeComponent({component: LinkedFormsComponent, inputs: ['elt', 'eltType'], outputs: []}));
-
-import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
-angular.module('systemModule').directive('cdeValueDomainSummary', downgradeComponent({component: ValueDomainSummaryComponent, inputs: ['elt'], outputs: []}));
-
-import {CdeSummaryListComponent} from "../components/searchResults/cdeSummaryList.component";
-angular.module('cdeModule').directive('cdeCdeSummaryList', downgradeComponent({component: CdeSummaryListComponent, inputs: ['cdes'], outputs: []}));
+angular.module('cdeModule').directive('cdeBoardCdeSummaryList', downgradeComponent({component: BoardCdeSummaryListComponent, inputs: ['board', 'cdes', 'currentPage', 'totalItems'], outputs: ['reload']}));
 
 import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
 angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));
 
-import {PermissibleValueComponent} from "../components/permissibleValue.component";
-angular.module('cdeModule').directive('cdePermissibleValue', downgradeComponent({component: PermissibleValueComponent, inputs: ['elt'], outputs: []}));
-
 import {RegistrationValidatorService} from "../components/validationRules/registrationValidator.service";
 angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
-
-import {ValidRulesComponent} from "../components/validationRules/validRules.component";
-angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], outputs: []}));
 
 import {CreateDataElementComponent} from "../components/createDataElement.component";
 angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent({component: CreateDataElementComponent, inputs: ['elt'], outputs: ['cancel','modelChange']}));

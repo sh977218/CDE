@@ -131,7 +131,7 @@
                 </ngb-tabset>
             </div>
         </div>
-        <div class="row" *ngIf="elt.unsaved">
+        <div class="row" *ngIf="elt.unsaved && elt.allValidate">
             <cde-update-element [elt]="elt" (discard)="reload($event);"
                                 (save)="saveDataElement($event)"></cde-update-element>
         </div>

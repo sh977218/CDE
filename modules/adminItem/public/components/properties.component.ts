@@ -92,4 +92,22 @@ export class PropertiesComponent implements OnInit {
         });
     };
 
+    reorderProperty() {
+        if (this.elt.unsaved) {
+            this.alert.addAlert("info", "Property reordered. Save to confirm.");
+        } else if (this.elt.elementType === "cde") {
+            this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+                if (res) {
+                    this.elt = res;
+                    this.alert.addAlert("success", "Property Reordered.");
+                }
+            }, err => this.alert.addAlert("danger", err));
+        } else {
+            this.elt.$save(newElt => {
+                this.elt = newElt;
+                this.alert.addAlert("success", "Property Reordered");
+            });
+        }
+    }
+
 }

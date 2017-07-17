@@ -13,15 +13,15 @@ public class CdeReorderPropertiesTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         clickElement(By.id("properties_tab"));
         clickElement(By.id("moveDown-0"));
-        textPresent("Data Element Saved");
+        textPresent("Property Reordered.");
         closeAlert();
         textPresent("pk1", By.id("key_1"));
         clickElement(By.id("moveUp-2"));
-        textPresent("Data Element Saved");
+        textPresent("Property Reordered.");
         closeAlert();
         textPresent("pk3", By.id("key_1"));
         clickElement(By.id("moveTop-2"));
-        textPresent("Data Element Saved");
+        textPresent("Property Reordered.");
         closeAlert();
         textPresent("pk1", By.id("key_0"));
     }
