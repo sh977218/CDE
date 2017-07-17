@@ -1,4 +1,5 @@
 import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { OrgHelperService } from "../../../core/public/orgHelper.service";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
@@ -20,6 +21,7 @@ export class PropertiesComponent implements OnInit {
     public onInitDone: boolean;
 
     constructor(private alert: AlertService,
+                private http: Http,
                 @Inject("isAllowedModel") public isAllowedModel,
                 public orgHelpers: OrgHelperService,
                 public modalService: NgbModal) {
@@ -37,7 +39,8 @@ export class PropertiesComponent implements OnInit {
             this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
         } else {
             this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-            this.modalRef.result.then(() => this.newProperty = {}, () => {});
+            this.modalRef.result.then(() => this.newProperty = {}, () => {
+            });
         }
     }
 
@@ -46,6 +49,14 @@ export class PropertiesComponent implements OnInit {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property added. Save to confirm.");
             this.modalRef.close();
+        } else if (this.elt.elementType === "cde") {
+            this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+                if (res) {
+                    this.elt = res;
+                    this.alert.addAlert("success", "Property Added");
+                    this.modalRef.close();
+                }
+            }, err => this.alert.addAlert("danger", err));
         } else {
             this.elt.$save(newElt => {
                 this.elt = newElt;
@@ -59,6 +70,13 @@ export class PropertiesComponent implements OnInit {
         this.elt.properties.splice(index, 1);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property removed. Save to confirm.");
+        } else if (this.elt.elementType === "cde") {
+            this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+                if (res) {
+                    this.elt = res;
+                    this.alert.addAlert("success", "Property Removed");
+                }
+            }, err => this.alert.addAlert("danger", err));
         } else {
             this.elt.$save(newElt => {
                 this.elt = newElt;

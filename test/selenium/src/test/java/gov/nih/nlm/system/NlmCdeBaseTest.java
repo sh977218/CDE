@@ -941,6 +941,13 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
+    protected void removeProperty(int index) {
+        clickElement(By.id("removeProperty-" + index));
+        clickElement(By.id("confirmRemoveProperty-" + index));
+        textPresent("Property Removed");
+        closeAlert();
+    }
+
     protected void addNewReferenceDocument(String id, String title, String uri, String providerOrg, String languageCode, String document) {
         clickElement(By.id("openNewReferenceDocumentModalBtn"));
         findElement(By.name("newId")).sendKeys(id);
