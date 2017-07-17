@@ -10,12 +10,12 @@ export class NativeRenderStandaloneComponent {
     elt: any;
     errorMessage: string;
     selectedProfile: string;
-    submitForm: string;
+    submitForm: boolean;
 
     constructor(private http: Http) {
         let args: any = NativeRenderStandaloneComponent.searchParamsGet();
         this.selectedProfile = args.selectedProfile;
-        this.submitForm = args.submit;
+        this.submitForm = args.submit !== undefined;
 
         if ((<any>window).formElt) {
             this.prefetch(null, (<any>window).formElt);
