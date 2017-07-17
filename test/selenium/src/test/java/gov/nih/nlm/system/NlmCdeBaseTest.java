@@ -941,6 +941,11 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
+    /**
+     * This method is used to remove property for cde and form.
+     *
+     * @param index Index of properties, starting from 0.
+     */
     protected void removeProperty(int index) {
         clickElement(By.id("removeProperty-" + index));
         clickElement(By.id("confirmRemoveProperty-" + index));
@@ -1053,12 +1058,16 @@ public class NlmCdeBaseTest {
         hangon(1);
     }
 
+    /**
+     * This method is used to remove identifier for cde and form.
+     *
+     * @param index Index of identifiers, starting from 0.
+     */
     protected void removeIdentifier(int index) {
         clickElement(By.id("ids_tab"));
         clickElement(By.xpath("removeIdentifier-" + index));
         clickElement(By.xpath("confirmRemoveIdentifier-" + index));
         closeAlert();
     }
-
 
 }
