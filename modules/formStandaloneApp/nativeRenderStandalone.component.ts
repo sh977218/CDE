@@ -32,14 +32,14 @@ export class NativeRenderStandaloneComponent {
     fetchWholeForm(form, callback) {
         let maxDepth = 8;
         let depth = 0;
-        let loopFormElements = function (form, cb) {
+        let loopFormElements = (form, cb) => {
             depth++;
             if (form.formElements) {
-                async.forEach(form.formElements, function (fe, doneOne) {
+                async.forEach(form.formElements, (fe, doneOne) => {
                     if (fe.elementType === 'form') {
                         if (depth < maxDepth) {
                             this.http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version)
-                                .map((res: Response) => res.json())
+                                .map(res => res.json())
                                 .subscribe((response) => {
                                     fe.formElements = response.formElements;
                                     loopFormElements(fe, function () {
