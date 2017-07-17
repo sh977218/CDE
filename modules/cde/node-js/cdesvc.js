@@ -1,10 +1,11 @@
-var mongo_data = require('./mongo-cde')
+var xml2js = require('xml2js')
+    , mongo_data = require('./mongo-cde')
     , mongo_cde = require('./mongo-cde')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
     , elastic = require('../../cde/node-js/elastic')
     , deValidator = require('../../cde/shared/deValidator')
-
+    , vsac = require('./vsac-io')
 ;
 exports.versionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
@@ -61,13 +62,13 @@ function allowUpdate(user, item, cb) {
         !user.siteAdmin) {
         cb("Not authorized");
     } else if ((item.registrationState.registrationStatus === "Standard" ||
-        item.registrationState.registrationStatus === "Preferred Standard") &&
+            item.registrationState.registrationStatus === "Preferred Standard") &&
         !user.siteAdmin) {
         cb("This record is already standard.");
     } else if ((item.registrationState.registrationStatus !== "Standard" &&
-        item.registrationState.registrationStatus !== " Preferred Standard") &&
+            item.registrationState.registrationStatus !== " Preferred Standard") &&
         (item.registrationState.registrationStatus === "Standard" ||
-        item.registrationState.registrationStatus === "Preferred Standard") &&
+            item.registrationState.registrationStatus === "Preferred Standard") &&
         !user.siteAdmin
     ) cb("Not authorized");
     else cb();
@@ -119,8 +120,8 @@ exports.createDataElement = function (req, res) {
                 return res.status(403).send("not authorized");
             else if (elt.registrationState && elt.registrationState.registrationStatus &&
                 ((elt.registrationState.registrationStatus === "Standard" ||
-                elt.registrationState.registrationStatus === " Preferred Standard") &&
-                !user.siteAdmin))
+                    elt.registrationState.registrationStatus === " Preferred Standard") &&
+                    !user.siteAdmin))
                 return res.status(403).send("Not authorized");
             else mongo_cde.create(elt, user, function (err, dataElement) {
                     if (err) res.status(500).send();
@@ -130,6 +131,22 @@ exports.createDataElement = function (req, res) {
     }
 };
 
+let parser = new xml2js.Parser();
+exports.vsacId = function (req, res) {
+    if (!req.user) {
+        res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
+    } else {
+        vsac.getValueSet(req.params.vsacId, function (err, result) {
+            if (result.statusCode === 404 || result === 400) {
+                return res.status(500).end();
+            } else {
+                parser.parseString(result.body, function (err, jsonResult) {
+                    res.send(jsonResult);
+                });
+            }
+        });
+    }
+};
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
@@ -238,18 +255,18 @@ exports.hideProprietaryCodes = function (cdes, user) {
 exports.checkEligibleToRetire = function (req, res, elt, cb) {
     if (!req.isAuthenticated())
         res.status(403).send("You are not authorized to do this.");
-    if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0
-        && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0
-        && !req.user.siteAdmin) {
+    if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
+        req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 &&
+        !req.user.siteAdmin) {
         res.status(403).send("Not authorized");
     } else {
         if ((elt.registrationState.registrationStatus === "Standard" ||
-            elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+                elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
             res.status(403).send("This record is already standard.");
         } else {
             if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard") &&
                 (elt.registrationState.registrationStatus === "Standard" ||
-                elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
+                    elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
             ) {
                 res.status(403).send("Not authorized");
             } else {

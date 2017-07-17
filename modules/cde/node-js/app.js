@@ -6,7 +6,6 @@ var cdesvc = require('./cdesvc')
     , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationNode = require('./classificationNode')
     , classificationShared = require('../../system/shared/classificationShared')
-    , xml2js = require('xml2js')
     , vsac = require('./vsac-io')
     , config = require('../../system/node-js/parseConfig')
     , elastic = require('./elastic')
@@ -53,6 +52,7 @@ exports.init = function (app, daoManager) {
     app.post("/dataElement/", exportShared.nocacheMiddleware, cdesvc.createDataElement);
     app.put("/dataElement/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
 
+    app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
     /* ---------- PUT NEW REST API above ---------- */
 
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
@@ -220,22 +220,6 @@ exports.init = function (app, daoManager) {
     fetchRemoteData();
     setInterval(fetchRemoteData, 1000 * 60 * 60);
 
-    var parser = new xml2js.Parser();
-    app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
-        } else {
-            vsac.getValueSet(req.params.vsacId, function (err, result) {
-                if (result.statusCode === 404 || result === 400) {
-                    return res.status(500).end();
-                } else {
-                    parser.parseString(result.body, function (err, jsonResult) {
-                        res.send(jsonResult);
-                    });
-                }
-            });
-        }
-    });
 
     // from others to UMLS
     app.get('/umlsCuiFromSrc/:id/:src', function (req, res) {
