@@ -508,8 +508,11 @@ public class NlmCdeBaseTest {
         clickElement(By.id("openSave"));
         textPresent("has already been used");
         if (changeNote != null) {
-            findElement(By.name("changeNote")).clear();
-            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
+            findElement(By.id("changeNote")).clear();
+            findElement(By.id("changeNote")).sendKeys(changeNote);
+        } else {
+            findElement(By.id("changeNote")).clear();
+            findElement(By.id("changeNote")).sendKeys("Change note for change number 1");
         }
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
@@ -517,7 +520,10 @@ public class NlmCdeBaseTest {
         textPresent("Data Element saved.");
         closeAlert();
         modalGone();
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='openSave']")).size(), 0);
+/*
         wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
+*/
     }
 
     public void hangon(double i) {
@@ -869,6 +875,18 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
         hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+    protected void changeDefinitionFormat(int index, boolean isHtml) {
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
+        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
+        String plainTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]";
+        String confirmBtnXpath = "//*[@id='definition_0']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(definitionEditIconXpath));
+        if (isHtml) clickElement(By.xpath(richTextBtnXpath));
+        if (!isHtml) clickElement(By.xpath(plainTextBtnXpath));
+        clickElement(By.xpath(confirmBtnXpath));
         textNotPresent("Confirm");
     }
 
