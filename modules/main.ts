@@ -10,9 +10,8 @@ import { CdeAppModule } from "./app.module";
 import "./upgrade-imports";
 
 import { enableProdMode } from "@angular/core";
-if (PRODUCTION) {
+if (PRODUCTION)
     enableProdMode();
-}
 
 platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/).then(platformRef => {
     const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;

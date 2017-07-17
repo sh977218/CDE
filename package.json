@@ -2,7 +2,7 @@
   "name": "ludetc-cdes",
   "version": "0.0.1",
   "scripts": {
-    "build": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
+    "build": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js && cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackNative.config.js",
     "install": "napa",
     "start": "node app.js",
     "dev": "rm -f modules/static/main.js.map modules/static/print.js.map modules/static/embed.js.map && node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js"

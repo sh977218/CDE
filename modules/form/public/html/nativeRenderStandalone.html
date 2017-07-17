@@ -48,126 +48,60 @@
 
 	<!-- bower:css -->
 	<link rel='stylesheet' href='/components/font-awesome/css/font-awesome.css' />
-	<link rel='stylesheet' href='/components/selectize/dist/css/selectize.css' />
-	<link rel='stylesheet' href='/components/angular-ui-select/dist/select.css' />
-	<link rel='stylesheet' href='/components/textAngular/dist/textAngular.css' />
 	<link rel='stylesheet' href='/components/bootstrap-css-only/css/bootstrap.css' />
 	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour.css' />
 	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css' />
 	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
 	<!-- endbower -->
 
-	<link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css'/>
 	<!-- endbuild -->
 
 	<!-- IFH -->
-
 </head>
 
-<body role="application" id="top" style="padding: 5px;">
+<body role="application" id="top" style="padding: 5px;max-width: 1000px;margin: 0 auto">
+    <cde-native-render-standalone></cde-native-render-standalone>
 
-<div ng-controller="PrintCtrl" style="max-width: 1000px;margin: 0 auto">
-	<div ng-if="!elt">
-		<h2 class="text-center mt20">Loading...</h2>
-	</div>
-	<div ng-if="elt">
-		<cde-native-render [elt]="elt" [submit-form]="submitForm"
-						   [profile]="elt.displayProfiles.length > selectedProfile ? elt.displayProfiles[selectedProfile] : null">
-		</cde-native-render>
-	</div>
-</div>
-<nih-cde></nih-cde>
+    <!--Polyfills for legacy browsers-->
+    <script type="text/javascript" src="/static/shim.min.js" defer></script>
+    <script type="text/javascript" src="/static/Intl.min.js" defer></script>
+    <script type="text/javascript" src="/static/en.js" defer></script>
+    <script type="text/javascript" src="/static/classList.min.js" defer></script>
+    <!--[if IE]><script type="text/javascript" src="/static/formdata.js" defer></script><![endif]-->
+    <!--[if IE]><script type="text/javascript" src="/static/typedarray.js" defer></script><![endif]-->
+    <!--[if IE]><script type="text/javascript" src="/static/Blob.js" defer></script><![endif]-->
 
-<!--Polyfills for legacy browsers-->
-<script type="text/javascript" src="/static/shim.min.js" defer></script>
-<script type="text/javascript" src="/static/Intl.min.js" defer></script>
-<script type="text/javascript" src="/static/en.js" defer></script>
-<script type="text/javascript" src="/static/classList.min.js" defer></script>
-<!--[if IE]><script type="text/javascript" src="/static/formdata.js" defer></script><![endif]-->
-<!--[if IE]><script type="text/javascript" src="/static/typedarray.js" defer></script><![endif]-->
-<!--[if IE]><script type="text/javascript" src="/static/Blob.js" defer></script><![endif]-->
+    <!-- build:webp /system/public/assets/js/print.js -->
+    <script src="/static/print.js" defer></script>
+    <!-- endbuild -->
 
-<!-- build:js /form/public/assets/js/vendor-printable.js -->
-<!-- bower:js -->
-<script src="/components/jquery/jquery.js"></script>
-<script src="/components/angular/angular.js"></script>
-<script src="/components/angular-route/angular-route.js"></script>
-<script src="/components/angular-resource/angular-resource.js"></script>
-<script src="/components/angular-sanitize/angular-sanitize.js"></script>
-<script src="/components/angular-animate/angular-animate.js"></script>
-<script src="/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="/components/angular-local-storage/dist/angular-local-storage.js"></script>
-<script src="/components/angular-timeago/dist/angular-timeago.js"></script>
-<script src="/components/select2/dist/js/select2.js"></script>
-<script src="/components/sifter/sifter.js"></script>
-<script src="/components/microplugin/src/microplugin.js"></script>
-<script src="/components/selectize/dist/js/selectize.js"></script>
-<script src="/components/angular-ui-select/dist/select.js"></script>
-<script src="/components/rangy/rangy-core.js"></script>
-<script src="/components/rangy/rangy-classapplier.js"></script>
-<script src="/components/rangy/rangy-highlighter.js"></script>
-<script src="/components/rangy/rangy-selectionsaverestore.js"></script>
-<script src="/components/rangy/rangy-serializer.js"></script>
-<script src="/components/rangy/rangy-textrange.js"></script>
-<script src="/components/textAngular/dist/textAngular.js"></script>
-<script src="/components/textAngular/dist/textAngular-sanitize.js"></script>
-<script src="/components/textAngular/dist/textAngularSetup.js"></script>
-<script src="/components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="/components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
-<script src="/components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
-<script src="/components/angularjs-camelCase-human/camelcase-browser.js"></script>
-<script src="/components/html2canvas/build/html2canvas.js"></script>
-<script src="/components/angular-send-feedback/dist/angular-send-feedback.js"></script>
-<script src="/components/ng-file-upload/angular-file-upload.js"></script>
-<script src="/components/jszip/dist/jszip.js"></script>
-<script src="/components/jxon/index.js"></script>
-<script src="/components/jscrypto/crypto.js"></script>
-<script src="/components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
-<script src="/components/checklist-model/checklist-model.js"></script>
-<script src="/components/jquery-ui/jquery-ui.js"></script>
-<script src="/components/angular-ui-sortable/sortable.js"></script>
-<script src="/components/angular-ui-scrollpoint/dist/scrollpoint.js"></script>
-<script src="/components/async/dist/async.js"></script>
-<script src="/components/angular-elastic/elastic.js"></script>
-<script src="/components/element-resize-detector/dist/element-resize-detector.js"></script>
-<!-- endbower -->
-<!-- endbuild -->
+    <script type="application/ld+json">
+            {
+              "@context": "http://schema.org",
+              "@type": "GovernmentOrganization",
+              "name":"U.S. National Library of Medicine",
+              "address":{
+                "@type":"PostalAddress",
+                "addressCountry":"US",
+                "addressLocality":"Bethesda",
+                "addressRegion":"MD",
+                "postalCode":"20894",
+                "streetAddress":"8600 Rockville Pike",
+                },
+              "description" : "NIH Common Data Elements Repository",
+              "url": "https://cde.nlm.nih.gov",
+              "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
+              }
+    </script>
 
-<!-- build:webp /system/public/assets/js/print.js -->
-<script src="/static/print.js" defer></script>
-<!-- endbuild -->
-
-<script type="application/ld+json">
-        {
-          "@context": "http://schema.org",
-          "@type": "GovernmentOrganization",
-          "name":"U.S. National Library of Medicine",
-          "address":{
-            "@type":"PostalAddress",
-            "addressCountry":"US",
-            "addressLocality":"Bethesda",
-            "addressRegion":"MD",
-            "postalCode":"20894",
-            "streetAddress":"8600 Rockville Pike",
-            },
-          "description" : "NIH Common Data Elements Repository",
-          "url": "https://cde.nlm.nih.gov",
-          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
-          }
-</script>
-
-<script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "WebSite",
-          "name" : "NIH CDE Repository",
-          "description" : "NIH Common Data Elements Repository",
-          "url" : "https://cde.nlm.nih.gov"
-        }
-</script>
-
-<!-- ICSSH -->
-<!-- IJSH -->
-
+    <script type="application/ld+json">
+            {
+              "@context" : "http://schema.org",
+              "@type" : "WebSite",
+              "name" : "NIH CDE Repository",
+              "description" : "NIH Common Data Elements Repository",
+              "url" : "https://cde.nlm.nih.gov"
+            }
+    </script>
 </body>
 </html>
