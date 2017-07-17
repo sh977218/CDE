@@ -505,25 +505,19 @@ public class NlmCdeBaseTest {
     }
 
     protected void newCdeVersion(String changeNote) {
+        if (changeNote == null || changeNote == "")
+            changeNote = "Change note for change number 1";
         clickElement(By.id("openSave"));
         textPresent("has already been used");
-        if (changeNote != null) {
-            findElement(By.id("changeNote")).clear();
-            findElement(By.id("changeNote")).sendKeys(changeNote);
-        } else {
-            findElement(By.id("changeNote")).clear();
-            findElement(By.id("changeNote")).sendKeys("Change note for change number 1");
-        }
+        findElement(By.id("changeNote")).clear();
+        findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
         clickElement(By.id("confirmSaveBtn"));
         textPresent("Data Element saved.");
         closeAlert();
         modalGone();
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='openSave']")).size(), 0);
-/*
-        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
-*/
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
     }
 
     public void hangon(double i) {

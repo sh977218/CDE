@@ -6,14 +6,15 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class CdeStewardTest extends NlmCdeBaseTest {
+public class CdeChangeStewardTest extends NlmCdeBaseTest {
 
     @Test
-    public void changeCDESteward() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
+    public void cdeChangeSteward() {
         String cdeName = "Patient Tissue Specimen Colorectal Research Consent Ind-2";
         String oldStewardOrgName = "CTEP";
         String newStewardOrgName = "NINDS";
+
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName(cdeName);
 
         // Changes Steward and cancels
