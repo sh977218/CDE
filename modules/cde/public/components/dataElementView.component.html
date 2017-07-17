@@ -62,7 +62,7 @@
                     </button>
 
                     <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
-                            type="button" (click)="switchCommentMode()">
+                            type="button" (click)="commentMode = !commentMode;">
                         <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
                     </button>
                 </h1>

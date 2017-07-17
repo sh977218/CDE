@@ -15,7 +15,7 @@ export class DataElementViewComponent implements OnInit {
     @Input() elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
-
+    commentMode;
     eltLoaded: boolean = false;
 
     constructor(private http: Http,

@@ -1070,4 +1070,34 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removeDataElementConcept(int index) {
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.id("removedataElementConcept-" + index));
+    }
+
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removeObjectClassConcept(int index) {
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.id("removeobjectClass-" + index));
+    }
+
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removePropertyConcept(int index) {
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.id("removeproperty-" + index));
+    }
+
 }
