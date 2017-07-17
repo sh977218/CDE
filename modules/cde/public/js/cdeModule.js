@@ -44,6 +44,9 @@ angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({c
 import {RegistrationValidatorService} from "../components/validationRules/registrationValidator.service";
 angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
 
+import {CdeSummaryListComponent} from "../components/searchResults/cdeSummaryList.component";
+angular.module('cdeModule').directive('cdeCdeSummaryList', downgradeComponent({component: CdeSummaryListComponent, inputs: ['cdes'], outputs: []}));
+
 import {CreateDataElementComponent} from "../components/createDataElement.component";
 angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent({component: CreateDataElementComponent, inputs: ['elt'], outputs: ['cancel','modelChange']}));
 
