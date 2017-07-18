@@ -78,7 +78,6 @@ export class HistoryComponent implements OnInit {
             this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.priorElements = res.reverse();
                 this.elt.viewing = true;
-                this.elt.changeNote = this.elt._changeNote;
                 this.priorElements.splice(0, 0, this.elt);
                 this.priorElements.forEach(pe => {
                     pe.url = prefix_url + pe._id;

@@ -7,6 +7,21 @@ import * as io from "socket.io-client";
 import { TimerObservable } from "rxjs/observable/TimerObservable";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
+const tabMap = {
+    "generalDetails_tab": "general",
+    "pvs_tab": "pvs",
+    "naming_tab": "naming",
+    "classification_tab": "classification",
+    "concepts_tab": "concepts",
+    "referenceDocuments_tab": "referenceDocuments",
+    "properties_tab": "properties",
+    "ids_tab": "ids",
+    "attachments_tab": "attachments",
+    "history_tab": "history",
+    "derivationRules_tab": "derivationRules",
+    "validRules_tab": "validRules"
+};
+
 @Component({
     selector: "cde-discuss-area",
     templateUrl: "./discussArea.component.html"
@@ -89,7 +104,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     addComment = function () {
         this.http.post("/comments/" + this.elt.elementType + "/add", {
             comment: this.newComment.text,
-            linkedTab: this.selectedElt,
+            linkedTab: tabMap[this.selectedElt],
             element: {eltId: this.eltId}
         }).map(r => r.json()).subscribe(res => {
             this.newComment.text = "";

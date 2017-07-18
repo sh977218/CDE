@@ -66,8 +66,9 @@
                         <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
                     </button>
                 </h1>
-                <ngb-tabset>
-                    <ngb-tab id="_tab" title="General Details">
+                <ngb-tabset (tabChange)="beforeChange($event)">
+                    <ngb-tab id="general_tab" title="General Details"
+                             [ngClass]="{'highlightedTab':commentMode}">
                         <ng-template ngbTabContent>
                             <cde-de-general-details [elt]="elt"></cde-de-general-details>
                         </ng-template>
@@ -132,8 +133,8 @@
             </div>
             <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
                  style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-                <cde-discuss-area [selected-elt]="currentTab" [elt-id]="elt.tinyId" [elt]="elt"
-                                  [elt-name]="elt.naming[0].designation"></cde-discuss-area>
+                <cde-discuss-area [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                                  [eltName]="elt.naming[0].designation"></cde-discuss-area>
             </div>
         </div>
         <div class="row" *ngIf="elt.unsaved && elt.allValidate !== false">

@@ -17,6 +17,7 @@ export class DataElementViewComponent implements OnInit {
     public modalRef: NgbModalRef;
     commentMode;
     eltLoaded: boolean = false;
+    currentTab = "general";
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -89,5 +90,9 @@ export class DataElementViewComponent implements OnInit {
                 this.alert.addAlert("success", "Data Element saved.");
             }
         }, err => this.alert.addAlert("danger", err));
+    }
+
+    beforeChange(event) {
+        this.currentTab = event.nextId;
     }
 }

@@ -22,9 +22,9 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
         textNotPresent(validationError);
         findElement(By.id("newVersion")).sendKeys("/23");
         textPresent(validationError);
-/*
-        findElement(By.id("newVersion")).clear();
-*/
+        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
         textNotPresent(validationError);
         findElement(By.id("newVersion")).sendKeys("123#abc");

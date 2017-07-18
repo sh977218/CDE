@@ -1,4 +1,4 @@
-import { Component, Input, Output, ViewChild, EventEmitter } from "@angular/core";
+import { Component, Input, Output, OnInit, ViewChild, EventEmitter } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
@@ -20,7 +20,7 @@ const urlMap = {
     selector: "cde-update-element",
     templateUrl: "./cdeUpdateElement.component.html"
 })
-export class CdeUpdateElementComponent {
+export class CdeUpdateElementComponent implements OnInit {
     @ViewChild("updateElementContent") public updateElementContent: NgbModalModule;
     @Input() elt: any;
     public modalRef: NgbModalRef;
@@ -30,6 +30,10 @@ export class CdeUpdateElementComponent {
     @Output() save = new EventEmitter();
 
     constructor(public modalService: NgbModal, public http: Http, private alert: AlertService) {
+    }
+
+    ngOnInit(): void {
+        this.elt.changeNote = "";
     }
 
     openSaveModal() {
