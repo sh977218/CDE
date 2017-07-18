@@ -174,7 +174,7 @@ export class FormService {
     }
 
     get(tinyId) {
-        let url = "/formByTinyId/" + tinyId;
+        let url = "/form/tinyId/" + tinyId;
         return this.http.get(url).map(res => res.json());
     }
 

@@ -26,6 +26,33 @@ exports.Form = Form;
 
 exports.elastic = elastic;
 
+exports.byTinyId = function (tinyId, callback) {
+    Form.findOne({'tinyId': tinyId, archived: false}, function (err, cde) {
+        callback(err, cde);
+    });
+};
+
+exports.byTinyIdVersion = function (tinyId, version, cb) {
+    let cond = {'tinyId': tinyId};
+    if (version) cond["registrationState.registrationStatus"] = {$ne: "Retired"};
+    else cond.version = version;
+    Form.findOne(cond).exec(function (err, cde) {
+        cb(err, cde);
+    });
+};
+
+exports.versionById = function (id, callback) {
+    Form.findOne({_id: id}).exec(function (err, result) {
+        callback(err, result);
+    });
+};
+exports.versionByTinyId = function (tinyId, callback) {
+    Form.findOne({tinyId: tinyId, archived: false}).exec(function (err, result) {
+        callback(err, result);
+    });
+};
+/* ---------- PUT NEW REST API above ---------- */
+
 exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
 };

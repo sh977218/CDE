@@ -6,6 +6,7 @@ import { LocalStorageService } from "angular-2-local-storage/dist";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
+
 const actionMapping: IActionMapping = {
     mouse: {
         click: () => {
@@ -169,7 +170,7 @@ export class ClassifyCdesModalComponent implements OnInit {
     }
 
     reloadElt(cb) {
-        let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
+        let url = this.elt.elementType === "cde" ? "dataElement/tinyId/" + this.elt.tinyId : "form/tinyId/" + this.elt.tinyId;
         //noinspection TypeScriptValidateTypes
         this.http.get(url).map(res => res.json()).subscribe(res => {
             this.updateElt.emit(res);

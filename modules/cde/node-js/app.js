@@ -104,21 +104,6 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/viewingHistory', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            res.send("You must be logged in to do that");
-        } else {
-            var splicedArray = req.user.viewHistory.splice(0, 10);
-            var idList = [];
-            for (var i = 0; i < splicedArray.length; i++) {
-                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
-            }
-            mongo_cde.cdesByTinyIdListInOrder(idList, function (err, cdes) {
-                res.send(cdesvc.hideProprietaryCodes(cdes, req.user));
-            });
-        }
-    });
-
     app.get('/autocomplete/org/:name', exportShared.nocacheMiddleware, function (req, res) {
         mongo_cde.org_autocomplete(req.params.name, function (result) {
             res.send(result);

@@ -65,7 +65,7 @@ export class DataElementViewComponent implements OnInit {
         this.eltCopy = _.cloneDeep(this.elt);
         delete this.eltCopy["_id"];
         delete this.eltCopy["tinyId"];
-        this.eltCopy["naming"][0].designation = "Copy of " + this.eltCopy["naming"][0].designation;
+        this.eltCopy["naming"][0].designation = "Copy of: " + this.eltCopy["naming"][0].designation;
         this.eltCopy["registrationState"] = {registrationStatus: "Incomplete"};
         this.modalRef = this.modalService.open(this.copyDataElementContent, {size: "lg"});
     }

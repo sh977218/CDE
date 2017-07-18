@@ -58,7 +58,7 @@ export class FormViewComponent implements OnInit {
     }
 
     reload() {
-        let url = "/formByTinyId/" + this.elt.tinyId;
+        let url = "/form/tinyId/" + this.elt.tinyId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
             if (res && res.elementType === "form") {
                 this.elt = res;
@@ -68,7 +68,7 @@ export class FormViewComponent implements OnInit {
     }
 
     saveForm() {
-        let url = "/dataElement/" + this.elt.tinyId + "/" + this.elt.version;
+        let url = "/form/" + this.elt.tinyId + "/" + this.elt.version;
         this.http.post(url, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;

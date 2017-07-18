@@ -38,7 +38,6 @@ import "./system/public/js/exceptionHandler";
 import "./system/public/js/controllers/AccountManagementCtrl";
 import "./system/public/js/controllers/SiteManagementCtrl";
 import "./system/public/js/controllers/AuthCtrl";
-import "./system/public/js/controllers/VersionCtrl";
 import "./system/public/js/controllers/ListCtrl";
 import "./system/public/js/controllers/ClassificationCtrl";
 import "./system/public/js/controllers/AddClassificationModalCtrl";

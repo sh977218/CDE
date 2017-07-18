@@ -1,10 +1,10 @@
 var express = require('express')
     , path = require('path')
     , formCtrl = require('./formCtrl')
+    , formSvc = require("./formsvc")
     , mongo_form = require('./mongo-form')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationNode_system = require('../../system/node-js/classificationNode')
-    , classificationShared = require('../../system/shared/classificationShared')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , config = require('../../system/node-js/parseConfig')
     , multer = require('multer')
@@ -22,15 +22,24 @@ var express = require('express')
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
 
-    app.post('/findForms', formCtrl.findForms);
+    app.get("/form/id/:id", exportShared.nocacheMiddleware, formSvc.byId);
+    app.get("/form/id/:id/history/", exportShared.nocacheMiddleware, formSvc.priorForms);
+    app.get("/form/id/:id/version/", exportShared.nocacheMiddleware, formSvc.versionById);
 
-    app.post('/form', formCtrl.save);
-    app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
+    app.get("/form/tinyId/:tinyId", exportShared.nocacheMiddleware, formSvc.byTinyId);
+    app.get("/form/tinyId/:tinyId/version/:version", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
+    app.get("/form/tinyId/:tinyId/version/", exportShared.nocacheMiddleware, formSvc.versionByTinyId);
+
+    /*
+        app.post("/form/", exportShared.nocacheMiddleware, formCtrl.save);
+        app.put("/form/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
+    */
+
+    app.post('/form/publish', formCtrl.publishForm);
+    /* ---------- PUT NEW REST API above ---------- */
     app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);
 
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
-
-    app.post('/publishForm', formCtrl.publishForm);
 
     app.get('/elasticSearch/form/count', function (req, res) {
         return elastic_system.nbOfForms(function (err, result) {
@@ -51,44 +60,6 @@ exports.init = function (app, daoManager) {
             adminItemSvc.removeAttachment(req, res, mongo_form);
         });
     }
-    app.get('/priorforms/:id', exportShared.nocacheMiddleware, function (req, res) {
-        formCtrl.priorForms(req, res);
-    });
-    app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
-
-    app.get('/formByTinyId/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.params.version) {
-            mongo_form.eltByTinyId(req.params.tinyId, function (err, form) {
-                if (err) res.status(500).send(err);
-                else res.send(form);
-            });
-        } else {
-            mongo_form.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
-                if (err) res.status(500).send(err);
-                else res.send(form);
-            });
-        }
-    });
-
-    app.post('/formByTinyId/:tinyId/:version?', formCtrl.save);
-
-
-    app.get('/formByTinyIdAndVersion/:id/:version', exportShared.nocacheMiddleware, formCtrl.formByTinyIdVersion);
-
-    app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            res.send("You must be logged in to do that");
-        } else {
-            var splicedArray = req.user.formViewHistory.splice(0, 10);
-            var idList = [];
-            for (var i = 0; i < splicedArray.length; i++) {
-                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
-            }
-            mongo_form.byTinyIdListInOrder(idList, function (err, forms) {
-                res.send(forms);
-            });
-        }
-    });
 
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_form.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
@@ -222,10 +193,10 @@ exports.init = function (app, daoManager) {
     // This is for tests only
     app.post('/sendMockFormData', function (req, res) {
         if (
-            req.body.q1 === "1"
-            && req.body.q2 === "2"
-            && req.body.q3 === "Lab Name"
-            && req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14936\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsLargerAlleleNum\"}],\"tinyId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14937\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsSmallerAlleleNum\"}],\"tinyId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C17744\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"MolecularStdyLabName\"}],\"tinyId\":\"EdUB2kWmV61\"}]}]}"
+            req.body.q1 === "1" &&
+            req.body.q2 === "2" &&
+            req.body.q3 === "Lab Name" &&
+            req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14936\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsLargerAlleleNum\"}],\"tinyId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14937\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsSmallerAlleleNum\"}],\"tinyId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C17744\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"MolecularStdyLabName\"}],\"tinyId\":\"EdUB2kWmV61\"}]}]}"
         ) {
             if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0)
                 res.send("<html><body>Form Submitted</body></html>");
@@ -240,8 +211,8 @@ exports.init = function (app, daoManager) {
                 let ifaces = os.networkInterfaces();
                 if (Object.keys(ifaces).some(ifname => {
                         return ifaces[ifname].filter(iface => {
-                                return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
-                            }).length > 0;
+                            return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
+                        }).length > 0;
                     }))
                     res.send("<html><body>Form Submitted</body></html>");
                 else

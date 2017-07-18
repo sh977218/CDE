@@ -16,7 +16,7 @@ const urlMap = {
     "form": {
         delete: "/removeFormClassification/",
         add: "/addFormClassification/",
-        get: "formById/"
+        get: "form/tinyId/"
     }
 };
 

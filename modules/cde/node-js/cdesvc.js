@@ -42,6 +42,7 @@ exports.byId = function (req, res) {
         }
     });
 };
+
 exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) res.status(500).send();

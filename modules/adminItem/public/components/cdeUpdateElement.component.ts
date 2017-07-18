@@ -11,8 +11,8 @@ const urlMap = {
         exist: "/dataElement/tinyId/"
     },
     form: {
-        get: "",
-        exist: ""
+        get: "/form/",
+        exist: "/form/tinyId/"
     }
 };
 

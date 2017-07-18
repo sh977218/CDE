@@ -372,18 +372,3 @@ var getFormRedCap = function (form, response) {
     }
 };
 
-exports.priorForms = function (req, res) {
-    var formId = req.params.id;
-
-    if (!formId) {
-        res.send("No Form Id");
-    }
-    mongo_data_form.priorForms(formId, function (err, priorForms) {
-        if (err) {
-            res.send("ERROR");
-        } else {
-            res.send(priorForms);
-        }
-    });
-};
-

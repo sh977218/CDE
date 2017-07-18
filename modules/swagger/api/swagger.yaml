@@ -60,7 +60,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /formById/{tinyId}:
+  /form/tinyId/{tinyId}:
     get:
       tags:
       - "Form"
@@ -82,7 +82,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /formByTinyIdAndVersion/{tinyId}/{version}:
+  /form/tinyId/{tinyId}/version/{version}:
     get:
       tags:
       - "Form"

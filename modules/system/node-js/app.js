@@ -1019,13 +1019,4 @@ exports.init = function (app) {
     });
     app.post('/comments/reply', adminItemSvc.replyToComment);
 
-    app.get('/priorElements/:type/:id', exportShared.nocacheMiddleware, function (req, res) {
-        let type = req.params.type;
-        let id = req.params.id;
-        if (!type || !id) return res.status(500).end();
-        else if (type.toLowerCase() === "cde") cdesvc.priorCdes(req, res);
-        else if (type.toLowerCase() === "form") formsvc.priorForms(req, res);
-        else return res.status(500).end();
-    });
-
 };
