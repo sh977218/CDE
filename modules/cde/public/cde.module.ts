@@ -32,7 +32,6 @@ import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { CreateDataElementComponent } from "./components/createDataElement.component";
 import { SystemModule } from "../../system/public/system.module";
 import { DiscussModule } from "../../discuss/discuss.module";
-import { DiscussAreaComponent } from "../../discuss/components/discussArea/discussArea.component";
 
 @NgModule({
     imports: [

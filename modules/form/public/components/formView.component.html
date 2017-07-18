@@ -4,7 +4,7 @@
             <i class="fa fa-spinner fa-pulse"></i>Loading...
         </h1>
     </ng-container>
-    <ng-container *ngIf="eltLoaded">
+    <ng-container *ngIf="eltLoaded && elt">
         <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this form is archived. You can
@@ -35,12 +35,12 @@
         <div class="row">
             <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
                 <h1 class="page-header">{{elt.naming[0].designation}}
-                    <button id="addToQuickBoard" class="btn btn-small btn-default" role="button"
-                            title="Add to Compare List" type="button">
+                    <button *ngIf="quickBoard.canAddElt(elt)" id="addToQuickBoard" class="btn btn-small btn-default"
+                            role="button" title="Add to Compare List" type="button" (click)="formQuickBoard.add(elt)">
                         <i class="fa fa-plus"></i> Add to Quick Board
                     </button>
                     <button id="addToBoard" class="btn btn-small btn-default" role="button" title="Add to Board"
-                            type="button">
+                            type="button" (click)="mltPinModal.open(cde, 'cde')">
                         <i class="fa fa-thumb-tack"></i> Add to Board
                     </button>
                     <div class="btn-group" role="group">
@@ -50,20 +50,20 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="export">
                             <ng-container *ngIf="isAllowedModel.isAllowed(elt)">
-                                <a class="dropdown-item" id='nihJson' href="form/{{elt._id}}" target="_blank">
+                                <a class="dropdown-item" id='nihJson' href="form/id/{{elt._id}}" target="_blank">
                                     JSON File, NIH/CDE Schema</a>
-                                <a class="dropdown-item" id='odmExport' href="form/{{elt._id}}?type=xml&subtype=odm"
+                                <a class="dropdown-item" id='odmExport' href="form/id/{{elt._id}}/xml/odm"
                                    target="_blank">XML File, ODM Schema</a>
-                                <a class="dropdown-item" id='sdcExport' href="form/{{elt._id}}?type=xml&subtype=sdc"
+                                <a class="dropdown-item" id='sdcExport' href="form/id/{{elt._id}}/xml/sdc"
                                    target="_blank">XML File, SDC Schema</a>
                                 <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
-                                   href="form/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml" target="_blank">
+                                   href="form/id/{{elt._id}}/xml/sdc/defaultHtml" target="_blank">
                                     XML File, SDC Schema with XSL Transform</a>
-                                <a class="dropdown-item" id='nihXml' href="form/{{elt._id}}?type=xml" target="_blank">
+                                <a class="dropdown-item" id='nihXml' href="form/id/{{elt._id}}/xml" target="_blank">
                                     XML File, NIH/CDE Schema</a>
                                 <a class="dropdown-item" id='formPublishExport' (click)="preparePublishExport()"
                                    target="_blank">Published Form</a>
-                                <a class="dropdown-item" id='nihRedCap' href="form/{{elt._id}}?type=REDCap"
+                                <a class="dropdown-item" id='nihRedCap' href="form/id/{{elt._id}}/REDCap"
                                    target="_blank">REDCap</a>
                             </ng-container>
                             <a class="dropdown-item" *ngIf="!isAllowedModel.isAllowed(elt)" href="login">
@@ -77,64 +77,70 @@
                     </button>
 
                     <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
-                            type="button">
+                            type="button" (click)="commentMode = !commentMode;">
                         <i class="fa fa-comment"></i> Discuss
                     </button>
                 </h1>
-                <ngb-tabset>
-                    <ngb-tab title="General Details">
+                <ngb-tabset (tabChange)="beforeChange($event)">
+                    <ngb-tab id="general_tab" title="General Details"
+                             [ngClass]="{'highlightedTab':commentMode}">
                         <ng-template ngbTabContent>
                             <cde-form-general-details [elt]="elt"></cde-form-general-details>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Form Element">
+                    <ngb-tab id="description_tab" title="Form Element">
                         <ng-template ngbTabContent>
                             <cde-form-description [cache]="cache" [elt]="elt" [in-score-cdes]="inScoreCdes"
                                                   (cachePut)="cachePut($event)" (is-form-valid)="setIsValid($event)"
                                                   (stage-elt)="stageElt()"></cde-form-description>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Naming">
+                    <ngb-tab id="naming_tab" title="Naming">
                         <ng-template ngbTabContent>
                             <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Classification">
+                    <ngb-tab id="classification_tab" title="Classification">
                         <ng-template ngbTabContent>
                             <cde-admin-item-classification [elt]="elt"></cde-admin-item-classification>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Reference Documents">
+                    <ngb-tab id="referenceDocuments_tab" title="Reference Documents">
                         <cde-admin-item-reference-document [elt]="elt"></cde-admin-item-reference-document>
                         <ng-template ngbTabContent>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Properties">
+                    <ngb-tab id="properties_tab" title="Properties">
                         <ng-template ngbTabContent>
                             <cde-admin-item-properties [elt]="elt"></cde-admin-item-properties>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Identifiers">
+                    <ngb-tab id="ids_tab" title="Identifiers">
                         <ng-template ngbTabContent>
                             <cde-admin-item-ids [elt]="elt"></cde-admin-item-ids>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="Attachments">
+                    <ngb-tab id="attachments_tab" title="Attachments">
                         <ng-template ngbTabContent>
                             <cde-admin-item-attachments [elt]="elt"></cde-admin-item-attachments>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab title="History">
+                    <ngb-tab id="history_tab" title="History">
                         <ng-template ngbTabContent>
                             <cde-admin-item-history [elt]="elt"></cde-admin-item-history>
                         </ng-template>
                     </ngb-tab>
                 </ngb-tabset>
             </div>
+            <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+                 style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+                <cde-discuss-area [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                                  [eltName]="elt.naming[0].designation"></cde-discuss-area>
+            </div>
         </div>
         <div class="row" *ngIf="elt.unsaved">
             <cde-update-element [elt]="elt" (discard)="reload($event);"
-                                (save)="saveDataElement($event)"></cde-update-element>
+                                (save)="saveForm($event)"></cde-update-element>
         </div>
     </ng-container>
 </div>
@@ -149,40 +155,4 @@
         <cde-create-form [elt]="eltCopy" (cancel)="closeCopyFormModal()"></cde-create-form>
     </div>
 </ng-template>
-
-
-<!--
-<uib-tabset active="currentTab">
-    <uib-tab id="general_tab" index="'general'">
-        <uib-tab-heading
-                ngClass="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
-            General Details
-        </uib-tab-heading>
-        <div *ngIf="currentTab === 'general'">
-            <cde-de-general-details [elt]="elt"></cde-de-general-details>
-        </div>
-    </uib-tab>
-
-    <uib-tab ng-repeat="(tabName, tab) in tabs" *ngIf="tab.if?tab.if():true"
-             id="{{tabName}}_tab" select="tab.select(tabName)" index="tabName">
-        <uib-tab-heading
-                ngClass="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
-            {{tab.heading}}
-        </uib-tab-heading>
-        <div *ngIf="tab.includes" ng-repeat="incl in tab.includes">
-            <div *ngIf="currentTab == tabName">
-                <div ng-include="incl"></div>
-            </div>
-        </div>
-    </uib-tab>
-</uib-tabset>
-</div>
-
-<div *ngIf="commentMode" ngClass="{'col-sm-3':commentMode,'':!commentMode}"
-     style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-    <cde-discuss-area [selected-elt]="currentTab" [elt-id]="elt.tinyId" [elt]="elt"
-                      [elt-name]="elt.naming[0].designation"></cde-discuss-area>
-</div>
-
-
--->
+<cde-pin-modal #mltPinModal></cde-pin-modal>

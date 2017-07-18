@@ -21,8 +21,8 @@ export function getSearchSettingsFactory(i: any) { return i.get("SearchSettings"
 export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"); }
 export function getIsAllowedModelFactory(i: any) { return i.get("isAllowedModel"); }
 export function getQuickBoardFactory(i: any) { return i.get("QuickBoard"); }
-export function getAccountManagementFactory(i: any) { return i.get("AccountManagement"); }
 export function getFormQuickBoardFactory(i: any) { return i.get("FormQuickBoard"); }
+export function getAccountManagementFactory(i: any) { return i.get("AccountManagement"); }
 export function getPinModalFactory(i: any) { return i.get("PinModal"); }
 export function getElasticFactory(i: any) { return i.get("Elastic"); }
 
@@ -47,8 +47,8 @@ export function getElasticFactory(i: any) { return i.get("Elastic"); }
         {provide: "ViewingHistory", useFactory: getViewingHistoryFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
-        {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
+        {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
         {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
         {provide: "Elastic", useFactory: getElasticFactory, deps: ["$injector"]},
     ],

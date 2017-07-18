@@ -4,7 +4,6 @@ import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstra
 import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
-import { FormService } from "../form.service";
 
 @Component({
     selector: "cde-form-view",
@@ -15,13 +14,15 @@ export class FormViewComponent implements OnInit {
     @Input() elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
-
+    commentMode;
     eltLoaded: boolean = false;
+    currentTab = "general";
 
     constructor(private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
-                private formService: FormService,
+                @Inject("FormQuickBoard") public formQuickBoard,
+                @Inject("PinModal") public PinModal,
                 private alert: AlertService) {
     }
 
@@ -38,18 +39,30 @@ export class FormViewComponent implements OnInit {
 
     ngOnInit(): void {
         let tinyId = this.getParameterByName("tinyId");
-        this.formService.get(tinyId).subscribe(res => {
-            this.elt = res;
-            this.eltLoaded = true;
+        let cdeId = this.getParameterByName("cdeId");
+        let url;
+        if (tinyId) {
+            url = "/form/tinyId/" + tinyId;
+        }
+        if (cdeId) {
+            url = "/form/id/" + cdeId;
+        }
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+            if (res) {
+                this.elt = res;
+                this.eltLoaded = true;
+            } else
+                this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
         }, err =>
-            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this element." + err));
+            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form." + err));
     }
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
         delete this.eltCopy["_id"];
         delete this.eltCopy["tinyId"];
-        this.eltCopy["naming"][0].designation = "Copy of " + this.eltCopy["naming"][0].designation;
+        this.eltCopy["naming"][0].designation = "Copy of: " + this.eltCopy["naming"][0].designation;
+        this.eltCopy["registrationState"] = {registrationStatus: "Incomplete"};
         this.modalRef = this.modalService.open(this.copyFormContent, {size: "lg"});
     }
 
@@ -58,18 +71,16 @@ export class FormViewComponent implements OnInit {
     }
 
     reload() {
-        let url = "/form/tinyId/" + this.elt.tinyId;
-        this.http.get(url).map(res => res.json()).subscribe(res => {
-            if (res && res.elementType === "form") {
+        this.http.get("/form/tinyId/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
+            if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Changes discarded.");
-            }
+            } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         }, err => this.alert.addAlert("danger", err));
     }
 
     saveForm() {
-        let url = "/form/" + this.elt.tinyId + "/" + this.elt.version;
-        this.http.post(url, this.elt).map(res => res.json()).subscribe(res => {
+        this.http.post("/form/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Form saved.");
@@ -77,9 +88,14 @@ export class FormViewComponent implements OnInit {
         }, err => this.alert.addAlert("danger", err));
     }
 
+    beforeChange(event) {
+        this.currentTab = event.nextId;
+    }
+
     isIe() {
         let userAgent = window.navigator.userAgent;
-        if (/internet explorer/i.test(userAgent))return true;
+        if (/internet explorer/i.test(userAgent)) return true;
         else return false;
     }
+
 }

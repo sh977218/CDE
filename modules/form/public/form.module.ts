@@ -38,6 +38,7 @@ import { DisplayProfileComponent } from "./components/displayProfile/displayProf
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
 import { CreateFormComponent } from "./components/createForm.component";
 import { FormViewComponent } from "./components/formView.component";
+import { DiscussModule } from "../../discuss/discuss.module";
 
 @NgModule({
     imports: [
@@ -53,6 +54,7 @@ import { FormViewComponent } from "./components/formView.component";
         BoardModule,
         SearchModule,
         WidgetModule,
+        DiscussModule
     ],
     declarations: [
         ArrayListPipe,
