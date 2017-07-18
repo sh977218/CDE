@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('SwitchListViewCtrl',
-    ['$scope', '$location', '$window', '$timeout', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService', 'AlertService',
+    ['$scope', '$location', '$window', '$timeout', 'OrgHelpers', 'SearchSettings', 'DataElementQuickBoard', 'FormQuickBoard', 'localStorageService', 'AlertService',
         function ($scope, $location, $window, $timeout, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService, Alert) {
 
 

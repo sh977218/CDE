@@ -21,7 +21,7 @@ export class FormViewComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("FormQuickBoard") public formQuickBoard,
+                @Inject("FormQuickBoard") public quickBoard,
                 @Inject("PinModal") public PinModal,
                 private alert: AlertService) {
     }

@@ -2,11 +2,11 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
     var params = {
         cde: {
             url: "/dataElement/tinyId/",
-            localStorage: "quickBoard"
+            localStorage: "DataElementQuickBoard"
         },
         form: {
-            url: "/form/",
-            localStorage: "formQuickBoard"
+            url: "/form/tinyId/",
+            localStorage: "FormQuickBoard"
         }
     };
     var param = params[type];
@@ -16,7 +16,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
             var res = localStorageService.get(param.localStorage);
             if (!res) res = [];
             this.elts = res;
-            this.elts.forEach(function(elt) {
+            this.elts.forEach(function (elt) {
                 if (!elt.primaryNameCopy) elt.primaryNameCopy = elt.naming[0].designation;
                 if (!elt.primaryDefinitionCopy) elt.primaryDefinitionCopy = elt.naming[0].definition;
             });
@@ -60,7 +60,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
 }
 
 angular.module('resourcesSystem', ['ngResource'])
-    .factory('Auth',  ["$http", function ($http) {
+    .factory('Auth', ["$http", function ($http) {
         return {
             login: function (user, success, error) {
                 $http.post('/login', user).then(function onSuccess(response) {
@@ -183,7 +183,7 @@ angular.module('resourcesSystem', ['ngResource'])
         this.user = null;
         this.userHasMail = false;
 
-        this.getRemoteUser = function() {
+        this.getRemoteUser = function () {
             userResource.deferred = $q.defer();
             $http.get('/user/me').then(function (response) {
                 var u = response.data;
@@ -225,7 +225,8 @@ angular.module('resourcesSystem', ['ngResource'])
             if (userResource.user) {
                 $http.get('/mailStatus').then(function onSuccess(response) {
                     if (response.data.count > 0) userResource.userHasMail = true;
-                }, function () {});
+                }, function () {
+                });
             }
         };
 
@@ -261,16 +262,16 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
-    .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
+    .factory("DataElementQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
-        var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
-        result.restoreFromLocalStorage();
-        return result;
-    }])
+            var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
+            result.restoreFromLocalStorage();
+            return result;
+        }])
     .factory("FormQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
-        var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService, Alert);
-        result.restoreFromLocalStorage();
-        return result;
-    }])
+            var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService, Alert);
+            result.restoreFromLocalStorage();
+            return result;
+        }])
 ;

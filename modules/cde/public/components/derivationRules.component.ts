@@ -24,7 +24,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 public activeModal: NgbActiveModal,
-                @Inject("QuickBoard") private quickBoard,
+                @Inject("DataElementQuickBoard") private quickBoard,
                 @Inject("isAllowedModel") private isAllowedModel) {
     }
 

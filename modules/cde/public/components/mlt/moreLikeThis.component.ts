@@ -23,7 +23,7 @@ export class MoreLikeThisComponent {
     constructor(private http: Http,
                 private alert: AlertService,
                 public modalService: NgbModal,
-                @Inject("QuickBoard") public quickBoard) {
+                @Inject("DataElementQuickBoard") public quickBoard) {
     }
 
     open () {

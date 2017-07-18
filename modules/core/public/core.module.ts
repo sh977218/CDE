@@ -16,15 +16,41 @@ import { OrgHelperService } from "./orgHelper.service";
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 
-export function getUserResourceFactory(i: any) { return i.get("userResource"); }
-export function getSearchSettingsFactory(i: any) { return i.get("SearchSettings"); }
-export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"); }
-export function getIsAllowedModelFactory(i: any) { return i.get("isAllowedModel"); }
-export function getQuickBoardFactory(i: any) { return i.get("QuickBoard"); }
-export function getFormQuickBoardFactory(i: any) { return i.get("FormQuickBoard"); }
-export function getAccountManagementFactory(i: any) { return i.get("AccountManagement"); }
-export function getPinModalFactory(i: any) { return i.get("PinModal"); }
-export function getElasticFactory(i: any) { return i.get("Elastic"); }
+export function getUserResourceFactory(i: any) {
+    return i.get("userResource");
+}
+
+export function getSearchSettingsFactory(i: any) {
+    return i.get("SearchSettings");
+}
+
+export function getViewingHistoryFactory(i: any) {
+    return i.get("ViewingHistory");
+}
+
+export function getIsAllowedModelFactory(i: any) {
+    return i.get("isAllowedModel");
+}
+
+export function getDataElementQuickBoardFactory(i: any) {
+    return i.get("DataElementQuickBoard");
+}
+
+export function getFormQuickBoardFactory(i: any) {
+    return i.get("FormQuickBoard");
+}
+
+export function getAccountManagementFactory(i: any) {
+    return i.get("AccountManagement");
+}
+
+export function getPinModalFactory(i: any) {
+    return i.get("PinModal");
+}
+
+export function getElasticFactory(i: any) {
+    return i.get("Elastic");
+}
 
 @NgModule({
     imports: [
@@ -46,7 +72,7 @@ export function getElasticFactory(i: any) { return i.get("Elastic"); }
         {provide: "SearchSettings", useFactory: getSearchSettingsFactory, deps: ["$injector"]},
         {provide: "ViewingHistory", useFactory: getViewingHistoryFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
-        {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
+        {provide: "DataElementQuickBoard", useFactory: getDataElementQuickBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
         {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
         {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},

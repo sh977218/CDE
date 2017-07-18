@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', 'isAllowedModel',
+angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'DataElementQuickBoard', 'isAllowedModel',
     function ($scope, QuickBoard, isAllowedModel) {
         $scope.compareView = true;
         $scope.pvLimit = 30;

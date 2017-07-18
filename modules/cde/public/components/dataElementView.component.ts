@@ -22,7 +22,7 @@ export class DataElementViewComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("QuickBoard") public quickBoard,
+                @Inject("DataElementQuickBoard") public quickBoard,
                 @Inject("PinModal") public PinModal,
                 private alert: AlertService) {
     }
