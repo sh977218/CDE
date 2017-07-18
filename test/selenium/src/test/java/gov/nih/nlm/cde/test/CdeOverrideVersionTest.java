@@ -4,10 +4,10 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class OverrideVersionTest extends NlmCdeBaseTest {
+public class CdeOverrideVersionTest extends NlmCdeBaseTest {
 
     @Test
-    public void overrideVersion() {
+    public void cdeOverrideVersion() {
         String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
         String nameChange = "[name change number 1]";
 
@@ -19,9 +19,9 @@ public class OverrideVersionTest extends NlmCdeBaseTest {
         clickElement(By.id("openSave"));
         textPresent("has already been used");
         clickElement(By.id("overrideVersion"));
-        clickElement(By.id("confirmNewVersion"));
+        clickElement(By.id("confirmSaveBtn"));
 
-        textPresent("Saved.");
+        textPresent("Data Element saved.");
         closeAlert();
         modalGone();
 

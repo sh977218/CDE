@@ -3,7 +3,7 @@ import { NgForm, NgControl } from "@angular/forms";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
-import * as _  from "lodash";
+import * as _ from "lodash";
 
 const urlMap = {
     cde: {
@@ -46,8 +46,11 @@ export class CdeUpdateElementComponent {
         this.modalRef.close();
     }
 
-    newVersionVersionUnicity(newVersion = null) {
-        if (newVersion === null) newVersion = this.elt.version;
+    newVersionVersionUnicity(event = null) {
+        if (!event) return;
+        let newVersion = "";
+        if (!event) newVersion = this.elt.version;
+        console.log("event: " + event);
         let url = urlMap[this.elt.elementType].exist + this.elt.tinyId + "/version/";
         if (!url) return this.alert.addAlert("danger", "Unknown element type " + this.elt.elementType);
         this.http.get(url).map(res => res.text()).subscribe(

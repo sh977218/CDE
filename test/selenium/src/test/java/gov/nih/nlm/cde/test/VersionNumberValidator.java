@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
@@ -11,7 +12,7 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
     public void versionNumberValidator() {
         String cdeName = "Operating room total time";
         String newName = "[name change number 2]";
-        String validationError = "Version number cannot include characters other than letters, numbers, -, = and .";
+        String validationError = "Version number cannot include characters other than letters, numbers";
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
@@ -22,6 +23,7 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
         findElement(By.id("newVersion")).sendKeys("/23");
         textPresent(validationError);
         findElement(By.id("newVersion")).clear();
+        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
         textNotPresent(validationError);
         findElement(By.id("newVersion")).sendKeys("123#abc");
         textPresent(validationError);
