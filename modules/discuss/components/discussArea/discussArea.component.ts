@@ -11,15 +11,13 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
     selector: "cde-discuss-area",
     templateUrl: "./discussArea.component.html"
 })
-
-
 export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     constructor(private http: Http,
                 private alert: AlertService,
                 @Inject("isAllowedModel") private isAllowedModel,
-                @Inject("userResource") public userService
-    ) {};
+                @Inject("userResource") public userService) {
+    };
 
     newComment: Comment = new Comment();
     eltComments: Comment[];
@@ -37,9 +35,8 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     @Input() public eltName: string;
     @Input() public selectedElt: string;
 
-    ngOnInit () {
+    ngOnInit() {
         this.loadComments();
-
         this.socket.emit("room", this.eltId);
         this.socket.on("commentUpdated", () => this.loadComments());
         this.socket.on("userTyping", data => {
@@ -54,7 +51,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         });
     };
 
-    ngOnDestroy () {
+    ngOnDestroy() {
         this.socket.close();
     }
 
@@ -74,7 +71,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         });
     };
 
-    addAvatar = function(username) {
+    addAvatar = function (username) {
         if (username && !this.avatarUrls[username]) {
             this.http.get('/user/avatar/' + username).map(r => r.text()).subscribe(res => {
                 this.avatarUrls[username] = res.length > 0 ? res : "/cde/public/assets/img/portrait.png";
@@ -82,7 +79,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         }
     };
 
-    canRemoveComment = (com) =>  this.isAllowedModel.doesUserOwnElt(this.elt) ||
+    canRemoveComment = (com) => this.isAllowedModel.doesUserOwnElt(this.elt) ||
         (this.userService.user && this.userService.user._id && (this.userService.user._id === com.user));
 
     canResolveComment = (com) => com.status !== "resolved" && this.canRemoveComment(com);
@@ -102,23 +99,23 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         });
     };
 
-    removeComment (commentId, replyId) {
+    removeComment(commentId, replyId) {
         this.http.post("/comments/" + this.elt.elementType + "/remove", {
             commentId: commentId, replyId: replyId
         }).map(r => r.json()).subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
     };
 
-    updateCommentStatus (commentId, status) {
+    updateCommentStatus(commentId, status) {
         this.http.post("/comments/status/" + status, {commentId: commentId}).map(r => r.json())
             .subscribe((res) => this.loadComments(() => this.alert.addAlert("success", res.message)));
     };
 
-    updateReplyStatus (commentId, replyId, status) {
+    updateReplyStatus(commentId, replyId, status) {
         this.http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId}).map(r => r.json())
             .subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
     };
 
-    replyTo (commentId, reply) {
+    replyTo(commentId, reply) {
         this.http.post("/comments/reply", {
             commentId: commentId,
             eltName: this.eltName,

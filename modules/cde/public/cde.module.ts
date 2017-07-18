@@ -31,6 +31,8 @@ import { DataElementViewComponent } from "./components/dataElementView.component
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { CreateDataElementComponent } from "./components/createDataElement.component";
 import { SystemModule } from "../../system/public/system.module";
+import { DiscussModule } from "../../discuss/discuss.module";
+import { DiscussAreaComponent } from "../../discuss/components/discussArea/discussArea.component";
 
 @NgModule({
     imports: [
@@ -45,7 +47,8 @@ import { SystemModule } from "../../system/public/system.module";
         SearchModule,
         WidgetModule,
         TreeModule,
-        SystemModule
+        SystemModule,
+        DiscussModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,

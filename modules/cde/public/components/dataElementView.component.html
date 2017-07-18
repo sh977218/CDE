@@ -32,7 +32,7 @@
             You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
             <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
         </div>
-        <div class="row" [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+        <div class="row">
             <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
                 <h1 class="page-header">{{elt.naming[0].designation}}
                     <button *ngIf="quickBoard.canAddElt(elt)" id="addToQuickBoard" class="btn btn-small btn-default"
@@ -130,11 +130,11 @@
                     </ngb-tab>
                 </ngb-tabset>
             </div>
-        </div>
-        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
-             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-            <cde-discuss-area [selected-elt]="currentTab" [elt-id]="elt.tinyId" [elt]="elt"
-                              [elt-name]="elt.naming[0].designation"></cde-discuss-area>
+            <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+                 style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+                <cde-discuss-area [selected-elt]="currentTab" [elt-id]="elt.tinyId" [elt]="elt"
+                                  [elt-name]="elt.naming[0].designation"></cde-discuss-area>
+            </div>
         </div>
         <div class="row" *ngIf="elt.unsaved && elt.allValidate !== false">
             <cde-update-element [elt]="elt" (discard)="reload($event);"
