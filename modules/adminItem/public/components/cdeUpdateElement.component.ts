@@ -46,11 +46,8 @@ export class CdeUpdateElementComponent {
         this.modalRef.close();
     }
 
-    newVersionVersionUnicity(event = null) {
-        if (!event) return;
-        let newVersion = "";
-        if (!event) newVersion = this.elt.version;
-        console.log("event: " + event);
+    newVersionVersionUnicity(newVersion = null) {
+        if (newVersion === null) newVersion = this.elt.version;
         let url = urlMap[this.elt.elementType].exist + this.elt.tinyId + "/version/";
         if (!url) return this.alert.addAlert("danger", "Unknown element type " + this.elt.elementType);
         this.http.get(url).map(res => res.text()).subscribe(

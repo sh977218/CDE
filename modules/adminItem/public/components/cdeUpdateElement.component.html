@@ -16,13 +16,8 @@
                 <div class="form-group">
                     <label for="newVersion">Choose a new version</label>
                     <input id="newVersion" name="newVersion" type="text" #newVersion="ngModel"
-                           [ngModel]="elt.version" pattern="^[A-z0-9-=.]+$"
+                           [(ngModel)]="elt.version" pattern="^[A-z0-9-=.]+$"
                            (ngModelChange)="newVersionVersionUnicity($event)"/>
-                    <div>elt.version: {{elt.version}}</div>
-                    <div>newVersion.errors: {{newVersion.errors | json}}</div>
-                    <div>newVersion.dirty: {{newVersion.dirty | json}}</div>
-                    <div>newVersion.touched: {{newVersion.touched | json}}</div>
-
                     <div *ngIf="newVersion.errors && (newVersion.dirty || newVersion.touched)" class="help-inline">
                         Version number cannot include characters other than letters, numbers, -, = and .
                     </div>
