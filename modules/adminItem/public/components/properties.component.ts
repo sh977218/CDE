@@ -80,7 +80,7 @@ export class PropertiesComponent implements OnInit {
         } else {
             this.elt.$save(newElt => {
                 this.elt = newElt;
-                this.alert.addAlert("success", "Property Removed");
+                this.alert.addAlert("success", "Property Removed.");
             });
         }
     }
@@ -88,7 +88,7 @@ export class PropertiesComponent implements OnInit {
     saveProperty() {
         this.elt.$save(newElt => {
             this.elt = newElt;
-            this.alert.addAlert("success", "Saved");
+            this.alert.addAlert("success", "Property Saved.");
         });
     };
 

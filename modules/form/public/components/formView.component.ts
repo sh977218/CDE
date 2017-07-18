@@ -62,7 +62,10 @@ export class FormViewComponent implements OnInit {
         delete this.eltCopy["_id"];
         delete this.eltCopy["tinyId"];
         this.eltCopy["naming"][0].designation = "Copy of: " + this.eltCopy["naming"][0].designation;
-        this.eltCopy["registrationState"] = {registrationStatus: "Incomplete"};
+        this.eltCopy["registrationState"] = {
+            registrationStatus: "Incomplete",
+            administrativeNote: "Copy of: " + this.elt.tinyId
+        };
         this.modalRef = this.modalService.open(this.copyFormContent, {size: "lg"});
     }
 

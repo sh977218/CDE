@@ -1100,4 +1100,24 @@ public class NlmCdeBaseTest {
         clickElement(By.id("removeproperty-" + index));
     }
 
+    /**
+     * This method is used to edit registration status for cde or form.
+     *
+     * @param status             Registration Status.
+     * @param effectiveDate      Effective Date.
+     * @param untilDate          Until Date.
+     * @param administrativeNote Administrative Note.
+     * @param unresolvedIssue    Unresolved Issue.
+     */
+    protected void editRegistrationStatus(String status, String effectiveDate, String untilDate, String administrativeNote, String unresolvedIssue) {
+        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(status);
+        if (status.equals("Recorded"))
+            textPresent("Recorded elements are not visible by default");
+        findElement(By.name("effectiveDate")).sendKeys(effectiveDate);
+        findElement(By.name("untilDate")).sendKeys(untilDate);
+        findElement(By.name("administrativeNote")).sendKeys(administrativeNote);
+        findElement(By.name("unresolvedIssue")).sendKeys(unresolvedIssue);
+        clickElement(By.id("saveRegStatus"));
+    }
+
 }

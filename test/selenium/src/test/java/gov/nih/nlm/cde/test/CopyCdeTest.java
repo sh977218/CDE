@@ -7,8 +7,8 @@ public class CopyCdeTest extends BaseClassificationTest {
 
     @Test
     public void copyCde() {
-        mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Medication affecting cardiovascular function type exam day indicator";
+        mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("copyCdeBtn"));
         textPresent("Create a copy");

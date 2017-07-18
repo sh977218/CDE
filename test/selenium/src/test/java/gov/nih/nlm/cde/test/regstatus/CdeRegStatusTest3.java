@@ -13,10 +13,5 @@ public class CdeRegStatusTest3 extends CdeRegStatusTest {
     public void cantEditStatusIfPendingChanges() {
         cantEditStatusIfPendingChanges("Form Form Element Administered Item Modified By java.lang.String", cabigAdmin_username);        
     }
-    
-    @Test
-    public void changeRegistrationStatus() {
-        changeRegistrationStatus("Investigator Identifier java.lang.Integer", cabigAdmin_username);
-    }
-    
+
 }
