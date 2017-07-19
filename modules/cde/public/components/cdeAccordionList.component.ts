@@ -4,8 +4,6 @@ import { Component, Inject, Input } from "@angular/core";
     selector: "cde-accordion-list",
     templateUrl: "./cdeAccordionList.component.html"
 })
-
-
 export class CdeAccordionListComponent {
 
     @Input() cdes;

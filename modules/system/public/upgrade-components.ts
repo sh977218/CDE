@@ -16,7 +16,7 @@ export class CdeAccordionListDirective extends UpgradeComponent {
 }
 
 @Directive({
-    selector: "form-accordion-list"
+    selector: "form-accordion-list-directive"
 })
 export class FormAccordionListDirective extends UpgradeComponent {
     @Input() forms: any;
