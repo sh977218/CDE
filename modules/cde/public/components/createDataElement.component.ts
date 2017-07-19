@@ -4,7 +4,7 @@ import { NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
 import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
-import * as ClassificationShared from "../../../system/shared/classificationShared.js"
+import * as ClassificationShared from "../../../system/shared/classificationShared.js";
 import * as _ from "lodash";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 

@@ -53,10 +53,10 @@ export class DataElementViewComponent implements OnInit {
                 this.elt = res;
                 this.eltLoaded = true;
             } else
-                this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+                this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
         }, err => {
             this.eltLoaded = true;
-            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
         });
     }
 
@@ -81,7 +81,7 @@ export class DataElementViewComponent implements OnInit {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Changes discarded.");
-            } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+            } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
         }, err => this.alert.addAlert("danger", err));
     }
 

@@ -78,7 +78,7 @@ export class FormViewComponent implements OnInit {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Changes discarded.");
-            } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
+            } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.");
         }, err => this.alert.addAlert("danger", err));
     }
 
