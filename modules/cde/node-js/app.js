@@ -53,6 +53,21 @@ exports.init = function (app, daoManager) {
     app.put("/dataElement/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
 
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
+
+    app.get('/viewingHistory', exportShared.nocacheMiddleware, function (req, res) {
+        if (!req.user) {
+            res.send("You must be logged in to do that");
+        } else {
+            let splicedArray = req.user.viewHistory.splice(0, 10);
+            let idList = [];
+            for (let i = 0; i < splicedArray.length; i++) {
+                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
+            }
+            mongo_cde.cdesByTinyIdListInOrder(idList, function (err, cdes) {
+                res.send(cdesvc.hideProprietaryCodes(cdes, req.user));
+            });
+        }
+    });
     /* ---------- PUT NEW REST API above ---------- */
 
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {

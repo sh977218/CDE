@@ -38,6 +38,20 @@ exports.init = function (app, daoManager) {
 
     app.post('/form/publish', formCtrl.publishForm);
 
+    app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
+        if (!req.user) {
+            res.send("You must be logged in to do that");
+        } else {
+            let splicedArray = req.user.formViewHistory.splice(0, 10);
+            let idList = [];
+            for (let i = 0; i < splicedArray.length; i++) {
+                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
+            }
+            mongo_form.byTinyIdListInOrder(idList, function (err, forms) {
+                res.send(forms);
+            });
+        }
+    });
     /* ---------- PUT NEW REST API above ---------- */
 
     app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);

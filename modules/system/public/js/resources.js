@@ -163,6 +163,35 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
+    .factory('ViewingHistory', ["$http", "$q", function ($http, $q) {
+        var viewHistoryResource = this;
+
+        viewHistoryResource.deferred = $q.defer();
+        this.getViewingHistory = function () {
+            viewHistoryResource.deferred = $q.defer();
+            $http.get('/viewingHistory').then(function (response) {
+                viewHistoryResource.deferred.resolve(response.data);
+            });
+        };
+        viewHistoryResource.formViewHistory = $q.defer();
+        this.getFormViewingHistory = function () {
+            viewHistoryResource.formViewHistory = $q.defer();
+            $http.get('/viewingHistory/form').then(function (response) {
+                viewHistoryResource.formViewHistory.resolve(response.data);
+            });
+        };
+
+        this.getViewingHistory();
+        this.getFormViewingHistory();
+
+        this.getCdes = function () {
+            return viewHistoryResource.deferred.promise;
+        };
+        this.getForms = function () {
+            return viewHistoryResource.formViewHistory.promise;
+        };
+        return this;
+    }])
     .factory("Organization", ["$http", function ($http) {
         return {
             getByName: function (orgName, cb) {
