@@ -18,13 +18,12 @@
             <div class="col-sm-7">
                 <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!isAllowedModel.isAllowed(elt)"
                        id="isCopyrighted" title="copyrighted" (click)="elt.unsaved = true"/>
+
                 <div *ngIf="elt.isCopyrighted">
                     Statement:
                     <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
                                      [isAllowed]="isAllowedModel.isAllowed(elt)"
                                      (modelChange)="elt.unsaved = true"></cde-inline-edit>
-                </div>
-                <div *ngIf="elt.isCopyrighted">
                     Authority:
                     <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
                                      [isAllowed]="isAllowedModel.isAllowed(elt)"

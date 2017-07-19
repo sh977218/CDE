@@ -499,25 +499,41 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void newCdeVersion(String changeNote) {
+        newVersion(changeNote);
+        textPresent("Data Element saved.");
+        closeAlert();
+        modalGone();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+    }
 
     protected void newCdeVersion() {
         newCdeVersion(null);
     }
 
-    protected void newCdeVersion(String changeNote) {
-        if (changeNote == null || changeNote == "")
+    protected void newFormVersion(String changeNote) {
+        newVersion(changeNote);
+        textPresent("Form saved.");
+        closeAlert();
+        modalGone();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+    }
+
+    protected void newFormVersion() {
+        newFormVersion(null);
+    }
+
+    protected void newVersion(String changeNote) {
+        if (changeNote == null || changeNote.equals(""))
             changeNote = "Change note for change number 1";
         clickElement(By.id("openSave"));
-        textPresent("has already been used");
+        if (findElement(By.id("newVersion")).getText().length() > 0)
+            textPresent("has already been used");
         findElement(By.id("changeNote")).clear();
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
         clickElement(By.id("confirmSaveBtn"));
-        textPresent("Data Element saved.");
-        closeAlert();
-        modalGone();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
     }
 
     public void hangon(double i) {

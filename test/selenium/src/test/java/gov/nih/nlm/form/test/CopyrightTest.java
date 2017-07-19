@@ -23,7 +23,7 @@ public class CopyrightTest extends BaseFormTest {
         clickElement(By.cssSelector("#formCopyrightAuthority .fa-edit"));
         findElement(By.cssSelector("#formCopyrightAuthority input")).sendKeys(authority);
         clickElement(By.cssSelector("#formCopyrightAuthority .fa-check"));
-        saveForm();
+        newFormVersion();
         mustBeLoggedOut();
         goToFormByName(formName);
         textPresent("Statement");

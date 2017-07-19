@@ -83,6 +83,7 @@ export class FormViewComponent implements OnInit {
     }
 
     saveForm() {
+        if (!this.elt.isCopyrighted) this.elt.copyright = {text: "", authority: ""};
         this.http.put("/form/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
