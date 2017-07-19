@@ -45,14 +45,14 @@ angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$uibModalIn
     };
     $scope.approvalNecessary = function() {
         return {
-            fieldsRequireApproval: $scope.mergeRequest.mergeFields.ids
-            || $scope.mergeRequest.mergeFields.naming
-            || $scope.mergeRequest.mergeFields.properties
-            || $scope.mergeRequest.mergeFields.attachments
-            || $scope.mergeRequest.mergeFields.sources
-            || $scope.mergeRequest.mergeFields.referenceDocuments
-            || $scope.mergeRequest.mergeFields.dataSets
-            || $scope.mergeRequest.mergeFields.derivationRules,
+            fieldsRequireApproval: $scope.mergeRequest.mergeFields.ids ||
+            $scope.mergeRequest.mergeFields.naming ||
+            $scope.mergeRequest.mergeFields.properties ||
+            $scope.mergeRequest.mergeFields.attachments ||
+            $scope.mergeRequest.mergeFields.sources ||
+            $scope.mergeRequest.mergeFields.referenceDocuments ||
+            $scope.mergeRequest.mergeFields.dataSets ||
+            $scope.mergeRequest.mergeFields.derivationRules,
             ownDestinationCde: UserResource.user.orgAdmin.concat(UserResource.user.orgCurator).indexOf($scope.mergeRequest.destination.object.stewardOrg.name) > -1
         };
     };

@@ -9,10 +9,10 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                     controller: 'MergeModalCtrl',
                     resolve: {
                         cdeSource: function () {
-                            return $http.get('/dataElement/' + $scope.cdes[$scope.retiredIndex].tinyId);
+                            return $http.get('/dataElement/tinyId/' + $scope.cdes[$scope.retiredIndex].tinyId);
                         },
                         cdeTarget: function () {
-                            return $http.get('/dataElement/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);
+                            return $http.get('/dataElement/tinyId/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);
                         }
                     }
                 }).result.then(function (dat) {
@@ -32,7 +32,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                     } else {
                         var gotoNewElement = function (mr) {
                             MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function (cde) {
-                                $location.url("deview?tinyId=" + cde.tinyId);
+                                $location.url("deView?tinyId=" + cde.tinyId);
                                 Alert.addAlert("success", "CDEs successfully merged");
                             });
                         };
@@ -69,6 +69,6 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                 }).result.then(callback, function () {
                 });
             };
-            
+
         }
     ]);
