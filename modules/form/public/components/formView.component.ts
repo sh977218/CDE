@@ -83,7 +83,7 @@ export class FormViewComponent implements OnInit {
     }
 
     saveForm() {
-        this.http.post("/form/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+        this.http.put("/form/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Form saved.");

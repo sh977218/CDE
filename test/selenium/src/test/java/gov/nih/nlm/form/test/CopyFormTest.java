@@ -8,12 +8,11 @@ public class CopyFormTest extends BaseClassificationTest {
 
     @Test
     public void copyForm() {
-        mustBeLoggedInAs(ninds_username, password);
         String formName = "Type, Place, Cause and Mechanism of Injury";
+        mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         textPresent("LOINC");
         textPresent("CHAR");
-
         clickElement(By.id("ids_tab"));
         textPresent("1234567");
         clickElement(By.id("copyFormBtn"));

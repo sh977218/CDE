@@ -31,9 +31,7 @@ exports.init = function (app, daoManager) {
     app.get("/form/tinyId/:tinyId/version/:version", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
     app.get("/form/tinyId/:tinyId/version/", exportShared.nocacheMiddleware, formSvc.versionByTinyId);
 
-    /*
-        app.post("/form/", exportShared.nocacheMiddleware, formCtrl.save);
-    */
+    app.post("/form/", exportShared.nocacheMiddleware, formSvc.createForm);
     app.put("/form/tinyId/:tinyId", exportShared.nocacheMiddleware, formSvc.updateForm);
 
     app.post('/form/publish', formCtrl.publishForm);

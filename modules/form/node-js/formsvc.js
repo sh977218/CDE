@@ -49,6 +49,31 @@ exports.byTinyIdVersion = function (req, res) {
     });
 };
 
+
+exports.createForm = function (req, res) {
+    if (req.params.id) return res.status(500).send("bad request");
+    else {
+        if (req.isAuthenticated()) {
+            let elt = req.body;
+            let user = req.user;
+            if (!elt.stewardOrg.name) return res.send("Missing Steward");
+            else if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
+                user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !user.siteAdmin)
+                return res.status(403).send("not authorized");
+            else if (elt.registrationState && elt.registrationState.registrationStatus &&
+                ((elt.registrationState.registrationStatus === "Standard" ||
+                    elt.registrationState.registrationStatus === " Preferred Standard") &&
+                    !user.siteAdmin))
+                return res.status(403).send("Not authorized");
+            else mongo_form.create(elt, user, function (err, dataElement) {
+                    if (err) res.status(500).send();
+                    else res.send(dataElement);
+                });
+        } else res.status(403).send("You are not authorized to do this.");
+    }
+};
+
+
 exports.updateForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(500).send();

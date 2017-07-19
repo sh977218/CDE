@@ -7,11 +7,9 @@ import * as _ from "lodash";
 
 const urlMap = {
     cde: {
-        save: "/dataElement/",
         exist: "/dataElement/tinyId/"
     },
     form: {
-        get: "/form/",
         exist: "/form/tinyId/"
     }
 };

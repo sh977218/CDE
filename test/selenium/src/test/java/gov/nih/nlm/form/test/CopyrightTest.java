@@ -7,26 +7,25 @@ public class CopyrightTest extends BaseFormTest {
 
     @Test
     public void editCopyright() {
-        mustBeLoggedInAs(ninds_username, password);
         String formName = "Quantitative Sensory Testing (QST)";
         String statement = "Never ever share this form";
         String authority = "Patent for truth";
-        driver.get(baseUrl + "/formView?tinyId=7ygDrkrStx");
-        textPresent(formName);
+        mustBeLoggedInAs(ninds_username, password);
+        goToFormByName(formName);
         textNotPresent("Statement");
         textNotPresent("Authority");
-        findElement(By.id("isCopyrighted")).click();
+        clickElement(By.id("isCopyrighted"));
         textPresent("Statement");
         textPresent("Authority");
-        findElement(By.cssSelector("#formCopyrightText .fa-edit")).click();
+        clickElement(By.cssSelector("#formCopyrightText .fa-edit"));
         findElement(By.cssSelector("#formCopyrightText input")).sendKeys(statement);
-        findElement(By.cssSelector("#formCopyrightText .fa-check")).click();
-        findElement(By.cssSelector("#formCopyrightAuthority .fa-edit")).click();
+        clickElement(By.cssSelector("#formCopyrightText .fa-check"));
+        clickElement(By.cssSelector("#formCopyrightAuthority .fa-edit"));
         findElement(By.cssSelector("#formCopyrightAuthority input")).sendKeys(authority);
-        findElement(By.cssSelector("#formCopyrightAuthority .fa-check")).click();
+        clickElement(By.cssSelector("#formCopyrightAuthority .fa-check"));
         saveForm();
         mustBeLoggedOut();
-        driver.get(baseUrl + "/formView?tinyId=7ygDrkrStx");
+        goToFormByName(formName);
         textPresent("Statement");
         textPresent("Authority");
         textPresent(statement);
