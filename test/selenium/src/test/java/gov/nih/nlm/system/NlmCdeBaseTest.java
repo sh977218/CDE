@@ -1110,7 +1110,7 @@ public class NlmCdeBaseTest {
      * @param unresolvedIssue    Unresolved Issue.
      */
     protected void editRegistrationStatus(String status, String effectiveDate, String untilDate, String administrativeNote, String unresolvedIssue) {
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(status);
+        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText(status);
         if (status.equals("Preferred Standard"))
             textPresent("Preferred Standard elements cannot be edited by their stewards");
         if (status.equals("Standard"))
@@ -1126,13 +1126,13 @@ public class NlmCdeBaseTest {
         if (status.equals("Retired"))
             textPresent("Retired elements are not returned in searches");
         if (effectiveDate != null && effectiveDate.length() > 0)
-            findElement(By.name("effectiveDate")).sendKeys(effectiveDate);
+            findElement(By.id("newEffectiveDate")).sendKeys(effectiveDate);
         if (untilDate != null && untilDate.length() > 0)
-            findElement(By.name("untilDate")).sendKeys(untilDate);
+            findElement(By.id("newUntilDate")).sendKeys(untilDate);
         if (administrativeNote != null && administrativeNote.length() > 0)
-            findElement(By.name("administrativeNote")).sendKeys(administrativeNote);
+            findElement(By.id("newAdministrativeNote")).sendKeys(administrativeNote);
         if (unresolvedIssue != null && unresolvedIssue.length() > 0)
-            findElement(By.name("unresolvedIssue")).sendKeys(unresolvedIssue);
+            findElement(By.id("newUnresolvedIssue")).sendKeys(unresolvedIssue);
         clickElement(By.id("saveRegStatus"));
     }
 
