@@ -12,13 +12,13 @@
         </div>
         <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this data element is retired.
+            <strong>Warning:</strong> this form is retired.
             <span *ngIf="elt.registrationState.replacedBy">
                     <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
         <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
              role="alert">
             <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this data element is about to be retired.
+            <strong>Warning:</strong> this form is about to be retired.
             <span *ngIf="elt.registrationState.replacedBy">
                     <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
             </span>
@@ -140,7 +140,7 @@
         </div>
         <div class="row" *ngIf="elt.unsaved">
             <cde-update-element [elt]="elt" (discard)="reload($event);"
-                                (save)="saveForm($event)"></cde-update-element>
+                                (save)="saveForm();"></cde-update-element>
         </div>
     </ng-container>
 </div>

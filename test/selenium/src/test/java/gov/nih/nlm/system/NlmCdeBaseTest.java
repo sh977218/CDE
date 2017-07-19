@@ -1111,12 +1111,28 @@ public class NlmCdeBaseTest {
      */
     protected void editRegistrationStatus(String status, String effectiveDate, String untilDate, String administrativeNote, String unresolvedIssue) {
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(status);
+        if (status.equals("Preferred Standard"))
+            textPresent("Preferred Standard elements cannot be edited by their stewards");
+        if (status.equals("Standard"))
+            textPresent("Standard elements cannot be edited by their stewards");
+        if (status.equals("Qualified"))
+            textPresent("Qualified elements should be well defined and are visible to the public by default.");
         if (status.equals("Recorded"))
-            textPresent("Recorded elements are not visible by default");
-        findElement(By.name("effectiveDate")).sendKeys(effectiveDate);
-        findElement(By.name("untilDate")).sendKeys(untilDate);
-        findElement(By.name("administrativeNote")).sendKeys(administrativeNote);
-        findElement(By.name("unresolvedIssue")).sendKeys(unresolvedIssue);
+            textPresent("Recorded elements are not visible by default.");
+        if (status.equals("Candidate"))
+            textPresent("Candidate elements are not visible by default.");
+        if (status.equals("Incomplete"))
+            textPresent("Incomplete indicates an element that is not fully defined. Incomplete elements are not visible by default.");
+        if (status.equals("Retired"))
+            textPresent("Retired elements are not returned in searches");
+        if (effectiveDate != null && effectiveDate.length() > 0)
+            findElement(By.name("effectiveDate")).sendKeys(effectiveDate);
+        if (untilDate != null && untilDate.length() > 0)
+            findElement(By.name("untilDate")).sendKeys(untilDate);
+        if (administrativeNote != null && administrativeNote.length() > 0)
+            findElement(By.name("administrativeNote")).sendKeys(administrativeNote);
+        if (unresolvedIssue != null && unresolvedIssue.length() > 0)
+            findElement(By.name("unresolvedIssue")).sendKeys(unresolvedIssue);
         clickElement(By.id("saveRegStatus"));
     }
 

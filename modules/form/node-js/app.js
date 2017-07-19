@@ -21,6 +21,7 @@ var express = require('express')
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
+    app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
 
     app.get("/form/id/:id", exportShared.nocacheMiddleware, formSvc.byId);
     app.get("/form/id/:id/history/", exportShared.nocacheMiddleware, formSvc.priorForms);
@@ -32,14 +33,14 @@ exports.init = function (app, daoManager) {
 
     /*
         app.post("/form/", exportShared.nocacheMiddleware, formCtrl.save);
-        app.put("/form/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
     */
+    app.put("/form/tinyId/:tinyId", exportShared.nocacheMiddleware, formSvc.updateForm);
 
     app.post('/form/publish', formCtrl.publishForm);
-    /* ---------- PUT NEW REST API above ---------- */
-    app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);
 
-    app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
+    /* ---------- PUT NEW REST API above ---------- */
+
+    app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);
 
     app.get('/elasticSearch/form/count', function (req, res) {
         return elastic_system.nbOfForms(function (err, result) {
@@ -224,13 +225,4 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/schema/form', (req, res) => res.send(mongo_form.Form.jsonSchema()));
-
-
-    app.get('/formExists/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_form.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
-            res.send(result);
-        });
-    });
-
-
 };
