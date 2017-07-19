@@ -90,7 +90,6 @@ import "./form/public/js/controllers/CreateFormCtrl";
 import "./form/public/js/controllers/ClassifyFormCdesModalCtrl";
 import "./form/public/js/controllers/CreateFormAbstractCtrl";
 import "./form/public/js/controllers/CreateFormFromBoardModalCtrl";
-import * as formShared from "./form/shared/formShared";
 import "./form/public/js/controllers/FormCopyModalCtrl";
 import "./form/public/js/controllers/PublishedFormExportCtrl";
 

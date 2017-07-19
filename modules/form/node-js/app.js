@@ -31,8 +31,27 @@ exports.init = function (app, daoManager) {
     app.get("/form/tinyId/:tinyId/version/:version", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
     app.get("/form/tinyId/:tinyId/version/", exportShared.nocacheMiddleware, formSvc.versionByTinyId);
 
+    app.get("/form/tinyId/:tinyId/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlByTinyId);
+    app.get("/form/id/:id/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlById);
+
+    app.get("/form/tinyId/:tinyId/xml/sdc/", exportShared.nocacheMiddleware, formSvc.sdcXmlByTinyId);
+    app.get("/form/id/:id/xml/sdc/", exportShared.nocacheMiddleware, formSvc.sdcXmlById);
+
+    app.get("/form/tinyId/:tinyId/xml/", exportShared.nocacheMiddleware, formSvc.xmlByTinyId);
+    app.get("/form/id/:id/xml/", exportShared.nocacheMiddleware, formSvc.xmlById);
+
+    app.get("/form/tinyId/:tinyId/zip/redCap/", exportShared.nocacheMiddleware, formSvc.redCapZipByTinyId);
+    app.get("/form/id/:id/zip/redCap/", exportShared.nocacheMiddleware, formSvc.redCapZipById);
+
+    app.get("/form/tinyId/:tinyId/html/sdc", exportShared.nocacheMiddleware, formSvc.sdcHtmlByTinyId);
+    app.get("/form/id/:id/html/sdc", exportShared.nocacheMiddleware, formSvc.sdcHtmlById);
+
+
     app.post("/form/", exportShared.nocacheMiddleware, formSvc.createForm);
     app.put("/form/tinyId/:tinyId", exportShared.nocacheMiddleware, formSvc.updateForm);
+
+    app.get('/wholeForm/id/:id', exportShared.nocacheMiddleware, formSvc.wholeFormById);
+    app.get('/wholeForm/tinyId/:tinyId', exportShared.nocacheMiddleware, formSvc.wholeFormByTinyId);
 
     app.post('/form/publish', formCtrl.publishForm);
 
@@ -51,44 +70,22 @@ exports.init = function (app, daoManager) {
         }
     });
     /* ---------- PUT NEW REST API above ---------- */
-
-    app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);
-
     app.get('/elasticSearch/form/count', function (req, res) {
         return elastic_system.nbOfForms(function (err, result) {
             res.send("" + result);
         });
     });
 
-    if (config.modules.forms.attachments) {
-        app.post('/attachments/form/setDefault', function (req, res) {
-            adminItemSvc.setAttachmentDefault(req, res, mongo_form);
-        });
+    app.post('/attachments/form/setDefault', function (req, res) {
+        adminItemSvc.setAttachmentDefault(req, res, mongo_form);
+    });
 
-        app.post('/attachments/form/add', multer(config.multer), function (req, res) {
-            adminItemSvc.addAttachment(req, res, mongo_form);
-        });
+    app.post('/attachments/form/add', multer(config.multer), function (req, res) {
+        adminItemSvc.addAttachment(req, res, mongo_form);
+    });
 
-        app.post('/attachments/form/remove', function (req, res) {
-            adminItemSvc.removeAttachment(req, res, mongo_form);
-        });
-    }
-
-    app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_form.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
-            if (err) {
-                logging.errorLogger.error("Error: Cannot find element by tiny id.", {
-                    origin: "system.adminItemSvc.approveComment",
-                    stack: new Error().stack
-                }, req);
-                return res.status(500).send();
-            } else {
-                res.setHeader("Content-Type", "application/xml");
-                sdc.formToSDC(form, null, function (txt) {
-                    res.send(txt);
-                });
-            }
-        });
+    app.post('/attachments/form/remove', function (req, res) {
+        adminItemSvc.removeAttachment(req, res, mongo_form);
     });
 
     app.post('/elasticSearch/form', function (req, res) {

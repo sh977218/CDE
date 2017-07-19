@@ -52,18 +52,18 @@
                             <ng-container *ngIf="isAllowedModel.isAllowed(elt)">
                                 <a class="dropdown-item" id='nihJson' href="form/id/{{elt._id}}" target="_blank">
                                     JSON File, NIH/CDE Schema</a>
-                                <a class="dropdown-item" id='odmExport' href="form/id/{{elt._id}}/xml/odm"
+                                <a class="dropdown-item" id='odmExport' href="form/id/{{elt._id}}/xml/odm/"
                                    target="_blank">XML File, ODM Schema</a>
-                                <a class="dropdown-item" id='sdcExport' href="form/id/{{elt._id}}/xml/sdc"
+                                <a class="dropdown-item" id='sdcExport' href="form/id/{{elt._id}}/xml/sdc/"
                                    target="_blank">XML File, SDC Schema</a>
                                 <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
                                    href="form/id/{{elt._id}}/xml/sdc/defaultHtml" target="_blank">
                                     XML File, SDC Schema with XSL Transform</a>
-                                <a class="dropdown-item" id='nihXml' href="form/id/{{elt._id}}/xml" target="_blank">
+                                <a class="dropdown-item" id='nihXml' href="form/id/{{elt._id}}/xml/" target="_blank">
                                     XML File, NIH/CDE Schema</a>
                                 <a class="dropdown-item" id='formPublishExport' (click)="preparePublishExport()"
                                    target="_blank">Published Form</a>
-                                <a class="dropdown-item" id='nihRedCap' href="form/id/{{elt._id}}/REDCap"
+                                <a class="dropdown-item" id='nihRedCap' href="form/id/{{elt._id}}/REDCap/"
                                    target="_blank">REDCap</a>
                             </ng-container>
                             <a class="dropdown-item" *ngIf="!isAllowedModel.isAllowed(elt)" href="login">

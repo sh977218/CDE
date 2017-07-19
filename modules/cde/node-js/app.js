@@ -17,7 +17,6 @@ var cdesvc = require('./cdesvc')
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
-    , js2xml = require('js2xmlparser')
     , usersrvc = require('../../system/node-js/usersrvc')
 ;
 
@@ -30,20 +29,7 @@ exports.init = function (app, daoManager) {
     app.get("/dataElement/id/:id/fork/", exportShared.nocacheMiddleware, cdesvc.forks);
     app.get("/dataElement/id/:id/history/", exportShared.nocacheMiddleware, cdesvc.priorCdes);
     app.get("/dataElement/id/:id/version/", exportShared.nocacheMiddleware, cdesvc.versionById);
-    app.get("/dataElement/id/:id/xml/", exportShared.nocacheMiddleware, function (req, res) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-        res.setHeader("Content-Type", "application/xml");
-        mongo_cde.byId(req.params.id, function (err, dataElement) {
-            if (err) return res.status(500).send();
-            else {
-                mongo_data_system.addToViewHistory(dataElement, req.user);
-                mongo_cde.incDeView(dataElement);
-                let cde = cdesvc.hideProprietaryCodes(dataElement.toObject(), req.user);
-                res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
-            }
-        });
-    });
+    app.get("/dataElement/id/:id/xml/", exportShared.nocacheMiddleware, cdesvc.xmlById);
 
     app.get("/dataElement/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
     app.get("/dataElement/tinyId/:tinyId/version/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);

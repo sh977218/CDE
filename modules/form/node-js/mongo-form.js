@@ -27,8 +27,8 @@ exports.Form = Form;
 exports.elastic = elastic;
 
 exports.byTinyId = function (tinyId, callback) {
-    Form.findOne({'tinyId': tinyId, archived: false}, function (err, cde) {
-        callback(err, cde);
+    Form.findOne({'tinyId': tinyId, archived: false}, function (err, form) {
+        callback(err, form);
     });
 };
 
@@ -213,12 +213,6 @@ exports.byTinyIdListInOrder = function (idList, callback) {
         });
         callback(err, reorderedForms);
     });
-};
-
-exports.eltByTinyId = function (tinyId, callback) {
-    if (!tinyId) callback("tinyId is undefined!", null);
-    if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
-    else Form.findOne({'tinyId': tinyId, "archived": false}).exec(callback);
 };
 
 exports.removeAttachmentLinks = function (id) {

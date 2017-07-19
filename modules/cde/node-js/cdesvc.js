@@ -1,4 +1,5 @@
 var xml2js = require('xml2js')
+    , js2xml = require('js2xmlparser')
     , mongo_data = require('./mongo-cde')
     , mongo_cde = require('./mongo-cde')
     , mongo_data_system = require('../../system/node-js/mongo-data')
@@ -6,7 +7,24 @@ var xml2js = require('xml2js')
     , elastic = require('../../cde/node-js/elastic')
     , deValidator = require('../../cde/shared/deValidator')
     , vsac = require('./vsac-io')
+    , exportShared = require('../../system/shared/exportShared')
 ;
+
+exports.xmlById = function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.setHeader("Content-Type", "application/xml");
+    mongo_cde.byId(req.params.id, function (err, dataElement) {
+        if (err) return res.status(500).send();
+        else {
+            mongo_data_system.addToViewHistory(dataElement, req.user);
+            mongo_cde.incDeView(dataElement);
+            let cde = hideProprietaryCodes(dataElement.toObject(), req.user);
+            res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
+        }
+    });
+};
+
 exports.versionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     mongo_cde.versionByTinyId(tinyId, function (err, dataElement) {
@@ -204,8 +222,7 @@ exports.save = function (req, res) {
         elastic.fetchPVCodeSystemList();
     });
 };
-
-exports.hideProprietaryCodes = function (cdes, user) {
+let hideProprietaryCodes = function (cdes, user) {
     var hiddenFieldMessage = 'Login to see the value.';
     this.systemWhitelist = [
         "RXNORM"
@@ -251,6 +268,8 @@ exports.hideProprietaryCodes = function (cdes, user) {
     });
     return cdes;
 };
+
+exports.hideProprietaryCodes = hideProprietaryCodes;
 
 
 exports.checkEligibleToRetire = function (req, res, elt, cb) {

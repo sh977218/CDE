@@ -15,6 +15,22 @@ var text_validation_type_map = {
     "Date": "date"
 };
 
+exports.loopForm = function (form) {
+    function loopFormElements(fe) {
+        for (var i = 0; i < fe.formElements.length; i++) {
+            var e = fe.formElements[i];
+            if (e.elementType === 'section') {
+                return loopFormElements(e, true);
+            } else if (e.elementType !== 'question') {
+                return 'unknownElementType';
+            }
+        }
+        return false;
+    }
+
+    return loopFormElements(form, false);
+};
+
 function formatSkipLogic(text, map) {
     if (text) {
         text = text.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
