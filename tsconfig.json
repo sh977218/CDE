@@ -9,12 +9,12 @@
       "es2015",
       "dom"
     ],
-    "module": "ES2015",
+    "module": "ES201",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "es5",
+    "target": "es6",
     "types": [
       "node"
     ],
