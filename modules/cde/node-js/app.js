@@ -54,7 +54,7 @@ exports.init = function (app, daoManager) {
 
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
 
-    app.get('/viewingHistory', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/viewingHistory/dataElement', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send("You must be logged in to do that");
         } else {

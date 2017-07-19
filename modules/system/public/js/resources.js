@@ -167,9 +167,9 @@ angular.module('resourcesSystem', ['ngResource'])
         var viewHistoryResource = this;
 
         viewHistoryResource.deferred = $q.defer();
-        this.getViewingHistory = function () {
+        this.getDataElementViewingHistory = function () {
             viewHistoryResource.deferred = $q.defer();
-            $http.get('/viewingHistory').then(function (response) {
+            $http.get('/viewingHistory/dataElement').then(function (response) {
                 viewHistoryResource.deferred.resolve(response.data);
             });
         };
@@ -181,7 +181,7 @@ angular.module('resourcesSystem', ['ngResource'])
             });
         };
 
-        this.getViewingHistory();
+        this.getDataElementViewingHistory();
         this.getFormViewingHistory();
 
         this.getCdes = function () {
