@@ -1,9 +1,53 @@
-var js2xml = require('js2xmlparser');
-var async = require('async'), JXON = require('jxon'), archiver = require('archiver'),
-    mongo_form = require('./mongo-form'), mongo_data_system = require('../../system/node-js/mongo-data'),
-    mongo_cde = require('../../cde/node-js/mongo-cde'), adminSvc = require('../../system/node-js/adminItemSvc.js'),
-    authorization = require('../../system/node-js/authorization'), formShared = require('../shared/formShared'),
-    sdc = require('./sdcForm'), odm = require('./odmForm'), redCap = require('./redCapForm');
+var async = require("async");
+var JXON = require("jxon");
+var archiver = require("archiver");
+var _ = require("lodash");
+var mongo_form = require("./mongo-form");
+var mongo_data_system = require("../../system/node-js/mongo-data");
+var adminSvc = require("../../system/node-js/adminItemSvc.js");
+var authorization = require("../../system/node-js/authorization");
+var sdc = require("./sdcForm");
+var odm = require("./odmForm");
+var redCap = require("./redCapForm");
+
+function fetchWholeForm(Form, callback) {
+    let maxDepth = 8;
+    let depth = 0;
+    let form = _.cloneDeep(Form);
+    let loopFormElements = function (form, cb) {
+        if (form.formElements) {
+            async.forEach(form.formElements, function (fe, doneOne) {
+                if (fe.elementType === "form") {
+                    depth++;
+                    if (depth < maxDepth) {
+                        mongo_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
+                            result = result.toObject();
+                            fe.formElements = result.formElements;
+                            loopFormElements(fe, function () {
+                                depth--;
+                                doneOne();
+                            });
+                        });
+                    } else {
+                        doneOne();
+                    }
+                } else if (fe.elementType === "section") {
+                    loopFormElements(fe, function () {
+                        doneOne();
+                    });
+                } else {
+                    doneOne();
+                }
+            }, function doneAll() {
+                cb();
+            });
+        } else cb();
+    };
+    loopFormElements(form, function () {
+        if (form.toObject) form = form.toObject();
+        callback(form);
+    });
+}
 
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
@@ -93,7 +137,7 @@ exports.updateForm = function (req, res) {
                 if (err) return res.status(500).send(); else if (item) {
                     allowUpdate(user, item, function (err) {
                         if (err) res.status(500).send(); else mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
-                            let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+                            let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
                             if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
                                 let elt = req.body;
                                 mongo_form.update(elt, req.user, function (err, response) {
@@ -243,11 +287,11 @@ exports.sdcHtmlByTinyId = function (req, res) {
 };
 
 let redCapExportWarnings = {
-    'PhenX': 'You can download PhenX REDCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.',
-    'PROMIS / Neuro-QOL': 'You can download PROMIS / Neuro-QOL REDCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.',
-    'emptySection': 'REDCap cannot support empty section.',
-    'nestedSection': 'REDCap cannot support nested section.',
-    'unknownElementType': 'This form has error.'
+    "PhenX": "You can download PhenX REDCap from <a class='alert-link' href='https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist'>here</a>.",
+    "PROMIS / Neuro-QOL": "You can download PROMIS / Neuro-QOL REDCap from <a class='alert-link' href='http://project-redcap.org/'>here</a>.",
+    "emptySection": "REDCap cannot support empty section.",
+    "nestedSection": "REDCap cannot support nested section.",
+    "unknownElementType": "This form has error."
 };
 exports.redCapZipByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
@@ -260,21 +304,21 @@ exports.redCapZipByTinyId = function (req, res) {
                 if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
                 if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
                 res.writeHead(200, {
-                    'Content-Type': 'application/zip',
-                    'Content-disposition': 'attachment; filename=' + wholeForm.naming[0].designation + '.zip'
+                    "Content-Type": "application/zip",
+                    "Content-disposition": "attachment; filename=" + wholeForm.naming[0].designation + ".zip"
                 });
-                let zip = archiver('zip', {});
-                zip.on('error', function (err) {
+                let zip = archiver("zip", {});
+                zip.on("error", function (err) {
                     res.status(500).send({error: err.message});
                 });
 
                 //on stream closed we can end the request
-                zip.on('end', function () {
+                zip.on("end", function () {
                 });
                 zip.pipe(res);
-                zip.append('NLM', {name: 'AuthorID.txt'})
-                    .append(form.tinyId, {name: 'InstrumentID.txt'})
-                    .append(redCap.formToRedCap(wholeForm), {name: 'instrument.csv'})
+                zip.append("NLM", {name: "AuthorID.txt"})
+                    .append(form.tinyId, {name: "InstrumentID.txt"})
+                    .append(redCap.formToRedCap(wholeForm), {name: "instrument.csv"})
                     .finalize();
             });
         });
@@ -292,21 +336,21 @@ exports.redCapZipById = function (req, res) {
                 if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
                 if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
                 res.writeHead(200, {
-                    'Content-Type': 'application/zip',
-                    'Content-disposition': 'attachment; filename=' + wholeForm.naming[0].designation + '.zip'
+                    "Content-Type": "application/zip",
+                    "Content-disposition": "attachment; filename=" + wholeForm.naming[0].designation + ".zip"
                 });
-                let zip = archiver('zip', {});
-                zip.on('error', function (err) {
+                let zip = archiver("zip", {});
+                zip.on("error", function (err) {
                     res.status(500).send({error: err.message});
                 });
 
                 //on stream closed we can end the request
-                zip.on('end', function () {
+                zip.on("end", function () {
                 });
                 zip.pipe(res);
-                zip.append('NLM', {name: 'AuthorID.txt'})
-                    .append(form.tinyId, {name: 'InstrumentID.txt'})
-                    .append(redCap.formToRedCap(wholeForm), {name: 'instrument.csv'})
+                zip.append("NLM", {name: "AuthorID.txt"})
+                    .append(form.tinyId, {name: "InstrumentID.txt"})
+                    .append(redCap.formToRedCap(wholeForm), {name: "instrument.csv"})
                     .finalize();
             });
         });
@@ -361,47 +405,5 @@ exports.xmlByTinyId = function (req, res) {
                 res.send(JXON.jsToString({element: exportForm}));
             });
         });
-    });
-};
-
-
-fetchWholeForm = function (Form, callback) {
-    let maxDepth = 8;
-    let depth = 0;
-    let form = JSON.parse(JSON.stringify(Form));
-    let loopFormElements = function (form, cb) {
-        if (form.formElements) {
-            async.forEach(form.formElements, function (fe, doneOne) {
-                if (fe.elementType === 'form') {
-                    depth++;
-                    if (depth < maxDepth) {
-                        mongo_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
-                            result = result.toObject();
-                            fe.formElements = result.formElements;
-                            loopFormElements(fe, function () {
-                                depth--;
-                                doneOne();
-                            });
-                        });
-                    } else {
-                        doneOne();
-                    }
-                } else if (fe.elementType === 'section') {
-                    loopFormElements(fe, function () {
-                        doneOne();
-                    });
-                } else {
-                    doneOne();
-                }
-            }, function doneAll() {
-                cb();
-            });
-        } else {
-            cb();
-        }
-    };
-    loopFormElements(form, function () {
-        if (form.toObject) form = form.toObject();
-        callback(form);
     });
 };
