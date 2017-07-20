@@ -74,7 +74,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         newQuestion.question.skipLogic = currentQuestion.question.skipLogic;
                         newQuestion.repeat = currentQuestion.repeat;
 
-                        this.http.get("/dataElement/" + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
+                        this.http.get("/dataElement/tinyId/" + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
                             .subscribe((newCde) => {
                                 let cdeUrl = currentQuestion.question.cde.tinyId +
                                     (currentQuestion.question.cde.version ? "/" + currentQuestion.question.cde.version : "");

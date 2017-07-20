@@ -2,15 +2,15 @@ import {
     Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef,
     ViewChild
 } from "@angular/core";
-import { Http, Response } from "@angular/http";
-import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import {Http, Response} from "@angular/http";
+import {NgbModal, NgbModalModule, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
-import { Observable } from "rxjs/Observable";
+import {Observable} from "rxjs/Observable";
 
-import { SkipLogicService } from "../../skipLogic.service";
-import { CdeForm, FormElement, FormQuestion, SkipLogic } from "../../form.model";
-import { TreeNode } from "angular-tree-component";
-import { FormattedValue } from "../../../../core/public/models.model";
+import {SkipLogicService} from "../../skipLogic.service";
+import {CdeForm, FormElement, FormQuestion, SkipLogic} from "../../form.model";
+import {TreeNode} from "angular-tree-component";
+import {FormattedValue} from "../../../../core/public/models.model";
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -142,7 +142,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     getAnswersData() {
-        return this.question.question.cde.permissibleValues.map(answer => { return {id: answer.permissibleValue, text: answer.valueMeaningName}; });
+        return this.question.question.cde.permissibleValues.map(answer => {
+            return {id: answer.permissibleValue, text: answer.valueMeaningName};
+        });
     }
 
     getAnswersValue() {
@@ -152,7 +154,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     getUoms() {
-        return this.question.question.uoms.map(uom => { return {id: uom, text: uom}; });
+        return this.question.question.uoms.map(uom => {
+            return {id: uom, text: uom};
+        });
     }
 
     isScore(formElt) {
@@ -163,8 +167,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.nameSelectModal.section = section;
         this.nameSelectModal.question = question;
         this.nameSelectModal.cde = question.question.cde;
-        let url = "/dataElement/" + this.nameSelectModal.cde.tinyId;
-        if (this.nameSelectModal.cde.version) url += "/" + this.nameSelectModal.cde.version;
+        let url = "/dataElement/tinyId/" + this.nameSelectModal.cde.tinyId;
+        if (this.nameSelectModal.cde.version) url += "/version/" + this.nameSelectModal.cde.version;
         this.http.get(url).map((res: Response) => res.json())
             .subscribe((response) => {
                 this.nameSelectModal.cde = response;

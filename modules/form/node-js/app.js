@@ -94,14 +94,12 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    if (config.modules.cde.comments) {
-        app.post('/comments/form/add', function (req, res) {
-            adminItemSvc.addComment(req, res, mongo_form);
-        });
-        app.post('/comments/form/remove', function (req, res) {
-            adminItemSvc.removeComment(req, res, mongo_form);
-        });
-    }
+    app.post('/comments/form/add', function (req, res) {
+        adminItemSvc.addComment(req, res, mongo_form);
+    });
+    app.post('/comments/form/remove', function (req, res) {
+        adminItemSvc.removeComment(req, res, mongo_form);
+    });
 
     app.post('/elasticSearchExport/form', function (req, res) {
         var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);

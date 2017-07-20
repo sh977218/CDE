@@ -126,10 +126,11 @@ exports.createForm = function (req, res) {
 
 exports.updateForm = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(500).send(); else {
+    if (!tinyId) return res.status(500).send();
+    else {
         if (req.isAuthenticated()) {
             let user = req.user;
-            mongo_form.eltByTinyId(tinyId, function (err, item) {
+            mongo_form.byTinyId(tinyId, function (err, item) {
                 if (err) return res.status(500).send(); else if (item) {
                     allowUpdate(user, item, function (err) {
                         if (err) res.status(500).send(); else mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
