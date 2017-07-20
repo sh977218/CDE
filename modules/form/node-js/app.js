@@ -1,23 +1,21 @@
-var express = require('express')
-    , path = require('path')
-    , formCtrl = require('./formCtrl')
-    , formSvc = require("./formsvc")
-    , mongo_form = require('./mongo-form')
-    , mongo_data_system = require('../../system/node-js/mongo-data')
-    , classificationNode_system = require('../../system/node-js/classificationNode')
-    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-    , config = require('../../system/node-js/parseConfig')
-    , multer = require('multer')
-    , sdc = require('./sdcForm')
-    , logging = require('../../system/node-js/logging')
-    , elastic_system = require('../../system/node-js/elastic')
-    , sharedElastic = require('../../system/node-js/elastic.js')
-    , exportShared = require('../../system/shared/exportShared')
-    , boardsvc = require('../../board/node-js/boardsvc')
-    , usersrvc = require('../../system/node-js/usersrvc')
-    , dns = require('dns')
-    , os = require('os')
-;
+var express = require('express');
+var path = require('path');
+var formCtrl = require('./formCtrl');
+var formSvc = require("./formsvc");
+var mongo_form = require('./mongo-form');
+var mongo_data_system = require('../../system/node-js/mongo-data');
+var classificationNode_system = require('../../system/node-js/classificationNode');
+var adminItemSvc = require('../../system/node-js/adminItemSvc.js');
+var config = require('../../system/node-js/parseConfig');
+var multer = require('multer');
+var logging = require('../../system/node-js/logging');
+var elastic_system = require('../../system/node-js/elastic');
+var sharedElastic = require('../../system/node-js/elastic.js');
+var exportShared = require('../../system/shared/exportShared');
+var boardsvc = require('../../board/node-js/boardsvc');
+var usersrvc = require('../../system/node-js/usersrvc');
+var dns = require('dns');
+var os = require('os');
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
@@ -114,8 +112,7 @@ exports.init = function (app, daoManager) {
                     res.type('application/json');
                     res.write("[");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send(err);
-                        else if (elt) {
+                        if (err) return res.status(500).send(err); else if (elt) {
                             if (!firstElt) res.write(',');
                             elt = exportShared.stripBsonIds(elt);
                             elt = elastic_system.removeElasticFields(elt);
@@ -162,18 +159,13 @@ exports.init = function (app, daoManager) {
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
         classificationNode_system.addClassification(req.body, mongo_form, function (err, result) {
             if (err) return res.status(500).send(err);
-            if (result === "Classification Already Exists") return res.status(409).send(result);
-            else res.send(result);
+            if (result === "Classification Already Exists") return res.status(409).send(result); else res.send(result);
             mongo_data_system.addToClassifAudit({
-                date: new Date(),
-                user: {
+                date: new Date(), user: {
                     username: req.user.username
-                },
-                elements: [{
+                }, elements: [{
                     _id: req.body.eltId
-                }],
-                action: "add",
-                path: [req.body.orgName].concat(req.body.categories)
+                }], action: "add", path: [req.body.orgName].concat(req.body.categories)
             });
 
         });
@@ -184,38 +176,23 @@ exports.init = function (app, daoManager) {
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
         classificationNode_system.removeClassification(req.body, mongo_form, function (err, elt) {
-            if (err) return res.status(500).send({error: err});
-            else res.send(elt);
+            if (err) return res.status(500).send({error: err}); else res.send(elt);
             mongo_data_system.addToClassifAudit({
-                date: new Date(),
-                user: {
+                date: new Date(), user: {
                     username: req.user.username
-                },
-                elements: [{
+                }, elements: [{
                     _id: req.body.eltId
-                }],
-                action: "delete",
-                path: [req.body.orgName].concat(req.body.categories)
+                }], action: "delete", path: [req.body.orgName].concat(req.body.categories)
             });
         });
     });
 
     // This is for tests only
     app.post('/sendMockFormData', function (req, res) {
-        if (
-            req.body.q1 === "1" &&
-            req.body.q2 === "2" &&
-            req.body.q3 === "Lab Name" &&
-            req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14936\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsLargerAlleleNum\"}],\"tinyId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14937\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsSmallerAlleleNum\"}],\"tinyId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C17744\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"MolecularStdyLabName\"}],\"tinyId\":\"EdUB2kWmV61\"}]}]}"
-        ) {
-            if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0)
-                res.send("<html><body>Form Submitted</body></html>");
-            else if (config.publicUrl.indexOf('localhost') === -1) {
+        if (req.body.q1 === "1" && req.body.q2 === "2" && req.body.q3 === "Lab Name" && req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14936\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsLargerAlleleNum\"}],\"tinyId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C14937\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"CAGRepeatsSmallerAlleleNum\"}],\"tinyId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"ids\":[{\"source\":\"NINDS\",\"id\":\"C17744\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"MolecularStdyLabName\"}],\"tinyId\":\"EdUB2kWmV61\"}]}]}") {
+            if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0) res.send("<html><body>Form Submitted</body></html>"); else if (config.publicUrl.indexOf('localhost') === -1) {
                 dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
-                    if (!err && req.body.formUrl.indexOf(result + "/data") === 0)
-                        res.send("<html><body>Form Submitted</body></html>");
-                    else
-                        res.status(401).send("<html><body>Not the right input</body></html>");
+                    if (!err && req.body.formUrl.indexOf(result + "/data") === 0) res.send("<html><body>Form Submitted</body></html>"); else res.status(401).send("<html><body>Not the right input</body></html>");
                 });
             } else {
                 let ifaces = os.networkInterfaces();
@@ -223,10 +200,7 @@ exports.init = function (app, daoManager) {
                         return ifaces[ifname].filter(iface => {
                             return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
                         }).length > 0;
-                    }))
-                    res.send("<html><body>Form Submitted</body></html>");
-                else
-                    res.status(401).send("<html><body>Not the right input</body></html>");
+                    })) res.send("<html><body>Form Submitted</body></html>"); else res.status(401).send("<html><body>Not the right input</body></html>");
             }
         } else {
             res.status(401).send("<html><body>Not the right input</body></html>");

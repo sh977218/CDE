@@ -254,12 +254,14 @@ exports.sdcHtmlById = function (req, res) {
     if (!id) res.status(500).send();
     mongo_form.byId(id, function (err, form) {
         if (err || !form) return res.status(404).end(); else {
-            if (!req.user) adminSvc.hideProprietaryIds(form); else wipeRenderDisallowed(form, req, function () {
+            if (!req.user) adminSvc.hideProprietaryIds(form);
+            else wipeRenderDisallowed(form, req, function () {
                 fetchWholeForm(form, function (wholeForm) {
                     if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                    sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
+                    sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
                         res.header("Access-Control-Allow-Origin", "*");
                         res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                        res.setHeader("Content-Type", "application/xml");
                         res.send(txt);
                     });
                 });
@@ -272,12 +274,14 @@ exports.sdcHtmlByTinyId = function (req, res) {
     if (!tinyId) res.status(500).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err || !form) return res.status(404).end(); else {
-            if (!req.user) adminSvc.hideProprietaryIds(form); else wipeRenderDisallowed(form, req, function () {
+            if (!req.user) adminSvc.hideProprietaryIds(form);
+            else wipeRenderDisallowed(form, req, function () {
                 fetchWholeForm(form, function (wholeForm) {
                     if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                    sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
+                    sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
                         res.header("Access-Control-Allow-Origin", "*");
                         res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                        res.setHeader("Content-Type", "application/xml");
                         res.send(txt);
                     });
                 });
@@ -328,7 +332,7 @@ exports.redCapZipByTinyId = function (req, res) {
 exports.redCapZipById = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(500).send();
-    mongo_form.byTinyId(id, function (err, form) {
+    mongo_form.byId(id, function (err, form) {
         if (err || !form) return res.status(404).end(); else wipeRenderDisallowed(form, req, function () {
             fetchWholeForm(form, function (wholeForm) {
                 if (redCapExportWarnings[form.stewardOrg.name]) return res.status(202).send(redCapExportWarnings[wholeForm.stewardOrg.name]);

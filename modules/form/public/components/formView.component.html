@@ -57,13 +57,13 @@
                                 <a class="dropdown-item" id='sdcExport' href="form/id/{{elt._id}}/xml/sdc/"
                                    target="_blank">XML File, SDC Schema</a>
                                 <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
-                                   href="form/id/{{elt._id}}/xml/sdc/defaultHtml" target="_blank">
+                                   href="form/id/{{elt._id}}/html/sdc/" target="_blank">
                                     XML File, SDC Schema with XSL Transform</a>
                                 <a class="dropdown-item" id='nihXml' href="form/id/{{elt._id}}/xml/" target="_blank">
                                     XML File, NIH/CDE Schema</a>
                                 <a class="dropdown-item" id='formPublishExport' (click)="preparePublishExport()"
                                    target="_blank">Published Form</a>
-                                <a class="dropdown-item" id='nihRedCap' href="form/id/{{elt._id}}/REDCap/"
+                                <a class="dropdown-item" id='nihRedCap' href="form/id/{{elt._id}}/zip/redCap/"
                                    target="_blank">REDCap</a>
                             </ng-container>
                             <a class="dropdown-item" *ngIf="!isAllowedModel.isAllowed(elt)" href="login">
