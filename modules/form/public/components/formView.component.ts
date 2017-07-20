@@ -1,9 +1,9 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
-import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import {Component, Inject, Input, OnInit, ViewChild} from "@angular/core";
+import {Http} from "@angular/http";
+import {NgbModalRef, NgbModal, NgbModalModule} from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { AlertService } from "../../../system/public/components/alert/alert.service";
+import {AlertService} from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-form-view",
@@ -11,12 +11,15 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 })
 export class FormViewComponent implements OnInit {
     @ViewChild("copyFormContent") public copyFormContent: NgbModalModule;
+    @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @Input() elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
     commentMode;
     eltLoaded: boolean = false;
     currentTab = "general";
+
+    formInput;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -94,6 +97,26 @@ export class FormViewComponent implements OnInit {
 
     beforeChange(event) {
         this.currentTab = event.nextId;
+    }
+
+
+    openPreparePublishModal() {
+        this.formInput = {};
+        this.modalRef = this.modalService.open(this.publishFormContent, {size: "lg"});
+    };
+
+    publishForm() {
+        this.http.post("/form/publish/" + this.elt._id, {
+            publishedFormName: this.formInput.publishedFormName,
+            endpointUrl: this.formInput.endpointUrl
+        }).subscribe(
+            res => {
+                this.alert.addAlert("info", "Done. Go to your profile to see all your published forms");
+                this.modalRef.close();
+            }, err => {
+                this.alert.addAlert("danger", "Error when publishing form. " + err);
+                this.modalRef.close();
+            });
     }
 
     isIe() {

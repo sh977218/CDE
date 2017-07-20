@@ -61,7 +61,7 @@
                                     XML File, SDC Schema with XSL Transform</a>
                                 <a class="dropdown-item" id='nihXml' href="form/id/{{elt._id}}/xml/" target="_blank">
                                     XML File, NIH/CDE Schema</a>
-                                <a class="dropdown-item" id='formPublishExport' (click)="preparePublishExport()"
+                                <a class="dropdown-item" id='formPublishExport' (click)="openPreparePublishModal()"
                                    target="_blank">Published Form</a>
                                 <a class="dropdown-item" id='nihRedCap' href="form/id/{{elt._id}}/zip/redCap/"
                                    target="_blank">REDCap</a>
@@ -155,4 +155,42 @@
         <cde-create-form [elt]="eltCopy" (cancel)="closeCopyFormModal()"></cde-create-form>
     </div>
 </ng-template>
+<ng-template #publishFormContent id="publishFormModal" let-c="close" let-d="dismiss">
+    <form #createPublishedForm="ngForm">
+        <div class="modal-header" id="publishFormModalHeader">
+            <h3>Export to a Published Form</h3>
+        </div>
+        <div class="modal-body" id="publishFormModalBody">
+            <p class="text-info">This export will generate a published version of this form that will submit data to
+                the endpoint of your choice. Note that the NIH CDE Repository will not have access to any of the
+                submitted.
+                You will need to ensure that your endpoint meets your own security standards. A sample endpoint could be
+                a
+                Google Spreadsheet (via a Google Script published as a web app).
+            </p>
+            To get started, please follow these steps:
+            <div class="form-group">
+                <label for="publishedFormUrl">Copy paste that URL here:</label>
+                <input type="url" class="form-control" id="publishedFormUrl" [(ngModel)]="formInput.endpointUrl"
+                       name="publishedFormUrl" #endpointUrl="ngModel" required>
+                <p *ngIf="endpointUrl.errors">Not a valid URL.</p>
+                <p>Your published forms will appear in your profile.</p>
+            </div>
+            <div class="form-group">
+                <label for="publishedFormName">Give your published form a name so you can find it more easily.</label>
+                <input class="form-control" id="publishedFormName" [(ngModel)]="formInput.publishedFormName"
+                       name="publishedFormName" required>
+                Click "Publish my form" below and write down the final URL. This is the url you will open to start
+                recording your data.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" (click)="c()" id="cancelExport">Cancel</button>
+            <button class="btn btn-success" (click)="publishForm(formInput)" id="goExport"
+                    [disabled]="!createPublishedForm.form.valid">Publish my form.
+            </button>
+        </div>
+    </form>
+</ng-template>
+
 <cde-pin-modal #mltPinModal></cde-pin-modal>

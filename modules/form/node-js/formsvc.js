@@ -1,14 +1,16 @@
-var async = require("async");
-var JXON = require("jxon");
-var archiver = require("archiver");
-var _ = require("lodash");
-var mongo_form = require("./mongo-form");
-var mongo_data_system = require("../../system/node-js/mongo-data");
-var adminSvc = require("../../system/node-js/adminItemSvc.js");
-var authorization = require("../../system/node-js/authorization");
-var sdc = require("./sdcForm");
-var odm = require("./odmForm");
-var redCap = require("./redCapForm");
+let async = require("async");
+let JXON = require("jxon");
+let archiver = require("archiver");
+let _ = require("lodash");
+let mongo_form = require("./mongo-form");
+let mongo_data_system = require("../../system/node-js/mongo-data");
+let adminSvc = require("../../system/node-js/adminItemSvc.js");
+let authorization = require("../../system/node-js/authorization");
+let sdc = require("./sdcForm");
+let odm = require("./odmForm");
+let redCap = require("./redCapForm");
+let publishForm = require("./publishForm");
+
 
 function fetchWholeForm(Form, callback) {
     let maxDepth = 8;
@@ -126,8 +128,7 @@ exports.createForm = function (req, res) {
 
 exports.updateForm = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(500).send();
-    else {
+    if (!tinyId) return res.status(500).send(); else {
         if (req.isAuthenticated()) {
             let user = req.user;
             mongo_form.byTinyId(tinyId, function (err, item) {
@@ -399,5 +400,15 @@ exports.xmlByTinyId = function (req, res) {
                 res.send(JXON.jsToString({element: exportForm}));
             });
         });
+    });
+};
+
+
+exports.publishForm = function (req, res) {
+    let id = req.params.id;
+    if (!id) return res.status(500).send();
+    if (!req.isAuthenticated()) return res.status(401).send("Not Authorized");
+    mongo_form.byId(id, function (err, form) {
+        publishForm.getFormForPublishing(form, req, res);
     });
 };

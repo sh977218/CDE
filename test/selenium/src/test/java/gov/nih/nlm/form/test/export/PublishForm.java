@@ -8,8 +8,9 @@ public class PublishForm extends NlmCdeBaseTest {
 
     @Test
     public void publishForm() {
+        String formName = "DNA Elements - Information from the Laboratory";
         mustBeLoggedInAs(reguser_username, password);
-        goToFormByName("DNA Elements - Information from the Laboratory");
+        goToFormByName(formName);
         clickElement(By.id("export"));
         clickElement(By.id("formPublishExport"));
         findElement(By.name("endpointUrl")).sendKeys(baseUrl + "/sendMockFormData");
