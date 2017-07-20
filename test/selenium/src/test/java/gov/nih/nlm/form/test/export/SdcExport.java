@@ -11,7 +11,9 @@ public class SdcExport extends NlmCdeBaseTest {
 
     @Test
     public void sdcXmlExport() {
-        String response = get(baseUrl + "/form/tinyId/XySUBn_NZ/xml/sdc/").asString();
+        String url = baseUrl + "/form/tinyId/XySUBn_NZ/xml/sdc/";
+        System.out.println("url: " + url);
+        String response = get(url).asString();
         System.out.println("response: " + response);
         Assert.assertFalse(response.contains("<!-- Validation Error: Error:"));
         Assert.assertTrue(response.contains("<FormDesign xmlns=\"http://healthIT.gov/sdc\""));

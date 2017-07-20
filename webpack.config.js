@@ -71,10 +71,8 @@ module.exports = {
         modules: ["modules", "modules/components", "node_modules"]
     },
     devtool: prod ? '#source-map' : '#cheap-eval-source-map',
-//    watch: !prod,
-    watch: true,
-//    watchOptions: prod ? undefined :
-    watchOptions: {
+    watch: !prod,
+    watchOptions: prod ? undefined : {
         aggregateTimeout: 1000,
         ignored: /node_modules/
     },
