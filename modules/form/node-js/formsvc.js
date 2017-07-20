@@ -1,9 +1,9 @@
-let js2xml = require('js2xmlparser'), async = require('async'), JXON = require('jxon'),
+var js2xml = require('js2xmlparser');
+var async = require('async'), JXON = require('jxon'), archiver = require('archiver'),
     mongo_form = require('./mongo-form'), mongo_data_system = require('../../system/node-js/mongo-data'),
     mongo_cde = require('../../cde/node-js/mongo-cde'), adminSvc = require('../../system/node-js/adminItemSvc.js'),
     authorization = require('../../system/node-js/authorization'), formShared = require('../shared/formShared'),
-    sdc = require('./sdcForm'), odm = require('./odmForm'), archiver = require('archiver'),
-    redCap = require('./redCapForm');
+    sdc = require('./sdcForm'), odm = require('./odmForm'), redCap = require('./redCapForm');
 
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
