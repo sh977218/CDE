@@ -15,7 +15,7 @@ public abstract class RegStatusTest extends CommonTest {
 
 
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
+        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Recorded");
         clickElement(By.id("cancelRegStatus"));
         modalGone();
         goToEltByName(eltName);
@@ -41,7 +41,7 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified");
 
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
+        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Recorded");
         textPresent("Recorded elements are not visible by default");
         findElement(By.name("effectiveDate")).sendKeys("09/15/2013");
         findElement(By.name("untilDate")).sendKeys("10/31/2014");
@@ -71,7 +71,7 @@ public abstract class RegStatusTest extends CommonTest {
 
 
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
+        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");
         clickElement(By.id("saveRegStatus"));
         closeAlert();
@@ -90,7 +90,7 @@ public abstract class RegStatusTest extends CommonTest {
 
 
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
+        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Standard");
         textPresent("Standard elements cannot be edited by their stewards");
         clickElement(By.id("saveRegStatus"));
         closeAlert();
