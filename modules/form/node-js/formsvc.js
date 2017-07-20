@@ -19,18 +19,14 @@ function fetchWholeForm(Form, callback) {
             async.forEach(form.formElements, function (fe, doneOne) {
                 if (fe.elementType === "form") {
                     depth++;
-                    if (depth < maxDepth) {
-                        mongo_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
-                            result = result.toObject();
-                            fe.formElements = result.formElements;
-                            loopFormElements(fe, function () {
-                                depth--;
-                                doneOne();
-                            });
+                    if (depth < maxDepth) mongo_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
+                        result = result.toObject();
+                        fe.formElements = result.formElements;
+                        loopFormElements(fe, function () {
+                            depth--;
+                            doneOne();
                         });
-                    } else {
-                        doneOne();
-                    }
+                    }); else doneOne();
                 } else if (fe.elementType === "section") {
                     loopFormElements(fe, function () {
                         doneOne();
@@ -214,15 +210,14 @@ exports.sdcXmlById = function (req, res) {
     if (!id) res.status(500).send();
     mongo_form.byId(id, function (err, form) {
         if (err || !form) return res.status(404).end(); else {
-            if (!req.user) adminSvc.hideProprietaryIds(form); else wipeRenderDisallowed(form, req, function () {
-                fetchWholeForm(form, function (wholeForm) {
-                    if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                    sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
-                        res.header("Access-Control-Allow-Origin", "*");
-                        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                        res.setHeader("Content-Type", "application/xml");
-                        res.send(txt);
-                    });
+            if (!req.user) adminSvc.hideProprietaryIds(form);
+            fetchWholeForm(form, function (wholeForm) {
+                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+                sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
+                    res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    res.setHeader("Content-Type", "application/xml");
+                    res.send(txt);
                 });
             });
         }
@@ -234,15 +229,14 @@ exports.sdcXmlByTinyId = function (req, res) {
     if (!tinyId) res.status(500).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err || !form) return res.status(404).end(); else {
-            if (!req.user) adminSvc.hideProprietaryIds(form); else wipeRenderDisallowed(form, req, function () {
-                fetchWholeForm(form, function (wholeForm) {
-                    if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                    sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
-                        res.header("Access-Control-Allow-Origin", "*");
-                        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                        res.setHeader("Content-Type", "application/xml");
-                        res.send(txt);
-                    });
+            if (!req.user) adminSvc.hideProprietaryIds(form);
+            fetchWholeForm(form, function (wholeForm) {
+                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+                sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
+                    res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    res.setHeader("Content-Type", "application/xml");
+                    res.send(txt);
                 });
             });
         }
@@ -255,17 +249,16 @@ exports.sdcHtmlById = function (req, res) {
     mongo_form.byId(id, function (err, form) {
         if (err || !form) return res.status(404).end(); else {
             if (!req.user) adminSvc.hideProprietaryIds(form);
-            else wipeRenderDisallowed(form, req, function () {
-                fetchWholeForm(form, function (wholeForm) {
-                    if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                    sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
-                        res.header("Access-Control-Allow-Origin", "*");
-                        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                        res.setHeader("Content-Type", "application/xml");
-                        res.send(txt);
-                    });
+            fetchWholeForm(form, function (wholeForm) {
+                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+                sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
+                    res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    res.setHeader("Content-Type", "application/xml");
+                    res.send(txt);
                 });
             });
+
         }
     });
 };
@@ -275,15 +268,13 @@ exports.sdcHtmlByTinyId = function (req, res) {
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err || !form) return res.status(404).end(); else {
             if (!req.user) adminSvc.hideProprietaryIds(form);
-            else wipeRenderDisallowed(form, req, function () {
-                fetchWholeForm(form, function (wholeForm) {
-                    if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                    sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
-                        res.header("Access-Control-Allow-Origin", "*");
-                        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                        res.setHeader("Content-Type", "application/xml");
-                        res.send(txt);
-                    });
+            fetchWholeForm(form, function (wholeForm) {
+                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+                sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
+                    res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    res.setHeader("Content-Type", "application/xml");
+                    res.send(txt);
                 });
             });
         }
@@ -301,30 +292,29 @@ exports.redCapZipByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(500).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err || !form) return res.status(404).end(); else wipeRenderDisallowed(form, req, function () {
-            fetchWholeForm(form, function (wholeForm) {
-                if (redCapExportWarnings[form.stewardOrg.name]) return res.status(202).send(redCapExportWarnings[wholeForm.stewardOrg.name]);
-                let validationErr = redCap.loopForm(wholeForm);
-                if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
-                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                res.writeHead(200, {
-                    "Content-Type": "application/zip",
-                    "Content-disposition": "attachment; filename=" + wholeForm.naming[0].designation + ".zip"
-                });
-                let zip = archiver("zip", {});
-                zip.on("error", function (err) {
-                    res.status(500).send({error: err.message});
-                });
-
-                //on stream closed we can end the request
-                zip.on("end", function () {
-                });
-                zip.pipe(res);
-                zip.append("NLM", {name: "AuthorID.txt"})
-                    .append(form.tinyId, {name: "InstrumentID.txt"})
-                    .append(redCap.formToRedCap(wholeForm), {name: "instrument.csv"})
-                    .finalize();
+        if (err || !form) return res.status(404).end();
+        fetchWholeForm(form, function (wholeForm) {
+            if (redCapExportWarnings[form.stewardOrg.name]) return res.status(202).send(redCapExportWarnings[wholeForm.stewardOrg.name]);
+            let validationErr = redCap.loopForm(wholeForm);
+            if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
+            if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+            res.writeHead(200, {
+                "Content-Type": "application/zip",
+                "Content-disposition": "attachment; filename=" + wholeForm.naming[0].designation + ".zip"
             });
+            let zip = archiver("zip", {});
+            zip.on("error", function (err) {
+                res.status(500).send({error: err.message});
+            });
+
+            //on stream closed we can end the request
+            zip.on("end", function () {
+            });
+            zip.pipe(res);
+            zip.append("NLM", {name: "AuthorID.txt"})
+                .append(form.tinyId, {name: "InstrumentID.txt"})
+                .append(redCap.formToRedCap(wholeForm), {name: "instrument.csv"})
+                .finalize();
         });
     });
 };
@@ -333,30 +323,29 @@ exports.redCapZipById = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(500).send();
     mongo_form.byId(id, function (err, form) {
-        if (err || !form) return res.status(404).end(); else wipeRenderDisallowed(form, req, function () {
-            fetchWholeForm(form, function (wholeForm) {
-                if (redCapExportWarnings[form.stewardOrg.name]) return res.status(202).send(redCapExportWarnings[wholeForm.stewardOrg.name]);
-                let validationErr = redCap.loopForm(wholeForm);
-                if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
-                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                res.writeHead(200, {
-                    "Content-Type": "application/zip",
-                    "Content-disposition": "attachment; filename=" + wholeForm.naming[0].designation + ".zip"
-                });
-                let zip = archiver("zip", {});
-                zip.on("error", function (err) {
-                    res.status(500).send({error: err.message});
-                });
-
-                //on stream closed we can end the request
-                zip.on("end", function () {
-                });
-                zip.pipe(res);
-                zip.append("NLM", {name: "AuthorID.txt"})
-                    .append(form.tinyId, {name: "InstrumentID.txt"})
-                    .append(redCap.formToRedCap(wholeForm), {name: "instrument.csv"})
-                    .finalize();
+        if (err || !form) return res.status(404).end();
+        fetchWholeForm(form, function (wholeForm) {
+            if (redCapExportWarnings[form.stewardOrg.name]) return res.status(202).send(redCapExportWarnings[wholeForm.stewardOrg.name]);
+            let validationErr = redCap.loopForm(wholeForm);
+            if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
+            if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+            res.writeHead(200, {
+                "Content-Type": "application/zip",
+                "Content-disposition": "attachment; filename=" + wholeForm.naming[0].designation + ".zip"
             });
+            let zip = archiver("zip", {});
+            zip.on("error", function (err) {
+                res.status(500).send({error: err.message});
+            });
+
+            //on stream closed we can end the request
+            zip.on("end", function () {
+            });
+            zip.pipe(res);
+            zip.append("NLM", {name: "AuthorID.txt"})
+                .append(form.tinyId, {name: "InstrumentID.txt"})
+                .append(redCap.formToRedCap(wholeForm), {name: "instrument.csv"})
+                .finalize();
         });
     });
 };
