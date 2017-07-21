@@ -44,9 +44,7 @@ schemas.dataElementSchema.pre('save', function (next) {
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 exports.DataElement = DataElement;
 
-
 exports.elastic = elastic;
-
 
 exports.byTinyIdVersion = function (tinyId, version, cb) {
     let cond = {'tinyId': tinyId};

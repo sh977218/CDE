@@ -147,8 +147,10 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             }
         }
 
-        Assert.assertEquals(findElement(By.xpath("//div[@id='classificationBody']//*[@id='" + selector + "']")).getText(),
+        Assert.assertEquals(findElement(By.xpath("//div[@id='classificationBody']//*[@id ='" + categories[0] + "']//*[@id='" + selector + "']")).getText(),
                 categories[categories.length - 1]);
+        textPresent("Classification added.");
+        closeAlert();
     }
 
     private void _addExistClassificationMethodDo(String[] categories) {

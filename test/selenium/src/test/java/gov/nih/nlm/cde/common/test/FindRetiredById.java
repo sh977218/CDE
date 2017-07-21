@@ -10,7 +10,6 @@ public class FindRetiredById extends NlmCdeBaseTest {
         String cdeName = "Skull fracture anatomic site";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("editStatus"));
         editRegistrationStatus("Retired", null, null, null, null);
         textPresent("Data Element saved.");
         closeAlert();
@@ -23,7 +22,6 @@ public class FindRetiredById extends NlmCdeBaseTest {
         String formName = "PTSD Checklist - Civilian (PCL-C)";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.id("editStatus"));
         editRegistrationStatus("Retired", null, null, null, null);
         textPresent("Form saved.");
         closeAlert();

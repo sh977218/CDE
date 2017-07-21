@@ -1,8 +1,8 @@
-import {Component, Inject, Input, ViewChild, OnInit, Output, EventEmitter} from "@angular/core";
-import {Http} from "@angular/http";
-import {NgbModalModule, NgbModal, NgbModalRef,} from "@ng-bootstrap/ng-bootstrap";
-import {OrgHelperService} from "../../../core/public/orgHelper.service";
-import {AlertService} from "../../../system/public/components/alert/alert.service";
+import { Component, Inject, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
+import { Http } from "@angular/http";
+import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { OrgHelperService } from "../../../core/public/orgHelper.service";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 import "rxjs/add/operator/map";
 

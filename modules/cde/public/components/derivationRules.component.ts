@@ -1,6 +1,6 @@
-import {Http} from "@angular/http";
-import {Component, DoCheck, Inject, Input, ViewChild, OnChanges,} from "@angular/core";
-import {NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef,} from "@ng-bootstrap/ng-bootstrap";
+import { Http } from "@angular/http";
+import { Component, DoCheck, Inject, Input, ViewChild, OnChanges, } from "@angular/core";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-derivation-rules",

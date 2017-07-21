@@ -81,7 +81,6 @@ export class ClassificationComponent {
             eltId: this.elt._id,
             orgName: event.selectedOrg
         };
-
         this.http.post(urlMap[this.elt.elementType].add, postBody).subscribe(
             () => {
                 this.updateClassificationLocalStorage(postBody);
