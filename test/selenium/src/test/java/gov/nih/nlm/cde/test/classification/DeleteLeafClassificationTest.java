@@ -8,8 +8,9 @@ public class DeleteLeafClassificationTest extends NlmCdeBaseTest {
 
     @Test
     public void deleteLeafClassification() {
+        String cdeName = "Spectroscopy geometry location not applicable indicator";
         mustBeLoggedInAs(classificationMgtUser_username, password);
-        goToCdeByName("Spectroscopy geometry location not applicable indicator");
+        goToCdeByName(cdeName);
         clickElement(By.id("classification_tab"));
         findElement(By.xpath("//*[@id='Domain,Assessments and Examinations,Imaging Diagnostics']"));
         removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});

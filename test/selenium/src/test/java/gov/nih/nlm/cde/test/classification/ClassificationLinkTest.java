@@ -7,7 +7,8 @@ import org.testng.annotations.Test;
 public class ClassificationLinkTest extends NlmCdeBaseTest {
     @Test
     public void classificationLink() {
-        goToCdeByName("Spectroscopy water signal removal filter text");
+        String cdeName = "Spectroscopy water signal removal filter text";
+        goToCdeByName(cdeName);
         clickElement(By.id("classification_tab"));
         clickElement(By.xpath("//*[@id='Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics']"));
         showSearchFilters();
