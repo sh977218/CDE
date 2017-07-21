@@ -74,7 +74,7 @@ function classify(steward, categories, elt) {
     classificationShared.addCategory(steward.object, body.categories, function (err) {
         classification.saveCdeClassif(err, elt, cb);
     });
-};
+}
 
 exports.isInvalidatedClassificationRequest = function (req) {
     if (!req.body || !req.body.eltId || !req.body.categories || !(req.body.categories instanceof Array) || !req.body.orgName)

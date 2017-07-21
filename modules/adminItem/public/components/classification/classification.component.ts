@@ -95,13 +95,20 @@ export class ClassificationComponent {
     }
 
     updateClassificationLocalStorage(item) {
+        let allPossibleCategories = [];
+        let accumulateCategories = [];
+        item.categories.forEach(i => {
+            allPossibleCategories.push(accumulateCategories.concat([i]));
+            accumulateCategories.push(i);
+        });
         let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
         if (!recentlyClassification) recentlyClassification = [];
-        recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) o.eltId = o.cdeId;
-            return _.isEqual(o, item);
-        });
-        recentlyClassification.unshift(item);
+        allPossibleCategories.forEach(i => recentlyClassification.unshift({
+            categories: i,
+            eltId: item.eltId,
+            orgName: item.orgName
+        }));
+        recentlyClassification = _.uniqWith(recentlyClassification, (a, b) => _.isEqual(a.categories, b.categories) && _.isEqual(a.orgName, b.orgName));
         this.localStorageService.set("classificationHistory", recentlyClassification);
     }
 

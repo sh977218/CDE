@@ -1153,4 +1153,64 @@ public class NlmCdeBaseTest {
         clickElement(By.id("saveRegStatus"));
     }
 
+    protected void checkRecentlyUsedClassifications(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        clickElement(By.id("recentlyAddViewTab"));
+        String recentlyClassificationString = org;
+        for (int i = 0; i < classificationArray.length; i++)
+            recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
+        textPresent(recentlyClassificationString, By.id("recentlyClassification_0"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
+    }
+
+    protected void addClassificationByTree(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        textPresent(classificationArray[0]);
+        String expanderStr = "";
+        for (int i = 0; i < classificationArray.length - 1; i++) {
+            expanderStr = expanderStr + classificationArray[i];
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
+            expanderStr += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
+        textPresent("Classification added.");
+        closeAlert();
+        for (int i = 1; i < classificationArray.length; i++)
+            textPresent(classificationArray[i], By.id("classificationOrg-" + org));
+    }
+
+    protected void addClassificationByRecentlyAdd(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        clickElement(By.id("recentlyAddViewTab"));
+        String recentlyClassificationString = org;
+        for (int i = 0; i < classificationArray.length; i++)
+            recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
+        String classifyBtnXpath = "//*[normalize-space( text() )='" + recentlyClassificationString + "']//button";
+        clickElement(By.xpath(classifyBtnXpath));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
+    }
+
+    protected void addExistingClassification(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        textPresent(classificationArray[0]);
+        String expanderStr = "";
+        for (int i = 0; i < classificationArray.length - 1; i++) {
+            expanderStr = expanderStr + classificationArray[i];
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
+            expanderStr += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
+        textPresent("Classification Already Exists");
+        closeAlert();
+    }
+
+
 }
