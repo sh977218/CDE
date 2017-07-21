@@ -55,7 +55,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         closeAlert();
 
         clickElement(By.id("classification_tab"));
-        _addClassificationMethod(new String[]{orgWG, classification, subClassification});
+        addClassificationByTree(orgWG, new String[]{classification, subClassification});
         waitForESUpdate();
         // Make sure ctepCurator user can see it
         goToCdeSearch();

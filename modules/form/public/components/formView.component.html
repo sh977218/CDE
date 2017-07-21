@@ -95,7 +95,7 @@
                                                   (stage-elt)="stageElt()"></cde-form-description>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab id="naming_tab" title="Naming">
+                    <ngb-tab id="naming_tab" title="Naming" [ngClass]="{'highlightedTab':commentMode}">
                         <ng-template ngbTabContent>
                             <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
                         </ng-template>
