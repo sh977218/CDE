@@ -66,10 +66,10 @@ exports.byTinyId = function (req, res) {
     if (!tinyId) res.status(500).send();
     else mongo_cde.byTinyId(tinyId, function (err, dataElement) {
         if (err) res.status(500).send(err);
-        else {
-            mongo_data_system.addToViewHistory(dataElement, req.user);
-            res.send(dataElement);
-        }
+        if (!req.user) hideProprietaryCodes(dataElement);
+        mongo_data_system.addToViewHistory(dataElement, req.user);
+        res.send(dataElement);
+
     });
 };
 
@@ -222,19 +222,9 @@ exports.save = function (req, res) {
         elastic.fetchPVCodeSystemList();
     });
 };
-let hideProprietaryCodes = function (cdes, user) {
+var hideProprietaryCodes = function (cdes, user) {
     var hiddenFieldMessage = 'Login to see the value.';
-    this.systemWhitelist = [
-        "RXNORM"
-        , "HSLOC"
-        , "CDCREC"
-        , "SOP"
-        , "AHRQ"
-        , "HL7"
-        , "CDC Race and Ethnicity"
-        , "NCI"
-        , "UMLS"
-    ];
+    this.systemWhitelist = ["RXNORM", "HSLOC", "CDCREC", "SOP", "AHRQ", "HL7", "CDC Race and Ethnicity", "NCI", "UMLS"];
     this.censorPv = function (pvSet) {
         var toBeCensored = true;
         this.systemWhitelist.forEach(function (system) {

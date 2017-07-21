@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Inject, Input, Output, ViewChild} from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import {NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef,} from "@ng-bootstrap/ng-bootstrap";
-import {AlertService} from "../../../system/public/components/alert/alert.service";
-import {Http} from "@angular/http";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { Http } from "@angular/http";
 
 @Component({
     selector: "cde-admin-item-reference-document",

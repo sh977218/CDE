@@ -492,7 +492,7 @@ exports.declineComment = function (req, res) {
             comment.remove(function (err) {
                 if (err) res.status(500).send();
                 return res.send("Comment declined");
-            })
+            });
         }
     });
 };
