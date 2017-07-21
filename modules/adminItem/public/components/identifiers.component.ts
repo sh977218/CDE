@@ -36,20 +36,19 @@ export class IdentifiersComponent {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Identifier added. Save to confirm.");
             this.modalRef.close();
-        } else if (this.elt.elementType === "cde") {
-            this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+        } else {
+            let url;
+            if (this.elt.elementType === "cde")
+                url = "/dataElement/tinyId/";
+            if (this.elt.elementType === "form")
+                url = "/form/tinyId/";
+            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
                 if (res) {
                     this.elt = res;
-                    this.alert.addAlert("success", "Identifier Added");
+                    this.alert.addAlert("success", "Identifier added.");
                     this.modalRef.close();
                 }
             }, err => this.alert.addAlert("danger", err));
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.alert.addAlert("success", "Identifier Added");
-                this.modalRef.close();
-            });
         }
     }
 
@@ -58,19 +57,18 @@ export class IdentifiersComponent {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Identifier removed. Save to confirm.");
         } else {
-            if (this.elt.elementType === "cde") {
-                this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                    if (res) {
-                        this.elt = res;
-                        this.alert.addAlert("success", "Identifier Removed");
-                    }
-                }, err => this.alert.addAlert("danger", err));
-            } else {
-                this.elt.$save(newElt => {
-                    this.elt = newElt;
-                    this.alert.addAlert("success", "Identifier Removed");
-                });
-            }
+            let url;
+            if (this.elt.elementType === "cde")
+                url = "/dataElement/tinyId/";
+            if (this.elt.elementType === "form")
+                url = "/form/tinyId/";
+            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+                if (res) {
+                    this.elt = res;
+                    this.alert.addAlert("success", "Identifier removed.");
+                    this.modalRef.close();
+                }
+            }, err => this.alert.addAlert("danger", err));
         }
     }
 

@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class FormChangeRegistrationStatusTest extends NlmCdeBaseTest {
     @Test
-    void cdeChangeRegistrationStatus() {
+    void formChangeRegistrationStatus() {
         String formName = "Form Status Test";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToFormByName(formName);

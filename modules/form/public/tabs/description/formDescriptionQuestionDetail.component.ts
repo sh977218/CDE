@@ -2,15 +2,15 @@ import {
     Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef,
     ViewChild
 } from "@angular/core";
-import {Http, Response} from "@angular/http";
-import {NgbModal, NgbModalModule, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import { Http, Response } from "@angular/http";
+import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
-import {Observable} from "rxjs/Observable";
+import { Observable } from "rxjs/Observable";
 
-import {SkipLogicService} from "../../skipLogic.service";
-import {CdeForm, FormElement, FormQuestion, SkipLogic} from "../../form.model";
-import {TreeNode} from "angular-tree-component";
-import {FormattedValue} from "../../../../core/public/models.model";
+import { SkipLogicService } from "../../skipLogic.service";
+import { CdeForm, FormElement, FormQuestion, SkipLogic } from "../../form.model";
+import { TreeNode } from "angular-tree-component";
+import { FormattedValue } from "../../../../core/public/models.model";
 
 @Component({
     selector: "cde-form-description-question-detail",

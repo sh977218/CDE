@@ -50,7 +50,7 @@
             <div class="modal-body" id="regStatusModalBody">
                 <div class="alert-warning">{{helpMessage}}</div>
                 <div class="form-group">
-                    <label for="registrationStatus">Registration Status</label>
+                    <label for="newRegistrationStatus">Registration Status</label>
                     <select id="newRegistrationStatus" class="form-control"
                             [(ngModel)]="newState.registrationStatus"
                             name="newRegistrationStatus" (ngModelChange)="setHelpMessage($event)">

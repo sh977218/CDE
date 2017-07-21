@@ -139,7 +139,6 @@
         <div class="row" *ngIf="elt.unsaved && !elt.pvNotValidMsg">
             <cde-update-element [elt]="elt" (discard)="reload($event);"
                                 (save)="saveDataElement($event)"></cde-update-element>
-            {{elt | json}}
         </div>
     </ng-container>
 </div>

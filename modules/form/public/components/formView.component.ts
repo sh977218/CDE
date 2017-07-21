@@ -1,9 +1,9 @@
-import {Component, Inject, Input, OnInit, ViewChild} from "@angular/core";
-import {Http} from "@angular/http";
-import {NgbModalRef, NgbModal, NgbModalModule} from "@ng-bootstrap/ng-bootstrap";
+import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Http } from "@angular/http";
+import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import {AlertService} from "../../../system/public/components/alert/alert.service";
+import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-form-view",

@@ -61,12 +61,12 @@
                 <label for="newDerivationRule.name">Name: </label>
                 <input class="form-control" id="newDerivationRule.name" name="scoreName"
                        [(ngModel)]="newDerivationRule.name" Placeholder="Score Name" required/>
-                </div>
+            </div>
             <div class="form-group">
                 <label for="newDerivationRule.inputs">Inputs: </label>
                 <div id="newDerivationRule.inputs">
-                    <span *ngIf="invalidCdeMessage === undefined">All {{quickBoard.elts.length}} CDEs in your quickboard.</span>
-                    <span *ngIf="invalidCdeMessage !== undefined" class="error-block">{{invalidCdeMessage}}</span>
+                    <span *ngIf="!invalidCdeMessage">All {{quickBoard.elts.length}} CDEs in your quickboard.</span>
+                    <span *ngIf="invalidCdeMessage" class="error-block">{{invalidCdeMessage}}</span>
                 </div>
             </div>
             <div class="form-group">
@@ -74,7 +74,7 @@
                 <span id="newDerivationRule.ruleType">Score</span>
             </div>
             <div class="form-group">
-                <label  for="newDerivationRule.formula">Formula: </label>
+                <label for="newDerivationRule.formula">Formula: </label>
                 <select class="form-control" id="newDerivationRule.formula" name="formula"
                         [(ngModel)]="newDerivationRule.formula">
                     <option value="sumAll">Sum of All</option>
@@ -88,7 +88,7 @@
             </button>
             <button class="btn btn-warning" (click)="addNewScore();"
                     [disabled]="someCdesInvalid() || !newScoreForm.form.valid"
-                    id="createDerivationRule" type="submit">Save
+                    id="createDerivationRule">Save
             </button>
         </div>
     </form>

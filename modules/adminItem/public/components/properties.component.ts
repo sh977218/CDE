@@ -1,8 +1,8 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import { Http } from "@angular/http";
-import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { OrgHelperService } from "../../../core/public/orgHelper.service";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
+import {Component, Inject, Input, ViewChild, OnInit, Output, EventEmitter} from "@angular/core";
+import {Http} from "@angular/http";
+import {NgbModalModule, NgbModal, NgbModalRef,} from "@ng-bootstrap/ng-bootstrap";
+import {OrgHelperService} from "../../../core/public/orgHelper.service";
+import {AlertService} from "../../../system/public/components/alert/alert.service";
 
 import "rxjs/add/operator/map";
 
@@ -14,6 +14,8 @@ import "rxjs/add/operator/map";
 export class PropertiesComponent implements OnInit {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: any;
+    @Output() save = new EventEmitter();
+    @Output() remove = new EventEmitter();
     orgPropertyKeys: string[] = [];
     public newProperty: any = {};
     public modalRef: NgbModalRef;
@@ -49,20 +51,19 @@ export class PropertiesComponent implements OnInit {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property added. Save to confirm.");
             this.modalRef.close();
-        } else if (this.elt.elementType === "cde") {
-            this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+        } else {
+            let url;
+            if (this.elt.elementType === "cde")
+                url = "/dataElement/tinyId/";
+            if (this.elt.elementType === "form")
+                url = "/form/tinyId/";
+            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
                 if (res) {
                     this.elt = res;
-                    this.alert.addAlert("success", "Property Added");
+                    this.alert.addAlert("success", "Property added");
                     this.modalRef.close();
                 }
             }, err => this.alert.addAlert("danger", err));
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.alert.addAlert("success", "Property Added");
-                this.modalRef.close();
-            });
         }
     }
 
@@ -70,43 +71,53 @@ export class PropertiesComponent implements OnInit {
         this.elt.properties.splice(index, 1);
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property removed. Save to confirm.");
-        } else if (this.elt.elementType === "cde") {
-            this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+        } else {
+            let url;
+            if (this.elt.elementType === "cde")
+                url = "/dataElement/tinyId/";
+            if (this.elt.elementType === "form")
+                url = "/form/tinyId/";
+            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
                 if (res) {
                     this.elt = res;
-                    this.alert.addAlert("success", "Property Removed");
+                    this.alert.addAlert("success", "Property removed.");
+                    this.modalRef.close();
                 }
             }, err => this.alert.addAlert("danger", err));
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.alert.addAlert("success", "Property Removed.");
-            });
         }
     }
 
     saveProperty() {
-        this.elt.$save(newElt => {
-            this.elt = newElt;
-            this.alert.addAlert("success", "Property Saved.");
-        });
+        let url;
+        if (this.elt.elementType === "cde")
+            url = "/dataElement/tinyId/";
+        if (this.elt.elementType === "form")
+            url = "/form/tinyId/";
+        this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+            if (res) {
+                this.elt = res;
+                this.alert.addAlert("success", "Property saved.");
+                this.modalRef.close();
+            }
+        }, err => this.alert.addAlert("danger", err));
     };
 
     reorderProperty() {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property reordered. Save to confirm.");
-        } else if (this.elt.elementType === "cde") {
-            this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+        } else {
+            let url;
+            if (this.elt.elementType === "cde")
+                url = "/dataElement/tinyId/";
+            if (this.elt.elementType === "form")
+                url = "/form/tinyId/";
+            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
                 if (res) {
                     this.elt = res;
-                    this.alert.addAlert("success", "Property Reordered.");
+                    this.alert.addAlert("success", "Property reordered.");
+                    this.modalRef.close();
                 }
             }, err => this.alert.addAlert("danger", err));
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.alert.addAlert("success", "Property Reordered");
-            });
         }
     }
 

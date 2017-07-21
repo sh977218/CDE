@@ -953,7 +953,7 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
-        textPresent("Property Added");
+        textPresent("Property added");
         closeAlert();
     }
 
@@ -965,7 +965,7 @@ public class NlmCdeBaseTest {
     protected void removeProperty(int index) {
         clickElement(By.id("removeProperty-" + index));
         clickElement(By.id("confirmRemoveProperty-" + index));
-        textPresent("Property Removed");
+        textPresent("Property removed");
         closeAlert();
     }
 
@@ -980,7 +980,7 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewReferenceDocumentBtn"));
         modalGone();
-        textPresent("Reference Document Added");
+        textPresent("Reference document added");
         closeAlert();
     }
 
@@ -1002,7 +1002,7 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier Added");
+        textPresent("Identifier added");
         closeAlert();
     }
 
@@ -1069,7 +1069,7 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier Added");
+        textPresent("Identifier added");
         closeAlert();
         hangon(1);
     }
@@ -1126,6 +1126,7 @@ public class NlmCdeBaseTest {
      * @param unresolvedIssue    Unresolved Issue.
      */
     protected void editRegistrationStatus(String status, String effectiveDate, String untilDate, String administrativeNote, String unresolvedIssue) {
+        clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText(status);
         if (status.equals("Preferred Standard"))
             textPresent("Preferred Standard elements cannot be edited by their stewards");
