@@ -97,7 +97,7 @@ export class PropertiesComponent implements OnInit {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Property saved.");
-                this.modalRef.close();
+                if (this.modalRef) this.modalRef.close();
             }
         }, err => this.alert.addAlert("danger", err));
     };
