@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { OrgHelperService } from "../../../../core/public/orgHelper.service";
@@ -18,15 +18,11 @@ export class DeGeneralDetailsComponent {
     }
 
     @Input() elt: any;
+    @Output() save = new EventEmitter();
 
     editDtMode: boolean;
 
     saveDataElement() {
-        this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-            if (res) {
-                this.elt = res;
-                this.alert.addAlert("success", "Data Element saved.");
-            }
-        }, err => this.alert.addAlert("danger", err));
+        this.save.emit();
     }
 }

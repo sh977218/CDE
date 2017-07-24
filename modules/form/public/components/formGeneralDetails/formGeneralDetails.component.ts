@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 import { Http } from "@angular/http";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
@@ -15,13 +15,9 @@ export class FormGeneralDetailsComponent {
     }
 
     @Input() elt: any;
+    @Output() save = new EventEmitter();
 
     saveForm() {
-        this.http.put("/form/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-            if (res) {
-                this.elt = res;
-                this.alert.addAlert("success", "Form saved.");
-            }
-        }, err => this.alert.addAlert("danger", err));
+        this.save.emit();
     }
 }

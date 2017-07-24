@@ -70,7 +70,7 @@
                     <ngb-tab id="general_tab" title="General Details"
                              [ngClass]="{'highlightedTab':commentMode}">
                         <ng-template ngbTabContent>
-                            <cde-de-general-details [elt]="elt"></cde-de-general-details>
+                            <cde-de-general-details [elt]="elt" (save)="saveDataElement();"></cde-de-general-details>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="pvs_tab" title="Permissible Values">

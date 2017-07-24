@@ -85,7 +85,7 @@
                     <ngb-tab id="general_tab" title="General Details"
                              [ngClass]="{'highlightedTab':commentMode}">
                         <ng-template ngbTabContent>
-                            <cde-form-general-details [elt]="elt"></cde-form-general-details>
+                            <cde-form-general-details [elt]="elt" (save)="saveForm();"></cde-form-general-details>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="description_tab" title="Form Description">
