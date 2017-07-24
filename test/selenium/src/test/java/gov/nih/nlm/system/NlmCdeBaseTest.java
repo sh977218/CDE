@@ -1180,7 +1180,7 @@ public class NlmCdeBaseTest {
         textPresent("Classification added.");
         closeAlert();
         for (int i = 1; i < classificationArray.length; i++)
-            textPresent(classificationArray[i], By.id("classificationOrg-" + org));
+            textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
     }
 
     protected void addClassificationByRecentlyAdd(String org, String[] classificationArray) {
