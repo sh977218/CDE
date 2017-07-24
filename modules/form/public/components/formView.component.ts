@@ -4,6 +4,7 @@ import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstra
 import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 
 @Component({
     selector: "cde-form-view",
@@ -12,12 +13,14 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 export class FormViewComponent implements OnInit {
     @ViewChild("copyFormContent") public copyFormContent: NgbModalModule;
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
+    @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @Input() elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
     commentMode;
     eltLoaded: boolean = false;
-    currentTab = "general";
+    currentTab = "general_tab";
+    highlightedTabs = [];
 
     formInput;
 
@@ -97,6 +100,8 @@ export class FormViewComponent implements OnInit {
 
     beforeChange(event) {
         this.currentTab = event.nextId;
+        if (this.commentMode)
+            this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
 
@@ -123,6 +128,10 @@ export class FormViewComponent implements OnInit {
         let userAgent = window.navigator.userAgent;
         if (/internet explorer/i.test(userAgent)) return true;
         else return false;
+    }
+
+    loadHighlightedTabs($event) {
+        this.highlightedTabs = $event;
     }
 
 }

@@ -67,63 +67,122 @@
                     </button>
                 </h1>
                 <ngb-tabset (tabChange)="beforeChange($event)">
-                    <ngb-tab id="general_tab" title="General Details"
-                             [ngClass]="{'highlightedTab':commentMode}">
+                    <ngb-tab id="general_tab">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('general') !== -1}">
+                                General Details
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-de-general-details [elt]="elt" (save)="saveDataElement();"></cde-de-general-details>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab id="pvs_tab" title="Permissible Values">
+                    <ngb-tab id="pvs_tab">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('pvs') !== -1}">
+                                Permissible Values
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-permissible-value [elt]="elt"></cde-permissible-value>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="naming_tab" title="Naming">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}">
+                                Naming
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="classification_tab" title="Classification">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('classification') !== -1}">
+                                Classification
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-admin-item-classification [elt]="elt"></cde-admin-item-classification>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="concepts_tab" title="Concepts">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('concepts') !== -1}">
+                                Reference Documents
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-concepts [elt]="elt"></cde-concepts>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="referenceDocuments_tab" title="Reference Documents">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('referenceDocuments') !== -1}">
+                                Reference Documents
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-admin-item-reference-document [elt]="elt"></cde-admin-item-reference-document>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="properties_tab" title="Properties">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('properties') !== -1}">
+                                Properties
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-admin-item-properties [elt]="elt"></cde-admin-item-properties>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="ids_tab" title="Identifiers">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('ids') !== -1}">
+                                Identifiers
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-admin-item-ids [elt]="elt"></cde-admin-item-ids>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="attachments_tab" title="Attachments">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('attachments') !== -1}">
+                                Attachments
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-admin-item-attachments [elt]="elt"></cde-admin-item-attachments>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="history_tab" title="History">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('history') !== -1}">
+                                History
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-admin-item-history [elt]="elt"></cde-admin-item-history>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab id="derivationRules_tab" title="Score Derivations">
+                    <ngb-tab id="derivationRules_tab">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('scoreDerivations') !== -1}">
+                                Score Derivations
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-derivation-rules [elt]="elt"></cde-derivation-rules>
                         </ng-template>
                     </ngb-tab>
-                    <ngb-tab id="validRules_tab" title="Validation Rules">
+                    <ngb-tab id="validRules_tab">
+                        <ng-template ngbTabTitle>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('validationRules') !== -1}">
+                                Validation Rules
+                            </div>
+                        </ng-template>
                         <ng-template ngbTabContent>
                             <cde-valid-rules [elt]="elt"></cde-valid-rules>
                         </ng-template>
@@ -132,7 +191,7 @@
             </div>
             <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
                  style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-                <cde-discuss-area [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
                                   [eltName]="elt.naming[0].designation"></cde-discuss-area>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { Http } from "@angular/http";
 import { Comment } from "../../discuss.model";
 
@@ -8,7 +8,8 @@ import { TimerObservable } from "rxjs/observable/TimerObservable";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 const tabMap = {
-    "generalDetails_tab": "general",
+    "general_tab": "general",
+    "description_tab": "description",
     "pvs_tab": "pvs",
     "naming_tab": "naming",
     "classification_tab": "classification",
@@ -49,6 +50,8 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     @Input() public eltId: string;
     @Input() public eltName: string;
     @Input() public selectedElt: string;
+    @Input() highlightedTabs = [];
+    @Output() highlightedTabsChange = new EventEmitter();
 
     ngOnInit() {
         this.loadComments();
@@ -74,14 +77,14 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         this.http.get('/comments/eltId/' + this.eltId).map(r => r.json()).subscribe(response => {
             this.eltComments = response;
             this.eltComments.forEach(comment => {
-                if (comment.linkedTab) {
-                    // $scope.tabs[comment.linkedTab].highlight = true;
-                }
+                if (comment.linkedTab && this.highlightedTabs.indexOf(comment.linkedTab) === -1)
+                    this.highlightedTabs.push(comment.linkedTab);
                 this.addAvatar(comment.username);
                 if (comment.replies) {
                     comment.replies.forEach(r => this.addAvatar(r.username));
                 }
             });
+            this.highlightedTabsChange.emit(this.highlightedTabs);
             if (cb) cb();
         });
     };
@@ -145,4 +148,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     changeOnReply = (comment) => this.socket.emit('currentReplying', this.eltId, comment._id);
 
+    setCurrentTab($event) {
+        console.log("$event: " + $event);
+    }
 }

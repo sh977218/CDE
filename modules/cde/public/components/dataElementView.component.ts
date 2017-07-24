@@ -5,6 +5,7 @@ import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DataElementService } from "../dataElement.service";
+import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 
 @Component({
     selector: "cde-data-element-view",
@@ -12,12 +13,13 @@ import { DataElementService } from "../dataElement.service";
 })
 export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
+    @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @Input() elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
     commentMode;
     eltLoaded: boolean = false;
-    currentTab = "general";
+    currentTab = "general_tab";
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -96,5 +98,7 @@ export class DataElementViewComponent implements OnInit {
 
     beforeChange(event) {
         this.currentTab = event.nextId;
+        if (this.commentMode)
+            this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 }

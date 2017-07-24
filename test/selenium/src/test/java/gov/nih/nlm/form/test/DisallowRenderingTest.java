@@ -7,13 +7,14 @@ public class DisallowRenderingTest extends BaseFormTest {
 
     @Test
     public void disallowRendering() {
-        goToFormByName("Short Form 36-Item Health Survey (SF-36)");
+        String formName = "Short Form 36-Item Health Survey (SF-36)";
+        goToFormByName(formName);
         textNotPresent("In general, would you say");
         clickElement(By.id("description_tab"));
         textPresent("Rendering is disabled for this form");
 
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToFormByName("Short Form 36-Item Health Survey (SF-36)");
+        goToFormByName(formName);
         clickElement(By.id("description_tab"));
         textPresent("In general, would you say");
         clickElement(By.id("general_tab"));
@@ -21,7 +22,7 @@ public class DisallowRenderingTest extends BaseFormTest {
         saveForm();
 
         mustBeLoggedOut();
-        goToFormByName("Short Form 36-Item Health Survey (SF-36)");
+        goToFormByName(formName);
         textPresent("In general, would you say");
         clickElement(By.id("description_tab"));
         textPresent("In general, would you say");

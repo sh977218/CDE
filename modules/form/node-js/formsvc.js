@@ -48,28 +48,34 @@ function fetchWholeForm(Form, callback) {
 }
 
 function wipeRenderDisallowed(form, req, cb) {
-    if (form && form.noRenderAllowed) authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
-        if (!isYouAllowed) form.formElements = [];
-        cb();
-    }); else cb();
+    if (form && form.noRenderAllowed) {
+        authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
+            if (!isYouAllowed) form.formElements = [];
+            cb();
+        });
+    } else cb();
 }
 
 exports.byId = function (req, res) {
     let id = req.params.id;
-    if (!id) res.status(500).send(); else mongo_form.byId(id, function (err, form) {
-        if (err) res.status(500).send(err); else {
+    if (!id) return res.status(500).send();
+    mongo_form.byId(id, function (err, form) {
+        if (err) return res.status(500).send(err);
+        wipeRenderDisallowed(form, req, function () {
             mongo_data_system.addToViewHistory(form, req.user);
             res.send(form);
-        }
+        });
     });
 };
 exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) res.status(500).send(); else mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err) res.status(500).send(err); else {
+    if (!tinyId) return res.status(500).send();
+    mongo_form.byTinyId(tinyId, function (err, form) {
+        if (err) return res.status(500).send(err);
+        wipeRenderDisallowed(form, req, function () {
             mongo_data_system.addToViewHistory(form, req.user);
             res.send(form);
-        }
+        });
     });
 };
 

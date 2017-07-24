@@ -8,9 +8,7 @@ import { AlertService } from "../../../../system/public/components/alert/alert.s
 })
 export class FormGeneralDetailsComponent {
 
-    constructor(private http: Http,
-                private alert: AlertService,
-                @Inject("isAllowedModel") public isAllowedModel,
+    constructor(@Inject("isAllowedModel") public isAllowedModel,
                 @Inject("userResource") public userService) {
     }
 
