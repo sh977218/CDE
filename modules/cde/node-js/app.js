@@ -236,7 +236,7 @@ exports.init = function (app, daoManager) {
                 return res.send({result: JSON.parse(result.body).result});
             else
                 return res.send({result: []});
-        })
+        });
     });
 
     app.get('/searchUmls', function (req, res) {
@@ -257,7 +257,7 @@ exports.init = function (app, daoManager) {
             cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
         mongo_cde.update(cdeMergeFrom, req.user, function () {
             res.end();
-        })
+        });
     });
     app.post('/mergeCde', function (req, res) {
         var cdeMergeTo = req.body.mergeTo;
@@ -281,19 +281,19 @@ exports.init = function (app, daoManager) {
                                 mongo_cde.update(cdeMergeTo, req.user, function (err) {
                                     if (err) return res.status(500).send(err);
                                     else res.status(200).end("retired");
-                                })
-                        })
-                    })
+                                });
+                        });
+                    });
                 } else res.status(200).end();
             });
         } else {
-            mongo_cde.update(cdeMergeFrom, req.user, function (err, newCdeMergeFrom) {
+            mongo_cde.update(cdeMergeFrom, req.user, function (err) {
                 if (err) return res.status(500).send(err);
-                else mongo_cde.update(cdeMergeTo, req.user, function (err, newCdeMergeTo) {
+                else mongo_cde.update(cdeMergeTo, req.user, function (err) {
                     if (err) return res.status(500).send(err);
                     else res.status(200).end();
-                })
-            })
+                });
+            });
         }
     });
 
@@ -393,7 +393,7 @@ exports.init = function (app, daoManager) {
         var date = new Date(dstring);
         mongo_cde.findModifiedElementsSince(date, function (err, elts) {
             res.send(elts.map(function (e) {
-                return {tinyId: e._id}
+                return {tinyId: e._id};
             }));
         });
     });

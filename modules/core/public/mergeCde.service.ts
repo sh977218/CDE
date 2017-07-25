@@ -13,7 +13,7 @@ export class MergeCdeService {
 
     public getCdeByTinyId(tinyId) {
         //noinspection TypeScriptValidateTypes
-        return this.http.get("/dataElement/" + tinyId).map(res => res.json());
+        return this.http.get("/dataElement/tinyId/" + tinyId).map(res => res.json());
     }
 
     public doMerge(tinyIdFrom, tinyIdTo, fields, cb) {

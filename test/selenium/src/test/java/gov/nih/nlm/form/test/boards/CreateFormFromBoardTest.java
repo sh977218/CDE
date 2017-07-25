@@ -9,15 +9,20 @@ public class CreateFormFromBoardTest extends BaseClassificationTest {
 
     @Test
     public void createFormFromBoard() {
+        String boardName = "Form Board";
+        String newFormName = "New form from boards";
+        String newFormDefinition = "New form from boards definition";
+        String newFormVersion = "1.0";
+        String classificationOrg = "TEST";
+        String[] classificationArray = new String[]{"Classify Board", "Classif_Board_Sub"};
         mustBeLoggedInAs(testAdmin_username, password);
-        goToBoard("Form Board");
+        goToBoard(boardName);
         clickElement(By.id("mb.createForm"));
-        findElement(By.id("eltName")).sendKeys("New form from boards");
-        findElement(By.id("eltDefinition")).sendKeys("New form from boards definition");
-        findElement(By.id("formVersion")).sendKeys("1.0");
-        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("TEST");
-        addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
-        scrollToViewById("submit");
+        findElement(By.id("eltName")).sendKeys(newFormName);
+        findElement(By.id("eltDefinition")).sendKeys(newFormDefinition);
+        findElement(By.id("formVersion")).sendKeys(newFormVersion);
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(classificationOrg);
+        addClassificationByTree(classificationOrg, classificationArray);
         clickElement(By.id("submit"));
         textPresent("Incomplete");
         textNotPresent("have newer version");

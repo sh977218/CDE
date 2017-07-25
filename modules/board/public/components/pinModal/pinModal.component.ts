@@ -17,19 +17,18 @@ export class PinModalComponent {
     @ViewChild("ifYouLoginModal") public ifYouLoginModal: NgbModalModule;
 
     public modalRef: NgbModalRef;
-    elt: any;
+    elts: any;
     type: String;
 
-    constructor(
-        public myBoardsSvc: MyBoardsService,
-        public modalService: NgbModal,
-        private alert: AlertService,
-        private http: Http,
-        @Inject("userResource") private userService
-    ) {}
+    constructor(public myBoardsSvc: MyBoardsService,
+                public modalService: NgbModal,
+                private alert: AlertService,
+                private http: Http,
+                @Inject("userResource") private userService) {
+    }
 
-    open (elt, type) {
-        this.elt = elt;
+    open(elts, type) {
+        this.elts = elts;
         this.type = type;
         if (this.userService.user && this.userService.user._id) {
             this.myBoardsSvc.loadMyBoards();
@@ -39,8 +38,11 @@ export class PinModalComponent {
         }
     }
 
-    selectBoard (board) {
-        this.http.put("/pin/" + this.type + "/" + this.elt.tinyId + "/" + board._id, {}).subscribe((r) => {
+    selectBoard(board) {
+        let url;
+        if (this.type === "cde") url = "/board/id/" + board._id + "/dataElements/";
+        if (this.type === "form") url = "/board/id/" + board._id + "/forms/";
+        this.http.put(url, this.elts).subscribe((r) => {
             this.alert.addAlert(r.status === 200 ? "success" : "warning", r.text());
             this.modalRef.close();
         }, (err) => {

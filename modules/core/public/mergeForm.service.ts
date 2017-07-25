@@ -21,7 +21,7 @@ export class MergeFormService {
 
     public saveForm(form, cb) {
         //noinspection TypeScriptValidateTypes
-        this.http.post("/form", form).map(res => res.json()).subscribe(
+        this.http.put("/form/tinyId/" + form.tinyId, form).map(res => res.json()).subscribe(
             data => {
                 cb(null, data);
             },

@@ -98,15 +98,22 @@ exports.updateDataElement = function (req, res) {
 
 
 exports.createDataElement = function (req, res) {
-    if (req.params.id) return res.status(500).send("bad request"); else {
-        if (req.isAuthenticated()) {
-            let elt = req.body;
-            let user = req.user;
-            if (!elt.stewardOrg.name) return res.send("Missing Steward"); else if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 && user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !user.siteAdmin) return res.status(403).send("not authorized"); else if (elt.registrationState && elt.registrationState.registrationStatus && ((elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === " Preferred Standard") && !user.siteAdmin)) return res.status(403).send("Not authorized"); else mongo_cde.create(elt, user, function (err, dataElement) {
-                if (err) res.status(500).send(); else res.send(dataElement);
-            });
-        } else res.status(403).send("You are not authorized to do this.");
-    }
+    if (req.params.id)
+        return res.status(500).send("bad request");
+    if (req.isAuthenticated())
+        return res.status(403).send("You are not authorized to do this.");
+    let elt = req.body;
+    let user = req.user;
+    if (!elt.stewardOrg.name)
+        return res.send("Missing Steward");
+    if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 && user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !user.siteAdmin)
+        return res.status(403).send("not authorized");
+    if (elt.registrationState && elt.registrationState.registrationStatus && ((elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === " Preferred Standard") && !user.siteAdmin))
+        return res.status(403).send("Not authorized");
+    mongo_cde.create(elt, user, function (err, dataElement) {
+        if (err) res.status(500).send(); else res.send(dataElement);
+    });
+
 };
 
 let parser = new xml2js.Parser();

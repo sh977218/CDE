@@ -68,6 +68,7 @@ export class CreateFormComponent implements OnInit {
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
+        this.alert.addAlert("success", "Classification added.");
     }
 
     validationErrors(elt) {

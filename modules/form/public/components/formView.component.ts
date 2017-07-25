@@ -5,6 +5,7 @@ import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+import * as formShared from '../../shared/formShared.js';
 
 @Component({
     selector: "cde-form-view",
@@ -21,6 +22,7 @@ export class FormViewComponent implements OnInit {
     eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
+    cdes = [];
 
     formInput;
 
@@ -56,6 +58,7 @@ export class FormViewComponent implements OnInit {
         this.http.get(url).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
+                this.cdes = formShared.getFormCdes(this.elt);
                 this.eltLoaded = true;
             } else
                 this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
@@ -132,6 +135,10 @@ export class FormViewComponent implements OnInit {
 
     loadHighlightedTabs($event) {
         this.highlightedTabs = $event;
+    }
+
+    stageElt() {
+        this.elt.unsaved = true;
     }
 
 }
