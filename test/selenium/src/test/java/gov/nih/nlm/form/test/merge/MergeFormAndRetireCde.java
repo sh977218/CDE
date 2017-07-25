@@ -8,9 +8,9 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
 
     @Test
     public void mergeFormAndRetireCde() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
         String form1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
         String form2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
+        mustBeLoggedInAs(nlm_username, nlm_password);
         addFormToQuickBoardByTinyId(form1);
         addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");

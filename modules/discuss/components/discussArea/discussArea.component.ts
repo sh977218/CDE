@@ -55,6 +55,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.loadComments();
+        this.setCurrentTab("general_tab");
         this.socket.emit("room", this.eltId);
         this.socket.on("commentUpdated", () => this.loadComments());
         this.socket.on("userTyping", data => {
@@ -149,6 +150,11 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     changeOnReply = (comment) => this.socket.emit('currentReplying', this.eltId, comment._id);
 
     setCurrentTab($event) {
-        console.log("$event: " + $event);
+        if (this.eltComments)
+            this.eltComments.forEach(c => {
+                if (c.linkedTab && c.linkedTab === tabMap[$event])
+                    c.currentComment = true;
+                else c.currentComment = false;
+            })
     }
 }

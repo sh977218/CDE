@@ -14,13 +14,11 @@
 
     <ng-container *ngFor="let comment of eltComments; let commentIndex = index">
         <div class="comment" id="comment_{{commentIndex}}"
-             [ngClass]="{'currentTabComment':selectedElt === comment.linkedTab}">
-            <ng-container *ngIf="comment.linkedTab === selectedElt">
+             [ngClass]="{'currentTabComment':comment.currentComment}">
+            <ng-container *ngIf="comment.currentComment">
                 <div class="comment-arrow-outer"></div>
                 <div class="comment-arrow-inner"></div>
             </ng-container>
-            selectedElt: {{selectedElt}}
-            comment.linkedTab: {{comment.linkedTab}}
             <div class="rootComment">
                 <div class="commentBody">
                     <div class="commentHeader">
