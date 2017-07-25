@@ -89,7 +89,7 @@ export class MergeFormComponent {
 
     openMergeFormModal() {
         this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
-        this.modalRef = this.modalService.open(this.mergeFormContent, {windowClass: "hugeModal"});
+        this.modalRef = this.modalService.open(this.mergeFormContent, {size: "lg"});
     }
 
     public doMerge() {
