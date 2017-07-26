@@ -25,18 +25,18 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_cde);
 
-    app.get("/dataElement/id/:id", exportShared.nocacheMiddleware, cdesvc.byId);
-    app.get("/dataElement/id/:id/fork/", exportShared.nocacheMiddleware, cdesvc.forks);
-    app.get("/dataElement/id/:id/history/", exportShared.nocacheMiddleware, cdesvc.priorCdes);
-    app.get("/dataElement/id/:id/version/", exportShared.nocacheMiddleware, cdesvc.versionById);
-    app.get("/dataElement/id/:id/xml/", exportShared.nocacheMiddleware, cdesvc.xmlById);
+    app.get("/deById/:id", exportShared.nocacheMiddleware, cdesvc.byId);
+    app.get("/deById/:id/fork/", exportShared.nocacheMiddleware, cdesvc.forks);
+    app.get("/deById/:id/history/", exportShared.nocacheMiddleware, cdesvc.priorCdes);
+    app.get("/deById/:id/version/", exportShared.nocacheMiddleware, cdesvc.versionById);
+    app.get("/deById/:id/xml/", exportShared.nocacheMiddleware, cdesvc.xmlById);
 
-    app.get("/dataElement/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
-    app.get("/dataElement/tinyId/:tinyId/version/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
-    app.get("/dataElement/tinyId/:tinyId/version/", exportShared.nocacheMiddleware, cdesvc.versionByTinyId);
+    app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
+    app.get("/de/:tinyId/version/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
+    app.get("/de/:tinyId/version/", exportShared.nocacheMiddleware, cdesvc.versionByTinyId);
 
-    app.post("/dataElement/", exportShared.nocacheMiddleware, cdesvc.createDataElement);
-    app.put("/dataElement/tinyId/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
+    app.post("/de/", exportShared.nocacheMiddleware, cdesvc.createDataElement);
+    app.put("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
 
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
 

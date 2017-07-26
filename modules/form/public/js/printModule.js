@@ -15,7 +15,7 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
                 async.forEach(form.formElements, function (fe, doneOne) {
                     if (fe.elementType === 'form') {
                         if (depth < maxDepth) {
-                            $http.get('/form/tinyId/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
+                            $http.get('/form/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
                                 .then(function (result) {
                                     fe.formElements = result.data.formElements;
                                     loopFormElements(fe, function () {

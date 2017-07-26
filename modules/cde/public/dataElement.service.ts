@@ -13,7 +13,7 @@ export class DataElementService {
     }
 
     get(tinyId) {
-        let url = "/dataElement/" + tinyId;
+        let url = "/de/" + tinyId;
         return this.http.get(url).map(res => res.json());
     }
 

@@ -50,10 +50,10 @@ export class FormViewComponent implements OnInit {
         let cdeId = this.getParameterByName("cdeId");
         let url;
         if (tinyId) {
-            url = "/form/tinyId/" + tinyId;
+            url = "/form/" + tinyId;
         }
         if (cdeId) {
-            url = "/form/id/" + cdeId;
+            url = "/formById/" + cdeId;
         }
         this.http.get(url).map(res => res.json()).subscribe(res => {
             if (res) {
@@ -83,7 +83,7 @@ export class FormViewComponent implements OnInit {
     }
 
     reload() {
-        this.http.get("/form/tinyId/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
+        this.http.get("/form/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Changes discarded.");
@@ -93,7 +93,7 @@ export class FormViewComponent implements OnInit {
 
     saveForm() {
         if (!this.elt.isCopyrighted) this.elt.copyright = {text: "", authority: ""};
-        this.http.put("/form/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+        this.http.put("/form/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Form saved.");

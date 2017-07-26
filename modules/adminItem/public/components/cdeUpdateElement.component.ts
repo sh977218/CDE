@@ -7,10 +7,10 @@ import * as _ from "lodash";
 
 const urlMap = {
     cde: {
-        exist: "/dataElement/tinyId/"
+        exist: "/de/"
     },
     form: {
-        exist: "/form/tinyId/"
+        exist: "/form/"
     }
 };
 

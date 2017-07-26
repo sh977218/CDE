@@ -56,7 +56,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     }
 
     openUpdateCdeVersion(question) {
-        this.http.get('/dataElement/tinyId/' + question.question.cde.tinyId).map((res: Response) => res.json())
+        this.http.get('/de/' + question.question.cde.tinyId).map((res: Response) => res.json())
             .subscribe((response) => {
                 this.formService.convertCdeToQuestion(response, (newQuestion) => {
                     this.updateCdeVersion = (() => {
@@ -74,11 +74,11 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         newQuestion.question.skipLogic = currentQuestion.question.skipLogic;
                         newQuestion.repeat = currentQuestion.repeat;
 
-                        this.http.get("/dataElement/tinyId/" + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
+                        this.http.get("/de/" + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
                             .subscribe((newCde) => {
                                 let cdeUrl = currentQuestion.question.cde.tinyId +
                                     (currentQuestion.question.cde.version ? "/" + currentQuestion.question.cde.version : "");
-                                this.http.get("/dataElement/" + cdeUrl).map((res: Response) => res.json())
+                                this.http.get("/de/" + cdeUrl).map((res: Response) => res.json())
                                     .subscribe((oldCde) => {
                                         modal.bLabel = !_.isEqual(newCde.naming, oldCde.naming);
                                     });

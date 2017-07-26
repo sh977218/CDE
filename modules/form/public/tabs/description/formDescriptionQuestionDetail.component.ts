@@ -167,7 +167,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.nameSelectModal.section = section;
         this.nameSelectModal.question = question;
         this.nameSelectModal.cde = question.question.cde;
-        let url = "/dataElement/tinyId/" + this.nameSelectModal.cde.tinyId;
+        let url = "/de/" + this.nameSelectModal.cde.tinyId;
         if (this.nameSelectModal.cde.version) url += "/version/" + this.nameSelectModal.cde.version;
         this.http.get(url).map((res: Response) => res.json())
             .subscribe((response) => {

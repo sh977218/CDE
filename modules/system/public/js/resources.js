@@ -1,11 +1,11 @@
 function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageService, Alert) {
     var params = {
         cde: {
-            url: "/dataElement/tinyId/",
+            url: "/de/",
             localStorage: "DataElementQuickBoard"
         },
         form: {
-            url: "/form/tinyId/",
+            url: "/form/",
             localStorage: "FormQuickBoard"
         }
     };

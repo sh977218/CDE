@@ -21,32 +21,32 @@ exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
 
-    app.get("/form/id/:id", exportShared.nocacheMiddleware, formSvc.byId);
-    app.get("/form/id/:id/history/", exportShared.nocacheMiddleware, formSvc.priorForms);
-    app.get("/form/id/:id/version/", exportShared.nocacheMiddleware, formSvc.versionById);
+    app.get("/formById/:id", exportShared.nocacheMiddleware, formSvc.byId);
+    app.get("/formById/:id/history/", exportShared.nocacheMiddleware, formSvc.priorForms);
+    app.get("/formById/:id/version/", exportShared.nocacheMiddleware, formSvc.versionById);
 
-    app.get("/form/tinyId/:tinyId", exportShared.nocacheMiddleware, formSvc.byTinyId);
-    app.get("/form/tinyId/:tinyId/version/:version", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
-    app.get("/form/tinyId/:tinyId/version/", exportShared.nocacheMiddleware, formSvc.versionByTinyId);
+    app.get("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.byTinyId);
+    app.get("/form/:tinyId/version/:version", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
+    app.get("/form/:tinyId/version/", exportShared.nocacheMiddleware, formSvc.versionByTinyId);
 
-    app.get("/form/tinyId/:tinyId/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlByTinyId);
-    app.get("/form/id/:id/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlById);
+    app.get("/form/:tinyId/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlByTinyId);
+    app.get("/formById/:id/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlById);
 
-    app.get("/form/tinyId/:tinyId/xml/sdc/", exportShared.nocacheMiddleware, formSvc.sdcXmlByTinyId);
-    app.get("/form/id/:id/xml/sdc/", exportShared.nocacheMiddleware, formSvc.sdcXmlById);
+    app.get("/form/:tinyId/xml/sdc/", exportShared.nocacheMiddleware, formSvc.sdcXmlByTinyId);
+    app.get("/formById/:id/xml/sdc/", exportShared.nocacheMiddleware, formSvc.sdcXmlById);
 
-    app.get("/form/tinyId/:tinyId/xml/", exportShared.nocacheMiddleware, formSvc.xmlByTinyId);
-    app.get("/form/id/:id/xml/", exportShared.nocacheMiddleware, formSvc.xmlById);
+    app.get("/form/:tinyId/xml/", exportShared.nocacheMiddleware, formSvc.xmlByTinyId);
+    app.get("/formById/:id/xml/", exportShared.nocacheMiddleware, formSvc.xmlById);
 
-    app.get("/form/tinyId/:tinyId/zip/redCap/", exportShared.nocacheMiddleware, formSvc.redCapZipByTinyId);
-    app.get("/form/id/:id/zip/redCap/", exportShared.nocacheMiddleware, formSvc.redCapZipById);
+    app.get("/form/:tinyId/zip/redCap/", exportShared.nocacheMiddleware, formSvc.redCapZipByTinyId);
+    app.get("/formById/:id/zip/redCap/", exportShared.nocacheMiddleware, formSvc.redCapZipById);
 
-    app.get("/form/tinyId/:tinyId/html/sdc", exportShared.nocacheMiddleware, formSvc.sdcHtmlByTinyId);
-    app.get("/form/id/:id/html/sdc", exportShared.nocacheMiddleware, formSvc.sdcHtmlById);
+    app.get("/form/:tinyId/html/sdc", exportShared.nocacheMiddleware, formSvc.sdcHtmlByTinyId);
+    app.get("/formById/:id/html/sdc", exportShared.nocacheMiddleware, formSvc.sdcHtmlById);
 
 
     app.post("/form/", exportShared.nocacheMiddleware, formSvc.createForm);
-    app.put("/form/tinyId/:tinyId", exportShared.nocacheMiddleware, formSvc.updateForm);
+    app.put("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.updateForm);
 
     app.get('/wholeForm/id/:id', exportShared.nocacheMiddleware, formSvc.wholeFormById);
     app.get('/wholeForm/tinyId/:tinyId', exportShared.nocacheMiddleware, formSvc.wholeFormByTinyId);

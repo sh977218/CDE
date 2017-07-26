@@ -39,9 +39,9 @@ export class IdentifiersComponent {
         } else {
             let url;
             if (this.elt.elementType === "cde")
-                url = "/dataElement/tinyId/";
+                url = "/de/";
             if (this.elt.elementType === "form")
-                url = "/form/tinyId/";
+                url = "/form/";
             this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
                 if (res) {
                     this.elt = res;
@@ -59,9 +59,9 @@ export class IdentifiersComponent {
         } else {
             let url;
             if (this.elt.elementType === "cde")
-                url = "/dataElement/tinyId/";
+                url = "/de/";
             if (this.elt.elementType === "form")
-                url = "/form/tinyId/";
+                url = "/form/";
             this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
                 if (res) {
                     this.elt = res;

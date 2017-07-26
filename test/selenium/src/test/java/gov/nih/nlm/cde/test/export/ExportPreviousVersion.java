@@ -18,8 +18,8 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         // Current version
         Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("dataElement/id/585adda729f8ae801d0f045a"));
         Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("dataElement/id/585adda729f8ae801d0f045a/xml/"));
-        Assert.assertFalse(get(baseUrl + "/dataElement/id/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
-        Assert.assertFalse(get(baseUrl + "/dataElement/id/585adda729f8ae801d0f045a/xml/").asString().contains("<designation>This name will be removed</designation>"));
+        Assert.assertFalse(get(baseUrl + "/deById/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
+        Assert.assertFalse(get(baseUrl + "/deById/585adda729f8ae801d0f045a/xml/").asString().contains("<designation>This name will be removed</designation>"));
 
         clickElement(By.id("history_tab"));
         clickElement(By.xpath("//*[@id='prior-1']//span"));
@@ -30,8 +30,8 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         // Previous version
         Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("dataElement/id/585adda229f8ae801d0f0456"));
         Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("dataElement/id/585adda229f8ae801d0f0456/xml/"));
-        Assert.assertTrue(get(baseUrl + "/dataElement/id/585adda229f8ae801d0f0456").asString().contains("This name will be removed"));
-        Assert.assertTrue(get(baseUrl + "/dataElement/id/585adda229f8ae801d0f0456/xml/").asString().contains("<designation>This name will be removed</designation>"));
+        Assert.assertTrue(get(baseUrl + "/deById/585adda229f8ae801d0f0456").asString().contains("This name will be removed"));
+        Assert.assertTrue(get(baseUrl + "/deById/585adda229f8ae801d0f0456/xml/").asString().contains("<designation>This name will be removed</designation>"));
 
         switchTabAndClose(0);
     }

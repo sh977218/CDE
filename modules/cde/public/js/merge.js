@@ -9,9 +9,9 @@ angular.module('CdeMerge', [])
             });
         };
         service.approveMerge = function (source, destination, fields, callback) {
-            $http.get('/dataElement/tinyId/' + source.tinyId).then(function (result) {
+            $http.get('/de/' + source.tinyId).then(function (result) {
                 service.source = result.data;
-                return $http.get('/dataElement/tinyId/' + destination.tinyId);
+                return $http.get('/de/' + destination.tinyId);
             }).then(function (result) {
                 service.destination = result.data;
                 Object.keys(fields).forEach(function (field) {
@@ -22,7 +22,7 @@ angular.module('CdeMerge', [])
 
                 if (fields.ids || fields.properties || fields.naming) {
                     classificationShared.transferClassifications(service.source, service.destination);
-                    $http.put("/dataElement/tinyId/" + result.data.tinyId, result.data).then(function () {
+                    $http.put("/de/" + result.data.tinyId, result.data).then(function () {
                         service.retireSource(service.source, service.destination, function () {
                             if (callback) callback();
                         });

@@ -11,7 +11,7 @@ const urlMap = {
     "cde": {
         delete: "/removeCdeClassification/",
         add: "/addCdeClassification/",
-        get: "/dataElement/tinyId/",
+        get: "/de/",
     },
     "form": {
         delete: "/removeFormClassification/",

@@ -45,10 +45,10 @@ export class DataElementViewComponent implements OnInit {
         let cdeId = this.getParameterByName("cdeId");
         let url;
         if (tinyId) {
-            url = "/dataElement/tinyId/" + tinyId;
+            url = "/de/" + tinyId;
         }
         if (cdeId) {
-            url = "/dataElement/id/" + cdeId;
+            url = "/deById/" + cdeId;
         }
         this.http.get(url).map(res => res.json()).subscribe(res => {
             if (res) {
@@ -79,7 +79,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     reload() {
-        this.http.get("/dataElement/tinyId/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
+        this.http.get("/de/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Changes discarded.");
@@ -88,7 +88,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDataElement() {
-        this.http.put("/dataElement/tinyId/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
+        this.http.put("/de/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
                 this.alert.addAlert("success", "Data Element saved.");

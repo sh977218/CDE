@@ -3,13 +3,13 @@ angular.module('resourcesCde', ['ngResource'])
         return $resource('/listboards');
     }])
     .factory('DataElement', ["$resource", function ($resource) {
-        return $resource('/dataElement/tinyId/:tinyId', {deId: '@tinyId'}, {
+        return $resource('/de/:tinyId', {deId: '@tinyId'}, {
             update: {method: 'PUT'},
             save: {method: 'POST', params: {type: null}}
         });
     }])
     .factory('DataElementTinyId', ["$resource", function ($resource) {
-        return $resource('/dataElement/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
+        return $resource('/de/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
     }])
     .factory('CdeList', ["$http", function ($http) {
         return {

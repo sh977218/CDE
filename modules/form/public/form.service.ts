@@ -114,7 +114,7 @@ export class FormService {
                 if (cde.valueDomain.permissibleValues.length > 0) {
                     // elastic only store 10 pv, retrieve pv when have more than 9 pv.
                     if (cde.valueDomain.permissibleValues.length > 9) {
-                        this.http.get("/dataElement/" + cde.tinyId + "/" + (cde.version ? cde.version : ""))
+                        this.http.get("/de/" + cde.tinyId + "/" + (cde.version ? cde.version : ""))
                             .map((res: Response) => res.json())
                             .subscribe((result) => {
                                 result.valueDomain.permissibleValues.forEach(function (pv) {
@@ -174,7 +174,7 @@ export class FormService {
     }
 
     get(tinyId) {
-        let url = "/form/tinyId/" + tinyId;
+        let url = "/form/" + tinyId;
         return this.http.get(url).map(res => res.json());
     }
 
