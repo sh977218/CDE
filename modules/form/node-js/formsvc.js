@@ -58,42 +58,94 @@ function wipeRenderDisallowed(form, req, cb) {
 
 exports.byId = function (req, res) {
     let id = req.params.id;
-    if (!id) return res.status(500).send();
+    if (!id) return res.status(400).send();
     mongo_form.byId(id, function (err, form) {
         if (err) return res.status(500).send(err);
-        wipeRenderDisallowed(form, req, function () {
-            mongo_data_system.addToViewHistory(form, req.user);
-            res.send(form);
+        if (!form) return res.status(404).send();
+        fetchWholeForm(form, function (wholeForm) {
+            wipeRenderDisallowed(wholeForm, req, function () {
+                if (req.query.type === 'xml') {
+                    res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    res.setHeader("Content-Type", "application/xml");
+                    res.send(wholeForm);
+                    /*
+                                        let cde = wholeForm.toObject();
+                                        JXON.jsToString({element: xmlForm})
+                    */
+                }
+                res.send(form);
+            });
+        });
+        mongo_data_system.addToViewHistory(form, req.user);
+    });
+};
+
+exports.priorForms = function (req, res) {
+    let id = req.params.id;
+    if (!id) return res.status(400).send();
+    mongo_form.byId(id, function (err, form) {
+        if (err) res.status(500).send(err);
+        if (!form) res.status(404).send();
+        mongo_form.byIdList(form.history, function (err, priorForms) {
+            if (err) return res.status(500).send(err);
+            res.send(priorForms);
         });
     });
 };
+
 exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(500).send();
+    if (!tinyId) return res.status(400).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err) return res.status(500).send(err);
+        if (!form) return res.status(404).send();
         wipeRenderDisallowed(form, req, function () {
-            mongo_data_system.addToViewHistory(form, req.user);
             res.send(form);
         });
+        mongo_data_system.addToViewHistory(form, req.user);
+    });
+};
+
+exports.byTinyIdVersion = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    let version = req.params.version;
+    mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
+        if (err) return res.status(500).send();
+        if (!form) return res.status(404).send();
+        res.send(form);
+    });
+};
+exports.latestVersionByTinyId = function (req, res) {
+    let tinyId = req.params.tinyId;
+    mongo_form.latestVersionByTinyId(tinyId, function (err, latestVersion) {
+        if (err) return res.status(500).send(err);
+        res.send(latestVersion);
     });
 };
 
 exports.wholeFormByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) res.status(500).send(); else mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err) res.status(500).send(); else fetchWholeForm(form, function (wholeForm) {
+    if (!tinyId) return res.status(500).send();
+    mongo_form.byTinyId(tinyId, function (err, form) {
+        if (err) return res.status(500).send();
+        fetchWholeForm(form, function (wholeForm) {
             if (!wholeForm) return res.status(404).end();
-            if (!req.user) adminSvc.hideProprietaryIds(wholeForm); else res.send(wholeForm);
+            if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+            res.send(wholeForm);
         });
     });
 };
 exports.wholeFormById = function (req, res) {
     let id = req.params.id;
-    if (!id) res.status(500).send(); else mongo_form.byId(id, function (err, form) {
-        if (err) res.status(500).send(); else fetchWholeForm(form, function (wholeForm) {
+    if (!id) return res.status(500).send();
+    mongo_form.byId(id, function (err, form) {
+        if (err) return res.status(500).send();
+        fetchWholeForm(form, function (wholeForm) {
             if (!wholeForm) return res.status(404).end();
-            if (!req.user) adminSvc.hideProprietaryIds(wholeForm); else res.send(wholeForm);
+            if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+            res.send(wholeForm);
         });
     });
 };
@@ -101,68 +153,60 @@ exports.wholeFormById = function (req, res) {
 exports.versionById = function (req, res) {
     let id = req.params.id;
     mongo_form.versionById(id, function (err, form) {
-        if (err) res.status(500).send(); else res.send(form.version);
+        if (err) return res.status(500).send();
+        res.send(form.version);
     });
 };
 
 exports.versionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     mongo_form.versionByTinyId(tinyId, function (err, form) {
-        if (err) res.status(500).send(); else res.send(form.version);
+        if (err) return res.status(500).send();
+        res.send(form.version);
     });
 };
 
-exports.byTinyIdVersion = function (req, res) {
-    let tinyId = req.params.tinyId;
-    let version = req.params.version;
-    mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
-        if (err) res.status(500).send(); else res.send(form);
-    });
-};
 
 exports.createForm = function (req, res) {
-    if (req.params.id) return res.status(500).send("bad request"); else {
-        if (req.isAuthenticated()) {
-            let elt = req.body;
-            let user = req.user;
-            if (!elt.stewardOrg.name) return res.send("Missing Steward"); else if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 && user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !user.siteAdmin) return res.status(403).send("not authorized"); else if (elt.registrationState && elt.registrationState.registrationStatus && ((elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === " Preferred Standard") && !user.siteAdmin)) return res.status(403).send("Not authorized"); else mongo_form.create(elt, user, function (err, dataElement) {
-                if (err) res.status(500).send(); else res.send(dataElement);
-            });
-        } else res.status(403).send("You are not authorized to do this.");
-    }
+    if (req.params.id) return res.status(500).send("bad request");
+    if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
+    let elt = req.body;
+    let user = req.user;
+    if (!elt.stewardOrg.name) return res.send("Missing Steward");
+    if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 && user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !user.siteAdmin)
+        return res.status(403).send("not authorized");
+    if (elt.registrationState && elt.registrationState.registrationStatus && ((elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === " Preferred Standard") && !user.siteAdmin))
+        return res.status(403).send("Not authorized");
+    mongo_form.create(elt, user, function (err, dataElement) {
+        if (err) return res.status(500).send();
+        res.send(dataElement);
+    });
 };
 
 exports.updateForm = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(500).send(); else {
-        if (req.isAuthenticated()) {
-            let user = req.user;
-            mongo_form.byTinyId(tinyId, function (err, item) {
-                if (err) return res.status(500).send(); else if (item) {
-                    allowUpdate(user, item, function (err) {
-                        if (err) res.status(500).send(); else mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
-                            let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
-                            if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
-                                let elt = req.body;
-                                mongo_form.update(elt, req.user, function (err, response) {
-                                    if (err) res.status(500).send(); else res.send(response);
-                                });
-                            }
-                        });
+    if (!tinyId) return res.status(500).send();
+    if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
+    let user = req.user;
+    mongo_form.byTinyId(tinyId, function (err, item) {
+        if (err) return res.status(500).send();
+        if (!item) return res.status(500).send("Element not exist.");
+        allowUpdate(user, item, function (err) {
+            if (err) return res.status(500).send();
+            mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
+                let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
+                if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
+                    let elt = req.body;
+                    mongo_form.update(elt, req.user, function (err, response) {
+                        if (err) return res.status(500).send();
+                        res.send(response);
                     });
-                } else return res.status(500).send("Element not exist.");
+                }
             });
-        } else res.status(403).send("You are not authorized to do this.");
-    }
-};
-
-exports.priorForms = function (req, res) {
-    let formId = req.params.id;
-    if (!formId) return res.status(500).send();
-    mongo_form.priorForms(formId, function (err, priorForms) {
-        if (err) res.status(500).send(); else res.send(priorForms);
+        });
     });
 };
+
 
 function allowUpdate(user, item, cb) {
     if (item.archived === true) {
@@ -176,18 +220,19 @@ function allowUpdate(user, item, cb) {
 
 exports.odmXmlById = function (req, res) {
     let id = req.params.id;
-    if (!id) res.status(500).send(); else mongo_form.byId(id, function (err, form) {
-        if (err || !form) return res.status(404).end(); else wipeRenderDisallowed(form, req, function () {
+    if (!id) return res.status(500).send();
+    mongo_form.byId(id, function (err, form) {
+        if (err || !form) return res.status(404).end();
+        wipeRenderDisallowed(form, req, function () {
             fetchWholeForm(form, function (wholeForm) {
                 if (!wholeForm) return res.status(404).end();
                 if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
                 odm.getFormOdm(wholeForm, function (err, xmlForm) {
-                    if (err) res.status(err).send(xmlForm); else {
-                        res.header("Access-Control-Allow-Origin", "*");
-                        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                        res.setHeader("Content-Type", "application/xml");
-                        res.send(JXON.jsToString({element: xmlForm}));
-                    }
+                    if (err) return res.status(err).send(xmlForm);
+                    res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    res.setHeader("Content-Type", "application/xml");
+                    res.send(JXON.jsToString({element: xmlForm}));
                 });
             });
         });
@@ -195,18 +240,19 @@ exports.odmXmlById = function (req, res) {
 };
 exports.odmXmlByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) res.status(500).send(); else mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err || !form) return res.status(404).end(); else wipeRenderDisallowed(form, req, function () {
+    if (!tinyId) res.status(500).send();
+    mongo_form.byTinyId(tinyId, function (err, form) {
+        if (err || !form) return res.status(404).end();
+        wipeRenderDisallowed(form, req, function () {
             fetchWholeForm(form, function (wholeForm) {
                 if (!wholeForm) return res.status(404).end();
                 if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
                 odm.getFormOdm(wholeForm, function (err, xmlForm) {
-                    if (err) res.status(err).send(xmlForm); else {
-                        res.header("Access-Control-Allow-Origin", "*");
-                        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                        res.setHeader("Content-Type", "application/xml");
-                        res.send(JXON.jsToString({element: xmlForm}));
-                    }
+                    if (err) return res.status(err).send(xmlForm);
+                    res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    res.setHeader("Content-Type", "application/xml");
+                    res.send();
                 });
             });
         });
@@ -217,18 +263,17 @@ exports.sdcXmlById = function (req, res) {
     let id = req.params.id;
     if (!id) res.status(500).send();
     mongo_form.byId(id, function (err, form) {
-        if (err || !form) return res.status(404).end(); else {
-            if (!req.user) adminSvc.hideProprietaryIds(form);
-            fetchWholeForm(form, function (wholeForm) {
-                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
-                    res.header("Access-Control-Allow-Origin", "*");
-                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                    res.setHeader("Content-Type", "application/xml");
-                    res.send(txt);
-                });
+        if (err || !form) return res.status(404).end();
+        if (!req.user) adminSvc.hideProprietaryIds(form);
+        fetchWholeForm(form, function (wholeForm) {
+            if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+            sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                res.setHeader("Content-Type", "application/xml");
+                res.send(txt);
             });
-        }
+        });
     });
 };
 
@@ -236,56 +281,52 @@ exports.sdcXmlByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) res.status(500).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err || !form) return res.status(404).end(); else {
-            if (!req.user) adminSvc.hideProprietaryIds(form);
-            fetchWholeForm(form, function (wholeForm) {
-                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
-                    res.header("Access-Control-Allow-Origin", "*");
-                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                    res.setHeader("Content-Type", "application/xml");
-                    res.send(txt);
-                });
+        if (err || !form) return res.status(404).end();
+        if (!req.user) adminSvc.hideProprietaryIds(form);
+        fetchWholeForm(form, function (wholeForm) {
+            if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+            sdc.formToSDC(wholeForm, req.query.renderer, function (txt) {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                res.setHeader("Content-Type", "application/xml");
+                res.send(txt);
             });
-        }
+        });
     });
 };
 
 exports.sdcHtmlById = function (req, res) {
     let id = req.params.id;
-    if (!id) res.status(500).send();
+    if (!id) return res.status(500).send();
     mongo_form.byId(id, function (err, form) {
-        if (err || !form) return res.status(404).end(); else {
-            if (!req.user) adminSvc.hideProprietaryIds(form);
-            fetchWholeForm(form, function (wholeForm) {
-                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
-                    res.header("Access-Control-Allow-Origin", "*");
-                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                    res.setHeader("Content-Type", "application/xml");
-                    res.send(txt);
-                });
+        if (err || !form) return res.status(404).end();
+        if (!req.user) adminSvc.hideProprietaryIds(form);
+        fetchWholeForm(form, function (wholeForm) {
+            if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+            sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                res.setHeader("Content-Type", "application/xml");
+                res.send(txt);
             });
-
-        }
+        });
     });
 };
 exports.sdcHtmlByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) res.status(500).send();
+    if (!tinyId) return res.status(500).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err || !form) return res.status(404).end(); else {
-            if (!req.user) adminSvc.hideProprietaryIds(form);
-            fetchWholeForm(form, function (wholeForm) {
-                if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-                sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
-                    res.header("Access-Control-Allow-Origin", "*");
-                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                    res.setHeader("Content-Type", "application/xml");
-                    res.send(txt);
-                });
+        if (err || !form) return res.status(404).end();
+        if (!req.user) adminSvc.hideProprietaryIds(form);
+        fetchWholeForm(form, function (wholeForm) {
+            if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+            sdc.formToSDC(wholeForm, "defaultHtml", function (txt) {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                res.setHeader("Content-Type", "application/xml");
+                res.send(txt);
             });
-        }
+        });
     });
 };
 
@@ -361,9 +402,10 @@ exports.redCapZipById = function (req, res) {
 
 exports.xmlById = function (req, res) {
     let id = req.params.id;
-    if (!id) res.status(500).send();
+    if (!id) return res.status(500).send();
     mongo_form.byId(id, function (err, form) {
-        if (err || !form) return res.status(404).end(); else wipeRenderDisallowed(form, req, function () {
+        if (err || !form) return res.status(404).end();
+        wipeRenderDisallowed(form, req, function () {
             fetchWholeForm(form, function (wholeForm) {
                 if (!wholeForm) return res.status(404).end();
                 if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
@@ -386,9 +428,10 @@ exports.xmlById = function (req, res) {
 
 exports.xmlByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) res.status(500).send();
+    if (!tinyId) return res.status(500).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err || !form) return res.status(404).end(); else wipeRenderDisallowed(form, req, function () {
+        if (err || !form) return res.status(404).end();
+        wipeRenderDisallowed(form, req, function () {
             fetchWholeForm(form, function (wholeForm) {
                 if (!wholeForm) return res.status(404).end();
                 if (!req.user) adminSvc.hideProprietaryIds(wholeForm);

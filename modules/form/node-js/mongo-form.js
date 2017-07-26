@@ -26,6 +26,15 @@ exports.Form = Form;
 
 exports.elastic = elastic;
 
+
+exports.byId = function (id, cb) {
+    Form.findById(id, cb);
+};
+
+exports.byIdList = function (idList, cb) {
+    Form.find({}).where("_id").in(idList).exec(cb);
+};
+
 exports.byTinyId = function (tinyId, callback) {
     Form.findOne({'tinyId': tinyId, archived: false}, function (err, form) {
         callback(err, form);
@@ -33,24 +42,18 @@ exports.byTinyId = function (tinyId, callback) {
 };
 
 exports.byTinyIdVersion = function (tinyId, version, cb) {
-    let cond = {'tinyId': tinyId};
-    if (version) cond["registrationState.registrationStatus"] = {$ne: "Retired"};
-    else cond.version = version;
-    Form.findOne(cond).exec(function (err, cde) {
-        cb(err, cde);
-    });
+    Form.findOne({'tinyId': tinyId, version: version}, cb);
 };
 
-exports.versionById = function (id, callback) {
-    Form.findOne({_id: id}).exec(function (err, result) {
-        callback(err, result);
-    });
+exports.latestVersionByTinyId = function (tinyId, cb) {
+    Form.findOne({tinyId: tinyId, archived: false}, 'version', cb);
 };
-exports.versionByTinyId = function (tinyId, callback) {
-    Form.findOne({tinyId: tinyId, archived: false}).exec(function (err, result) {
-        callback(err, result);
-    });
+
+exports.byTinyIdList = function (tinyIdList, cb) {
+    Form.find({}).where("tinyId").in(tinyIdList).exec(cb);
 };
+
+
 /* ---------- PUT NEW REST API above ---------- */
 
 exports.getPrimaryName = function (elt) {
@@ -67,15 +70,6 @@ exports.count = function (condition, callback) {
     });
 };
 
-exports.priorForms = function (formId, callback) {
-    Form.findById(formId).exec(function (err, form) {
-        if (form !== null) {
-            return Form.find({}).where("_id").in(form.history).exec(function (err, forms) {
-                callback(err, forms);
-            });
-        }
-    });
-};
 
 exports.findForms = function (request, callback) {
     var criteria = {};
@@ -154,10 +148,6 @@ exports.create = function (form, user, callback) {
     newForm.save(function (err) {
         callback(err, newForm);
     });
-};
-
-exports.byId = function (id, callback) {
-    Form.findById(id, callback);
 };
 
 exports.byOtherId = function (source, id, cb) {

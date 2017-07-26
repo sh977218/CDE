@@ -8,7 +8,6 @@ var classificationNode_system = require('../../system/node-js/classificationNode
 var adminItemSvc = require('../../system/node-js/adminItemSvc.js');
 var config = require('../../system/node-js/parseConfig');
 var multer = require('multer');
-var logging = require('../../system/node-js/logging');
 var elastic_system = require('../../system/node-js/elastic');
 var sharedElastic = require('../../system/node-js/elastic.js');
 var exportShared = require('../../system/shared/exportShared');
@@ -22,12 +21,12 @@ exports.init = function (app, daoManager) {
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
 
     app.get("/formById/:id", exportShared.nocacheMiddleware, formSvc.byId);
-    app.get("/formById/:id/history/", exportShared.nocacheMiddleware, formSvc.priorForms);
-    app.get("/formById/:id/version/", exportShared.nocacheMiddleware, formSvc.versionById);
+    app.get("/formById/:id/priorForms/", exportShared.nocacheMiddleware, formSvc.priorForms);
 
     app.get("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.byTinyId);
-    app.get("/form/:tinyId/version/:version", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
-    app.get("/form/:tinyId/version/", exportShared.nocacheMiddleware, formSvc.versionByTinyId);
+    app.get("/form/:tinyId/version/:version?", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
+
+    app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
 
     app.get("/form/:tinyId/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlByTinyId);
     app.get("/formById/:id/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlById);

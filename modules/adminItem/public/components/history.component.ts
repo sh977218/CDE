@@ -29,10 +29,11 @@ const URL_MAP = {
             left: 5px;
             top: 5px;
         }
+
         .isSelected {
-            background-color:#f5f5f5;
+            background-color: #f5f5f5;
         }
-        
+
     `],
     providers: [NgbActiveModal]
 })
@@ -71,7 +72,7 @@ export class HistoryComponent implements OnInit {
         if (this.elt.history && this.elt.history.length > 0) {
             let url;
             if (this.elt.elementType === "cde") {
-                url = "/deById/" + this.elt._id + "/history";
+                url = "/deById/" + this.elt._id + "/priorDataElements";
             } else {
                 url = "/formById/" + this.elt._id + "/history";
             }

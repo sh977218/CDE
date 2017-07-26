@@ -26,50 +26,34 @@ exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
 
     app.get("/deById/:id", exportShared.nocacheMiddleware, cdesvc.byId);
-    app.get("/deById/:id/fork/", exportShared.nocacheMiddleware, cdesvc.forks);
-    app.get("/deById/:id/history/", exportShared.nocacheMiddleware, cdesvc.priorCdes);
-    app.get("/deById/:id/version/", exportShared.nocacheMiddleware, cdesvc.versionById);
-    app.get("/deById/:id/xml/", exportShared.nocacheMiddleware, cdesvc.xmlById);
+    app.get("/deById/:id/priorDataElements/", exportShared.nocacheMiddleware, cdesvc.priorDataElements);
 
     app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
-    app.get("/de/:tinyId/version/:version", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
-    app.get("/de/:tinyId/version/", exportShared.nocacheMiddleware, cdesvc.versionByTinyId);
+    app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
+
+    app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
+
 
     app.post("/de/", exportShared.nocacheMiddleware, cdesvc.createDataElement);
     app.put("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.updateDataElement);
 
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
 
-    app.get('/viewingHistory/dataElement', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            res.send("You must be logged in to do that");
-        } else {
-            let splicedArray = req.user.viewHistory.splice(0, 10);
-            let idList = [];
-            for (let i = 0; i < splicedArray.length; i++) {
-                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
-            }
-            mongo_cde.cdesByTinyIdListInOrder(idList, function (err, cdes) {
-                res.send(cdesvc.hideProprietaryCodes(cdes, req.user));
-            });
-        }
-    });
+    app.get('/viewingHistory/dataElement', exportShared.nocacheMiddleware, cdesvc.viewHistory);
+
     /* ---------- PUT NEW REST API above ---------- */
 
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            return res.status(403).send();
-        } else {
-            elastic.myBoards(req.user, req.body, function (err, result) {
-                if (err) return res.status(500).send(err);
-                return res.send(result);
-            });
-        }
+        if (!req.user) return res.status(403).send();
+        elastic.myBoards(req.user, req.body, function (err, result) {
+            if (err) return res.status(500).send(err);
+            res.send(result);
+        });
     });
 
     app.post('/cdesByTinyIdList', function (req, res) {
         mongo_cde.byTinyIdList(req.body, function (err, cdes) {
-            if (err) res.status(500).send();
+            if (err) return res.status(500).send();
             res.send(cdes);
         });
     });
@@ -77,31 +61,6 @@ exports.init = function (app, daoManager) {
     app.get('/listOrgsFromDEClassification', exportShared.nocacheMiddleware, function (req, res) {
         elastic.DataElementDistinct("classification.stewardOrg.name", function (result) {
             res.send(result);
-        });
-    });
-
-    app.get('/cdeById/:id', exportShared.nocacheMiddleware, cdesvc.byId);
-
-    app.get('/forks/:id', exportShared.nocacheMiddleware, cdesvc.forks);
-
-    app.post('/dataelement/fork', function (req, res) {
-        adminItemSvc.fork(req, res, mongo_cde);
-    });
-
-    app.post('/acceptFork', function (req, res) {
-        adminItemSvc.acceptFork(req, res, mongo_cde);
-    });
-
-    app.get('/forkroot/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
-        adminItemSvc.forkRoot(req, res, mongo_cde);
-    });
-
-    app.get('/deLatestVersionByTinyId/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.params.tinyId || req.params.tinyId.length === 0) res.status(400).send();
-        else mongo_cde.latestVersionByTinyId(req.params.tinyId, function (err, result) {
-            if (err) res.status(500).send();
-            else if (result) res.send(result.version);
-            else res.status(500).send();
         });
     });
 
@@ -117,7 +76,7 @@ exports.init = function (app, daoManager) {
             if (err) return res.status(404).send("Cannot retrieve DataElement.");
             if (!dataElement.history || dataElement.history.length < 1) return res.send([]);
             mongo_cde.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
-                var diff = cdediff.diff(dataElement, priorDe);
+                let diff = cdediff.diff(dataElement, priorDe);
                 res.send(diff);
             });
         });
@@ -146,28 +105,24 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    if (config.modules.cde.attachments) {
-        app.post('/attachments/cde/add', multer(config.multer), function (req, res) {
-            adminItemSvc.addAttachment(req, res, mongo_cde);
-        });
+    app.post('/attachments/cde/add', multer(config.multer), function (req, res) {
+        adminItemSvc.addAttachment(req, res, mongo_cde);
+    });
 
-        app.post('/attachments/cde/remove', function (req, res) {
-            adminItemSvc.removeAttachment(req, res, mongo_cde);
-        });
+    app.post('/attachments/cde/remove', function (req, res) {
+        adminItemSvc.removeAttachment(req, res, mongo_cde);
+    });
 
-        app.post('/attachments/cde/setDefault', function (req, res) {
-            adminItemSvc.setAttachmentDefault(req, res, mongo_cde);
-        });
-    }
+    app.post('/attachments/cde/setDefault', function (req, res) {
+        adminItemSvc.setAttachmentDefault(req, res, mongo_cde);
+    });
 
-    if (config.modules.cde.comments) {
-        app.post('/comments/cde/add', function (req, res) {
-            adminItemSvc.addComment(req, res, mongo_cde);
-        });
-        app.post('/comments/cde/remove', function (req, res) {
-            adminItemSvc.removeComment(req, res, mongo_cde);
-        });
-    }
+    app.post('/comments/cde/add', function (req, res) {
+        adminItemSvc.addComment(req, res, mongo_cde);
+    });
+    app.post('/comments/cde/remove', function (req, res) {
+        adminItemSvc.removeComment(req, res, mongo_cde);
+    });
 
     app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
         elastic.morelike(req.params.tinyId, function (result) {
@@ -197,7 +152,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    var fetchRemoteData = function () {
+    let fetchRemoteData = function () {
         vsac.getTGT();
         elastic.fetchPVCodeSystemList();
     };
@@ -209,39 +164,34 @@ exports.init = function (app, daoManager) {
 
     // from others to UMLS
     app.get('/umlsCuiFromSrc/:id/:src', function (req, res) {
-        if (!config.umls.sourceOptions[req.params.src]) {
+        if (!config.umls.sourceOptions[req.params.src])
             return res.send("Source cannot be looked up, use UTS Instead.");
-        }
-        return vsac.umlsCuiFromSrc(req.params.id, req.params.src, res);
+        vsac.umlsCuiFromSrc(req.params.id, req.params.src, res);
     });
 
     // from UMLS to others
     app.get('/umlsAtomsBridge/:id/:src', function (req, res) {
-        if (!config.umls.sourceOptions[req.params.src]) {
+        if (!config.umls.sourceOptions[req.params.src])
             return res.send("Source cannot be looked up, use UTS Instead.");
-        }
-        if (config.umls.sourceOptions[req.params.src].requiresLogin && !req.user) {
+        if (config.umls.sourceOptions[req.params.src].requiresLogin && !req.user)
             return res.status(403).send();
-        }
         vsac.getAtomsFromUMLS(req.params.id, req.params.src, res);
     });
 
     app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', function (req, res) {
         if (!req.params.source || !req.params.code || !req.params.targetSource)
             return res.status(401).end();
-        else vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, function (err, result) {
-            if (err)
-                return res.status(500).send(err);
-            else if (result.statusCode === 200)
+        vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, function (err, result) {
+            if (err) return res.status(500).send(err);
+            if (result.statusCode === 200)
                 return res.send({result: JSON.parse(result.body).result});
-            else
-                return res.send({result: []});
+            return res.send({result: []});
         });
     });
 
     app.get('/searchUmls', function (req, res) {
         if (!req.user) return res.status(403).send();
-        return vsac.searchUmls(req.query.searchTerm, res);
+        vsac.searchUmls(req.query.searchTerm, res);
     });
 
     app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
@@ -249,8 +199,8 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/retireCde', function (req, res) {
-        var cdeMergeTo = req.body.merge;
-        var cdeMergeFrom = req.body.cde;
+        let cdeMergeTo = req.body.merge;
+        let cdeMergeFrom = req.body.cde;
         req.params.type = "received";
         cdeMergeFrom.registrationState.registrationStatus = "Retired";
         if (cdeMergeTo && cdeMergeTo.tinyId)
@@ -260,8 +210,8 @@ exports.init = function (app, daoManager) {
         });
     });
     app.post('/mergeCde', function (req, res) {
-        var cdeMergeTo = req.body.mergeTo;
-        var cdeMergeFrom = req.body.mergeFrom;
+        let cdeMergeTo = req.body.mergeTo;
+        let cdeMergeFrom = req.body.mergeFrom;
         if (cdeMergeTo && cdeMergeTo.tinyId)
             cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
         cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
@@ -271,27 +221,27 @@ exports.init = function (app, daoManager) {
                 index: config.elastic.formIndex.name,
                 q: cdeMergeFrom.tinyId
             }, function (err, result) {
-                if (err) req.status(500).send(err);
-                else if (result.hits.hits.length === 1) {
+                if (err) return req.status(500).send(err);
+                if (result.hits.hits.length === 1) {
                     cdeMergeFrom.registrationState.registrationStatus = "Retired";
                     cdesvc.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
                         mongo_cde.update(cdeMergeFrom, req.user, function (err) {
                             if (err) return res.status(500).send(err);
-                            else
-                                mongo_cde.update(cdeMergeTo, req.user, function (err) {
-                                    if (err) return res.status(500).send(err);
-                                    else res.status(200).end("retired");
-                                });
+                            mongo_cde.update(cdeMergeTo, req.user, function (err) {
+                                if (err) return res.status(500).send(err);
+                                res.status(200).end("retired");
+                            });
                         });
                     });
-                } else res.status(200).end();
+                }
+                res.status(200).end();
             });
         } else {
             mongo_cde.update(cdeMergeFrom, req.user, function (err) {
                 if (err) return res.status(500).send(err);
-                else mongo_cde.update(cdeMergeTo, req.user, function (err) {
+                mongo_cde.update(cdeMergeTo, req.user, function (err) {
                     if (err) return res.status(500).send(err);
-                    else res.status(200).end();
+                    res.status(200).end();
                 });
             });
         }
@@ -308,41 +258,32 @@ exports.init = function (app, daoManager) {
     app.get('/status/cde', appStatus.status);
 
     app.post('/pinEntireSearchToBoard', function (req, res) {
-        if (req.isAuthenticated()) {
-            var query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
-            if (query.size > config.maxPin) {
-                res.status(403).send("Maximum number excesses.");
-            } else {
-                elastic_system.elasticsearch(query, 'cde', function (err, cdes) {
-                    boardsvc.pinAllToBoard(req, cdes.cdes, res);
-                });
-            }
-        } else {
-            res.send("Please login first.");
-        }
+        if (!req.isAuthenticated()) res.send("Please login first.");
+        let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
+        if (query.size > config.maxPin) return res.status(403).send("Maximum number excesses.");
+        elastic_system.elasticsearch(query, 'cde', function (err, cdes) {
+            boardsvc.pinAllToBoard(req, cdes.cdes, res);
+        });
     });
 
     app.get('/cde/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_cde);
     });
 
-
     app.post('/getCdeAuditLog', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_cde.getCdeAuditLog(req.body, function (err, result) {
-                res.send(result);
-            });
-        } else {
-            res.status(401).send("Not Authorized");
-        }
+        if (!req.isAuthenticated() || !req.user.siteAdmin)
+            return res.status(401).send("Not Authorized");
+        mongo_cde.getCdeAuditLog(req.body, function (err, result) {
+            res.send(result);
+        });
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {
-        var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        var exporters = {
+        let query = elastic_system.buildElasticSearchQuery(req.user, req.body);
+        let exporters = {
             json: {
                 export: function (res) {
-                    var firstElt = true;
+                    let firstElt = true;
                     res.type('application/json');
                     res.write("[");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
@@ -365,8 +306,8 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
-        var result = [];
-        var term = req.params.term;
+        let result = [];
+        let term = req.params.term;
         elastic_system.completionSuggest(term, function (resp) {
             if (resp.search_suggest) {
                 resp.search_suggest[0].options.map(function (item) {
@@ -378,19 +319,19 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/api/cde/modifiedElements', function (req, res) {
-        var dstring = req.query.from;
+        let dstring = req.query.from;
 
         function badDate() {
             res.status(300).send("Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24");
         }
 
-        if (!dstring) badDate();
-        if (dstring[4] !== '-' || dstring[7] !== '-') badDate();
-        if (dstring.indexOf('20') !== 0) badDate();
-        if (dstring[5] !== "0" && dstring[5] !== "1") badDate();
-        if (dstring[8] !== "0" && dstring[8] !== "1" && dstring[8] !== "2" && dstring[8] !== "3") badDate();
+        if (!dstring) return badDate();
+        if (dstring[4] !== '-' || dstring[7] !== '-') return badDate();
+        if (dstring.indexOf('20') !== 0) return badDate();
+        if (dstring[5] !== "0" && dstring[5] !== "1") return badDate();
+        if (dstring[8] !== "0" && dstring[8] !== "1" && dstring[8] !== "2" && dstring[8] !== "3") return badDate();
 
-        var date = new Date(dstring);
+        let date = new Date(dstring);
         mongo_cde.findModifiedElementsSince(date, function (err, elts) {
             res.send(elts.map(function (e) {
                 return {tinyId: e._id};
@@ -406,10 +347,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/classification/cde', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.status(401).send();
-            return;
-        }
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send();
         classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
             if (!err) {
                 res.send({code: 200, msg: "Classification Added"});
@@ -424,10 +362,9 @@ exports.init = function (app, daoManager) {
                     action: "add",
                     path: [req.body.orgName].concat(req.body.categories)
                 });
-            } else {
-                res.send({code: 403, msg: "Classification Already Exists"});
+                return;
             }
-
+            res.send({code: 403, msg: "Classification Already Exists"});
         });
     });
 
@@ -438,7 +375,7 @@ exports.init = function (app, daoManager) {
         classificationNode_system.addClassification(req.body, mongo_cde, function (err, result) {
             if (err) return res.status(500).send(err);
             if (result === "Classification Already Exists") return res.status(409).send(result);
-            else res.send(result);
+            res.send(result);
             mongo_data_system.addToClassifAudit({
                 date: new Date(),
                 user: {
@@ -459,7 +396,7 @@ exports.init = function (app, daoManager) {
         if (invalidateRequest) return res.status(400).send({error: invalidateRequest});
         classificationNode_system.removeClassification(req.body, mongo_cde, function (err, elt) {
             if (err) return res.status(500).send({error: err});
-            else res.send(elt);
+            res.send(elt);
             mongo_data_system.addToClassifAudit({
                 date: new Date(),
                 user: {

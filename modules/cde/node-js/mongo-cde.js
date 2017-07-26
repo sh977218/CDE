@@ -1,17 +1,16 @@
-var config = require('../../system/node-js/parseConfig')
-    , schemas = require('./schemas')
-    , schemas_system = require('../../system/node-js/schemas')
-    , mongo_data_system = require('../../system/node-js/mongo-data')
-    , mongo_board = require('../../board/node-js/mongo-board')
-    , connHelper = require('../../system/node-js/connections')
-    , dbLogger = require('../../system/node-js/dbLogger')
-    , logging = require('../../system/node-js/logging')
-    , cdediff = require("./cdediff")
-    , async = require('async')
-    , CronJob = require('cron').CronJob
-    , elastic = require('./elastic')
-    , deValidator = require('../shared/deValidator')
-;
+let config = require('../../system/node-js/parseConfig');
+let schemas = require('./schemas');
+let schemas_system = require('../../system/node-js/schemas');
+let mongo_data_system = require('../../system/node-js/mongo-data');
+let mongo_board = require('../../board/node-js/mongo-board');
+let connHelper = require('../../system/node-js/connections');
+let dbLogger = require('../../system/node-js/dbLogger');
+let logging = require('../../system/node-js/logging');
+let cdediff = require("./cdediff");
+let async = require('async');
+let CronJob = require('cron').CronJob;
+let elastic = require('./elastic');
+let deValidator = require('../shared/deValidator');
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -43,39 +42,30 @@ schemas.dataElementSchema.pre('save', function (next) {
 
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 exports.DataElement = DataElement;
-
 exports.elastic = elastic;
 
+exports.byId = function (id, cb) {
+    DataElement.findOne({'_id': id}, cb);
+};
+
+exports.byIdList = function (idList, cb) {
+    DataElement.find({}).where("_id").in(idList).exec(cb);
+};
+
+exports.byTinyId = function (tinyId, cb) {
+    DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
+};
+
 exports.byTinyIdVersion = function (tinyId, version, cb) {
-    let cond = {'tinyId': tinyId};
-    if (version) cond["registrationState.registrationStatus"] = {$ne: "Retired"};
-    else cond.version = version;
-    DataElement.findOne(cond).exec(function (err, cde) {
-        cb(err, cde);
-    });
+    DataElement.findOne({tinyId: tinyId, version: version}, cb);
 };
 
-exports.byId = function (id, callback) {
-    DataElement.findOne({'_id': id}, function (err, cde) {
-        callback(err, cde);
-    });
+exports.latestVersionByTinyId = function (tinyId, cb) {
+    DataElement.findOne({tinyId: tinyId, archived: false}, 'version', cb);
 };
-exports.byTinyId = function (tinyId, callback) {
-    DataElement.findOne({'tinyId': tinyId, archived: false}, function (err, cde) {
-        callback(err, cde);
-    });
+exports.byTinyIdList = function (tinyIdList, cb) {
+    DataElement.find({}).where("tinyId").in(tinyIdList).exec(cb);
 };
-exports.versionById = function (id, callback) {
-    DataElement.findOne({_id: id}).exec(function (err, result) {
-        callback(err, result);
-    });
-};
-exports.versionByTinyId = function (tinyId, callback) {
-    DataElement.findOne({tinyId: tinyId, archived: false}).exec(function (err, result) {
-        callback(err, result);
-    });
-};
-
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
@@ -167,16 +157,6 @@ exports.cdesByTinyIdListInOrder = function (idList, callback) {
             }
         });
         callback(err, reorderedCdes);
-    });
-};
-
-exports.priorCdes = function (cdeId, callback) {
-    DataElement.findById(cdeId).exec(function (err, dataElement) {
-        if (dataElement !== null) {
-            return DataElement.find({}).where("_id").in(dataElement.history).exec(function (err, cdes) {
-                callback(err, cdes);
-            });
-        }
     });
 };
 
