@@ -4,7 +4,6 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 
 public class TourTest extends NlmCdeBaseTest {
 
@@ -59,7 +58,10 @@ public class TourTest extends NlmCdeBaseTest {
         textPresent(expectedText);
     }
 
-    @Test
+    /*
+        @TODO
+        //@Test
+    */
     public void tourTest() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
