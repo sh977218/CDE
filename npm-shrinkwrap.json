@@ -2,6 +2,9 @@
   "name": "ludetc-cdes",
   "version": "0.0.1",
   "dependencies": {
+    "enhanced-resolve": {
+      "version": "3.3.0"
+    },
     "webpack": {
       "version": "2.4.1",
       "dependencies": {
@@ -17,6 +20,14 @@
               }
             }
           }
+        }
+      }
+    },
+    "@ngtools/webpack": {
+      "version": "1.4.1",
+      "dependencies": {
+        "enhanced-resolve": {
+          "version": "3.3.0"
         }
       }
     }
