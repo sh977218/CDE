@@ -5,6 +5,9 @@
     "webpack": {
       "version": "2.4.1",
       "dependencies": {
+        "enhanced-resolve": {
+          "version": "3.3.0"
+        },
         "node-libs-browser": {
           "version": "2.0.0",
           "dependencies": {
@@ -17,6 +20,14 @@
               }
             }
           }
+        }
+      }
+    },
+    "@ngtools/webpack": {
+      "version": "1.4.1",
+      "dependencies": {
+        "enhanced-resolve": {
+          "version": "3.3.0"
         }
       }
     }
