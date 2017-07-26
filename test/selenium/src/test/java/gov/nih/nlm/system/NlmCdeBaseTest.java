@@ -1213,4 +1213,64 @@ public class NlmCdeBaseTest {
     }
 
 
+    public void startEditQuestionSectionById(String id) {
+        try {
+            scrollToViewById(id);
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
+        } catch (Exception e) {
+            scrollDownBy(50);
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
+        }
+    }
+
+    public void saveEditQuestionSectionById(String id) {
+        try {
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
+        } catch (Exception e) {
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
+        }
+    }
+
+    /**
+     * This method is used to edit section in form description for form.
+     *
+     * @param sectionId             Section Id.
+     * @param newSectionName        New section name.
+     * @param newSectionInstruction New section instruction.
+     * @param isInstructionHtml     Is instruction html?
+     * @param newSectionCardinality New section cardinality
+     */
+    protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
+        startEditQuestionSectionById(sectionId);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).sendKeys(newSectionName);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+        textNotPresent("Confirm");
+        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]"));
+
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//i[contains(@class,'fa-edit')]"));
+        textPresent("Plain Text");
+        textPresent("Rich Text");
+        textPresent("Confirm");
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).sendKeys(newSectionInstruction);
+        if (isInstructionHtml)
+            clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[text()='Rich Text']"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[contains(text(),'Confirm')]"));
+        textNotPresent("Confirm");
+        textPresent(newSectionInstruction, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//div/span"));
+
+        new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newSectionCardinalityType);
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(newSectionCardinality);
+        saveEditQuestionSectionById("section_0");
+        if (newSectionCardinality.equals("1"))
+            textNotPresent("Repeats", By.xpath("//*[@id='" + sectionId + "']"));
+        else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));
+    }
+
 }

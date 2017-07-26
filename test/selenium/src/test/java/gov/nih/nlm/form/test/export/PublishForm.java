@@ -13,7 +13,7 @@ public class PublishForm extends NlmCdeBaseTest {
         goToFormByName(formName);
         clickElement(By.id("export"));
         clickElement(By.id("formPublishExport"));
-        findElement(By.name("endpointUrl")).sendKeys(baseUrl + "/sendMockFormData");
+        findElement(By.name("publishedFormUrl")).sendKeys(baseUrl + "/sendMockFormData");
         findElement(By.name("publishedFormName")).sendKeys("My Published Form");
         clickElement(By.id("goExport"));
         textPresent("Done. Go to your profile to see all your published forms");
