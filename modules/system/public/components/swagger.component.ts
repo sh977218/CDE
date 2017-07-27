@@ -5,7 +5,8 @@ import { AfterViewInit, Component } from "@angular/core";
     templateUrl: "./swagger.component.html",
 })
 export class SwaggerComponent implements AfterViewInit {
-    constructor() {}
+    constructor() {
+    }
 
     ngAfterViewInit() {
         let initializeIFrame = setInterval(function () {
@@ -21,6 +22,6 @@ export class SwaggerComponent implements AfterViewInit {
             cssLink.type = "text/css";
             window.frames['swaggerFrame'].contentDocument.body.appendChild(cssLink);
             clearInterval(initializeIFrame);
-        }, 10);
+        }, 500);
     }
 }
