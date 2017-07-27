@@ -60,31 +60,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             $scope.orgCurators = response.data.orgs;
         });
     };
-    $scope.getOrgCurators(); 
-    
-    $scope.addSiteAdmin = function() {
-        AccountManagement.addSiteAdmin({username: $scope.admin.username},
-            function(res) {
-                  Alert.addAlert("success", res);
-                  $scope.siteAdmins = $scope.getSiteAdmins();
-            }, function () {
-                Alert.addAlert("danger", "There was an issue adding this administrator.");
-            }
-        );
-        $scope.admin.username = "";
-    };
-    
-    $scope.removeSiteAdmin = function(byId) {
-       AccountManagement.removeSiteAdmin(
-           {id: byId},
-            function(res) {
-                  Alert.addAlert("success", res);
-                  $scope.siteAdmins = $scope.getSiteAdmins();
-            }, function (){
-               Alert.addAlert("danger", "There was an issue adding this administrator.");
-            }
-        );
-    };
+    $scope.getOrgCurators();
 
     $scope.addOrgCurator = function() {
         AccountManagement.addOrgCurator({
