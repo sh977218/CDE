@@ -31,6 +31,8 @@ import { ClientErrorsComponent } from "./components/siteAdmin/clientErrors/clien
 import { ServerErrorsComponent } from "./components/siteAdmin/serverErrors/serverErrors.component";
 import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.component";
 import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
+import { StatusValidationRulesComponent } from "./components/siteAdmin/statusValidationRules/statusValidationRules.component";
+import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/editSiteAdmins.component";
 
 @NgModule({
     imports: [
@@ -52,6 +54,7 @@ import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/f
         ClassificationAuditLogComponent,
         ClientErrorsComponent,
         DailyUsageComponent,
+        EditSiteAdminsComponent,
         FeedbackIssuesComponent,
         FormAccordionListDirective,
         HomeComponent,
@@ -62,6 +65,7 @@ import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/f
         ProfileComponent,
         ServerErrorsComponent,
         SiteAuditComponent,
+        StatusValidationRulesComponent,
         SwaggerComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
@@ -69,12 +73,14 @@ import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/f
     ],
     entryComponents: [
         AlertComponent,
+        EditSiteAdminsComponent,
         HomeComponent,
         ListManagementComponent,
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
         SiteAuditComponent,
+        StatusValidationRulesComponent,
         SwaggerComponent,
         UsersMgtComponent,
     ],

@@ -39,7 +39,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }],
             templateUrl: '/system/public/html/latestComments.html'
         }).when('/siteaccountmanagement', {
-            controller: 'SiteManagementCtrl',
             templateUrl: '/system/public/html/siteAccountManagement.html'
         }).when('/orgaccountmanagement', {
             controller: 'AccountManagementCtrl',
@@ -445,6 +444,12 @@ angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({comp
 
 import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
+
+import {EditSiteAdminsComponent} from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
+angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({component: EditSiteAdminsComponent, inputs: [], outputs: []}));
+
+import {StatusValidationRulesComponent} from "../components/siteAdmin/statusValidationRules/statusValidationRules.component";
+angular.module('systemModule').directive('cdeStatusValidationRules', downgradeComponent({component: StatusValidationRulesComponent, inputs: [], outputs: []}));
 
 import {IdentifiersComponent} from "../../../adminItem/public/components/identifiers.component";
 angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({component: IdentifiersComponent, inputs: ['elt'], outputs: []}));
