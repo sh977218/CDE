@@ -1,58 +1,49 @@
-var validator = require('xsd-schema-validator'),
-    xml2js = require('xml2js'),
-    builder = require('xmlbuilder'),
-    dbLogger = require('../../system/node-js/dbLogger.js')
-    ;
+let validator = require('xsd-schema-validator');
+let builder = require('xmlbuilder');
+let dbLogger = require('../../system/node-js/dbLogger.js');
 
 function addQuestion(parent, question) {
-
-    var newQuestion = {
+    let newQuestion = {
         "@ID": question.question.cde.tinyId
     };
-
     if (question.label !== undefined && !question.hideLabel) {
         newQuestion["@title"] = question.label;
     }
-
     if (question.instructions) {
         newQuestion.OtherText = {"@val": question.instructions.value};
     }
-
-    var questionEle = parent.ele({Question: newQuestion});
-
+    let questionEle = parent.ele({Question: newQuestion});
     if (question.question.cde.ids.length > 0) {
         question.question.cde.ids.forEach(function (id) {
-            var codedValueEle = questionEle.ele(
-                {
-                    CodedValue: {
-                        "Code": {"@val": id.id}
-                        , "CodeSystem": {
-                            "CodeSystemName": {"@val": id.source}
-                        }
+            let codedValueEle = questionEle.ele({
+                CodedValue: {
+                    "Code": {"@val": id.id},
+                    "CodeSystem": {
+                        "CodeSystemName": {"@val": id.source}
                     }
-                });
-            if (id.version) {
+                }
+            });
+            if (id.version)
                 codedValueEle.children.filter(c => c.name === 'CodeSystem')[0].ele({Version: {"@val": id.version}});
-            }
         });
     }
 
     if (question.question.datatype === 'Value List' && question.question.answers.length > 0) {
-        var newListField = questionEle.ele("ListField");
-        var newList = newListField.ele("List");
+        let newListField = questionEle.ele("ListField");
+        let newList = newListField.ele("List");
         if (question.question.multiselect) newListField.att("maxSelections", "0");
 
         if (question.question.answers) {
             question.question.answers.forEach(function (answer) {
-                var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
-                var q = {
+                let title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
+                let q = {
                     "@ID": "NA_" + Math.random(),
                     "@title": title
                 };
                 if (answer.codeSystemName) {
                     q["CodedValue"] = {
-                        "Code": {"@val": answer.valueMeaningCode}
-                        , "CodeSystem": {
+                        "Code": {"@val": answer.valueMeaningCode},
+                        "CodeSystem": {
                             "CodeSystemName": {"@val": answer.codeSystemName}
                         }
                     };
@@ -66,24 +57,21 @@ function addQuestion(parent, question) {
             "maxLength": "4000"
         });
     }
-
     idToName[question.question.cde.tinyId] = question.label;
-
     questionsInSection[question.label] = questionEle;
 }
 
 function doQuestion(parent, question) {
 
-    var embed = false;
-
+    let embed = false;
     try {
         if (question.skipLogic && question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
-                var terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function (t) {
+                let terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function (t) {
                     return t.substr(1, t.length - 2);
                 });
                 if (terms.length === 2) {
-                    var qToAddTo = questionsInSection[terms[0]];
+                    let qToAddTo = questionsInSection[terms[0]];
                     // below is xmlBuilder ele. This seems to be the way to find child inside element
                     qToAddTo.children.filter(c => c.name === 'ListField')[0]
                         .children.filter(c => c.name === 'List')[0]
@@ -91,14 +79,14 @@ function doQuestion(parent, question) {
                         if (li.attributes["title"] && li.attributes['title'].value === terms[1]) {
                             embed = true;
                             if (question.question.datatype === 'Value List') {
-                                var liChildItems = li.children.filter(c => c.name === 'ChildItems')[0];
+                                let liChildItems = li.children.filter(c => c.name === 'ChildItems')[0];
                                 if (!liChildItems) liChildItems = li.ele({ChildItems: {}});
                                 addQuestion(liChildItems, question);
                             } else {
                                 if (question.label === "" || question.hideLabel) {
                                     li.ele({ListItemResponseField: {Response: {string: ""}}});
                                 } else {
-                                    var liChildItems2 = li.children.filter(c => c.name === 'ChildItems')[0];
+                                    let liChildItems2 = li.children.filter(c => c.name === 'ChildItems')[0];
                                     if (!liChildItems2) liChildItems2 = li.ele({ChildItems: {}});
                                     addQuestion(liChildItems2, question);
                                 }
@@ -116,34 +104,29 @@ function doQuestion(parent, question) {
     }
 }
 
-var questionsInSection = {};
+let questionsInSection = {};
 
-var doSection = function (parent, section) {
-    var newSection = {
+let doSection = function (parent, section) {
+    let newSection = {
         "@ID": "NA_" + Math.random(),
         "@title": section.label
     };
-    var subSection = parent.ele({Section: newSection});
-
+    let subSection = parent.ele({Section: newSection});
     if (section.formElements && section.formElements.length > 0) {
-        var childItems = subSection.ele({ChildItems: {}});
-
+        let childItems = subSection.ele({ChildItems: {}});
         section.formElements.forEach(function (formElement) {
-            if (formElement.elementType === 'question') {
+            if (formElement.elementType === 'question')
                 doQuestion(childItems, formElement);
-            } else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
+            else if (formElement.elementType === 'section' || formElement.elementType === 'form')
                 doSection(childItems, formElement);
-            }
         });
     }
-
 };
 
-var idToName = {};
+let idToName = {};
 
 exports.formToSDC = function (form, renderer, cb) {
-
-    var formDesign = builder.create({
+    let formDesign = builder.create({
         "FormDesign": {
             "@xmlns": "http://healthIT.gov/sdc",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -157,15 +140,15 @@ exports.formToSDC = function (form, renderer, cb) {
         }
     }, {separateArrayItems: true, headless: true});
 
-    var body = formDesign.ele({
+    let body = formDesign.ele({
         "Body": {
             "@ID": "NA_" + Math.random()
         }
     });
 
-    var noSupport = false;
+    let noSupport = false;
 
-    var childItems = body.ele({ChildItems: {}});
+    let childItems = body.ele({ChildItems: {}});
 
     form.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'section' || formElement.elementType === 'form') {
@@ -177,7 +160,7 @@ exports.formToSDC = function (form, renderer, cb) {
 
     idToName = {};
 
-    var xmlStr = formDesign.end({pretty: false});
+    let xmlStr = formDesign.end({pretty: false});
 
     validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err) {
         if (err) {
@@ -192,10 +175,9 @@ exports.formToSDC = function (form, renderer, cb) {
         if (noSupport) {
             cb("SDC Export does not support questions outside of sections. ");
         } else if (renderer === "defaultHtml") {
-            cb("<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr)
+            cb("<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr);
         } else {
             cb(xmlStr);
         }
     });
-
 };

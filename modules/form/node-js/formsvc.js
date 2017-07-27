@@ -17,11 +17,35 @@ let redCapExportWarnings = {
     "unknownElementType": "This form has error."
 };
 
+function allowUpdate(user, item, cb) {
+    if (item.archived === true) {
+        return cb("Element is archived.");
+    } else if (user.orgCurator.indexOf(item.stewardOrg.name) < 0 && user.orgAdmin.indexOf(item.stewardOrg.name) < 0 && !user.siteAdmin) {
+        cb("Not authorized");
+    } else if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin) {
+        cb("This record is already standard.");
+    } else if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") && (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin) cb("Not authorized"); else cb();
+}
+
+function allowCreate(user, item, cb) {
+    if (!elt.stewardOrg.name) return res.status(400).send("Missing Steward");
+    if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
+        user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 &&
+        !user.siteAdmin)
+        return res.status(403).send("Not authorized");
+    if (elt.registrationState && elt.registrationState.registrationStatus &&
+        ((elt.registrationState.registrationStatus === "Standard" ||
+            elt.registrationState.registrationStatus === " Preferred Standard") &&
+            !user.siteAdmin))
+        return res.status(403).send("Not authorized");
+}
+
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) {
         authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
+            if (err) return cb(err);
             if (!isYouAllowed) form.formElements = [];
-            cb();
+            return cb();
         });
     } else cb();
 }
@@ -32,7 +56,8 @@ exports.byId = function (req, res) {
     mongo_form.byId(id, function (err, form) {
         if (err) return res.status(500).send(err);
         if (!form) return res.status(404).send();
-        wipeRenderDisallowed(form, req, function () {
+        wipeRenderDisallowed(form, req, function (err) {
+            if (err) return res.status(500).send(err);
             if (req.query.type === 'xml') {
                 res.header("Access-Control-Allow-Origin", "*");
                 res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -40,13 +65,13 @@ exports.byId = function (req, res) {
                 if (req.query.subtype === 'odm') {
                     odm.getFormOdm(form, function (err, xmlForm) {
                         if (err) return res.status(500).send(err);
-                        res.send(xmlForm);
+                        return res.send(xmlForm);
                     });
                 } else if (req.query.subtype === 'sdc') {
                     sdc.formToSDC(form, req.query.renderer, function (txt) {
-                        res.send(txt);
+                        return res.send(txt);
                     });
-                }else {
+                } else {
                     let exportForm = form.toObject();
                     delete exportForm._id;
                     delete exportForm.history;
@@ -55,7 +80,7 @@ exports.byId = function (req, res) {
                             delete q._id;
                         });
                     });
-                    res.send(JXON.jsToString({element: exportForm}));
+                    return res.send(JXON.jsToString({element: exportForm}));
                 }
             } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
                 if (redCapExportWarnings[form.stewardOrg.name])
@@ -106,7 +131,8 @@ exports.byTinyId = function (req, res) {
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err) return res.status(500).send(err);
         if (!form) return res.status(404).send();
-        wipeRenderDisallowed(form, req, function () {
+        wipeRenderDisallowed(form, req, function (err) {
+            if (err) return res.status(500).send(err);
             res.send(form);
         });
         mongo_data_system.addToViewHistory(form, req.user);
@@ -120,11 +146,15 @@ exports.byTinyIdVersion = function (req, res) {
     mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).send();
-        res.send(form);
+        wipeRenderDisallowed(form, req, function (err) {
+            if (err) return res.status(500).send(err);
+            res.send(form);
+        });
     });
 };
 exports.latestVersionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
     mongo_form.latestVersionByTinyId(tinyId, function (err, latestVersion) {
         if (err) return res.status(500).send(err);
         res.send(latestVersion);
@@ -133,7 +163,7 @@ exports.latestVersionByTinyId = function (req, res) {
 
 exports.formByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(500).send();
+    if (!tinyId) return res.status(400).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).end();
@@ -143,7 +173,7 @@ exports.formByTinyId = function (req, res) {
 };
 exports.formById = function (req, res) {
     let id = req.params.id;
-    if (!id) return res.status(500).send();
+    if (!id) return res.status(400).send();
     mongo_form.byId(id, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).end();
@@ -168,17 +198,15 @@ exports.versionByTinyId = function (req, res) {
     });
 };
 
-
 exports.createForm = function (req, res) {
-    if (req.params.id) return res.status(500).send("bad request");
-    if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
+    let id = req.params.id;
+    if (!id) return res.status(400).send();
+    if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     let elt = req.body;
     let user = req.user;
-    if (!elt.stewardOrg.name) return res.send("Missing Steward");
-    if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 && user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !user.siteAdmin)
-        return res.status(403).send("not authorized");
-    if (elt.registrationState && elt.registrationState.registrationStatus && ((elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === " Preferred Standard") && !user.siteAdmin))
-        return res.status(403).send("Not authorized");
+    allowCreate(user,item,function(err){
+
+    })
     mongo_form.create(elt, user, function (err, dataElement) {
         if (err) return res.status(500).send();
         res.send(dataElement);
@@ -187,20 +215,20 @@ exports.createForm = function (req, res) {
 
 exports.updateForm = function (req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(500).send();
-    if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
+    if (!tinyId) return res.status(400).send();
+    if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     let user = req.user;
     mongo_form.byTinyId(tinyId, function (err, item) {
-        if (err) return res.status(500).send();
-        if (!item) return res.status(500).send("Element not exist.");
+        if (err) return res.status(400).send();
+        if (!item) return res.status(404).send();
         allowUpdate(user, item, function (err) {
-            if (err) return res.status(500).send();
+            if (err) return res.status(500).send(err);
             mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
                     let elt = req.body;
                     mongo_form.update(elt, req.user, function (err, response) {
-                        if (err) return res.status(500).send();
+                        if (err) return res.status(500).send(err);
                         res.send(response);
                     });
                 }
@@ -208,17 +236,6 @@ exports.updateForm = function (req, res) {
         });
     });
 };
-
-
-function allowUpdate(user, item, cb) {
-    if (item.archived === true) {
-        return cb("Element is archived.");
-    } else if (user.orgCurator.indexOf(item.stewardOrg.name) < 0 && user.orgAdmin.indexOf(item.stewardOrg.name) < 0 && !user.siteAdmin) {
-        cb("Not authorized");
-    } else if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin) {
-        cb("This record is already standard.");
-    } else if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") && (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin) cb("Not authorized"); else cb();
-}
 
 exports.publishForm = function (req, res) {
     let id = req.params.id;
