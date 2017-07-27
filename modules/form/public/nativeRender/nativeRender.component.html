@@ -3,15 +3,15 @@
 <form *ngIf="!endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal">
     <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
                                   || skipLogicService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition,
-                                  null, formElement, nativeRenderService.getElt(), nativeRenderService.getErrors())"
+                                  null, nativeRenderService.getElt(), nativeRenderService.getElt(), nativeRenderService.getErrors())"
                         [formElement]="nativeRenderService.getElt()"></cde-native-section>
 </form>
-<form ngNoForm *ngIf="endpointUrl && nativeRenderService.getElt()" #formData name="sectionLabel" role="form" class="form-horizontal"
+<form ngNoForm #formData *ngIf="endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal"
       [action]="getEndpointUrl()" method="post">
 
     <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
                                   || skipLogicService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition,
-                                  null, formElement, nativeRenderService.getElt(), nativeRenderService.getErrors())"
+                                  null, nativeRenderService.getElt(), nativeRenderService.getElt(), nativeRenderService.getErrors())"
                         [formElement]="nativeRenderService.getElt()"></cde-native-section>
 
     <input type="hidden" name="formUrl" [value]="formUrl">
@@ -20,6 +20,6 @@
            style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" [disabled]="formData.$invalid">
 </form>
 
-<uib-alert type="danger" *ngIf="nativeRenderService.hasErrors()">
+<ngb-alert type="danger" *ngIf="nativeRenderService.hasErrors()">
     <span [textContent]="nativeRenderService.getErrors().join(' -- ')"></span>
-</uib-alert>
+</ngb-alert>
