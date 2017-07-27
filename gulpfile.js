@@ -37,6 +37,23 @@ gulp.task('bower', function () {
         .pipe(gulp.dest('./modules/components'));
 });
 
+gulp.task('thirdParty', ['npm', 'bower'], function () {
+    gulp.src('./node_modules/core-js/client/shim.min.js')
+        .pipe(gulp.dest('./modules/static/'));
+    gulp.src('./node_modules/classlist.js/classList.min.js')
+        .pipe(gulp.dest('./modules/static/'));
+    gulp.src('./node_modules/html5-formdata/formdata.js')
+        .pipe(gulp.dest('./modules/static/'));
+    gulp.src('./node_modules/js-polyfills/typedarray.js')
+        .pipe(gulp.dest('./modules/static/'));
+    gulp.src('./node_modules/Blob.js/Blob.js')
+        .pipe(gulp.dest('./modules/static/'));
+    gulp.src('./node_modules/intl/locale-data/jsonp/en.js')
+        .pipe(gulp.dest('./modules/static/'));
+    return gulp.src('./node_modules/intl/dist/Intl.min.js')
+        .pipe(gulp.dest('./modules/static/'));
+});
+
 gulp.task('lhc-wiredep', ['bower'], function () {
     return gulp.src("./modules/form/public/html/lformsRender.html")
         .pipe(wiredep({
@@ -187,7 +204,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
     });
 });
 
-gulp.task('webpack', ['npm', 'bower'], function () {
+gulp.task('webpack', ['thirdParty'], function () {
     return run('npm run build').exec(undefined,
         () => gulp.src('./modules/static/*.js').pipe(gulp.dest(config.node.buildDir + "/modules/static/")));
 });

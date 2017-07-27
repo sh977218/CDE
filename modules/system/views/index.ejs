@@ -2,14 +2,14 @@
 <html xmlns:ng="http://angularjs.org" id="ng-app" lang="en">
 <head>
 	<title>NIH Common Data Elements (CDE) Repository</title>
-	<meta name="site-version" content="<%= version %>"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<meta name="site-version" content="<%= version %>">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="description"
-	      content="Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms."/>
+	      content="Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms.">
 	<meta name="keywords"
-	      content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine"/>
+	      content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine">
 	<meta name=viewport content="width=device-width, initial-scale=1">
-	<meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk"/>
+	<meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
 
 	<!--[if lt IE 9]>
 	<script type="text/javascript">
@@ -91,6 +91,15 @@
 		<angular-feedback options="feedbackOptions"></angular-feedback>
 	</div>
 </div>
+
+<!--Polyfills for legacy browsers-->
+<script type="text/javascript" src="/static/shim.min.js" defer></script>
+<script type="text/javascript" src="/static/Intl.min.js" defer></script>
+<script type="text/javascript" src="/static/en.js" defer></script>
+<script type="text/javascript" src="/static/classList.min.js" defer></script>
+<!--[if IE]><script type="text/javascript" src="/static/formdata.js" defer></script><![endif]-->
+<!--[if IE]><script type="text/javascript" src="/static/typedarray.js" defer></script><![endif]-->
+<!--[if IE]><script type="text/javascript" src="/static/Blob.js" defer></script><![endif]-->
 
 <!-- build:js /system/public/assets/js/vendor.js -->
 <!-- bower:js -->
