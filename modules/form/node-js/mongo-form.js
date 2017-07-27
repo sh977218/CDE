@@ -1,10 +1,11 @@
-var config = require('../../system/node-js/parseConfig')
-    , schemas = require('./schemas')
-    , mongo_data_system = require('../../system/node-js/mongo-data')
-    , connHelper = require('../../system/node-js/connections')
-    , logging = require('../../system/node-js/logging')
-    , elastic = require('./elastic')
-;
+let async = require('async');
+let _ = require('lodash');
+let config = require('../../system/node-js/parseConfig');
+let schemas = require('./schemas');
+let mongo_data_system = require('../../system/node-js/mongo-data');
+let connHelper = require('../../system/node-js/connections');
+let logging = require('../../system/node-js/logging');
+let elastic = require('./elastic');
 
 exports.type = "form";
 exports.name = "forms";
@@ -26,23 +27,72 @@ exports.Form = Form;
 
 exports.elastic = elastic;
 
+function fetchWholeForm(form, callback) {
+    let maxDepth = 8;
+    let depth = 0;
+    let loopFormElements = function (form, cb) {
+        if (!form.formElements) form.formElements = [];
+        async.forEachSeries(form.formElements, function (fe, doneOne) {
+            if (fe.elementType === "form") {
+                depth++;
+                if (depth < maxDepth)
+                    Form.findOne({
+                        tinyId: fe.inForm.form.tinyId,
+                        version: fe.inForm.form.version
+                    }, function (err, result) {
+                        if (err)
+                            return cb("Retrieving form tinyId: " + fe.inForm.form.tinyId + " version: " + fe.inForm.form.version + " has error: " + err);
+                        result = result.toObject();
+                        fe.formElements = result.formElements;
+                        loopFormElements(fe, function () {
+                            depth--;
+                            doneOne();
+                        });
+                    });
+                else doneOne();
+            } else if (fe.elementType === "section") {
+                loopFormElements(fe, function () {
+                    doneOne();
+                });
+            } else doneOne();
+        }, function doneAll() {
+            cb();
+        });
+    };
+    loopFormElements(form, function (err) {
+        callback(err, form);
+    });
+}
 
 exports.byId = function (id, cb) {
-    Form.findById(id, cb);
+    Form.findById(id, function (err, form) {
+        if (err) return cb(err, form);
+        fetchWholeForm(form, cb);
+    });
 };
 
 exports.byIdList = function (idList, cb) {
-    Form.find({}).where("_id").in(idList).exec(cb);
+    Form.find({}).where("_id").in(idList).exec(function (err, forms) {
+        async.forEach(forms, function (form, doneOneForm) {
+            fetchWholeForm(form, doneOneForm);
+        }, function doneAllForms(e) {
+            cb(e, forms);
+        });
+    });
 };
 
-exports.byTinyId = function (tinyId, callback) {
+exports.byTinyId = function (tinyId, cb) {
     Form.findOne({'tinyId': tinyId, archived: false}, function (err, form) {
-        callback(err, form);
+        if (err) return cb(err, form);
+        fetchWholeForm(form, cb);
     });
 };
 
 exports.byTinyIdVersion = function (tinyId, version, cb) {
-    Form.findOne({'tinyId': tinyId, version: version}, cb);
+    Form.findOne({'tinyId': tinyId, version: version}, function (err, form) {
+        if (err) return cb(err, form);
+        fetchWholeForm(form, cb);
+    });
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
@@ -50,9 +100,14 @@ exports.latestVersionByTinyId = function (tinyId, cb) {
 };
 
 exports.byTinyIdList = function (tinyIdList, cb) {
-    Form.find({}).where("tinyId").in(tinyIdList).exec(cb);
+    Form.find({}).where("tinyId").in(tinyIdList).exec(function (err, forms) {
+        async.forEach(forms, function (form, doneOneForm) {
+            fetchWholeForm(form, doneOneForm);
+        }, function doneAllForms(e) {
+            cb(e, forms);
+        });
+    });
 };
-
 
 /* ---------- PUT NEW REST API above ---------- */
 
