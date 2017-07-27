@@ -28,22 +28,6 @@ exports.init = function (app, daoManager) {
 
     app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
 
-    app.get("/form/:tinyId/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlByTinyId);
-    app.get("/formById/:id/xml/odm/", exportShared.nocacheMiddleware, formSvc.odmXmlById);
-
-    app.get("/form/:tinyId/xml/sdc/", exportShared.nocacheMiddleware, formSvc.sdcXmlByTinyId);
-    app.get("/formById/:id/xml/sdc/", exportShared.nocacheMiddleware, formSvc.sdcXmlById);
-
-    app.get("/form/:tinyId/xml/", exportShared.nocacheMiddleware, formSvc.xmlByTinyId);
-    app.get("/formById/:id/xml/", exportShared.nocacheMiddleware, formSvc.xmlById);
-
-    app.get("/form/:tinyId/zip/redCap/", exportShared.nocacheMiddleware, formSvc.redCapZipByTinyId);
-    app.get("/formById/:id/zip/redCap/", exportShared.nocacheMiddleware, formSvc.redCapZipById);
-
-    app.get("/form/:tinyId/html/sdc", exportShared.nocacheMiddleware, formSvc.sdcHtmlByTinyId);
-    app.get("/formById/:id/html/sdc", exportShared.nocacheMiddleware, formSvc.sdcHtmlById);
-
-
     app.post("/form/", exportShared.nocacheMiddleware, formSvc.createForm);
     app.put("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.updateForm);
 
