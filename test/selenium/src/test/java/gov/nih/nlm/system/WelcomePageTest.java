@@ -22,10 +22,10 @@ public class WelcomePageTest extends NlmCdeBaseTest {
 
         mustBeLoggedOut();
         goToCdeSearch();
-        clickElement(By.xpath("//*[@id='search_by_classification_caBIG']/i"));
+        clickElement(By.id("search_by_classification_info_caBIG"));
         textPresent(orgDetail);
         goToFormSearch();
-        clickElement(By.xpath("//*[@id='search_by_classification_caBIG']/i"));
+        clickElement(By.id("search_by_classification_info_caBIG"));
         textPresent(orgDetail);
     }
 }

@@ -44,7 +44,6 @@ import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
 import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
 import "./system/public/js/controllers/TriggerClientExceptionCtrl";
-import "./system/public/js/controllers/TakeATourCtrl";
 import "./system/public/js/controllers/ApproveCommentCtrl";
 import "./system/public/js/controllers/RemoveClassificationModalCtrl";
 import "./system/public/js/controllers/ServerStatusesCtrl";

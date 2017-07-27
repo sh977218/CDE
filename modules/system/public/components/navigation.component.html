@@ -69,12 +69,6 @@
             <a ngbDropdownToggle class="dropdown-toggle" href="#" id="dropdownMenu_help" title="Help"
                attr.aria-label="Help">Help<span class="caret"></span></a>
             <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu_help">
-                <a href="/home" class="dropdown-item" id="aboutLink"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
-                   attr.aria-controls="main-navigation" attr.aria-expanded="false">About</a>
-                <a href="" class="dropdown-item" (click)="takeATour.emit()" id="takeTourLink"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
-                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Take a tour</a>
                 <a *ngIf="userService.user?._id && userService.user?.siteAdmin" href="/stats" class="dropdown-item"
                    [attr.data-toggle]="toggleaction" data-target="#main-navigation" id="statisticsLink"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Statistics</a>

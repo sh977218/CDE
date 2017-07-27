@@ -51,6 +51,11 @@ module.exports = {
                 compressor: {
                     warnings: false
                 }
+            }),
+            new webpack.ProvidePlugin({
+                $: 'jquery',
+                jQuery: 'jquery',
+                'windows.jQuery': 'jquery'
             })
         ] : [
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
@@ -62,7 +67,12 @@ module.exports = {
             }),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
-            new webpack.ProgressPlugin() // show progress in ConEmu window
+            new webpack.ProgressPlugin(), // show progress in ConEmu window
+            new webpack.ProvidePlugin({
+                $: 'jquery',
+                jQuery: 'jquery',
+                'windows.jQuery': 'jquery'
+            })
         ],
     resolve: {
         unsafeCache: false,

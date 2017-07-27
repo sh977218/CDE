@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.search;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeSearchFilterTest extends NlmCdeBaseTest {
@@ -12,7 +11,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
 
-        clickElement(By.cssSelector("#search_by_classification_ACRIN fieldset"));
+        clickElement(By.id("search_by_classification_ACRIN"));
         textPresent("5 results for");
         textPresent("Neoadjuvant Therapy");
         textPresent("Under Review (3)");
