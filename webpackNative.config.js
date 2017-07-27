@@ -1,3 +1,4 @@
+// WORKAROUND: for no multiple entry points issue https://github.com/angular/angular-cli/issues/5072
 const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run build"
 const path = require('path');
 const webpack = require('webpack');
@@ -8,8 +9,7 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        main:'./modules/main.ts',
-        embed: './modules/embedded/public/js/embeddedApp.js'
+        print:'./modules/formStandaloneApp/nativeRenderStandalone.ts'
     },
     output: {
         path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
@@ -18,10 +18,7 @@ module.exports = {
     module: {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
-            {
-                test: /\.ts$/,
-                use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
-            },
+            {test: /\.ts$/, use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']},
             {test: /\.css$/, use: ['style-loader?insertAt=top', 'raw-loader']},
             {test: /\.html$/, use: ['raw-loader']}
         ]
@@ -34,8 +31,7 @@ module.exports = {
             ),
             new AotPlugin.AotPlugin({
                 tsConfigPath: './tsconfig.json',
-                entryModule: path.join(__dirname, 'modules', 'app.module') + '#CdeAppModule',
-                mainPath: 'modules/main-aot'
+                entryModule: path.join(__dirname, 'modules', 'formStandaloneApp', 'nativeRenderStandalone.module') + '#NativeRenderStandaloneModule'
             }),
             new webpack.DefinePlugin({
                 PRODUCTION: JSON.stringify(true),

@@ -1,0 +1,5 @@
+<h2 *ngIf="!elt && !errorMessage" class="text-center mt20">Loading...</h2>
+<h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
+<cde-native-render *ngIf="elt" [elt]="elt" [submitForm]="submitForm"
+                   [profile]="elt.displayProfiles.length > selectedProfile ? elt.displayProfiles[selectedProfile] : null">
+</cde-native-render>
