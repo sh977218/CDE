@@ -12,6 +12,7 @@ import { MergeShareService } from "./mergeShare.service";
 import { SharedService } from "./shared.service";
 import { CompareService } from "./compare.service";
 import { OrgHelperService } from "./orgHelper.service";
+import { TourService } from "./tour.service";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";

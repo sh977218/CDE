@@ -21,10 +21,10 @@
 
 	<script type="text/javascript">
         (function () {
-            function CustomEvent ( event, params ) {
-                params = params || { bubbles: false, cancelable: false, detail: undefined };
-                var evt = document.createEvent( 'CustomEvent' );
-                evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+            function CustomEvent(event, params) {
+                params = params || {bubbles: false, cancelable: false, detail: undefined};
+                var evt = document.createEvent('CustomEvent');
+                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
                 return evt;
             }
 
@@ -47,14 +47,12 @@
 	<link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
 
 	<!-- bower:css -->
-	<link rel='stylesheet' href='/components/font-awesome/css/font-awesome.css' />
-	<link rel='stylesheet' href='/components/selectize/dist/css/selectize.css' />
-	<link rel='stylesheet' href='/components/angular-ui-select/dist/select.css' />
-	<link rel='stylesheet' href='/components/textAngular/dist/textAngular.css' />
-	<link rel='stylesheet' href='/components/bootstrap-css-only/css/bootstrap.css' />
-	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour.css' />
-	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css' />
-	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
+	<link rel='stylesheet' href='/components/font-awesome/css/font-awesome.css'/>
+	<link rel='stylesheet' href='/components/selectize/dist/css/selectize.css'/>
+	<link rel='stylesheet' href='/components/angular-ui-select/dist/select.css'/>
+	<link rel='stylesheet' href='/components/textAngular/dist/textAngular.css'/>
+	<link rel='stylesheet' href='/components/bootstrap-css-only/css/bootstrap.css'/>
+	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css'/>
 	<!-- endbower -->
 
 	<link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css'/>
@@ -70,12 +68,10 @@
 
 	<%- include googleAnalytics.html %>
 
-    <div ng-controller="AuthCtrl">
-        <div ng-controller="TakeATourCtrl">
-            <cde-navigation [quick-board-count]="quickBoard.elts.length + formQuickBoard.elts.length"
-                            (take-a-tour)="restartTour()" (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
-        </div>
-    </div>
+	<div ng-controller="AuthCtrl">
+		<cde-navigation [quick-board-count]="quickBoard.elts.length + formQuickBoard.elts.length"
+		                (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
+	</div>
 
 	<!-- Main content area -->
 	<div ng-view>
@@ -131,8 +127,6 @@
 <script src="/components/textAngular/dist/textAngular-sanitize.js"></script>
 <script src="/components/textAngular/dist/textAngularSetup.js"></script>
 <script src="/components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="/components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
-<script src="/components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
 <script src="/components/angularjs-camelCase-human/camelcase-browser.js"></script>
 <script src="/components/html2canvas/build/html2canvas.js"></script>
 <script src="/components/angular-send-feedback/dist/angular-send-feedback.js"></script>
@@ -172,6 +166,8 @@
           "url": "https://cde.nlm.nih.gov",
           "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
           }
+
+
 </script>
 
 <script type="application/ld+json">
@@ -182,6 +178,8 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
+
+
 </script>
 
 </body>

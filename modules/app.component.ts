@@ -5,4 +5,6 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
     selector: "nih-cde",
     template: ``
 })
-export class CdeAppComponent { name = "Angular 2"; }
+export class CdeAppComponent {
+    name = "Angular 2";
+}
