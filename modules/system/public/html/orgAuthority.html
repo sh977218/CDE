@@ -87,30 +87,7 @@
         </div>
         <uib-tab heading="Status Validation Rules">
             <div ng-controller="SaveValidRuleCtrl">
-                <br>
-                <button id="addRule" class="btn btn-success btn-sm" ng-click="openAddRuleModal()">Add New Rule</button>
-                <div ng-repeat="(orgName, orgRules) in userOrgs" ng-if="orgRules.length>0">
-                    <h3>CDEs classified by {{orgName}}</h3>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Rule Name</th>
-                            <th>Status</th>
-                            <th>Field</th>
-                            <th>RegEx</th>
-                            <th>Occurence</th>
-                        </tr>
-                        </thead>
-                        <tr ng-repeat="rule in orgRules">
-                            <td>{{rule.ruleName}}</td>
-                            <td>{{rule.targetStatus}}</td>
-                            <td>{{rule.field}}</td>
-                            <td>{{rule.rule.regex}}</td>
-                            <td>{{rule.occurence}}</td>
-                            <td><button ng-click="disableRule(orgName, rule)" class="btn btn-danger btn-xs">Remove</button></td>
-                        </tr>
-                    </table>
-                </div>
+
             </div>
         </uib-tab>
 
