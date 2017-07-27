@@ -64,15 +64,30 @@ exports.byId = function (req, res) {
         if (!form) return res.status(404).send();
         fetchWholeForm(form, function (wholeForm) {
             wipeRenderDisallowed(wholeForm, req, function () {
-                if (req.query.type === 'xml') {
-                    res.header("Access-Control-Allow-Origin", "*");
-                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                    res.setHeader("Content-Type", "application/xml");
-                    res.send(wholeForm);
-                    /*
-                                        let cde = wholeForm.toObject();
-                                        JXON.jsToString({element: xmlForm})
-                    */
+                if (req.query.subtype === 'sdc') {
+                    if (req.query.type === 'xml') {
+                        res.header("Access-Control-Allow-Origin", "*");
+                        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                        res.setHeader("Content-Type", "application/xml");
+                        res.send(wholeForm);
+                    } else {
+
+                    }
+                }
+                else if (req.query.subtype === 'odm') {
+                    if (req.query.type === 'xml') {
+                        res.header("Access-Control-Allow-Origin", "*");
+                        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                        res.setHeader("Content-Type", "application/xml");
+                        res.send(wholeForm);
+                    } else {
+
+                    }
+                }
+                else if (req.query.subtype === 'REDCap') {
+                }
+                else {
+
                 }
                 res.send(form);
             });
