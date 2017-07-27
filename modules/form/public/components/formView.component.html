@@ -52,18 +52,18 @@
                             <ng-container *ngIf="isAllowedModel.loggedIn()">
                                 <a class="dropdown-item" id='nihJson' href="form/id/{{elt._id}}" target="_blank">
                                     JSON File, NIH/CDE Schema</a>
-                                <a class="dropdown-item" id='odmExport' href="form/id/{{elt._id}}/xml/odm/"
+                                <a class="dropdown-item" id='odmExport' href="form/{{elt._id}}?type=xml&subtype=odm"
                                    target="_blank">XML File, ODM Schema</a>
-                                <a class="dropdown-item" id='sdcExport' href="form/id/{{elt._id}}/xml/sdc/"
+                                <a class="dropdown-item" id='sdcExport' href="form/{{elt._id}}?type=xml&subtype=sdc"
                                    target="_blank">XML File, SDC Schema</a>
                                 <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
-                                   href="form/id/{{elt._id}}/html/sdc/" target="_blank">
+                                   href="form/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml" target="_blank">
                                     XML File, SDC Schema with XSL Transform</a>
-                                <a class="dropdown-item" id='nihXml' href="form/id/{{elt._id}}/xml/" target="_blank">
+                                <a class="dropdown-item" id='nihXml' href="form/{{elt._id}}?type=xml" target="_blank">
                                     XML File, NIH/CDE Schema</a>
                                 <a class="dropdown-item" id='formPublishExport' (click)="openPreparePublishModal()"
                                    target="_blank">Published Form</a>
-                                <a class="dropdown-item" id='nihRedCap' href="form/id/{{elt._id}}/zip/redCap/"
+                                <a class="dropdown-item" id='nihRedCap' href="form/{{elt._id}}?type=REDCap"
                                    target="_blank">REDCap</a>
                             </ng-container>
                             <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">

@@ -31,9 +31,6 @@ exports.init = function (app, daoManager) {
     app.post("/form/", exportShared.nocacheMiddleware, formSvc.createForm);
     app.put("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.updateForm);
 
-    app.get('/wholeForm/id/:id', exportShared.nocacheMiddleware, formSvc.wholeFormById);
-    app.get('/wholeForm/tinyId/:tinyId', exportShared.nocacheMiddleware, formSvc.wholeFormByTinyId);
-
     app.post('/form/publish/:id', exportShared.nocacheMiddleware, formSvc.publishForm);
 
     app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {

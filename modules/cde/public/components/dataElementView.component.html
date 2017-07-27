@@ -48,23 +48,12 @@
                                 aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-download"></i> Export
                         </button>
-                        <ng-container *ngIf="elt.archived">
-                            <div class="dropdown-menu" aria-labelledby="export">
-                                <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
-                                    JSON File, NIH/CDE Schema</a>
-                                <a id="xmlExport" class="dropdown-item" href="deById/{{elt._id}}?type=xml"
-                                   target="_blank">XML File, NIH/CDE Schema</a>
-                            </div>
-                        </ng-container>
-                        <ng-container *ngIf="!elt.archived">
-                            <div class="dropdown-menu" aria-labelledby="export">
-                                <a id="jsonExport" class="dropdown-item" href="de/{{elt.tinyId}}"
-                                   target="_blank">
-                                    JSON File, NIH/CDE Schema</a>
-                                <a id="xmlExport" class="dropdown-item" href="de/{{elt.tinyId}}?type=xml"
-                                   target="_blank">XML File, NIH/CDE Schema</a>
-                            </div>
-                        </ng-container>
+                        <div class="dropdown-menu" aria-labelledby="export">
+                            <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
+                                JSON File, NIH/CDE Schema</a>
+                            <a id="xmlExport" class="dropdown-item" href="deById/{{elt._id}}?type=xml"
+                               target="_blank">XML File, NIH/CDE Schema</a>
+                        </div>
                     </div>
 
                     <button id="copyCdeBtn" class="btn btn-small btn-default" role="button"
