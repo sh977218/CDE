@@ -74,7 +74,7 @@ export class HistoryComponent implements OnInit {
             if (this.elt.elementType === "cde") {
                 url = "/deById/" + this.elt._id + "/priorDataElements";
             } else {
-                url = "/formById/" + this.elt._id + "/history";
+                url = "/formById/" + this.elt._id + "/priorForms";
             }
             this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.priorElements = res.reverse();
