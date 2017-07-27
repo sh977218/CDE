@@ -10,6 +10,7 @@ const async = require('async')
     , mongo_form = require("../../form/node-js/mongo-form")
     , mongo_board = require("../../board/node-js/mongo-board")
     , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery")
+    , noDbLogger = require("../../system/node-js/noDbLogger")
     ;
 
 let esClient = new elasticsearch.Client({
@@ -155,6 +156,7 @@ exports.reIndex = function (index, cb) {
         });
         stream.on('end', function () {
             injector.inject(function () {
+                noDbLogger.noDbLogger.info("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
                 dbLogger.consoleLog("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
                 if (cb) cb();
             });

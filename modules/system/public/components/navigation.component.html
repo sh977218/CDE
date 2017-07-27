@@ -72,9 +72,6 @@
                 <a href="/home" class="dropdown-item"
                    [attr.data-toggle]="toggleaction" data-target="#main-navigation"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">About</a>
-                <a href="" class="dropdown-item" (click)="takeATour.emit()"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
-                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Take a tour</a>
                 <a href="/stats" class="dropdown-item" *ngIf="userService.user?._id && userService.user?.siteAdmin"
                    [attr.data-toggle]="toggleaction" data-target="#main-navigation"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Statistics</a>
