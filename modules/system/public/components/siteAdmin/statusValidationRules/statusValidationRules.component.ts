@@ -22,7 +22,7 @@ export class StatusValidationRulesComponent implements OnInit {
 
     userOrgs: any = {};
     orgNames: string[] = [];
-    newRule: any = {id: Math.random()};
+    newRule: any = {id: Math.random(), rule: {}};
     userOrgsArray: string[] = [];
     fields: [string] = [
         'stewardOrg.name'
@@ -76,16 +76,6 @@ export class StatusValidationRulesComponent implements OnInit {
         });
     }
 
-    removeRule (o, i) {
-        let key = this.userOrgs[o][i].field.replace(/[^\w]/g, "") + this.userOrgs[o][i].rule.regex.replace(/[^\w]/g, "");
-        this.http.post('/removeRule', {orgName: o, rule: key}).subscribe(() => {});
-    };
-
-
-    ruleEnabled (orgName, rule) {
-        return this.userOrgs[orgName].map(rule => rule.id).indexOf(rule.id) > -1;
-    };
-
     disableRule (orgName, rule) {
         // @TODO does not refresh page
        this.modalService.open(this.removeRuleModal, {size: "lg"}).result.then(() => {
@@ -93,12 +83,6 @@ export class StatusValidationRulesComponent implements OnInit {
                this.userOrgs[orgName] = response.cdeStatusValidationRules;
            });
        }, () => {});
-    };
-
-    enableRule (orgName, rule) {
-        this.http.post("/enableRule", {orgName: orgName, rule: rule}).map(r => r.json()).subscribe(response => {
-            this.userOrgs[orgName] = response.cdeStatusValidationRules;
-        }, () => {});
     };
 
     openAddRuleModal () {
