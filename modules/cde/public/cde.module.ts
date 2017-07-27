@@ -16,7 +16,7 @@ import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetai
 import { CdeSummaryListComponent } from "./components/searchResults/cdeSummaryList.component";
 import { CdeSummaryListContentComponent } from "./components/searchResults/cdeSummaryListContent.component";
 import { ConceptsComponent } from "./components/concepts.component";
-import { CdeAccordionListComponent } from "./components/cdeAccordionList.component";
+import { CdeAccordionListNg2Component } from "./components/cdeAccordionListNg2.component";
 import { DatasetsComponent } from "./components/datasets/datasets.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
@@ -56,7 +56,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
         CreateDataElementComponent,
-        CdeAccordionListComponent,
+        CdeAccordionListNg2Component,
         ConceptsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
@@ -73,7 +73,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         BoardCdeSummaryListContentComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
-        CdeAccordionListComponent,
+        CdeAccordionListNg2Component,
         CreateDataElementComponent,
         DataElementViewComponent
     ],

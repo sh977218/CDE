@@ -3,7 +3,7 @@ import { UpgradeComponent } from "@angular/upgrade/static";
 
 /* tslint:disable */
 @Directive({
-    selector: "cde-accordion-list-directive"
+    selector: "cde-accordion-list"
 })
 export class CdeAccordionListDirective extends UpgradeComponent {
     @Input() cdes: any;
@@ -11,12 +11,12 @@ export class CdeAccordionListDirective extends UpgradeComponent {
     @Input() module: any;
 
     constructor(elementRef: ElementRef, injector: Injector) {
-        super("cdeAccordionListDirective", elementRef, injector);
+        super("cdeAccordionList", elementRef, injector);
     }
 }
 
 @Directive({
-    selector: "form-accordion-list-directive"
+    selector: "form-accordion-list"
 })
 export class FormAccordionListDirective extends UpgradeComponent {
     @Input() forms: any;

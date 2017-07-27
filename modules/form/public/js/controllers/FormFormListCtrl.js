@@ -1,5 +1,5 @@
 angular.module('formModule').controller('FormFormListCtrl', ['$scope', '$controller',
-    function ($scope, $controller) {
+    function ($scope) {
         $scope.embedded = true;
 
         $scope.reset = function () {
