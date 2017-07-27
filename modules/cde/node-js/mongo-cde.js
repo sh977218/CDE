@@ -344,7 +344,15 @@ exports.saveModification = function (oldDe, newDe, user) {
         }
         , diff: diff
     };
-    CdeAudit(message).save();
+    CdeAudit(message).save((err) => {
+        if (err) {
+            logging.errorLogger.error("Error: Cannot add to CDE Audit. newDe.tinyId: " + newDe.tinyId, {
+                origin: "cde.mongo-cde.saveModification",
+                stack: new Error().stack,
+                details: "err " + err
+            });
+        }
+    });
 };
 
 exports.getCdeAuditLog = function (params, callback) {
