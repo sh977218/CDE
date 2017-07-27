@@ -133,7 +133,54 @@ exports.byTinyId = function (req, res) {
         if (!form) return res.status(404).send();
         wipeRenderDisallowed(form, req, function (err) {
             if (err) return res.status(500).send(err);
-            res.send(form);
+            if (req.query.type === 'xml') {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                res.setHeader("Content-Type", "application/xml");
+                if (req.query.subtype === 'odm') {
+                    odm.getFormOdm(form, function (err, xmlForm) {
+                        if (err) return res.status(500).send(err);
+                        return res.send(xmlForm);
+                    });
+                } else if (req.query.subtype === 'sdc') {
+                    sdc.formToSDC(form, req.query.renderer, function (txt) {
+                        return res.send(txt);
+                    });
+                } else {
+                    let exportForm = form.toObject();
+                    delete exportForm._id;
+                    delete exportForm.history;
+                    exportForm.formElements.forEach(function (s) {
+                        s.formElements.forEach(function (q) {
+                            delete q._id;
+                        });
+                    });
+                    return res.send(JXON.jsToString({element: exportForm}));
+                }
+            } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
+                if (redCapExportWarnings[form.stewardOrg.name])
+                    return res.status(202).send(redCapExportWarnings[form.stewardOrg.name]);
+                let validationErr = redCap.loopForm(form);
+                if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
+                res.writeHead(200, {
+                    "Content-Type": "application/zip",
+                    "Content-disposition": "attachment; filename=" + form.naming[0].designation + ".zip"
+                });
+                let zip = archiver("zip", {});
+                zip.on("error", function (err) {
+                    res.status(500).send({error: err.message});
+                });
+
+                //on stream closed we can end the request
+                zip.on("end", function () {
+                });
+                zip.pipe(res);
+                zip.append("NLM", {name: "AuthorID.txt"})
+                    .append(form.tinyId, {name: "InstrumentID.txt"})
+                    .append(redCap.formToRedCap(form), {name: "instrument.csv"})
+                    .finalize();
+            }
+            else res.send(form);
         });
         mongo_data_system.addToViewHistory(form, req.user);
     });

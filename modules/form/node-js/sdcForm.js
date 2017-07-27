@@ -9,8 +9,8 @@ function addQuestion(parent, question) {
     if (question.label !== undefined && !question.hideLabel) {
         newQuestion["@title"] = question.label;
     }
-    if (question.instructions) {
-        newQuestion.OtherText = {"@val": question.instructions.value ? question.instructions.value : ""};
+    if (question.instructions && question.instructions.value) {
+        newQuestion.OtherText = {"@val": question.instructions.value};
     }
     let questionEle = parent.ele({Question: newQuestion});
     if (question.question.cde.ids.length > 0) {

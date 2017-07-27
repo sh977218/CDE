@@ -79,7 +79,6 @@ export class FormDescriptionComponent implements OnInit {
     @Input() inScoreCdes: any;
     @Output() cachePut: EventEmitter<any> = new EventEmitter<any>();
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild(TreeComponent) public tree: TreeComponent;
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;
@@ -123,7 +122,7 @@ export class FormDescriptionComponent implements OnInit {
 
                     tree.expandAll();
                     this.addIds(this.elt.formElements, "");
-                    this.stageElt.emit();
+                    this.elt.unsaved = true;
                 }
             }
         },
@@ -150,7 +149,7 @@ export class FormDescriptionComponent implements OnInit {
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
             this.addIds(this.elt.formElements, "");
-            this.stageElt.emit();
+            this.elt.unsaved = true;
         });
     }
 
@@ -161,7 +160,7 @@ export class FormDescriptionComponent implements OnInit {
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
         this.addIds(this.elt.formElements, "");
-        this.stageElt.emit();
+        this.elt.unsaved = true;
     }
 
     addIds(fes, preId) {

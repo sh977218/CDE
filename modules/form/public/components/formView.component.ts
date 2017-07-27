@@ -137,8 +137,4 @@ export class FormViewComponent implements OnInit {
         this.highlightedTabs = $event;
     }
 
-    stageElt() {
-        this.elt.unsaved = true;
-    }
-
 }

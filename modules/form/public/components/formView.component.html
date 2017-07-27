@@ -103,8 +103,7 @@
                         </ng-template>
                         <ng-template ngbTabContent>
                             <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
-                                                  (cachePut)="cachePut($event)" (isFormValid)="setIsValid($event)"
-                                                  (stageElt)="stageElt()"></cde-form-description>
+                                                  (isFormValid)="setIsValid($event)"></cde-form-description>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="naming_tab">
