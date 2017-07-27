@@ -1,8 +1,8 @@
 import { Http } from "@angular/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import { AlertService } from "../../alert/alert.service";
 import { OrgHelperService } from "../../../../../core/public/orgHelper.service";
+import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-status-validation-rules",
@@ -13,39 +13,86 @@ export class StatusValidationRulesComponent implements OnInit {
 
     constructor(
         private http: Http,
-        private Alert: AlertService,
-        public orgHelper: OrgHelperService
+        public orgHelper: OrgHelperService,
+        public modalService: NgbModal
     ) {}
 
-    userOrgs: any;
+    @ViewChild("removeRuleModal") public removeRuleModal: NgbModalModule;
+    @ViewChild("addNewRuleModal") public addNewRuleModal: NgbModalModule;
 
+    userOrgs: any = {};
+    orgNames: string[] = [];
+    newRule: any = {id: Math.random()};
+    userOrgsArray: string[] = [];
+    fields: [string] = [
+        'stewardOrg.name'
+        , 'properties.key'
+        , 'valueDomain.permissibleValues.codeSystemName'
+        , 'valueDomain.permissibleValues.permissibleValue'
+        , 'valueDomain.permissibleValues.valueMeaningName'
+        , 'valueDomain.permissibleValues.valueMeaningCode'
+        , 'version'
+        , 'ids.version'
+        , 'ids.source'
+        , 'naming.context.contextName'
+        , 'source'
+        , 'origin'
+
+        , 'objectClass.concepts.name'
+        , 'objectClass.concepts.origin'
+        , 'objectClass.concepts.originId'
+
+        , 'property.concepts.name'
+        , 'property.concepts.origin'
+        , 'property.concepts.originId'
+
+        , 'dataElementConcept.concepts.name'
+        , 'dataElementConcept.concepts.origin'
+        , 'dataElementConcept.concepts.originId'
+
+        , 'dataElementConcept.conceptualDomain.vsac.id'
+        , 'dataElementConcept.conceptualDomain.vsac.name'
+        , 'dataElementConcept.conceptualDomain.vsac.version'
+
+        , 'valueDomain.datatype'
+        , 'valueDomain.uom'
+        , 'valueDomain.ids.source'
+        , 'valueDomain.ids.id'
+        , 'valueDomain.ids.version'
+
+        , 'referenceDocuments.referenceDocumentId'
+        , 'referenceDocuments.document'
+        , 'referenceDocuments.uri'
+        , 'referenceDocuments.title'
+    ];
 
     ngOnInit () {
-        Object.keys(this.orgHelper.orgsDetailedInfo).forEach(orgName => {
-            this.userOrgs[orgName] = this.orgHelper.orgsDetailedInfo[orgName].cdeStatusValidationRules;
+        this.orgHelper.orgDetails.subscribe(() => {
+            this.orgNames = Object.keys(this.orgHelper.orgsDetailedInfo);
+            Object.keys(this.orgHelper.orgsDetailedInfo).forEach(orgName => {
+                this.userOrgs[orgName] = this.orgHelper.orgsDetailedInfo[orgName].cdeStatusValidationRules;
+            });
+            this.userOrgsArray = Object.keys(this.userOrgs).sort();
         });
     }
 
-    removeRule(o, i) {
-        let key = this.userOrgs[o][i].field.replace(/[^\w]/g, "") +
-            this.userOrgs[o][i].rule.regex.replace(/[^\w]/g, "");
+    removeRule (o, i) {
+        let key = this.userOrgs[o][i].field.replace(/[^\w]/g, "") + this.userOrgs[o][i].rule.regex.replace(/[^\w]/g, "");
         this.http.post('/removeRule', {orgName: o, rule: key}).subscribe(() => {});
     };
+
 
     ruleEnabled (orgName, rule) {
         return this.userOrgs[orgName].map(rule => rule.id).indexOf(rule.id) > -1;
     };
 
-
     disableRule (orgName, rule) {
-        // $modal.open({
-        //     templateUrl: '/system/public/html/statusRules/removeRule.html',
-        //     controller: function () {}
-        // }).result.then(function () {
-        //     $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
-        //         $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
-        //     });
-        // }, function () {});
+        // @TODO does not refresh page
+       this.modalService.open(this.removeRuleModal, {size: "lg"}).result.then(() => {
+           this.http.post("/disableRule", {orgName: orgName, rule: rule}).map(r => r.json()).subscribe(response => {
+               this.userOrgs[orgName] = response.cdeStatusValidationRules;
+           });
+       }, () => {});
     };
 
     enableRule (orgName, rule) {
@@ -55,16 +102,15 @@ export class StatusValidationRulesComponent implements OnInit {
     };
 
     openAddRuleModal () {
-        // $modal.open({
-        //     animation: false,
-        //     templateUrl: '/system/public/html/statusRules/addNewRule.html',
-        //     controller: 'AddNewRuleCtrl',
-        //     resolve: {
-        //         userOrgs: function(){return $scope.userOrgs;}
-        //     }
-        // }).result.then(function (rule) {
-        //     $scope.enableRule(rule.org, rule);
-        // }, function () {});
+        this.modalService.open(this.addNewRuleModal, {size: "lg"}).result.then(() => {
+            this.http.post("/enableRule", {
+                orgName: this.newRule.org,
+                rule: this.newRule
+            }).map(r => r.json()).subscribe(response => {
+                this.userOrgs[this.newRule.org] = response.cdeStatusValidationRules;
+            }, () => {
+            });
+        });
     };
 
 }

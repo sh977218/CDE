@@ -30,7 +30,8 @@ import { CamelCaseToHumanPipe } from "../../core/public/camelCaseToHumanPipe";
 import { ClientErrorsComponent } from "./components/siteAdmin/clientErrors/clientErrors.component";
 import { ServerErrorsComponent } from "./components/siteAdmin/serverErrors/serverErrors.component";
 import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.component";
-import {FeedbackIssuesComponent} from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
+import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
+import { StatusValidationRulesComponent } from "./components/siteAdmin/statusValidationRules/statusValidationRules.component";
 
 @NgModule({
     imports: [
@@ -62,6 +63,7 @@ import {FeedbackIssuesComponent} from "./components/siteAdmin/feedbackIssues/fee
         ProfileComponent,
         ServerErrorsComponent,
         SiteAuditComponent,
+        StatusValidationRulesComponent,
         SwaggerComponent,
         TruncateLongNamePipe,
         UserCommentsComponent,
@@ -75,6 +77,7 @@ import {FeedbackIssuesComponent} from "./components/siteAdmin/feedbackIssues/fee
         OrgAdminComponent,
         ProfileComponent,
         SiteAuditComponent,
+        StatusValidationRulesComponent,
         SwaggerComponent,
         UsersMgtComponent,
     ],
