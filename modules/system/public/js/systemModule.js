@@ -426,7 +426,7 @@ angular.module('systemModule').directive('cdeHome', downgradeComponent({componen
 
 import {NavigationComponent} from "../components/navigation.component";
 angular.module('systemModule').directive('cdeNavigation', downgradeComponent({component: NavigationComponent,
-    inputs: ['quickBoardCount'], outputs: ['takeATour', 'goToLogin', 'logout']}));
+    inputs: ['quickBoardCount'], outputs: ['goToLogin', 'logout']}));
 
 import {ProfileComponent} from "../components/profile.component";
 angular.module('systemModule').directive('cdeProfile', downgradeComponent({component: ProfileComponent, inputs: [], outputs: []}));

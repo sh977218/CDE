@@ -24,8 +24,8 @@ import { FormSearchDirective, QuestionSearchDirective } from "./upgrade-componen
 import { FormSummaryListComponent } from "./components/searchResults/formSummaryList.component";
 import { FormSummaryListContentComponent } from "./components/searchResults/formSummaryListContent.component";
 import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
-import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
+import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
 import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
 import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
@@ -74,7 +74,7 @@ import { FormTermMappingComponent } from "./components/formTermMapping/formTermM
         NativeSectionMatrixComponent,
         NativeQuestionComponent,
         NativeTableComponent,
-        QuestionSearchDirective
+        QuestionSearchDirective,
     ],
     entryComponents: [
         DisplayProfileComponent,
@@ -86,14 +86,15 @@ import { FormTermMappingComponent } from "./components/formTermMapping/formTermM
         FormSummaryListComponent,
         FormSummaryListContentComponent,
         MergeFormComponent,
-        NativeRenderFullComponent,
         NativeRenderComponent,
+        NativeRenderFullComponent,
     ],
     exports: [
+        NativeRenderComponent,
     ],
     providers: [
         FormService,
-        SkipLogicService
+        SkipLogicService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

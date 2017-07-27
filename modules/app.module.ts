@@ -32,7 +32,7 @@ import { SystemModule } from "./system/public/system.module";
         CoreModule,
         DiscussModule,
         FormModule,
-        SystemModule,
+        SystemModule
     ],
     bootstrap: [CdeAppComponent]
 })
