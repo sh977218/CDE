@@ -31,6 +31,7 @@ function fetchWholeForm(form, callback) {
     let maxDepth = 8;
     let depth = 0;
     let loopFormElements = function (form, cb) {
+        if (!form) return cb();
         if (!form.formElements) form.formElements = [];
         async.forEachSeries(form.formElements, function (fe, doneOne) {
             if (fe.elementType === "form") {
@@ -96,7 +97,9 @@ exports.byTinyIdVersion = function (tinyId, version, cb) {
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
-    Form.findOne({tinyId: tinyId, archived: false}, 'version', cb);
+    Form.findOne({tinyId: tinyId, archived: false}, function (err, form) {
+        cb(err, form.version);
+    });
 };
 
 exports.byTinyIdList = function (tinyIdList, cb) {

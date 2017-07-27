@@ -61,7 +61,9 @@ exports.byTinyIdVersion = function (tinyId, version, cb) {
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
-    DataElement.findOne({tinyId: tinyId, archived: false}, 'version', cb);
+    DataElement.findOne({tinyId: tinyId, archived: false}, function (err, dataElement) {
+        cb(err, dataElement.version);
+    });
 };
 exports.byTinyIdList = function (tinyIdList, cb) {
     DataElement.find({}).where("tinyId").in(tinyIdList).exec(cb);
@@ -71,12 +73,6 @@ exports.byTinyIdList = function (tinyIdList, cb) {
 
 exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
-};
-
-exports.latestVersionByTinyId = function (tinyId, callback) {
-    DataElement.findOne({tinyId: tinyId, archived: false}).exec(function (err, result) {
-        callback(err, result);
-    });
 };
 
 exports.getStream = function (condition) {

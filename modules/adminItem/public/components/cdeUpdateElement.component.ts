@@ -5,15 +5,6 @@ import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstra
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import * as _ from "lodash";
 
-const urlMap = {
-    cde: {
-        exist: "/de/"
-    },
-    form: {
-        exist: "/form/"
-    }
-};
-
 @Component({
     selector: "cde-update-element",
     templateUrl: "./cdeUpdateElement.component.html"
@@ -50,23 +41,20 @@ export class CdeUpdateElementComponent implements OnInit {
 
     newVersionVersionUnicity(newVersion = null) {
         if (newVersion === null) newVersion = this.elt.version;
-        let url = urlMap[this.elt.elementType].exist + this.elt.tinyId + "/version/";
-        if (!url) return this.alert.addAlert("danger", "Unknown element type " + this.elt.elementType);
+        let url;
+        if (this.elt.elementType === "cde")
+            url = "/de/" + this.elt.tinyId + "/latestVersion/";
+        if (this.elt.elementType === "form")
+            url = "/form/" + this.elt.tinyId + "/latestVersion/";
         this.http.get(url).map(res => res.text()).subscribe(
             res => {
-                if (res && newVersion) {
-                    if (_.isEqual(res.toString(), newVersion.toString())) {
-                        this.duplicatedVersion = true;
-                    } else {
-                        this.duplicatedVersion = false;
-                        this.overrideVersion = false;
-                    }
+                if (res && newVersion && _.isEqual(res.toString(), newVersion.toString())) {
+                    this.duplicatedVersion = true;
                 } else {
                     this.duplicatedVersion = false;
                     this.overrideVersion = false;
                 }
-            }, err =>
-                this.alert.addAlert("danger", err));
+            }, err => this.alert.addAlert("danger", err));
     }
 
 }
