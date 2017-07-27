@@ -1,20 +1,20 @@
-var express = require('express');
-var path = require('path');
-var formCtrl = require('./formCtrl');
-var formSvc = require("./formsvc");
-var mongo_form = require('./mongo-form');
-var mongo_data_system = require('../../system/node-js/mongo-data');
-var classificationNode_system = require('../../system/node-js/classificationNode');
-var adminItemSvc = require('../../system/node-js/adminItemSvc.js');
-var config = require('../../system/node-js/parseConfig');
-var multer = require('multer');
-var elastic_system = require('../../system/node-js/elastic');
-var sharedElastic = require('../../system/node-js/elastic.js');
-var exportShared = require('../../system/shared/exportShared');
-var boardsvc = require('../../board/node-js/boardsvc');
-var usersrvc = require('../../system/node-js/usersrvc');
-var dns = require('dns');
-var os = require('os');
+let express = require('express');
+let path = require('path');
+let formCtrl = require('./formCtrl');
+let formSvc = require("./formsvc");
+let mongo_form = require('./mongo-form');
+let mongo_data_system = require('../../system/node-js/mongo-data');
+let classificationNode_system = require('../../system/node-js/classificationNode');
+let adminItemSvc = require('../../system/node-js/adminItemSvc.js');
+let config = require('../../system/node-js/parseConfig');
+let multer = require('multer');
+let elastic_system = require('../../system/node-js/elastic');
+let sharedElastic = require('../../system/node-js/elastic.js');
+let exportShared = require('../../system/shared/exportShared');
+let boardsvc = require('../../board/node-js/boardsvc');
+let usersrvc = require('../../system/node-js/usersrvc');
+let dns = require('dns');
+let os = require('os');
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
@@ -67,7 +67,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearch/form', function (req, res) {
-        var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         sharedElastic.elasticsearch(query, 'form', function (err, result) {
             if (err) return res.status(400).send("invalid query");
             res.send(result);
@@ -82,11 +82,11 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/form', function (req, res) {
-        var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        var exporters = {
+        let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        let exporters = {
             json: {
                 export: function (res) {
-                    var firstElt = true;
+                    let firstElt = true;
                     res.type('application/json');
                     res.write("[");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
@@ -115,10 +115,10 @@ exports.init = function (app, daoManager) {
         if (req.isAuthenticated()) {
             mongo_form.eltByTinyId(req.body.formTinyId, function (err, form) {
                 if (form) {
-                    var allCdes = {};
-                    var allTinyIds = [];
+                    let allCdes = {};
+                    let allTinyIds = [];
                     formCtrl.findAllCdesInForm(form, allCdes, allTinyIds);
-                    var fakeCdes = allTinyIds.map(function (_tinyId) {
+                    let fakeCdes = allTinyIds.map(function (_tinyId) {
                         return {tinyId: _tinyId};
                     });
                     boardsvc.pinAllToBoard(req, fakeCdes, res);
