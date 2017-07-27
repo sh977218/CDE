@@ -13,7 +13,7 @@ export class NativeRenderComponent implements OnInit {
     @Input() eltLoaded: {promise: Promise<void>};
     @Input() elt: CdeForm;
     @Input() profile: DisplayProfile;
-    @Input() submitForm: string;
+    @Input() submitForm: boolean;
 
     endpointUrl: string;
     formUrl: string;
