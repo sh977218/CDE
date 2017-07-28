@@ -2,11 +2,11 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
     var params = {
         cde: {
             url: "/de/",
-            localStorage: "QuickBoard"
+            localStorage: "quickBoard"
         },
         form: {
             url: "/form/",
-            localStorage: "FormQuickBoard"
+            localStorage: "formQuickBoard"
         }
     };
     var param = params[type];
