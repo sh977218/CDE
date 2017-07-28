@@ -14,7 +14,7 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
         }).when('/formView', {templateUrl: '/form/public/html/formView.html'});
     }]);
 
-angular.module('formModule').directive('formAccordionListDirective', function () {
+angular.module('formModule').directive('formAccordionList', function () {
     return {
         scope: {forms: '=', ejsPage: '=', module: '='},
         template: require('../html/formAccordionList.html')
