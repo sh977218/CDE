@@ -1,5 +1,5 @@
 angular.module('cdeModule').controller('DEListCtrl',
-    ['$scope', '$controller', '$http', '$uibModal', 'TourContent', 'userResource', '$timeout', 'DataElementQuickBoard', 'PinModal',
+    ['$scope', '$controller', '$http', '$uibModal', 'TourContent', 'userResource', '$timeout', 'QuickBoard', 'PinModal',
     function ($scope, $controller, $http, $modal, TourContent, userResource, $timeout, QuickBoard, PinModal) {
         $scope.module = "cde";
         $scope.quickBoard = QuickBoard;

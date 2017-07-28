@@ -11,7 +11,7 @@ export class PinQuickboardComponent implements OnInit {
 
     quickBoard: any;
 
-    constructor(@Inject("DataElementQuickBoard") public cdeQuickBoard,
+    constructor(@Inject("QuickBoard") public cdeQuickBoard,
                 @Inject("FormQuickBoard") public formQuickBoard) {
     }
 

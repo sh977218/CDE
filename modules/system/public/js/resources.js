@@ -2,7 +2,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
     var params = {
         cde: {
             url: "/de/",
-            localStorage: "DataElementQuickBoard"
+            localStorage: "QuickBoard"
         },
         form: {
             url: "/form/",
@@ -262,7 +262,7 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
-    .factory("DataElementQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
+    .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
             var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
             result.restoreFromLocalStorage();

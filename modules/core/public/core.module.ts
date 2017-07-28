@@ -29,8 +29,8 @@ export function getIsAllowedModelFactory(i: any) {
     return i.get("isAllowedModel");
 }
 
-export function getDataElementQuickBoardFactory(i: any) {
-    return i.get("DataElementQuickBoard");
+export function getQuickBoardFactory(i: any) {
+    return i.get("QuickBoard");
 }
 
 export function getFormQuickBoardFactory(i: any) {
@@ -68,7 +68,7 @@ export function getElasticFactory(i: any) {
         {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},
         {provide: "SearchSettings", useFactory: getSearchSettingsFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
-        {provide: "DataElementQuickBoard", useFactory: getDataElementQuickBoardFactory, deps: ["$injector"]},
+        {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
         {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
         {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},

@@ -2,7 +2,7 @@ import * as exportShared from "../../../../system/shared/exportShared";
 import {saveAs} from "../../../../cde/public/assets/js/FileSaver";
 
 angular.module('cdeModule').controller('QuickBoardCtrl',
-    ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'DataElementQuickBoard', 'FormQuickBoard', 'localStorageService', 'AlertService',
+    ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard', 'FormQuickBoard', 'localStorageService', 'AlertService',
         function ($scope, CdeList, OrgHelpers, userResource, QuickBoard, FormQuickBoard, localStorageService, Alert) {
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
@@ -58,7 +58,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
         }]);
 
 angular.module('cdeModule').controller('CdeQuickBoardCtrl',
-    ['$scope', 'DataElementQuickBoard',
+    ['$scope', 'QuickBoard',
         function ($scope, QuickBoard) {
             $scope.module = 'cde';
             $scope.quickBoard = QuickBoard;
