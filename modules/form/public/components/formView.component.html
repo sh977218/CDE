@@ -199,7 +199,6 @@
                                   [eltName]="elt.naming[0].designation"></cde-discuss-area>
             </div>
         </div>
-        highlightedTabs: {{highlightedTabs | json}}
         <div class="row" *ngIf="elt.unsaved">
             <cde-update-element [elt]="elt" (discard)="reload($event);"
                                 (save)="saveForm();"></cde-update-element>

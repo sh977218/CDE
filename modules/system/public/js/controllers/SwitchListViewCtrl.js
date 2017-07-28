@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('SwitchListViewCtrl',
     ['$scope', '$location', '$window', '$timeout', 'OrgHelpers', 'SearchSettings', 'DataElementQuickBoard', 'FormQuickBoard', 'localStorageService', 'AlertService',
-        function ($scope, $location, $window, $timeout, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService, Alert) {
+        function ($scope, $location, $window, $timeout, OrgHelpers, SearchSettings, DataElementQuickBoard, FormQuickBoard, localStorageService, Alert) {
 
 
         $scope.setViewTypes = function (module) {
@@ -59,7 +59,7 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
 
         $scope.showSideBySideView = function () {
             var qbResource;
-            if (localStorageService.get("defaultQuickBoard") === 'cdeQuickBoard') qbResource = QuickBoard;
+            if (localStorageService.get("defaultQuickBoard") === 'cdeQuickBoard') qbResource = DataElementQuickBoard;
             if (localStorageService.get("defaultQuickBoard") === 'formQuickBoard') qbResource = FormQuickBoard;
             if (qbResource.elts.length === 2 && Object.keys($scope.eltsToCompareMap).length === 0) {
                 qbResource.elts.forEach(function(a){
