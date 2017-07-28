@@ -2,7 +2,7 @@
 <cde-board-cde-summary-list ng-if="ejsPage === 'board'"
                             [board]="board" [cdes]="cdes" [current-page]="currentPage" [total-items]="totalItems"
                             (reload)="reload()"></cde-board-cde-summary-list>
-<div ng-if="ejsPage === 'QuickBoard'" ng-repeat="(eltIndex, elt) in cdes track by elt.tinyId">
+<div ng-if="ejsPage === 'quickBoard'" ng-repeat="(eltIndex, elt) in cdes track by elt.tinyId">
     <div ng-if="$index === cutoffIndex" style="margin-top:40px">
         <h3>More results</h3>
     </div>
