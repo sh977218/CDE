@@ -155,6 +155,6 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 if (c.linkedTab && c.linkedTab === tabMap[$event])
                     c.currentComment = true;
                 else c.currentComment = false;
-            })
+            });
     }
 }
