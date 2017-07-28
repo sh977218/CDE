@@ -124,7 +124,7 @@ export class CreateDataElementComponent implements OnInit {
 
 
     createDataElement() {
-        this.http.post("/dataelement", this.elt).map(res => res.json())
+        this.http.post("/de", this.elt).map(res => res.json())
             .subscribe(res => window.location.href = "/deView?tinyId=" + res.tinyId,
                 err => this.alert.addAlert("danger", err));
     }
