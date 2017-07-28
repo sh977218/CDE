@@ -23,6 +23,7 @@ export class FormViewComponent implements OnInit {
     currentTab = "general_tab";
     highlightedTabs = [];
     cdes = [];
+    isFormValid = true;
 
     formInput;
 
@@ -135,6 +136,14 @@ export class FormViewComponent implements OnInit {
 
     loadHighlightedTabs($event) {
         this.highlightedTabs = $event;
+    }
+
+    setIsValid(valid) {
+        this.isFormValid = valid;
+    }
+
+    stageElt() {
+        this.elt.unsaved = true;
     }
 
 }
