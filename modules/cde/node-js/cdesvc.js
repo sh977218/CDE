@@ -94,8 +94,6 @@ exports.latestVersionByTinyId = function (req, res) {
 };
 
 exports.createDataElement = function (req, res) {
-    let id = req.params.id;
-    if (!id) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
     let elt = req.body;
     let user = req.user;
