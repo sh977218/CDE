@@ -12,10 +12,10 @@ public class SwaggerTest extends NlmCdeBaseTest {
         textPresent("CDE API");
         clickElement(By.partialLinkText("Form"));
         clickElement(By.partialLinkText("/form/{tinyId}"));
-        findElement(By.xpath("//*[@id='Form_get_form_tinyId_tinyId_content']//td[label[text()='tinyId']]/following-sibling::td/input"))
+        findElement(By.xpath("//*[@id='Form_get_form_tinyId_content']//td[label[text()='tinyId']]/following-sibling::td/input"))
                 .sendKeys("Xy1kuxJqm");
-        clickElement(By.cssSelector("#Form_get_form_tinyId_tinyId_content input[type=submit]"));
-        scrollToViewByXpath("//*[@id='Form_get_form_tinyId_tinyId_content']//*[contains(@class,'response_body')]");
-        textPresent("Xy1kuxJqm", By.xpath("//*[@id='Form_get_form_tinyId_tinyId_content']//*[contains(@class,'response_body')]"));
+        clickElement(By.cssSelector("#Form_get_form_tinyId_content input[type=submit]"));
+        scrollToViewByXpath("//*[@id='Form_get_form_tinyId_content']//*[contains(@class,'response_body')]");
+        textPresent("Xy1kuxJqm", By.xpath("//*[@id='Form_get_form_tinyId_content']//*[contains(@class,'response_body')]"));
     }
 }

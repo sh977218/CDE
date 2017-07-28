@@ -86,7 +86,7 @@
              class="text-center mt20">This form has no content. There is nothing to preview.
         </div>
         <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0">
-            <cde-native-render-full [eltLoaded]="deferredEltLoaded" [elt]="elt"></cde-native-render-full>
+            <cde-native-render-full [elt]="elt"></cde-native-render-full>
         </div>
     </div>
 </div>

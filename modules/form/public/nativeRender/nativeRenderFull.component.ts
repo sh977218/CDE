@@ -8,7 +8,6 @@ import { CdeForm } from "../form.model";
     providers: [NativeRenderService]
 })
 export class NativeRenderFullComponent implements OnInit {
-    @Input() eltLoaded: {promise: Promise<void>};
     @Input() elt: CdeForm;
 
     profileIndex: any;

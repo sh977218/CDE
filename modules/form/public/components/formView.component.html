@@ -104,7 +104,7 @@
                         <ng-template ngbTabContent>
                             <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
                                                   (isFormValid)="setIsValid($event)"
-                                                  (stage-elt)="stageElt()"></cde-form-description>
+                                                  (stageElt)="stageElt()"></cde-form-description>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="naming_tab">
@@ -200,8 +200,6 @@
                                   [eltName]="elt.naming[0].designation"></cde-discuss-area>
             </div>
         </div>
-        elt.unsaved:{{elt.unsaved}}
-        isFormValid:{{isFormValid}}
         <div class="row" *ngIf="elt.unsaved && isFormValid">
             <cde-update-element [elt]="elt" (discard)="reload($event);"
                                 (save)="saveForm();"></cde-update-element>

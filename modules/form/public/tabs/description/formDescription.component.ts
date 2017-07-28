@@ -191,4 +191,8 @@ export class FormDescriptionComponent implements OnInit {
         }, () => {
         });
     }
+
+    stageParent() {
+        this.stageElt.emit();
+    }
 }
