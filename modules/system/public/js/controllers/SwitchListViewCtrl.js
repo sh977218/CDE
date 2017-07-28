@@ -27,11 +27,11 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
                     $window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
             });
             $window.addEventListener('unload', function () {
-                if (/^\/(cde|form)\/search\?.*/.exec($location.url()))
+                if (/^\/(cde|form)\/search\?.*!/.exec($location.url()))
                     $window.sessionStorage['nlmcde.scroll.' + $location.url()] = $(window).scrollTop();
             });
             var previousSpot = $window.sessionStorage['nlmcde.scroll.' + $location.url()];
-            if (previousSpot != null)
+            if (previousSpot !== null)
                 waitScroll(3);
 
             function waitScroll(count) {
@@ -43,17 +43,21 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
                     $window.scrollTo(0, previousSpot);
             }
 
+            $scope.getUsedBy = OrgHelpers.getUsedBy;
 
             var listViewCacheName = $scope.module + "listViewType";
-            if ($scope.cache.get(listViewCacheName)) $scope.listViewType = $scope.cache.get(listViewCacheName);
-            else if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
-            $scope.getUsedBy = OrgHelpers.getUsedBy;
+            if ($scope.cache && $scope.cache.get(listViewCacheName))
+                $scope.listViewType = $scope.cache.get(listViewCacheName);
+            else if (SearchSettings.getDefaultSearchView())
+                $scope.listViewType = SearchSettings.getDefaultSearchView();
+
 
             $scope.switchToView = function (viewType) {
                 $scope.eltsToCompare = [];
                 $scope.listViewType = viewType;
                 $scope.cache.put(listViewCacheName, $scope.listViewType);
             };
+
 
             $scope.showSideBySideView = function () {
                 var qbResource;

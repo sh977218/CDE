@@ -28,10 +28,10 @@ exports.init = function (app, daoManager) {
 
     app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
 
-    app.post("/form/", exportShared.nocacheMiddleware, formSvc.createForm);
-    app.put("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.updateForm);
+    app.post("/form/", formSvc.createForm);
+    app.put("/form/:tinyId", formSvc.updateForm);
 
-    app.post('/form/publish/:id', exportShared.nocacheMiddleware, formSvc.publishForm);
+    app.post('/form/publish/:id', formSvc.publishForm);
 
     app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {

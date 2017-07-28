@@ -41,14 +41,14 @@ function allowCreate(user, elt, cb) {
 }
 
 function wipeRenderDisallowed(form, req, cb) {
-    if (!req.user) adminSvc.hideProprietaryIds(form);
     if (form && form.noRenderAllowed) {
         authorization.checkOwnership(mongo_form, form._id, req, function (err, isYouAllowed) {
-            if (err) return cb(err);
             if (!isYouAllowed) form.formElements = [];
-            return cb();
+            cb();
         });
-    } else cb();
+    } else {
+        cb();
+    }
 }
 
 exports.byId = function (req, res) {
