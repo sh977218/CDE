@@ -1,10 +1,11 @@
 package gov.nih.nlm.form.test;
 
-import junit.framework.Assert;
+import gov.nih.nlm.system.NlmCdeBaseTest;
+import org.testng.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormHistoryTest extends BaseFormTest {
+public class FormHistoryTest extends NlmCdeBaseTest {
 
     @Test
     public void formHistoryTest() {
@@ -20,7 +21,7 @@ public class FormHistoryTest extends BaseFormTest {
         clickElement(By.id("naming_tab"));
         textPresent("Form testing history");
         editDefinitionByIndex(0, newFormDef, false);
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         clickElement(By.id("history_tab"));
