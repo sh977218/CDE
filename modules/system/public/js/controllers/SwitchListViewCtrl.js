@@ -27,7 +27,7 @@ angular.module('systemModule').controller('SwitchListViewCtrl',
                     $window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
             });
             $window.addEventListener('unload', function () {
-                if (/^\/(cde|form)\/search\?.*!/.exec($location.url()))
+                if (/^\/(cde|form)\/search\?.*/.exec($location.url()))
                     $window.sessionStorage['nlmcde.scroll.' + $location.url()] = $(window).scrollTop();
             });
             var previousSpot = $window.sessionStorage['nlmcde.scroll.' + $location.url()];
