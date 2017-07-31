@@ -63,8 +63,10 @@ public class MergeTest extends NlmCdeBaseTest {
 
     @Test
     public void mergeMineMineEverything() {
+        String cdeName1 = "Common Toxicity Criteria Adverse Event Colitis Grade";
+        String cdeName2 = "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade";
         mustBeLoggedInAs(ctepCurator_username, password);
-        addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
+        addToCompare(cdeName1, cdeName2);
         clickElement(By.id("retireMerge-0"));
         textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
         checkEverything();
