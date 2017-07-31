@@ -205,8 +205,9 @@ exports.init = function (app, daoManager) {
         cdeMergeFrom.registrationState.registrationStatus = "Retired";
         if (cdeMergeTo && cdeMergeTo.tinyId)
             cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
-        mongo_cde.update(cdeMergeFrom, req.user, function () {
-            res.end();
+        mongo_cde.update(cdeMergeFrom, req.user, function (err, newDe) {
+            if (err) return res.status(500).send(err);
+            res.send(newDe);
         });
     });
     app.post('/mergeCde', function (req, res) {

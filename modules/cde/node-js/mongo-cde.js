@@ -196,7 +196,7 @@ exports.forks = function (cdeId, callback) {
 
 var viewedCdes = {};
 var threshold = config.viewsIncrementThreshold || 50;
-exports.incDeView = function (cde) {
+exports.incdeView = function (cde) {
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
     viewedCdes[cde._id]++;
     if (viewedCdes[cde._id] >= threshold && cde && cde._id) {

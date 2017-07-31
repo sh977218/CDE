@@ -7,7 +7,7 @@ angular.module('cdeModule').controller('MoreLikeThisModalCtrl',
             $scope.module = "cde";
             $scope.view = function (cde, event) {
                 $scope.interruptEvent(event);
-                $location.url("deview?tinyId=" + cde.tinyId);
+                $location.url("deView?tinyId=" + cde.tinyId);
                 $dismiss();
             };
             $scope.PinModal = PinModal.new('cde');

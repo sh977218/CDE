@@ -23,8 +23,8 @@ angular.module('CdeMerge', [])
                 if (fields.ids || fields.properties || fields.naming) {
                     classificationShared.transferClassifications(service.source, service.destination);
                     $http.put("/de/" + result.data.tinyId, result.data).then(function () {
-                        service.retireSource(service.source, service.destination, function () {
-                            if (callback) callback();
+                        service.retireSource(service.source, service.destination, function (response) {
+                            if (callback) callback(response);
                         });
                     });
                 } else {
@@ -38,7 +38,7 @@ angular.module('CdeMerge', [])
             service.alreadyExists = function (obj) {
                 delete obj.$$hashKey;
                 return destination[type].map(function (obj) {
-                    return JSON.stringify(obj)
+                    return JSON.stringify(obj);
                 }).indexOf(JSON.stringify(obj)) >= 0;
             };
             source[type].forEach(function (obj) {
@@ -48,8 +48,8 @@ angular.module('CdeMerge', [])
         };
 
         service.retireSource = function (source, destination, cb) {
-            CDE.retire(source, destination, function () {
-                if (cb) cb();
+            CDE.retire(source, destination, function (response) {
+                if (cb) cb(response);
             });
         };
         return service;

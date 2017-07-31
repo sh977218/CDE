@@ -36,7 +36,7 @@ exports.byId = function (req, res) {
             return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
         }
         res.send(dataElement);
-        mongo_data.incDeView(dataElement);
+        mongo_data.incdeView(dataElement);
         mongo_data_system.addToViewHistory(dataElement, req.user);
     });
 };
@@ -69,7 +69,7 @@ exports.byTinyId = function (req, res) {
             return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
         }
         res.send(dataElement);
-        mongo_data.incDeView(dataElement);
+        mongo_data.incdeView(dataElement);
         mongo_data_system.addToViewHistory(dataElement, req.user);
     });
 };
@@ -168,7 +168,7 @@ exports.show = function (req, res, cb) {
         cb(cde);
         // Following have no callback because it's no big deal if it fails.
         if (cde) {
-            mongo_data.incDeView(cde);
+            mongo_data.incdeView(cde);
             if (req.isAuthenticated()) {
                 mongo_data.addToViewHistory(cde, req.user);
             }
