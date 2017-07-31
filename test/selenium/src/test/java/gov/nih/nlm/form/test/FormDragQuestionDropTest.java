@@ -22,7 +22,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
 
         addSectionToSection(2, 1);
         addQuestionToSection("Smoking History Ind", 1);
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         clickElement(By.id("description_tab"));

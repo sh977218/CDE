@@ -17,7 +17,7 @@ public class FormPermissionTest extends BaseFormTest {
         String sec1 = "test permission section";
         addSectionBottom(sec1, null);
         textPresent(sec1);
-        saveForm();
+        newFormVersion();
 
         mustBeLoggedInAs(ctepCurator_username, password);
         goToFormByName(formName);

@@ -12,23 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends FormCommentTest {
 
-    protected void saveForm() {
-        try {
-            clickElement(By.id("openSaveBottom"));
-            textPresent("has already been used");
-        } catch (Exception e) {
-            // known error spot. Seems the button does not always get clicked.
-            clickElement(By.id("openSaveBottom"));
-            textPresent("has already been used");
-        }
-        hangon(2);
-        findElement(By.name("version")).sendKeys("1");
-        textNotPresent("This version number has already been used.");
-        clickElement(By.id("confirmNewVersion"));
-        textPresent("Saved.");
-        closeAlert();
-    }
-
     public void searchForm(String query) {
         findElement(By.name("q")).sendKeys("\"" + query + "\"");
         hangon(1);

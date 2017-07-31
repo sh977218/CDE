@@ -17,7 +17,7 @@ public class FormEmptyPermissibleValueMeaningTest extends QuestionTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         addQuestionToSection(cdeName, 0);
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         clickElement(By.id("description_tab"));

@@ -21,7 +21,7 @@ public class QuestionDefaultValue extends BaseFormTest {
         clickElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//button[contains(text(),'Confirm')]"));
         saveEditQuestionSectionById("question_0_1");
 
-        saveForm();
+        newFormVersion();
 
         goToFormByName("History Data Source and Reliability");
         // this find ensures option Brother is selected.

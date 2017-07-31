@@ -16,7 +16,7 @@ public class NoLabelLogic extends BaseFormTest {
         clickElement(By.id("description_tab"));
         clickElement(By.cssSelector("#question_0_1 .fa-pencil"));
         findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_1"))).sendKeys("\"Gender type\" = \"Unknown\"");
-        saveForm();
+        newFormVersion();
         textPresent("Show if: \"Gender type\" = \"Unknown\"");
         clickElement(By.id("general_tab"));
         textPresent("Walking speed value");

@@ -61,7 +61,7 @@ public class DisplayProfilesTest extends BaseFormTest {
                 findElement(By.xpath("//*[@id='profile_3']//*[*[text()='Education level USA type']]//*/span[text()='1st Grade']")).getLocation().y,
                 findElement(By.xpath("//*[@id='profile_3']//*[*[text()='Education level USA type']]//*/span[text()='5th Grade']")).getLocation().y
         );
-        saveForm();
+        newFormVersion();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
@@ -99,7 +99,7 @@ public class DisplayProfilesTest extends BaseFormTest {
             clickElement(By.id("confirmRemoveDisplayProfile-0"));
         }
 
-        saveForm();
+        newFormVersion();
         clickElement(By.id("general_tab"));
         textPresent("Display Profile:");
     }

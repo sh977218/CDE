@@ -14,7 +14,7 @@ public class FormEditTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         editQuestion();
-        saveForm();
+        newFormVersion();
         goHome();
     }
 
