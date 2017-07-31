@@ -78,8 +78,12 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         this.http.get('/comments/eltId/' + this.eltId).map(r => r.json()).subscribe(response => {
             this.eltComments = response;
             this.eltComments.forEach(comment => {
-                if (comment.linkedTab && this.highlightedTabs.indexOf(comment.linkedTab) === -1)
+                if (comment.linkedTab && this.highlightedTabs.indexOf(comment.linkedTab) === -1) {
                     this.highlightedTabs.push(comment.linkedTab);
+                }
+                if (this.selectedElt.indexOf(comment.linkedTab) !== -1 || comment.linkedTab.indexOf(this.selectedElt) !== -1) {
+                    comment.currentComment = true;
+                }
                 this.addAvatar(comment.username);
                 if (comment.replies) {
                     comment.replies.forEach(r => this.addAvatar(r.username));

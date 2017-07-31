@@ -11,7 +11,7 @@ public class SdcExport extends NlmCdeBaseTest {
 
     @Test
     public void sdcXmlExport() {
-        String url = baseUrl + "/form/XySUBn_NZ/xml/sdc/";
+        String url = baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc";
         System.out.println("url: " + url);
         String response = get(url).asString();
         System.out.println("response: " + response);
@@ -26,7 +26,7 @@ public class SdcExport extends NlmCdeBaseTest {
 
     @Test
     public void sdcXmlExportLoinc() {
-        String response = get(baseUrl + "/form/Xyo4O4BIM/xml/sdc/").asString();
+        String response = get(baseUrl + "/form/Xyo4O4BIM?type=xml&subtype=sdc").asString();
         Assert.assertTrue(response.contains("<CodedValue><Code val=\"LA15255-5\"/><CodeSystem><CodeSystemName val=\"LOINC\"/>"));
         Assert.assertTrue(response.contains("<CodeSystem><CodeSystemName val=\"LOINC\"/><Version val=\"2.1213\"/></CodeSystem>"));
 

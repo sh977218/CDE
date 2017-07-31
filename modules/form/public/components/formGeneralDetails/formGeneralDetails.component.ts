@@ -1,6 +1,4 @@
 import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
-import { Http } from "@angular/http";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-form-general-details",

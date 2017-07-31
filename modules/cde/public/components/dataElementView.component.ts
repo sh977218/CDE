@@ -4,7 +4,6 @@ import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstra
 import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
-import { DataElementService } from "../dataElement.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 
 @Component({
@@ -20,6 +19,7 @@ export class DataElementViewComponent implements OnInit {
     commentMode;
     eltLoaded: boolean = false;
     currentTab = "general_tab";
+    highlightedTabs = [];
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -94,6 +94,10 @@ export class DataElementViewComponent implements OnInit {
                 this.alert.addAlert("success", "Data Element saved.");
             }
         }, err => this.alert.addAlert("danger", err));
+    }
+
+    loadHighlightedTabs($event) {
+        this.highlightedTabs = $event;
     }
 
     beforeChange(event) {

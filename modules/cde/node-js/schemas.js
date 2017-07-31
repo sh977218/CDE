@@ -10,16 +10,6 @@ var conceptSchema = new mongoose.Schema({
     originId: {type: String, description: "Identifier of concept from source"}
 }, {_id: false});
 
-var derivationRuleSchema = new mongoose.Schema(
-    {
-        name: String,
-        inputs: {type: [String], index: true, description: "Information operated on by rule"},
-        outputs: {description: "Information produced by rule", type: [String]},
-        ruleType: {type: String, enum: ['score', 'panel']},
-        formula: {type: String, enum: ['sumAll', 'mean']}
-    }, {_id: true}
-);
-
 var deJson = {
     elementType: {type: String, default: 'cde', description: "This value is always 'cde'"}
     , naming: {type: [sharedSchemas.namingSchema], description: "Any string used by which CDE is known, addressed or referred to"}
@@ -104,13 +94,13 @@ var deJson = {
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , referenceDocuments: {type: [sharedSchemas.referenceDocumentSchema], description: "Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record."}
-    , derivationRules: [derivationRuleSchema]
+    , derivationRules: [sharedSchemas.derivationRuleSchema]
 };
 
 schemas.deJson = deJson;
 schemas.dataElementSchema = new mongoose.Schema(deJson, {
     toJSON: {
-        transform: function (doc, ret, options) {
+        transform: function (doc, ret) {
             ret._links = {
                 describedBy: {
                     href: '/meta/schemas/example'

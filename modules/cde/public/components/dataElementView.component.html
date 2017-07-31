@@ -192,6 +192,7 @@
             <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
                  style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
                 <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                                  (highlightedTabsChange)="loadHighlightedTabs($event)"
                                   [eltName]="elt.naming[0].designation"></cde-discuss-area>
             </div>
         </div>

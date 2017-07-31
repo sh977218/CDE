@@ -1,11 +1,11 @@
 let async = require('async');
-let _ = require('lodash');
 let config = require('../../system/node-js/parseConfig');
 let schemas = require('./schemas');
 let mongo_data_system = require('../../system/node-js/mongo-data');
 let connHelper = require('../../system/node-js/connections');
 let logging = require('../../system/node-js/logging');
 let elastic = require('./elastic');
+let mongo_cde = require('../../cde/node-js/mongo-cde');
 
 exports.type = "form";
 exports.name = "forms";
@@ -55,7 +55,21 @@ function fetchWholeForm(form, callback) {
                 loopFormElements(fe, function () {
                     doneOne();
                 });
-            } else doneOne();
+            } else {
+                let tinyId = fe.question.cde.tinyId;
+                let version = fe.question.cde.version;
+                mongo_cde.byTinyIdAndVersion(tinyId, version, function (err, dataElement) {
+                    if (err || !dataElement) cb(err);
+                    else {
+                        let de = dataElement.toObject();
+                        if (fe.question.cde.version !== de.version) {
+                            fe.question.cde.outdated = true;
+                        }
+                        fe.question.cde.derivationRules = de.derivationRules;
+                        doneOne();
+                    }
+                });
+            }
         }, function doneAll() {
             cb();
         });
@@ -64,6 +78,21 @@ function fetchWholeForm(form, callback) {
         callback(err, form);
     });
 }
+
+exports.trimWholeForm = function (form) {
+    let loopFormElements = function (form, cb) {
+        if (!form) return cb();
+        if (!form.formElements) form.formElements = [];
+        form.formElements.forEach(fe => {
+            if (fe.elementType === "form") {
+                fe.formElements = [];
+            } else if (fe.elementType === "section") {
+                loopFormElements(fe);
+            }
+        });
+    };
+    loopFormElements(form);
+};
 
 exports.byId = function (id, cb) {
     Form.findById(id, function (err, form) {

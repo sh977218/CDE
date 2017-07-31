@@ -95,23 +95,6 @@ angular.module('formModule').directive('cdeBoardFormSummaryList',
         inputs: ['board', 'forms', 'currentPage', 'totalItems'],
         outputs: ['reload']
     }));
-
-import {FormDescriptionComponent} from "../tabs/description/formDescription.component";
-
-angular.module('formModule').directive('cdeFormDescription', downgradeComponent({
-    component: FormDescriptionComponent,
-    inputs: ['elt', 'inScoreCdes', 'cache'],
-    outputs: ['isFormValid', 'stageElt', 'cachePut']
-}));
-
-import {DisplayProfileComponent} from "../components/displayProfile/displayProfile.component";
-
-angular.module('formModule').directive('cdeFormDisplayProfile', downgradeComponent({
-    component: DisplayProfileComponent,
-    inputs: ['eltLoaded', 'elt'],
-    outputs: []
-}));
-
 import {FormSummaryListComponent} from "../components/searchResults/formSummaryList.component";
 
 angular.module('formModule').directive('cdeFormSummaryList', downgradeComponent({
@@ -125,30 +108,6 @@ import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
 angular.module('formModule').directive('cdeMergeForm', downgradeComponent({
     component: MergeFormComponent,
     inputs: ['left', 'right'],
-    outputs: []
-}));
-
-import {NativeRenderComponent} from "../nativeRender/nativeRender.component";
-
-angular.module('formModule').directive('cdeNativeRender', downgradeComponent({
-    component: NativeRenderComponent,
-    inputs: ['eltLoaded', 'elt', 'profile', 'submitForm'],
-    outputs: []
-}));
-
-import {NativeRenderFullComponent} from "../nativeRender/nativeRenderFull.component";
-
-angular.module('formModule').directive('cdeNativeRenderFull', downgradeComponent({
-    component: NativeRenderFullComponent,
-    inputs: ['eltLoaded', 'elt'],
-    outputs: []
-}));
-
-import {FormGeneralDetailsComponent} from "../components/formGeneralDetails/formGeneralDetails.component";
-
-angular.module('formModule').directive('cdeFormGeneralDetails', downgradeComponent({
-    component: FormGeneralDetailsComponent,
-    inputs: ['eltLoaded', 'elt'],
     outputs: []
 }));
 

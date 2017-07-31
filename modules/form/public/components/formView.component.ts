@@ -24,6 +24,8 @@ export class FormViewComponent implements OnInit {
     highlightedTabs = [];
     cdes = [];
     isFormValid = true;
+    missingCdes;
+    inScoreCdes;
 
     formInput;
 
@@ -59,6 +61,7 @@ export class FormViewComponent implements OnInit {
         this.http.get(url).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
+                this.areDerivationRulesSatisfied();
                 this.cdes = formShared.getFormCdes(this.elt);
                 this.eltLoaded = true;
             } else
@@ -87,6 +90,7 @@ export class FormViewComponent implements OnInit {
         this.http.get("/form/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
             if (res) {
                 this.elt = res;
+
                 this.alert.addAlert("success", "Changes discarded.");
             } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.");
         }, err => this.alert.addAlert("danger", err));
@@ -143,7 +147,57 @@ export class FormViewComponent implements OnInit {
     }
 
     stageElt() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
         this.elt.unsaved = true;
     }
 
+    areDerivationRulesSatisfied = function () {
+        this.missingCdes = [];
+        this.inScoreCdes = [];
+        let allCdes = {};
+        let allQuestions = [];
+        let doFormElement = function (formElt) {
+            if (formElt.elementType === 'question') {
+                allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
+                allQuestions.push(formElt);
+            } else if (formElt.elementType === 'section') {
+                formElt.formElements.forEach(doFormElement);
+            }
+        };
+        this.elt.formElements.forEach(doFormElement);
+        allQuestions.forEach(function (quest) {
+            if (quest.question.cde.derivationRules)
+                quest.question.cde.derivationRules.forEach(function (derRule) {
+                    delete quest.incompleteRule;
+                    if (derRule.ruleType === 'score') {
+                        quest.question.isScore = true;
+                        quest.question.scoreFormula = derRule.formula;
+                        this.inScoreCdes = derRule.inputs;
+                    }
+                    derRule.inputs.forEach(function (input) {
+                        if (!allCdes[input]) {
+                            this.missingCdes.push({tinyId: input});
+                            quest.incompleteRule = true;
+                        }
+                    });
+                });
+        });
+    };
+
+    validateForm() {
+        this.isFormValid = true;
+        var loopFormElements = function (form) {
+            if (form.formElements) {
+                form.formElements.forEach(function (fe) {
+                    if (fe.skipLogic && fe.skipLogic.error) {
+                        this.isFormValid = false;
+                        return;
+                    }
+                    loopFormElements(fe);
+                })
+            }
+        };
+        loopFormElements(this.elt);
+    };
 }

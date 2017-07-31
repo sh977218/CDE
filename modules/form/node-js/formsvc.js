@@ -247,6 +247,7 @@ exports.updateForm = function (req, res) {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
                     let elt = req.body;
+                    mongo_form.trimWholeForm(elt);
                     mongo_form.update(elt, req.user, function (err, response) {
                         if (err) return res.status(500).send(err);
                         res.send(response);
