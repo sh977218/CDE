@@ -14,7 +14,7 @@ import { CdeForm } from 'form/public/form.model';
 export class DataElementViewComponent {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @Input() elt: CdeForm;
+    @Input() elt: any;
     @Output() public stageElt = new EventEmitter();
     @Output() public reload = new EventEmitter();
 

@@ -11,7 +11,7 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
         }).when('/createForm', {
             controller: 'CreateFormCtrl',
             templateUrl: '/form/public/html/createForm.html'
-        }).when('/formView', {templateUrl: '/form/public/html/formView.html'});
+        }).when('/formView', {controller:'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
     }]);
 
 angular.module('formModule').directive('formAccordionList', function () {
@@ -124,6 +124,6 @@ import {FormViewComponent} from "../components/formView.component";
 angular.module('formModule').directive('cdeFormView', downgradeComponent({
     component: FormViewComponent,
     inputs: ['elt'],
-    outputs: []
+    outputs: ['stageElt', 'reload']
 }));
 

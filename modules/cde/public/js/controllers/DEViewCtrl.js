@@ -1,7 +1,5 @@
 angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$http', 'AlertService',
     function ($scope, $http, Alert) {
-        $scope.eltLoaded = false;
-
         // remove it once has angular2 route
         function getParameterByName(name, url = null) {
             if (!url) url = window.location.href;

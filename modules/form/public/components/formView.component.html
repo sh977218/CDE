@@ -1,223 +1,216 @@
 <div class="container-fluid" itemscope="http://schema.org/MedicalCode">
-    <ng-container *ngIf="!eltLoaded">
-        <h1 class="pt60 pb40 text-center">
-            <i class="fa fa-spinner fa-pulse"></i>Loading...
-        </h1>
-    </ng-container>
-    <ng-container *ngIf="eltLoaded && elt">
-        <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this form is archived. You can
-            <a href="/formView?tinyId={{elt.tinyId}}">view the current version here</a>.
-        </div>
-        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this form is retired.
-            <a *ngIf="elt.registrationState.replacedBy"
-               href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a>
-        </div>
-        <div class="alert alert-info mt20" role="alert" *ngIf="elt.outdated">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Note: </strong>Some CDEs in this form have newer version.
-        </div>
-        <div class="alert alert-warning mt20" role="alert" *ngIf="missingCdes.length > 0">
-            <i class="fa fa-exclamation-triangle"></i>
-            The following CDEs are part of a score but are missing from this form:
-            <ul class="list-inline">
-                <li *ngFor="let missCde of missingCdes;let i = index;">
-                    <a href="/deView?tinyId={{missCde.tinyId}}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
-                    <span *ngIf="i < missingCdes.length">,</span></li>
-            </ul>
-        </div>
-        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
-             role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this form is about to be retired.
-            <a *ngIf="elt.registrationState.replacedBy"
-               href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
-        </div>
-        <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Note:</strong> You may not edit this CDE because it is standard.
-        </div>
-        <div *ngIf="elt.forkOf" class="alert alert-info mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
-            <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
-        </div>
-        <div class="row">
-            <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-                <h1 class="page-header">{{elt.naming[0].designation}}
-                    <button *ngIf="quickBoard.canAddElt(elt)" id="addToQuickBoard" class="btn btn-small btn-default"
-                            role="button" title="Add to Compare List" type="button" (click)="quickBoard.add(elt)">
-                        <i class="fa fa-plus"></i> Add to Quick Board
+    <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this form is archived. You can
+        <a href="/formView?tinyId={{elt.tinyId}}">view the current version here</a>.
+    </div>
+    <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this form is retired.
+        <a *ngIf="elt.registrationState.replacedBy"
+           href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a>
+    </div>
+    <div class="alert alert-info mt20" role="alert" *ngIf="elt.outdated">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Note: </strong>Some CDEs in this form have newer version.
+    </div>
+    <div class="alert alert-warning mt20" role="alert" *ngIf="missingCdes.length > 0">
+        <i class="fa fa-exclamation-triangle"></i>
+        The following CDEs are part of a score but are missing from this form:
+        <ul class="list-inline">
+            <li *ngFor="let missCde of missingCdes;let i = index;">
+                <a href="/deView?tinyId={{missCde.tinyId}}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
+                <span *ngIf="i < missingCdes.length">,</span></li>
+        </ul>
+    </div>
+    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
+         role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this form is about to be retired.
+        <a *ngIf="elt.registrationState.replacedBy"
+           href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
+    </div>
+    <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Note:</strong> You may not edit this CDE because it is standard.
+    </div>
+    <div *ngIf="elt.forkOf" class="alert alert-info mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
+        <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
+    </div>
+    <div class="row">
+        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+            <h1 class="page-header">{{elt.naming[0].designation}}
+                <button *ngIf="quickBoard.canAddElt(elt)" id="addToQuickBoard" class="btn btn-small btn-default"
+                        role="button" title="Add to Compare List" type="button" (click)="quickBoard.add(elt)">
+                    <i class="fa fa-plus"></i> Add to Quick Board
+                </button>
+                <button id="addToBoard" class="btn btn-small btn-default" title="Add to Board"
+                        type="button" (click)="mltPinModal.open([elt], 'cde')">
+                    <i class="fa fa-thumb-tack"></i> Add to Board
+                </button>
+                <div class="btn-group" role="group">
+                    <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-download"></i> Export
                     </button>
-                    <button id="addToBoard" class="btn btn-small btn-default" title="Add to Board"
-                            type="button" (click)="mltPinModal.open([elt], 'cde')">
-                        <i class="fa fa-thumb-tack"></i> Add to Board
-                    </button>
-                    <div class="btn-group" role="group">
-                        <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-download"></i> Export
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="export">
-                            <ng-container *ngIf="isAllowedModel.loggedIn()">
-                                <a class="dropdown-item" id='nihJson' href="formById/{{elt._id}}" target="_blank">
-                                    JSON File, NIH/CDE Schema</a>
-                                <a class="dropdown-item" id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm"
-                                   target="_blank">XML File, ODM Schema</a>
-                                <a class="dropdown-item" id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc"
-                                   target="_blank">XML File, SDC Schema</a>
-                                <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
-                                   href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                                   target="_blank">XML File, SDC Schema with XSL Transform</a>
-                                <a class="dropdown-item" id='nihXml' href="formById/{{elt._id}}?type=xml"
-                                   target="_blank">XML File, NIH/CDE Schema</a>
-                                <a class="dropdown-item" id='formPublishExport' (click)="openPreparePublishModal()"
-                                   target="_blank">Published Form</a>
-                                <a class="dropdown-item" id='nihRedCap' href="formById/{{elt._id}}?type=REDCap"
-                                   target="_blank">REDCap</a>
-                            </ng-container>
-                            <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
-                                Please login to export forms.</a>
-                        </div>
+                    <div class="dropdown-menu" aria-labelledby="export">
+                        <ng-container *ngIf="isAllowedModel.loggedIn()">
+                            <a class="dropdown-item" id='nihJson' href="formById/{{elt._id}}" target="_blank">
+                                JSON File, NIH/CDE Schema</a>
+                            <a class="dropdown-item" id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm"
+                               target="_blank">XML File, ODM Schema</a>
+                            <a class="dropdown-item" id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc"
+                               target="_blank">XML File, SDC Schema</a>
+                            <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
+                               href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                               target="_blank">XML File, SDC Schema with XSL Transform</a>
+                            <a class="dropdown-item" id='nihXml' href="formById/{{elt._id}}?type=xml"
+                               target="_blank">XML File, NIH/CDE Schema</a>
+                            <a class="dropdown-item" id='formPublishExport' (click)="openPreparePublishModal()"
+                               target="_blank">Published Form</a>
+                            <a class="dropdown-item" id='nihRedCap' href="formById/{{elt._id}}?type=REDCap"
+                               target="_blank">REDCap</a>
+                        </ng-container>
+                        <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
+                            Please login to export forms.</a>
                     </div>
-                    <button *ngIf="isAllowedModel.loggedIn()" id="pinAllCdes" class="btn btn-small btn-default"
-                            target="_blank" title="Pin CDEs" (click)="mltPinModal.open(cdes, 'cde')">
-                        <i class="fa fa-cogs"></i> Pin CDEs
-                    </button>
-                    <button *ngIf="isAllowedModel.loggedIn()" id="copyFormBtn" class="btn btn-small btn-default"
-                            (click)="openCopyElementModal()" title="Copy CDE" type="button">
-                        <i class="fa fa-clone"></i> Copy
-                    </button>
+                </div>
+                <button *ngIf="isAllowedModel.loggedIn()" id="pinAllCdes" class="btn btn-small btn-default"
+                        target="_blank" title="Pin CDEs" (click)="mltPinModal.open(cdes, 'cde')">
+                    <i class="fa fa-cogs"></i> Pin CDEs
+                </button>
+                <button *ngIf="isAllowedModel.loggedIn()" id="copyFormBtn" class="btn btn-small btn-default"
+                        (click)="openCopyElementModal()" title="Copy CDE" type="button">
+                    <i class="fa fa-clone"></i> Copy
+                </button>
 
-                    <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
-                            type="button" (click)="commentMode = !commentMode;">
-                        <i class="fa fa-comment"></i> Discuss
-                    </button>
-                </h1>
-                <ngb-tabset (tabChange)="beforeChange($event)">
-                    <ngb-tab id="general_tab">
+                <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
+                        type="button" (click)="commentMode = !commentMode;">
+                    <i class="fa fa-comment"></i> Discuss
+                </button>
+            </h1>
+            <ngb-tabset (tabChange)="beforeChange($event)">
+                <ngb-tab id="general_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('general') !== -1}">
+                            General Details
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-form-general-details [elt]="elt" (save)="saveForm();"></cde-form-general-details>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="description_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('description') !== -1}">
+                            Form Description
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
+                                              (isFormValid)="setIsValid($event)"
+                                              (stageElt)="stageElt()"></cde-form-description>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="naming_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}">
+                            Naming
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
                         <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('general') !== -1}">
-                                General Details
-                            </div>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-form-general-details [elt]="elt" (save)="saveForm();"></cde-form-general-details>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="description_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('description') !== -1}">
-                                Form Description
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
-                                                  (isFormValid)="setIsValid($event)"
-                                                  (stageElt)="stageElt()"></cde-form-description>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="naming_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}">
-                                Naming
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <ng-template ngbTabTitle>
-                                <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
-                            </ng-template>
-                            <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="classification_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('classification') !== -1}">
-                                Classification
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-admin-item-classification [elt]="elt"></cde-admin-item-classification>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="referenceDocuments_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('referenceDocuments') !== -1}">
-                                Reference Documents
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-admin-item-reference-document [elt]="elt"></cde-admin-item-reference-document>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="displayProfiles_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('displayProfiles') !== -1}">
-                                Display Profiles
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-form-display-profile [elt]="elt"></cde-form-display-profile>
-                        </ng-template>
-                    </ngb-tab>
+                        <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="classification_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('classification') !== -1}">
+                            Classification
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-admin-item-classification [elt]="elt"></cde-admin-item-classification>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="referenceDocuments_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('referenceDocuments') !== -1}">
+                            Reference Documents
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-admin-item-reference-document [elt]="elt"></cde-admin-item-reference-document>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="displayProfiles_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('displayProfiles') !== -1}">
+                            Display Profiles
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-form-display-profile [elt]="elt"></cde-form-display-profile>
+                    </ng-template>
+                </ngb-tab>
 
-                    <ngb-tab id="properties_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('properties') !== -1}">
-                                Properties
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-admin-item-properties [elt]="elt"></cde-admin-item-properties>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="ids_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('ids') !== -1}">
-                                Identifiers
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-admin-item-ids [elt]="elt"></cde-admin-item-ids>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="attachments_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('attachments') !== -1}">
-                                Attachments
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-admin-item-attachments [elt]="elt"></cde-admin-item-attachments>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="history_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('history') !== -1}">
-                                History
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-admin-item-history [elt]="elt"></cde-admin-item-history>
-                        </ng-template>
-                    </ngb-tab>
-                </ngb-tabset>
-            </div>
-            <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
-                 style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-                <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
-                                  (highlightedTabsChange)="loadHighlightedTabs($event)"
-                                  [eltName]="elt.naming[0].designation"></cde-discuss-area>
-            </div>
+                <ngb-tab id="properties_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('properties') !== -1}">
+                            Properties
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-admin-item-properties [elt]="elt"></cde-admin-item-properties>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="ids_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('ids') !== -1}">
+                            Identifiers
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-admin-item-ids [elt]="elt"></cde-admin-item-ids>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="attachments_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('attachments') !== -1}">
+                            Attachments
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-admin-item-attachments [elt]="elt"></cde-admin-item-attachments>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="history_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('history') !== -1}">
+                            History
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-admin-item-history [elt]="elt"></cde-admin-item-history>
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
         </div>
-        <div class="row" *ngIf="elt.unsaved && isFormValid">
-            <cde-update-element [elt]="elt" (discard)="reload($event);"
-                                (save)="saveForm();"></cde-update-element>
+        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+            <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                              (highlightedTabsChange)="loadHighlightedTabs($event)"
+                              [eltName]="elt.naming[0].designation"></cde-discuss-area>
         </div>
-    </ng-container>
+    </div>
+    <div class="row" *ngIf="elt.unsaved && isFormValid">
+        <cde-update-element [elt]="elt" (discard)="reload.emit();"
+                            (save)="stageElt.emit();"></cde-update-element>
+    </div>
 </div>
 
 <ng-template #copyFormContent id="copyFormModal" let-c="close" let-d="dismiss">
