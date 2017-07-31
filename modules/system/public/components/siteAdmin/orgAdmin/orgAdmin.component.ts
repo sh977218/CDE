@@ -19,7 +19,6 @@ export class OrgAdminComponent implements OnInit {
     constructor(
         private http: Http,
         private Alert: AlertService,
-        @Inject("userResource") private userService,
         @Inject("isAllowedModel") public isAllowedModel
     ) {
     }
@@ -27,7 +26,7 @@ export class OrgAdminComponent implements OnInit {
     searchTypeahead = (text$: Observable<string>) =>
         text$.debounceTime(300).distinctUntilChanged()
             .switchMap(term => term.length < 3 || !this.isAllowedModel.hasRole("OrgAuthority") ? [] :
-            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
+            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users.map(u => u.username))
                 .catch(() => {
                     //noinspection TypeScriptUnresolvedFunction
                     return Observable.of([]);

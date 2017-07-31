@@ -2,9 +2,9 @@
     Make
     <div class="form-group">
         <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
-               placeholder="enter user name" [(ngModel)]="newAdmin"
+               placeholder="enter user name" [(ngModel)]="newAdmin.username"
                [ngbTypeahead]="searchTypeahead"
-               [resultFormatter]="formatter" [inputFormatter]="formatter"  required>
+               required>
 
     </div>
     an administrator for
