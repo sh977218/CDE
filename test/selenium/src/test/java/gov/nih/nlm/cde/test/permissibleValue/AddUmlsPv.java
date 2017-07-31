@@ -31,8 +31,8 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         textPresent("A24095561", By.id("codeAsLNC_5"));
 
         clickElement(By.id("displaySNOMEDCT_USCodes"));
-        textPresent("Female structure (body structure)", By.id("nameAsSCT_5"));
-        textPresent("A3453355", By.id("codeAsSCT_5"));
+        textPresent("Female", By.id("nameAsSCT_5"));
+        textPresent("A2881557", By.id("codeAsSCT_5"));
 
         newCdeVersion();
         textPresent("Female Gender, Self Reported", By.id("nameAsNCI_5"));
