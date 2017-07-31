@@ -1,19 +1,23 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+import { CdeForm } from 'form/public/form.model';
 
 @Component({
     selector: "cde-data-element-view",
     templateUrl: "dataElementView.component.html"
 })
-export class DataElementViewComponent implements OnInit {
+export class DataElementViewComponent {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @Input() elt: any;
+    @Input() elt: CdeForm;
+    @Output() public stageElt = new EventEmitter();
+    @Output() public reload = new EventEmitter();
+
     public eltCopy = {};
     public modalRef: NgbModalRef;
     commentMode;
@@ -21,45 +25,11 @@ export class DataElementViewComponent implements OnInit {
     currentTab = "general_tab";
     highlightedTabs = [];
 
-    constructor(private http: Http,
-                public modalService: NgbModal,
+    constructor(public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
                 @Inject("QuickBoard") public quickBoard,
                 @Inject("PinModal") public PinModal,
                 private alert: AlertService) {
-    }
-
-    // remove it once has angular2 route
-    getParameterByName(name, url = null) {
-        if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, "\\$&");
-        let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-            results = regex.exec(url);
-        if (!results) return null;
-        if (!results[2]) return '';
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
-
-    ngOnInit(): void {
-        let tinyId = this.getParameterByName("tinyId");
-        let cdeId = this.getParameterByName("cdeId");
-        let url;
-        if (tinyId) {
-            url = "/de/" + tinyId;
-        }
-        if (cdeId) {
-            url = "/deById/" + cdeId;
-        }
-        this.http.get(url).map(res => res.json()).subscribe(res => {
-            if (res) {
-                this.elt = res;
-                this.eltLoaded = true;
-            } else
-                this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
-        }, err => {
-            this.eltLoaded = true;
-            this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
-        });
     }
 
     openCopyElementModal() {
@@ -76,24 +46,6 @@ export class DataElementViewComponent implements OnInit {
 
     closeCopyElementModal() {
         this.modalRef.close();
-    }
-
-    reload() {
-        this.http.get("/de/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
-            if (res) {
-                this.elt = res;
-                this.alert.addAlert("success", "Changes discarded.");
-            } else this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
-        }, err => this.alert.addAlert("danger", err));
-    }
-
-    saveDataElement() {
-        this.http.put("/de/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-            if (res) {
-                this.elt = res;
-                this.alert.addAlert("success", "Data Element saved.");
-            }
-        }, err => this.alert.addAlert("danger", err));
     }
 
     loadHighlightedTabs($event) {

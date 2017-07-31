@@ -40,4 +40,5 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
         $scope.redirectToHome = function () {
             window.location.href = "/";
         };
+
     }]);

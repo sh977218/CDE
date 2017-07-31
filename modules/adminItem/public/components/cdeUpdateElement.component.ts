@@ -27,7 +27,7 @@ export class CdeUpdateElementComponent implements OnInit {
 
     openSaveModal() {
         this.newVersionVersionUnicity();
-        this.modalRef = this.modalService.open(this.updateElementContent, {size: "lg"});
+        this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
     }
 
     discardChange() {
@@ -35,8 +35,8 @@ export class CdeUpdateElementComponent implements OnInit {
     }
 
     confirmSave() {
-        this.save.emit();
         this.modalRef.close();
+        this.save.emit();
     }
 
     newVersionVersionUnicity(newVersion = null) {

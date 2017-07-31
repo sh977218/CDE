@@ -30,7 +30,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn cancel" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
-                <button class="btn btn-warning" id="confirmSaveBtn" (click)="confirmSave();"
+                <button class="btn btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
                         [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
                 </button>
             </div>
