@@ -46,7 +46,7 @@ export class MergeFormService {
                     if (err) return cb(err);
                     else {
                         index++;
-                        if (result === "retired") questionFrom.isRetired = true;
+                        questionFrom.isRetired = true;
                         doneOne(index, doneOneQuestion);
                     }
                 });

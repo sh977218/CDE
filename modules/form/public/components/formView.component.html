@@ -13,15 +13,28 @@
         <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this form is retired.
-            <span *ngIf="elt.registrationState.replacedBy">
-                    <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
+            <a *ngIf="elt.registrationState.replacedBy"
+               href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a>
+        </div>
+        <div class="alert alert-info mt20" role="alert" *ngIf="elt.outdated">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Note: </strong>Some CDEs in this form have newer version.
+        </div>
+        <div class="alert alert-warning mt20" role="alert" *ngIf="missingCdes.length > 0">
+            <i class="fa fa-exclamation-triangle"></i>
+            The following CDEs are part of a score but are missing from this form:
+            <ul class="list-inline">
+                <li *ngFor="let missCde of missingCdes;let i = index;">
+                    <a href="/deView?tinyId={{missCde.tinyId}}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
+                    <span *ngIf="i < missingCdes.length">,</span></li>
+            </ul>
+        </div>
         <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
              role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this form is about to be retired.
-            <span *ngIf="elt.registrationState.replacedBy">
-                    <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
-            </span>
+            <a *ngIf="elt.registrationState.replacedBy"
+               href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
         </div>
         <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
