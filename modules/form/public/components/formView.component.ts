@@ -166,16 +166,16 @@ export class FormViewComponent implements OnInit {
             }
         };
         this.elt.formElements.forEach(doFormElement);
-        allQuestions.forEach(function (quest) {
+        allQuestions.forEach(quest => {
             if (quest.question.cde.derivationRules)
-                quest.question.cde.derivationRules.forEach(function (derRule) {
+                quest.question.cde.derivationRules.forEach(derRule => {
                     delete quest.incompleteRule;
                     if (derRule.ruleType === 'score') {
                         quest.question.isScore = true;
                         quest.question.scoreFormula = derRule.formula;
                         this.inScoreCdes = derRule.inputs;
                     }
-                    derRule.inputs.forEach(function (input) {
+                    derRule.inputs.forEach(input => {
                         if (!allCdes[input]) {
                             this.missingCdes.push({tinyId: input});
                             quest.incompleteRule = true;
