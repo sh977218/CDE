@@ -23,8 +23,8 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         textPresent("C0086287", By.id("pvMeaningCode_5"));
 
         clickElement(By.id("displayNCICodes"));
-        textPresent("Female Gender, Self Reported", By.id("nameAsNCI_5"));
-        textPresent("A10805030", By.id("codeAsNCI_5"));
+        textPresent("Female", By.id("nameAsNCI_5"));
+        textPresent("A7570536", By.id("codeAsNCI_5"));
 
         clickElement(By.id("displayLNCCodes"));
         textPresent("Female", By.id("nameAsLNC_5"));
