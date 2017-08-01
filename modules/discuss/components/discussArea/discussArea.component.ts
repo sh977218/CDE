@@ -49,7 +49,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     @Input() public elt: any;
     @Input() public eltId: string;
     @Input() public eltName: string;
-    @Input() public selectedElt: string;
+    @Input() public selectedElt: string = "";
     @Input() highlightedTabs = [];
     @Output() highlightedTabsChange = new EventEmitter();
 
@@ -81,7 +81,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 if (comment.linkedTab && this.highlightedTabs.indexOf(comment.linkedTab) === -1) {
                     this.highlightedTabs.push(comment.linkedTab);
                 }
-                if (this.selectedElt.indexOf(comment.linkedTab) !== -1 || comment.linkedTab.indexOf(this.selectedElt) !== -1) {
+                if (this.selectedElt.indexOf(comment.linkedTab) !== -1 || (comment.linkedTab && comment.linkedTab.indexOf(this.selectedElt) !== -1)) {
                     comment.currentComment = true;
                 }
                 this.addAvatar(comment.username);
