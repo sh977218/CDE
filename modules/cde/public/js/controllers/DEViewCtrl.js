@@ -1,7 +1,7 @@
 angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$http', 'AlertService',
     function ($scope, $http, Alert) {
         // remove it once has angular2 route
-        function getParameterByName(name, url = null) {
+        function getParameterByName(name, url) {
             if (!url) url = window.location.href;
             name = name.replace(/[\[\]]/g, "\\$&");
             let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),

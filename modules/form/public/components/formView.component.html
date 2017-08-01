@@ -30,10 +30,6 @@
         <a *ngIf="elt.registrationState.replacedBy"
            href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
     </div>
-    <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Note:</strong> You may not edit this CDE because it is standard.
-    </div>
     <div *ngIf="elt.forkOf" class="alert alert-info mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
@@ -88,7 +84,7 @@
 
                 <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
                         type="button" (click)="commentMode = !commentMode;">
-                    <i class="fa fa-comment"></i> Discuss
+                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
                 </button>
             </h1>
             <ngb-tabset (tabChange)="beforeChange($event)">

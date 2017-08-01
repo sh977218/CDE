@@ -309,25 +309,6 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
         userResource.getPromise().then(toRun);
     };
 
-    isAllowedModel.setDisplayStatusWarning = function ($scope) {
-        isAllowedModel.runWhenInitialized($scope, function () {
-            $scope.displayStatusWarning = isAllowedModel.displayStatusWarning($scope, $scope.elt);
-        });
-    };
-
-    isAllowedModel.displayStatusWarning = function ($scope, CuratedItem) {
-        if (!CuratedItem) return false;
-        if (CuratedItem.archived || userResource.user.siteAdmin) {
-            return false;
-        } else {
-            if (userResource.userOrgs) {
-                return authShared.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "fPreferred Standard");
-            } else {
-                return false;
-            }
-        }
-    };
-
     isAllowedModel.isOrgCurator = function () {
         return authShared.isOrgCurator(userResource.user);
     };

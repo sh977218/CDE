@@ -11,7 +11,7 @@ import { CdeForm } from 'form/public/form.model';
     selector: "cde-data-element-view",
     templateUrl: "dataElementView.component.html"
 })
-export class DataElementViewComponent {
+export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @Input() elt: any;
@@ -20,16 +20,28 @@ export class DataElementViewComponent {
 
     public eltCopy = {};
     public modalRef: NgbModalRef;
+    displayStatusWarning;
+    hasComments;
     commentMode;
     eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
 
-    constructor(public modalService: NgbModal,
+    constructor(private http: Http,
+                public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
                 @Inject("QuickBoard") public quickBoard,
                 @Inject("PinModal") public PinModal,
                 private alert: AlertService) {
+    }
+
+    ngOnInit(): void {
+        this.http.get("/comments/eltId/" + this.elt.tinyId)
+            .map(res => res.json()).subscribe(
+            res => this.hasComments = res && (res.length > 0),
+            err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+        );
+        this.isAllowedModel.setDisplayStatusWarning(this);
     }
 
     openCopyElementModal() {

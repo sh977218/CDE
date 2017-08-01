@@ -24,6 +24,7 @@ export class FormViewComponent implements OnInit {
 
     public eltCopy = {};
     public modalRef: NgbModalRef;
+    hasComments;
     commentMode;
     eltLoaded: boolean = false;
     currentTab = "general_tab";
@@ -42,6 +43,11 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.http.get("/comments/eltId/" + this.elt.tinyId)
+            .map(res => res.json()).subscribe(
+            res => this.hasComments = res && (res.length > 0),
+            err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+        )
     }
 
     openCopyElementModal() {
