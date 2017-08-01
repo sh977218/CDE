@@ -334,6 +334,11 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     }
 
+    // Do not include non classified item
+    if (settings.includeNonClassified !== true) {
+        queryStuff.query.bool.must.push({term: {"notClassified": false}});
+    }
+
     // Filter by selected org
     if (settings.selectedOrg !== undefined) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
