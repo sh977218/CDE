@@ -13,13 +13,12 @@ import { AlertService } from "../../alert/alert.service";
 
 export class OrgAdminComponent implements OnInit {
 
-    newAdmin: any = {orgName: ""};
+    newAdmin: any = {orgName: "", username: ""};
     orgAdmins: any[] = [{name: "Loading..."}];
 
     constructor(
         private http: Http,
         private Alert: AlertService,
-        @Inject("userResource") private userService,
         @Inject("isAllowedModel") public isAllowedModel
     ) {
     }
@@ -27,7 +26,7 @@ export class OrgAdminComponent implements OnInit {
     searchTypeahead = (text$: Observable<string>) =>
         text$.debounceTime(300).distinctUntilChanged()
             .switchMap(term => term.length < 3 || !this.isAllowedModel.hasRole("OrgAuthority") ? [] :
-            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
+            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users.map(u => u.username))
                 .catch(() => {
                     //noinspection TypeScriptUnresolvedFunction
                     return Observable.of([]);
@@ -54,21 +53,13 @@ export class OrgAdminComponent implements OnInit {
     }
 
     removeOrgAdmin (orgName, userId) {
-        if (this.userService.user._id === userId) {
-            let answer = confirm("Please confirm that you want to remove yourself from the list of admins. You will be redirected to the home page. ");
-            if (!answer) return;
-        } else {
-            this.http.post("/removeOrgAdmin", {
-                orgName: orgName
-                , userId: userId
-            }).subscribe(r => {
-                this.Alert.addAlert("success", r.text());
-                this.getAdmins();
-                if (this.userService.user._id === userId) {
-                    location.assign("/");
-                }
-            }, () => this.Alert.addAlert("danger", "An error occured."));
-        }
+        this.http.post("/removeOrgAdmin", {
+            orgName: orgName
+            , userId: userId
+        }).subscribe(r => {
+            this.Alert.addAlert("success", r.text());
+            this.getAdmins();
+        }, () => this.Alert.addAlert("danger", "An error occured."));
     }
 
     addOrgAdmin () {

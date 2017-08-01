@@ -10,6 +10,7 @@ public class NotLoggedInCantExport extends NlmCdeBaseTest {
     public void notLoggedInCantExport() {
         mustBeLoggedOut();
         goToFormSearch();
+        hangon(1);
         clickElement(By.id("export"));
         textPresent("Please login to export forms");
 
