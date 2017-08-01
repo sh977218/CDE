@@ -56,15 +56,32 @@ export class FormViewComponent implements OnInit {
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
-        delete this.eltCopy["_id"];
+        this.eltCopy["classification"] = this.elt.classification.filter(function (c) {
+            return this.userResource.userOrgs.indexOf(c.stewardOrg.name) !== -1;
+        });
+        this.eltCopy["registrationState.administrativeNote"] = "Copy of: " + this.elt.tinyId;
         delete this.eltCopy["tinyId"];
+        delete this.eltCopy["_id"];
+        delete this.eltCopy["source"];
+        this.eltCopy["sources"] = [];
+        delete this.eltCopy["origin"];
+        delete this.eltCopy["created"];
+        delete this.eltCopy["updated"];
+        delete this.eltCopy["imported"];
+        delete this.eltCopy["updatedBy"];
+        delete this.eltCopy["createdBy"];
+        delete this.eltCopy["version"];
+        delete this.eltCopy["history"];
+        delete this.eltCopy["changeNote"];
+        delete this.eltCopy["comments"];
+        delete this.eltCopy["forkOf"];
+        delete this.eltCopy["views"];
+        this.eltCopy["ids"] = [];
         this.eltCopy["naming"][0].designation = "Copy of: " + this.eltCopy["naming"][0].designation;
         this.eltCopy["registrationState"] = {
             registrationStatus: "Incomplete",
             administrativeNote: "Copy of: " + this.elt.tinyId
         };
-        this.eltCopy["created"] = new Date();
-        this.eltCopy["createdBy"] = {username: this.userService.user.username};
         this.modalRef = this.modalService.open(this.copyFormContent, {size: "lg"});
     }
 
