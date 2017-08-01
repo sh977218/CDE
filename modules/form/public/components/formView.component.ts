@@ -46,6 +46,7 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.areDerivationRulesSatisfied();
         this.http.get("/comments/eltId/" + this.elt.tinyId)
             .map(res => res.json()).subscribe(
             res => this.hasComments = res && (res.length > 0),

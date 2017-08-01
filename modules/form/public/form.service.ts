@@ -126,9 +126,7 @@ export class FormService {
                                     question.question.cde.permissibleValues.push(pv);
                                 });
                                 cb(question);
-                            }, err => {
-                                console.log("err");
-                            });
+                            }, err => cb());
                         return;
                     } else {
                         cde.valueDomain.permissibleValues.forEach(function (pv) {

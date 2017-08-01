@@ -228,12 +228,11 @@ exports.init = function (app, daoManager) {
                             if (err) return res.status(500).send(err);
                             mongo_cde.update(cdeMergeTo, req.user, function (err) {
                                 if (err) return res.status(500).send(err);
-                                res.status(200).end("retired");
+                                res.status(200).send("retired");
                             });
                         });
                     });
-                }
-                res.status(200).end();
+                } else res.status(200).end();
             });
         } else {
             mongo_cde.update(cdeMergeFrom, req.user, function (err) {
