@@ -24,7 +24,7 @@ exports.pinDataElements = function (req, res) {
         board.save(e => {
             if (e) return res.status(500).send(e);
             let message = "Added to Board";
-            if (cdes.length > 0)
+            if (cdes.length > 1)
                 message = "All elements pinned.";
             res.send(message);
         });
