@@ -39,7 +39,8 @@ export class FormViewComponent implements OnInit {
                 @Inject("isAllowedModel") public isAllowedModel,
                 @Inject("FormQuickBoard") public quickBoard,
                 @Inject("PinModal") public PinModal,
-                private alert: AlertService) {
+                private alert: AlertService,
+                @Inject("userResource") public userService,) {
     }
 
     ngOnInit(): void {
@@ -59,6 +60,8 @@ export class FormViewComponent implements OnInit {
             registrationStatus: "Incomplete",
             administrativeNote: "Copy of: " + this.elt.tinyId
         };
+        this.eltCopy["created"] = new Date();
+        this.eltCopy["createdBy"] = {username: this.userService.user.username};
         this.modalRef = this.modalService.open(this.copyFormContent, {size: "lg"});
     }
 

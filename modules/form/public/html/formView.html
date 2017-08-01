@@ -3,7 +3,7 @@
         <i class="fa fa-spinner fa-pulse"></i>Loading...
     </h1>
 </div>
-<div ng-if="eltLoaded">
+<div ng-if="eltLoaded && elt">
     <cde-form-view [(elt)]="elt" (stage-elt)="stageForm()" [(inScoreCdes)]="inScoreCdes" [(inScoreCdes)]="missingCdes"
                    (reload)="reloadForm()"></cde-form-view>
 </div>

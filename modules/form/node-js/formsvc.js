@@ -2,7 +2,6 @@ let JXON = require("jxon");
 let archiver = require("archiver");
 let mongo_form = require("./mongo-form");
 let mongo_data_system = require("../../system/node-js/mongo-data");
-let adminSvc = require("../../system/node-js/adminItemSvc.js");
 let authorization = require("../../system/node-js/authorization");
 let sdc = require("./sdcForm");
 let odm = require("./odmForm");
@@ -16,29 +15,6 @@ let redCapExportWarnings = {
     "nestedSection": "REDCap cannot support nested section.",
     "unknownElementType": "This form has error."
 };
-
-function allowUpdate(user, item, cb) {
-    if (item.archived === true) {
-        return cb("Element is archived.");
-    } else if (user.orgCurator.indexOf(item.stewardOrg.name) < 0 && user.orgAdmin.indexOf(item.stewardOrg.name) < 0 && !user.siteAdmin) {
-        cb("Not authorized");
-    } else if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin) {
-        cb("This record is already standard.");
-    } else if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") && (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin) cb("Not authorized"); else cb();
-}
-
-function allowCreate(user, elt, cb) {
-    if (!elt.stewardOrg.name) return cb("Missing Steward");
-    if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
-        user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 &&
-        !user.siteAdmin)
-        return cb("Not authorized");
-    if (elt.registrationState && elt.registrationState.registrationStatus &&
-        ((elt.registrationState.registrationStatus === "Standard" ||
-            elt.registrationState.registrationStatus === " Preferred Standard") &&
-            !user.siteAdmin))
-        return cb("Not authorized");
-}
 
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) {
@@ -220,11 +196,11 @@ exports.publishForm = function (req, res) {
 
 exports.createForm = function (req, res) {
     let id = req.params.id;
-    if (!id) return res.status(400).send();
+    if (id) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     let elt = req.body;
     let user = req.user;
-    allowCreate(user, elt, function (err) {
+    authorization.allowCreate(user, elt, function (err) {
         if (err) return res.status(500).send(err);
         mongo_form.create(elt, user, function (err, dataElement) {
             if (err) return res.status(500).send(err);
@@ -241,7 +217,7 @@ exports.updateForm = function (req, res) {
     mongo_form.byTinyId(tinyId, function (err, item) {
         if (err) return res.status(400).send();
         if (!item) return res.status(404).send();
-        allowUpdate(user, item, function (err) {
+        authorization.allowUpdate(user, item, function (err) {
             if (err) return res.status(500).send(err);
             mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];

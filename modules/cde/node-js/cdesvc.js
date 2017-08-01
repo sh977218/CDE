@@ -3,23 +3,12 @@ let js2xml = require('js2xmlparser');
 let mongo_data = require('./mongo-cde');
 let mongo_cde = require('./mongo-cde');
 let mongo_data_system = require('../../system/node-js/mongo-data');
+let authorization = require("../../system/node-js/authorization");
 let adminSvc = require('../../system/node-js/adminItemSvc.js');
 let elastic = require('../../cde/node-js/elastic');
 let deValidator = require('../../cde/shared/deValidator');
 let vsac = require('./vsac-io');
 let exportShared = require('../../system/shared/exportShared');
-
-function allowUpdate(user, item, cb) {
-    if (item.archived === true)
-        return cb("Element is archived.");
-    if (user.orgCurator.indexOf(item.stewardOrg.name) < 0 && user.orgAdmin.indexOf(item.stewardOrg.name) < 0 && !user.siteAdmin)
-        return cb("Not authorized");
-    if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin)
-        return cb("This record is already standard.");
-    if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") && (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin)
-        return cb("Not authorized");
-    else return cb();
-}
 
 exports.byId = function (req, res) {
     let id = req.params.id;
@@ -94,17 +83,17 @@ exports.latestVersionByTinyId = function (req, res) {
 };
 
 exports.createDataElement = function (req, res) {
+    let id = req.params.id;
+    if (id) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
     let elt = req.body;
     let user = req.user;
-    if (!elt.stewardOrg.name) return res.send("Missing Steward");
-    if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 && user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !user.siteAdmin)
-        return res.status(403).send("not authorized");
-    if (elt.registrationState && elt.registrationState.registrationStatus && ((elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === " Preferred Standard") && !user.siteAdmin))
-        return res.status(403).send("Not authorized");
-    mongo_cde.create(elt, user, function (err, dataElement) {
+    authorization.allowCreate(user, elt, function (err) {
         if (err) return res.status(500).send(err);
-        res.send(dataElement);
+        mongo_cde.create(elt, user, function (err, dataElement) {
+            if (err) return res.status(500).send(err);
+            res.send(dataElement);
+        });
     });
 };
 
@@ -115,7 +104,7 @@ exports.updateDataElement = function (req, res) {
     mongo_cde.byTinyId(tinyId, function (err, item) {
         if (err) return res.status(500).send(err);
         if (!item) return res.status(404).send();
-        allowUpdate(req.user, item, function (err) {
+        authorization.allowUpdate(req.user, item, function (err) {
             if (err) return res.status(500).send(err);
             mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
                 let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];

@@ -2,10 +2,8 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
     function ($scope, $routeParams, $http, Alert) {
         var tinyId = $routeParams.tinyId;
         var cdeId = $routeParams.cdeId;
-        var url;
-        if (tinyId) url = "/de/" + tinyId;
+        var url = "/de/" + tinyId;
         if (cdeId) url = "/deById/" + cdeId;
-
         $http.get(url).then(function (response) {
             if (response.status === 200) {
                 $scope.elt = response.data;
@@ -14,6 +12,9 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
                 Alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
                 $scope.eltLoaded = true;
             }
+        }, function () {
+            Alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
+            $scope.eltLoaded = true;
         });
 
 

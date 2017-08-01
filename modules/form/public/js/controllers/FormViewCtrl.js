@@ -5,20 +5,19 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
 
         var tinyId = $routeParams.tinyId;
         var cdeId = $routeParams.cdeId;
-        var url;
-        if (tinyId) url = "/form/" + tinyId;
+        var url = "/form/" + tinyId;
         if (cdeId) url = "/formById/" + cdeId;
-
         $http.get(url).then(function (response) {
             if (response.status === 200) {
                 $scope.elt = response.data;
-                $scope.areDerivationRulesSatisfied();
-                $scope.validateForm();
                 $scope.eltLoaded = true;
             } else {
                 Alert.addAlert("danger", "Sorry, we are unable to retrieve this form.");
                 $scope.eltLoaded = true;
             }
+        }, function () {
+            Alert.addAlert("danger", "Sorry, we are unable to retrieve this form.");
+            $scope.eltLoaded = true;
         });
 
         $scope.$on('$locationChangeStart', function (event) {

@@ -38,3 +38,30 @@ exports.boardOwnership = function (req, res, boardId, next) {
         next(board);
     });
 };
+
+
+exports.allowCreate = function (user, elt, cb) {
+    if (!elt.stewardOrg.name) return cb("Missing Steward");
+    if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
+        user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 &&
+        !user.siteAdmin)
+        return cb("Not authorized");
+    if (elt.registrationState && elt.registrationState.registrationStatus &&
+        ((elt.registrationState.registrationStatus === "Standard" ||
+            elt.registrationState.registrationStatus === " Preferred Standard") &&
+            !user.siteAdmin))
+        return cb("Not authorized");
+    cb();
+};
+
+exports.allowUpdate = function (user, item, cb) {
+    if (item.archived === true)
+        return cb("Element is archived.");
+    if (user.orgCurator.indexOf(item.stewardOrg.name) < 0 && user.orgAdmin.indexOf(item.stewardOrg.name) < 0 && !user.siteAdmin)
+        return cb("Not authorized");
+    if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin)
+        return cb("This record is already standard.");
+    if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") && (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard") && !user.siteAdmin)
+        return cb("Not authorized");
+    else return cb();
+}

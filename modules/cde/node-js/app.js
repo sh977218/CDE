@@ -34,7 +34,7 @@ exports.init = function (app, daoManager) {
     app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
 
 
-    app.post("/de/", cdesvc.createDataElement);
+    app.post("/de/:id?", cdesvc.createDataElement);
     app.put("/de/:tinyId", cdesvc.updateDataElement);
 
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);

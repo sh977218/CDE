@@ -57,6 +57,7 @@ function flattenFormElement(fe) {
 
 exports.getFormOdm = function (form, cb) {
     if (!form) return cb(null, "");
+    if (form.toObject) form = form.toObject();
     if (!form.formElements) {
         form.formElements = [];
     }
