@@ -28,12 +28,13 @@ exports.Form = Form;
 exports.elastic = elastic;
 
 function fetchWholeForm(form, callback) {
+    if (form.toObject) form = form.toObject();
     let maxDepth = 8;
     let depth = 0;
-    let loopFormElements = function (form, cb) {
-        if (!form) return cb();
-        if (!form.formElements) form.formElements = [];
-        async.forEachSeries(form.formElements, function (fe, doneOne) {
+    let loopFormElements = function (f, cb) {
+        if (!f) return cb();
+        if (!f.formElements) f.formElements = [];
+        async.forEachSeries(f.formElements, function (fe, doneOne) {
             if (fe.elementType === "form") {
                 depth++;
                 if (depth < maxDepth)
@@ -58,12 +59,13 @@ function fetchWholeForm(form, callback) {
             } else {
                 let tinyId = fe.question.cde.tinyId;
                 let version = fe.question.cde.version;
-                mongo_cde.byTinyIdAndVersion(tinyId, version, function (err, dataElement) {
+                mongo_cde.byTinyId(tinyId, function (err, dataElement) {
                     if (err || !dataElement) cb(err);
                     else {
                         let de = dataElement.toObject();
-                        if (fe.question.cde.version !== de.version) {
+                        if (version !== de.version) {
                             fe.question.cde.outdated = true;
+                            form.outdated = true;
                         }
                         fe.question.cde.derivationRules = de.derivationRules;
                         doneOne();
