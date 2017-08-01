@@ -87,7 +87,6 @@ import "./form/public/js/controllers/FormViewCtrl";
 import "./form/public/js/controllers/ClassifyFormCdesModalCtrl";
 import "./form/public/js/controllers/CreateFormAbstractCtrl";
 import "./form/public/js/controllers/CreateFormFromBoardModalCtrl";
-import "./form/public/js/controllers/FormCopyModalCtrl";
 import "./form/public/js/controllers/PublishedFormExportCtrl";
 
 import "./board/public/js/controllers/ShareBoardCtrl";

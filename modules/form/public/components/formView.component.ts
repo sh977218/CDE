@@ -62,8 +62,6 @@ export class FormViewComponent implements OnInit {
         this.eltCopy["registrationState.administrativeNote"] = "Copy of: " + this.elt.tinyId;
         delete this.eltCopy["tinyId"];
         delete this.eltCopy["_id"];
-        delete this.eltCopy["source"];
-        this.eltCopy["sources"] = [];
         delete this.eltCopy["origin"];
         delete this.eltCopy["created"];
         delete this.eltCopy["updated"];
@@ -77,6 +75,7 @@ export class FormViewComponent implements OnInit {
         delete this.eltCopy["forkOf"];
         delete this.eltCopy["views"];
         this.eltCopy["ids"] = [];
+        this.eltCopy["sources"] = [];
         this.eltCopy["naming"][0].designation = "Copy of: " + this.eltCopy["naming"][0].designation;
         this.eltCopy["registrationState"] = {
             registrationStatus: "Incomplete",
