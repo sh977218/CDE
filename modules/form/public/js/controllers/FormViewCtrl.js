@@ -55,9 +55,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         $scope.areDerivationRulesSatisfied = function () {
             $scope.missingCdes = [];
             $scope.inScoreCdes = [];
-            let allCdes = {};
-            let allQuestions = [];
-            let doFormElement = function (formElt) {
+            var allCdes = {};
+            var allQuestions = [];
+            var doFormElement = function (formElt) {
                 if (formElt.elementType === 'question') {
                     allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
                     allQuestions.push(formElt);
@@ -65,7 +65,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                     formElt.formElements.forEach(doFormElement);
                 }
             };
-            this.elt.formElements.forEach(doFormElement);
+            $scope.elt.formElements.forEach(doFormElement);
             allQuestions.forEach(quest => {
                 if (quest.question.cde.derivationRules)
                     quest.question.cde.derivationRules.forEach(function (derRule) {
@@ -91,7 +91,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                 if (form.formElements) {
                     form.formElements.forEach(function (fe) {
                         if (fe.skipLogic && fe.skipLogic.error) {
-                            this.isFormValid = false;
+                            $scope.isFormValid = false;
                             return;
                         }
                         loopFormElements(fe);
