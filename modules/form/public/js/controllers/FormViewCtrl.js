@@ -4,9 +4,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         $scope.inScoreCdes = [];
 
         var tinyId = $routeParams.tinyId;
-        var cdeId = $routeParams.cdeId;
+        var formId = $routeParams.formId;
         var url = "/form/" + tinyId;
-        if (cdeId) url = "/formById/" + cdeId;
+        if (formId) url = "/formById/" + formId;
         $http.get(url).then(function (response) {
             if (response.status === 200) {
                 $scope.elt = response.data;
