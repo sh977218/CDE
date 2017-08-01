@@ -9,8 +9,9 @@ public class NoLabelLogic extends BaseFormTest {
 
     @Test
     public void noLabelLogic() {
+        String formName = "No Label Logic";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToFormByName("No Label Logic");
+        goToFormByName(formName);
         textPresent("Undifferentiated/Indeterminant/Intersex");
         textPresent("Walking speed value");
         clickElement(By.id("description_tab"));
