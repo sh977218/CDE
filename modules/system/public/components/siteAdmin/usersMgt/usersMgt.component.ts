@@ -76,11 +76,13 @@ export class UsersMgtComponent {
     }
 
     updateRoles(user, data: {value: string[]}) {
-        user.roles = data.value;
-        this.http.post("/updateUserRoles", user).subscribe(
-            () => {
-                this.Alert.addAlert("success", "Roles saved.");
-            });
+        if (data.value !== user.roles) {
+            user.roles = data.value;
+            this.http.post("/updateUserRoles", user).subscribe(
+                () => {
+                    this.Alert.addAlert("success", "Roles saved.");
+                });
+        }
     }
 
     addNewUser() {

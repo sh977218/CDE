@@ -30,7 +30,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
 
         clickElement(By.id("linkToElt_4"));
-        hangon(1);
+        findElement(By.id("discussBtn"));
 
         searchEltAny("patient", "form");
         hangon(1);
@@ -38,7 +38,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
 
         clickElement(By.id("linkToElt_5"));
-        hangon(1);
+        findElement(By.id("discussBtn"));
 
         searchEltAny("pain", "cde");
         hangon(1);
