@@ -18,12 +18,10 @@
 
 <ng-template #quickBoardContent>
     <div class="container-fluid mt20">
-        <div class="btn-group mb-1">
-            <button id="qb_{{quickBoardListService.module}}_compare" value="Side by Side View"
-                    (click)="showSideBySideView()" class="btn btn-default">
-                <i class="fa fa-search"></i> Side by Side View
-            </button>
-            <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"></cde-list-view-controls>
+        <cde-elts-compare *ngIf="ng1TemplateLoaded.sideBySide" [eltsToCompare]="quickBoardListService.getSelectedElts()"
+                          [module]="quickBoardListService.module"></cde-elts-compare>
+        <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"></cde-list-view-controls>
+        <div class="btn-group ml-3">
             <button id="qb_{{quickBoardListService.module}}_empty" class="btn btn-default" value="Empty Quick Board"
                     (click)="quickBoardListService.quickBoard.empty()">
                 <i class="fa fa-trash-o"></i> Empty Quick Board
@@ -54,6 +52,3 @@
     </div>
 </ng-template>
 
-<ng-template #sideBySideModal>
-    <cde-elts-compare class="mt-3" [eltsToCompare]="eltsToCompare" [module]="quickBoardListService.module"></cde-elts-compare>
-</ng-template>

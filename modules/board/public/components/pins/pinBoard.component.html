@@ -1,3 +1,5 @@
-<a href class="nonLinkAnchor" (click)="interruptEvent($event);pinModal.openPinModal(elt)">
+<a href class="nonLinkAnchor" (click)="interruptEvent($event);mltPinModal.pinOne(module, elt, mltPinModal.open())">
     <i id="pinToBoard_{{eltIndex}}" class="fa fa-thumb-tack hand-cursor" title="Attach to Board"
        role="link"> </i></a>
+
+<cde-pin-modal  #mltPinModal></cde-pin-modal>

@@ -1,5 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { ExportService } from 'core/public/export.service';
 import { QuickBoardListService } from 'board/public/components/quickBoard/quickBoardList.service';
@@ -10,31 +9,17 @@ import { QuickBoardListService } from 'board/public/components/quickBoard/quickB
     providers: [QuickBoardListService],
 })
 export class QuickBoardComponent {
-    @ViewChild("sideBySideModal") public sideBySideModal: NgbModal;
-
-    eltsToCompare: any[];
     listViews = {};
+    ng1TemplateLoaded = {sideBySide: false};
 
     constructor(private alertService: AlertService,
                 public exportService: ExportService,
-                private modalService: NgbModal,
                 public quickBoardListService: QuickBoardListService) {
+        setTimeout(() => this.ng1TemplateLoaded.sideBySide = true, 10 );
     }
 
     setDefaultQuickBoard(selectedQuickBoard: string) {
         this.quickBoardListService.eltsToCompareMap = {};
         this.quickBoardListService.setEltType(selectedQuickBoard);
     }
-
-    showSideBySideView() {
-        this.eltsToCompare = this.quickBoardListService.getSelectedElts();
-
-        if (this.eltsToCompare.length !== 2) {
-            this.alertService.addAlert("danger", "You may only compare 2 elements side by side.");
-            return;
-        }
-
-        this.eltsToCompare.sort();
-        this.modalService.open(this.sideBySideModal, {size: "lg"});
-    };
 }

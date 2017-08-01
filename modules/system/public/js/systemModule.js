@@ -181,11 +181,28 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 module: '=',
                 eltsToCompare: '=',
             },
-            templateUrl: '/system/public/html/eltsCompare.html',
-            controller: ["$scope", "userResource", function ($scope, userResource) {
-                userResource.getPromise().then(function () {
-                    $scope.user = userResource.user;
-                });
+            templateUrl: '/system/public/html/eltsCompareButton.html',
+            controller: ['$scope', '$uibModal', 'AlertService', function ($scope, $modal, Alert) {
+                $scope.showSideBySideView = function() {
+                    if ($scope.eltsToCompare.length !== 2) {
+                        Alert.addAlert("danger", "You may only compare 2 elements side by side.");
+                        return;
+                    }
+                    $scope.eltsToCompare.sort();
+                    $modal.open({
+                        animation: false,
+                        templateUrl: '/system/public/html/eltsCompare.html',
+                        controller: ['$scope', 'module', 'eltsToCompare', function ($scope, module, eltsToCompare) {
+                            $scope.module = module;
+                            $scope.eltsToCompare = eltsToCompare;
+                        }],
+                        resolve: {
+                            module: function() {return $scope.module;},
+                            eltsToCompare: function() {return $scope.eltsToCompare;}
+                        },
+                        size: 'lg'
+                    });
+                };
             }]
         };
     }])

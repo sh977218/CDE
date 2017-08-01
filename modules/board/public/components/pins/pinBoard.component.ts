@@ -4,18 +4,14 @@ import { Component, Inject, Input, OnInit } from '@angular/core';
     selector: 'cde-pin-board',
     templateUrl: './pinBoard.component.html',
 })
-export class PinBoardComponent implements OnInit {
+export class PinBoardComponent {
     @Input() elt: any;
     @Input() eltIndex: any;
     @Input() module: any;
 
     pinModal: any;
 
-    constructor(@Inject('PinModal') public PinModal) {}
-
-    ngOnInit() {
-        this.pinModal = this.PinModal.new(this.module);
-    }
+    constructor() {}
 
     interruptEvent(event) {
         if (event) {

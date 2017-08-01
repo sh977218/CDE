@@ -31,9 +31,9 @@ export class PinModalComponent {
     open() {
         if (this.userService.user && this.userService.user._id) {
             this.myBoardsSvc.loadMyBoards();
-            this.modalRef = this.modalService.open(this.pinModal, {size: "lg"});
+            this.modalRef = this.modalService.open(this.pinModal);
         } else {
-            this.modalService.open(this.ifYouLoginModal, {size: "lg"});
+            this.modalService.open(this.ifYouLoginModal);
             this.reject();
         }
 
