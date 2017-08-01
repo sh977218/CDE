@@ -72,9 +72,9 @@ angular.module('CdeMerge', [])
         return {
             sendMessage: function (dat, success, error) {
                 $http.post('/mail/messages/new', dat).then(function onSuccess(response) {
-                    success(response.data)
+                    success(response.data);
                 }, function onError(response) {
-                    error(response.data)
+                    error(response.data);
                 });
             }, getMail: function (type, query, cb) {
                 $http.post("/mail/messages/" + type, query).then(function (response) {
@@ -82,9 +82,9 @@ angular.module('CdeMerge', [])
                 });
             }, updateMessage: function (msg, success, error) {
                 $http.post('/mail/messages/update', msg).then(function onSuccess(response) {
-                    success(response.data)
+                    success(response.data);
                 }, function onError(response) {
-                    error(response.data)
+                    error(response.data);
                 });
             }
         };

@@ -72,7 +72,6 @@ export class FormViewComponent implements OnInit {
             this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
-
     openPreparePublishModal() {
         this.formInput = {};
         this.modalRef = this.modalService.open(this.publishFormContent, {size: "lg"});
@@ -105,4 +104,59 @@ export class FormViewComponent implements OnInit {
     setIsValid(valid) {
         this.isFormValid = valid;
     }
+
+    doStageElt() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
+        this.elt.unsaved = true;
+    }
+
+    areDerivationRulesSatisfied() {
+        this.missingCdes = [];
+        this.inScoreCdes = [];
+        var allCdes = {};
+        var allQuestions = [];
+        var doFormElement = function (formElt) {
+            if (formElt.elementType === 'question') {
+                allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
+                allQuestions.push(formElt);
+            } else if (formElt.elementType === 'section') {
+                formElt.formElements.forEach(doFormElement);
+            }
+        };
+        this.elt.formElements.forEach(doFormElement);
+        allQuestions.forEach(quest => {
+            if (quest.question.cde.derivationRules)
+                quest.question.cde.derivationRules.forEach(derRule => {
+                    delete quest.incompleteRule;
+                    if (derRule.ruleType === 'score') {
+                        quest.question.isScore = true;
+                        quest.question.scoreFormula = derRule.formula;
+                        this.inScoreCdes = derRule.inputs;
+                    }
+                    derRule.inputs.forEach(input => {
+                        if (!allCdes[input]) {
+                            this.missingCdes.push({tinyId: input});
+                            quest.incompleteRule = true;
+                        }
+                    });
+                });
+        });
+    };
+
+    validateForm() {
+        this.elt.isFormValid = true;
+        var loopFormElements = function (form) {
+            if (form.formElements) {
+                form.formElements.forEach(function (fe) {
+                    if (fe.skipLogic && fe.skipLogic.error) {
+                        this.isFormValid = false;
+                        return;
+                    }
+                    loopFormElements(fe);
+                });
+            }
+        };
+        loopFormElements(this.elt);
+    };
 }

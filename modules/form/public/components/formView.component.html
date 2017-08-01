@@ -107,7 +107,7 @@
                     <ng-template ngbTabContent>
                         <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
                                               (isFormValid)="setIsValid($event)"
-                                              (stageElt)="stageElt.emit()"></cde-form-description>
+                                              (stageElt)="doStageElt()"></cde-form-description>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="naming_tab">

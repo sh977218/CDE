@@ -104,8 +104,10 @@ public class CdeMergeTest extends NlmCdeBaseTest {
 
     @Test
     public void mergeMineTheirsClassificationsOnly() {
+        String cdeName1 = "Diagnosis Change Date java.util.Date";
+        String cdeName2 = "Form Element End Date java.util.Date";
         mustBeLoggedInAs(cabigAdmin_username, password);
-        addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
+        addToCompare(cdeName1, cdeName2);
         hangon(1);
         clickElement(By.linkText("Retire & Merge"));
         textPresent("Fields to be Imported");
