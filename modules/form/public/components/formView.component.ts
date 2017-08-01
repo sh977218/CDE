@@ -114,9 +114,9 @@ export class FormViewComponent implements OnInit {
     areDerivationRulesSatisfied() {
         this.missingCdes = [];
         this.inScoreCdes = [];
-        var allCdes = {};
-        var allQuestions = [];
-        var doFormElement = function (formElt) {
+        let allCdes = {};
+        let allQuestions = [];
+        let doFormElement = function (formElt) {
             if (formElt.elementType === 'question') {
                 allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
                 allQuestions.push(formElt);
@@ -146,7 +146,7 @@ export class FormViewComponent implements OnInit {
 
     validateForm() {
         this.elt.isFormValid = true;
-        var loopFormElements = function (form) {
+        let loopFormElements = function (form) {
             if (form.formElements) {
                 form.formElements.forEach(function (fe) {
                     if (fe.skipLogic && fe.skipLogic.error) {
