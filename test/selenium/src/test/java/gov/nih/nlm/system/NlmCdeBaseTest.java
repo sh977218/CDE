@@ -282,6 +282,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("addOrg"));
         textPresent("Org Added");
         textPresent(orgName);
+        closeAlert();
 
         if (orgLongName != null) {
             textPresent(orgLongName);

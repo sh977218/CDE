@@ -178,11 +178,10 @@ export class PermissibleValueComponent implements OnInit {
                     this.http.get("/umlsAtomsBridge/" + code + "/" + targetSource).map(res => res.json())
                         .subscribe(
                             res => {
-                                if (res.result.length > 0)
-                                    res.result.forEach((r) => {
-                                        __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
-                                    });
-                                else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
+                                let l = res.result.filter(r => r.termType === __this.SOURCES[src].termType);
+                                if (l[0]) {
+                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: l[0].ui, meaning: l[0].name};
+                                } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
                             }, err => this.alert.addAlert("danger", err));
                 } else {
                     this.http.get("/crossWalkingVocabularies/" + source + "/" + code + "/" + targetSource).map(res => res.json())

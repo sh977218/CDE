@@ -30,10 +30,9 @@ export class EditSiteAdminsComponent implements OnInit {
 
     searchTypeahead = (text$: Observable<string>) =>
         text$.debounceTime(300).distinctUntilChanged().switchMap(term => term.length < 3 ? [] :
-            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
+            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users.map(u => u.username))
                 .catch(() =>  Observable.of([]))
         );
-    formatter = (result: any) => result.username;
 
     addSiteAdmin () {
         this.AccountManagement.addSiteAdmin({username: this.newAdmin.username},
