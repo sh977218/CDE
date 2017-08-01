@@ -42,7 +42,8 @@ exports.byId = function (req, res) {
                 if (req.query.subtype === 'odm') {
                     odm.getFormOdm(form, function (err, xmlForm) {
                         if (err) return res.status(500).send(err);
-                        return res.send(xmlForm);
+                        res.setHeader("Content-Type", "text/xml");
+                        return res.send(JXON.jsToString({element: xmlForm}));
                     });
                 } else if (req.query.subtype === 'sdc') {
                     sdc.formToSDC(form, req.query.renderer, function (txt) {
@@ -114,9 +115,10 @@ exports.byTinyId = function (req, res) {
                 res.header("Access-Control-Allow-Headers", "X-Requested-With");
                 res.setHeader("Content-Type", "application/xml");
                 if (req.query.subtype === 'odm') {
+                    res.setHeader("Content-Type", "text/xml");
                     odm.getFormOdm(form, function (err, xmlForm) {
                         if (err) return res.status(500).send(err);
-                        return res.send(xmlForm);
+                        return res.send(JXON.jsToString({element: xmlForm}));
                     });
                 } else if (req.query.subtype === 'sdc') {
                     sdc.formToSDC(form, req.query.renderer, function (txt) {
