@@ -10,7 +10,7 @@ import java.util.List;
 public class FormEmptyPermissibleValueMeaningTest extends QuestionTest {
 
     @Test
-    public void formEmptyPermissibleValueMeaningTest() {
+    public void formEmptyPermissibleValueMeaning() {
         String cdeName = "McGill Quality of Life Questionnaire (MQOL) - troublesome physical symptom problem score";
         String formName = "PROMIS SF v1.0 - Applied Cog Abilities 4a";
         mustBeLoggedInAs(nlm_username, nlm_password);
