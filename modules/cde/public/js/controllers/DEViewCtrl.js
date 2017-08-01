@@ -1,18 +1,7 @@
-angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$http', 'AlertService',
-    function ($scope, $http, Alert) {
-        // remove it once has angular2 route
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
-
-        var tinyId = getParameterByName("tinyId");
-        var cdeId = getParameterByName("cdeId");
+angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', '$http', 'AlertService',
+    function ($scope, $routeParams, $http, Alert) {
+        var tinyId = $routeParams.tinyId;
+        var cdeId = $routeParams.cdeId;
         var url;
         if (tinyId) url = "/de/" + tinyId;
         if (cdeId) url = "/deById/" + cdeId;

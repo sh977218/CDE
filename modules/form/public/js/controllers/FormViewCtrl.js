@@ -1,21 +1,10 @@
-angular.module('formModule').controller('FormViewCtrl', ['$scope', '$http', 'AlertService',
-    function ($scope, $http, Alert) {
+angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', '$http', 'AlertService',
+    function ($scope, $routeParams, $http, Alert) {
         $scope.missingCdes = [];
         $scope.inScoreCdes = [];
 
-        // remove it once has angular2 route
-        function getParameterByName(name, url = null) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
-
-        var tinyId = getParameterByName("tinyId");
-        var cdeId = getParameterByName("cdeId");
+        var tinyId = $routeParams.tinyId;
+        var cdeId = $routeParams.cdeId;
         var url;
         if (tinyId) url = "/form/" + tinyId;
         if (cdeId) url = "/formById/" + cdeId;
