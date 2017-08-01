@@ -66,7 +66,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                 }
             };
             $scope.elt.formElements.forEach(doFormElement);
-            allQuestions.forEach(quest => {
+            allQuestions.forEach(function (quest) {
                 if (quest.question.cde.derivationRules)
                     quest.question.cde.derivationRules.forEach(function (derRule) {
                         delete quest.incompleteRule;
