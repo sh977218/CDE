@@ -143,6 +143,7 @@ export class SkipLogicService {
             options = ["AND ", "OR "];
         }
 
+        if (!options) options = [];
         let optionsFiltered = options.filter(o => o.indexOf(tokens.unmatched) > -1);
         if (optionsFiltered.length > 0)
             options = optionsFiltered;
