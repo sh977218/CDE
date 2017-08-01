@@ -10,7 +10,10 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
             if (response.status === 200) {
                 $scope.elt = response.data;
                 $scope.eltLoaded = true;
-            } else Alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
+            } else {
+                Alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.");
+                $scope.eltLoaded = true;
+            }
         });
 
 

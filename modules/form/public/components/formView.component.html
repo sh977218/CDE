@@ -95,7 +95,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-general-details [elt]="elt" (save)="saveForm();"></cde-form-general-details>
+                        <cde-form-general-details [elt]="elt" (save)="stageElt.emit();"></cde-form-general-details>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="description_tab">
@@ -107,7 +107,7 @@
                     <ng-template ngbTabContent>
                         <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
                                               (isFormValid)="setIsValid($event)"
-                                              (stageElt)="stageElt()"></cde-form-description>
+                                              (stageElt)="stageElt.emit()"></cde-form-description>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="naming_tab">

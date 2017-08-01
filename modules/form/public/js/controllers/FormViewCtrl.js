@@ -15,7 +15,10 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                 $scope.areDerivationRulesSatisfied();
                 $scope.validateForm();
                 $scope.eltLoaded = true;
-            } else Alert.addAlert("danger", "Sorry, we are unable to retrieve this form.");
+            } else {
+                Alert.addAlert("danger", "Sorry, we are unable to retrieve this form.");
+                $scope.eltLoaded = true;
+            }
         });
 
         $scope.$on('$locationChangeStart', function (event) {
