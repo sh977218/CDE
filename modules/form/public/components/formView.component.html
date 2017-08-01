@@ -2,7 +2,7 @@
     <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this form is archived. You can
-        <a href="/formView?tinyId={{elt.tinyId}}">view the current version here</a>.
+        <a id="viewCurrentEltLink" href="/formView?tinyId={{elt.tinyId}}">view the current version here</a>.
     </div>
     <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
