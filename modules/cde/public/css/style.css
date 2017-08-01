@@ -699,7 +699,7 @@ button#selectDefault {
     border-top-left-radius: 6px !important;
     border-top-right-radius: 6px !important;
     font-size: 11px;
-    right: 20px !important;
+    right: 15% !important;
 }
 
 #feedback-note-tmp {

@@ -42,7 +42,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     if (response.data.board) {
                         $scope.board = response.data.board;
                         if ($scope.board.type === "form") { $scope.quickBoard = $scope.formQuickBoard; }
-                        var elts = $scope[$scope.board.type + 's'] = [];
+                        $scope.elts = $scope[$scope.board.type + 's'] = [];
                         $scope.module = $scope.board.type;
                         $scope.totalItems = response.data.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
@@ -53,11 +53,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             respElts.forEach(function (elt) {
                                 if (pinId === elt.tinyId) {
                                     pins.elt = elt;
-                                    elts.push(elt);
+                                    $scope.elts.push(elt);
                                 }
                             });
                         });
-                        elts.forEach(function (elt) {
+                        $scope.elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
                         $scope.board.users.filter(function (u) {

@@ -101,7 +101,7 @@ export class ListViewComponent implements OnChanges, OnInit {
             if (this.embedded)
                 this.viewComponentRef.instance.addMode = 0;
             this.viewComponentRef.instance.add.subscribe(elt => this.add.emit(elt));
-        } else if (this.ejsPage === 'board') {
+        } else if (this.ejsPage === 'board' && this._listView !== 'table') {
             this.viewComponentRef.instance.board = this.board;
             this.viewComponentRef.instance.currentPage = this.currentPage;
             this.viewComponentRef.instance.totalItems = this.totalItems;

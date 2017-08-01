@@ -53,8 +53,7 @@
                                 <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
                                           (click)="browseOrg(org.name)">
                                     <legend>
-                                        <a [href]="embedded ? '' : 'search?selectedOrg=' + org.name"
-                                           id="browseOrg-{{org.name}}">{{org.name}}</a>
+                                        <a href id="browseOrg-{{org.name}}">{{org.name}}</a>
                                     </legend>
                                     <div *ngIf="org.longName">{{org.longName}}</div>
                                     <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
@@ -309,7 +308,7 @@
                     <span class="hand-cursor"
                           *ngFor="let t of aggregations.statuses.statuses.buckets"
                           [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
-                        <a href class="nonLinkAnchor displayBlock"  *ngIf="t.doc_count > 0"
+                        <span class="nonLinkAnchor displayBlock" *ngIf="t.doc_count > 0"
                            style="margin-right: 0" (click)="addStatusFilter(t.key)">
                             <ng-container *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
                                 <i class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
@@ -318,7 +317,7 @@
                                 <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                             </ng-template>
                             <small id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
-                        </a>
+                        </span>
                     </span>
                     </div>
                     <ng-container *ngIf="module === 'cde'">
@@ -328,7 +327,7 @@
                         <span class="hand-cursor"
                               *ngFor="let t of aggregations.datatype.datatype.buckets"
                               [ngbTooltip]="'a'" placement="right" container="body">
-                            <a href class="nonLinkAnchor displayBlock" *ngIf="t.doc_count > 0"
+                            <span class="nonLinkAnchor displayBlock" *ngIf="t.doc_count > 0"
                                style="margin-right: 0" (click)="addDatatypeFilter(t.key)">
                                 <ng-container *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
                                     <i class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
@@ -337,7 +336,7 @@
                                     <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                                 </ng-template>
                                 <small id="datatype-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
-                            </a>
+                            </span>
                         </span>
                         </div>
                     </ng-container>

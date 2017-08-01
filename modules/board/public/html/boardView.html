@@ -90,14 +90,8 @@
                 </div>
             </div>
 
-            <div ng-if="board.type === 'cde'">
-                <cde-list-view [board]="board" [current-page]="currentPage" ejs-page="board" [elts]="cdes"
-                               [list-view]="listViewType" (list-view-change)="listViewType = $event" module="cde" [total-items]="totalItems" (add)="reload()"></cde-list-view>
-            </div>
-            <div ng-if="board.type === 'form'">
-                <cde-list-view [board]="board" [current-page]="currentPage" ejs-page="board" [elts]="forms"
-                               [(list-view)]="listViewType" module="form" [total-items]="totalItems" (add)="reload()"></cde-list-view>
-            </div>
+            <cde-list-view [board]="board" [current-page]="currentPage" ejs-page="board" [elts]="elts"
+                           [(list-view)]="listViewType" module="form" [total-items]="totalItems" (add)="reload()"></cde-list-view>
 
             <ul uib-pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems"
                             ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></ul>

@@ -648,7 +648,7 @@ public class NlmCdeBaseTest {
         textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
-        clickElement(By.xpath("//*[@id='qb_cde_tab']/a"));
+        clickElement(By.id("qb_cde_tab"));
         textPresent(cdeName1);
         textPresent(cdeName2);
         clickElement(By.id("qb_elt_compare_0"));
