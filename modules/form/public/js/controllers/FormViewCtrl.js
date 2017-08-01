@@ -2,6 +2,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     function ($scope, $routeParams, $http, Alert) {
         $scope.missingCdes = [];
         $scope.inScoreCdes = [];
+        $scope.cdes = [];
 
         var tinyId = $routeParams.tinyId;
         var formId = $routeParams.formId;

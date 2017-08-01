@@ -7,6 +7,7 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import * as formShared from '../../shared/formShared.js';
 import { CdeForm } from 'form/public/form.model';
+import { PinModalComponent } from 'board/public/components/pinModal/pinModal.component';
 
 @Component({
     selector: "cde-form-view",
@@ -16,6 +17,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild("copyFormContent") public copyFormContent: NgbModalModule;
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
+    @ViewChild("mltPinModal") public mltPinModal: PinModalComponent;
     @Input() elt: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -92,6 +94,19 @@ export class FormViewComponent implements OnInit {
                 this.alert.addAlert("danger", "Error when publishing form. " + err);
                 this.modalRef.close();
             });
+    }
+
+    pinAllCdesIntoBoard() {
+        this.cdes = [];
+        let doFormElement = formElt => {
+            if (formElt.elementType === 'question') {
+                this.cdes.push(formElt.question.cde);
+            } else if (formElt.elementType === 'section' || formElt.elementType === 'form') {
+                formElt.formElements.forEach(doFormElement);
+            }
+        };
+        this.elt.formElements.forEach(doFormElement);
+        this.mltPinModal.open(this.cdes, "cde");
     }
 
     isIe() {

@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <button *ngIf="isAllowedModel.loggedIn()" id="pinAllCdes" class="btn btn-small btn-default"
-                        target="_blank" title="Pin CDEs" (click)="mltPinModal.open(cdes, 'cde')">
+                        target="_blank" title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
                     <i class="fa fa-cogs"></i> Pin CDEs
                 </button>
                 <button *ngIf="isAllowedModel.loggedIn()" id="copyFormBtn" class="btn btn-small btn-default"
@@ -256,41 +256,6 @@
             </button>
         </div>
     </form>
-</ng-template>
-<ng-template #pinAllCdesContent id="pinAllCdesModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="pinAllCdesModalHeader">
-        <h3>Choose a Board to pin this element to
-            <cde-create-board></cde-create-board>
-        </h3>
-    </div>
-    <div class="modal-body" id="pinAllCdesModalBody">
-        <div *ngIf="boards.length === 0">
-            <div style="margin-left: 10px"> You don't have any boards</div>
-            <i class="fa fa-spinner fa-spin"></i>
-        </div>
-        <div *ngIf="boards.length > 0">
-            <div ng-if="filter.tags.length > 0">
-                <h4>Tags</h4>
-                <label ng-repeat="tag in filter.tags" class="my-board-tag">
-                    <input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"
-                           checklist-change="loadMyBoards()" data-id="tag-{{tag.key}}">
-                    <small>{{tag.key}} ({{tag.doc_count}})</small>
-                </label>
-            </div>
-            <div ng-if="filter.shareStatus.length > 0">
-                <h4>Share Status</h4>
-                <label ng-repeat="ss in filter.shareStatus" class="my-board-tag">
-                    <input type="checkbox" data-checklist-model="filter.selectedShareStatus"
-                           data-checklist-value="ss.key" data-id="status-{{ss.key}}"
-                           checklist-change="loadMyBoards()">
-                    <small>{{ss.key}} ({{ss.doc_count}})</small>
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer" id="pinAllCdesModalFooter">
-        <button class="btn btn-warning" (click)="c()" id="cancelPinAllCdes">Cancel</button>
-    </div>
 </ng-template>
 
 <cde-pin-modal #mltPinModal></cde-pin-modal>
