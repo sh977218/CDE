@@ -203,61 +203,55 @@
                     <p [hidden]="!aggregations.orgs.buckets" class="gray">Filter by:</p>
                     <div>
                         <strong [hidden]="!aggregations.orgs.buckets" id="classif_filter_title">Classification
-                            <a href  class="nonLinkAnchor" id="altClassificationFilterModeToggle"
-                               [hidden]="altClassificationFilterMode || embedded"
-                               (click)="toggleAltClassificationFilterMode()"
-                               ngbTooltip="Add a second classifications filter as an AND condition"
-                               placement="right" container="body">
-                                <i class="fa fa-plus-square hand-cursor"></i></a></strong>
+                            <span class="nonLinkAnchor" id="altClassificationFilterModeToggle"
+                                  [hidden]="altClassificationFilterMode || embedded"
+                                  (click)="toggleAltClassificationFilterMode()"
+                                  ngbTooltip="Add a second classifications filter as an AND condition"
+                                  placement="right" container="body">
+                                <i class="fa fa-plus-square hand-cursor"></i></span></strong>
                         <div class="pl5" id="classificationListHolder">
-                            <a href class="nonLinkAnchor displayBlock"
-                               *ngFor="let t of aggregations.orgs.buckets"
-                               (click)="alterOrgFilter(t.key)"
-                               [hidden]="t.key !== getCurrentSelectedOrg() && getCurrentSelectedOrg()">
-                                <span class="hand-cursor" ngbTooltip="t.longName" placement="right" container="body">
-                                    <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">
-                                        <i class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
-                                    </ng-container>
-                                    <ng-template #else01>
-                                        <i class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>
-                                    </ng-template>
-                                    <small id="classifications-text-{{t.key}}"> {{t.key}} (
-                                        <span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</small>
-                                </span>
-                            </a>
+                            <span class="nonLinkAnchor displayBlock hand-cursor"
+                                  ngbTooltip="t.longName" placement="right" container="body"
+                                  *ngFor="let t of aggregations.orgs.buckets" (click)="alterOrgFilter(t.key)"
+                                  [hidden]="t.key !== getCurrentSelectedOrg() && getCurrentSelectedOrg()">
+                                <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">
+                                    <i class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
+                                </ng-container>
+                                <ng-template #else01>
+                                    <i class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>
+                                </ng-template>
+                                <small id="classifications-text-{{t.key}}"> {{t.key}} (
+                                    <span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</small>
+                            </span>
                             <div id="classification-facets">
-                                <a href class="nonLinkAnchor displayBlock"
+                                <span class="nonLinkAnchor displayBlock hand-cursor"
                                    *ngFor="let e of getCurrentSelectedClassification(); let i = index"
                                    (click)="selectElement(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
-                                    <span class="hand-cursor">
-                                        <ng-container *ngIf="getCurrentSelectedClassification()?.indexOf(e) > -1; else else02">
-                                            <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
-                                        </ng-container>
-                                        <ng-template #else02>
-                                            <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
-                                        </ng-template>
-                                        <span>
-                                            <small>{{e}}</small>
-                                        </span>
+                                    <ng-container *ngIf="getCurrentSelectedClassification()?.indexOf(e) > -1; else else02">
+                                        <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
+                                    </ng-container>
+                                    <ng-template #else02>
+                                        <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
+                                    </ng-template>
+                                    <span>
+                                        <small>{{e}}</small>
                                     </span>
-                                </a>
-                                <a href class="nonLinkAnchor displayBlock" (click)="selectElement(b.name)"
+                                </span>
+                                <span class="nonLinkAnchor displayBlock hand-cursor" (click)="selectElement(b.name)"
                                    *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications)"
                                    [style.margin-left]="(getCurrentSelectedClassification()?.length + 1) * 10 + 'px'">
-                                    <span class="hand-cursor">
-                                        <ng-container *ngIf="getCurrentSelectedClassification()?.indexOf(b.name) > -1; else else03">
-                                            <i class="fa fa-chevron-down" id="li-checked-{{b.name}}"></i>
-                                        </ng-container>
-                                        <ng-template #else03>
-                                            <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
-                                        </ng-template>
-                                        <span>
-                                            <small style="word-break: break-all">{{b.name}}
-                                                (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
-                                            </small>
-                                        </span>
+                                    <ng-container *ngIf="getCurrentSelectedClassification()?.indexOf(b.name) > -1; else else03">
+                                        <i class="fa fa-chevron-down" id="li-checked-{{b.name}}"></i>
+                                    </ng-container>
+                                    <ng-template #else03>
+                                        <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
+                                    </ng-template>
+                                    <span>
+                                        <small style="word-break: break-all">{{b.name}}
+                                            (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
+                                        </small>
+                                    </span>
                                 </span>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -267,37 +261,34 @@
                                 id="meshTrees_filter">Topics</strong>
                         <div class="pl5" id="meshTreesListHolder">
                             <div id="topic-facets">
-                                <a href class="nonLinkAnchor displayBlock"
-                                   *ngFor="let e of getCurrentSelectedTopic(); index as i"
-                                   (click)="selectTopic(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
-                            <span class="hand-cursor">
-                                <ng-container *ngIf="getCurrentSelectedTopic()?.indexOf(e) > -1; else else04">
-                                    <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
-                                </ng-container>
-                                <ng-template #else04>
-                                    <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
-                                </ng-template>
-                                <span>
-                                    <small>{{e}}</small>
+                                <span class="nonLinkAnchor displayBlock hand-cursor"
+                                      *ngFor="let e of getCurrentSelectedTopic(); index as i"
+                                      (click)="selectTopic(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
+                                    <ng-container *ngIf="getCurrentSelectedTopic()?.indexOf(e) > -1; else else04">
+                                        <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
+                                    </ng-container>
+                                    <ng-template #else04>
+                                        <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
+                                    </ng-template>
+                                    <span>
+                                        <small>{{e}}</small>
+                                    </span>
                                 </span>
-                            </span>
-                                </a>
-                                <a  href class="nonLinkAnchor displayBlock" (click)="selectTopic(b.name)"
-                                    *ngFor="let b of aggregations.topics"
-                                    [style.margin-left]="(getCurrentSelectedTopic()?.length + 1) * 10 + 'px'">
-                            <span class="hand-cursor">
-                                <ng-container *ngIf="getCurrentSelectedTopic()?.indexOf(b.name) > -1; else else05">
-                                    <i class="fa fa-chevron-down" id="li-checked-{{b.name}}"></i>
-                                </ng-container>
-                                <ng-template #else05>
-                                    <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
-                                </ng-template>
-                                <span>
-                                    <small style="word-break: break-all">{{b.name}} (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
-                                    </small>
+                                <span class="nonLinkAnchor displayBlock hand-cursor" (click)="selectTopic(b.name)"
+                                      *ngFor="let b of aggregations.topics"
+                                      [style.margin-left]="(getCurrentSelectedTopic()?.length + 1) * 10 + 'px'">
+                                    <ng-container *ngIf="getCurrentSelectedTopic()?.indexOf(b.name) > -1; else else05">
+                                        <i class="fa fa-chevron-down" id="li-checked-{{b.name}}"></i>
+                                    </ng-container>
+                                    <ng-template #else05>
+                                        <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
+                                    </ng-template>
+                                    <span>
+                                        <small style="word-break: break-all">{{b.name}}
+                                            (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
+                                        </small>
+                                    </span>
                                 </span>
-                            </span>
-                                </a>
                             </div>
                         </div>
                     </div>
