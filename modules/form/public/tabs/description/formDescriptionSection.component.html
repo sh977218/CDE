@@ -83,6 +83,7 @@
                                [ngModel]="section.skipLogic.condition"
                                (ngModelChange)="validateSkipLogic(section.skipLogic, parent.formElements, $event)"
                                class="form-control skipLogicCondition"
+                               placeholder="Start typing a question name to find options"
                                [ngbTypeahead]="getSkipLogicOptions"
                                (selectItem)="validateSkipLogic(section.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
                         <span [textContent]="section.skipLogic?.validationError"></span>
@@ -144,6 +145,7 @@
                            [ngModel]="section.skipLogic.condition"
                            (ngModelChange)="validateSkipLogic(section.skipLogic, parent.formElements, $event)"
                            class="form-control skipLogicCondition"
+                           placeholder="Start typing a question name to find options"
                            [ngbTypeahead]="getSkipLogicOptions"
                            (selectItem)="validateSkipLogic(section.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
                     <span [textContent]="section.skipLogic?.validationError"></span>
