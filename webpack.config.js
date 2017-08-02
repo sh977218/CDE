@@ -8,7 +8,7 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        main:'./modules/main.ts',
+        main: './modules/main.ts',
         embed: './modules/embedded/public/js/embeddedApp.js'
     },
     output: {

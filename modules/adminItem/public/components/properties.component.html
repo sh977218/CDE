@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Value:</div>
                     <div class="col-xs-10 ng-binding" id="value_{{i}}">
-                        <cde-inline-area-edit [(model)]="prop.value" (modelChange)="saveProperty()"
+                        <cde-inline-area-edit [(model)]="prop.value" (save)="saveProperty()"
                                               [(defFormat)]="prop.valueFormat"
                                               [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-area-edit>
                     </div>
