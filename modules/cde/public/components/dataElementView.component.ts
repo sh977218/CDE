@@ -75,10 +75,6 @@ export class DataElementViewComponent implements OnInit {
         this.modalRef = this.modalService.open(this.copyDataElementContent, {size: "lg"});
     }
 
-    closeCopyElementModal() {
-        this.modalRef.close();
-    }
-
     loadHighlightedTabs($event) {
         this.highlightedTabs = $event;
     }

@@ -1,20 +1,20 @@
-let express = require('express');
-let path = require('path');
-let formCtrl = require('./formCtrl');
-let formSvc = require("./formsvc");
-let mongo_form = require('./mongo-form');
-let mongo_data_system = require('../../system/node-js/mongo-data');
-let classificationNode_system = require('../../system/node-js/classificationNode');
-let adminItemSvc = require('../../system/node-js/adminItemSvc.js');
-let config = require('../../system/node-js/parseConfig');
-let multer = require('multer');
-let elastic_system = require('../../system/node-js/elastic');
-let sharedElastic = require('../../system/node-js/elastic.js');
-let exportShared = require('../../system/shared/exportShared');
-let boardsvc = require('../../board/node-js/boardsvc');
-let usersrvc = require('../../system/node-js/usersrvc');
-let dns = require('dns');
-let os = require('os');
+const express = require('express');
+const path = require('path');
+const dns = require('dns');
+const os = require('os');
+const multer = require('multer');
+const config = require('../../system/node-js/parseConfig');
+const formCtrl = require('./formCtrl');
+const formSvc = require("./formsvc");
+const mongo_form = require('./mongo-form');
+const mongo_data_system = require('../../system/node-js/mongo-data');
+const classificationNode_system = require('../../system/node-js/classificationNode');
+const adminItemSvc = require('../../system/node-js/adminItemSvc.js');
+const elastic_system = require('../../system/node-js/elastic');
+const sharedElastic = require('../../system/node-js/elastic.js');
+const exportShared = require('../../system/shared/exportShared');
+const boardsvc = require('../../board/node-js/boardsvc');
+const usersrvc = require('../../system/node-js/usersrvc');
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);

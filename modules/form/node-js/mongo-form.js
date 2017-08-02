@@ -1,11 +1,11 @@
-let async = require('async');
-let config = require('../../system/node-js/parseConfig');
-let schemas = require('./schemas');
-let mongo_data_system = require('../../system/node-js/mongo-data');
-let connHelper = require('../../system/node-js/connections');
-let logging = require('../../system/node-js/logging');
-let elastic = require('./elastic');
-let mongo_cde = require('../../cde/node-js/mongo-cde');
+const async = require('async');
+const config = require('../../system/node-js/parseConfig');
+const schemas = require('./schemas');
+const mongo_data_system = require('../../system/node-js/mongo-data');
+const connHelper = require('../../system/node-js/connections');
+const logging = require('../../system/node-js/logging');
+const elastic = require('./elastic');
+const mongo_cde = require('../../cde/node-js/mongo-cde');
 
 exports.type = "form";
 exports.name = "forms";

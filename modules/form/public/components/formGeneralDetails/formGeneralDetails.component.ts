@@ -12,8 +12,4 @@ export class FormGeneralDetailsComponent {
 
     @Input() elt: any;
     @Output() save = new EventEmitter();
-
-    saveForm() {
-        this.save.emit();
-    }
 }
