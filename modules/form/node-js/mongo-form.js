@@ -28,7 +28,6 @@ exports.Form = Form;
 exports.elastic = elastic;
 
 function fetchWholeForm(form, callback) {
-    if (form.toObject) form = form.toObject();
     let maxDepth = 8;
     let depth = 0;
     let loopFormElements = function (f, cb) {
@@ -76,6 +75,8 @@ function fetchWholeForm(form, callback) {
             cb();
         });
     };
+    if (!form) return callback();
+    if (form.toObject) form = form.toObject();
     loopFormElements(form, function (err) {
         callback(err, form);
     });

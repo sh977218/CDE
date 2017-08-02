@@ -42,7 +42,7 @@ export class FormViewComponent implements OnInit {
                 @Inject("FormQuickBoard") public quickBoard,
                 @Inject("PinModal") public PinModal,
                 private alert: AlertService,
-                @Inject("userResource") public userService,) {
+                @Inject("userResource") public userService) {
     }
 
     ngOnInit(): void {
@@ -56,8 +56,8 @@ export class FormViewComponent implements OnInit {
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
-        this.eltCopy["classification"] = this.elt.classification.filter(function (c) {
-            return this.userResource.userOrgs.indexOf(c.stewardOrg.name) !== -1;
+        this.eltCopy["classification"] = this.elt.classification.filter(c => {
+            return this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1;
         });
         this.eltCopy["registrationState.administrativeNote"] = "Copy of: " + this.elt.tinyId;
         delete this.eltCopy["tinyId"];

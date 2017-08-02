@@ -32,7 +32,8 @@ export class DataElementViewComponent implements OnInit {
                 @Inject("isAllowedModel") public isAllowedModel,
                 @Inject("QuickBoard") public quickBoard,
                 @Inject("PinModal") public PinModal,
-                private alert: AlertService) {
+                private alert: AlertService,
+                @Inject("userResource") public userService) {
     }
 
     ngOnInit(): void {
@@ -46,8 +47,8 @@ export class DataElementViewComponent implements OnInit {
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
-        this.eltCopy["classification"] = this.elt.classification.filter(function (c) {
-            return this.userResource.userOrgs.indexOf(c.stewardOrg.name) !== -1;
+        this.eltCopy["classification"] = this.elt.classification.filter(c => {
+            return this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1;
         });
         this.eltCopy["registrationState.administrativeNote"] = "Copy of: " + this.elt.tinyId;
         delete this.eltCopy["tinyId"];
