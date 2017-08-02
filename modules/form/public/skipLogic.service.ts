@@ -144,8 +144,8 @@ export class SkipLogicService {
         }
 
         let optionsFiltered = options.filter(o => o.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1);
-        if (optionsFiltered.length > 5)
-            optionsFiltered = optionsFiltered.slice(optionsFiltered.length - 5, optionsFiltered.length);
+        if (optionsFiltered.length > 6)
+            optionsFiltered = optionsFiltered.slice(optionsFiltered.length - 6, optionsFiltered.length);
         if (optionsFiltered.length > 0)
             options = optionsFiltered;
 
