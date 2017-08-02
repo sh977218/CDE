@@ -31,17 +31,17 @@ exports.byId = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(400).send();
     mongo_form.byId(id, function (err, form) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         if (!form) return res.status(404).send();
         wipeRenderDisallowed(form, req, function (err) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             if (req.query.type === 'xml') {
                 res.header("Access-Control-Allow-Origin", "*");
                 res.header("Access-Control-Allow-Headers", "X-Requested-With");
                 res.setHeader("Content-Type", "application/xml");
                 if (req.query.subtype === 'odm') {
                     odm.getFormOdm(form, function (err, xmlForm) {
-                        if (err) return res.status(500).send(err);
+                        if (err) return res.status(500).send("ERROR");
                         res.setHeader("Content-Type", "text/xml");
                         return res.send(JXON.jsToString({element: xmlForm}));
                     });
@@ -93,10 +93,10 @@ exports.priorForms = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(400).send();
     mongo_form.byId(id, function (err, form) {
-        if (err) res.status(500).send(err);
+        if (err) res.status(500).send("ERROR");
         if (!form) res.status(404).send();
         mongo_form.byIdList(form.history, function (err, priorForms) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             res.send(priorForms);
         });
     });
@@ -106,10 +106,10 @@ exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         if (!form) return res.status(404).send();
         wipeRenderDisallowed(form, req, function (err) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             if (req.query.type === 'xml') {
                 res.header("Access-Control-Allow-Origin", "*");
                 res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -117,7 +117,7 @@ exports.byTinyId = function (req, res) {
                 if (req.query.subtype === 'odm') {
                     res.setHeader("Content-Type", "text/xml");
                     odm.getFormOdm(form, function (err, xmlForm) {
-                        if (err) return res.status(500).send(err);
+                        if (err) return res.status(500).send("ERROR");
                         return res.send(JXON.jsToString({element: xmlForm}));
                     });
                 } else if (req.query.subtype === 'sdc') {
@@ -172,7 +172,7 @@ exports.byTinyIdVersion = function (req, res) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).send();
         wipeRenderDisallowed(form, req, function (err) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             res.send(form);
         });
     });
@@ -182,7 +182,7 @@ exports.latestVersionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     mongo_form.latestVersionByTinyId(tinyId, function (err, latestVersion) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         res.send(latestVersion);
     });
 };
@@ -203,9 +203,9 @@ exports.createForm = function (req, res) {
     let elt = req.body;
     let user = req.user;
     authorization.allowCreate(user, elt, function (err) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         mongo_form.create(elt, user, function (err, dataElement) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             res.send(dataElement);
         });
     });
@@ -220,14 +220,14 @@ exports.updateForm = function (req, res) {
         if (err) return res.status(400).send();
         if (!item) return res.status(404).send();
         authorization.allowUpdate(user, item, function (err) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
                     let elt = req.body;
                     mongo_form.trimWholeForm(elt);
                     mongo_form.update(elt, req.user, function (err, response) {
-                        if (err) return res.status(500).send(err);
+                        if (err) return res.status(500).send("ERROR");
                         res.send(response);
                     });
                 }

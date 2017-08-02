@@ -1,4 +1,4 @@
-var passport = require('passport')
+let passport = require('passport')
     , mongo_data_system = require('./mongo-data')
     , config = require('./parseConfig')
     , dbLogger = require('./dbLogger.js')
@@ -26,17 +26,15 @@ var passport = require('passport')
     , async = require('async')
     , request = require('request')
     , CronJob = require('cron').CronJob
-    , cdesvc = require('../../cde/node-js/cdesvc')
-    , formsvc = require('../../form/node-js/formsvc')
 ;
 
 exports.init = function (app) {
-    var getRealIp = function (req) {
+    let getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
 
-    var version = "local-dev";
+    let version = "local-dev";
     try {
         version = require('./version.js').version;
     } catch (e) {
@@ -56,7 +54,7 @@ exports.init = function (app) {
 
     app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            var index = esInit.indices[req.params.indexPosition];
+            let index = esInit.indices[req.params.indexPosition];
             res.status(200).send({count: index.count, totalCount: index.totalCount});
         } else {
             res.status(401).send();
@@ -65,7 +63,7 @@ exports.init = function (app) {
 
     app.post('/reindex/:indexPosition', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            var index = esInit.indices[req.params.indexPosition];
+            let index = esInit.indices[req.params.indexPosition];
             elastic.reIndex(index, function () {
                 setTimeout(function () {
                     index.count = 0;
@@ -104,11 +102,8 @@ exports.init = function (app) {
 
     app.get('/listOrgs', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data_system.listOrgs(function (err, orgs) {
-            if (err) {
-                res.send("ERROR");
-            } else {
-                res.send(orgs);
-            }
+            if (err) return res.status(500).send("ERROR");
+            res.send(orgs);
         });
     });
 
@@ -117,23 +112,21 @@ exports.init = function (app) {
             if (err) {
                 logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
                 res.status(403).send('Failed to get list of orgs detailed info.');
-            } else {
-                res.send(orgs);
-            }
+            } else res.send(orgs);
         });
     });
 
     app.get('/loginText', csrf(), function (req, res) {
-        var token = req.csrfToken();
+        let token = req.csrfToken();
         res.render("loginText", "system", {csrftoken: token});
     });
 
-    var failedIps = [];
+    let failedIps = [];
 
     app.get('/csrf', csrf(), function (req, res) {
         exportShared.nocacheMiddleware(req, res);
-        var resp = {csrf: req.csrfToken()};
-        var failedIp = findFailedIp(getRealIp(req));
+        let resp = {csrf: req.csrfToken()};
+        let failedIp = findFailedIp(getRealIp(req));
         if ((failedIp && failedIp.nb > 2)) {
             resp.showCaptcha = true;
         }
@@ -147,7 +140,7 @@ exports.init = function (app) {
     }
 
     app.post('/login', csrf(), function (req, res, next) {
-        var failedIp = findFailedIp(getRealIp(req));
+        let failedIp = findFailedIp(getRealIp(req));
         async.series([
                 function checkCaptcha(captchaDone) {
                     // disabled for now.
@@ -178,15 +171,11 @@ exports.init = function (app) {
                     //}
                 }],
             function allDone(err) {
-                if (err) {
-                    return res.status(412).send(err);
-                }
+                if (err) return res.status(412).send(err);
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(function () {
                     passport.authenticate('local', function (err, user) {
-                        if (err) {
-                            return res.status(403).end();
-                        }
+                        if (err) return res.status(403).end();
                         if (!user) {
                             if (failedIp && config.useCaptcha) failedIp.nb++;
                             else {
@@ -196,12 +185,8 @@ exports.init = function (app) {
                             return res.status(403).send();
                         }
                         req.logIn(user, function (err) {
-                            if (failedIp) {
-                                failedIp.nb = 0;
-                            }
-                            if (err) {
-                                return res.status(403).end();
-                            }
+                            if (failedIp) failedIp.nb = 0;
+                            if (err) return res.status(403).end();
                             req.session.passport = {user: req.user._id};
                             return res.send("OK");
                         });
@@ -211,9 +196,7 @@ exports.init = function (app) {
     });
 
     app.post('/logout', function (req, res) {
-        if (!req.session) {
-            return res.status(403).end();
-        }
+        if (!req.session) return res.status(403).end();
         req.session.destroy(function () {
             req.logout();
             res.clearCookie('connect.sid');
@@ -243,8 +226,8 @@ exports.init = function (app) {
     app.post('/appLogs', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin)
             return dbLogger.appLogs(req.body, function (err, result) {
-                if (err) return res.send({error: err});
-                res.send(result);
+                if (err) return res.status(500).send("ERROR");
+                return res.send(result);
             });
         res.status(401).send();
     });
@@ -308,57 +291,47 @@ exports.init = function (app) {
     });
 
     app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            res.send("Not logged in.");
-        } else if (!req.params.search) {
-            res.send("search is empty.");
+        if (!req.user) return res.send("Not logged in.");
+        else if (!req.params.search) {
+            return res.send("search is empty.");
+        } else if (req.params.search === 'me') {
+            mongo_data_system.userById(req.user._id, function (err, user) {
+                if (err) return res.status(500).send("ERROR");
+                res.send(user);
+            });
         } else {
-            if (req.params.search === 'me') {
-                mongo_data_system.userById(req.user._id, function (err, user) {
-                    res.send(user);
-                });
-            } else {
-                mongo_data_system.usersByName(req.params.search, function (err, users) {
-                    if (err) res.status(500);
-                    else res.send(users);
-                });
-            }
+            mongo_data_system.usersByName(req.params.search, function (err, users) {
+                if (err) return res.status(500).send("ERROR");
+                res.send(users);
+            });
         }
     });
 
     app.post('/user/me', function (req, res) {
-        if (!req.user) {
-            res.status(401).send();
-        } else {
-            if (req.user._id.toString() !== req.body._id) {
-                res.status(401).send();
-            } else {
-                mongo_data_system.userById(req.user._id, function (err, user) {
-                    user.email = req.body.email;
-                    user.publishedForms = req.body.publishedForms;
-                    user.save(function (err) {
-                        if (err) res.status(500).send("Unable to save");
-                        res.send("OK");
-                    });
-                });
-            }
-        }
+        if (!req.user) return res.status(401).send();
+        if (req.user._id.toString() !== req.body._id)
+            return res.status(401).send();
+        mongo_data_system.userById(req.user._id, function (err, user) {
+            user.email = req.body.email;
+            user.publishedForms = req.body.publishedForms;
+            user.save(function (err) {
+                if (err) return res.status(500).send("ERROR");
+                res.send("OK");
+            });
+        });
     });
 
     app.put('/user', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            mongo_data_system.addUser({
-                    username: req.body.username,
-                    password: "umls",
-                    quota: 1024 * 1024 * 1024
-                },
-                function (err, newUser) {
-                    if (err) res.status(500).end()
-                    else res.send(newUser.username + " added.");
-                });
-        } else {
-            res.status(401).send("Not Authorized");
-        }
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+            return res.status(401).send("Not Authorized");
+        mongo_data_system.addUser({
+            username: req.body.username,
+            password: "umls",
+            quota: 1024 * 1024 * 1024
+        }, function (err, newUser) {
+            if (err) return res.status(500).end("ERROR");
+            res.send(newUser.username + " added.");
+        });
     });
 
     app.post('/addSiteAdmin', function (req, res) {
@@ -423,24 +396,20 @@ exports.init = function (app) {
     });
 
     app.get('/searchUsers/:username?', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
-                res.send({users: users});
-            });
-        } else {
-            res.status(401).send();
-        }
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+            return res.status(401).send("Not Authorized");
+        mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
+            res.send({users: users});
+        });
     });
 
     app.post('/updateUserRoles', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            usersrvc.updateUserRoles(req.body, function (err) {
-                if (err) res.status(500).end();
-                else res.status(200).end();
-            });
-        } else {
-            res.status(401).send();
-        }
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+            return res.status(401).send("Not Authorized");
+        usersrvc.updateUserRoles(req.body, function (err) {
+            if (err) res.status(500).end();
+            else res.status(200).end();
+        });
     });
 
     app.get('/user/avatar/:username', function (req, res) {
@@ -450,25 +419,21 @@ exports.init = function (app) {
     });
 
     app.post('/updateUserAvatar', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            usersrvc.updateUserAvatar(req.body, function (err) {
-                if (err) res.status(500).end();
-                else res.status(200).end();
-            });
-        } else {
-            res.status(401).send();
-        }
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+            return res.status(401).send("Not Authorized");
+        usersrvc.updateUserAvatar(req.body, function (err) {
+            if (err) res.status(500).end();
+            else res.status(200).end();
+        });
     });
 
     app.post('/updateTesterStatus', function (req, res) {
-        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            mongo_data_system.User.findOne({_id: req.body._id}, function (err, u) {
-                u.tester = req.body.tester;
-                u.save(() => res.send());
-            });
-        } else {
-            res.status(401).send();
-        }
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+            return res.status(401).send("Not Authorized");
+        mongo_data_system.User.findOne({_id: req.body._id}, function (err, u) {
+            u.tester = req.body.tester;
+            u.save(() => res.send());
+        });
     });
 
     app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
@@ -515,14 +480,10 @@ exports.init = function (app) {
     });
 
     app.post('/classification/rename', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.status(401).send();
-            return;
-        }
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName))
+            return res.status(401).send();
         classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function (err, org) {
-            if (!err) {
-                res.send(org);
-            }
+            if (!err) res.send(org);
             else res.status(202).send({error: {message: "Classification does not exists."}});
         });
     });
@@ -530,7 +491,6 @@ exports.init = function (app) {
     app.post('/classifyEntireSearch', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName))
             return res.status(401).send();
-
         classificationNode.classifyEntireSearch(req, function (err) {
             if (!err) res.end();
             else res.status(202).send({error: {message: err}});
@@ -548,7 +508,7 @@ exports.init = function (app) {
         let elements = req.body.elements;
         if (elements.length <= 50)
             adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, function (err) {
-                if (err) res.status(500).send(err);
+                if (err) res.status(500).send("ERROR");
                 else res.send("Done");
             });
         else {
@@ -640,7 +600,7 @@ exports.init = function (app) {
 
     app.post('/mail/messages/new', function (req, res) {
         if (req.isAuthenticated()) {
-            var message = req.body;
+            let message = req.body;
             if (message.author.authorType === "user") {
                 message.author.name = req.user.username;
             }
@@ -727,7 +687,7 @@ exports.init = function (app) {
 
     app.post('/user/update/searchSettings', function (req, res) {
         usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
-            if (err) res.status(500).send(err);
+            if (err) res.status(500).send("ERROR");
             else res.send("Search settings updated.");
         });
     });
@@ -747,7 +707,7 @@ exports.init = function (app) {
         mongo_data_system.embeds.find({_id: req.params.id}, function (err, embeds) {
             if (err) return res.status(500).send();
             if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
-            var embed = embeds[0];
+            let embed = embeds[0];
             if (authorization.isOrgAdmin(req, embed.org)) {
                 mongo_data_system.embeds.delete(req.params.id, function (err) {
                     if (err) res.status(500).send("There was an error removing this embed.");
@@ -784,9 +744,9 @@ exports.init = function (app) {
 
     app.post('/api/reloadProd', authorization.checkSiteAdmin, function (req, res) {
         if (!config.prodDump.enabled) return res.status(401).send();
-        var target = './prodDump';
-        var untar = tar.extract(target);
-        var rmTargets = [target + '/system*', target + '/clusterstatuses*'];
+        let target = './prodDump';
+        let untar = tar.extract(target);
+        let rmTargets = [target + '/system*', target + '/clusterstatuses*'];
         if (!req.body.includeAll) {
             rmTargets.push(target + '/cdeAudit*');
             rmTargets.push(target + '/classificationAudit*');
@@ -796,7 +756,7 @@ exports.init = function (app) {
         request(req.body.url, {rejectUnauthorized: false}).pipe(zlib.createGunzip()).pipe(untar);
         untar.on('finish', function () {
             spawn('rm', rmTargets).on('exit', function () {
-                var restore = spawn('mongorestore',
+                let restore = spawn('mongorestore',
                     ['-host', config.database.servers[0].host,
                         '-u', config.database.appData.username,
                         '-p', config.database.appData.password,
@@ -805,7 +765,7 @@ exports.init = function (app) {
                         '--db', config.database.appData.db
                     ], {stdio: 'inherit'});
                 restore.on('exit', function () {
-                    var rm = spawn('rm', [target + '/*']);
+                    let rm = spawn('rm', [target + '/*']);
                     rm.on('exit', function () {
                         esInit.indices.forEach(elastic.reIndex);
                         res.send();
@@ -816,10 +776,10 @@ exports.init = function (app) {
         });
     });
 
-    var loincUploadStatus;
+    let loincUploadStatus;
     app.post('/uploadLoincCsv', multer(), function (req, res) {
         loincUploadStatus = [];
-        var load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function (code) {
+        let load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function (code) {
             loincUploadStatus.push("Complete with Code: " + code);
             setTimeout(function () {
                 loincUploadStatus = [];
@@ -880,7 +840,7 @@ exports.init = function (app) {
         });
     });
 
-    var meshTopTreeMap = {
+    let meshTopTreeMap = {
         'A': "Anatomy",
         'B': "Organisms",
         'C': "Diseases",
@@ -900,16 +860,16 @@ exports.init = function (app) {
     };
 
     function flatTreesFromMeshDescriptorArray(descArr, cb) {
-        var allTrees = new Set();
+        let allTrees = new Set();
         async.each(descArr, function (desc, oneDescDone) {
             request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function (err, response, oneDescBody) {
                 async.each(oneDescBody.TreeNumberList.TreeNumber, function (treeNumber, tnDone) {
                     request(config.mesh.baseUrl + "/api/tree/parents/" + treeNumber.t, {json: true}, function (err, response, oneTreeBody) {
-                        var flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
+                        let flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
                         if (oneTreeBody && oneTreeBody.length > 0) {
                             flatTree = flatTree + ";" + oneTreeBody.map(function (a) {
-                                    return a.RecordName;
-                                }).join(";");
+                                return a.RecordName;
+                            }).join(";");
                         }
                         flatTree = flatTree + ";" + oneDescBody.DescriptorName.String.t;
                         allTrees.add(flatTree);
@@ -926,7 +886,7 @@ exports.init = function (app) {
 
     app.post('/meshClassification', function (req, res) {
         if (req.body._id) {
-            var id = req.body._id;
+            let id = req.body._id;
             delete req.body._id;
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
@@ -935,7 +895,7 @@ exports.init = function (app) {
                     elt.flatTrees = req.body.flatTrees;
                     elt.save(function (err, o) {
                         res.send(o);
-                    })
+                    });
                 });
             });
         } else {
@@ -979,7 +939,7 @@ exports.init = function (app) {
 
     app.get('/comments/eltId/:eltId', function (req, res) {
         mongo_data_system.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
-            var result = comments.filter(c => c.status !== 'deleted');
+            let result = comments.filter(c => c.status !== 'deleted');
             result.forEach(function (c) {
                 c.replies = c.replies.filter(r => r.status !== 'deleted');
             });
@@ -990,7 +950,7 @@ exports.init = function (app) {
                 });
             });
             res.send(result);
-        })
+        });
     });
 
     app.get('/comment/:commentId', function (req, res) {
@@ -998,7 +958,7 @@ exports.init = function (app) {
             if (err) res.send(500);
             else
                 res.send(comment);
-        })
+        });
     });
 
     app.get('/commentsfor/:username/:from/:size', adminItemSvc.commentsForUser);

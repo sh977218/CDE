@@ -106,7 +106,7 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
-            if (err) res.status(500).send(err);
+            if (err) res.status(500).send("ERROR");
             else res.send();
         });
     });
@@ -115,14 +115,14 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
-            if (err) res.status(500).send(err);
+            if (err) res.status(500).send("ERROR");
             else res.send();
         });
     });
 
     app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
         elastic.boardSearch(req.body, function (err, result) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             return res.send(result);
         });
     });
@@ -172,6 +172,9 @@ exports.init = function (app, daoManager) {
                     return a.toObject();
                 });
                 delete board._doc.owner.userId;
+                /* @Todo
+                * filter(p => p) looks weired.
+                * */
                 var idList = board.pins.map(function (p) {
                     return board.type === 'cde' ? p.deTinyId : p.formTinyId;
                 }).filter(p => p);

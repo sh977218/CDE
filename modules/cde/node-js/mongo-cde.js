@@ -1,16 +1,16 @@
-let config = require('../../system/node-js/parseConfig');
-let schemas = require('./schemas');
-let schemas_system = require('../../system/node-js/schemas');
-let mongo_data_system = require('../../system/node-js/mongo-data');
-let mongo_board = require('../../board/node-js/mongo-board');
-let connHelper = require('../../system/node-js/connections');
-let dbLogger = require('../../system/node-js/dbLogger');
-let logging = require('../../system/node-js/logging');
-let cdediff = require("./cdediff");
-let async = require('async');
-let CronJob = require('cron').CronJob;
-let elastic = require('./elastic');
-let deValidator = require('../shared/deValidator');
+const config = require('../../system/node-js/parseConfig');
+const schemas = require('./schemas');
+const schemas_system = require('../../system/node-js/schemas');
+const mongo_data_system = require('../../system/node-js/mongo-data');
+const mongo_board = require('../../board/node-js/mongo-board');
+const connHelper = require('../../system/node-js/connections');
+const dbLogger = require('../../system/node-js/dbLogger');
+const logging = require('../../system/node-js/logging');
+const cdediff = require("./cdediff");
+const async = require('async');
+const CronJob = require('cron').CronJob;
+const elastic = require('./elastic');
+const deValidator = require('../shared/deValidator');
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -196,7 +196,7 @@ exports.forks = function (cdeId, callback) {
 
 var viewedCdes = {};
 var threshold = config.viewsIncrementThreshold || 50;
-exports.incdeView = function (cde) {
+exports.inCdeView = function (cde) {
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
     viewedCdes[cde._id]++;
     if (viewedCdes[cde._id] >= threshold && cde && cde._id) {

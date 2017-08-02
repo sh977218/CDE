@@ -10,7 +10,6 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 
 @Component({
     selector: "cde-create-data-element",
-    providers: [NgbActiveModal],
     templateUrl: "./createDataElement.component.html"
 })
 export class CreateDataElementComponent implements OnInit {
@@ -25,9 +24,7 @@ export class CreateDataElementComponent implements OnInit {
                 @Inject("isAllowedModel") public isAllowedModel,
                 private localStorageService: LocalStorageService,
                 private http: Http,
-                private alert: AlertService,
-                @Inject("Elastic") private elasticService,
-                @Inject("SearchSettings") private searchSettings) {
+                private alert: AlertService) {
     }
 
     ngOnInit(): void {

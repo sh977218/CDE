@@ -12,7 +12,7 @@ exports.pinDataElements = function (req, res) {
     let cdes = req.body;
     if (!Array.isArray(cdes)) return res.status(400).send();
     mongo_board.byId(boardId, function (err, board) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         let cdePins = cdes.map(c => {
             return {
                 deTinyId: c.tinyId,
@@ -36,7 +36,7 @@ exports.pinForms = function (req, res) {
     let forms = req.body;
     if (!Array.isArray(forms)) return res.status(400).send();
     mongo_board.byId(boardId, function (err, board) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         let formPins = forms.map(c => {
             return {
                 formTinyId: c.tinyId,

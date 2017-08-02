@@ -14,7 +14,7 @@ exports.byId = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(400).send();
     mongo_cde.byId(id, function (err, dataElement) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         if (!dataElement) return res.status(404).send();
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
@@ -25,7 +25,7 @@ exports.byId = function (req, res) {
             return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
         }
         res.send(dataElement);
-        mongo_data.incdeView(dataElement);
+        mongo_data.inCdeView(dataElement);
         mongo_data_system.addToViewHistory(dataElement, req.user);
     });
 };
@@ -34,10 +34,10 @@ exports.priorDataElements = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(400).send();
     mongo_cde.byId(id, function (err, dataElement) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         if (!dataElement) return res.status(404).send();
         mongo_data.byIdList(dataElement.history, function (err, priorDataElements) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             res.send(priorDataElements);
         });
     });
@@ -47,7 +47,7 @@ exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     mongo_cde.byTinyId(tinyId, function (err, dataElement) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         if (!dataElement) return res.status(404).send();
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
@@ -58,7 +58,7 @@ exports.byTinyId = function (req, res) {
             return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
         }
         res.send(dataElement);
-        mongo_data.incdeView(dataElement);
+        mongo_data.inCdeView(dataElement);
         mongo_data_system.addToViewHistory(dataElement, req.user);
     });
 };
@@ -68,7 +68,7 @@ exports.byTinyIdVersion = function (req, res) {
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
     mongo_cde.byTinyIdVersion(tinyId, version, function (err, dataElement) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         if (!dataElement) return res.status(404).send();
         res.send(dataElement);
     });
@@ -77,7 +77,7 @@ exports.byTinyIdVersion = function (req, res) {
 exports.latestVersionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     mongo_cde.latestVersionByTinyId(tinyId, function (err, latestVersion) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         res.send(latestVersion);
     });
 };
@@ -89,9 +89,9 @@ exports.createDataElement = function (req, res) {
     let elt = req.body;
     let user = req.user;
     authorization.allowCreate(user, elt, function (err) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         mongo_cde.create(elt, user, function (err, dataElement) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             res.send(dataElement);
         });
     });
@@ -102,18 +102,19 @@ exports.updateDataElement = function (req, res) {
     if (!tinyId) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
     mongo_cde.byTinyId(tinyId, function (err, item) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         if (!item) return res.status(404).send();
         authorization.allowUpdate(req.user, item, function (err) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
                 let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-                if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)
+                if (org && org.workingGroupOf && org.workingGroupOf.length > 0 &&
+                    allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)
                     return res.status(403).send("You are not authorized to do this.");
                 let elt = req.body;
                 deValidator.wipeDatatype(elt);
                 mongo_cde.update(elt, req.user, function (err, response) {
-                    if (err) return res.status(500).send(err);
+                    if (err) return res.status(500).send("ERROR");
                     res.send(response);
                 });
             });
@@ -142,7 +143,7 @@ exports.viewHistory = function (req, res) {
             tinyIdList.push(splicedArray[i]);
     }
     mongo_cde.byTinyIdList(tinyIdList, function (err, dataElements) {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(500).send("ERROR");
         dataElements.forEach(de => hideProprietaryCodes(de, req.user));
         return res.send(dataElements);
     });
@@ -157,7 +158,7 @@ exports.show = function (req, res, cb) {
         cb(cde);
         // Following have no callback because it's no big deal if it fails.
         if (cde) {
-            mongo_data.incdeView(cde);
+            mongo_data.inCdeView(cde);
             if (req.isAuthenticated()) {
                 mongo_data.addToViewHistory(cde, req.user);
             }
@@ -177,7 +178,8 @@ var hideProprietaryCodes = function (cdes, user) {
     this.censorPv = function (pvSet) {
         var toBeCensored = true;
         this.systemWhitelist.forEach(function (system) {
-            if (!pvSet.codeSystemName) toBeCensored = false; else if (pvSet.codeSystemName.indexOf(system) >= 0) toBeCensored = false;
+            if (!pvSet.codeSystemName || pvSet.codeSystemName.indexOf(system) >= 0)
+                toBeCensored = false;
         });
         if (toBeCensored) {
             pvSet.valueMeaningName = hiddenFieldMessage;
@@ -215,10 +217,16 @@ exports.checkEligibleToRetire = function (req, res, elt, cb) {
     if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0 && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !req.user.siteAdmin) {
         res.status(403).send("Not authorized");
     } else {
-        if ((elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+        if ((elt.registrationState.registrationStatus === "Standard" ||
+                elt.registrationState.registrationStatus === "Preferred Standard") &&
+            !req.user.siteAdmin) {
             res.status(403).send("This record is already standard.");
         } else {
-            if ((elt.registrationState.registrationStatus !== "Standard" && elt.registrationState.registrationStatus !== " Preferred Standard") && (elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+            if ((elt.registrationState.registrationStatus !== "Standard" &&
+                    elt.registrationState.registrationStatus !== " Preferred Standard") &&
+                (elt.registrationState.registrationStatus === "Standard" ||
+                    elt.registrationState.registrationStatus === "Preferred Standard") &&
+                !req.user.siteAdmin) {
                 res.status(403).send("Not authorized");
             } else {
                 cb();

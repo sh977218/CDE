@@ -51,7 +51,7 @@ export class FormViewComponent implements OnInit {
             .map(res => res.json()).subscribe(
             res => this.hasComments = res && (res.length > 0),
             err => this.alert.addAlert("danger", "Error on loading comments. " + err)
-        )
+        );
     }
 
     openCopyElementModal() {

@@ -8,7 +8,7 @@ export class CdeAccordionListNg2Component {
 
     @Input() cdes;
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel) {
+    constructor() {
     }
 
 }

@@ -18,7 +18,6 @@ const actionMapping: IActionMapping = {
 export class ClassificationViewComponent {
     @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
     @Input() elt;
-    @Input() isAllowed;
     @Output() confirmDelete = new EventEmitter();
     public modalRef: NgbModalRef;
     deleteClassificationString;

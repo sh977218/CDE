@@ -31,7 +31,7 @@ exports.save = function (req, res, dao, cb) {
                     res.status(403).send("not authorized");
                 } else if (elt.registrationState && elt.registrationState.registrationStatus) {
                     if ((elt.registrationState.registrationStatus === "Standard" ||
-                        elt.registrationState.registrationStatus === " Preferred Standard") && !req.user.siteAdmin) {
+                            elt.registrationState.registrationStatus === " Preferred Standard") && !req.user.siteAdmin) {
                         return res.status(403).send("Not authorized");
                     }
                     return dao.create(elt, req.user, function (err, savedItem) {
@@ -53,12 +53,12 @@ exports.save = function (req, res, dao, cb) {
                     res.status(403).send("Not authorized");
                 } else {
                     if ((item.registrationState.registrationStatus === "Standard" ||
-                        item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+                            item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
                         res.status(403).send("This record is already standard.");
                     } else {
                         if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
                             (item.registrationState.registrationStatus === "Standard" ||
-                            item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
+                                item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
                         ) {
                             res.status(403).send("Not authorized");
                         } else {
@@ -88,7 +88,7 @@ exports.setAttachmentDefault = function (req, res, dao) {
     auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
         if (err) {
             logging.expressLogger.info(err);
-            return res.send(err);
+            return res.status(500).send("ERROR");
         }
         var state = req.body.state;
         for (var i = 0; i < elt.attachments.length; i++) {
@@ -121,7 +121,7 @@ exports.addAttachment = function (req, res, dao) {
     exports.scanFile(stream, res, function (scanned) {
         req.files.uploadedFiles.scanned = scanned;
         auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-            if (err) return res.send(err);
+            if (err) return res.status(500).send("ERROR");
             dao.userTotalSpace(req.user.username, function (totalSpace) {
                 if (totalSpace > req.user.quota) {
                     res.send({message: "You have exceeded your quota"});
@@ -150,19 +150,14 @@ exports.addAttachment = function (req, res, dao) {
 
 exports.removeAttachment = function (req, res, dao) {
     auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-        if (err) {
-            return res.send(err);
-        }
+        if (err) return res.status(500).send("ERROR");
         let fileid = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
 
         elt.save(function (err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(elt);
-                mongo_data_system.removeAttachmentIfNotUsed(fileid);
-            }
+            if (err) return res.status(500).send("ERROR");
+            res.send(elt);
+            mongo_data_system.removeAttachmentIfNotUsed(fileid);
         });
     });
 };
@@ -346,7 +341,7 @@ exports.replyToComment = function (req, res) {
                         origin: "system.adminItemSvc.addComment",
                         stack: new Error().stack
                     });
-                    res.status(500).send(err);
+                    res.status(500).send("ERROR");
                 } else {
                     ioServer.ioServer.of("/comment").emit('commentUpdated');
                     res.send({message: "Reply added"});
@@ -411,7 +406,7 @@ exports.removeComment = function (req, res, dao) {
                                     origin: "system.adminItemSvc.removeComment",
                                     stack: new Error().stack
                                 });
-                                res.status(500).send(err);
+                                res.status(500).send("ERROR");
                             } else {
                                 ioServer.ioServer.of("/comment").emit('commentUpdated');
                                 res.send({message: "Comment removed"});
@@ -456,7 +451,7 @@ exports.updateCommentStatus = function (req, res, status) {
                             origin: "system.adminItemSvc.removeComment",
                             stack: new Error().stack
                         });
-                        res.status(500).send(err);
+                        res.status(500).send("ERROR");
                     } else {
                         ioServer.ioServer.of("/comment").emit('commentUpdated');
                         res.send({message: "Saved."});
@@ -611,13 +606,13 @@ exports.acceptFork = function (req, res, dao) {
                         res.status(403).send("not authorized");
                     } else {
                         if ((orig.registrationState.registrationStatus === "Standard" ||
-                            orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+                                orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
                             res.send("This record is already standard.");
                         } else {
                             if ((orig.registrationState.registrationStatus !== "Standard" &&
-                                orig.registrationState.registrationStatus !== " Preferred Standard") &&
+                                    orig.registrationState.registrationStatus !== " Preferred Standard") &&
                                 (orig.registrationState.registrationStatus === "Standard" ||
-                                orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
+                                    orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
                             ) {
                                 res.status(403).send("not authorized");
                             } else {

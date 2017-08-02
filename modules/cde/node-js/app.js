@@ -46,7 +46,7 @@ exports.init = function (app, daoManager) {
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.status(403).send();
         elastic.myBoards(req.user, req.body, function (err, result) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             res.send(result);
         });
     });
@@ -98,7 +98,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/classification/cde/moveclassif', function (req, res) {
         classificationNode.moveClassifications(req, function (err, cde) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             res.send(cde);
         });
     });
@@ -180,7 +180,7 @@ exports.init = function (app, daoManager) {
         if (!req.params.source || !req.params.code || !req.params.targetSource)
             return res.status(401).end();
         vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, function (err, result) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             if (result.statusCode === 200)
                 return res.send({result: JSON.parse(result.body).result});
             return res.send({result: []});
@@ -204,7 +204,7 @@ exports.init = function (app, daoManager) {
         if (cdeMergeTo && cdeMergeTo.tinyId)
             cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
         mongo_cde.update(cdeMergeFrom, req.user, function (err, newDe) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             res.send(newDe);
         });
     });
@@ -225,9 +225,9 @@ exports.init = function (app, daoManager) {
                     cdeMergeFrom.registrationState.registrationStatus = "Retired";
                     cdesvc.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
                         mongo_cde.update(cdeMergeFrom, req.user, function (err) {
-                            if (err) return res.status(500).send(err);
+                            if (err) return res.status(500).send("ERROR");
                             mongo_cde.update(cdeMergeTo, req.user, function (err) {
-                                if (err) return res.status(500).send(err);
+                                if (err) return res.status(500).send("ERROR");
                                 res.status(200).send("retired");
                             });
                         });
@@ -236,9 +236,9 @@ exports.init = function (app, daoManager) {
             });
         } else {
             mongo_cde.update(cdeMergeFrom, req.user, function (err) {
-                if (err) return res.status(500).send(err);
+                if (err) return res.status(500).send("ERROR");
                 mongo_cde.update(cdeMergeTo, req.user, function (err) {
-                    if (err) return res.status(500).send(err);
+                    if (err) return res.status(500).send("ERROR");
                     res.status(200).end();
                 });
             });
@@ -285,7 +285,7 @@ exports.init = function (app, daoManager) {
                     res.type('application/json');
                     res.write("[");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send(err);
+                        if (err) return res.status(500).send("ERROR");
                         else if (elt) {
                             if (!firstElt) res.write(',');
                             elt = exportShared.stripBsonIds(elt);
@@ -371,7 +371,7 @@ exports.init = function (app, daoManager) {
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
         classificationNode_system.addClassification(req.body, mongo_cde, function (err, result) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             if (result === "Classification Already Exists") return res.status(409).send(result);
             res.send(result);
             mongo_data_system.addToClassifAudit({

@@ -65,6 +65,7 @@ function fetchWholeForm(form, callback) {
                         if (version !== de.version) {
                             fe.question.cde.outdated = true;
                             form.outdated = true;
+                            form.markModified("formElements");
                         }
                         fe.question.cde.derivationRules = de.derivationRules;
                         doneOne();
@@ -76,7 +77,6 @@ function fetchWholeForm(form, callback) {
         });
     };
     if (!form) return callback();
-    if (form.toObject) form = form.toObject();
     loopFormElements(form, function (err) {
         callback(err, form);
     });
