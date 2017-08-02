@@ -1,5 +1,5 @@
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Component, Inject, ViewChild } from "@angular/core";
+import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { MyBoardsService } from "../../myBoards.service";
 import { Http } from "@angular/http";
@@ -13,6 +13,7 @@ import { reject } from "q";
     providers: [NgbActiveModal]
 })
 export class PinModalComponent {
+    @Input() module = null;
     @ViewChild("pinModal") public pinModal: NgbModalModule;
     @ViewChild("ifYouLoginModal") public ifYouLoginModal: NgbModalModule;
 
@@ -30,7 +31,7 @@ export class PinModalComponent {
 
     open() {
         if (this.userService.user && this.userService.user._id) {
-            this.myBoardsSvc.loadMyBoards();
+            this.myBoardsSvc.loadMyBoards(this.module);
             this.modalRef = this.modalService.open(this.pinModal);
         } else {
             this.modalService.open(this.ifYouLoginModal);

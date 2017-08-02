@@ -15,21 +15,23 @@
                 <div *ngIf="myBoardsSvc.filter.tags.length > 0">
                     <h4>Tags</h4>
                     <label *ngFor="let tag of myBoardsSvc.filter.tags" class="my-board-tag">
-                        <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()">
+                        <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()"
+                               attr.data-id="tag-{{tag.key}}">
                         <small>{{tag.key}} ({{tag.doc_count}})</small>
                     </label>
                 </div>
                 <div *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
                     <h4>Share Status</h4>
                     <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="my-board-tag">
-                        <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()">
+                        <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()"
+                               attr.data-id="status-{{ss.key}}">
                         <small>{{ss.key}} ({{ss.doc_count}})</small>
                     </label>
                 </div>
             </div>
             <div class="row">
                 <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-md-6">
-                    <div class="pinToBoard-card my-board-card" data-id="boardDiv_{{board.name}}">
+                    <div class="pinToBoard-card my-board-card" attr.data-id="boardDiv_{{board.name}}">
                         <h5 class="myBoardName" id="board_name_{{$index}}">
                             <span>
                                 <i class="fa"
