@@ -153,9 +153,12 @@ export class FormViewComponent implements OnInit {
         let allQuestions = [];
         let doFormElement = function (formElt) {
             if (formElt.elementType === 'question') {
+                if (formElt.question.datatype === 'Number' && !Number.isNaN(formElt.question.defaultAnswer))
+                    formElt.question.answer = Number.parseFloat(formElt.question.defaultAnswer);
+                else formElt.question.answer = formElt.question.defaultAnswer;
                 allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
                 allQuestions.push(formElt);
-            } else if (formElt.elementType === 'section') {
+            } else if (formElt.elementType === 'section' || formElt.elementType === 'form') {
                 formElt.formElements.forEach(doFormElement);
             }
         };

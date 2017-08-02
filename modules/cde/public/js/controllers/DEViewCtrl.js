@@ -48,5 +48,4 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
                 } else Alert.addAlert("danger", "Sorry, we are unable to retrieve this data element." + response.error);
             });
         };
-
     }]);
