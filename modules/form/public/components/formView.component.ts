@@ -180,11 +180,11 @@ export class FormViewComponent implements OnInit {
     };
 
     validateForm() {
-        this.elt.isFormValid = true;
+        this.isFormValid = true;
         let loopFormElements = form => {
             if (form.formElements) {
                 form.formElements.forEach(fe => {
-                    if (fe.skipLogic && fe.skipLogic.error) {
+                    if (fe.skipLogic && fe.skipLogic.validationError) {
                         this.isFormValid = false;
                         return;
                     }

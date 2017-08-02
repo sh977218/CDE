@@ -203,8 +203,6 @@
                               [eltName]="elt.naming[0].designation"></cde-discuss-area>
         </div>
     </div>
-    elt.unsaved:{{elt.unsaved }}
-    isFormValid:{{isFormValid}}
     <div class="row" *ngIf="elt.unsaved && isFormValid">
         <cde-update-element [elt]="elt" (discard)="reload.emit();"
                             (save)="stageElt.emit();"></cde-update-element>
