@@ -28,6 +28,7 @@ exports.Form = Form;
 exports.elastic = elastic;
 
 function fetchWholeForm(form, callback) {
+    let formOutdated = false;
     let maxDepth = 8;
     let depth = 0;
     let loopFormElements = function (f, cb) {
@@ -64,8 +65,7 @@ function fetchWholeForm(form, callback) {
                         let de = dataElement.toObject();
                         if (version !== de.version) {
                             fe.question.cde.outdated = true;
-                            form.outdated = true;
-                            form.markModified("formElements");
+                            formOutdated = true;
                         }
                         fe.question.cde.derivationRules = de.derivationRules;
                         doneOne();
@@ -78,6 +78,7 @@ function fetchWholeForm(form, callback) {
     };
     if (!form) return callback();
     loopFormElements(form, function (err) {
+        if (formOutdated) form.set("outdated", true);
         callback(err, form);
     });
 }

@@ -11,7 +11,6 @@ public class PrefStdFacets extends NlmCdeBaseTest {
         String cdeName = "Noncompliant Reason Text";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        clickElement(By.id("editStatus"));
         editRegistrationStatus("Preferred Standard", null, null, null, null);
         textPresent("Data Element saved.");
         closeAlert();
