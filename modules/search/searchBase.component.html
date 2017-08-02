@@ -139,7 +139,7 @@
                         </li>
                         <li *ngIf="!embedded">
                             <button id="pinAll" (click)="openPinModal()" class="btn btn-default" type="button"
-                                    [hidden]="totalItems <= 0 || !userService?.user?._id || module === 'form'">
+                                    [hidden]="totalItems <= 0 || module === 'form'">
                                 <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
                             </button>
                         </li>
@@ -153,7 +153,7 @@
                             </button>
                         </li>
                         <li *ngIf="!embedded">
-                            <cde-list-view-controls [(listView)]="resultsView"></cde-list-view-controls>
+                            <cde-list-view-controls [(listView)]="resultsView" [module]="module"></cde-list-view-controls>
                         </li>
                         <li *ngIf="!embedded" class="dropdown">
                             <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn "
@@ -211,7 +211,7 @@
                                 <i class="fa fa-plus-square hand-cursor"></i></span></strong>
                         <div class="pl5" id="classificationListHolder">
                             <span class="nonLinkAnchor displayBlock hand-cursor"
-                                  ngbTooltip="t.longName" placement="right" container="body"
+                                  [ngbTooltip]="t.longName" placement="right" container="body"
                                   *ngFor="let t of aggregations.orgs.buckets" (click)="alterOrgFilter(t.key)"
                                   [hidden]="t.key !== getCurrentSelectedOrg() && getCurrentSelectedOrg()">
                                 <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">

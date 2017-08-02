@@ -16,7 +16,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         WebElement pagElt = findElement(By.cssSelector("ul.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
-        Assert.assertEquals(linkList.size(), 12);
+        Assert.assertEquals(linkList.size(), 14);
     }
 
     @Test

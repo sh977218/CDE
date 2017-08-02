@@ -86,7 +86,8 @@
                 </div>
 
                 <div class="btn-group  pull-right">
-                    <cde-list-view-controls [list-view]="listViewType" (list-view-change)="listViewType = $event"></cde-list-view-controls>
+                    <cde-list-view-controls [list-view]="listViewType" (list-view-change)="listViewType = $event"
+                                            [module]="board.type"></cde-list-view-controls>
                 </div>
             </div>
 

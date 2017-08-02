@@ -20,7 +20,8 @@
     <div class="container-fluid mt20">
         <cde-elts-compare *ngIf="ng1TemplateLoaded.sideBySide" [eltsToCompare]="quickBoardListService.getSelectedElts()"
                           [module]="quickBoardListService.module"></cde-elts-compare>
-        <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"></cde-list-view-controls>
+        <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"
+                                [module]="quickBoardListService.module"></cde-list-view-controls>
         <div class="btn-group ml-3">
             <button id="qb_{{quickBoardListService.module}}_empty" class="btn btn-default" value="Empty Quick Board"
                     (click)="quickBoardListService.quickBoard.empty()">

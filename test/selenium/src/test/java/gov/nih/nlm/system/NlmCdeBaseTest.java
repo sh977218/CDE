@@ -628,7 +628,7 @@ public class NlmCdeBaseTest {
 
     public void goToQuickBoardByModule(String module) {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
-        clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));
+        clickElement(By.id("qb_" + module + "_tab"));
         String quickBoardTabText = ("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (";
         textPresent(quickBoardTabText);
     }
