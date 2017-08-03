@@ -8,6 +8,19 @@ public class QuickboardButtons extends NlmCdeBaseTest{
 
     @Test
     public void quickBoardButtons() {
+        textPresent("Quick Board (0)");
+        goToQuickBoardByModule("cde");
+        textNotPresent("Side by Side View");
+        textNotPresent("Table View");
+        textNotPresent("Empty Quick Board");
+        textNotPresent("Export Quick Board");
+
+        goToQuickBoardByModule("form");
+        textNotPresent("Side by Side View");
+        textNotPresent("Table View");
+        textNotPresent("Empty Quick Board");
+        textNotPresent("Export Quick Board");
+
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("Quick Board (2)");

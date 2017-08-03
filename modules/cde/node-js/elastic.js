@@ -276,9 +276,6 @@ exports.boardSearch = function (filter, cb) {
                 "must": [
                     {
                         "match": {"shareStatus": 'Public'}
-                    },
-                    {
-                        "match": {"_all": filter.search}
                     }
                 ]
             }
@@ -292,6 +289,13 @@ exports.boardSearch = function (filter, cb) {
             }
         }
     };
+
+    if (filter.search && filter.search.length > 0) {
+        query.query.bool.must.push({
+            "match": {"_all": filter.search}
+        });
+    }
+
     if (filter.selectedTypes) {
         filter.selectedTypes.forEach(function (t) {
             if (t !== 'All') {
