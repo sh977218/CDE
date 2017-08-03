@@ -1,21 +1,18 @@
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Component, Inject, Input, ViewChild } from "@angular/core";
-import "rxjs/add/operator/map";
-import { MyBoardsService } from "../../myBoards.service";
-import { Http } from "@angular/http";
-import { AlertService } from "system/public/components/alert/alert.service";
-import { promise } from "selenium-webdriver";
-import { reject } from "q";
+import { Component, Inject, Input, ViewChild } from '@angular/core';
+import { Http } from '@angular/http';
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { MyBoardsService } from 'board/public/myBoards.service';
 
 @Component({
-    selector: "cde-pin-modal",
-    templateUrl: "pinModal.component.html",
+    selector: 'cde-pin-board-modal',
+    templateUrl: './pinBoardModal.component.html',
     providers: [NgbActiveModal]
 })
-export class PinModalComponent {
+export class PinBoardModalComponent {
     @Input() module = null;
-    @ViewChild("pinModal") public pinModal: NgbModalModule;
-    @ViewChild("ifYouLoginModal") public ifYouLoginModal: NgbModalModule;
+    @ViewChild('pinModal') public pinModal: NgbModalModule;
+    @ViewChild('ifYouLoginModal') public ifYouLoginModal: NgbModalModule;
 
     public modalRef: NgbModalRef;
     private resolve;
@@ -26,7 +23,7 @@ export class PinModalComponent {
         public modalService: NgbModal,
         private alert: AlertService,
         private http: Http,
-        @Inject("userResource") private userService
+        @Inject('userResource') private userService
     ) {}
 
     open() {
@@ -50,11 +47,11 @@ export class PinModalComponent {
 
     pinOne(module: string, elt: any, promise: Promise<any>) {
         promise.then(board => {
-            this.http.put("/pin/" + module + "/" + elt.tinyId + "/" + board._id, {}).subscribe((r) => {
-                this.alert.addAlert(r.status === 200 ? "success" : "warning", r.text());
+            this.http.put('/pin/' + module + '/' + elt.tinyId + '/' + board._id, {}).subscribe((r) => {
+                this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.text());
                 this.modalRef.close();
             }, (err) => {
-                this.alert.addAlert("danger", err);
+                this.alert.addAlert('danger', err);
             });
         });
     }

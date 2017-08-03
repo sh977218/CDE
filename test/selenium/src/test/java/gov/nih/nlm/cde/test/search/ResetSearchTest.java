@@ -13,6 +13,7 @@ public class ResetSearchTest extends NlmCdeBaseTest {
     @Test
     public void resetSearch() {
         goToCdeSearch();
+        scrollToViewById("browseOrg-caCORE");
         findElement(By.id("browseOrg-caCORE")).click();
         textPresent("caCORE 3.2");
         findElement(By.id("li-blank-caCORE")).click();

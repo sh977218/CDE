@@ -9,7 +9,7 @@ import { LinkedBoardsComponent } from "./components/linkedBoards/linkedBoards.co
 import { ListSortComponent } from "./components/listView/listSort.component";
 import { MyBoardsService } from "./myBoards.service";
 import { PinBoardComponent } from "./components/pins/pinBoard.component";
-import { PinModalComponent } from "./components/pins/pinModal.component";
+import { PinBoardModalComponent } from "./components/pins/pinBoardModal.component";
 import { PinQuickboardComponent } from "./components/pins/pinQuickboard.component";
 import { QuickBoardComponent } from 'board/public/components/quickBoard/quickBoard.component';
 import { SearchModule } from "search/search.module";
@@ -29,7 +29,7 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         LinkedBoardsComponent,
         ListSortComponent,
         PinBoardComponent,
-        PinModalComponent,
+        PinBoardModalComponent,
         PinQuickboardComponent,
         QuickBoardComponent,
         UnpinBoardComponent,
@@ -37,7 +37,7 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
     entryComponents: [
         CreateBoardComponent,
         LinkedBoardsComponent,
-        PinModalComponent,
+        PinBoardModalComponent,
         QuickBoardComponent,
     ],
     providers: [
@@ -47,7 +47,7 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         LinkedBoardsComponent,
         ListSortComponent,
         PinBoardComponent,
-        PinModalComponent,
+        PinBoardModalComponent,
         PinQuickboardComponent,
         UnpinBoardComponent,
     ],
