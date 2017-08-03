@@ -3,7 +3,7 @@ const mongo_cde = require('../modules/cde/node-js/mongo-cde');
 const DataElementModal = mongo_cde.DataElement;
 
 let count = 0;
-let cond = {archived: false, classification: {$size: 0}};
+let cond = {'stewardOrg.name': 'NCI', archived: false, classification: {$size: 0}};
 DataElementModal.find(cond, (err, dataElements) => {
     if (err) throw err;
     async.forEach(dataElements, (dataElement, doneOneDataElement) => {
