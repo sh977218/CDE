@@ -58,3 +58,6 @@ angular.module('cdeModule').directive('cdeDataElementView', downgradeComponent({
 
 import {CdeAccordionListNg2Component} from "../components/cdeAccordionListNg2.component";
 angular.module('cdeModule').directive('cdeAccordionListNg2', downgradeComponent({component: CdeAccordionListNg2Component, inputs: ['cdes'], outputs: []}));
+
+import {CreateFormFromBoardComponent} from "../../../board/public/components/createFormFromBoard.component";
+angular.module('systemModule').directive('cdeCreateFormFromBoard', downgradeComponent({component: CreateFormFromBoardComponent, inputs: ['board'], outputs: []}));

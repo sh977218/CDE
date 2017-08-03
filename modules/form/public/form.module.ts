@@ -36,7 +36,6 @@ import { SkipLogicService } from "./skipLogic.service";
 import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
-import { CreateFormComponent } from "./components/createForm.component";
 import { FormViewComponent } from "./components/formView.component";
 import { DiscussModule } from "../../discuss/discuss.module";
 
@@ -61,7 +60,6 @@ import { DiscussModule } from "../../discuss/discuss.module";
         BoardFormSummaryListComponent,
         BoardFormSummaryListContentComponent,
         CdeSortableComponent,
-        CreateFormComponent,
         DisplayProfileComponent,
         FormViewComponent,
         FormDescriptionComponent,
@@ -83,7 +81,6 @@ import { DiscussModule } from "../../discuss/discuss.module";
         QuestionSearchDirective,
     ],
     entryComponents: [
-        CreateFormComponent,
         DisplayProfileComponent,
         FormViewComponent,
         FormDescriptionComponent,
