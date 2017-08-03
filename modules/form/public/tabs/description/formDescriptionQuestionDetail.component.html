@@ -176,7 +176,7 @@
             </select>
         </div>
         <div *ngIf="question.question.datatype !== 'Value List'" class="col-sm-10 col-xs-12 defaultAnswer">
-            <inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true" (onOk)="stageElt.emit()"></inline-edit>
+            <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true" (modelChange)="stageElt.emit()"></cde-inline-edit>
         </div>
     </div>
     <div *ngIf="question.question.defaultAnswer" class="row">

@@ -47,7 +47,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'ClassificationManagementCtrl',
             templateUrl: '/system/public/html/classificationManagement.html'
         }).when('/orgAuthority', {
-            controller: 'AccountManagementCtrl',
             templateUrl: '/system/public/html/orgAuthority.html'
         }).when('/profile', {
             template: '<cde-profile></cde-profile>'
@@ -58,36 +57,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'SearchSettingsCtrl',
             templateUrl: '/system/public/html/searchSettings.html'
         });
-    }])
-    .directive('inlineEdit', ["$timeout", function ($timeout) {
-        return {
-            restrict: 'AE',
-            scope: {
-                model: '=',
-                inputType: '=?',
-                isAllowed: '=',
-                onOk: '&',
-                typeaheadSource: '=',
-                linkSource: '@'
-            },
-            template: require('../html/systemTemplate/inlineEdit.html'),
-            controller: ["$scope", function ($scope) {
-                $scope.inputType = $scope.inputType || 'text';
-                $scope.value = $scope.model;
-                $scope.discard = function () {
-                    $scope.editMode = false;
-                };
-                $scope.save = function () {
-                    $scope.model = angular.copy(this.value);
-                    $scope.editMode = false;
-                    $timeout($scope.onOk, 0);
-                };
-                $scope.edit = function () {
-                    $scope.value = $scope.model;
-                    $scope.editMode = true;
-                };
-            }]
-        };
     }])
     .directive('inlineSelectEdit', ["$timeout", function ($timeout) {
         return {
@@ -459,22 +428,6 @@ angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     outputs: []
 }));
 
-import { ListManagementComponent } from "../components/siteAdmin/listManagement/listManagement.component";
-
-angular.module('systemModule').directive('cdeListManagement', downgradeComponent({
-    component: ListManagementComponent,
-    inputs: [],
-    outputs: []
-}));
-
-import { OrgAdminComponent } from "../components/siteAdmin/orgAdmin/orgAdmin.component";
-
-angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({
-    component: OrgAdminComponent,
-    inputs: [],
-    outputs: []
-}));
-
 import { UsersMgtComponent } from "../components/siteAdmin/usersMgt/usersMgt.component";
 
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
@@ -483,18 +436,17 @@ angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
     outputs: []
 }));
 
-import { EditSiteAdminsComponent } from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
-
-angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
-    component: EditSiteAdminsComponent,
+import {OrgAuthorityComponent} from "../components/siteAdmin/orgAuthority/orgAuthority.component"
+angular.module('systemModule').directive('cdeOrgAuthority', downgradeComponent({
+    component: OrgAuthorityComponent,
     inputs: [],
     outputs: []
 }));
 
-import { StatusValidationRulesComponent } from "../components/siteAdmin/statusValidationRules/statusValidationRules.component";
+import { EditSiteAdminsComponent } from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
 
-angular.module('systemModule').directive('cdeStatusValidationRules', downgradeComponent({
-    component: StatusValidationRulesComponent,
+angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
+    component: EditSiteAdminsComponent,
     inputs: [],
     outputs: []
 }));

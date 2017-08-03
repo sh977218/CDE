@@ -3,15 +3,39 @@
         <div ng-include="'/cde/public/html/deDatatypeValueList.html'"></div>
     </div>
     <div ng-switch-when="Text">
-        <div ng-include="'/cde/public/html/deDatatypeText.html'"></div>
+        <dl class="dl-horizontal">
+            <dt>Minimum Length: </dt>
+            <dd>{{elt.valueDomain.datatypeText.minLength}}</dd>
+            <dt>Maximum Length: </dt>
+            <dd>{{elt.valueDomain.datatypeText.maxLength}}</dd>
+            <dt>Regular Expression: </dt>
+            <dd>{{elt.valueDomain.datatypeText.regex}}</dd>
+            <dt>Free text rule: </dt>
+            <dd>{{elt.valueDomain.datatypeText.rule}}</dd>
+        </dl>
     </div>
     <div ng-switch-when="Number">
-        <div ng-include="'/cde/public/html/deDatatypeNumber.html'"></div>
+        <dl class="dl-horizontal">
+            <dt>Minimum Value: </dt>
+            <dd>{{elt.valueDomain.datatypeNumber.minValue}}</dd>
+            <dt>Maximum Value: </dt>
+            <dd>{{elt.valueDomain.datatypeNumber.maxValue}}</dd>
+            <dt>Precision: </dt>
+            <dd>{{elt.valueDomain.datatypeNumber.precision}}</dd>
+        </dl>
     </div>
     <div ng-switch-when="Date">
-        <div ng-include="'/cde/public/html/deDatatypeDate.html'"></div>
+        <dl class="dl-horizontal">
+            <dt>Date Format: </dt>
+            <dd>{{elt.valueDomain.datatypeDate.format}}</dd>
+        </dl>
     </div>
     <div ng-switch-when="Externally Defined">
-        <div ng-include="'/cde/public/html/deDatatypeExternal.html'"></div>
+        <dl class="dl-horizontal">
+            <dt>Link: </dt>
+            <dd>{{elt.valueDomain.datatypeExternallyDefined.link}}</dd>
+            <dt>Description: </dt>
+            <dd>{{elt.valueDomain.datatypeExternallyDefined.description}}</dd>
+        </dl>
     </div>
 </div>

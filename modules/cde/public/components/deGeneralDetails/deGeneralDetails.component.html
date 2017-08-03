@@ -51,8 +51,8 @@
         <div class="row" *ngIf="elt.origin">
             <div class="col-sm-5 questionSectionLabel text-right">Origin:</div>
             <div class="col-sm-7">
-                <inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="isAllowedModel.isAllowed(elt)"
-                             (onOk)="elt.unsaved = true"></inline-edit>
+                <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="isAllowedModel.isAllowed(elt)"
+                             (modelChange)="elt.unsaved = true"></cde-inline-edit>
             </div>
         </div>
         <div class="row" *ngIf="elt.views">

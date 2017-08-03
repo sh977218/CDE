@@ -19,8 +19,8 @@
         <div class="row">
             <div class="col-md-2"><strong>Avatar:</strong></div>
             <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
-            <inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (onOk)="updateAvatar(u)"
-                         class="col-md-10"></inline-edit>
+            <cde-inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (modelChange)="updateAvatar(u)"
+                         class="col-md-10"></cde-inline-edit>
         </div>
         <div class="row">
             <div class="col-md-2"><strong>Last Login:</strong></div>
