@@ -439,7 +439,7 @@ import { ProfileComponent } from "../components/profile.component";
 
 angular.module('systemModule').directive('cdeProfile', downgradeComponent({
     component: ProfileComponent,
-    inputs: [],
+    inputs: ['commentsUrl'],
     outputs: []
 }));
 
@@ -450,6 +450,13 @@ angular.module('systemModule').directive('user-comments', downgradeComponent({
     inputs: ['user'],
     outputs: []
 }));
+
+import { LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
+angular.module('systemModule').directive('cdeLatestComments', downgradeComponent({
+    component: LatestCommentsComponent,
+    outputs: []
+}));
+
 
 import { SiteAuditComponent } from "../components/siteAdmin/siteAudit/siteAudit.component";
 
