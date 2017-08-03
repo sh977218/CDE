@@ -1,26 +1,28 @@
 <div ng-cloak class="container-fluid mt20" ng-controller="SwitchListViewCtrl">
-    <div class="btn-group">
-        <button id="qb_{{module}}_compare" ng-disabled="listViewType === 'sideBySide'" value="Side by Side View"
-                ng-click="showSideBySideView()" class="btn btn-default">
-            <i class="fa fa-search"></i> Side by Side View
-        </button>
-    </div>
-    <div class="btn-group" ng-include="'/system/public/html/switchListViewControls.html'"></div>
-    <div class="btn-group">
-        <button id="qb_{{module}}_empty" value="Empty Quick Board" ng-click="quickBoard.empty()"
-                class="btn btn-default">
-            <i class="fa fa-trash-o"></i> Empty Quick Board
-        </button>
-    </div>
-    <div ng-if="module==='cde'" class="btn-group" ng-controller="ExportCtrl">
-        <button id="qb_{{module}}_export" value="Export Quick Board" ng-click="quickBoardExport(quickBoard)"
-                class="btn btn-default">
-            <i class="fa fa-download"></i> Export Quick Board
-        </button>
-    </div>
+    <div ng-if="quickBoard.elts.length > 0">
+        <div class="btn-group">
+            <button id="qb_{{module}}_compare" ng-disabled="listViewType === 'sideBySide'" value="Side by Side View"
+                    ng-click="showSideBySideView()" class="btn btn-default">
+                <i class="fa fa-search"></i> Side by Side View
+            </button>
+        </div>
+        <div class="btn-group" ng-include="'/system/public/html/switchListViewControls.html'"></div>
+        <div class="btn-group">
+            <button id="qb_{{module}}_empty" value="Empty Quick Board" ng-click="quickBoard.empty()"
+                    class="btn btn-default">
+                <i class="fa fa-trash-o"></i> Empty Quick Board
+            </button>
+        </div>
+        <div ng-if="module==='cde'" class="btn-group" ng-controller="ExportCtrl">
+            <button id="qb_{{module}}_export" value="Export Quick Board" ng-click="quickBoardExport(quickBoard)"
+                    class="btn btn-default">
+                <i class="fa fa-download"></i> Export Quick Board
+            </button>
+        </div>
 
-    <br/>
-    <hr/>
+        <br/>
+        <hr/>
+    </div>
 
     <div ng-if="quickBoard.loading" class="container pt40 pb40 text-center">
         <h1><i class="fa fa-spinner fa-pulse"></i> Loading...</h1>
