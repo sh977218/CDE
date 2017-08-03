@@ -1,6 +1,5 @@
-var config = require('config'),
-    hash = require("crypto")
-;
+const config = require('config');
+const hash = require("crypto");
 
 exports.createIndexJson = {
     "mappings": {
@@ -90,7 +89,7 @@ exports.createIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas" : config.elastic.number_of_replicas,
+            "number_of_replicas": config.elastic.number_of_replicas,
             analysis: {
                 analyzer: {
                     default: {
@@ -150,7 +149,7 @@ exports.createFormIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas" : config.elastic.number_of_replicas
+            "number_of_replicas": config.elastic.number_of_replicas
         }
     }
 };
@@ -159,7 +158,7 @@ exports.storedQueryRiverFunction = function (elt, cb) {
     elt.selectedElements1.forEach(function (se, i) {
         elt['classifLevel' + i] = se;
     });
-    if(elt.searchTerm && elt.searchTerm.length > 0) elt.search_suggest = elt.searchTerm;
+    if (elt.searchTerm && elt.searchTerm.length > 0) elt.search_suggest = elt.searchTerm;
     return cb(elt);
 };
 
@@ -186,7 +185,7 @@ exports.riverFunction = function (_elt, cb) {
         cb(e);
     };
 
-    getElt(_elt, function(elt) {
+    getElt(_elt, function (elt) {
 
         function escapeHTML(s) {
             return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -284,7 +283,7 @@ exports.riverFunction = function (_elt, cb) {
             elt.classificationBoost = 0.1;
         }
         elt.flatIds = elt.ids.map(function (id) {
-            return  id.source + ' ' + id.id + ' ' + id.version
+            return id.source + ' ' + id.id + ' ' + id.version
         });
         elt.flatProperties = elt.properties.map(function (p) {
             return p.key + ' ' + p.value;
@@ -309,7 +308,7 @@ exports.createBoardIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas" : config.elastic.number_of_replicas
+            "number_of_replicas": config.elastic.number_of_replicas
         }
     }
 };
@@ -336,7 +335,7 @@ exports.createStoredQueryIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas" : config.elastic.number_of_replicas
+            "number_of_replicas": config.elastic.number_of_replicas
         }
     }
 };
