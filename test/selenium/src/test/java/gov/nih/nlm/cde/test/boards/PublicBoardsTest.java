@@ -23,6 +23,8 @@ public class PublicBoardsTest extends BoardTest {
     public void searchPublicBoardNoResult() {
         mustBeLoggedOut();
         clickElement(By.id("boardsMenu"));
+        textPresent("Cerebral Palsy");
+        textPresent("Public Smoking Board");
         findElement(By.name("search")).sendKeys("noResultSearch");
         clickElement(By.id("search.submit"));
         textPresent("No results were found. Try other criteria.");
