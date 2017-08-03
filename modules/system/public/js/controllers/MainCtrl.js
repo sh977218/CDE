@@ -2,9 +2,9 @@ import * as authShared from "../../../../system/shared/authorizationShared";
 
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
+        '$interval', '$window', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
         function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                  $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard) {
+                  $interval, $window, OrgHelpers, QuickBoard, FormQuickBoard) {
 
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;

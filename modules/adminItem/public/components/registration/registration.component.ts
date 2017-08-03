@@ -1,31 +1,31 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import "rxjs/add/operator/map";
-import { Http } from "@angular/http";
-import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
-import { SharedService } from "../../../../core/public/shared.service";
+import { Component, Inject, Input, ViewChild, OnInit } from '@angular/core';
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import 'rxjs/add/operator/map';
+import { Http } from '@angular/http';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { SharedService } from 'core/public/shared.service';
 
 @Component({
-    selector: "cde-registration",
-    templateUrl: "./registration.component.html",
+    selector: 'cde-registration',
+    templateUrl: './registration.component.html',
     providers: [NgbActiveModal]
 })
 
 export class RegistrationComponent implements OnInit {
-    @ViewChild("regStatusEdit") public regStatusEditModal: NgbModalModule;
+    @ViewChild('regStatusEdit') public regStatusEditModal: NgbModalModule;
     @Input() public elt: any;
     helpMessage: string;
     newState: any = {};
     public modalRef: NgbModalRef;
 
-    validRegStatuses: string[] = ["Retired", "Incomplete", "Candidate"];
+    validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
 
     constructor (private http: Http,
                  private parserFormatter: NgbDateParserFormatter,
                  private alert: AlertService,
-                 @Inject("isAllowedModel") public isAllowedModel,
-                 @Inject("userResource") private userService,
+                 @Inject('isAllowedModel') public isAllowedModel,
+                 @Inject('userResource') private userService,
                  public modalService: NgbModal
     ) {}
 
@@ -34,24 +34,24 @@ export class RegistrationComponent implements OnInit {
     }
 
     openRegStatusUpdate() {
-        this.http.get("/comments/eltId/" + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
+        this.http.get('/comments/eltId/' + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
-                    return a.status !== "resolved" && a.status !== "deleted";
+                    return a.status !== 'resolved' && a.status !== 'deleted';
                 }).length > 0) {
-                this.alert.addAlert("info", "Info: There are unresolved comments. ");
+                this.alert.addAlert('info', 'Info: There are unresolved comments. ');
             }
 
-            this.http.get("/org/" + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
+            this.http.get('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
                 if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
-                    this.validRegStatuses = this.validRegStatuses.concat(["Recorded", "Qualified"]);
+                    this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
                     if (this.userService.user.siteAdmin) {
-                        this.validRegStatuses = this.validRegStatuses.concat(["Standard", "Preferred Standard"]);
+                        this.validRegStatuses = this.validRegStatuses.concat(['Standard', 'Preferred Standard']);
                     }
                 }
                 this.validRegStatuses.reverse();
             });
 
-            this.modalRef = this.modalService.open(this.regStatusEditModal, {size: "lg"});
+            this.modalRef = this.modalService.open(this.regStatusEditModal, {size: 'lg'});
         });
     }
 
@@ -67,7 +67,7 @@ export class RegistrationComponent implements OnInit {
         this.elt.registrationState.untilDate = this.parserFormatter.format(this.newState.untilDate);
         this.elt.$save(() => {
             this.modalRef.close();
-            this.alert.addAlert("success", "Saved");
+            this.alert.addAlert('success', 'Saved');
         });
     }
 

@@ -13,7 +13,7 @@
 </ng-template>
 
 <ng-template #formOptions>
-    <li class="dropdown-item" *ngIf="user?._id"><a (click)="exportType.emit('json')">JSON File</a></li>
-    <li class="dropdown-item" *ngIf="user?._id"><a id="xmlExport" (click)="exportType.emit('xml')">XML File</a></li>
-    <li class="dropdown-item" *ngIf="!user?._id"><a href="login">Please login to export forms.</a></li>
+    <li class="dropdown-item" *ngIf="userService?.user?._id"><a (click)="exportType.emit('json')">JSON File</a></li>
+    <li class="dropdown-item" *ngIf="userService?.user?._id"><a id="xmlExport" (click)="exportType.emit('xml')">XML File</a></li>
+    <li class="dropdown-item" *ngIf="!userService?.user?._id"><a href="login">Please login to export forms.</a></li>
 </ng-template>

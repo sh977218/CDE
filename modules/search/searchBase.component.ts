@@ -63,7 +63,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
                 protected orgHelperService,
                 protected userService) {
         this.searchSettings.page = 1;
-        setTimeout(() => this.userService.getPromise().then(() => this.search()), 0);
+        setTimeout(() => this.search(), 0);
 
         // TODO: upgrade to Angular when router is available
         // scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
@@ -71,6 +71,8 @@ export abstract class SearchBaseComponent implements AfterViewInit {
         //     if (match)
         //         window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
         // });
+
+        this.filterMode = $(window).width() >= 768;
     }
 
     addDatatypeFilter(datatype) {
@@ -499,20 +501,15 @@ export abstract class SearchBaseComponent implements AfterViewInit {
             if (this.aggregations) {
                 this.orgHelperService.orgDetails.subscribe(() => {
                     this.aggregations.orgs.orgs.buckets.forEach(org_t => {
-                        let found = false;
-                        if (!found) {
-                            if (this.orgHelperService.orgsDetailedInfo[org_t.key]) {
-                                this.orgs.push(
-                                    {
-                                        name: org_t.key,
-                                        longName: this.orgHelperService.orgsDetailedInfo[org_t.key].longName,
-                                        count: org_t.doc_count,
-                                        source: this.orgHelperService.orgsDetailedInfo[org_t.key].uri,
-                                        extraInfo: this.orgHelperService.orgsDetailedInfo[org_t.key].extraInfo,
-                                        htmlOverview: this.orgHelperService.orgsDetailedInfo[org_t.key].htmlOverview
-                                    });
-                            }
-                        }
+                        if (this.orgHelperService.orgsDetailedInfo[org_t.key])
+                            this.orgs.push({
+                                name: org_t.key,
+                                longName: this.orgHelperService.orgsDetailedInfo[org_t.key].longName,
+                                count: org_t.doc_count,
+                                source: this.orgHelperService.orgsDetailedInfo[org_t.key].uri,
+                                extraInfo: this.orgHelperService.orgsDetailedInfo[org_t.key].extraInfo,
+                                htmlOverview: this.orgHelperService.orgsDetailedInfo[org_t.key].htmlOverview
+                            });
                     });
                     this.orgs.sort(SearchBaseComponent.compareObjName);
                 });

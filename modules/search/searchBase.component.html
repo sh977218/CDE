@@ -33,7 +33,7 @@
             <div class="clear"></div>
         </div>
         <cde-search-export-button id="exportEverything" class="pull-right btn-group mt-3 mb-2" *ngIf="!embedded"
-                                  [module]="module" [user]="userService?.user"
+                                  [module]="module"
                                   (exportType)="exportService.exportSearchResults($event, {searchSettings: searchSettings})">
 
         </cde-search-export-button>
@@ -198,8 +198,21 @@
         </div>
         <div class="container-fluid">
             <div class="row">
+                <div id="resultList" [ngClass]="filterMode?'col-xs-12 col-sm-10 push-md-2':'col-xs-12'">
+                    <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
+                        Searching...</span>
+                    <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
+                        No results were found. Try other criterias or selecting more statuses</span>
+                    <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
+                                   (add)="add.emit($event)"></cde-list-view>
+                    <ngb-pagination [hidden]="totalItems <= 0" maxSize="10" [collectionSize]="totalItems"
+                                    [pageSize]="resultPerPage" [(page)]="searchSettings.page"
+                                    (pageChange)="pageChange()"></ngb-pagination>
+                    <!-- link for google indexer only -->
+                    <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
+                </div>
                 <div *ngIf="elts?.length > 0" [hidden]="!filterMode"
-                     class="hidden-sm-down" [ngClass]="filterMode?'col-xs-2':'col-xs-12'">
+                     [ngClass]="filterMode?'col-xs-12 col-sm-2 pull-md-10 ':'col-xs-12'">
                     <p [hidden]="!aggregations.orgs.buckets" class="gray">Filter by:</p>
                     <div>
                         <strong [hidden]="!aggregations.orgs.buckets" id="classif_filter_title">Classification
@@ -226,8 +239,8 @@
                             </span>
                             <div id="classification-facets">
                                 <span class="nonLinkAnchor displayBlock hand-cursor"
-                                   *ngFor="let e of getCurrentSelectedClassification(); let i = index"
-                                   (click)="selectElement(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
+                                      *ngFor="let e of getCurrentSelectedClassification(); let i = index"
+                                      (click)="selectElement(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
                                     <ng-container *ngIf="getCurrentSelectedClassification()?.indexOf(e) > -1; else else02">
                                         <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
                                     </ng-container>
@@ -239,8 +252,8 @@
                                     </span>
                                 </span>
                                 <span class="nonLinkAnchor displayBlock hand-cursor" (click)="selectElement(b.name)"
-                                   *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications)"
-                                   [style.margin-left]="(getCurrentSelectedClassification()?.length + 1) * 10 + 'px'">
+                                      *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications)"
+                                      [style.margin-left]="(getCurrentSelectedClassification()?.length + 1) * 10 + 'px'">
                                     <ng-container *ngIf="getCurrentSelectedClassification()?.indexOf(b.name) > -1; else else03">
                                         <i class="fa fa-chevron-down" id="li-checked-{{b.name}}"></i>
                                     </ng-container>
@@ -257,9 +270,8 @@
                         </div>
                     </div>
                     <br/>
-                    <div> <!-- TOPIC AGGREGATIONS -->
-                        <strong [hidden]="searchSettings.meshTree?.length === 0 && aggregations.topics.length === 0"
-                                id="meshTrees_filter">Topics</strong>
+                    <div *ngIf="searchSettings.meshTree || aggregations.topics.length"> <!-- TOPIC AGGREGATIONS -->
+                        <strong id="meshTrees_filter">Topics</strong>
                         <div class="pl5" id="meshTreesListHolder">
                             <div id="topic-facets">
                                 <span class="nonLinkAnchor displayBlock hand-cursor"
@@ -292,8 +304,8 @@
                                 </span>
                             </div>
                         </div>
+                        <br/>
                     </div>
-                    <br/>
                     <strong [hidden]="!aggregations.statuses.statuses.buckets" id="status_filter">Registration Status</strong>
 
                     <div class="pl5" id="registrationStatusListHolder">
@@ -301,7 +313,7 @@
                           *ngFor="let t of aggregations.statuses.statuses.buckets"
                           [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
                         <span class="nonLinkAnchor displayBlock" *ngIf="t.doc_count > 0"
-                           style="margin-right: 0" (click)="addStatusFilter(t.key)">
+                              style="margin-right: 0" (click)="addStatusFilter(t.key)">
                             <ng-container *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
                                 <i class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
                             </ng-container>
@@ -312,15 +324,15 @@
                         </span>
                     </span>
                     </div>
+                    <br/>
                     <ng-container *ngIf="module === 'cde'">
-                        <br/>
                         <strong [hidden]="!aggregations.datatype.datatype.buckets.length" id="datatype_filter">Data Types</strong>
                         <div class="pl5" id="datatypeListHolder">
                         <span class="hand-cursor"
                               *ngFor="let t of aggregations.datatype.datatype.buckets"
                               [ngbTooltip]="'a'" placement="right" container="body">
                             <span class="nonLinkAnchor displayBlock" *ngIf="t.doc_count > 0"
-                               style="margin-right: 0" (click)="addDatatypeFilter(t.key)">
+                                  style="margin-right: 0" (click)="addDatatypeFilter(t.key)">
                                 <ng-container *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
                                     <i class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
                                 </ng-container>
@@ -331,20 +343,8 @@
                             </span>
                         </span>
                         </div>
+                        <br/>
                     </ng-container>
-                </div>
-                <div id="resultList" [ngClass]="filterMode?'col-xs-10':'col-xs-12'">
-                <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
-                    Searching...</span>
-                    <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
-                    No results were found. Try other criterias or selecting more statuses</span>
-                    <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
-                                   (add)="add.emit($event)"></cde-list-view>
-                    <ngb-pagination [hidden]="totalItems <= 0" maxSize="10" [collectionSize]="totalItems"
-                                    [pageSize]="resultPerPage" [(page)]="searchSettings.page"
-                                    (pageChange)="pageChange()"></ngb-pagination>
-                    <!-- link for google indexer only -->
-                    <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                 </div>
             </div>
         </div>
