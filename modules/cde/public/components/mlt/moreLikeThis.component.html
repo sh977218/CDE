@@ -14,7 +14,7 @@
             <div *ngIf="cdes">
                 <div *ngIf="cdes.length === 0"><h4>No similar elements to show.</h4></div>
 
-                <cde-pin-modal #mltPinModal module="cde"></cde-pin-modal>
+                <cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>
 
                 <ngb-accordion id="mltAccordion">
                     <ngb-panel *ngFor="let cde of cdes; let i = index">

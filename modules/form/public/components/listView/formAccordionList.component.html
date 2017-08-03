@@ -2,13 +2,13 @@
     <ngb-panel class='panel-default' *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index"
                is-open="elt.isOpen">
         <ng-template ngbPanelTitle>
-            <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="eltIndex"
+            <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="i"
                                         [openInNewTab]="openInNewTab" (add)="add.emit($event)">
                 <span class="accordion-list-before">
                 </span>
                 <span class="accordion-list-after">
-                    <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
-                    <cde-pin-quickboard [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-quickboard>
+                    <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
+                    <cde-pin-quickboard [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-quickboard>
                     <a href class="nonLinkAnchor" *ngIf="ejsPage=='quickboard'"
                        (click)="interruptEvent($event);formQuickBoard.remove(i)">
                         <i class="fa fa-trash-o hand-cursor" title="remove" id="remove_{{i}}" role="link"></i></a>

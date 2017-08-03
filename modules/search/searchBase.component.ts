@@ -32,6 +32,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
     module = 'cde';
     numPages: any;
     orgs: any[];
+    orgHtmlOverview: string;
     pinComponent: Type<Component>;
     pinModalComponent: any;
     redirectPath: string;
@@ -208,26 +209,26 @@ export abstract class SearchBaseComponent implements AfterViewInit {
         // TODO: replace with router
         let searchTerms = [];
         if (this.searchSettings.q)
-            searchTerms.push('q=' + encodeURI(this.searchSettings.q));
+            searchTerms.push('q=' + encodeURIComponent(this.searchSettings.q));
         if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0)
             searchTerms.push('regStatuses=' + this.searchSettings.regStatuses.join(';'));
         if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0)
-            searchTerms.push('datatypes=' + encodeURI(this.searchSettings.datatypes.join(';')));
+            searchTerms.push('datatypes=' + encodeURIComponent(this.searchSettings.datatypes.join(';')));
         if (this.searchSettings.selectedOrg)
-            searchTerms.push('selectedOrg=' + encodeURI(this.searchSettings.selectedOrg));
+            searchTerms.push('selectedOrg=' + encodeURIComponent(this.searchSettings.selectedOrg));
         if (this.searchSettings.classification && this.searchSettings.classification.length > 0)
-            searchTerms.push('classification=' + encodeURI(this.searchSettings.classification.join(';')));
+            searchTerms.push('classification=' + encodeURIComponent(this.searchSettings.classification.join(';')));
         if (this.searchSettings.selectedOrgAlt)
-            searchTerms.push('selectedOrgAlt=' + encodeURI(this.searchSettings.selectedOrgAlt));
+            searchTerms.push('selectedOrgAlt=' + encodeURIComponent(this.searchSettings.selectedOrgAlt));
         if (this.altClassificationFilterMode)
             if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0)
-                searchTerms.push('classificationAlt=' + encodeURI(this.searchSettings.classificationAlt.join(';')));
+                searchTerms.push('classificationAlt=' + encodeURIComponent(this.searchSettings.classificationAlt.join(';')));
         if (pageNumber)
             searchTerms.push('page=' + pageNumber);
         else if (this.searchSettings.page)
             searchTerms.push('page=' + this.searchSettings.page);
         if (this.searchSettings.meshTree)
-            searchTerms.push('topic=' + encodeURI(this.searchSettings.meshTree));
+            searchTerms.push('topic=' + encodeURIComponent(this.searchSettings.meshTree));
         if (this.byTopic && !this.isSearched())
             searchTerms.push('byTopic');
         return '/' + this.module + '/search?' + searchTerms.join('&');
@@ -325,7 +326,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
     }
 
     openOrgDetails(org) {
-        // let htmlOverview = org.htmlOverview;
+        this.orgHtmlOverview = org.htmlOverview;
         this.modalService.open(this.orgDetailsModal, {size: 'lg'});
     }
 
@@ -572,7 +573,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
         location.search && location.search.substr(1).split('&').forEach(e => {
             let p = e.split('=');
             if (p.length === 2)
-                params[p[0]] = decodeURI(p[1]);
+                params[p[0]] = decodeURIComponent(p[1]);
             else
                 params[p[0]] = null;
         });
@@ -584,7 +585,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
         for (let p in params) {
             if (params.hasOwnProperty(p)) {
                 if (params[p] !== null)
-                    search.push(p + '=' + encodeURI(params[p]));
+                    search.push(p + '=' + encodeURIComponent(params[p]));
                 else
                     search.push('' + p);
             }

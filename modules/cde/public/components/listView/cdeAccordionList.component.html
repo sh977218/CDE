@@ -2,7 +2,7 @@
     <ngb-panel class='panel-default' *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index"
                is-open="elt.isOpen">
         <ng-template ngbPanelTitle>
-            <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="eltIndex"
+            <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="i"
                                         [openInNewTab]="openInNewTab" (add)="add.emit($event)">
                 <span class="accordion-list-before">
                 </span>
@@ -10,8 +10,8 @@
                     <small class="matched-by hidden-xs" *ngIf="elt?.highlight?.matchedBy">Matched by: <strong>
                         <span [innerHtml]="elt.highlight.matchedBy"></span></strong></small>
 
-                    <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
-                    <cde-pin-quickboard [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-quickboard>
+                    <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
+                    <cde-pin-quickboard [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-quickboard>
                 </span>
             </cde-accordion-list-heading>
         </ng-template>

@@ -182,7 +182,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 eltsToCompare: '=',
             },
             templateUrl: '/system/public/html/eltsCompareButton.html',
-            controller: ['$scope', '$uibModal', 'AlertService', function ($scope, $modal, Alert) {
+            controller: ['$scope', '$uibModal', 'AlertService', 'userResource', function ($scope, $modal, Alert) {
                 $scope.showSideBySideView = function() {
                     if ($scope.eltsToCompare.length !== 2) {
                         Alert.addAlert("danger", "You may only compare 2 elements side by side.");
@@ -192,10 +192,15 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                     $modal.open({
                         animation: false,
                         templateUrl: '/system/public/html/eltsCompare.html',
-                        controller: ['$scope', 'module', 'eltsToCompare', function ($scope, module, eltsToCompare) {
-                            $scope.module = module;
-                            $scope.eltsToCompare = eltsToCompare;
-                        }],
+                        controller: ['$scope', 'userResource', 'module', 'eltsToCompare',
+                            function ($scope, userResource, module, eltsToCompare) {
+                                $scope.module = module;
+                                $scope.eltsToCompare = eltsToCompare;
+                                userResource.getPromise().then(function () {
+                                    $scope.user = userResource.user;
+                                });
+                            }
+                        ],
                         resolve: {
                             module: function() {return $scope.module;},
                             eltsToCompare: function() {return $scope.eltsToCompare;}
