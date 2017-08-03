@@ -18,19 +18,24 @@ export class ProfileComponent {
 
     constructor(private http: Http,
                 private alert: AlertService,
-                @Inject("userResource") private userService,
-                @Inject("ViewingHistory") private viewingHistoryService) {
-        viewingHistoryService.getViewingHistory();
-        viewingHistoryService.getCdes().then((response) => {
-            this.cdes = [];
-            if (Array.isArray(response))
-                this.cdes = response;
-        });
-        viewingHistoryService.getForms().then((response) => {
-            this.forms = [];
-            if (Array.isArray(response))
-                this.forms = response;
-        });
+                @Inject("userResource") private userService) {
+
+        this.http.get('/viewingHistory/dataElement').map(res => res.json())
+            .subscribe(
+                res => {
+                    this.cdes = [];
+                    if (Array.isArray(res))
+                        this.cdes = res;
+                }, err => this.alert.addAlert("danger", "Error, unable to retrieve data element view history. " + err)
+            );
+        this.http.get('/viewingHistory/form').map(res => res.json())
+            .subscribe(
+                res => {
+                    this.forms = [];
+                    if (Array.isArray(res))
+                        this.forms = res;
+                }, err => this.alert.addAlert("danger", "Error, unable to retrieve form view history. " + err)
+            );
         this.reloadUser();
     }
 

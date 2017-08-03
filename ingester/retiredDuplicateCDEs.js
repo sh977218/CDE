@@ -46,7 +46,7 @@ async.series([
                         console.log('found ' + cdes.length + ' cdes of cde id ' + cdeId);
                         var cde = cdes[0];
                         cde.registrationState.registrationStatus = "Retired";
-                        cde.registrationState.administrativeNote = "This CDE is replaced by https://cde.nlm.nih.gov/deview?tinyId=" + cdes[1].tinyId;
+                        cde.registrationState.administrativeNote = "This CDE is replaced by https://cde.nlm.nih.gov/deView?tinyId=" + cdes[1].tinyId;
                         cde.updatedBy.username = "batchloader";
                         mongo_cde.update(cde, user, function (err) {
                             if (err) throw err;

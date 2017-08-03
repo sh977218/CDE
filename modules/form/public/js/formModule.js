@@ -1,8 +1,6 @@
 angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'formTemplates']).config(
-    ["$routeProvider", function($routeProvider)
-{
-    $routeProvider.
-        when('/form/search', {
+    ["$routeProvider", function ($routeProvider) {
+        $routeProvider.when('/form/search', {
             controller: 'ListCtrl',
             subCtrl: 'FormListCtrl',
             templateUrl: '/system/public/html/list.html',
@@ -10,17 +8,19 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
             title: "Find protocol forms",
             keywords: 'form, protocol, protocol form, crf, case report form, repository',
             description: 'Repository of Protocol Forms and Common Data Elements. Search Forms and CDEs.'
-        }).
-        when('/createForm', {controller: 'CreateFormCtrl', templateUrl: '/form/public/html/createForm.html'}).
-        when('/formView', {controller: 'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
-}]);
+        }).when('/createForm', {
+            controller: 'CreateFormCtrl',
+            templateUrl: '/form/public/html/createForm.html'
+        }).when('/formView', {controller:'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
+    }]);
 
 angular.module('formModule').directive('formAccordionList', function () {
     return {
         scope: {forms: '=', ejsPage: '=', module: '='},
-        template: require('../html/formAccordionList.html')}
+        template: require('../html/formAccordionList.html')
+    };
 });
-angular.module('formModule').directive('formSummaryList', ["PinModal", function (PinModal) {
+angular.module('formModule').directive('formSummaryList', ["PinModal", function () {
     return {
         scope: {forms: '=', ejsPage: '=', module: '=', includeInAccordion: "="},
         template: require('../html/formSummaryList.html'),
@@ -66,7 +66,7 @@ angular.module('formModule').directive('formSearch', [function () {
             $scope.openFormInNewTab = true;
             $scope.searchAdded = function (fe) {
                 $scope.result(fe);
-            }
+            };
         }]
     };
 }]);
@@ -80,34 +80,50 @@ angular.module('formModule').directive('questionSearch', [function () {
             $scope.openCdeInNewTab = true;
             $scope.searchAdded = function (fe) {
                 $scope.result(fe);
-            }
+            };
         }]
     };
 }]);
 
-import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
+import {downgradeComponent} from "@angular/upgrade/static";
 
 import {BoardFormSummaryListComponent} from "../components/searchResults/boardFormSummaryList.component";
+
 angular.module('formModule').directive('cdeBoardFormSummaryList',
-    downgradeComponent({component: BoardFormSummaryListComponent, inputs: ['board', 'forms', 'currentPage', 'totalItems'], outputs: ['reload']}));
-
-import {FormDescriptionComponent} from "../tabs/description/formDescription.component";
-angular.module('formModule').directive('cdeFormDescription', downgradeComponent({component: FormDescriptionComponent, inputs: ['elt', 'inScoreCdes', 'cache'], outputs: ['isFormValid', 'stageElt', 'cachePut']}));
-
-import {DisplayProfileComponent} from "../components/displayProfile/displayProfile.component";
-angular.module('formModule').directive('cdeFormDisplayProfile', downgradeComponent({component: DisplayProfileComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));
-
+    downgradeComponent({
+        component: BoardFormSummaryListComponent,
+        inputs: ['board', 'forms', 'currentPage', 'totalItems'],
+        outputs: ['reload']
+    }));
 import {FormSummaryListComponent} from "../components/searchResults/formSummaryList.component";
-angular.module('formModule').directive('cdeFormSummaryList', downgradeComponent({component: FormSummaryListComponent, inputs: ['forms'], outputs: []}));
+
+angular.module('formModule').directive('cdeFormSummaryList', downgradeComponent({
+    component: FormSummaryListComponent,
+    inputs: ['forms'],
+    outputs: []
+}));
 
 import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
-angular.module('formModule').directive('cdeMergeForm', downgradeComponent({component: MergeFormComponent, inputs: ['left', 'right'], outputs: []}));
 
-import {NativeRenderComponent} from "../nativeRender/nativeRender.component";
-angular.module('formModule').directive('cdeNativeRender', downgradeComponent({component: NativeRenderComponent, inputs: ['eltLoaded', 'elt', 'profile', 'submitForm'], outputs: []}));
+angular.module('formModule').directive('cdeMergeForm', downgradeComponent({
+    component: MergeFormComponent,
+    inputs: ['left', 'right'],
+    outputs: []
+}));
 
-import {NativeRenderFullComponent} from "../nativeRender/nativeRenderFull.component";
-angular.module('formModule').directive('cdeNativeRenderFull', downgradeComponent({component: NativeRenderFullComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));
+import {CreateFormComponent} from "../components/createForm.component";
 
-import {FormGeneralDetailsComponent} from "../components/formGeneralDetails/formGeneralDetails.component";
-angular.module('formModule').directive('cdeFormGeneralDetails', downgradeComponent({component: FormGeneralDetailsComponent, inputs: ['eltLoaded', 'elt'], outputs: []}));
+angular.module('formModule').directive('cdeCreateForm', downgradeComponent({
+    component: CreateFormComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
+
+import {FormViewComponent} from "../components/formView.component";
+
+angular.module('formModule').directive('cdeFormView', downgradeComponent({
+    component: FormViewComponent,
+    inputs: ['elt'],
+    outputs: ['stageElt', 'reload']
+}));
+

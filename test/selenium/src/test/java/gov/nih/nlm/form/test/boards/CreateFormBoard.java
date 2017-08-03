@@ -11,10 +11,11 @@ public class CreateFormBoard extends BoardTest {
     public void createFormOnlyBoard() {
         mustBeLoggedInAs(formboarduser, password);
         String boardName = "formOnlyBoard";
+        String boardDefinition = "this board only has forms.";
         String formName1 = "Participant/Subject Contact Information";
         String formName2 = "Parkinson's Disease Quality of Life Scale (PDQUALIF)";
         String formName3 = "ER/Admission Therapeutic Procedures";
-        createBoard(boardName, "this board only has forms.", "form");
+        createBoard(boardName, boardDefinition, "form");
 
         pinFormToBoard(formName1, boardName);
         pinFormToBoard(formName2, boardName);
@@ -31,7 +32,7 @@ public class CreateFormBoard extends BoardTest {
         clickElement(By.id("form_gridView"));
         textPresent("Steward");
         textPresent("Registration Status");
-        
+
         switchTabAndClose(0);
 
         goToFormByName(formName1);

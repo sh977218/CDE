@@ -167,7 +167,7 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', '
                 return a.question.cde.tinyId === b.question.cde.tinyId;
             },
             properties: [{label: 'Label', property: 'label'},
-                {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/deview/?tinyId='},
+                {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/deView/?tinyId='},
                 {label: 'Unit of Measurement', property: 'question.uoms'},
                 {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
             ],

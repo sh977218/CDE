@@ -10,7 +10,6 @@ import { CdeForm, DisplayProfile } from "../form.model";
     providers: [NativeRenderService]
 })
 export class NativeRenderComponent implements OnInit {
-    @Input() eltLoaded: {promise: Promise<void>};
     @Input() elt: CdeForm;
     @Input() profile: DisplayProfile;
     @Input() submitForm: boolean;
@@ -27,13 +26,9 @@ export class NativeRenderComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.eltLoaded && this.eltLoaded.promise)
-            this.eltLoaded.promise.then(() => {
-                this.load();
-            });
-        else
-            this.load();
+        this.load();
     }
+
     private load() {
         this.nativeRenderService.elt = this.elt;
         this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
@@ -42,6 +37,7 @@ export class NativeRenderComponent implements OnInit {
         if (!this.nativeRenderService.elt.formInput)
             this.nativeRenderService.elt.formInput = [];
     }
+
     getEndpointUrl() {
         return this.sanitizer.bypassSecurityTrustUrl(this.endpointUrl);
     }
@@ -50,6 +46,7 @@ export class NativeRenderComponent implements OnInit {
         this.nativeRenderService.profile = profile;
         this.nativeRenderService.setSelectedProfile();
     }
+
     setNativeRenderType(userType) {
         this.nativeRenderService.setNativeRenderType(userType);
     }

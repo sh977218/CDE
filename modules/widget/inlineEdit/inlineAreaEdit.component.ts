@@ -31,12 +31,14 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     @Input() defFormat: String = "";
     @Output() modelChange = new EventEmitter<string>();
     @Output() defFormatChange = new EventEmitter<string>();
+    @Output() save = new EventEmitter<string>();
 
     public editMode: boolean;
     public value: string;
     public localFormat: string;
 
-    constructor(private elementRef: ElementRef) {};
+    constructor(private elementRef: ElementRef) {
+    };
 
     ngOnInit(): void {
         this.value = _.cloneDeep(this.model);
@@ -50,7 +52,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
         this.elementRef.nativeElement.appendChild(s);
     }
 
-    setHtml (html) {
+    setHtml(html) {
         this.localFormat = html ? 'html' : '';
     }
 
@@ -64,7 +66,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
         this.editMode = false;
     }
 
-    static isInvalidHtml (html) {
+    static isInvalidHtml(html) {
         let srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
         if (srcs) {
             for (let i = 0; i < srcs.length; i++) {
@@ -83,13 +85,15 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
         return false;
     };
 
-    save() {
+    confirmSave() {
         if (InlineAreaEditComponent.isInvalidHtml(this.value)) {
             alert('Error. Img src may only be a relative url starting with /data');
         } else {
             this.editMode = false;
+            this.defFormat = this.localFormat;
             this.modelChange.emit(this.value);
             this.defFormatChange.emit(this.localFormat);
+            this.save.emit();
         }
     }
 

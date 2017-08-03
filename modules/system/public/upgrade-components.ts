@@ -9,6 +9,7 @@ export class CdeAccordionListDirective extends UpgradeComponent {
     @Input() cdes: any;
     @Input() ejsPage: any;
     @Input() module: any;
+
     constructor(elementRef: ElementRef, injector: Injector) {
         super("cdeAccordionList", elementRef, injector);
     }
@@ -21,6 +22,7 @@ export class FormAccordionListDirective extends UpgradeComponent {
     @Input() forms: any;
     @Input() ejsPage: any;
     @Input() module: any;
+
     constructor(elementRef: ElementRef, injector: Injector) {
         super("formAccordionList", elementRef, injector);
     }

@@ -16,6 +16,7 @@ import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetai
 import { CdeSummaryListComponent } from "./components/searchResults/cdeSummaryList.component";
 import { CdeSummaryListContentComponent } from "./components/searchResults/cdeSummaryListContent.component";
 import { ConceptsComponent } from "./components/concepts.component";
+import { CdeAccordionListNg2Component } from "./components/cdeAccordionListNg2.component";
 import { DatasetsComponent } from "./components/datasets/datasets.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
@@ -25,6 +26,12 @@ import { PermissibleValueComponent } from "./components/permissibleValue.compone
 import { RegistrationValidatorService } from "./components/validationRules/registrationValidator.service";
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
+import { DataElementService } from "./dataElement.service";
+import { DataElementViewComponent } from "./components/dataElementView.component";
+import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import { CreateDataElementComponent } from "./components/createDataElement.component";
+import { SystemModule } from "../../system/public/system.module";
+import { DiscussModule } from "../../discuss/discuss.module";
 
 @NgModule({
     imports: [
@@ -38,6 +45,9 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         FormModule,
         SearchModule,
         WidgetModule,
+        TreeModule,
+        SystemModule,
+        DiscussModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,
@@ -45,39 +55,32 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
+        CreateDataElementComponent,
+        CdeAccordionListNg2Component,
         ConceptsComponent,
-        DeGeneralDetailsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
-        KeysPipe,
+        DeGeneralDetailsComponent,
+        DataElementViewComponent,
         MoreLikeThisComponent,
-        PermissibleValueComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
-        CdeSummaryListComponent,
-        DeGeneralDetailsComponent,
         PermissibleValueComponent,
+        KeysPipe
     ],
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
-        CdeGeneralDetailsComponent,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
-        ConceptsComponent,
-        DatasetsComponent,
-        DeGeneralDetailsComponent,
-        DerivationRulesComponent,
-        MoreLikeThisComponent,
-        PermissibleValueComponent,
-        ValidRulesComponent,
-        ValueDomainSummaryComponent,
-        PermissibleValueComponent,
+        CdeAccordionListNg2Component,
+        CreateDataElementComponent,
+        DataElementViewComponent
     ],
-    exports: [
-    ],
+    exports: [],
     providers: [
         RegistrationValidatorService,
+        DataElementService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

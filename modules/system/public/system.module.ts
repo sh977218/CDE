@@ -84,7 +84,9 @@ import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/e
         SwaggerComponent,
         UsersMgtComponent,
     ],
-    exports: [],
+    exports: [
+        CdeAccordionListDirective
+    ],
     providers: [
         AlertService,
         CdeDiffPopulateService
