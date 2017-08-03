@@ -31,6 +31,7 @@ cursor.on('data', function (dataElement) {
 });
 cursor.on('close', function () {
     console.info("Finished all. count: " + count);
+    process.exit(1);
 });
 
 
