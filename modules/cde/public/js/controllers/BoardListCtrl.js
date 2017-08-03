@@ -21,6 +21,8 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
         });
     };
 
+    $scope.loadPublicBoards();
+
     $scope.canEditBoard = function () {
         return false;
     };

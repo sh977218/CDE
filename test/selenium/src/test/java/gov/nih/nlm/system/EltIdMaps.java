@@ -30,6 +30,7 @@ public class EltIdMaps {
         eltMap.put("History data reliability type", "K8v6jJWkmmC");
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
+        eltMap.put("Investigator Identifier java.lang.Integer", "wT3DsGm-bea");
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");
         eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
         eltMap.put("Little interest or pleasure in doing things in last 2 weeks [Reported.PHQ]", "QkWPURx5Fz");

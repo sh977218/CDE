@@ -104,6 +104,7 @@
                    [ngModel]="question.skipLogic.condition"
                    (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event); stageElt.emit()"
                    class="form-control skipLogicCondition"
+                   placeholder="Start typing a question name to find options"
                    [ngbTypeahead]="getSkipLogicOptions"
                    (selectItem)="validateSkipLogic(question.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
             <span [textContent]="question.skipLogic?.validationError"></span>

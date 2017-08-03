@@ -18,25 +18,27 @@
 
 <ng-template #quickBoardContent>
     <div class="container-fluid mt20">
-        <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"
-                                [module]="quickBoardListService.module"></cde-list-view-controls>
-        <div class="btn-group ml-3">
-            <button id="qb_{{quickBoardListService.module}}_empty" class="btn btn-default" value="Empty Quick Board"
-                    (click)="quickBoardListService.quickBoard.empty()">
-                <i class="fa fa-trash-o"></i> Empty Quick Board
-            </button>
-            <ng-container *ngIf="quickBoardListService.module==='cde'">
-                <button id="qb_{{quickBoardListService.module}}_export" class="btn btn-default" value="Export Quick Board"
-                        (click)="exportService.quickBoardExport(quickBoardListService.quickBoard)">
-                    <i class="fa fa-download"></i> Export Quick Board
+        <ng-container *ngIf="quickBoardListService.quickBoard.elts.length > 0">
+            <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"
+                                    [module]="quickBoardListService.module"></cde-list-view-controls>
+            <div class="btn-group ml-3">
+                <button id="qb_{{quickBoardListService.module}}_empty" class="btn btn-default" value="Empty Quick Board"
+                        (click)="quickBoardListService.quickBoard.empty()">
+                    <i class="fa fa-trash-o"></i> Empty Quick Board
                 </button>
-            </ng-container>
-        </div>
-        <cde-elts-compare *ngIf="ng1TemplateLoaded.sideBySide && listViews[quickBoardListService.module] === 'summary'"
-                          [eltsToCompare]="quickBoardListService.getSelectedElts()"
-                          [module]="quickBoardListService.module"></cde-elts-compare>
+                <ng-container *ngIf="quickBoardListService.module==='cde'">
+                    <button id="qb_{{quickBoardListService.module}}_export" class="btn btn-default" value="Export Quick Board"
+                            (click)="exportService.quickBoardExport(quickBoardListService.quickBoard)">
+                        <i class="fa fa-download"></i> Export Quick Board
+                    </button>
+                </ng-container>
+            </div>
+            <cde-elts-compare *ngIf="ng1TemplateLoaded.sideBySide && listViews[quickBoardListService.module] === 'summary'"
+                              [eltsToCompare]="quickBoardListService.getSelectedElts()"
+                              [module]="quickBoardListService.module"></cde-elts-compare>
 
-        <hr/>
+            <hr/>
+        </ng-container>
 
         <div *ngIf="quickBoardListService.quickBoard.loading" class="container pt40 pb40 text-center">
             <h1><i class="fa fa-spinner fa-pulse"></i> Loading...</h1>
