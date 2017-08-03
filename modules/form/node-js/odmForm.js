@@ -1,5 +1,6 @@
-var _ = require("lodash");
-var _crypto;
+const JXON = require("jxon");
+const _ = require("lodash");
+let _crypto;
 
 if (typeof(window) === "undefined") {
     // This will be executed in NodeJS
@@ -11,7 +12,7 @@ if (typeof(window) === "undefined") {
     } catch (e) {
     }
 }
-var ODM_DATATYPE_MAP = {
+const ODM_DATATYPE_MAP = {
     "Value List": "text",
     "Character": "text",
     "Numeric": "float",
@@ -41,12 +42,12 @@ var ODM_DATATYPE_MAP = {
 };
 
 function flattenFormElement(fe) {
-    var result = [];
+    let result = [];
     fe.formElements.map(function (subFe) {
         if (!subFe.formElements || subFe.formElements.length === 0) {
             result.push(subFe);
         } else {
-            var subEs = flattenFormElement(subFe);
+            let subEs = flattenFormElement(subFe);
             subEs.forEach(function (e) {
                 result.push(e);
             });
@@ -61,7 +62,7 @@ exports.getFormOdm = function (form, cb) {
     if (!form.formElements) {
         form.formElements = [];
     }
-    var odmJsonForm = {
+    let odmJsonForm = {
         '$CreationDateTime': new Date().toISOString(),
         '$FileOID': form.tinyId,
         '$FileType': 'Snapshot',
@@ -111,17 +112,17 @@ exports.getFormOdm = function (form, cb) {
             }
         }
     };
-    var sections = [];
-    var questions = [];
-    var codeLists = [];
+    let sections = [];
+    let questions = [];
+    let codeLists = [];
 
     form.formElements.forEach(function (s1, si) {
-        var childrenOids = [];
+        let childrenOids = [];
         flattenFormElement(s1).forEach(function (q1, qi) {
-            var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
+            let oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
-            var omdDatatype = ODM_DATATYPE_MAP[q1.question.datatype] ? ODM_DATATYPE_MAP[q1.question.datatype] : "text";
-            var odmQuestion = {
+            let omdDatatype = ODM_DATATYPE_MAP[q1.question.datatype] ? ODM_DATATYPE_MAP[q1.question.datatype] : "text";
+            let odmQuestion = {
                 Question: {
                     TranslatedText: {
                         '$xml:lang': 'en',
@@ -133,12 +134,12 @@ exports.getFormOdm = function (form, cb) {
                 '$OID': oid
             };
             if (q1.question.answers) {
-                var codeListAlreadyPresent = false;
+                let codeListAlreadyPresent = false;
                 codeLists.forEach(function (cl) {
-                    var codeListInHouse = cl.CodeListItem.map(function (i) {
+                    let codeListInHouse = cl.CodeListItem.map(function (i) {
                         return i.Decode.TranslatedText._;
                     }).sort();
-                    var codeListToAdd = q1.question.answers.map(function (a) {
+                    let codeListToAdd = q1.question.answers.map(function (a) {
                         return a.valueMeaningName;
                     }).sort();
                     if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
@@ -150,13 +151,13 @@ exports.getFormOdm = function (form, cb) {
                 if (!codeListAlreadyPresent) {
                     odmQuestion.CodeListRef = {'$CodeListOID': 'CL_' + oid};
                     questions.push(odmQuestion);
-                    var codeList = {
+                    let codeList = {
                         '$DataType': omdDatatype,
                         '$OID': 'CL_' + oid,
                         '$Name': q1.label
                     };
                     codeList.CodeListItem = q1.question.answers.map(function (pv) {
-                        var cl = {
+                        let cl = {
                             '$CodedValue': pv.permissibleValue,
                             Decode: {
                                 TranslatedText: {
@@ -175,7 +176,7 @@ exports.getFormOdm = function (form, cb) {
                 }
             }
         });
-        var oid = _crypto.createHash('md5').update(s1.label).digest('hex');
+        let oid = _crypto.createHash('md5').update(s1.label).digest('hex');
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
             '$ItemGroupOID': oid,
             '$Mandatory': 'Yes',
@@ -210,5 +211,5 @@ exports.getFormOdm = function (form, cb) {
     codeLists.forEach(function (cl) {
         odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
     });
-    cb(null, odmJsonForm);
+    cb(null, JXON.jsToString({element: odmJsonForm}));
 };

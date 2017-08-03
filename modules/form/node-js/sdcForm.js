@@ -175,9 +175,9 @@ exports.formToSDC = function (form, renderer, cb) {
         if (noSupport) {
             cb("SDC Export does not support questions outside of sections. ");
         } else if (renderer === "defaultHtml") {
-            cb("<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr);
+            cb(null, "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr);
         } else {
-            cb(xmlStr);
+            cb(null, xmlStr);
         }
     });
 };

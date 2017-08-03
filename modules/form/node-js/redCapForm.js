@@ -1,24 +1,33 @@
-var exportShared = require('../../system/shared/exportShared');
-
-var existingVariables = {};
-var label_variables_map = {};
-var field_type_map = {
+const archiver = require("archiver");
+const exportShared = require('../../system/shared/exportShared');
+const field_type_map = {
     "Text": "text",
     "Value List": "radio",
     "Number": "text",
     "Date": "text"
 };
-var text_validation_type_map = {
+const text_validation_type_map = {
     "Text": "",
     "Value List": "",
     "Number": "number",
     "Date": "date"
 };
 
-exports.loopForm = function (form) {
+const redCapExportWarnings = {
+    "PhenX": "You can download PhenX REDCap from <a class='alert-link' href='https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist'>here</a>.",
+    "PROMIS / Neuro-QOL": "You can download PROMIS / Neuro-QOL REDCap from <a class='alert-link' href='http://project-redcap.org/'>here</a>.",
+    "emptySection": "REDCap cannot support empty section.",
+    "nestedSection": "REDCap cannot support nested section.",
+    "unknownElementType": "This form has error."
+};
+
+let existingVariables = {};
+let label_variables_map = {};
+
+function loopForm(form) {
     function loopFormElements(fe) {
-        for (var i = 0; i < fe.formElements.length; i++) {
-            var e = fe.formElements[i];
+        for (let i = 0; i < fe.formElements.length; i++) {
+            let e = fe.formElements[i];
             if (e.elementType === 'section') {
                 return loopFormElements(e, true);
             } else if (e.elementType !== 'question') {
@@ -29,7 +38,7 @@ exports.loopForm = function (form) {
     }
 
     return loopFormElements(form, false);
-};
+}
 
 function formatSkipLogic(text, map) {
     if (text) {
@@ -44,15 +53,15 @@ function formatSkipLogic(text, map) {
 }
 
 function getRedCap(form) {
-    var instrumentResult = '';
-    var loopFormElements = function (fe) {
-        var sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
-        var sectionHeader = '';
+    let instrumentResult = '';
+    let loopFormElements = function (fe) {
+        let sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
+        let sectionHeader = '';
         if (fe.elementType === 'section') {
             sectionHeader = fe.label;
         }
         if (sectionsAsMatrix) {
-            var answers = JSON.stringify(fe.formElements[0].question.answers);
+            let answers = JSON.stringify(fe.formElements[0].question.answers);
             fe.formElements.forEach(function (e) {
                 if (answers !== JSON.stringify(e.question.answers) || e.question.answers.length === 0) {
                     sectionsAsMatrix = false;
@@ -61,14 +70,14 @@ function getRedCap(form) {
         }
         fe.formElements.forEach(function (e, i) {
             if (e.elementType === 'question') {
-                var q = e.question;
-                var questionSkipLogic = '';
+                let q = e.question;
+                let questionSkipLogic = '';
                 if (e.skipLogic)
                     questionSkipLogic = e.skipLogic.condition;
-                var variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
+                let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
                 if (existingVariables[variableName]) {
-                    var index = existingVariables[variableName];
-                    var newVariableName = variableName + "_" + index;
+                    let index = existingVariables[variableName];
+                    let newVariableName = variableName + "_" + index;
                     existingVariables[variableName] = index++;
                     existingVariables[newVariableName] = 1;
                     label_variables_map[e.label] = variableName;
@@ -77,7 +86,7 @@ function getRedCap(form) {
                     existingVariables[variableName] = 1;
                     label_variables_map[e.label] = variableName;
                 }
-                var questionRow = {
+                let questionRow = {
                     'Variable / Field Name': variableName,
                     'Form Name': form.naming[0].designation,
                     'Section Header': i === 0 ? sectionHeader : '',
@@ -100,21 +109,41 @@ function getRedCap(form) {
                 };
                 instrumentResult += exportShared.convertToCsv(questionRow);
             }
-            else if (e.elementType === 'section') {
+            else if (e.elementType === 'section')
                 loopFormElements(e);
-            }
-            else {
-                throw "unknown elementType";
-            }
+            else throw "unknown elementType";
         });
         return instrumentResult;
     };
-
     return loopFormElements(form);
 }
 
-exports.formToRedCap = function (form) {
-    var instrumentResult = getRedCap(form);
+function formToRedCap(form) {
+    let instrumentResult = getRedCap(form);
     return exportShared.exportHeader.redCapHeader + instrumentResult;
+}
+
+exports.getZipRedCap = function (form, res) {
+    if (redCapExportWarnings[form.stewardOrg.name])
+        return res.status(202).send(redCapExportWarnings[form.stewardOrg.name]);
+    let validationErr = loopForm(form);
+    if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
+    res.writeHead(200, {
+        "Content-Type": "application/zip",
+        "Content-disposition": "attachment; filename=" + form.naming[0].designation + ".zip"
+    });
+    let zip = archiver("zip", {});
+    zip.on("error", function (err) {
+        res.status(500).send({error: err.message});
+    });
+
+    //on stream closed we can end the request
+    zip.on("end", function () {
+    });
+    zip.pipe(res);
+    zip.append("NLM", {name: "AuthorID.txt"})
+        .append(form.tinyId, {name: "InstrumentID.txt"})
+        .append(formToRedCap(form), {name: "instrument.csv"})
+        .finalize();
 };
 

@@ -1,20 +1,71 @@
-let JXON = require("jxon");
-let archiver = require("archiver");
+let async = require("async");
+let mongo_cde = require("../../cde/node-js/mongo-cde");
 let mongo_form = require("./mongo-form");
 let mongo_data_system = require("../../system/node-js/mongo-data");
 let authorization = require("../../system/node-js/authorization");
+let nih = require("./nihForm");
 let sdc = require("./sdcForm");
 let odm = require("./odmForm");
 let redCap = require("./redCapForm");
 let publishForm = require("./publishForm");
 
-let redCapExportWarnings = {
-    "PhenX": "You can download PhenX REDCap from <a class='alert-link' href='https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist'>here</a>.",
-    "PROMIS / Neuro-QOL": "You can download PROMIS / Neuro-QOL REDCap from <a class='alert-link' href='http://project-redcap.org/'>here</a>.",
-    "emptySection": "REDCap cannot support empty section.",
-    "nestedSection": "REDCap cannot support nested section.",
-    "unknownElementType": "This form has error."
-};
+function setResponseXmlHeader(res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.setHeader("Content-Type", "application/xml");
+}
+
+function fetchWholeForm(form, callback) {
+    let formOutdated = false;
+    let maxDepth = 8;
+    let depth = 0;
+    let loopFormElements = function (f, cb) {
+        if (!f) return cb();
+        if (!f.formElements) f.formElements = [];
+        async.forEachSeries(f.formElements, function (fe, doneOne) {
+            if (fe.elementType === "form") {
+                depth++;
+                if (depth < maxDepth) {
+                    let tinyId = fe.inForm.form.tinyId;
+                    let version = fe.inForm.form.version;
+                    mongo_form.byTinyIdAndVersion(tinyId, version, function (err, result) {
+                        if (err) return cb("Retrieving form tinyId: " + fe.inForm.form.tinyId + " version: " + fe.inForm.form.version + " has error: " + err);
+                        result = result.toObject();
+                        fe.formElements = result.formElements;
+                        loopFormElements(fe, function () {
+                            depth--;
+                            doneOne();
+                        });
+                    });
+                } else doneOne();
+            } else if (fe.elementType === "section") {
+                loopFormElements(fe, doneOne);
+            } else {
+                let tinyId = fe.question.cde.tinyId;
+                let version = fe.question.cde.version;
+                mongo_cde.byTinyId(tinyId, function (err, dataElement) {
+                    if (err || !dataElement) cb(err);
+                    else {
+                        let de = dataElement.toObject();
+                        if (version !== de.version) {
+                            fe.question.cde.outdated = true;
+                            formOutdated = true;
+                        }
+                        fe.question.cde.derivationRules = de.derivationRules;
+                        doneOne();
+                    }
+                });
+            }
+        }, function doneAll() {
+            cb();
+        });
+    };
+    if (!form) return callback();
+    loopFormElements(form, function (err) {
+        if (formOutdated) form.outdated = true;
+        callback(err, form);
+    });
+}
 
 function wipeRenderDisallowed(form, req, cb) {
     if (form && form.noRenderAllowed) {
@@ -22,9 +73,7 @@ function wipeRenderDisallowed(form, req, cb) {
             if (!isYouAllowed) form.formElements = [];
             cb();
         });
-    } else {
-        cb();
-    }
+    } else cb();
 }
 
 exports.byId = function (req, res) {
@@ -33,59 +82,34 @@ exports.byId = function (req, res) {
     mongo_form.byId(id, function (err, form) {
         if (err) return res.status(500).send("ERROR");
         if (!form) return res.status(404).send();
-        wipeRenderDisallowed(form, req, function (err) {
+        form = form.toObject();
+        fetchWholeForm(form, function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR");
-            if (req.query.type === 'xml') {
-                res.header("Access-Control-Allow-Origin", "*");
-                res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                res.setHeader("Content-Type", "application/xml");
-                if (req.query.subtype === 'odm') {
-                    odm.getFormOdm(form, function (err, xmlForm) {
-                        if (err) return res.status(500).send("ERROR");
-                        res.setHeader("Content-Type", "text/xml");
-                        return res.send(JXON.jsToString({element: xmlForm}));
-                    });
-                } else if (req.query.subtype === 'sdc') {
-                    sdc.formToSDC(form, req.query.renderer, function (txt) {
-                        return res.send(txt);
-                    });
-                } else {
-                    let exportForm = form.toObject();
-                    delete exportForm._id;
-                    delete exportForm.history;
-                    exportForm.formElements.forEach(function (s) {
-                        s.formElements.forEach(function (q) {
-                            delete q._id;
+            wipeRenderDisallowed(wholeForm, req, function (err) {
+                if (err) return res.status(500).send("ERROR");
+                if (req.query.type === 'xml') {
+                    setResponseXmlHeader(res);
+                    if (req.query.subtype === 'odm')
+                        odm.getFormOdm(wholeForm, function (err, xmlForm) {
+                            if (err) return res.status(500).send("ERROR");
+                            res.setHeader("Content-Type", "text/xml");
+                            return res.send(xmlForm);
                         });
-                    });
-                    return res.send(JXON.jsToString({element: exportForm}));
-                }
-            } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
-                if (redCapExportWarnings[form.stewardOrg.name])
-                    return res.status(202).send(redCapExportWarnings[form.stewardOrg.name]);
-                let validationErr = redCap.loopForm(form);
-                if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
-                res.writeHead(200, {
-                    "Content-Type": "application/zip",
-                    "Content-disposition": "attachment; filename=" + form.naming[0].designation + ".zip"
-                });
-                let zip = archiver("zip", {});
-                zip.on("error", function (err) {
-                    res.status(500).send({error: err.message});
-                });
-
-                //on stream closed we can end the request
-                zip.on("end", function () {
-                });
-                zip.pipe(res);
-                zip.append("NLM", {name: "AuthorID.txt"})
-                    .append(form.tinyId, {name: "InstrumentID.txt"})
-                    .append(redCap.formToRedCap(form), {name: "instrument.csv"})
-                    .finalize();
-            }
-            else res.send(form);
+                    else if (req.query.subtype === 'sdc')
+                        sdc.formToSDC(wholeForm, req.query.renderer, function (err, sdcForm) {
+                            if (err) return res.send(err);
+                            return res.send(sdcForm);
+                        });
+                    else nih.getFormNih(wholeForm, function (err, xmlForm) {
+                            if (err) return res.status(500).send("ERROR");
+                            return res.send(xmlForm);
+                        });
+                } else if (req.query.type && req.query.type.toLowerCase() === 'redcap')
+                    redCap.getZipRedCap(wholeForm, res);
+                else res.send(wholeForm);
+            });
+            mongo_data_system.addToViewHistory(wholeForm, req.user);
         });
-        mongo_data_system.addToViewHistory(form, req.user);
     });
 };
 
@@ -97,7 +121,12 @@ exports.priorForms = function (req, res) {
         if (!form) res.status(404).send();
         mongo_form.byIdList(form.history, function (err, priorForms) {
             if (err) return res.status(500).send("ERROR");
-            res.send(priorForms);
+            async.forEachSeries(priorForms, function (priorForm, doneOnePriorForm) {
+                priorForm = priorForm.toObject();
+                fetchWholeForm(priorForm, doneOnePriorForm);
+            }, function doneAllPriorForms() {
+                res.send(priorForms);
+            });
         });
     });
 };
@@ -108,59 +137,34 @@ exports.byTinyId = function (req, res) {
     mongo_form.byTinyId(tinyId, function (err, form) {
         if (err) return res.status(500).send("ERROR");
         if (!form) return res.status(404).send();
-        wipeRenderDisallowed(form, req, function (err) {
+        form = form.toObject();
+        fetchWholeForm(form, function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR");
-            if (req.query.type === 'xml') {
-                res.header("Access-Control-Allow-Origin", "*");
-                res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                res.setHeader("Content-Type", "application/xml");
-                if (req.query.subtype === 'odm') {
-                    res.setHeader("Content-Type", "text/xml");
-                    odm.getFormOdm(form, function (err, xmlForm) {
-                        if (err) return res.status(500).send("ERROR");
-                        return res.send(JXON.jsToString({element: xmlForm}));
-                    });
-                } else if (req.query.subtype === 'sdc') {
-                    sdc.formToSDC(form, req.query.renderer, function (txt) {
-                        return res.send(txt);
-                    });
-                } else {
-                    let exportForm = form.toObject();
-                    delete exportForm._id;
-                    delete exportForm.history;
-                    exportForm.formElements.forEach(function (s) {
-                        s.formElements.forEach(function (q) {
-                            delete q._id;
+            wipeRenderDisallowed(wholeForm, req, function (err) {
+                if (err) return res.status(500).send("ERROR");
+                if (req.query.type === 'xml') {
+                    setResponseXmlHeader(res);
+                    if (req.query.subtype === 'odm')
+                        odm.getFormOdm(wholeForm, function (err, xmlForm) {
+                            if (err) return res.status(500).send("ERROR");
+                            res.setHeader("Content-Type", "text/xml");
+                            return res.send(xmlForm);
                         });
-                    });
-                    return res.send(JXON.jsToString({element: exportForm}));
-                }
-            } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
-                if (redCapExportWarnings[form.stewardOrg.name])
-                    return res.status(202).send(redCapExportWarnings[form.stewardOrg.name]);
-                let validationErr = redCap.loopForm(form);
-                if (validationErr) return res.status(500).send(redCapExportWarnings[validationErr]);
-                res.writeHead(200, {
-                    "Content-Type": "application/zip",
-                    "Content-disposition": "attachment; filename=" + form.naming[0].designation + ".zip"
-                });
-                let zip = archiver("zip", {});
-                zip.on("error", function (err) {
-                    res.status(500).send({error: err.message});
-                });
-
-                //on stream closed we can end the request
-                zip.on("end", function () {
-                });
-                zip.pipe(res);
-                zip.append("NLM", {name: "AuthorID.txt"})
-                    .append(form.tinyId, {name: "InstrumentID.txt"})
-                    .append(redCap.formToRedCap(form), {name: "instrument.csv"})
-                    .finalize();
-            }
-            else res.send(form);
+                    else if (req.query.subtype === 'sdc')
+                        sdc.formToSDC(wholeForm, req.query.renderer, function (err, sdcForm) {
+                            if (err) return res.send(err);
+                            return res.send(sdcForm);
+                        });
+                    else nih.getFormNih(wholeForm, function (err, xmlForm) {
+                            if (err) return res.status(500).send("ERROR");
+                            return res.send(xmlForm);
+                        });
+                } else if (req.query.type && req.query.type.toLowerCase() === 'redcap')
+                    redCap.getZipRedCap(wholeForm, res);
+                else res.send(wholeForm);
+            });
+            mongo_data_system.addToViewHistory(wholeForm, req.user);
         });
-        mongo_data_system.addToViewHistory(form, req.user);
     });
 };
 
@@ -171,9 +175,13 @@ exports.byTinyIdVersion = function (req, res) {
     mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
         if (err) return res.status(500).send();
         if (!form) return res.status(404).send();
-        wipeRenderDisallowed(form, req, function (err) {
+        form = form.toObject();
+        fetchWholeForm(form, function (err, wholeForm) {
             if (err) return res.status(500).send("ERROR");
-            res.send(form);
+            wipeRenderDisallowed(wholeForm, req, function (err) {
+                if (err) return res.status(500).send("ERROR");
+                res.send(wholeForm);
+            });
         });
     });
 };
@@ -192,7 +200,11 @@ exports.publishForm = function (req, res) {
     if (!id) return res.status(400).send();
     if (!req.isAuthenticated()) return res.status(401).send("Not Authorized");
     mongo_form.byId(id, function (err, form) {
-        publishForm.getFormForPublishing(form, req, res);
+        form = form.toObject();
+        fetchWholeForm(form, function (err, wholeForm) {
+            if (err) return res.status(500).send("ERROR");
+            publishForm.getFormForPublishing(wholeForm, req, res);
+        });
     });
 };
 
