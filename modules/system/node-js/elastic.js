@@ -581,72 +581,71 @@ exports.syncWithMesh = function(allMappings) {
     });
 
     let searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
-    searches.forEach(function (search) {
+    searches.forEach(search => {
         search.scroll = '1m';
         search.body = {};
     });
 
     let scrollThrough = function (scrollId, s) {
-        esClient.scroll({scrollId: scrollId, scroll: '1m'},
-            function (err, response) {
-                if (err) {
-                    lock = false;
-                    logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
-                        {
-                            origin: "system.elastic.syncWithMesh", stack: new Error().stack
-                        });
-                } else {
-                    let newScrollId = response._scroll_id;
-                    exports.meshSyncStatus[s.type].total = response.hits.total;
-                    if (response.hits.hits.length > 0) {
-                        let request = {
-                            body: []
-                        };
-                        response.hits.hits.forEach(function (hit) {
-                            let thisElt = hit._source;
-                            let trees = new Set();
-                            let simpleTrees = new Set();
-                            if (!thisElt.flatClassifications) thisElt.flatClassifications = [];
-                            thisElt.flatClassifications.forEach(function (fc) {
-                                if (classifToTrees[fc]) {
-                                    classifToTrees[fc].forEach(function (node) {
-                                        trees.add(node);
-                                    });
-                                }
-                                if (classifToSimpleTrees[fc]) {
-                                    classifToSimpleTrees[fc].forEach(function (node) {
-                                        simpleTrees.add(node);
-                                    });
-                                }
-                            });
-                            if (trees.size > 0) {
-                                request.body.push({
-                                    update: {
-                                        _index: s.index,
-                                        _type: s.type,
-                                        _id: thisElt.tinyId
-                                    }});
-                                request.body.push({doc: {
-                                        flatMeshTrees: Array.from(trees),
-                                        flatMeshSimpleTrees: Array.from(simpleTrees)
-                                    }
+        esClient.scroll({scrollId: scrollId, scroll: '1m'}, (err, response) => {
+            if (err) {
+                lock = false;
+                logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
+                    {origin: "system.elastic.syncWithMesh", stack: new Error().stack});
+            } else {
+                let newScrollId = response._scroll_id;
+                exports.meshSyncStatus[s.type].total = response.hits.total;
+                if (response.hits.hits.length > 0) {
+                    let request = {body: []};
+                    response.hits.hits.forEach(hit => {
+                        let thisElt = hit._source;
+                        let trees = new Set();
+                        let simpleTrees = new Set();
+                        if (!thisElt.flatClassifications) thisElt.flatClassifications = [];
+                        thisElt.flatClassifications.forEach(function (fc) {
+                            if (classifToTrees[fc]) {
+                                classifToTrees[fc].forEach(function (node) {
+                                    trees.add(node);
                                 });
                             }
-                            exports.meshSyncStatus[s.type].done++;
+                            if (classifToSimpleTrees[fc]) {
+                                classifToSimpleTrees[fc].forEach(function (node) {
+                                    simpleTrees.add(node);
+                                });
+                            }
                         });
+                        if (trees.size > 0) {
+                            request.body.push({
+                                update: {
+                                    _index: s.index,
+                                    _type: s.type,
+                                    _id: thisElt.tinyId
+                                }});
+                            request.body.push({doc: {
+                                    flatMeshTrees: Array.from(trees),
+                                    flatMeshSimpleTrees: Array.from(simpleTrees)
+                                }
+                            });
+                        }
+                        exports.meshSyncStatus[s.type].done++;
+                    });
+                    if (request.body.length > 0) {
                         esClient.bulk(request, err => {
                             if (err) dbLogger.consoleLog("ERR: " + err, 'error');
                             scrollThrough(newScrollId, s);
                         });
                     } else {
-                        dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
+                        scrollThrough(newScrollId, s);
                     }
+                } else {
+                    dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
                 }
-            });
+            }
+        });
     };
 
-    searches.forEach(function (search) {
-        esClient.search(search, function (err, response) {
+    searches.forEach(search => {
+        esClient.search(search, (err, response) => {
             if (err) {
                 lock = false;
                 logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
@@ -692,7 +691,7 @@ exports.elasticsearch = function (query, type, cb) {
                 cb("Server Error");
             }
         } else {
-            if (response.hits.total === 0 && config.name.indexOf("Production") === -1) {
+            if (response.hits.total === 0 && config.name.indexOf("Prod") === -1) {
                 dbLogger.consoleLog("No response. QUERY: " + JSON.stringify(query), 'debug');
             }
 

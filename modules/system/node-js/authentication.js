@@ -216,8 +216,7 @@ exports.findAddUserLocally = function (profile, cb) {
                     quota: 1024 * 1024 * 1024,
                     accessToken: profile.accessToken,
                     refreshToken: profile.refreshToken
-                },
-                function (newUser) {
+                },  (err, newUser) => {
                     auth.updateUserAfterLogin(newUser, profile.ip);
                     cb(newUser);
                 });
