@@ -1,5 +1,5 @@
-let config = require('config');
-let hash = require("crypto");
+const config = require('config');
+const hash = require("crypto");
 
 exports.createIndexJson = {
     "mappings": {
