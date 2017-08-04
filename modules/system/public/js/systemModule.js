@@ -531,7 +531,6 @@ angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComp
 }));
 
 import { HistoryComponent } from "../../../adminItem/public/components/history.component";
-
 angular.module('systemModule').directive('cdeAdminItemHistory', downgradeComponent({
     component: HistoryComponent,
     inputs: ['elt'],
@@ -539,7 +538,6 @@ angular.module('systemModule').directive('cdeAdminItemHistory', downgradeCompone
 }));
 
 import { NamingComponent } from "../../../adminItem/public/components/naming.component";
-
 angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({
     component: NamingComponent,
     inputs: ['elt'],
@@ -547,7 +545,6 @@ angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponen
 }));
 
 import { ReferenceDocumentComponent } from "../../../adminItem/public/components/referenceDocument.component";
-
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({
     component: ReferenceDocumentComponent,
     inputs: ['elt'],
@@ -555,7 +552,6 @@ angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgr
 }));
 
 import { RegistrationComponent } from "../../../adminItem/public/components/registration/registration.component";
-
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({
     component: RegistrationComponent,
     inputs: ['elt'],
@@ -563,7 +559,6 @@ angular.module('systemModule').directive('cdeRegistration', downgradeComponent({
 }));
 
 import { TableListComponent } from "../../../search/searchResults/tableList.component";
-
 angular.module('systemModule').directive('cdeTableList', downgradeComponent({
     component: TableListComponent,
     inputs: ['elts', 'module'],
@@ -571,7 +566,6 @@ angular.module('systemModule').directive('cdeTableList', downgradeComponent({
 }));
 
 import { SwaggerComponent } from "../components/swagger.component";
-
 angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
     component: SwaggerComponent,
     inputs: [],
@@ -579,7 +573,6 @@ angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
 }));
 
 import { ClassificationComponent } from "../../../adminItem/public/components/classification/classification.component";
-
 angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({
     component: ClassificationComponent,
     inputs: ['elt'],
@@ -587,15 +580,16 @@ angular.module('systemModule').directive('cdeAdminItemClassification', downgrade
 }));
 
 import { DiscussAreaComponent } from "../../../discuss/components/discussArea/discussArea.component";
-
 angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
     {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));
 
 import { AlertService } from "../components/alert/alert.service";
-
 angular.module('systemModule').factory('AlertService', downgradeInjectable(AlertService));
 
 import { AlertComponent } from "../components/alert/alert.component";
-
 angular.module('systemModule').directive('cdeAlert', downgradeComponent(
     {component: AlertComponent, inputs: [], outputs: []}));
+
+import {ServerStatusComponent} from "../components/siteAdmin/serverStatus/serverStatus.component"
+angular.module('systemModule').directive('cdeServerStatus', downgradeComponent(
+    {component: ServerStatusComponent, inputs: [], outputs: []}));

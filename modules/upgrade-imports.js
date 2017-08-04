@@ -45,7 +45,6 @@ import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
 import "./system/public/js/controllers/TriggerClientExceptionCtrl";
 import "./system/public/js/controllers/ApproveCommentCtrl";
 import "./system/public/js/controllers/RemoveClassificationModalCtrl";
-import "./system/public/js/controllers/ServerStatusesCtrl";
 import "./system/public/js/controllers/AccordionCtrl";
 import "./system/public/js/controllers/ApproveAttachmentCtrl";
 import "./system/public/js/controllers/SwitchListViewCtrl";

@@ -33,6 +33,7 @@ import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.c
 import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
 import { StatusValidationRulesComponent } from "./components/siteAdmin/statusValidationRules/statusValidationRules.component";
 import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/editSiteAdmins.component";
+import {ServerStatusComponent} from "./components/siteAdmin/serverStatus/serverStatus.component";
 
 @NgModule({
     imports: [
@@ -64,6 +65,7 @@ import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/e
         OrgAdminComponent,
         ProfileComponent,
         ServerErrorsComponent,
+        ServerStatusComponent,
         SiteAuditComponent,
         StatusValidationRulesComponent,
         SwaggerComponent,
@@ -79,6 +81,7 @@ import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/e
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
+        ServerStatusComponent,
         SiteAuditComponent,
         StatusValidationRulesComponent,
         SwaggerComponent,
