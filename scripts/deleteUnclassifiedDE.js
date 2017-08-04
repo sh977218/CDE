@@ -1,40 +1,52 @@
 const async = require('async');
 const mongo_cde = require('../modules/cde/node-js/mongo-cde');
+const mongo_data = require('../modules/system/node-js/mongo-data');
 const DataElementModal = mongo_cde.DataElement;
 
 let count = 0;
 let cond = {'stewardOrg.name': 'NCI', archived: false, classification: {$size: 0}};
 let cursor = DataElementModal.find(cond).cursor();
 
-function removeAttachement(histories, cb) {
+function removeAttachments(de, cb) {
+    let attachments = de.attachments;
+    if (attachments && attachments.length > 0) {
+        async.forEachSeries(attachments, function (attachement, doneOneAttachment) {
+            mongo_data.removeAttachmentIfNotUsed(attachement, doneOneAttachment);
+        }, function doneAllAttachments() {
+            cb();
+        });
+    } else cb();
 }
 
-function removeHistory(attachements, cb) {
-
-}
-
-cursor.on('data', function (dataElement) {
-    let de = dataElement.toObject();
+function removeHistories(de, cb) {
     let histories = de.history;
     if (histories && histories.length > 0) {
         async.forEachSeries(histories, function (history, doneOneHistory) {
             DataElementModal.findById(history).remove((err) => {
                 if (err) throw err;
-                count++;
-                console.info("count: " + count);
                 doneOneHistory();
             });
         }, function doneAllHistories() {
-            dataElement.remove((err) => {
-                if (err) throw err;
-                count++;
-                console.info("count: " + count);
-            });
+            cb();
         });
-    } else dataElement.remove((err) => {
-        if (err) throw err;
-        count++;
-        console.info("count: " + count);
+    } else cb();
+}
+
+cursor.on('data', function (dataElement) {
+    let de = dataElement.toObject();
+    async.series([
+        function (cb) {
+            removeHistories(de, cb);
+        },
+        function (cb) {
+            removeAttachments(de, cb);
+        }
+    ], function () {
+        dataElement.remove((err) => {
+            if (err) throw err;
+            count++;
+            console.info("count: " + count);
+        });
     });
 });
 cursor.on('close', function () {

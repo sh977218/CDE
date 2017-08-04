@@ -370,12 +370,12 @@ exports.alterAttachmentStatus = function(id, status, cb) {
     }
 };
 
-exports.removeAttachmentIfNotUsed = function(id) {
+exports.removeAttachmentIfNotUsed = function (id, callback) {
     async.map(daoManager.getDaoList(), function(dao, cb) {
-        if(dao.fileUsed)
-            dao.fileUsed(id, cb);
+        if (dao.fileUsed) dao.fileUsed(id, cb);
     }, function(err, results){
-        if (results.indexOf(true)===-1) exports.deleteFileById(id);
+        if (results.indexOf(true) === -1)
+            exports.deleteFileById(id, callback);
     });
 };
 
