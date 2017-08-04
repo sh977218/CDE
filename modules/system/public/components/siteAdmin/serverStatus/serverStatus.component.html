@@ -35,10 +35,10 @@
             <dl class="dl-horizontal">
                 <dt>Status:</dt>
                 <dd>{{getNodeStatus(status)}}</dd>
-                <!--<dt>Last Up:</dt>-->
-                <!--<dd>{{status.lastUpdate | timeAgo}}</dd>-->
-                <!--<dt>UpTime:</dt>-->
-                <!--<dd>{{status.startupDate | timeAgo}}</dd>-->
+                <dt>Last Up:</dt>
+                <dd>{{status.lastUpdate | timeAgo}}</dd>
+                <dt>UpTime:</dt>
+                <dd>{{status.startupDate | timeAgo}}</dd>
                 <dt>PM Port:</dt>
                 <dd>{{status.pmPort}}</dd>
                 <dt>All Up:</dt>
@@ -50,26 +50,25 @@
             <div *ngIf="!status.allUp">
                 <h5>ElasticSearch</h5>
                 <dl class="dl-horizontal">
-                    <!--<dt>Up:</dt>-->
-                    <!--<dd>-->
-                        <!--<a class="btn btn-xs" ng-class="status.elastic.up?'btn-success':'btn-danger'">-->
-                            <!--<i class="fa" ng-class="status.elastic.up?'fa-check':'fa-times'"></i></a>-->
-                    <!--</dd>-->
-                    <dt>Message:</dt>
-                    <dd>{{status.elastic.message}}
+                    <dt>Up:</dt>
+                    <dd>
+                        <a class="btn btn-xs" [ngClass]="{'btn-success': status.elastic.up, 'btn-danger': !status.elastic.up}">
+                            <i class="fa" [ngClass]="{'fa-check': status.elastic.up, 'fa-times': !status.elastic.up}"></i></a>
                     </dd>
+                    <dt>Message:</dt>
+                    <dd>{{status.elastic.message}}</dd>
                 </dl>
-                <!--<div ng-repeat="index in status.elastic.indices" class="boxed-div">-->
-                    <!--<dl class="dl-horizontal">-->
-                        <!--<dt>{{index.name}}: </dt>-->
-                        <!--<dd>-->
-                            <!--<a class="btn btn-xs" ng-class="index.up?'btn-success':'btn-danger'">-->
-                                <!--<i class="fa" ng-class="index.up?'fa-check':'fa-times'"></i></a>-->
-                        <!--</dd>-->
-                        <!--<dt>Message:</dt>-->
-                        <!--<dd>{{index.message}}</dd>-->
-                    <!--</dl>-->
-                <!--</div>-->
+                <div *ngFor="let ind of status.elastic.indices" class="boxed-div">
+                    <dl class="dl-horizontal">
+                        <dt>{{ind.name}}: </dt>
+                        <dd>
+                            <a class="btn btn-xs" [ngClass]="{'btn-success': index.up, 'btn-danger': !index.up}">
+                                <i class="fa" [ngClass]="{'fa-check': index.up, 'fa-times': !index.up}"></i></a>
+                        </dd>
+                        <dt>Message:</dt>
+                        <dd>{{ind.message}}</dd>
+                    </dl>
+                </div>
             </div>
 
         </div>
@@ -81,10 +80,10 @@
         <h3 class="modal-title">Are you sure you want to re-index?</h3>
     </div>
     <div class="modal-body">
-        <h4>Reindexing: {{esIndices[i].indexName}}</h4>
+        <h4>Reindexing: {{esIndices[indexToReindex].indexName}}</h4>
     </div>
     <div class="modal-footer">
-        <!--<button class="btn btn-primary" type="button" ng-click="okReIndex(i); $dismiss()">OK</button>-->
+        <button class="btn btn-primary" type="button" (click)="okReIndex(); c()">OK</button>
         <button class="btn btn-warning" type="button" (click)="d()">Cancel</button>
     </div>
 </ng-template>

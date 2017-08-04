@@ -39,7 +39,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }],
             templateUrl: '/system/public/html/latestComments.html'
         }).when('/siteaccountmanagement', {
-            templateUrl: '/system/public/html/siteAccountManagement.html'
+            template: '<cde-site-management></cde-site-management>'
         }).when('/orgaccountmanagement', {
             controller: 'AccountManagementCtrl',
             templateUrl: '/system/public/html/orgAccountManagement.html'
@@ -451,15 +451,8 @@ angular.module('systemModule').directive('user-comments', downgradeComponent({
     outputs: []
 }));
 
-import { LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
-angular.module('systemModule').directive('cdeLatestComments', downgradeComponent({
-    component: LatestCommentsComponent,
-    outputs: []
-}));
-
 
 import { SiteAuditComponent } from "../components/siteAdmin/siteAudit/siteAudit.component";
-
 angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     component: SiteAuditComponent,
     inputs: [],
@@ -486,14 +479,6 @@ import { UsersMgtComponent } from "../components/siteAdmin/usersMgt/usersMgt.com
 
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
     component: UsersMgtComponent,
-    inputs: [],
-    outputs: []
-}));
-
-import { EditSiteAdminsComponent } from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
-
-angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
-    component: EditSiteAdminsComponent,
     inputs: [],
     outputs: []
 }));
@@ -593,3 +578,7 @@ angular.module('systemModule').directive('cdeAlert', downgradeComponent(
 import {ServerStatusComponent} from "../components/siteAdmin/serverStatus/serverStatus.component"
 angular.module('systemModule').directive('cdeServerStatus', downgradeComponent(
     {component: ServerStatusComponent, inputs: [], outputs: []}));
+
+import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component"
+angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent(
+    {component: SiteManagementComponent, inputs: [], outputs: []}));

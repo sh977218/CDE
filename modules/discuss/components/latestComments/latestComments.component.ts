@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 
@@ -7,10 +7,6 @@ import "rxjs/add/operator/map";
     templateUrl: "latestComments.component.html"
 })
 export class LatestCommentsComponent implements OnInit {
-
-//     if (!$scope.commentsUrl) {
-//     $scope.commentsUrl = '/allComments/';
-// }
 
     constructor(private http: Http) {}
 
@@ -36,7 +32,7 @@ export class LatestCommentsComponent implements OnInit {
         this.getComments(this.comments.currentCommentsPage);
     }
 
-    static getEltLink (c) {
+    getEltLink (c) {
         return {
             'cde': "/deView?tinyId=",
             'form': "/formView?tinyId=",

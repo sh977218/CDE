@@ -1,6 +1,8 @@
 import { Http } from "@angular/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
+import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { AlertService } from "../../alert/alert.service";
 
 @Component({
     selector: "cde-server-status",
@@ -9,11 +11,18 @@ import "rxjs/add/operator/map";
 
 export class ServerStatusComponent implements OnInit {
 
-    constructor(private http: Http) {}
+    constructor(private http: Http,
+                public modalService: NgbModal,
+                private Alert: AlertService) {}
 
     statuses: any[] = [];
     esIndices: any;
     meshSyncs: any;
+
+    indexToReindex: number;
+    isDone: boolean = false;
+
+    @ViewChild("confirmReindex") public confirmReindex: NgbModalModule;
 
     ngOnInit() {
         this.refreshStatus();
@@ -29,44 +38,31 @@ export class ServerStatusComponent implements OnInit {
         });
     }
 
-    // reIndex (i) {
-    //     this.esIndices[i].count = 0;
-    //     $uibModal.open({
-    //         animation: false,
-    //         templateUrl: 'confirmReindex.html',
-    //         controller: ["i", function (i) {
-    //             var isDone = false;
-    //             $scope.i = i;
-    //             $scope.okReIndex = function () {
-    //                 $http.post('/reindex/' + i).then(function onSuccess() {
-    //                     isDone = true;
-    //                 });
-    //                 var indexFn = setInterval(function () {
-    //                     $http.get("indexCurrentNumDoc/" + i).then(function onSuccess(response) {
-    //                         $scope.esIndices[i].count = response.data.count;
-    //                         $scope.esIndices[i].totalCount = response.data.totalCount;
-    //                         if ($scope.esIndices[i].count >= $scope.esIndices[i].totalCount && isDone) {
-    //                             clearInterval(indexFn);
-    //                             Alert.addAlert("success", "Finished reindex " + $scope.esIndices[i].name);
-    //                             setTimeout(function () {
-    //                                 $scope.esIndices[i].count = 0;
-    //                                 $scope.esIndices[i].totalCount = 0;
-    //                             }, 2000);
-    //                         }
-    //                     });
-    //                 }, 5000);
-    //             };
-    //         }],
-    //         resolve: {
-    //             i: function () {
-    //                 return i;
-    //             }
-    //         },
-    //         scope: $scope
-    //     }).result.then(function () {
-    //     }, function () {
-    //     });
-    // }
+    okReIndex () {
+        this.http.post('/reindex/' + this.indexToReindex, {}).subscribe(() => this.isDone = true);
+        let indexFn = setInterval(() => {
+            this.http.get("indexCurrentNumDoc/" + this.indexToReindex).map(r => r.json()).subscribe(response => {
+                this.esIndices[this.indexToReindex].count = response.count;
+                this.esIndices[this.indexToReindex].totalCount = response.totalCount;
+                if (this.esIndices[this.indexToReindex].count >= this.esIndices[this.indexToReindex].totalCount && this.isDone) {
+                    clearInterval(indexFn);
+                    this.Alert.addAlert("success", "Finished reindex " + this.esIndices[this.indexToReindex].name);
+                    setTimeout(() => {
+                        this.esIndices[this.indexToReindex].count = 0;
+                        this.esIndices[this.indexToReindex].totalCount = 0;
+                    }, 2000);
+                }
+            });
+        }, 5000);
+    };
+
+
+    reIndex (i) {
+        this.esIndices[i].count = 0;
+
+        this.indexToReindex = i;
+        this.modalService.open(this.confirmReindex);
+    }
 
     syncMesh () {
         this.http.post("/syncWithMesh", {}).subscribe();
@@ -82,7 +78,7 @@ export class ServerStatusComponent implements OnInit {
         }, 1000);
     }
 
-    static getNodeStatus (status) {
+    getNodeStatus (status) {
         if (status.nodeStatus === 'Running' && (new Date().getTime() - new Date(status.lastUpdate).getTime()) > (45 * 1000)) {
             return 'Not Responding';
         } else return status.nodeStatus;
