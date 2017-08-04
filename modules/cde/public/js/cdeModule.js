@@ -12,7 +12,9 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
             description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
         }).
         when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/cde/public/html/quickBoard.html', title: "Quickboard"}).
-        when('/sdcview', {controller: 'SDCViewCtrl', templateUrl: '/cde/public/html/sdcView.html'}).
+        when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
+            $scope.cdeId = $routeParams.cdeId;
+        }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
         when('/cdeSearchExport', {controller: 'DEListCtrl', templateUrl: '/cde/public/html/exportCdeSearch.html'}).
         when('/myboards', {controller: 'MyBoardsCtrl', templateUrl: '/cde/public/html/myBoards.html'}).
         when('/board/:boardId', {controller: 'SwitchListViewCtrl', templateUrl: '/board/public/html/boardView.html'}).
@@ -21,7 +23,6 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/deview', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
-        when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'}).
         when('/cdeStatusReport', {controller: 'ExportCtrl', templateUrl: '/system/public/html/cdeStatusReport.html'})
         ;
     }]);
