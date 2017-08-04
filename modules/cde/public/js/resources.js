@@ -1,15 +1,9 @@
 angular.module('resourcesCde', ['ngResource'])
-    .factory('BoardSearch', ["$resource", function ($resource) {
-        return $resource('/listboards');
-    }])
     .factory('DataElement', ["$resource", function ($resource) {
         return $resource('/de/:tinyId', {deId: '@tinyId'}, {
             update: {method: 'PUT'},
             save: {method: 'POST', params: {type: null}}
         });
-    }])
-    .factory('DataElementTinyId', ["$resource", function ($resource) {
-        return $resource('/de/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
     }])
     .factory('CdeList', ["$http", function ($http) {
         return {
@@ -40,16 +34,6 @@ angular.module('resourcesCde', ['ngResource'])
     }])
     .factory('CdeDiff', ["$resource", function ($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'}, {get: {isArray: true}});
-    }])
-    .factory("LinkToVsac", ["$resource", function ($resource) {
-        return $resource(
-            "/linktovsac",
-            {cde_id: '@cde_id', vs_id: '@vs_id'},
-            {link: {method: 'POST'}}
-        );
-    }])
-    .factory('CdesForApproval', ["$resource", function ($resource) {
-        return $resource('/cdesforapproval');
     }])
     .factory('CDE', ["$http", function ($http) {
         return {
