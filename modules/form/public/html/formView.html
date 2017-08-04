@@ -48,15 +48,17 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li ng-if="user._id">
-                        <a id='nihJson' ng-href="form/{{elt._id}}" target="_blank">JSON File, NIH/CDE Schema</a>
+                        <a id='nihJson' ng-href="form/{{elt._id}}" target="_blank" style="display: inline">JSON File, NIH/CDE Schema</a>
+                        <a href="/schema/form" target="_blank" style="display: inline"> <i class="fa fa-info-circle"></i></a>
                     </li>
                     <li ng-if="user._id">
-                        <a id='odmExport' ng-href="form/{{elt._id}}?type=xml&subtype=odm" target="_blank">XML File,
-                            ODM Schema</a>
+                        <a id='odmExport' ng-href="form/{{elt._id}}?type=xml&subtype=odm" target="_blank" style="display: inline">XML File, CDISC / ODM</a>
+                        <a href="https://www.cdisc.org" target="_blank" style="display: inline"> <i class="fa fa-info-circle"></i></a>
                     </li>
                     <li ng-if="user._id">
-                        <a id='sdcExport' ng-href="form/{{elt._id}}?type=xml&subtype=sdc" target="_blank">
-                            XML File, SDC Schema</a>
+                        <a id='sdcExport' ng-href="form/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
+                           style="display: inline">XML File, SDC Schema</a>
+                        <a href="https://github.com/esacinc/sdc-schema-package" target="_blank" style="display: inline"> <i class="fa fa-info-circle"></i></a>
                     </li>
                     <li ng-if="user._id && !isIe()">
                         <a id='sdcHtmlExport' ng-href="form/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml" target="_blank">
@@ -70,8 +72,9 @@
                         <a id='formPublishExport' ng-click="preparePublishExport()" target="_blank">Published Form</a>
                     </li>
                     <li ng-if="user._id">
-                        <a id='nihRedCap' ng-href="form/{{elt._id}}?type=REDCap" target="_blank">
+                        <a id='nihRedCap' ng-href="form/{{elt._id}}?type=REDCap" target="_blank" style="display: inline">
                             REDCap</a>
+                        <a href="https://projectredcap.org/" target="_blank" style="display: inline"> <i class="fa fa-info-circle"></i></a>
                     </li>
                     <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
                 </ul>
