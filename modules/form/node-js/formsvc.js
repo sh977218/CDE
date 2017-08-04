@@ -1,4 +1,5 @@
 let async = require("async");
+let _ = require("lodash");
 let mongo_cde = require("../../cde/node-js/mongo-cde");
 let mongo_form = require("./mongo-form");
 let mongo_data_system = require("../../system/node-js/mongo-data");
@@ -42,16 +43,17 @@ function fetchWholeForm(form, callback) {
                 loopFormElements(fe, doneOne);
             } else {
                 let tinyId = fe.question.cde.tinyId;
-                let version = fe.question.cde.version;
+                let version = fe.question.cde.version ? fe.question.cde.version : null;
                 mongo_cde.byTinyId(tinyId, function (err, dataElement) {
                     if (err || !dataElement) cb(err);
                     else {
-                        let de = dataElement.toObject();
-                        if (version !== de.version) {
+                        let systemDe = dataElement.toObject();
+                        let systemDeVersion = systemDe.version ? systemDe.version : null;
+                        if (!_.isEqual(version, systemDeVersion)) {
                             fe.question.cde.outdated = true;
                             formOutdated = true;
                         }
-                        fe.question.cde.derivationRules = de.derivationRules;
+                        fe.question.cde.derivationRules = systemDe.derivationRules;
                         doneOne();
                     }
                 });

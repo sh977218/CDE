@@ -42,10 +42,6 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 /*fixes an issue in bootstrap #1078 */
-.modal-body {
-    overflow-y: inherit;
-}
-
 .hand-cursor {
     cursor: pointer;
 }
@@ -1745,4 +1741,8 @@ ins {
 del {
     color: black;
     background: #ffbbbb;
+}
+
+.modal {
+    overflow-y: scroll !important;
 }
