@@ -13,9 +13,8 @@ public class FormJsonExport extends NlmCdeBaseTest {
         String form = "Adverse Event Tracking Log";
         goToFormByName(form);
 
-        findElement(By.id("export")).click();
-        findElement(By.id("nihJson")).click();
-
+        clickElement(By.id("export"));
+        clickElement(By.id("nihJson"));
         switchTab(1);
 
         String[] toCompare = {

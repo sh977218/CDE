@@ -3,13 +3,13 @@ angular.module('resourcesCde', ['ngResource'])
         return $resource('/listboards');
     }])
     .factory('DataElement', ["$resource", function ($resource) {
-        return $resource('/dataelement/:deId', {deId: '@deId'}, {
+        return $resource('/de/:tinyId', {deId: '@tinyId'}, {
             update: {method: 'PUT'},
             save: {method: 'POST', params: {type: null}}
         });
     }])
     .factory('DataElementTinyId', ["$resource", function ($resource) {
-        return $resource('/debytinyid/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
+        return $resource('/de/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
     }])
     .factory('CdeList', ["$http", function ($http) {
         return {
@@ -55,7 +55,7 @@ angular.module('resourcesCde', ['ngResource'])
         return {
             retire: function (cdeSrc, cdeDes, cb) {
                 $http.post("/retireCde", {cde: cdeSrc, merge: cdeDes}).then(function (response) {
-                    cb(response.data);
+                    cb(response);
                 });
             }
         };

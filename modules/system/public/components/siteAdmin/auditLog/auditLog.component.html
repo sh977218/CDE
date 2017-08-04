@@ -11,9 +11,9 @@
                 <dt>Date</dt>
                 <dd>{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
                 <dt>CDE - New Version</dt>
-                <dd><a target="_blank" href="/deview?cdeId={{edit.adminItem._id}}">{{edit.adminItem.name}}</a></dd>
+                <dd><a target="_blank" href="/deView?cdeId={{edit.adminItem._id}}">{{edit.adminItem.name}}</a></dd>
                 <dt>CDE - Previous Version</dt>
-                <dd><a target="_blank" href="/deview?cdeId={{edit.previousItem._id}}">{{edit.previousItem.name}}</a></dd>
+                <dd><a target="_blank" href="/deView?cdeId={{edit.previousItem._id}}">{{edit.previousItem.name}}</a></dd>
             </dl>
             <table *ngIf="edit.diff" id="modificationsList" class="table">
                 <caption>List of Modifications</caption>

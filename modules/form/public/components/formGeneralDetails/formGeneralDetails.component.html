@@ -16,35 +16,26 @@
         <div class="row">
             <div class="col-sm-5 questionSectionLabel">Copyrighted:</div>
             <div class="col-sm-7">
-                <input type="checkbox" [(ngModel)]="elt.isCopyrighted"
-                       [disabled]="!isAllowedModel.isAllowed(elt)"
-                       id="isCopyrighted" title="copyrighted"
-                       (click)="elt.unsaved = true"/>
+                <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!isAllowedModel.isAllowed(elt)"
+                       id="isCopyrighted" title="copyrighted" (click)="elt.unsaved = true"/>
+
                 <div *ngIf="elt.isCopyrighted">
                     Statement:
-                    <cde-inline-edit
-                            id="formCopyrightText"
-                            [(model)]="elt.copyright.text"
-                            [isAllowed]="isAllowedModel.isAllowed(elt)"
-                            (modelChange)="elt.unsaved = true"></cde-inline-edit>
-                </div>
-                <div *ngIf="elt.isCopyrighted">
+                    <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
+                                     [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                     (modelChange)="elt.unsaved = true"></cde-inline-edit>
                     Authority:
-                    <cde-inline-edit
-                            id="formCopyrightAuthority"
-                            [(model)]="elt.copyright.authority"
-                            [isAllowed]="isAllowedModel.isAllowed(elt)"
-                            (modelChange)="elt.unsaved = true"></cde-inline-edit>
+                    <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
+                                     [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                     (modelChange)="elt.unsaved = true"></cde-inline-edit>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-5 questionSectionLabel">Disallow Rendering:</div>
             <div class="col-sm-7">
-                <input type="checkbox" [(ngModel)]="elt.noRenderAllowed"
-                       [disabled]="!isAllowedModel.isAllowed(elt)"
-                       id="disallowRendering" title="disallow rendering"
-                       (click)="elt.unsaved = true"/>
+                <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!isAllowedModel.isAllowed(elt)"
+                       id="disallowRendering" title="disallow rendering" (click)="elt.unsaved = true"/>
             </div>
         </div>
         <div class="row">
@@ -80,21 +71,22 @@
         </div>
 
         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-        <cde-registration [elt]="elt"></cde-registration>
+        <cde-registration [elt]="elt" (save)="save.emit();"></cde-registration>
 
         <cde-linked-boards [elt]="elt"></cde-linked-boards>
         <cde-linked-forms [elt]="elt"></cde-linked-forms>
-
         <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
 
     </div>
     <div class="col-lg-7">
         <div *ngIf="elt.noRenderAllowed"
-             class="text-center mt20">Rendering has been disabled for this form.</div>
+             class="text-center mt20">Rendering has been disabled for this form.
+        </div>
         <div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
-             class="text-center mt20">This form has no content. There is nothing to preview.</div>
+             class="text-center mt20">This form has no content. There is nothing to preview.
+        </div>
         <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0">
-            <cde-native-render-full [eltLoaded]="deferredEltLoaded" [elt]="elt"></cde-native-render-full>
+            <cde-native-render-full [elt]="elt"></cde-native-render-full>
         </div>
     </div>
 </div>

@@ -12,8 +12,7 @@ export class MergeCdeService {
     }
 
     public getCdeByTinyId(tinyId) {
-        //noinspection TypeScriptValidateTypes
-        return this.http.get("/debytinyid/" + tinyId).map(res => res.json());
+        return this.http.get("/de/" + tinyId).map(res => res.json());
     }
 
     public doMerge(tinyIdFrom, tinyIdTo, fields, cb) {
@@ -22,7 +21,6 @@ export class MergeCdeService {
         } else {
             let cdeFromObservable = this.getCdeByTinyId(tinyIdFrom);
             let cdeToObservable = this.getCdeByTinyId(tinyIdTo);
-            //noinspection TypeScriptUnresolvedFunction
             Observable.forkJoin([cdeFromObservable, cdeToObservable]).subscribe(results => {
                     let cdeFrom = results[0];
                     let cdeTo = results[1];
@@ -45,7 +43,6 @@ export class MergeCdeService {
                     if (fields.classifications)
                         this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
                     let ownCdeFrom = this.isAllowedModel.isAllowed(cdeFrom);
-                    //noinspection TypeScriptValidateTypes
                     this.http.post("/mergeCde", {
                         mergeFrom: cdeFrom,
                         mergeTo: cdeTo,

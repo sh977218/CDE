@@ -44,10 +44,10 @@ exports.removeCategory = function (tree, fields, cb) {
         }
         if (lastLevel.elements[i].name === fields[fields.length - 1]) {
             lastLevel.elements.splice(i, 1);
-            return cb("success removed.");
+            return cb();
         }
     }
-    return cb("Did not find match classifications.")
+    return cb("Did not find match classifications.");
 };
 
 exports.classifyItem = function (item, orgName, classifPath) {

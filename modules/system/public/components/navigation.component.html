@@ -69,10 +69,10 @@
             <a ngbDropdownToggle class="dropdown-toggle" href="#" id="dropdownMenu_help" title="Help"
                attr.aria-label="Help">Help<span class="caret"></span></a>
             <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu_help">
-                <a href="/stats" class="dropdown-item" *ngIf="userService.user?._id && userService.user?.siteAdmin"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+                <a *ngIf="userService.user?._id && userService.user?.siteAdmin" href="/stats" class="dropdown-item"
+                   [attr.data-toggle]="toggleaction" data-target="#main-navigation" id="statisticsLink"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Statistics</a>
-                <a href="/api" class="dropdown-item"
+                <a href="/api" class="dropdown-item" id="apiDocumentationLink"
                    [attr.data-toggle]="toggleaction" data-target="#main-navigation"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">API Documentation</a>
             </div>

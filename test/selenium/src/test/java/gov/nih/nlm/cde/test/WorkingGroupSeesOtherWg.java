@@ -34,7 +34,7 @@ public class WorkingGroupSeesOtherWg extends BaseClassificationTest {
         textPresent("NINDS-WG-1");
         textPresent("NINDS-WG-2");
 
-        //DeView Wg1 sees Wg2
+        //deView Wg1 sees Wg2
         mustBeLoggedInAs("nindsWg1User", "pass");
         goToCdeByName("Urinary tract surgical procedure indicator");
         clickElement(By.id("classification_tab"));
@@ -42,7 +42,7 @@ public class WorkingGroupSeesOtherWg extends BaseClassificationTest {
         textPresent("WG2 Classif");
         textPresent("WG2 Sub Classif");
 
-        //DeView Ctep cannot see Wg2
+        //deView Ctep cannot see Wg2
         mustBeLoggedInAs("ctepCurator", "pass");
         goToCdeByName("Urinary tract surgical procedure indicator");
         clickElement(By.id("classification_tab"));
@@ -50,7 +50,7 @@ public class WorkingGroupSeesOtherWg extends BaseClassificationTest {
         textNotPresent("WG2 Classif");
         textNotPresent("WG2 Sub Classif");
 
-        //DeView Anon cannot see Wg2
+        //deView Anon cannot see Wg2
         logout();
         goToCdeByName("Urinary tract surgical procedure indicator");
         clickElement(By.id("classification_tab"));

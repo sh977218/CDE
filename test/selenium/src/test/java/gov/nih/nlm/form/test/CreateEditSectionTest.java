@@ -18,7 +18,7 @@ public class CreateEditSectionTest extends BaseFormTest {
         addSectionBottom("Section 2", "2");
         addSectionBottom("Section 3", "F");
 
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         clickElement(By.id("description_tab"));

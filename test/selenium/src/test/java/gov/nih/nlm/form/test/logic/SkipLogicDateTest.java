@@ -39,7 +39,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_4"))).sendKeys("\"Indicate date of reference scan\"<\"10/11/2016\"");
         saveEditQuestionSectionById("question_0_4");
 
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         textPresent("If 10/11/2016:",

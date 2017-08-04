@@ -23,7 +23,6 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
 
     constructor(private http: Http,
                 public modalService: NgbModal,
-                public activeModal: NgbActiveModal,
                 @Inject("QuickBoard") private quickBoard,
                 @Inject("isAllowedModel") private isAllowedModel) {
     }
@@ -127,23 +126,18 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             return true;
         }
         this.quickBoard.elts.forEach((qbElt: any) => {
-            if (qbElt.tinyId === this.elt.tinyId) {
+            if (qbElt.tinyId === this.elt.tinyId)
                 this.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board.";
-            }
         });
         this.quickBoard.elts.forEach((qbElt: any) => {
             if (qbElt.valueDomain.datatype === "Number") return;
-            if (qbElt.valueDomain.datatype === "Value List") {
+            if (qbElt.valueDomain.datatype === "Value List")
                 qbElt.valueDomain.permissibleValues.forEach((pv: any) => {
-                    if (isNaN(pv.permissibleValue)) {
-                        this.invalidCdeMessage = "CDE " + qbElt.naming[0].designation +
-                            " contains a Permissible Value that is not a number. It may not be added to a score.";
-                    }
+                    if (isNaN(pv.permissibleValue)) this.invalidCdeMessage = "CDE " + qbElt.naming[0].designation +
+                        " contains a Permissible Value that is not a number. It may not be added to a score.";
                 });
-            } else {
-                this.invalidCdeMessage = "CDE " + qbElt.naming[0].designation +
-                    " has a datatype other than 'Number' and may not be added to a score";
-            }
+            else this.invalidCdeMessage = "CDE " + qbElt.naming[0].designation +
+                " has a datatype other than 'Number' and may not be added to a score";
         });
     };
 }

@@ -14,12 +14,7 @@ public class FormRegStatusTest extends RegStatusTest {
     public void goToEltSearch() {
         goToFormSearch();
     }       
-    
-    @Test
-    public void changeRegistrationStatus() {
-        changeRegistrationStatus("Form Status Test", ctepCurator_username);
-    }
-    
+
     @Test
     public void cancelRegStatus() {
         cancelRegStatus("AED Resistance Log", ninds_username);

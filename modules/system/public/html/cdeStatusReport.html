@@ -11,7 +11,7 @@
             <tr ng-repeat="cde in cdes track by $index">
                 <td ng-repeat="(key, field) in cde track by $index">
                     <span ng-if="key.indexOf('rule')===-1">
-                        <span ng-if="key==='cdeName'"><a ng-href="/deview?tinyId={{cde.tinyId}}" target="_blank">{{field}}</a></span>
+                        <span ng-if="key==='cdeName'"><a ng-href="/deView?tinyId={{cde.tinyId}}" target="_blank">{{field}}</a></span>
                         <span ng-if="key!=='cdeName'">{{field}}</span>
                     </span>
                     <span ng-if="key.indexOf('rule')>-1">

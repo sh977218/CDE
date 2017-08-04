@@ -1,6 +1,15 @@
 import {
     Attachment,
-    CdeId, Classification, DataSource, Instruction, Naming, ObjectId, PermissibleValue, Property, ReferenceDocument,
+    CdeId,
+    Classification,
+    DataSource,
+    Instruction,
+    Naming,
+    ObjectId,
+    PermissibleValue,
+    DerivationRule,
+    Property,
+    ReferenceDocument,
     RegistrationState, UserReference
 } from "../../core/public/models.model";
 
@@ -133,7 +142,8 @@ export class SkipLogic {
     condition: string;
 }
 
-class Section {}
+class Section {
+}
 
 class InForm {
     form: {
@@ -150,6 +160,7 @@ class QuestionCde {
     outdated: boolean = false;
     tinyId: string;
     version: string;
+    derivationRules: DerivationRule[];
 }
 
 class TextQuestion {

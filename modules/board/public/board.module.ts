@@ -13,6 +13,8 @@ import { PinAccordionComponent } from "./components/searchResults/pinAccordion.c
 import { PinBoardAccordionComponent } from "./components/searchResults/pinBoardAccordion.component";
 import { PinModalComponent } from "./components/pinModal/pinModal.component";
 import { PinQuickboardComponent } from "./components/searchResults/pinQuickboard.component";
+import { CreateFormFromBoardComponent } from 'board/public/components/createFormFromBoard.component';
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
 
 @NgModule({
     imports: [
@@ -21,6 +23,7 @@ import { PinQuickboardComponent } from "./components/searchResults/pinQuickboard
         NgbModule,
         // internal
         SearchModule,
+        AdminItemModule,
     ],
     declarations: [
         CreateBoardComponent,
@@ -30,10 +33,12 @@ import { PinQuickboardComponent } from "./components/searchResults/pinQuickboard
         PinBoardAccordionComponent,
         PinModalComponent,
         PinQuickboardComponent,
+        CreateFormFromBoardComponent,
     ],
     entryComponents: [
         CreateBoardComponent,
-        LinkedBoardsComponent
+        LinkedBoardsComponent,
+        CreateFormFromBoardComponent
     ],
     providers: [
         BoardService,

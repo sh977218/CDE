@@ -7,9 +7,10 @@ public class TwoLabelsNoVersion extends BaseFormTest {
 
     @Test
     public void twoLabelsNoVersion() {
+        String formName = "NoVersionCdeFormTest";
         mustBeLoggedInAs(testAdmin_username, password);
-        goToFormByName("NoVersionCdeFormTest");
-        clickElement(By.linkText("Form Description"));
+        goToFormByName(formName);
+        clickElement(By.id("description_tab"));
         startEditQuestionSectionById("question_0_0");
         clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("No Label");

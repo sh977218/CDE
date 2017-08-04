@@ -74,8 +74,11 @@ export class ClassifyItemModalComponent {
 
 
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
-        classificationRecentlyAdd.eltId = this.elt._id;
-        this.afterClassified.emit(classificationRecentlyAdd);
+        this.afterClassified.emit({
+            eltId: this.elt._id,
+            classificationArray: classificationRecentlyAdd.categories,
+            selectedOrg: classificationRecentlyAdd.orgName,
+        });
     }
 
     classifyItemByTree(treeNode) {

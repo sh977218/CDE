@@ -18,7 +18,7 @@ public class WorkingGroupRegStatus extends NlmCdeBaseTest {
 
 
         clickElement(By.id("editStatus"));
-        List<WebElement> options = new Select(driver.findElement(By.name("registrationStatus"))).getOptions();
+        List<WebElement> options = new Select(driver.findElement(By.id("newRegistrationStatus"))).getOptions();
         for (WebElement option : options) {
             Assert.assertNotEquals("Qualified", option.getText());
             Assert.assertNotEquals("Recorded", option.getText());

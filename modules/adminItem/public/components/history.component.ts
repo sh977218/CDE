@@ -6,7 +6,7 @@ import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 const URL_MAP = {
-    "cde": "/deview?cdeId=",
+    "cde": "/deView?cdeId=",
     "form": "/formView?formId="
 };
 
@@ -29,10 +29,11 @@ const URL_MAP = {
             left: 5px;
             top: 5px;
         }
+
         .isSelected {
-            background-color:#f5f5f5;
+            background-color: #f5f5f5;
         }
-        
+
     `],
     providers: [NgbActiveModal]
 })
@@ -69,17 +70,21 @@ export class HistoryComponent implements OnInit {
         let prefix_url = URL_MAP[this.elt.elementType];
         delete this.elt.selected;
         if (this.elt.history && this.elt.history.length > 0) {
-            this.http.get('/priorElements/' + this.elt.elementType + '/' + this.elt._id).map(res => res.json())
-                .subscribe(res => {
-                    this.priorElements = res.reverse();
-                    this.elt.viewing = true;
-                    this.elt.changeNote = this.elt._changeNote;
-                    this.priorElements.splice(0, 0, this.elt);
-                    this.priorElements.forEach(pe => {
-                        pe.url = prefix_url + pe._id;
-                    });
-                }, err =>
-                    this.alert.addAlert("danger", "Error retrieving history: " + err));
+            let url;
+            if (this.elt.elementType === "cde") {
+                url = "/deById/" + this.elt._id + "/priorDataElements";
+            } else {
+                url = "/formById/" + this.elt._id + "/priorForms";
+            }
+            this.http.get(url).map(res => res.json()).subscribe(res => {
+                this.priorElements = res.reverse();
+                this.elt.viewing = true;
+                this.priorElements.splice(0, 0, this.elt);
+                this.priorElements.forEach(pe => {
+                    pe.url = prefix_url + pe._id;
+                });
+            }, err =>
+                this.alert.addAlert("danger", "Error retrieving history: " + err));
         }
 
     }

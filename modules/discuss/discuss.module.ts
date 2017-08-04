@@ -15,6 +15,7 @@ import { DiscussAreaComponent } from "./components/discussArea/discussArea.compo
         DiscussAreaComponent
     ],
     exports: [
+        DiscussAreaComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

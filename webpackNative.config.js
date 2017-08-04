@@ -9,7 +9,7 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        print:'./modules/formStandaloneApp/nativeRenderStandalone.ts'
+        print: './modules/formStandaloneApp/nativeRenderStandalone.ts'
     },
     output: {
         path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
@@ -18,7 +18,10 @@ module.exports = {
     module: {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
-            {test: /\.ts$/, use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']},
+            {
+                test: /\.ts$/,
+                use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
+            },
             {test: /\.css$/, use: ['style-loader?insertAt=top', 'raw-loader']},
             {test: /\.html$/, use: ['raw-loader']}
         ]
@@ -47,6 +50,11 @@ module.exports = {
                 compressor: {
                     warnings: false
                 }
+            }),
+            new webpack.ProvidePlugin({
+                $: 'jquery',
+                jQuery: 'jquery',
+                'windows.jQuery': 'jquery'
             })
         ] : [
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"

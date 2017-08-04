@@ -21,7 +21,7 @@ export class MergeFormService {
 
     public saveForm(form, cb) {
         //noinspection TypeScriptValidateTypes
-        this.http.post("/form", form).map(res => res.json()).subscribe(
+        this.http.put("/form/" + form.tinyId, form).map(res => res.json()).subscribe(
             data => {
                 cb(null, data);
             },
@@ -46,7 +46,8 @@ export class MergeFormService {
                     if (err) return cb(err);
                     else {
                         index++;
-                        if (result === "retired") questionFrom.isRetired = true;
+                        if (result === "retired")
+                            questionFrom.isRetired = true;
                         doneOne(index, doneOneQuestion);
                     }
                 });
