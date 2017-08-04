@@ -38,6 +38,7 @@ import { DisplayProfileComponent } from "./components/displayProfile/displayProf
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
 import { FormViewComponent } from "./components/formView.component";
 import { DiscussModule } from "../../discuss/discuss.module";
+import { CreateFormComponent } from 'form/public/components/createForm.component';
 
 @NgModule({
     imports: [
@@ -81,6 +82,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         QuestionSearchDirective,
     ],
     entryComponents: [
+        CreateFormComponent,
         DisplayProfileComponent,
         FormViewComponent,
         FormDescriptionComponent,

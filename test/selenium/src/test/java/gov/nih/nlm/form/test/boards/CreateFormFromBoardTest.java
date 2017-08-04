@@ -14,7 +14,7 @@ public class CreateFormFromBoardTest extends NlmCdeBaseTest {
         findElement(By.id("eltName")).sendKeys("New form from boards");
         findElement(By.id("eltDefinition")).sendKeys("New form from boards definition");
         findElement(By.id("formVersion")).sendKeys("1.0");
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("TEST");
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("TEST");
         addClassificationByTree("TEST", new String[]{"Classify Board", "Classif_Board_Sub"});
         hangon(2);
         clickElement(By.id("submit"));
