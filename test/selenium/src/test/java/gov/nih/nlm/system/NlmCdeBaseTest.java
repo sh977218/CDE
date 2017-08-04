@@ -389,7 +389,7 @@ public class NlmCdeBaseTest {
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
-        if (findElements(By.id("cde_summaryView")).size() > 0)
+        if (driver.findElements(By.id("cde_summaryView")).size() > 0)
             findElement(By.id("cde_summaryView")).click();
         textPresent(name, By.id("searchResult_0"));
     }
