@@ -69,8 +69,6 @@ import { KeysPipe } from 'core/public/KeysPipe';
         SdcViewComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
-        ValidRulesComponent,
-        ValueDomainSummaryComponent,
         PermissibleValueComponent,
         KeysPipe
     ],
