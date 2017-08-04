@@ -2,7 +2,6 @@ import { Component, Input, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'system/public/components/alert/alert.service';
-import { CreateFormComponent } from 'form/public/components/createForm.component'
 
 @Component({
     selector: "cde-create-form-from-board",
@@ -56,7 +55,7 @@ export class CreateFormFromBoardComponent {
                     });
                     this.modalRef = this.modalService.open(this.createFormContent, {size: "lg"});
                 }, err => this.alert.addAlert("danger", "Error on load elements in board " + err)
-            )
+            );
         }
     }
 
