@@ -77,3 +77,6 @@ angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable
 
 import {ValidRulesComponent} from "../components/validationRules/validRules.component";
 angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], ouputs: []}));
+
+import {SdcViewComponent} from "../components/sdcView/sdcView.component"
+angular.module('cdeModule').directive('cdeSdcView', downgradeComponent({component: SdcViewComponent, inputs: ['cdeId'], ouputs: []}));

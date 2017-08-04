@@ -1,14 +1,5 @@
-angular.module('cdeModule').controller('SDCViewCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+angular.module('cdeModule').controller('SDCViewCtrl', ['$scope', '$routeParams', function($scope, $routeParams) {
     
-    var load = function(cdeId, cb) {
-        if (cdeId) {
-            $http.get("/sdc/" + cdeId).then(function (result) {
-                $scope.sdcCde = result.data;
-            });
-        }
-    };
-    
-    load($routeParams.cdeId);
-    
-    
+    $scope.cdeId = $routeParams.cdeId;
+
 }]);

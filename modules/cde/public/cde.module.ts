@@ -25,6 +25,7 @@ import { PermissibleValueComponent } from "./components/permissibleValue.compone
 import { RegistrationValidatorService } from "./components/validationRules/registrationValidator.service";
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
+import { SdcViewComponent } from "./components/sdcView/sdcView.component";
 
 @NgModule({
     imports: [
@@ -52,11 +53,9 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         KeysPipe,
         MoreLikeThisComponent,
         PermissibleValueComponent,
+        SdcViewComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
-        CdeSummaryListComponent,
-        DeGeneralDetailsComponent,
-        PermissibleValueComponent,
     ],
     entryComponents: [
         BoardCdeSummaryListComponent,
@@ -70,9 +69,9 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         DerivationRulesComponent,
         MoreLikeThisComponent,
         PermissibleValueComponent,
+        SdcViewComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
-        PermissibleValueComponent,
     ],
     exports: [
     ],
