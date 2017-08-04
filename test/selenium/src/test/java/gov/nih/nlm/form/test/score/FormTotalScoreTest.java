@@ -9,8 +9,8 @@ public class FormTotalScoreTest extends BaseFormTest {
 
     @Test
     public void formTotalScore() {
-        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Apathy Scale (AS)";
+        mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         textPresent("Score: Incomplete answers");
 

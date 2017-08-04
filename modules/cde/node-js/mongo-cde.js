@@ -1,18 +1,16 @@
-var config = require('../../system/node-js/parseConfig')
-    , schemas = require('./schemas')
-    , schemas_system = require('../../system/node-js/schemas')
-    , mongo_data_system = require('../../system/node-js/mongo-data')
-    , mongo_form = require('../../form/node-js/mongo-form')
-    , mongo_board = require('../../board/node-js/mongo-board')
-    , connHelper = require('../../system/node-js/connections')
-    , dbLogger = require('../../system/node-js/dbLogger')
-    , logging = require('../../system/node-js/logging')
-    , cdediff = require("./cdediff")
-    , async = require('async')
-    , CronJob = require('cron').CronJob
-    , elastic = require('./elastic')
-    , deValidator = require('../shared/deValidator')
-;
+const config = require('../../system/node-js/parseConfig');
+const schemas = require('./schemas');
+const schemas_system = require('../../system/node-js/schemas');
+const mongo_data_system = require('../../system/node-js/mongo-data');
+const mongo_board = require('../../board/node-js/mongo-board');
+const connHelper = require('../../system/node-js/connections');
+const dbLogger = require('../../system/node-js/dbLogger');
+const logging = require('../../system/node-js/logging');
+const cdediff = require("./cdediff");
+const async = require('async');
+const CronJob = require('cron').CronJob;
+const elastic = require('./elastic');
+const deValidator = require('../shared/deValidator');
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -44,18 +42,37 @@ schemas.dataElementSchema.pre('save', function (next) {
 
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 exports.DataElement = DataElement;
-
-
 exports.elastic = elastic;
+
+exports.byId = function (id, cb) {
+    DataElement.findOne({'_id': id}, cb);
+};
+
+exports.byIdList = function (idList, cb) {
+    DataElement.find({}).where("_id").in(idList).exec(cb);
+};
+
+exports.byTinyId = function (tinyId, cb) {
+    DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
+};
+
+exports.byTinyIdVersion = function (tinyId, version, cb) {
+    DataElement.findOne({tinyId: tinyId, version: version}, cb);
+};
+
+exports.latestVersionByTinyId = function (tinyId, cb) {
+    DataElement.findOne({tinyId: tinyId, archived: false}, function (err, dataElement) {
+        cb(err, dataElement.version);
+    });
+};
+exports.byTinyIdList = function (tinyIdList, cb) {
+    DataElement.find({}).where("tinyId").in(tinyIdList).exec(cb);
+};
+
+/* ---------- PUT NEW REST API Implementation above  ---------- */
 
 exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
-};
-
-exports.exists = function (condition, callback) {
-    DataElement.count(condition, function (err, result) {
-        callback(err, result > 0);
-    });
 };
 
 exports.getStream = function (condition) {
@@ -88,11 +105,12 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    DataElement.find({
+    let cond = {
         'tinyId': tinyId,
         "version": version,
         "registrationState.registrationStatus": {$ne: "Retired"}
-    }).sort({"updated": -1}).limit(1).exec(function (err, des) {
+    };
+    DataElement.find(cond).sort({"updated": -1}).limit(1).exec(function (err, des) {
         callback(err, des[0]);
     });
 };
@@ -138,16 +156,6 @@ exports.cdesByTinyIdListInOrder = function (idList, callback) {
     });
 };
 
-exports.priorCdes = function (cdeId, callback) {
-    DataElement.findById(cdeId).exec(function (err, dataElement) {
-        if (dataElement !== null) {
-            return DataElement.find({}).where("_id").in(dataElement.history).exec(function (err, cdes) {
-                callback(err, cdes);
-            });
-        }
-    });
-};
-
 exports.acceptFork = function (fork, orig, callback) {
     fork.forkOf = undefined;
     fork.tinyId = orig.tinyId;
@@ -185,17 +193,10 @@ exports.forks = function (cdeId, callback) {
     });
 };
 
-exports.byId = function (cdeId, callback) {
-    if (!cdeId) callback("Not found", null);
-    DataElement.findOne({'_id': cdeId}, function (err, cde) {
-        if (!cde) err = "Cannot find CDE";
-        callback(err, cde);
-    });
-};
 
 var viewedCdes = {};
 var threshold = config.viewsIncrementThreshold || 50;
-exports.incDeView = function (cde) {
+exports.inCdeView = function (cde) {
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
     viewedCdes[cde._id]++;
     if (viewedCdes[cde._id] >= threshold && cde && cde._id) {

@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test.admin;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class SiteAdminTest extends NlmCdeBaseTest {
@@ -39,14 +38,14 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Create"));
         clickElement(By.linkText("CDE"));
         // following will assert that test user was indeed promoted
-        new Select(driver.findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(testOrg);
+        new Select(driver.findElement(By.id("eltStewardOrgName"))).selectByVisibleText(testOrg);
         mustBeLoggedInAs(nlm_username, nlm_password);
 
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Org Admins"));
 
-        clickElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//i[@title=\"Remove\"]"));
+        clickElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//i[@title='Remove']"));
         textNotPresent(test_username);
 
     }

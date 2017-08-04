@@ -30,7 +30,7 @@ public class SectionInSectionTest extends BaseFormTest {
         new Select(findElement(By.xpath(cardXPath + "//select"))).selectByVisibleText("1 or more");
         findElement(By.xpath(cardXPath + "//button[contains(text(),'Confirm')]")).click();
 
-        saveForm();
+        newFormVersion();
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         findElement(By.xpath("//div[@id='section_drop_area_0']//div[@id='section_drop_area_child']//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]"));

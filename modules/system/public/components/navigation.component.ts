@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Inject, Input, Output, OnInit, AfterViewInit, AfterViewChecked} from "@angular/core";
-import {SharedService} from "../../../core/public/shared.service";
+import { Component, EventEmitter, Inject, Input, Output, OnInit, AfterViewInit, AfterViewChecked } from "@angular/core";
+import { SharedService } from "../../../core/public/shared.service";
 import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
 
 @Component({
@@ -11,7 +11,7 @@ import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standal
         }
     `]
 })
-export class NavigationComponent{
+export class NavigationComponent {
     @Input() quickBoardCount: number;
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
@@ -27,7 +27,6 @@ export class NavigationComponent{
     isPageActive(viewLocation) {
         return viewLocation === window.location.pathname;
     }
-
 
 
 }

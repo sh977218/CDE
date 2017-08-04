@@ -13,14 +13,15 @@
                 </tr>
                 <tr>
                     <td>Quota:</td>
-                    <td id="quota">{{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span>
+                    <td id="quota">
+                        {{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span>
                     </td>
                 </tr>
                 <tr>
                     <td>E-mail:</td>
                     <td id="user_email">
                         <cde-inline-edit id="emailEdit" [(model)]="user.email" [inputType]="'email'" [isAllowed]="true"
-                                     (modelChange)="saveProfile()"></cde-inline-edit>
+                                         (modelChange)="saveProfile()"></cde-inline-edit>
                     </td>
                 </tr>
                 <tr>
@@ -55,10 +56,12 @@
     </div>
 
     <h3>CDE Viewing History</h3>
-    <cde-accordion-list id="accordionList" [cdes]="cdes" ejsPage="list" module="cde"></cde-accordion-list>
+    <cde-accordion-list *ngIf="cdes" id="accordionList" [cdes]="cdes" ejsPage="list"
+                        module="cde"></cde-accordion-list>
 
     <h3>Form Viewing History</h3>
-    <form-accordion-list id="formAccordionList" [forms]="forms" ejsPage="list" module="form"></form-accordion-list>
+    <form-accordion-list *ngIf="forms" id="formAccordionList" [forms]="forms" ejsPage="list"
+                         module="form"></form-accordion-list>
 
     <cde-user-comments [user]="user"></cde-user-comments>
 </div>

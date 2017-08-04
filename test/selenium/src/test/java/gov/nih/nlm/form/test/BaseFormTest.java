@@ -12,23 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends FormCommentTest {
 
-    protected void saveForm() {
-        try {
-            clickElement(By.id("openSaveBottom"));
-            textPresent("has already been used");
-        } catch (Exception e) {
-            // known error spot. Seems the button does not always get clicked.
-            clickElement(By.id("openSaveBottom"));
-            textPresent("has already been used");
-        }
-        hangon(2);
-        findElement(By.name("version")).sendKeys("1");
-        textNotPresent("This version number has already been used.");
-        clickElement(By.id("confirmNewVersion"));
-        textPresent("Saved.");
-        closeAlert();
-    }
-
     public void searchForm(String query) {
         findElement(By.name("q")).sendKeys("\"" + query + "\"");
         hangon(1);
@@ -140,27 +123,7 @@ public class BaseFormTest extends FormCommentTest {
         }
     }
 
-    public void startEditQuestionSectionById(String id) {
-        try {
-            scrollToViewById(id);
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
-        } catch (Exception e) {
-            scrollDownBy(50);
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
-        }
-    }
 
-    public void saveEditQuestionSectionById(String id) {
-        try {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
-        } catch (Exception e) {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
-        }
-    }
 
     public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
         return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//input";
@@ -177,6 +140,7 @@ public class BaseFormTest extends FormCommentTest {
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
     }
+
 
     protected void scrollToInfiniteById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;

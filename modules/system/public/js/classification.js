@@ -5,7 +5,7 @@ angular.module('classification', ['ngResource'])
         , rename: function(orgName, path, newname, cb) {
             var data = {orgName: orgName, categories: path, newname: newname};
             $http.post('/classification/rename', data).then(function onSuccess(response) {
-                cb(response.data)
+                cb(response.data);
             });
         }
     };
@@ -21,7 +21,7 @@ angular.module('classification', ['ngResource'])
         classifyTinyidList: function(list, newClassif, cb) {
             var data = {classification: newClassif, elements: list};
             $http.post('/classification/bulk/tinyId', data).then(function onSuccess(response) {
-                cb(response.data)
+                cb(response.data);
             }, function () {});
         }
     };
@@ -32,7 +32,7 @@ angular.module('classification', ['ngResource'])
             if (!org) return [];
             var elt = org.classifications;
             var selectedLast = false;
-            for (var i = 0; i < level; i++) { 
+            for (var i = 0; i < level; i++) {
                 var choice  = 0;
                 selectedLast = false;
                 for (var j = 0; j < elt.length; j++) {
@@ -42,7 +42,7 @@ angular.module('classification', ['ngResource'])
                         break;
                     }
                     choice++;
-                }            
+                }
             }
             if (level>0 && !selectedLast) return [];
             else return elt;
@@ -60,9 +60,9 @@ angular.module('classification', ['ngResource'])
                 cdeTarget: {tinyId: tinyIdTarget}
             };
             $http.post('/classification/cde/moveclassif', request).then(function onSuccess(response) {
-                cb(response.data)
+                cb(response);
             }).catch(function onError(response) {
-                cb(response.data)
+                cb(response);
             });
         }
     };
@@ -71,7 +71,7 @@ angular.module('classification', ['ngResource'])
     return {
         constructPath: function(org, pathArray) {
             var tempPath = org;
-        
+
             if(pathArray && pathArray.length>0) {
                 for(var i=0; i<pathArray.length; i++) {
                     tempPath += ' / ' + pathArray[i];

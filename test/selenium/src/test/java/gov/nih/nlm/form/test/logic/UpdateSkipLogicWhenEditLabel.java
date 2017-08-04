@@ -28,7 +28,7 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         Assert.assertEquals(cssClass.contains("fa-spin"), true);
         saveEditQuestionSectionById("question_0_0");
 
-        saveForm();
+        newFormVersion();
         goToFormByName(formName);
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Reason for premature intervention discontinuation");

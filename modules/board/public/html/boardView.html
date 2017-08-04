@@ -10,7 +10,7 @@
                     <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
                 </button>
             </span>
-             <span class="pt20 floatLeft pull-right">
+            <span class="pt20 floatLeft pull-right">
                 <button class="btn btn-default btn-sm" id="shareBoardBtn"
                         ng-if="user.username === board.owner.username"
                         ng-click="shareBoard()"><i class="fa fa-link"></i> Share
@@ -78,11 +78,8 @@
                         <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                     </button>
                 </div>
-                <div class="btn-group  pull-right" ng-controller="ExportCtrl">
-                    <button id="mb.createForm" value="Create Form" ng-click="createFormFromBoard()"
-                            class="btn btn-default" ng-if="canCreateForms()">
-                        <i class="fa"></i> Create Form
-                    </button>
+                <div class="btn-group  pull-right">
+                    <cde-create-form-from-board [board]="board"></cde-create-form-from-board>
                 </div>
 
                 <div class="btn-group  pull-right">
@@ -93,7 +90,7 @@
             <div ng-if="board.type" ng-include="viewTypes[listViewType].url"></div>
 
             <ul uib-pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems"
-                            ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></ul>
+                ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></ul>
         </div>
 
         <div ng-if="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"

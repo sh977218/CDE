@@ -58,7 +58,7 @@ public class QuestionLayoutTest extends QuestionTest {
         textNotPresent("Show Filters");
         textNotPresent("results for");
 
-        saveForm();
+        newFormVersion();
     }
 
 }

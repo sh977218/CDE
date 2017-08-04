@@ -7,9 +7,10 @@ public class FormViewingHistory extends NlmCdeBaseTest {
 
     @Test
     public void viewingHistory() {
+        String formName = "No Label Logic";
         mustBeLoggedInAs(history_username, password);
 
-        goToFormByName("No Label Logic");
+        goToFormByName(formName);
         hangon(4);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));

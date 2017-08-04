@@ -8,7 +8,8 @@ public class LinkedFormsTest extends NlmCdeBaseTest {
 
     @Test
     public void linkedForms() {
-        goToCdeByName("Psychiatric history clinical depression past year indicator");
+        String cdeName = "Psychiatric history clinical depression past year indicator";
+        goToCdeByName(cdeName);
         textPresent("Quick Board (0)");
         clickElement(By.id("openLinkedFormsModalBtn"));
         textPresent("Medical History");

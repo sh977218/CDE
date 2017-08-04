@@ -31,7 +31,7 @@ exports.save = function (req, res, dao, cb) {
                     res.status(403).send("not authorized");
                 } else if (elt.registrationState && elt.registrationState.registrationStatus) {
                     if ((elt.registrationState.registrationStatus === "Standard" ||
-                        elt.registrationState.registrationStatus === " Preferred Standard") && !req.user.siteAdmin) {
+                            elt.registrationState.registrationStatus === " Preferred Standard") && !req.user.siteAdmin) {
                         return res.status(403).send("Not authorized");
                     }
                     return dao.create(elt, req.user, function (err, savedItem) {
@@ -53,12 +53,12 @@ exports.save = function (req, res, dao, cb) {
                     res.status(403).send("Not authorized");
                 } else {
                     if ((item.registrationState.registrationStatus === "Standard" ||
-                        item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+                            item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
                         res.status(403).send("This record is already standard.");
                     } else {
                         if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
                             (item.registrationState.registrationStatus === "Standard" ||
-                            item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
+                                item.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
                         ) {
                             res.status(403).send("Not authorized");
                         } else {
@@ -88,7 +88,7 @@ exports.setAttachmentDefault = function (req, res, dao) {
     auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
         if (err) {
             logging.expressLogger.info(err);
-            return res.send(err);
+            return res.status(500).send("ERROR");
         }
         var state = req.body.state;
         for (var i = 0; i < elt.attachments.length; i++) {
@@ -121,7 +121,7 @@ exports.addAttachment = function (req, res, dao) {
     exports.scanFile(stream, res, function (scanned) {
         req.files.uploadedFiles.scanned = scanned;
         auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-            if (err) return res.send(err);
+            if (err) return res.status(500).send("ERROR");
             dao.userTotalSpace(req.user.username, function (totalSpace) {
                 if (totalSpace > req.user.quota) {
                     res.send({message: "You have exceeded your quota"});
@@ -150,19 +150,14 @@ exports.addAttachment = function (req, res, dao) {
 
 exports.removeAttachment = function (req, res, dao) {
     auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-        if (err) {
-            return res.send(err);
-        }
+        if (err) return res.status(500).send("ERROR");
         let fileid = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
 
         elt.save(function (err) {
-            if (err) {
-                res.send("error: " + err);
-            } else {
-                res.send(elt);
-                mongo_data_system.removeAttachmentIfNotUsed(fileid);
-            }
+            if (err) return res.status(500).send("ERROR");
+            res.send(elt);
+            mongo_data_system.removeAttachmentIfNotUsed(fileid);
         });
     });
 };
@@ -259,18 +254,17 @@ setInterval(function () {
 
 exports.addComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
-        var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
+        var idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
         idRetrievalFunc(req.body.element.eltId, function (err, elt) {
-            if (!elt || err) {
-                res.status(404).send("Element does not exist.");
-            } else {
+            if (!elt || err) res.status(404).send("Element does not exist.");
+            else {
                 var eltId = req.body.element.eltId;
                 var commentObj = {
-                    user: req.user._id
-                    , username: req.user.username
-                    , created: new Date().toJSON()
-                    , text: req.body.comment
-                    , element: {
+                    user: req.user._id,
+                    username: req.user.username,
+                    created: new Date().toJSON(),
+                    text: req.body.comment,
+                    element: {
                         eltType: dao.type,
                         eltId: eltId
                     }
@@ -311,17 +305,13 @@ exports.addComment = function (req, res, dao) {
                 });
             }
         });
-    } else {
-        res.status(403).send({message: "You are not authorized."});
-    }
+    } else res.status(403).send({message: "You are not authorized."});
 };
 
 exports.replyToComment = function (req, res) {
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
-            if (err) {
-                return res.status(404).send("Comment not found");
-            }
+            if (err) return res.status(404).send("Comment not found");
             var reply = {
                 user: req.user._id,
                 username: req.user.username,
@@ -351,29 +341,29 @@ exports.replyToComment = function (req, res) {
                         origin: "system.adminItemSvc.addComment",
                         stack: new Error().stack
                     });
-                    res.status(500).send(err);
+                    res.status(500).send("ERROR");
                 } else {
                     ioServer.ioServer.of("/comment").emit('commentUpdated');
                     res.send({message: "Reply added"});
                     if (req.user.username !== comment.username) {
                         var message = {
-                            recipient: {recipientType: "user", name: comment.username}
-                            , author: {authorType: "user", name: req.user.username}
-                            , date: new Date()
-                            , type: "CommentReply"
-                            , typeCommentReply: {
+                            recipient: {recipientType: "user", name: comment.username},
+                            author: {authorType: "user", name: req.user.username},
+                            date: new Date(),
+                            type: "CommentReply",
+                            typeCommentReply: {
                                 // TODO change this when you merge board comments
                                 element: {
                                     eltType: comment.element.eltType,
                                     eltId: comment.element.eltId,
                                     name: req.body.eltName
-                                }
-                                , comment: {
+                                },
+                                comment: {
                                     commentId: comment._id,
                                     text: reply.text
                                 }
-                            }
-                            , states: []
+                            },
+                            states: []
                         };
                         mongo_data_system.createMessage(message);
                     }
@@ -388,10 +378,7 @@ exports.replyToComment = function (req, res) {
 exports.removeComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
-            if (err) {
-                return res.status(404).send("Comment not found");
-            }
-
+            if (err) return res.status(404).send("Comment not found");
             var removedComment;
             if (req.body.replyId) {
                 if (comment.replies) {
@@ -401,12 +388,10 @@ exports.removeComment = function (req, res, dao) {
                         }
                     });
                 }
-            } else {
-                removedComment = comment;
-            }
+            } else removedComment = comment;
             if (removedComment) {
                 removedComment.status = "deleted";
-                var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
+                var idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
                 var eltId = comment.element.eltId;
                 idRetrievalFunc(eltId, function (err, elt) {
                     if (err || !elt) return res.status(404).send("elt not found");
@@ -421,7 +406,7 @@ exports.removeComment = function (req, res, dao) {
                                     origin: "system.adminItemSvc.removeComment",
                                     stack: new Error().stack
                                 });
-                                res.status(500).send(err);
+                                res.status(500).send("ERROR");
                             } else {
                                 ioServer.ioServer.of("/comment").emit('commentUpdated');
                                 res.send({message: "Comment removed"});
@@ -466,7 +451,7 @@ exports.updateCommentStatus = function (req, res, status) {
                             origin: "system.adminItemSvc.removeComment",
                             stack: new Error().stack
                         });
-                        res.status(500).send(err);
+                        res.status(500).send("ERROR");
                     } else {
                         ioServer.ioServer.of("/comment").emit('commentUpdated');
                         res.send({message: "Saved."});
@@ -502,7 +487,7 @@ exports.declineComment = function (req, res) {
             comment.remove(function (err) {
                 if (err) res.status(500).send();
                 return res.send("Comment declined");
-            })
+            });
         }
     });
 };
@@ -621,13 +606,13 @@ exports.acceptFork = function (req, res, dao) {
                         res.status(403).send("not authorized");
                     } else {
                         if ((orig.registrationState.registrationStatus === "Standard" ||
-                            orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
+                                orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin) {
                             res.send("This record is already standard.");
                         } else {
                             if ((orig.registrationState.registrationStatus !== "Standard" &&
-                                orig.registrationState.registrationStatus !== " Preferred Standard") &&
+                                    orig.registrationState.registrationStatus !== " Preferred Standard") &&
                                 (orig.registrationState.registrationStatus === "Standard" ||
-                                orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
+                                    orig.registrationState.registrationStatus === "Preferred Standard") && !req.user.siteAdmin
                             ) {
                                 res.status(403).send("not authorized");
                             } else {

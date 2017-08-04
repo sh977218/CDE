@@ -38,6 +38,7 @@ mongorestore --drop -d test -c comments test/data/comments.bson -u $db_user -p $
 mongo test test/createLargeBoard.js -u $db_user -p $db_password
 mongo test test/createManyBoards.js -u $db_user -p $db_password
 
+echo "deleting es index."
 gulp es
 
 

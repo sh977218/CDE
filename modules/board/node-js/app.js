@@ -16,10 +16,15 @@ var elastic = require('../../cde/node-js/elastic')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     , boardsvc = require('./boardsvc')
-    ;
+;
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_board);
+
+    app.put('/board/id/:id/dataElements/', exportShared.nocacheMiddleware, boardsvc.pinDataElements);
+    app.put('/board/id/:id/forms/', exportShared.nocacheMiddleware, boardsvc.pinForms);
+
+    /* ---------- PUT NEW REST API above ---------- */
 
     app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
         mongo_board.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
@@ -52,9 +57,9 @@ exports.init = function (app, daoManager) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
             var index = -1;
             board.get('pins').find(function (p, i) {
-                    index = i;
-                    return p.get('deTinyId') === req.body.tinyId;
-                });
+                index = i;
+                return p.get('deTinyId') === req.body.tinyId;
+            });
             if (index !== -1) {
                 moveFunc(board, index);
                 board.save(function (err) {
@@ -101,7 +106,7 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
-            if (err) res.status(500).send(err);
+            if (err) res.status(500).send("ERROR");
             else res.send();
         });
     });
@@ -110,14 +115,14 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
-            if (err) res.status(500).send(err);
+            if (err) res.status(500).send("ERROR");
             else res.send();
         });
     });
 
     app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
         elastic.boardSearch(req.body, function (err, result) {
-            if (err) return res.status(500).send(err);
+            if (err) return res.status(500).send("ERROR");
             return res.send(result);
         });
     });
@@ -167,9 +172,12 @@ exports.init = function (app, daoManager) {
                     return a.toObject();
                 });
                 delete board._doc.owner.userId;
+                /* @Todo
+                * filter(p => p) looks weired.
+                * */
                 var idList = board.pins.map(function (p) {
                     return board.type === 'cde' ? p.deTinyId : p.formTinyId;
-                }).filter(p=>p);
+                }).filter(p => p);
                 daoManager.getDao(board.type).elastic.byTinyIdList(idList, function (err, elts) {
                     if (req.query.type === "xml") {
                         res.setHeader("Content-Type", "application/xml");

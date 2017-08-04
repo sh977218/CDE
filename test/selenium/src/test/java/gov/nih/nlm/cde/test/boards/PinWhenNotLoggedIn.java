@@ -26,7 +26,7 @@ public class PinWhenNotLoggedIn extends NlmCdeBaseTest {
         clickElement(By.id("linkToElt_0"));
         clickElement(By.id("addToBoard"));
         textPresent("Create Boards and attach CDEs to them");
-        clickElement(By.id("cancelSelect"));
+        clickElement(By.id("cancelSelect2"));
         modalGone();
     }
 
