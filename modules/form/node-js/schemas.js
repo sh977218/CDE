@@ -11,6 +11,7 @@ var questionSchema = {
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
         , ids: [sharedSchemas.idSchema]
+        , derivationRules: [sharedSchemas.derivationRuleSchema]
     }
     , datatype: String
     , datatypeNumber: {

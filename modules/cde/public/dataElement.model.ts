@@ -4,7 +4,7 @@ export class DataElement extends Elt {
     primaryNameCopy: string;
 
     getEltUrl() {
-        return "/deview?tinyId=" + this.tinyId;
+        return "/deView?tinyId=" + this.tinyId;
     }
 
     getLabel() {

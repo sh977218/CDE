@@ -4,7 +4,8 @@ import { FormQuestion } from "./form.model";
 
 @Injectable()
 export class FormService {
-    constructor (private http: Http) {}
+    constructor(private http: Http) {
+    }
 
     getQuestions(fe, qLabel) {
         let result = [];
@@ -114,7 +115,7 @@ export class FormService {
                 if (cde.valueDomain.permissibleValues.length > 0) {
                     // elastic only store 10 pv, retrieve pv when have more than 9 pv.
                     if (cde.valueDomain.permissibleValues.length > 9) {
-                        this.http.get("/debytinyid/" + cde.tinyId + "/" + (cde.version ? cde.version : ""))
+                        this.http.get("/de/" + cde.tinyId + "/version/" + (cde.version ? cde.version : ""))
                             .map((res: Response) => res.json())
                             .subscribe((result) => {
                                 result.valueDomain.permissibleValues.forEach(function (pv) {
@@ -125,7 +126,7 @@ export class FormService {
                                     question.question.cde.permissibleValues.push(pv);
                                 });
                                 cb(question);
-                            });
+                            }, err => cb());
                         return;
                     } else {
                         cde.valueDomain.permissibleValues.forEach(function (pv) {
@@ -172,4 +173,10 @@ export class FormService {
         }
         return n.data.elementType === "form";
     }
+
+    get(tinyId) {
+        let url = "/form/" + tinyId;
+        return this.http.get(url).map(res => res.json());
+    }
+
 }

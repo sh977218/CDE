@@ -1,7 +1,7 @@
 function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageService, Alert) {
     var params = {
         cde: {
-            url: "/debytinyid/",
+            url: "/de/",
             localStorage: "quickBoard"
         },
         form: {
@@ -16,7 +16,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
             var res = localStorageService.get(param.localStorage);
             if (!res) res = [];
             this.elts = res;
-            this.elts.forEach(function(elt) {
+            this.elts.forEach(function (elt) {
                 if (!elt.primaryNameCopy) elt.primaryNameCopy = elt.naming[0].designation;
                 if (!elt.primaryDefinitionCopy) elt.primaryDefinitionCopy = elt.naming[0].definition;
             });
@@ -60,7 +60,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
 }
 
 angular.module('resourcesSystem', ['ngResource'])
-    .factory('Auth',  ["$http", function ($http) {
+    .factory('Auth', ["$http", function ($http) {
         return {
             login: function (user, success, error) {
                 $http.post('/login', user).then(function onSuccess(response) {
@@ -163,35 +163,6 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
-    .factory('ViewingHistory', ["$http", "$q", function ($http, $q) {
-        var viewHistoryResource = this;
-
-        viewHistoryResource.deferred = $q.defer();
-        this.getViewingHistory = function () {
-            viewHistoryResource.deferred = $q.defer();
-            $http.get('/viewingHistory').then(function (response) {
-                viewHistoryResource.deferred.resolve(response.data);
-            });
-        };
-        viewHistoryResource.formViewHistory = $q.defer();
-        this.getFormViewingHistory = function () {
-            viewHistoryResource.formViewHistory = $q.defer();
-            $http.get('/viewingHistory/form').then(function (response) {
-                viewHistoryResource.formViewHistory.resolve(response.data);
-            });
-        };
-
-        this.getViewingHistory();
-        this.getFormViewingHistory();
-
-        this.getCdes = function () {
-            return viewHistoryResource.deferred.promise;
-        };
-        this.getForms = function () {
-            return viewHistoryResource.formViewHistory.promise;
-        };
-        return this;
-    }])
     .factory("Organization", ["$http", function ($http) {
         return {
             getByName: function (orgName, cb) {
@@ -212,7 +183,7 @@ angular.module('resourcesSystem', ['ngResource'])
         this.user = null;
         this.userHasMail = false;
 
-        this.getRemoteUser = function() {
+        this.getRemoteUser = function () {
             userResource.deferred = $q.defer();
             $http.get('/user/me').then(function (response) {
                 var u = response.data;
@@ -254,7 +225,8 @@ angular.module('resourcesSystem', ['ngResource'])
             if (userResource.user) {
                 $http.get('/mailStatus').then(function onSuccess(response) {
                     if (response.data.count > 0) userResource.userHasMail = true;
-                }, function () {});
+                }, function () {
+                });
             }
         };
 
@@ -283,14 +255,14 @@ angular.module('resourcesSystem', ['ngResource'])
     }])
     .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
-        var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
-        result.restoreFromLocalStorage();
-        return result;
-    }])
+            var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
+            result.restoreFromLocalStorage();
+            return result;
+        }])
     .factory("FormQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
-        var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService, Alert);
-        result.restoreFromLocalStorage();
-        return result;
-    }])
+            var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService, Alert);
+            result.restoreFromLocalStorage();
+            return result;
+        }])
 ;

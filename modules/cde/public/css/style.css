@@ -42,10 +42,6 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 /*fixes an issue in bootstrap #1078 */
-.modal-body {
-    overflow-y: inherit;
-}
-
 .hand-cursor {
     cursor: pointer;
 }
@@ -985,10 +981,6 @@ div + .questionPlaceholder {
     margin-left: 0 !important;
 }
 
-#export {
-    margin-left: 10px;
-}
-
 .compare-divider {
     margin: 1px
 }
@@ -1753,4 +1745,8 @@ ins {
 del {
     color: black;
     background: #ffbbbb;
+}
+
+.modal {
+    overflow-y: scroll !important;
 }

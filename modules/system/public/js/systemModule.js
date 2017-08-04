@@ -280,44 +280,44 @@ angular.module('systemModule').filter('tagsToArray', [function () {
 
 angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'AlertService',
     function (userResource, $modal, $http, Alert) {
-    return {
-        new: function (type) {
-            return {
-                openPinModal: function (elt) {
-                    if (userResource.user.username) {
-                        $modal.open({
-                            animation: false,
-                            templateUrl: '/system/public/html/selectBoardModal.html',
-                            controller: 'SelectBoardModalCtrl',
-                            resolve: {
-                                type: function () {
-                                    return type;
+        return {
+            new: function (type) {
+                return {
+                    openPinModal: function (elt) {
+                        if (userResource.user.username) {
+                            $modal.open({
+                                animation: false,
+                                templateUrl: '/system/public/html/selectBoardModal.html',
+                                controller: 'SelectBoardModalCtrl',
+                                resolve: {
+                                    type: function () {
+                                        return type;
+                                    }
                                 }
-                            }
-                        }).result.then(function (selectedBoard) {
-                            $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
-                                if (response.status === 200) {
-                                    Alert.addAlert("success", response.data);
-                                } else
-                                    Alert.addAlert("warning", response.data);
-                            }, function (response) {
-                                Alert.addAlert("danger", response.data);
+                            }).result.then(function (selectedBoard) {
+                                $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
+                                    if (response.status === 200) {
+                                        Alert.addAlert("success", response.data);
+                                    } else
+                                        Alert.addAlert("warning", response.data);
+                                }, function (response) {
+                                    Alert.addAlert("danger", response.data);
+                                });
+                            }, function () {
                             });
-                        }, function () {
-                        });
-                    } else {
-                        $modal.open({
-                            animation: false,
-                            templateUrl: '/system/public/html/ifYouLogInModal.html'
-                        }).result.then(function () {
-                        }, function () {
-                        });
+                        } else {
+                            $modal.open({
+                                animation: false,
+                                templateUrl: '/system/public/html/ifYouLogInModal.html'
+                            }).result.then(function () {
+                            }, function () {
+                            });
+                        }
                     }
-                }
-            };
-        }
-    };
-}]);
+                };
+            }
+        };
+    }]);
 
 
 angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
@@ -389,8 +389,7 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
     };
 
     isAllowedModel.showWorkingGroups = function (stewardClassifications) {
-        return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user)
-            || authShared.isSiteAdmin(userResource.user);
+        return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) || authShared.isSiteAdmin(userResource.user);
     };
 
     isAllowedModel.doesUserOwnElt = function (elt) {
@@ -433,7 +432,7 @@ angular.module('systemModule').config(["$provide", function ($provide) {
                         });
                         $injector.get('$timeout')(function () {
                             lock = false;
-                        }, 5000)
+                        }, 5000);
                     }
                 } catch (e) {
 
@@ -459,88 +458,184 @@ angular.module('systemModule').run(["$rootScope", "$location", function ($rootSc
     });
 }]);
 
-import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
+import { downgradeComponent, downgradeInjectable } from "@angular/upgrade/static";
 
-import {ClassificationService} from "../../../core/public/classification.service";
+import { ClassificationService } from "../../../core/public/classification.service";
+
 angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
 
-import {HomeComponent} from "../components/home/home.component";
-angular.module('systemModule').directive('cdeHome', downgradeComponent({component: HomeComponent, inputs: [], outputs: []}));
+import { HomeComponent } from "../components/home/home.component";
 
-import {NavigationComponent} from "../components/navigation.component";
-angular.module('systemModule').directive('cdeNavigation', downgradeComponent({component: NavigationComponent,
-    inputs: ['quickBoardCount'], outputs: ['goToLogin', 'logout']}));
+angular.module('systemModule').directive('cdeHome', downgradeComponent({
+    component: HomeComponent,
+    inputs: [],
+    outputs: []
+}));
 
-import {ProfileComponent} from "../components/profile.component";
-angular.module('systemModule').directive('cdeProfile', downgradeComponent({component: ProfileComponent, inputs: [], outputs: []}));
+import { NavigationComponent } from "../components/navigation.component";
 
-import {UserCommentsComponent} from "../components/userComments.component";
-angular.module('systemModule').directive('user-comments', downgradeComponent({component: UserCommentsComponent, inputs: ['user'], outputs: []}));
+angular.module('systemModule').directive('cdeNavigation', downgradeComponent({
+    component: NavigationComponent,
+    inputs: ['quickBoardCount'], outputs: ['goToLogin', 'logout']
+}));
 
-import {SiteAuditComponent} from "../components/siteAdmin/siteAudit/siteAudit.component";
-angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({component: SiteAuditComponent, inputs: [], outputs: []}));
+import { ProfileComponent } from "../components/profile.component";
 
-import {ListManagementComponent} from "../components/siteAdmin/listManagement/listManagement.component";
-angular.module('systemModule').directive('cdeListManagement', downgradeComponent({component: ListManagementComponent, inputs: [], outputs: []}));
+angular.module('systemModule').directive('cdeProfile', downgradeComponent({
+    component: ProfileComponent,
+    inputs: [],
+    outputs: []
+}));
 
-import {OrgAdminComponent} from "../components/siteAdmin/orgAdmin/orgAdmin.component";
-angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({component: OrgAdminComponent, inputs: [], outputs: []}));
+import { UserCommentsComponent } from "../components/userComments.component";
 
-import {UsersMgtComponent} from "../components/siteAdmin/usersMgt/usersMgt.component";
-angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({component: UsersMgtComponent, inputs: [], outputs: []}));
+angular.module('systemModule').directive('user-comments', downgradeComponent({
+    component: UserCommentsComponent,
+    inputs: ['user'],
+    outputs: []
+}));
 
-import {EditSiteAdminsComponent} from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
-angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({component: EditSiteAdminsComponent, inputs: [], outputs: []}));
+import { SiteAuditComponent } from "../components/siteAdmin/siteAudit/siteAudit.component";
 
-import {StatusValidationRulesComponent} from "../components/siteAdmin/statusValidationRules/statusValidationRules.component";
-angular.module('systemModule').directive('cdeStatusValidationRules', downgradeComponent({component: StatusValidationRulesComponent, inputs: [], outputs: []}));
+angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
+    component: SiteAuditComponent,
+    inputs: [],
+    outputs: []
+}));
 
-import {IdentifiersComponent} from "../../../adminItem/public/components/identifiers.component";
-angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({component: IdentifiersComponent, inputs: ['elt'], outputs: []}));
+import { ListManagementComponent } from "../components/siteAdmin/listManagement/listManagement.component";
 
-import {AttachmentsComponent} from "../../../adminItem/public/components/attachments/attachments.component";
-angular.module('systemModule').directive('cdeAdminItemAttachments', downgradeComponent({component: AttachmentsComponent, inputs: ['elt'], outputs: []}));
+angular.module('systemModule').directive('cdeListManagement', downgradeComponent({
+    component: ListManagementComponent,
+    inputs: [],
+    outputs: []
+}));
 
-import {PropertiesComponent} from "../../../adminItem/public/components/properties.component";
-angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComponent({component: PropertiesComponent, inputs: ['elt'], outputs: []}));
+import { OrgAdminComponent } from "../components/siteAdmin/orgAdmin/orgAdmin.component";
 
-import {HistoryComponent} from "../../../adminItem/public/components/history.component";
-angular.module('systemModule').directive('cdeAdminItemHistory', downgradeComponent({component: HistoryComponent, inputs: ['elt'], outputs: []}));
+angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({
+    component: OrgAdminComponent,
+    inputs: [],
+    outputs: []
+}));
 
-import {NamingComponent} from "../../../adminItem/public/components/naming.component";
-angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({component: NamingComponent, inputs: ['elt'], outputs: []}));
+import { UsersMgtComponent } from "../components/siteAdmin/usersMgt/usersMgt.component";
 
-import {ReferenceDocumentComponent} from "../../../adminItem/public/components/referenceDocument.component";
-angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({component: ReferenceDocumentComponent, inputs: ['elt'], outputs: []}));
+angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
+    component: UsersMgtComponent,
+    inputs: [],
+    outputs: []
+}));
 
-import {RegistrationComponent} from "../../../adminItem/public/components/registration/registration.component";
-angular.module('systemModule').directive('cdeRegistration', downgradeComponent({component: RegistrationComponent, inputs: ['elt'], outputs: []}));
+import { EditSiteAdminsComponent } from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
+
+angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
+    component: EditSiteAdminsComponent,
+    inputs: [],
+    outputs: []
+}));
+
+import { StatusValidationRulesComponent } from "../components/siteAdmin/statusValidationRules/statusValidationRules.component";
+
+angular.module('systemModule').directive('cdeStatusValidationRules', downgradeComponent({
+    component: StatusValidationRulesComponent,
+    inputs: [],
+    outputs: []
+}));
+
+import { IdentifiersComponent } from "../../../adminItem/public/components/identifiers.component";
+
+angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({
+    component: IdentifiersComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
+
+import { AttachmentsComponent } from "../../../adminItem/public/components/attachments/attachments.component";
+
+angular.module('systemModule').directive('cdeAdminItemAttachments', downgradeComponent({
+    component: AttachmentsComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
+
+import { PropertiesComponent } from "../../../adminItem/public/components/properties.component";
+
+angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComponent({
+    component: PropertiesComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
+
+import { HistoryComponent } from "../../../adminItem/public/components/history.component";
+
+angular.module('systemModule').directive('cdeAdminItemHistory', downgradeComponent({
+    component: HistoryComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
+
+import { NamingComponent } from "../../../adminItem/public/components/naming.component";
+
+angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({
+    component: NamingComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
+
+import { ReferenceDocumentComponent } from "../../../adminItem/public/components/referenceDocument.component";
+
+angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({
+    component: ReferenceDocumentComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
+
+import { RegistrationComponent } from "../../../adminItem/public/components/registration/registration.component";
+
+angular.module('systemModule').directive('cdeRegistration', downgradeComponent({
+    component: RegistrationComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
 
 import {RegistrationValidatorService} from "../components/registrationValidator.service";
 angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
 
-import {TableListComponent} from "../../../search/listView/tableList.component";
-angular.module('systemModule').directive('cdeTableList', downgradeComponent({component: TableListComponent, inputs: ['elts', 'module'], outputs: []}));
+import { TableListComponent } from "../../../search/listView/tableList.component";
 
-import {SourcesComponent} from "../../../adminItem/public/components/sources/sources.component";
-angular.module('systemModule').directive('cdeAdminItemSources', downgradeComponent({component: SourcesComponent, inputs: ['elt'], outputs: []}));
+angular.module('systemModule').directive('cdeTableList', downgradeComponent({
+    component: TableListComponent,
+    inputs: ['elts', 'module'],
+    outputs: []
+}));
 
-import {SwaggerComponent} from "../components/swagger.component";
-angular.module('systemModule').directive('cdeSwagger', downgradeComponent({component: SwaggerComponent, inputs: [], outputs: []}));
+import { SwaggerComponent } from "../components/swagger.component";
 
-import {LinkedBoardsComponent} from "../../../board/public/components/linkedBoards/linkedBoards.component";
-angular.module('systemModule').directive('cdeLinkedBoards', downgradeComponent({component: LinkedBoardsComponent, inputs: ['elt'], outputs: []}));
+angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
+    component: SwaggerComponent,
+    inputs: [],
+    outputs: []
+}));
 
-import {ClassificationComponent} from "../../../adminItem/public/components/classification/classification.component";
-angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({component: ClassificationComponent, inputs: ['elt'], outputs: []}));
+import { ClassificationComponent } from "../../../adminItem/public/components/classification/classification.component";
 
-import {DiscussAreaComponent} from "../../../discuss/components/discussArea/discussArea.component";
+angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({
+    component: ClassificationComponent,
+    inputs: ['elt'],
+    outputs: []
+}));
+
+import { DiscussAreaComponent } from "../../../discuss/components/discussArea/discussArea.component";
+
 angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
     {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));
 
-import {AlertService} from "../components/alert/alert.service";
+import { AlertService } from "../components/alert/alert.service";
+
 angular.module('systemModule').factory('AlertService', downgradeInjectable(AlertService));
 
-import {AlertComponent} from "../components/alert/alert.component";
+import { AlertComponent } from "../components/alert/alert.component";
+
 angular.module('systemModule').directive('cdeAlert', downgradeComponent(
     {component: AlertComponent, inputs: [], outputs: []}));

@@ -46,7 +46,8 @@
         <div class="row">
             <div class="col-xs-3 text-right text_label">Size:</div>
             <div class="col-xs-3" id="dd_attach_size_{{$index}}">
-                <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}} MB</div>
+                <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}} MB
+                </div>
                 <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB</div>
             </div>
         </div>
@@ -62,18 +63,16 @@
         </div>
         <hr class="col-xs-9 divider compare-divider">
     </div>
-
     <hr/>
-
     <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
         <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-3 text-right text_label">
-                    <label for="fileToUpload"><i class="fa fa-upload"></i>
-                        Upload more files</label>
+                    <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
                 </div>
                 <div class="col-xs-9">
-                    <input type="file" style="display: none" id="fileToUpload" [(ngModel)]="fileLoc" (change)="upload($event)"/>
+                    <input type="file" style="display: none" id="fileToUpload" [(ngModel)]="fileLoc"
+                           (change)="upload($event)"/>
                 </div>
             </div>
             <div class="row" *ngIf="files && files.length > 0">

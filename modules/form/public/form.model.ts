@@ -1,6 +1,16 @@
 import {
-    CdeId, Classification, DataSource, Elt, Instruction, Naming, ObjectId, PermissibleValue, Property,
-    ReferenceDocument, RegistrationState, UserReference
+    CdeId,
+    Classification,
+    DataSource,
+    Elt,
+    Instruction,
+    Naming,
+    ObjectId,
+    PermissibleValue,
+    DerivationRule,
+    Property,
+    ReferenceDocument,
+    RegistrationState, UserReference
 } from 'core/public/models.model';
 
 export class CdeForm extends Elt {
@@ -139,7 +149,8 @@ export class SkipLogic {
     condition: string;
 }
 
-class Section {}
+class Section {
+}
 
 class InForm {
     form: {
@@ -156,6 +167,7 @@ class QuestionCde {
     outdated: boolean = false;
     tinyId: string;
     version: string;
+    derivationRules: DerivationRule[];
 }
 
 class TextQuestion {

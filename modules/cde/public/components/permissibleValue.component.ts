@@ -74,23 +74,18 @@ export class PermissibleValueComponent implements OnInit {
                 vsac: {}
             };
 
-        this.searchTerms
-            .debounceTime(300)
-            .distinctUntilChanged()
-            .switchMap(term => term
-                ? this.http.get("/searchUmls?searchTerm=" + term).map(res => res.json())
-                : Observable.of<string[]>([])
-            )
-            .subscribe((res) => {
-                if (res.result && res.result.results)
-                    this.umlsTerms = res.result.results;
-                else this.umlsTerms = [];
-            });
+        this.searchTerms.debounceTime(300).distinctUntilChanged().switchMap(term => term
+            ? this.http.get("/searchUmls?searchTerm=" + term).map(res => res.json())
+            : Observable.of<string[]>([])).subscribe((res) => {
+            if (res.result && res.result.results)
+                this.umlsTerms = res.result.results;
+            else this.umlsTerms = [];
+        });
     }
 
     initSrcOptions() {
         this.containsKnownSystem = this.elt.valueDomain.permissibleValues
-                .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
+            .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
     }
 
     openNewPermissibleValueModal() {

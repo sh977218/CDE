@@ -86,7 +86,8 @@ import { RegistrationValidatorService } from "./components/registrationValidator
         SwaggerComponent,
         UsersMgtComponent,
     ],
-    exports: [],
+    exports: [
+    ],
     providers: [
         AlertService,
         CdeDiffPopulateService,

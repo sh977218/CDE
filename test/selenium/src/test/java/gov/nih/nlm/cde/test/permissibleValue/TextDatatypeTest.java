@@ -29,7 +29,7 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         // check update cde has fixed datatype;
-        Assert.assertFalse(get(baseUrl + "/dataelement/593eff071acca22de85b0b29").asString().contains("valueMeaningName"));
+        Assert.assertFalse(get(baseUrl + "/deById/593eff071acca22de85b0b29").asString().contains("valueMeaningName"));
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);

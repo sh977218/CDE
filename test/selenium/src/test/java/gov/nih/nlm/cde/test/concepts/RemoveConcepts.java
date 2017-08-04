@@ -8,12 +8,10 @@ public class RemoveConcepts extends NlmCdeBaseTest {
 
     @Test
     public void removeConcepts() {
+        String cdeName = "ConceptCDE";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("ConceptCDE");
-
+        goToCdeByName(cdeName);
         clickElement(By.id("concepts_tab"));
-
-
         textPresent("DEC1");
         textPresent("DEC_ID_1");
         textPresent("DEC2");
@@ -35,9 +33,9 @@ public class RemoveConcepts extends NlmCdeBaseTest {
         textPresent("Prop3");
         textPresent("Prop_ID_3");
 
-        clickElement(By.id("removedataElementConcept-1"));
-        clickElement(By.id("removeobjectClass-1"));
-        clickElement(By.id("removeproperty-1"));
+        removeDataElementConcept(1);
+        removeObjectClassConcept(1);
+        removePropertyConcept(1);
 
         textPresent("DEC1");
         textPresent("DEC_ID_1");

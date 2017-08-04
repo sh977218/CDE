@@ -19,19 +19,6 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 14);
     }
 
-    @Test
-    public void viewIncrement() {
-        goHome();
-        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
-        textNotPresent("Views");
-        for (int i = 0; i < 10; i++) {
-            goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
-            textPresent("Someone who gives blood");
-        }
-        int nbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
-        textPresent("Views");
-        Assert.assertEquals(nbOfViews, 9);
-    }
 
     @Test
     public void usedBySummary() {

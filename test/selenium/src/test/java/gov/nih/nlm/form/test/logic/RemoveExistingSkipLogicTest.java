@@ -35,7 +35,7 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
         findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).sendKeys(Keys.SPACE);
         findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
         saveEditQuestionSectionById("inform_0_3");
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         textNotPresent(skipLogic);

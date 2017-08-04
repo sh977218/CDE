@@ -19,15 +19,37 @@ import { TourService } from "./tour.service";
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 
-export function getIsAllowedModelFactory(i: any) { return i.get("isAllowedModel"); }
-export function getUserResourceFactory(i: any) { return i.get("userResource"); }
-export function getAccountManagementFactory(i: any) { return i.get("AccountManagement"); }
-export function getElasticBoardFactory(i: any) { return i.get("ElasticBoard"); }
-export function getFormQuickBoardFactory(i: any) { return i.get("FormQuickBoard"); }
-export function getPinModalFactory(i: any) { return i.get("PinModal"); }
-export function getQuickBoardFactory(i: any) { return i.get("QuickBoard"); }
-export function getSearchSettingsFactory(i: any) { return i.get("SearchSettings"); }
-export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"); }
+export function getUserResourceFactory(i: any) {
+    return i.get("userResource");
+}
+
+export function getSearchSettingsFactory(i: any) {
+    return i.get("SearchSettings");
+}
+
+export function getIsAllowedModelFactory(i: any) {
+    return i.get("isAllowedModel");
+}
+
+export function getQuickBoardFactory(i: any) {
+    return i.get("QuickBoard");
+}
+
+export function getFormQuickBoardFactory(i: any) {
+    return i.get("FormQuickBoard");
+}
+
+export function getAccountManagementFactory(i: any) {
+    return i.get("AccountManagement");
+}
+
+export function getPinModalFactory(i: any) {
+    return i.get("PinModal");
+}
+
+export function getElasticBoardFactory(i: any) {
+    return i.get("ElasticBoard");
+}
 
 @NgModule({
     imports: [
@@ -46,15 +68,14 @@ export function getViewingHistoryFactory(i: any) { return i.get("ViewingHistory"
         OrgHelperService,
         // upgraded
         UpgradeModule,
-        {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},
-        {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
-        {provide: "ElasticBoard", useFactory: getElasticBoardFactory, deps: ["$injector"]},
-        {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
-        {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
-        {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
         {provide: "SearchSettings", useFactory: getSearchSettingsFactory, deps: ["$injector"]},
-        {provide: "ViewingHistory", useFactory: getViewingHistoryFactory, deps: ["$injector"]},
+        {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
+        {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
+        {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
+        {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
+        {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
+        {provide: "ElasticBoard", useFactory: getElasticBoardFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,

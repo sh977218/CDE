@@ -49,7 +49,7 @@ public class EditSkipLogic extends BaseFormTest {
         editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 2");
 
         saveEditQuestionSectionById("question_3_2");
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         textPresent("How often did you have to push yourself to get things done because of your fatigue?",

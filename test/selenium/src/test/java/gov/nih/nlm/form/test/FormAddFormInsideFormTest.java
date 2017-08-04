@@ -21,7 +21,7 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form/input")).clear();
         findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form/input")).sendKeys(newFormLabel);
         clickElement(By.xpath("//*[@id='innerForm_label_edit_icon_Vessel Imaging Angiography']//form//button[contains(text(),'Confirm')]"));
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         textPresent(newFormLabel);

@@ -66,9 +66,9 @@ export class ExportService {
                     'odm': function (result) {
                         let zip = new JSZip();
                         result.forEach(function (oneElt) {
-                            SharedService.formShared.getFormOdm(oneElt, function (err, odmElt) {
-                                if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
-                            });
+                            // SharedService.formShared.getFormOdm(oneElt, function (err, odmElt) {
+                            //     if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
+                            // });
                         });
                         let content = zip.generate({type: "blob"});
                         saveAs(content, "SearchExport_ODM.zip");

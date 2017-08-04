@@ -9,9 +9,11 @@ public class PinAllCdesInForm extends BoardTest {
 
     @Test
     public void pinAllCdesInForm() {
+        String formName = "Imaging OCT Analysis -Cirrus Macular Thickness";
         String boardName = "Pin All CDEs From Form";
+
         mustBeLoggedInAs(pinAllBoardUser_username, password);
-        goToFormByName("Imaging OCT Analysis -Cirrus Macular Thickness");
+        goToFormByName(formName);
         clickElement(By.id("pinAllCdes"));
         clickElement(By.linkText(boardName));
         textPresent("All elements pinned");

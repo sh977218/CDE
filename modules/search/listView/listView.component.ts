@@ -52,7 +52,7 @@ export class ListViewComponent implements OnChanges, OnInit {
                 this.viewsMap.set('accordion', CdeAccordionListComponent);
                 if (this.ejsPage === 'board') {
                     this.viewsMap.set('summary', BoardCdeSummaryListComponent);
-                } else if (this.ejsPage === 'quickboard') {
+                } else if (this.ejsPage === 'quickBoard') {
                     this.viewsMap.set('summary', SummaryListComponent);
                     this.viewsMap.set('summaryContent', QuickBoardCdeSummaryListContentComponent);
                 } else {
@@ -64,7 +64,7 @@ export class ListViewComponent implements OnChanges, OnInit {
                 this.viewsMap.set('accordion', FormAccordionListComponent);
                 if (this.ejsPage === 'board') {
                     this.viewsMap.set('summary', BoardFormSummaryListComponent);
-                } else if (this.ejsPage === 'quickboard') {
+                } else if (this.ejsPage === 'quickBoard') {
                     this.viewsMap.set('summary', SummaryListComponent);
                     this.viewsMap.set('summaryContent', QuickBoardFormSummaryListContentComponent);
                 } else {

@@ -38,7 +38,7 @@ export class MoreLikeThisComponent {
     }
 
     static view (cde) {
-        window.open("deview?tinyId=" + cde.tinyId);
+        window.open("deView?tinyId=" + cde.tinyId);
     };
 
 

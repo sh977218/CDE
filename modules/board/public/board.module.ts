@@ -3,7 +3,9 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CreateBoardComponent } from "./components/createBoard/createBoard.component";
+import { CreateFormFromBoardComponent } from 'board/public/components/createFormFromBoard.component';
 import { EltsCompareDirective } from 'board/public/upgrade-components';
 import { LinkedBoardsComponent } from "./components/linkedBoards/linkedBoards.component";
 import { ListSortComponent } from "./components/listView/listSort.component";
@@ -22,6 +24,7 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         NgbModule,
         // internal
         SearchModule,
+        AdminItemModule,
     ],
     declarations: [
         CreateBoardComponent,
@@ -31,11 +34,13 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         PinBoardComponent,
         PinBoardModalComponent,
         PinQuickboardComponent,
+        CreateFormFromBoardComponent,
         QuickBoardComponent,
         UnpinBoardComponent,
     ],
     entryComponents: [
         CreateBoardComponent,
+        CreateFormFromBoardComponent,
         LinkedBoardsComponent,
         PinBoardModalComponent,
         QuickBoardComponent,

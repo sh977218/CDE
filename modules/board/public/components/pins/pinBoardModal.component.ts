@@ -45,6 +45,23 @@ export class PinBoardModalComponent {
         this.resolve(board);
     }
 
+    pinMultiple(module: string, elts: any, promise: Promise<any>) {
+        promise.then(board => {
+            let url = "/board/id/" + board._id;
+            if (this.module === "cde")
+                url += "/dataElements/";
+            if (this.module === "form")
+                url += "/forms/";
+
+            this.http.put(url, elts).subscribe((r) => {
+                this.alert.addAlert(r.status === 200 ? "success" : "warning", r.text());
+                this.modalRef.close();
+            }, (err) => {
+                this.alert.addAlert("danger", err);
+            });
+        });
+    }
+
     pinOne(module: string, elt: any, promise: Promise<any>) {
         promise.then(board => {
             this.http.put('/pin/' + module + '/' + elt.tinyId + '/' + board._id, {}).subscribe((r) => {

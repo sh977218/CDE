@@ -6,23 +6,30 @@ import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { Select2Module } from "ng2-select2";
 import { LocalStorageModule } from "angular-2-local-storage";
 
-import { CompareModule } from "../../compare/compare.module";
-import { SearchModule } from "../../search/search.module";
-import { WidgetModule } from "../../widget/widget.module";
+import { CompareModule } from 'compare/compare.module';
+import { SearchModule } from 'search/search.module';
+import { WidgetModule } from 'widget/widget.module';
 
-import { InlineEditDirective, InlineSelectEditDirective, SortableArrayDirective } from "./upgrade-components";
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
+import { HistoryComponent } from "./components/history.component";
 import { ClassificationComponent } from "./components/classification/classification.component";
 import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
-import { HistoryComponent } from "./components/history.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
-import { LinkedFormsComponent } from "./components/linkedForms.component";
+import {
+    InlineEditDirective,
+    InlineSelectEditDirective,
+    SortableArrayDirective
+} from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
-import { RegistrationComponent } from "./components/registration/registration.component";
 import { SourcesComponent } from "./components/sources/sources.component";
+import { RegistrationComponent } from "./components/registration/registration.component";
+import { LinkedFormsComponent } from "./components/linkedForms.component";
+import { ClassificationViewComponent } from "./components/classification/classificationView.component";
+import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
+import { CreateFormComponent } from 'form/public/components/createForm.component';
 
 @NgModule({
     imports: [
@@ -43,8 +50,11 @@ import { SourcesComponent } from "./components/sources/sources.component";
     declarations: [
         AttachmentsComponent,
         ClassificationComponent,
+        ClassificationViewComponent,
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
+        CdeUpdateElementComponent,
+        CreateFormComponent,
         IdentifiersComponent,
         InlineEditDirective,
         InlineSelectEditDirective,
@@ -57,20 +67,13 @@ import { SourcesComponent } from "./components/sources/sources.component";
         SortableArrayDirective,
         SourcesComponent,
     ],
-    entryComponents: [
+    exports: [
         AttachmentsComponent,
         ClassificationComponent,
-        IdentifiersComponent,
-        LinkedFormsComponent,
-        HistoryComponent,
-        NamingComponent,
-        PropertiesComponent,
-        ReferenceDocumentComponent,
-        RegistrationComponent,
-        SourcesComponent,
-    ],
-    exports: [
-        ClassificationComponent,
+        ClassificationViewComponent,
+        ClassifyItemModalComponent,
+        CdeUpdateElementComponent,
+        CreateFormComponent,
         IdentifiersComponent,
         InlineEditDirective,
         InlineSelectEditDirective,

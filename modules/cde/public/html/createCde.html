@@ -1,23 +1,15 @@
 <div class="container-fluid">
-    <div class="row">
     <div class="col-md-5">
-        <form name="createCde" role="form">
-            <fieldset>
-                <legend>Create Data Element</legend>
-                <div ng-include="'/system/public/html/createCdeForm.html'"></div>
-                <hr/>
-                <a href="/" class="btn btn-warning">Cancel</a>
-                <input id="submit" type="submit" ng-click="save()" class="btn btn-success"
-                       value="Save" ng-disabled="isClean() || createCde.$invalid || validationErrors() !== null">
-                </input>
-            </fieldset>
-        </form>
+        <h1>Create Data Element</h1>
+        <hr>
+        <cde-create-data-element (cancel)="redirectToHome($event);"
+                                 (model-change)="showSuggestions($event);"></cde-create-data-element>
     </div>
-        <div class="col-md-7" ng-show="cdes">
-            <h4>Possible Matches</h4>
-            <div class="panel-group" id="accordion">
-                <cde-list-view [elts]="cdes" list-view="accordion" module="cde"></cde-list-view>
-            </div>
+
+    <div class="col-md-7" ng-if="cdes && cdes.length > 0">
+        <h4>Possible Matches</h4>
+        <div class="panel-group" id="accordion">
+            <cde-list-view [elts]="cdes" list-view="accordion" module="cde"></cde-list-view>
         </div>
     </div>
 </div>

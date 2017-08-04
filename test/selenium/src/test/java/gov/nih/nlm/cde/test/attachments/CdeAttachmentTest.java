@@ -12,7 +12,6 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
-
         clickElement(By.id("attachments_tab"));
         textNotPresent("Upload more files");
 

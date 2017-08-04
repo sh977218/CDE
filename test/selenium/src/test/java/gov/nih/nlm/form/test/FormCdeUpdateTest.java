@@ -1,9 +1,10 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormCdeUpdateTest extends BaseFormTest {
+public class FormCdeUpdateTest extends NlmCdeBaseTest {
 
     @Test
     public void answerList() {
@@ -21,7 +22,7 @@ public class FormCdeUpdateTest extends BaseFormTest {
         textPresent("was", By.id("mdd_d_cde"));
         textPresent("was", By.id("mdd_d_answers"));
         clickElement(By.id("okSelect"));
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         clickElement(By.id("description_tab"));

@@ -88,7 +88,7 @@ exports.addToViewHistory = function (elt, user) {
         if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
             origin: "cde.mongo-cde.addToViewHistory",
             stack: new Error().stack,
-            details: {"cde": cde, user: user}
+            details: {"cde": elt, user: user}
         });
     });
 };
@@ -151,10 +151,7 @@ exports.userById = function(id, callback) {
 
 exports.addUser = function(user, callback) {
     user.username = user.username.toLowerCase();
-    var newUser = new User(user);
-    newUser.save(function (err, o) {
-        callback(err, o);
-    });
+    new User(user).save(callback);
 };
 
 exports.siteadmins = function(callback) {

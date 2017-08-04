@@ -130,6 +130,22 @@ export class PermissibleValue {
     valueMeaningName: string;
 }
 
+enum RuleType {
+    'score', 'panel'
+}
+
+enum Formula {
+    'sumAll', 'mean'
+}
+
+export class DerivationRule {
+    name: String;
+    inputs: Array<String>;
+    outputs: Array<String>;
+    ruleType: String;
+    formula: String;
+}
+
 export class Property {
     _id: ObjectId;
     key: string;

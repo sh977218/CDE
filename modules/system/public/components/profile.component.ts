@@ -19,23 +19,28 @@ export class ProfileComponent {
 
     constructor(private http: Http,
                 private alert: AlertService,
-                @Inject("userResource") private userService,
-                @Inject("ViewingHistory") private viewingHistoryService) {
-        viewingHistoryService.getViewingHistory();
-        viewingHistoryService.getCdes().then((response) => {
-            this.cdes = response;
-            if (Array.isArray(response))
-                this.cdes.forEach((elt, i, elts) => elts[i] = Object.assign(new DataElement, elt));
-            else
-                this.cdes = [];
-        });
-        viewingHistoryService.getForms().then((response) => {
-            this.forms = response;
-            if (Array.isArray(response))
-                this.forms.forEach((elt, i, elts) => elts[i] = Object.assign(new CdeForm, elt));
-            else
-                this.forms = [];
-        });
+                @Inject("userResource") private userService) {
+
+        this.http.get('/viewingHistory/dataElement').map(res => res.json())
+            .subscribe(
+                response => {
+                    this.cdes = response;
+                    if (Array.isArray(response))
+                        this.cdes.forEach((elt, i, elts) => elts[i] = Object.assign(new DataElement, elt));
+                    else
+                        this.cdes = [];
+                }, err => this.alert.addAlert("danger", "Error, unable to retrieve data element view history. " + err)
+            );
+        this.http.get('/viewingHistory/form').map(res => res.json())
+            .subscribe(
+                response => {
+                    this.forms = response;
+                    if (Array.isArray(response))
+                        this.forms.forEach((elt, i, elts) => elts[i] = Object.assign(new CdeForm, elt));
+                    else
+                        this.forms = [];
+                }, err => this.alert.addAlert("danger", "Error, unable to retrieve form view history. " + err)
+            );
         this.reloadUser();
     }
 

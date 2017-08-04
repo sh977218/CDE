@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output, ViewChild, OnInit } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import 'rxjs/add/operator/map';
 import { Http } from '@angular/http';
@@ -15,6 +15,7 @@ import { SharedService } from 'core/public/shared.service';
 export class RegistrationComponent implements OnInit {
     @ViewChild('regStatusEdit') public regStatusEditModal: NgbModalModule;
     @Input() public elt: any;
+    @Output() save = new EventEmitter();
     helpMessage: string;
     newState: any = {};
     public modalRef: NgbModalRef;
@@ -65,10 +66,8 @@ export class RegistrationComponent implements OnInit {
         this.elt.registrationState = this.newState;
         this.elt.registrationState.effectiveDate = this.parserFormatter.format(this.newState.effectiveDate);
         this.elt.registrationState.untilDate = this.parserFormatter.format(this.newState.untilDate);
-        this.elt.$save(() => {
-            this.modalRef.close();
-            this.alert.addAlert('success', 'Saved');
-        });
+        this.save.emit();
+        this.modalRef.close();
     }
 
 }

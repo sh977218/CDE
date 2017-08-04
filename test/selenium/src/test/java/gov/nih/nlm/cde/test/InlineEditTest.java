@@ -12,11 +12,10 @@ public class InlineEditTest extends BaseAttachmentTest {
     @Test
     public void cdeInlineEditTest() {
         String cdeName = "ImgTagTest";
-        mustBeLoggedInAs(testAdmin_username, password);
-        goToCdeByName(cdeName);
         String attachmentName = "nih-logo-color.png";
 
-
+        mustBeLoggedInAs(testAdmin_username, password);
+        goToCdeByName(cdeName);
         // probably an issue with the clamAv mock. So we try twice.
         try {
             addAttachment(attachmentName);
@@ -64,10 +63,8 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.linkText("OK"));
 
         clickElement(By.cssSelector("button.fa-check"));
-
         textPresent("validate image url");
-
-        textPresent("Saved");
+        textPresent("Property saved.");
         closeAlert();
         Assert.assertTrue(findElement(By.xpath("//*[@id='value_0']//img")).getAttribute("src").contains("cde"));
     }

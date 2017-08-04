@@ -29,5 +29,9 @@ angular.module('formModule').controller('CreateFormCtrl', ['$scope', '$window', 
                 $location.url("formView?tinyId=" + form.tinyId);
             });
         };
-        
+
+        $scope.redirectToHome = function () {
+            window.location.href = "/";
+        };
+
     }]);

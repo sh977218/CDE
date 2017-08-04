@@ -6,6 +6,7 @@ export class Comment {
     created: Date;
     pendingApproval: boolean;
     linkedTab: string;
+    currentComment: boolean = false;
     status: string;
     currentlyReplying: boolean;
     replies: [
@@ -17,7 +18,7 @@ export class Comment {
             pendingApproval: boolean
             status: string
         }
-    ];
+        ];
     element: {
         eltType: string
         eltId: String

@@ -29,48 +29,20 @@ import {BoardCdeSummaryListComponent} from "../components/listView/boardCdeSumma
 angular.module('cdeModule').directive('cdeBoardCdeSummaryList',
     downgradeComponent({component: BoardCdeSummaryListComponent, inputs: ['board', 'cdes', 'module', 'currentPage', 'totalItems'], outputs: ['reload']}));
 
-import {DatasetsComponent} from "../components/datasets/datasets.component";
-angular.module('cdeModule').directive('cdeDatasets', downgradeComponent({component: DatasetsComponent, inputs: ['elt'], outputs: []}));
-
-import {MoreLikeThisComponent} from "../components/mlt/moreLikeThis.component";
-angular.module('cdeModule').directive('cdeMlt', downgradeComponent({component: MoreLikeThisComponent, inputs: ['elt'], outputs: []}));
-
-import {ConceptsComponent} from "../components/concepts.component";
-angular.module('cdeModule').directive('cdeConcepts', downgradeComponent({component: ConceptsComponent, inputs: ['elt'], outputs: []}));
-
-import {DerivationRulesComponent} from "../components/derivationRules.component";
-angular.module('cdeModule').directive('cdeDerivationRules', downgradeComponent({component: DerivationRulesComponent, inputs: ['elt'], outputs: []}));
-
-import {CdeGeneralDetailsComponent} from "../components/summary/cdeGeneralDetails.component";
-angular.module('systemModule').directive('cdeCdeGeneralDetails', downgradeComponent({component: CdeGeneralDetailsComponent, inputs: ['elt'], outputs: []}));
-
-import {CdeSearchComponent} from "../components/search/cdeSearch.component";
-angular.module('systemModule').directive('cdeCdeSearch', downgradeComponent({component: CdeSearchComponent, inputs: ['addMode'], outputs: []}));
-
-import {DeGeneralDetailsComponent} from "../components/deGeneralDetails/deGeneralDetails.component";
-angular.module('systemModule').directive('cdeDeGeneralDetails', downgradeComponent({component: DeGeneralDetailsComponent, inputs: ['elt'], outputs: []}));
-
-import {LinkedFormsComponent} from "../../../adminItem/public/components/linkedForms.component";
-angular.module('cdeModule').directive('cdeLinkedForms', downgradeComponent({component: LinkedFormsComponent, inputs: ['elt', 'eltType'], outputs: []}));
-
-import { ListViewComponent } from "../../../search/listView/listView.component";
-angular.module('cdeModule').directive('cdeListView', downgradeComponent({component: ListViewComponent,
-    inputs: ['board', 'currentPage', 'ejsPage', 'elts', 'listView', 'module', 'totalItems'], outputs: ['add', 'listViewChange']}));
-
-import { ListViewControlsComponent } from "../../../search/listView/listViewControls.component";
-angular.module('cdeModule').directive('cdeListViewControls', downgradeComponent({component: ListViewControlsComponent, inputs: ['listView'], outputs: ['listViewChange']}));
-
-import {ValueDomainSummaryComponent} from "../components/summary/valueDomainSummary.component";
-angular.module('systemModule').directive('cdeValueDomainSummary', downgradeComponent({component: ValueDomainSummaryComponent, inputs: ['elt'], outputs: []}));
-
 import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
 angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));
-
-import {PermissibleValueComponent} from "../components/permissibleValue.component";
-angular.module('cdeModule').directive('cdePermissibleValue', downgradeComponent({component: PermissibleValueComponent, inputs: ['elt'], outputs: []}));
 
 import {QuickBoardComponent} from "../../../board/public/components/quickBoard/quickBoard.component";
 angular.module('cdeModule').directive('cdeQuickBoard', downgradeComponent({component: QuickBoardComponent, inputs: [], outputs: []}));
 
-import {ValidRulesComponent} from "../components/validationRules/validRules.component";
-angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], ouputs: []}));
+import {CreateDataElementComponent} from "../components/createDataElement.component";
+angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent({component: CreateDataElementComponent, inputs: ['elt'], outputs: ['cancel','modelChange']}));
+
+import {DataElementViewComponent} from "../components/dataElementView.component";
+angular.module('cdeModule').directive('cdeDataElementView', downgradeComponent({component: DataElementViewComponent, inputs: ['elt'], outputs: ['reload','stageElt']}));
+
+import {CdeAccordionListNg2Component} from "../components/cdeAccordionListNg2.component";
+angular.module('cdeModule').directive('cdeAccordionListNg2', downgradeComponent({component: CdeAccordionListNg2Component, inputs: ['cdes'], outputs: []}));
+
+import {CreateFormFromBoardComponent} from "../../../board/public/components/createFormFromBoard.component";
+angular.module('systemModule').directive('cdeCreateFormFromBoard', downgradeComponent({component: CreateFormFromBoardComponent, inputs: ['board'], outputs: []}));

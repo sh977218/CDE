@@ -76,7 +76,7 @@ export class TableListComponent implements OnChanges {
             if (this.tableSetup.name)
                 row.push({
                     css: 'name',
-                    html: `<a href="/deview?tinyId=${e.tinyId}">${e.naming[0].designation}</a>`
+                    html: `<a href="/deView?tinyId=${e.tinyId}">${e.naming[0].designation}</a>`
                 });
             if (this.tableSetup.questionTexts)
                 row.push({

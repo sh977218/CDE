@@ -6,6 +6,7 @@ import { Select2Module } from "ng2-select2";
 
 import { AdminItemModule } from "adminItem/public/adminItem.module";
 import { BoardModule } from "board/public/board.module";
+import { DiscussModule } from 'discuss/discuss.module';
 import { SearchModule } from "search/search.module";
 import { WidgetModule } from "widget/widget.module";
 
@@ -15,7 +16,9 @@ import { CdeAccordionListComponent } from "./components/listView/cdeAccordionLis
 import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
 import { CdeSearchComponent } from "./components/search/cdeSearch.component";
 import { CdeSummaryListContentComponent } from "./components/listView/cdeSummaryListContent.component";
+import { CdeAccordionListNg2Component } from "./components/cdeAccordionListNg2.component";
 import { ConceptsComponent } from "./components/concepts.component";
+import { CreateDataElementComponent } from "./components/createDataElement.component";
 import { DatasetsComponent } from "./components/datasets/datasets.component";
 import { DerivationRulesComponent } from "./components/derivationRules.component";
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
@@ -24,6 +27,9 @@ import { PermissibleValueComponent } from "./components/permissibleValue.compone
 import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
+import { DataElementService } from "./dataElement.service";
+import { DataElementViewComponent } from "./components/dataElementView.component";
+import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 
 @NgModule({
     imports: [
@@ -31,9 +37,11 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         FormsModule,
         NgbModule,
         Select2Module,
+        TreeModule,
         // internal
         AdminItemModule,
         BoardModule,
+        DiscussModule,
         SearchModule,
         WidgetModule,
     ],
@@ -44,10 +52,13 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         CdeGeneralDetailsComponent,
         CdeSearchComponent,
         CdeSummaryListContentComponent,
+        CreateDataElementComponent,
+        CdeAccordionListNg2Component,
         ConceptsComponent,
-        DeGeneralDetailsComponent,
         DerivationRulesComponent,
         DatasetsComponent,
+        DeGeneralDetailsComponent,
+        DataElementViewComponent,
         MoreLikeThisComponent,
         PermissibleValueComponent,
         QuickBoardCdeSummaryListContentComponent,
@@ -70,12 +81,16 @@ import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSum
         QuickBoardCdeSummaryListContentComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
+        CdeAccordionListNg2Component,
+        CreateDataElementComponent,
+        DataElementViewComponent
     ],
     exports: [
         CdeAccordionListComponent,
         CdeSearchComponent,
     ],
     providers: [
+        DataElementService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
