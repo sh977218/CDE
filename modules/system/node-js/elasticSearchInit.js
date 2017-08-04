@@ -11,7 +11,6 @@ exports.createIndexJson = {
                     }
                 }
                 , "flatClassifications": {"type": "string", "index": "not_analyzed"}
-                , "notClassified": {"type": "boolean"}
                 , "flatMeshTrees": {"type": "string", "index": "not_analyzed"}
                 , "classification": {
                     properties: {
@@ -110,7 +109,6 @@ exports.createFormIndexJson = {
             "properties": {
                 "stewardOrg": {properties: {"name": {"type": "string", "index": "not_analyzed"}}}
                 , "flatClassifications": {"type": "string", "index": "not_analyzed"}
-                , "notClassified": {"type": "boolean"}
                 , "flatMeshTrees": {"type": "string", "index": "not_analyzed"}
                 , "classification": {
                     properties: {
@@ -240,7 +238,6 @@ exports.riverFunction = function (_elt, cb) {
             }
         }
         elt.flatClassifications = flatArray;
-        elt.notClassified = elt.flatClassifications.length === 0;
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;
         elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
@@ -283,7 +280,7 @@ exports.riverFunction = function (_elt, cb) {
             elt.classificationBoost = 0.1;
         }
         elt.flatIds = elt.ids.map(function (id) {
-            return id.source + ' ' + id.id + ' ' + id.version
+            return id.source + ' ' + id.id + ' ' + id.version;
         });
         elt.flatProperties = elt.properties.map(function (p) {
             return p.key + ' ' + p.value;
