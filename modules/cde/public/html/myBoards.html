@@ -62,8 +62,8 @@
                         <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'"
                            ng-click="showChangeStatus = true" id="privateIcon_{{$index}}"></i>
                     </span>
-                    <span id="viewBoard_{{board.name}}" inline-edit model="board.name"
-                          link-source="/board/{{board._id}}" is-allowed="canEditBoard()" on-ok="save(board);"></span>
+                    <cde-inline-edit id="viewBoard_{{board.name}}" [model]="board.name"
+                          link-source="/board/{{board._id}}" [allowed]="canEditBoard()" (modelChange)="save(board);"></cde-inline-edit>
                 </h4>
                 <div ng-include="'/cde/public/html/boardTemplate.html'"></div>
             </div>

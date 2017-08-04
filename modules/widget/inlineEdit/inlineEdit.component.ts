@@ -29,6 +29,7 @@ export class InlineEditComponent implements OnInit {
     @Input() inputType: string = "text";
     @Input() selectOptions: Array<any> = [];
     @Input() isAllowed: boolean = false;
+    @Input() linkSource: string;
     @Output() modelChange = new EventEmitter<string>();
 
     public INPUT_TYPE_ARRAY = ["text", "email", "number"];
