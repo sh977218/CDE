@@ -35,6 +35,7 @@ public class EltIdMaps {
         eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
         eltMap.put("Little interest or pleasure in doing things in last 2 weeks [Reported.PHQ]", "QkWPURx5Fz");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
+        eltMap.put("Malignant Neoplasm Surgical Margin Distance Value", "-d7K6T3-Z4Q");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL) - troublesome physical symptom problem score", "QXpcS9boYtk");
         eltMap.put("Medication affecting cardiovascular function type exam day indicator", "xug6J6R8fkf");
         eltMap.put("Mediastinal Lymph Node Physical Examination Specify", "64YoxVrtASF");

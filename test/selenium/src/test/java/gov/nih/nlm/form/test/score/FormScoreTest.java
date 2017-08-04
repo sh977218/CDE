@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class FormScoreTest extends QuestionTest {
 
     @Test
-    public void score() {
+    public void formScore() {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "ALS Score Form";
         goToFormByName(formName);

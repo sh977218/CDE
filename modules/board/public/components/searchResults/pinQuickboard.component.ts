@@ -11,7 +11,9 @@ export class PinQuickboardComponent implements OnInit {
 
     quickBoard: any;
 
-    constructor(@Inject("QuickBoard") public cdeQuickBoard, @Inject("FormQuickBoard") public formQuickBoard) {}
+    constructor(@Inject("QuickBoard") public cdeQuickBoard,
+                @Inject("FormQuickBoard") public formQuickBoard) {
+    }
 
     ngOnInit() {
         if (this.module === 'cde')

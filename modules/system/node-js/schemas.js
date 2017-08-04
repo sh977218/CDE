@@ -28,6 +28,18 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
+
+schemas.derivationRuleSchema = new mongoose.Schema(
+    {
+        name: String,
+        inputs: {type: [String], index: true, description: "Information operated on by rule"},
+        outputs: {description: "Information produced by rule", type: [String]},
+        ruleType: {type: String, enum: ['score', 'panel']},
+        formula: {type: String, enum: ['sumAll', 'mean']}
+    }, {_id: true}
+);
+
+
 schemas.sourceSchema = new mongoose.Schema({
     sourceName: String,
     created: {type: Date, description: "Date created in source"},

@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class CdeSearchTest2 extends NlmCdeBaseTest {
     
-    @Test(priority = 2)
+    @Test
     public void StandardStatusWarningCheck() {
         mustBeLoggedOut();
         // Check that a none Standard or Preferred Standard CDE doesn't have warning message when not logged in

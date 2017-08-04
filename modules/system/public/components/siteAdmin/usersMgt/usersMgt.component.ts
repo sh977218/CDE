@@ -95,7 +95,7 @@ export class UsersMgtComponent {
 
     getEltLink (c) {
         return {
-                cde: "/deview?tinyId=",
+                cde: "/deView?tinyId=",
                 form: "/formView?tinyId=",
                 board: "/board/"
             }[c.element.eltType] + c.element.eltId;

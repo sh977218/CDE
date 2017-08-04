@@ -9,10 +9,10 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                     controller: 'MergeModalCtrl',
                     resolve: {
                         cdeSource: function () {
-                            return $http.get('/deByTinyId/' + $scope.cdes[$scope.retiredIndex].tinyId);
+                            return $http.get('/de/' + $scope.cdes[$scope.retiredIndex].tinyId);
                         },
                         cdeTarget: function () {
-                            return $http.get('/deByTinyId/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);
+                            return $http.get('/de/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);
                         }
                     }
                 }).result.then(function (dat) {
@@ -27,12 +27,13 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                                 Alert.addAlert("success", "Merge request sent");
                             });
                         }, function () {
-                            Alert.addAlert("danger", "There was an error creating this merge request.")
+                            Alert.addAlert("danger", "There was an error creating this merge request.");
                         });
                     } else {
                         var gotoNewElement = function (mr) {
-                            MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function (cde) {
-                                $location.url("deview?tinyId=" + cde.tinyId);
+                            MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function (response) {
+                                if (response.status !== 200) return Alert.addAlert("danger", response.error);
+                                $location.url("deView?tinyId=" + response.data.tinyId);
                                 Alert.addAlert("success", "CDEs successfully merged");
                             });
                         };
@@ -50,10 +51,10 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
 
             $scope.isMergeRequestPossible = function (cde, otherCde) {
                 if ((!cde) || (!otherCde)) return false;
-                return isAllowedModel.isAllowed(cde)
-                    && !(cde.registrationState.administrativeStatus === "Retire Candidate")
-                    && !(otherCde.registrationState.administrativeStatus === "Retire Candidate")
-                    && !(cde.registrationState.registrationStatus === "Standard");
+                return isAllowedModel.isAllowed(cde) &&
+                    cde.registrationState.administrativeStatus !== "Retire Candidate" &&
+                    otherCde.registrationState.administrativeStatus !== "Retire Candidate" &&
+                    cde.registrationState.registrationStatus !== "Standard";
             };
 
             $scope.showVersioning = function (mergeRequest, callback) {
@@ -69,6 +70,6 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                 }).result.then(callback, function () {
                 });
             };
-            
+
         }
     ]);

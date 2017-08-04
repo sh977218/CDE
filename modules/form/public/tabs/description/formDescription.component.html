@@ -6,7 +6,8 @@
                   [treeDrag]="toolSection" [treeDragEnabled]="true">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
-            <span role="button" id="startAddingQuestions" class="btn btn-default formDescriptionTool" style="width: 87px"
+            <span role="button" id="startAddingQuestions" class="btn btn-default formDescriptionTool"
+                  style="width: 87px"
                   *ngIf="elt.formElements.length > 0"
                   [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
@@ -67,10 +68,9 @@
                             <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
-                                                                      [elt]="elt"
-                                                                      [node]="node"
+                                                                      [elt]="elt" [node]="node"
                                                                       (isFormValid)="isFormValid.emit($event)"
-                                                                      (stageElt)="stageElt.emit()"></cde-form-description-question-detail>
+                                                                      (stageElt)="stageParent()"></cde-form-description-question-detail>
                             </div>
                         </div>
                         <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>

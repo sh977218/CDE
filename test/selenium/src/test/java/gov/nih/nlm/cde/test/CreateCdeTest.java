@@ -17,15 +17,16 @@ public class CreateCdeTest extends BaseClassificationTest {
         textPresent("Submission and Reporting");
         textPresent("Breast Cancer Data Mart");
 
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("Select One");
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("Select One");
         textPresent("Please select a steward for the new CDE");
 
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("NINDS");
+        addClassificationMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
         modalGone();
         textPresent("Traumatic Brain Injury");
-        deleteClassification("classification-Disease,Traumatic Brain Injury");
-        addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Headache"});
+
+        deleteClassification("Disease,Traumatic Brain Injury");
+        addClassificationMethod(new String[]{"NINDS", "Disease", "Headache"});
         checkRecentlyUsedClassificationsForNewCde(new String[]{"NINDS", "Disease", "Headache"});
 
         clickElement(By.id("submit"));

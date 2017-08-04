@@ -1,13 +1,14 @@
 package gov.nih.nlm.common.test;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 
-public abstract class ConceptTest extends CommonTest {
+public abstract class ConceptTest extends NlmCdeBaseTest {
 
     public void reorderConceptTest(String eltName) {
         mustBeLoggedInAs(testAdmin_username, password);
-        goToEltByName(eltName, null);
+        goToCdeByName(eltName);
         clickElement(By.id("concepts_tab"));
 
         clickElement(By.id("moveDown-0"));

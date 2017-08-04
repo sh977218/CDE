@@ -22,7 +22,7 @@ angular.module('systemModule').controller('LatestCommentsCtrl',['$scope', '$http
 
     $scope.getEltLink = function (c) {
         return {
-                'cde': "/deview?tinyId=",
+                'cde': "/deView?tinyId=",
                 'form': "/formView?tinyId=",
                 'board': "/board/"
             }[c.element.eltType] + c.element.eltId;

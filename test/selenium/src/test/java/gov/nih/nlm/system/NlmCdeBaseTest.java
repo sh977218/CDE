@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.jayway.restassured.RestAssured.get;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
@@ -67,6 +66,7 @@ public class NlmCdeBaseTest {
     protected static String boarduser2_username = "boarduser2";
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
+    protected static String boardUser_username = "boarduser";
     protected static String formboarduser = "formboarduser";
     protected static String pinUser = "pinuser";
     protected static String unpinUser = "unpinuser";
@@ -319,7 +319,7 @@ public class NlmCdeBaseTest {
     private void goToElementByName(String name, String type) {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
-            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId=" + tinyId);
+            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deView" : "formView") + "/?tinyId=" + tinyId);
             textPresent(name);
         } else {
             try {
@@ -501,26 +501,41 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void newCdeVersion(String changeNote) {
+        newVersion(changeNote);
+        textPresent("Data Element saved.");
+        closeAlert();
+        modalGone();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+    }
 
     protected void newCdeVersion() {
         newCdeVersion(null);
     }
 
-    protected void newCdeVersion(String changeNote) {
-        scrollToEltByCss("#openSave");
-        clickElement(By.id("openSave"));
-        textPresent("has already been used");
-        if (changeNote != null) {
-            findElement(By.name("changeNote")).clear();
-            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
-        }
-        findElement(By.name("version")).sendKeys(".1");
-        textNotPresent("has already been used");
-        clickElement(By.id("confirmNewVersion"));
-        textPresent("Saved.");
+    protected void newFormVersion(String changeNote) {
+        newVersion(changeNote);
+        textPresent("Form saved.");
         closeAlert();
-        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         modalGone();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+    }
+
+    protected void newFormVersion() {
+        newFormVersion(null);
+    }
+
+    protected void newVersion(String changeNote) {
+        if (changeNote == null || changeNote.equals(""))
+            changeNote = "Change note for change number 1";
+        clickElement(By.id("openSave"));
+        if (findElement(By.id("newVersion")).getText().length() > 0)
+            textPresent("has already been used");
+        findElement(By.id("changeNote")).clear();
+        findElement(By.id("changeNote")).sendKeys(changeNote);
+        findElement(By.name("newVersion")).sendKeys(".1");
+        textNotPresent("has already been used");
+        clickElement(By.id("confirmSaveBtn"));
     }
 
     public void hangon(double i) {
@@ -773,14 +788,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void deleteClassification(String classificationId) {
-        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
-        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
+        clickElement(By.xpath("//*[@id='" + classificationId + "-unclassifyBtn']"));
+        clickElement(By.id("confirmDeleteClassificationBtn"));
         modalGone();
         closeAlert();
     }
 
-    protected void deleteMgtClassification(String classificationId,
-                                           String classificationName) {
+    protected void deleteMgtClassification(String classificationId, String classificationName) {
         clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
         clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
@@ -876,6 +890,18 @@ public class NlmCdeBaseTest {
         textNotPresent("Confirm");
     }
 
+    protected void changeDefinitionFormat(int index, boolean isHtml) {
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
+        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
+        String plainTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]";
+        String confirmBtnXpath = "//*[@id='definition_0']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(definitionEditIconXpath));
+        if (isHtml) clickElement(By.xpath(richTextBtnXpath));
+        if (!isHtml) clickElement(By.xpath(plainTextBtnXpath));
+        clickElement(By.xpath(confirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
     protected void editTagByIndex(int index, String[] tags) {
         String tagsInputXpath = "//*[@id='tags_" + index + "']//input";
         for (String tag : tags) {
@@ -929,7 +955,19 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
-        textPresent("Property Added");
+        textPresent("Property added");
+        closeAlert();
+    }
+
+    /**
+     * This method is used to remove property for cde and form.
+     *
+     * @param index Index of properties, starting from 0.
+     */
+    protected void removeProperty(int index) {
+        clickElement(By.id("removeProperty-" + index));
+        clickElement(By.id("confirmRemoveProperty-" + index));
+        textPresent("Property removed");
         closeAlert();
     }
 
@@ -944,7 +982,7 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewReferenceDocumentBtn"));
         modalGone();
-        textPresent("Reference Document Added");
+        textPresent("Reference document added");
         closeAlert();
     }
 
@@ -966,7 +1004,7 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier Added");
+        textPresent("Identifier added");
         closeAlert();
     }
 
@@ -981,5 +1019,260 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void removeClassificationMethod(String[] categories) {
+        String selector = "";
+        for (int i = 0; i < categories.length; i++) {
+            selector += categories[i];
+            if (i < categories.length - 1)
+                selector += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
+        textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
+        clickElement(By.id("confirmDeleteClassificationBtn"));
+        closeAlert();
+        Assert.assertTrue(checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']")));
+    }
+
+    protected void openClassificationAudit(String name) {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
+        clickElement(By.linkText("Classification Audit Log"));
+        clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
+    }
+
+    protected void goToBoard(String boardName) {
+        String boardId = EltIdMaps.eltMap.get(boardName);
+        if (boardId != null) {
+            driver.get(baseUrl + "/board/" + boardId);
+            textPresent(boardName);
+        } else {
+            gotoMyBoards();
+            textPresent(boardName);
+            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']//a"));
+            switchTab(1);
+            textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
+        }
+    }
+
+    protected void gotoMyBoards() {
+        clickElement(By.id("boardsMenu"));
+        textPresent("My Boards");
+        clickElement(By.id("myBoardsLink"));
+        textPresent("Add Board");
+        hangon(2);
+    }
+
+    protected void addIdentifier(String source, String id, String version) {
+        clickElement(By.id("ids_tab"));
+        clickElement(By.id("openNewIdentifierModalBtn"));
+        findElement(By.id("newSource")).sendKeys(source);
+        findElement(By.id("newId")).sendKeys(id);
+        if (version != null)
+            findElement(By.name("version")).sendKeys(version);
+        clickElement(By.id("createNewIdentifierBtn"));
+        textPresent("Identifier added");
+        closeAlert();
+        hangon(1);
+    }
+
+    /**
+     * This method is used to remove identifier for cde and form.
+     *
+     * @param index Index of identifiers, starting from 0.
+     */
+    protected void removeIdentifier(int index) {
+        clickElement(By.id("ids_tab"));
+        clickElement(By.id("removeIdentifier-" + index));
+        clickElement(By.id("confirmRemoveIdentifier-" + index));
+        closeAlert();
+    }
+
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removeDataElementConcept(int index) {
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.id("removedataElementConcept-" + index));
+    }
+
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removeObjectClassConcept(int index) {
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.id("removeobjectClass-" + index));
+    }
+
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removePropertyConcept(int index) {
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.id("removeproperty-" + index));
+    }
+
+    /**
+     * This method is used to edit registration status for cde or form.
+     *
+     * @param status             Registration Status.
+     * @param effectiveDate      Effective Date.
+     * @param untilDate          Until Date.
+     * @param administrativeNote Administrative Note.
+     * @param unresolvedIssue    Unresolved Issue.
+     */
+    protected void editRegistrationStatus(String status, String effectiveDate, String untilDate, String administrativeNote, String unresolvedIssue) {
+        clickElement(By.id("editStatus"));
+        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText(status);
+        if (status.equals("Preferred Standard"))
+            textPresent("Preferred Standard elements cannot be edited by their stewards");
+        if (status.equals("Standard"))
+            textPresent("Standard elements cannot be edited by their stewards");
+        if (status.equals("Qualified"))
+            textPresent("Qualified elements should be well defined and are visible to the public by default.");
+        if (status.equals("Recorded"))
+            textPresent("Recorded elements are not visible by default.");
+        if (status.equals("Candidate"))
+            textPresent("Candidate elements are not visible by default.");
+        if (status.equals("Incomplete"))
+            textPresent("Incomplete indicates an element that is not fully defined. Incomplete elements are not visible by default.");
+        if (status.equals("Retired"))
+            textPresent("Retired elements are not returned in searches");
+        if (effectiveDate != null && effectiveDate.length() > 0)
+            findElement(By.id("newEffectiveDate")).sendKeys(effectiveDate);
+        if (untilDate != null && untilDate.length() > 0)
+            findElement(By.id("newUntilDate")).sendKeys(untilDate);
+        if (administrativeNote != null && administrativeNote.length() > 0)
+            findElement(By.id("newAdministrativeNote")).sendKeys(administrativeNote);
+        if (unresolvedIssue != null && unresolvedIssue.length() > 0)
+            findElement(By.id("newUnresolvedIssue")).sendKeys(unresolvedIssue);
+        clickElement(By.id("saveRegStatus"));
+    }
+
+    protected void checkRecentlyUsedClassifications(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        clickElement(By.id("recentlyAddViewTab"));
+        String recentlyClassificationString = org;
+        for (int i = 0; i < classificationArray.length; i++)
+            recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
+        textPresent(recentlyClassificationString, By.id("recentlyClassification_0"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
+    }
+
+    protected void addClassificationByTree(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        textPresent(classificationArray[0]);
+        String expanderStr = "";
+        for (int i = 0; i < classificationArray.length - 1; i++) {
+            expanderStr = expanderStr + classificationArray[i];
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
+            expanderStr += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
+        textPresent("Classification added.");
+        closeAlert();
+        for (int i = 1; i < classificationArray.length; i++)
+            textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
+    }
+
+    protected void addClassificationByRecentlyAdd(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        clickElement(By.id("recentlyAddViewTab"));
+        String recentlyClassificationString = org;
+        for (int i = 0; i < classificationArray.length; i++)
+            recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
+        String classifyBtnXpath = "//*[normalize-space( text() )='" + recentlyClassificationString + "']//button";
+        clickElement(By.xpath(classifyBtnXpath));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
+    }
+
+    protected void addExistingClassification(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        textPresent(classificationArray[0]);
+        String expanderStr = "";
+        for (int i = 0; i < classificationArray.length - 1; i++) {
+            expanderStr = expanderStr + classificationArray[i];
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
+            expanderStr += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
+        textPresent("Classification Already Exists");
+        closeAlert();
+    }
+
+
+    public void startEditQuestionSectionById(String id) {
+        try {
+            scrollToViewById(id);
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
+        } catch (Exception e) {
+            scrollDownBy(50);
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
+        }
+    }
+
+    public void saveEditQuestionSectionById(String id) {
+        try {
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
+        } catch (Exception e) {
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
+        }
+    }
+
+    /**
+     * This method is used to edit section in form description for form.
+     *
+     * @param sectionId             Section Id.
+     * @param newSectionName        New section name.
+     * @param newSectionInstruction New section instruction.
+     * @param isInstructionHtml     Is instruction html?
+     * @param newSectionCardinality New section cardinality
+     */
+    protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
+        startEditQuestionSectionById(sectionId);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).sendKeys(newSectionName);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+        textNotPresent("Confirm");
+        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]"));
+
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//i[contains(@class,'fa-edit')]"));
+        textPresent("Plain Text");
+        textPresent("Rich Text");
+        textPresent("Confirm");
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).sendKeys(newSectionInstruction);
+        if (isInstructionHtml)
+            clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[text()='Rich Text']"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[contains(text(),'Confirm')]"));
+        textNotPresent("Confirm");
+        textPresent(newSectionInstruction, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//div/span"));
+
+        new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newSectionCardinalityType);
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(newSectionCardinality);
+        saveEditQuestionSectionById("section_0");
+        if (newSectionCardinality.equals("1"))
+            textNotPresent("Repeats", By.xpath("//*[@id='" + sectionId + "']"));
+        else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));
+    }
 
 }

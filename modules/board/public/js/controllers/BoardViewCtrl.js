@@ -43,7 +43,9 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     $scope.accordionListStyle = "";
                     if (response.data.board) {
                         $scope.board = response.data.board;
-                        if ($scope.board.type === "form") { $scope.quickBoard = $scope.formQuickBoard; }
+                        if ($scope.board.type === "form") {
+                            $scope.quickBoard = $scope.formQuickBoard;
+                        }
                         var elts = $scope[$scope.board.type + 's'] = [];
                         $scope.module = $scope.board.type;
                         $scope.setViewTypes($scope.module);
@@ -91,7 +93,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $http['delete'](url).then(function onSuccess() {
                     $scope.reload();
                     Alert.addAlert("success", "Unpinned.");
-                }).catch(function onError() {});
+                }).catch(function onError() {
+                });
             };
 
             $scope.exportBoard = function () {
@@ -191,34 +194,22 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             };
                         }
                     }
-                    });
-                $modalInstance.result.then(function () {}, function() {});
-            };
-
-            $scope.createFormFromBoard = function () {
-                $modal.open({
-                    animation: false,
-                    templateUrl: '/form/public/html/createFormFromBoard.html',
-                    controller: 'CreateFormFromBoardModalCtrl',
-                    resolve: {
-                        board: function () {
-                            return $scope.board;
-                        }
-                    }
-                }).result.then(function () {}, function() {});
+                });
+                $modalInstance.result.then(function () {
+                }, function () {
+                });
             };
             $scope.getReviewers = function () {
                 return $scope.board.users.filter(function (u) {
                     return u.role === 'reviewer';
-                })
+                });
             };
             $scope.modifiedSinceReview = function () {
                 var isModifiedSinceReview = false;
                 if (userResource.user) {
                     $scope.board.users.forEach(function (u) {
                         if (u.username === userResource.user.username &&
-                            u.role === 'reviewer' && u.status.approval === 'approved'
-                            && new Date($scope.board.updatedDate) >= new Date(u.status.reviewedDate)) {
+                            u.role === 'reviewer' && u.status.approval === 'approved' && new Date($scope.board.updatedDate) >= new Date(u.status.reviewedDate)) {
                             isModifiedSinceReview = true;
                         }
                     });
@@ -270,7 +261,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 }).result.then(function (users) {
                     $scope.board.users = users;
-                }, function () {});
+                }, function () {
+                });
             };
             $scope.boardApproval = function (approval) {
                 $http.post('/board/approval', {

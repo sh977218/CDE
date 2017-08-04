@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.classification;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -27,19 +26,6 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
     }
 
-    @Test
-    public void viewOrgClassifications() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Classifications")).click();
-        hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByVisibleText("PS&CC");
-        textPresent("edu.fccc.brcf.domain");
-        textNotPresent("Magnetic Resonance Imaging (MRI)");
-        new Select(findElement(By.cssSelector("select"))).selectByVisibleText("ACRIN");
-        textPresent("Magnetic Resonance Imaging (MRI)");
-        textNotPresent("edu.fccc.brcf.domain");
-    }
 
     @Test
     public void removeClassificationMgt() {
@@ -80,10 +66,4 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         modalGone();
     }
 
-    @Test
-    public void link() {
-        mustBeLoggedInAs(ninds_username, password);
-        gotoClassificationMgt();
-        textPresent("Headache");
-    }
 }

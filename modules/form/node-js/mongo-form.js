@@ -1,10 +1,9 @@
-var config = require('../../system/node-js/parseConfig')
-    , schemas = require('./schemas')
-    , mongo_data_system = require('../../system/node-js/mongo-data')
-    , connHelper = require('../../system/node-js/connections')
-    , logging = require('../../system/node-js/logging')
-    , elastic = require('./elastic')
-;
+const config = require('../../system/node-js/parseConfig');
+const schemas = require('./schemas');
+const mongo_data_system = require('../../system/node-js/mongo-data');
+const connHelper = require('../../system/node-js/connections');
+const logging = require('../../system/node-js/logging');
+const elastic = require('./elastic');
 
 exports.type = "form";
 exports.name = "forms";
@@ -26,6 +25,45 @@ exports.Form = Form;
 
 exports.elastic = elastic;
 
+exports.trimWholeForm = function (form) {
+    let loopFormElements = function (form, cb) {
+        if (!form) return cb();
+        if (!form.formElements) form.formElements = [];
+        form.formElements.forEach(fe => {
+            if (fe.elementType === "form") {
+                fe.formElements = [];
+            } else if (fe.elementType === "section") {
+                loopFormElements(fe);
+            }
+        });
+    };
+    loopFormElements(form);
+};
+
+exports.byId = function (id, cb) {
+    Form.findById(id, cb);
+};
+
+exports.byIdList = function (idList, cb) {
+    Form.find({}).where("_id").in(idList).exec(cb);
+};
+
+exports.byTinyId = function (tinyId, cb) {
+    Form.findOne({'tinyId': tinyId, archived: false}, cb);
+};
+
+exports.byTinyIdVersion = function (tinyId, version, cb) {
+    Form.findOne({'tinyId': tinyId, version: version}, cb);
+};
+
+exports.latestVersionByTinyId = function (tinyId, cb) {
+    Form.findOne({tinyId: tinyId, archived: false}, function (err, form) {
+        cb(err, form.version);
+    });
+};
+
+/* ---------- PUT NEW REST API above ---------- */
+
 exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
 };
@@ -40,15 +78,6 @@ exports.count = function (condition, callback) {
     });
 };
 
-exports.priorForms = function (formId, callback) {
-    Form.findById(formId).exec(function (err, form) {
-        if (form !== null) {
-            return Form.find({}).where("_id").in(form.history).exec(function (err, forms) {
-                callback(err, forms);
-            });
-        }
-    });
-};
 
 exports.findForms = function (request, callback) {
     var criteria = {};
@@ -75,7 +104,8 @@ exports.update = function (elt, user, callback, special) {
         elt.sources = form.sources;
         elt.comments = form.comments;
         if (special) special(elt, form);
-        var newForm = new Form(elt);
+
+        let newForm = new Form(elt);
         form.archived = true;
         if (newForm.naming.length < 1) {
             logging.errorLogger.error("Error: Cannot save form without names", {
@@ -127,10 +157,6 @@ exports.create = function (form, user, callback) {
     newForm.save(function (err) {
         callback(err, newForm);
     });
-};
-
-exports.byId = function (id, callback) {
-    Form.findById(id, callback);
 };
 
 exports.byOtherId = function (source, id, cb) {
@@ -188,12 +214,6 @@ exports.byTinyIdListInOrder = function (idList, callback) {
     });
 };
 
-exports.eltByTinyId = function (tinyId, callback) {
-    if (!tinyId) callback("tinyId is undefined!", null);
-    if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
-    else Form.findOne({'tinyId': tinyId, "archived": false}).exec(callback);
-};
-
 exports.removeAttachmentLinks = function (id) {
     Form.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
 };
@@ -213,5 +233,11 @@ exports.setAttachmentApproved = function (id) {
 exports.fileUsed = function (id, cb) {
     Form.find({"attachments.fileid": id}).count().exec(function (err, count) {
         cb(err, count > 0);
+    });
+};
+
+exports.exists = function (condition, callback) {
+    Form.count(condition, function (err, result) {
+        callback(err, result > 0);
     });
 };

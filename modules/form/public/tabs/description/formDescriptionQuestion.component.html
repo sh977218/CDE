@@ -31,7 +31,7 @@
     </div>
     <div class="ib left">
         <a target="_blank" title="{{question.question.cde.name}}"
-           href="/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
+           href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
             <i class="fa fa-eye"></i> View CDE
         </a>
     </div>
@@ -154,13 +154,13 @@
                 <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
                 <div class="col-sm-8" id="mdd_d_cde">
                     <a [ngClass]="{mark: updateCdeVersion.bCde}"
-                       href="/deview?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
+                       href="/deView?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
                        target="_blank"><i class="fa fa-eye"></i>
                         <span id="mdd_question_cde_name">{{updateCdeVersion.newQuestion.question.cde.name}}</span>
                     </a>
                     <span *ngIf="updateCdeVersion.bCde" class="red">( was
                     <a style="color: red"
-                       href="/deview?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
+                       href="/deView?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
                        target="_blank"><i class="fa fa-eye"></i>
                         <span id="mdd_old_question_cde_name">{{updateCdeVersion.currentQuestion.question.cde.name}}</span>
                     </a> )

@@ -2,14 +2,14 @@
 <cde-board-cde-summary-list ng-if="ejsPage === 'board'"
                             [board]="board" [cdes]="cdes" [current-page]="currentPage" [total-items]="totalItems"
                             (reload)="reload()"></cde-board-cde-summary-list>
-<div ng-if="ejsPage === 'quickboard'" ng-repeat="(eltIndex, elt) in cdes track by elt.tinyId">
+<div ng-if="ejsPage === 'quickBoard'" ng-repeat="(eltIndex, elt) in cdes track by elt.tinyId">
     <div ng-if="$index === cutoffIndex" style="margin-top:40px">
         <h3>More results</h3>
     </div>
     <div class="singleSearchResult" id="searchResult_{{$index}}">
         <h4>
             <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
-            <a ng-href="/deview/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy" id="linkToElt_{{$index}}"></a>
+            <a ng-href="/deView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy" id="linkToElt_{{$index}}"></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
             <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
             <small  class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>

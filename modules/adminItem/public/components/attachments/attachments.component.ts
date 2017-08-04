@@ -9,8 +9,6 @@ import { AlertService } from "../../../../system/public/components/alert/alert.s
     selector: "cde-admin-item-attachments",
     templateUrl: "./attachments.component.html"
 })
-
-
 export class AttachmentsComponent {
 
     @Input() public elt: any;
@@ -18,14 +16,13 @@ export class AttachmentsComponent {
 
     showDelete: boolean = false;
 
-    constructor(
-        private http: Http,
-        private ref: ChangeDetectorRef,
-        @Inject("isAllowedModel") public isAllowedModel,
-        private alert: AlertService
-    ) {}
+    constructor(private http: Http,
+                private ref: ChangeDetectorRef,
+                @Inject("isAllowedModel") public isAllowedModel,
+                private alert: AlertService) {
+    }
 
-    upload (event) {
+    upload(event) {
         if (event.srcElement.files) {
             let files = event.srcElement.files;
             let formData = new FormData();
@@ -46,20 +43,20 @@ export class AttachmentsComponent {
         }
     }
 
-    setDefault (index) {
+    setDefault(index) {
         this.http.post("/attachments/" + this.elt.elementType + "/setDefault",
             {
                 index: index
                 , state: this.elt.attachments[index].isDefault
                 , id: this.elt._id
             }).map(r => r.json()).subscribe(res => {
-                this.elt = res;
-                this.alert.addAlert("success", "Saved");
-                this.ref.detectChanges();
+            this.elt = res;
+            this.alert.addAlert("success", "Saved");
+            this.ref.detectChanges();
         });
     }
 
-    copyUrl (attachment) {
+    copyUrl(attachment) {
         let url = (window as any).publicUrl + "/data/" + attachment.fileid;
         let copyElement = document.createElement("input");
         copyElement.setAttribute("type", "text");
@@ -75,7 +72,7 @@ export class AttachmentsComponent {
         }
     }
 
-    removeAttachment (index) {
+    removeAttachment(index) {
         this.http.post("/attachments/" + this.elt.elementType + "/remove", {
             index: index
             , id: this.elt._id

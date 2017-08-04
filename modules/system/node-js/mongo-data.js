@@ -88,7 +88,7 @@ exports.addToViewHistory = function (elt, user) {
         if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
             origin: "cde.mongo-cde.addToViewHistory",
             stack: new Error().stack,
-            details: {"cde": cde, user: user}
+            details: {"cde": elt, user: user}
         });
     });
 };
