@@ -30,6 +30,7 @@ import { CompareModule } from "../../compare/compare.module";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
 import { SystemModule } from "../../system/public/system.module";
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
+import { CreateFormComponent } from 'form/public/components/createForm.component';
 
 @NgModule({
     imports: [
@@ -54,6 +55,7 @@ import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.compone
         ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
+        CreateFormComponent,
         FormSummaryListDirective,
         IdentifiersComponent,
         InlineEditDirective,
@@ -74,6 +76,7 @@ import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.compone
         ClassificationViewComponent,
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
+        CreateFormComponent,
         IdentifiersComponent,
         InlineEditDirective,
         InlineSelectEditDirective,

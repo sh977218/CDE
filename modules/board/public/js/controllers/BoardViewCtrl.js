@@ -199,67 +199,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 }, function () {
                 });
             };
-
-            $scope.createFormFromBoard = function () {
-                var elt = {
-                    naming: [
-                        {designation: $scope.board.name}],
-                    elementType: "form",
-                    stewardOrg: {},
-                    classification: [],
-                    formElements: []
-                };
-                if ($scope.board.pins && $scope.board.pins.length > 0) {
-                    elt.formElements.push({
-                        elementType: 'section',
-                        label: "",
-                        formElements: []
-                    });
-                    $http.get('/board/' + $scope.board._id + "/0/500").then(function onSuccess(response) {
-                        response.data.elts.forEach(function (p) {
-                            elt.formElements[0].formElements.push({
-                                elementType: 'question',
-                                label: p.naming[0].designation,
-                                formElements: [],
-                                question: {
-                                    cde: {
-                                        tinyId: p.tinyId,
-                                        name: p.naming[0].designation,
-                                        version: p.version ? p.version : null,
-                                        permissibleValues: p.valueDomain.permissibleValues,
-                                        ids: p.ids
-                                    }
-                                }
-                            });
-                        });
-                        $modal.open({
-                            animation: false,
-                            templateUrl: '/form/public/html/createFormFromBoard.html',
-                            controller: 'CreateFormFromBoardModalCtrl',
-                            resolve: {
-                                elt: function () {
-                                    return elt;
-                                }
-                            }
-                        }).result.then(function () {
-                        }, function () {
-                        });
-                    });
-                }
-                else
-                    $modal.open({
-                        animation: false,
-                        templateUrl: '/form/public/html/createFormFromBoard.html',
-                        controller: 'CreateFormFromBoardModalCtrl',
-                        resolve: {
-                            elt: function () {
-                                return elt;
-                            }
-                        }
-                    }).result.then(function () {
-                    }, function () {
-                    });
-            };
             $scope.getReviewers = function () {
                 return $scope.board.users.filter(function (u) {
                     return u.role === 'reviewer';

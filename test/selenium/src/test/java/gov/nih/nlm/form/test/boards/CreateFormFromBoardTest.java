@@ -1,28 +1,22 @@
 package gov.nih.nlm.form.test.boards;
 
-import gov.nih.nlm.cde.test.BaseClassificationTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
-public class CreateFormFromBoardTest extends BaseClassificationTest {
-
+public class CreateFormFromBoardTest extends NlmCdeBaseTest {
     @Test
     public void createFormFromBoard() {
-        String boardName = "Form Board";
-        String newFormName = "New form from boards";
-        String newFormDefinition = "New form from boards definition";
-        String newFormVersion = "1.0";
-        String classificationOrg = "TEST";
-        String[] classificationArray = new String[]{"Classify Board", "Classif_Board_Sub"};
         mustBeLoggedInAs(testAdmin_username, password);
-        goToBoard(boardName);
-        clickElement(By.id("mb.createForm"));
-        findElement(By.id("eltName")).sendKeys(newFormName);
-        findElement(By.id("eltDefinition")).sendKeys(newFormDefinition);
-        findElement(By.id("formVersion")).sendKeys(newFormVersion);
-        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText(classificationOrg);
-        addClassificationByTree(classificationOrg, classificationArray);
+        goToBoard("Form Board");
+        clickElement(By.id("createFormBtn"));
+        findElement(By.id("eltName")).sendKeys("New form from boards");
+        findElement(By.id("eltDefinition")).sendKeys("New form from boards definition");
+        findElement(By.id("formVersion")).sendKeys("1.0");
+        new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("TEST");
+        addClassificationByTree("TEST", new String[]{"Classify Board", "Classif_Board_Sub"});
+        hangon(2);
         clickElement(By.id("submit"));
         textPresent("Incomplete");
         textNotPresent("have newer version");
