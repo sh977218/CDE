@@ -6,9 +6,25 @@ if (typeof(window) === "undefined") {
     // This will be executed in Chrome
     try {
         _crypto = jscrypto; // jshin ignore:line
-    } catch (e) {}
+    } catch (e) {
+    }
 }
 var cdeOdmMapping;
+
+exports.flattenFormElement = function (fe) {
+    let result = [];
+    fe.formElements.map(function (subFe) {
+        if (!subFe.formElements || subFe.formElements.length === 0) {
+            result.push(subFe);
+        } else {
+            let subEs = exports.flattenFormElement(subFe);
+            subEs.forEach(function (e) {
+                result.push(e);
+            });
+        }
+    });
+    return result;
+};
 
 exports.getFormQuestions = function (form) {
     var getQuestions = function (fe) {
@@ -31,7 +47,7 @@ exports.getFormCdes = function (form) {
 };
 
 
-exports.getFormOdm = function(form, cb) {
+exports.getFormOdm = function (form, cb) {
 
     if (!form) return cb(null, "");
     if (!form.formElements) {
@@ -69,7 +85,7 @@ exports.getFormOdm = function(form, cb) {
         }[cdeType] || 'text';
     }
 
-    function escapeHTML(text){
+    function escapeHTML(text) {
         if (!text) return "";
         return text.replace(/\<.+?\>/gi, ""); // jshint ignore:line
     }
@@ -109,7 +125,8 @@ exports.getFormOdm = function(form, cb) {
                     , FormRef: {
                         '$FormOID': form.tinyId,
                         '$Mandatory': 'Yes',
-                        '$OrderNumber': '1'}
+                        '$OrderNumber': '1'
+                    }
                 }
                 , FormDef: {
                     '$Name': escapeHTML(form.naming[0].designation)
@@ -127,7 +144,7 @@ exports.getFormOdm = function(form, cb) {
     var questions = [];
     var codeLists = [];
 
-    form.formElements.forEach(function (s1,si) {
+    form.formElements.forEach(function (s1, si) {
         var childrenOids = [];
         exports.flattenFormElement(s1).forEach(function (q1, qi) {
             var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
@@ -159,7 +176,7 @@ exports.getFormOdm = function(form, cb) {
                     }
                 });
 
-                if (!codeListAlreadyPresent){
+                if (!codeListAlreadyPresent) {
                     odmQuestion.CodeListRef = {'$CodeListOID': 'CL_' + oid};
                     questions.push(odmQuestion);
                     var codeList = {
@@ -200,8 +217,9 @@ exports.getFormOdm = function(form, cb) {
             , '$Repeating': 'No'
             , Description: {
                 TranslatedText: {
-                    '$xml:lang':'en',
-                    '_': s1.label}
+                    '$xml:lang': 'en',
+                    '_': s1.label
+                }
             }
             , ItemRef: childrenOids.map(function (oid, i) {
                 return {
@@ -212,8 +230,14 @@ exports.getFormOdm = function(form, cb) {
             })
         });
     });
-    sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);});
-    questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);});
-    codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);});
+    sections.forEach(function (s) {
+        odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);
+    });
+    questions.forEach(function (s) {
+        odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);
+    });
+    codeLists.forEach(function (cl) {
+        odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
+    });
     cb(null, odmJsonForm);
 };
