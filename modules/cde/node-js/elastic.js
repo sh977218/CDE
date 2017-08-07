@@ -139,7 +139,7 @@ exports.dataElementDelete = function (elt, cb) {
             }
             cb(err);
         });
-    }
+    } else cb();
 };
 
 exports.elasticsearch = function (user, settings, cb) {
