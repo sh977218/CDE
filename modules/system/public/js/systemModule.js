@@ -34,12 +34,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'InboxCtrl',
             templateUrl: '/system/public/html/inbox.html'
         }).when('/orgComments', {
-            controller: ['$scope', function ($scope) {
-                $scope.commentsUrl = "/orgComments/";
-            }],
-            templateUrl: '/system/public/html/latestComments.html'
+            template: '<cde-latest-comments [comments-url]="\'/orgComments/\'"></cde-latest-comments>'
         }).when('/siteaccountmanagement', {
-            templateUrl: '/system/public/html/siteAccountManagement.html'
+            template: '<cde-site-management></cde-site-management>'
         }).when('/orgaccountmanagement', {
             controller: 'AccountManagementCtrl',
             templateUrl: '/system/public/html/orgAccountManagement.html'
@@ -439,7 +436,7 @@ import { ProfileComponent } from "../components/profile.component";
 
 angular.module('systemModule').directive('cdeProfile', downgradeComponent({
     component: ProfileComponent,
-    inputs: [],
+    inputs: ['commentsUrl'],
     outputs: []
 }));
 
@@ -451,8 +448,8 @@ angular.module('systemModule').directive('user-comments', downgradeComponent({
     outputs: []
 }));
 
-import { SiteAuditComponent } from "../components/siteAdmin/siteAudit/siteAudit.component";
 
+import { SiteAuditComponent } from "../components/siteAdmin/siteAudit/siteAudit.component";
 angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     component: SiteAuditComponent,
     inputs: [],
@@ -479,14 +476,6 @@ import { UsersMgtComponent } from "../components/siteAdmin/usersMgt/usersMgt.com
 
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
     component: UsersMgtComponent,
-    inputs: [],
-    outputs: []
-}));
-
-import { EditSiteAdminsComponent } from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
-
-angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
-    component: EditSiteAdminsComponent,
     inputs: [],
     outputs: []
 }));
@@ -524,7 +513,6 @@ angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComp
 }));
 
 import { HistoryComponent } from "../../../adminItem/public/components/history.component";
-
 angular.module('systemModule').directive('cdeAdminItemHistory', downgradeComponent({
     component: HistoryComponent,
     inputs: ['elt'],
@@ -532,7 +520,6 @@ angular.module('systemModule').directive('cdeAdminItemHistory', downgradeCompone
 }));
 
 import { NamingComponent } from "../../../adminItem/public/components/naming.component";
-
 angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({
     component: NamingComponent,
     inputs: ['elt'],
@@ -540,7 +527,6 @@ angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponen
 }));
 
 import { ReferenceDocumentComponent } from "../../../adminItem/public/components/referenceDocument.component";
-
 angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({
     component: ReferenceDocumentComponent,
     inputs: ['elt'],
@@ -548,7 +534,6 @@ angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgr
 }));
 
 import { RegistrationComponent } from "../../../adminItem/public/components/registration/registration.component";
-
 angular.module('systemModule').directive('cdeRegistration', downgradeComponent({
     component: RegistrationComponent,
     inputs: ['elt'],
@@ -556,7 +541,6 @@ angular.module('systemModule').directive('cdeRegistration', downgradeComponent({
 }));
 
 import { TableListComponent } from "../../../search/searchResults/tableList.component";
-
 angular.module('systemModule').directive('cdeTableList', downgradeComponent({
     component: TableListComponent,
     inputs: ['elts', 'module'],
@@ -564,7 +548,6 @@ angular.module('systemModule').directive('cdeTableList', downgradeComponent({
 }));
 
 import { SwaggerComponent } from "../components/swagger.component";
-
 angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
     component: SwaggerComponent,
     inputs: [],
@@ -572,7 +555,6 @@ angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
 }));
 
 import { ClassificationComponent } from "../../../adminItem/public/components/classification/classification.component";
-
 angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({
     component: ClassificationComponent,
     inputs: ['elt'],
@@ -580,15 +562,24 @@ angular.module('systemModule').directive('cdeAdminItemClassification', downgrade
 }));
 
 import { DiscussAreaComponent } from "../../../discuss/components/discussArea/discussArea.component";
-
 angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
     {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));
 
 import { AlertService } from "../components/alert/alert.service";
-
 angular.module('systemModule').factory('AlertService', downgradeInjectable(AlertService));
 
 import { AlertComponent } from "../components/alert/alert.component";
-
 angular.module('systemModule').directive('cdeAlert', downgradeComponent(
     {component: AlertComponent, inputs: [], outputs: []}));
+
+import {ServerStatusComponent} from "../components/siteAdmin/serverStatus/serverStatus.component"
+angular.module('systemModule').directive('cdeServerStatus', downgradeComponent(
+    {component: ServerStatusComponent, inputs: [], outputs: []}));
+
+import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component"
+angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent(
+    {component: SiteManagementComponent, inputs: [], outputs: []}));
+
+import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
+angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
+    {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
