@@ -29,7 +29,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'AuthCtrl',
             templateUrl: '/system/public/html/login.html'
         }).when('/siteAudit', {
-            templateUrl: '/system/public/html/siteAudit.html'
+            template: '<cde-site-audit></cde-site-audit>'
         }).when('/inbox', {
             controller: 'InboxCtrl',
             templateUrl: '/system/public/html/inbox.html'
@@ -50,7 +50,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             template: '<cde-profile></cde-profile>'
         }).when('/triggerClientException', {
             controller: 'TriggerClientExceptionCtrl',
-            templateUrl: '/system/public/html/triggerClientException.html'
+            template: 'An exception in your browser has been triggered.'
         }).when('/searchSettings', {
             controller: 'SearchSettingsCtrl',
             templateUrl: '/system/public/html/searchSettings.html'
