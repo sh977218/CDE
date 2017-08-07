@@ -38,6 +38,10 @@ angular.module('cdeModule').directive('cdeQuickBoard', downgradeComponent({compo
 import {CreateDataElementComponent} from "../components/createDataElement.component";
 angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent({component: CreateDataElementComponent, inputs: ['elt'], outputs: ['cancel','modelChange']}));
 
+import {CdeSearchComponent} from "../components/search/cdeSearch.component";
+angular.module('systemModule').directive('cdeCdeSearch', downgradeComponent({component: CdeSearchComponent,
+    inputs: ['addMode'], outputs: []}));
+
 import {DataElementViewComponent} from "../components/dataElementView.component";
 angular.module('cdeModule').directive('cdeDataElementView', downgradeComponent({component: DataElementViewComponent, inputs: ['elt'], outputs: ['reload','stageElt']}));
 
@@ -46,3 +50,11 @@ angular.module('cdeModule').directive('cdeAccordionListNg2', downgradeComponent(
 
 import {CreateFormFromBoardComponent} from "../../../board/public/components/createFormFromBoard.component";
 angular.module('systemModule').directive('cdeCreateFormFromBoard', downgradeComponent({component: CreateFormFromBoardComponent, inputs: ['board'], outputs: []}));
+
+import { ListViewComponent } from "../../../search/listView/listView.component";
+angular.module('cdeModule').directive('cdeListView', downgradeComponent({component: ListViewComponent,
+    inputs: ['board', 'currentPage', 'ejsPage', 'elts', 'listView', 'module', 'totalItems'], outputs: ['add', 'listViewChange']}));
+
+import { ListViewControlsComponent } from "../../../search/listView/listViewControls.component";
+angular.module('cdeModule').directive('cdeListViewControls', downgradeComponent({component: ListViewControlsComponent,
+    inputs: ['listView'], outputs: ['listViewChange']}));
