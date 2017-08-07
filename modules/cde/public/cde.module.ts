@@ -28,6 +28,7 @@ import { PermissibleValueComponent } from "./components/permissibleValue.compone
 import { RegistrationValidatorService } from "./components/validationRules/registrationValidator.service";
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
+import { SdcViewComponent } from "./components/sdcView/sdcView.component";
 import { DataElementService } from "./dataElement.service";
 import { DataElementViewComponent } from "./components/dataElementView.component";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
@@ -58,11 +59,14 @@ import { KeysPipe } from 'core/public/KeysPipe';
         CreateDataElementComponent,
         CdeAccordionListNg2Component,
         ConceptsComponent,
+        DataElementViewComponent,
         DerivationRulesComponent,
         DatasetsComponent,
         DeGeneralDetailsComponent,
         DataElementViewComponent,
         MoreLikeThisComponent,
+        PermissibleValueComponent,
+        SdcViewComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
         PermissibleValueComponent,
@@ -71,11 +75,20 @@ import { KeysPipe } from 'core/public/KeysPipe';
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
+        CdeAccordionListNg2Component,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
-        CdeAccordionListNg2Component,
+        ConceptsComponent,
         CreateDataElementComponent,
-        DataElementViewComponent
+        DataElementViewComponent,
+        DatasetsComponent,
+        DeGeneralDetailsComponent,
+        DerivationRulesComponent,
+        MoreLikeThisComponent,
+        PermissibleValueComponent,
+        SdcViewComponent,
+        ValidRulesComponent,
+        ValueDomainSummaryComponent,
     ],
     exports: [],
     providers: [

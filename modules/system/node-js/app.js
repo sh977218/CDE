@@ -42,8 +42,8 @@ exports.init = function (app) {
 
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
-    ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
-        "/board/:id", "/deView", "deview", "/myboards", "/sdcview",
+    ["/cde/search", "/form/search", "/home", "/help/:title", "/createForm", "/createCde", "/boardList",
+        "/board/:id", "/deview", "/myboards", "/sdcview",
         "/cdeStatusReport", "/api", "/sdcview", "/triggerClientException",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {

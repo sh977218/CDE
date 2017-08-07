@@ -139,7 +139,7 @@
     "tempDir": "/tmp/",
     "extractDir": ".."
   },
-  "pmRunOnStartup": ["/usr/nlm/cde/apps/kibana/current/bin/kibana"],
+  "pmRunOnStartup": [],
   "multer": {"inMemory": true},
   "oauth": {
     "enabled": false,
