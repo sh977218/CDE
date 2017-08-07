@@ -34,10 +34,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'InboxCtrl',
             templateUrl: '/system/public/html/inbox.html'
         }).when('/orgComments', {
-            controller: ['$scope', function ($scope) {
-                $scope.commentsUrl = "/orgComments/";
-            }],
-            templateUrl: '/system/public/html/latestComments.html'
+            template: '<cde-latest-comments [comments-url]="\'/orgComments/\'"></cde-latest-comments>'
         }).when('/siteaccountmanagement', {
             template: '<cde-site-management></cde-site-management>'
         }).when('/orgaccountmanagement', {
@@ -582,3 +579,7 @@ angular.module('systemModule').directive('cdeServerStatus', downgradeComponent(
 import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component"
 angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent(
     {component: SiteManagementComponent, inputs: [], outputs: []}));
+
+import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
+angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
+    {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
