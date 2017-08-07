@@ -1,7 +1,10 @@
 <span>
     <span *ngIf="!editMode">
         <i *ngIf="isAllowed" title="Edit" role="link" class="fa fa-edit" (click)="edit()"></i>
-        <span >{{value}}</span>
+        <span *ngIf="!linkSource">
+            <span *ngIf="value">{{value}}</span>
+            <span *ngIf="!value">N/A</span>
+        </span>
         <a *ngIf="linkSource" href="{{linkSource}}" target="_blank">{{value}}</a>
     </span>
     <form *ngIf="editMode" #inlineForm="ngForm" role="form">

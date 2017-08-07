@@ -87,6 +87,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         AlertComponent,
         HomeComponent,
         NavigationComponent,
+        OrgAdminComponent,
         OrgAuthorityComponent,
         ProfileComponent,
         ServerStatusComponent,

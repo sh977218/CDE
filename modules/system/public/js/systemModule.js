@@ -455,6 +455,13 @@ angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     outputs: []
 }));
 
+import { OrgAdminComponent } from "../components/siteAdmin/orgAdmin/orgAdmin.component";
+angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({
+    component: OrgAdminComponent,
+    inputs: [],
+    outputs: []
+}));
+
 import { UsersMgtComponent } from "../components/siteAdmin/usersMgt/usersMgt.component";
 
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
