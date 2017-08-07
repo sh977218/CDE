@@ -44,11 +44,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <a *ngIf="!openInNewTab" class='btn btn-small btn-default'
-                       href="/deView/?tinyId={{elt.tinyId}}" id="openEltInCurrentTab_{{index}}"
+                       href="/deView?tinyId={{elt.tinyId}}" id="openEltInCurrentTab_{{index}}"
                        (click)="$dismiss();">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a *ngIf="openInNewTab" target="_blank" class='btn btn-small btn-default'
-                       href="/deView/?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{index}}">
+                       href="/deView?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{index}}">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a *ngIf="ejsPage!='board'" class="btn btn-small btn-default"
                        (click)="pinModal.openPinModal(elt)" id="pin_{{index}}">
