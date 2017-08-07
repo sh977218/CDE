@@ -18,7 +18,6 @@ var path = require('path')
     , morganLogger = require('morgan')
     , compress = require('compression')
     , helmet = require('helmet')
-    , kibanaProxy = require("./modules/system/node-js/kibanaProxy")
     , ioServer = require('./modules/system/node-js/ioServer')
     ;
 
@@ -32,7 +31,6 @@ app.use(helmet());
 app.use(auth.ticketAuth);
 app.use(compress());
 
-kibanaProxy.setUp(app);
 var localRedirectProxy = httpProxy.createProxyServer({});
 
 process.on('uncaughtException', function (err) {
