@@ -25,9 +25,11 @@ exports.User = User;
 var mongo_data = this;
 
 schemas.dataElementSchema.post('remove', function (doc, next) {
-    elastic.dataElementDelete(doc, function (err) {
-        next(err);
-    });
+    if (!doc.archived)
+        elastic.dataElementDelete(doc, function (err) {
+            next(err);
+        });
+    else next();
 });
 
 schemas.dataElementSchema.pre('save', function (next) {
