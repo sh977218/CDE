@@ -75,6 +75,7 @@ import { KeysPipe } from 'core/public/KeysPipe';
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
+        CdeAccordionListNg2Component,
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
         ConceptsComponent,
