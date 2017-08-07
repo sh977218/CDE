@@ -12,12 +12,12 @@ if (typeof(window) === "undefined") {
 var cdeOdmMapping;
 
 exports.flattenFormElement = function (fe) {
-    let result = [];
+    var result = [];
     fe.formElements.map(function (subFe) {
         if (!subFe.formElements || subFe.formElements.length === 0) {
             result.push(subFe);
         } else {
-            let subEs = exports.flattenFormElement(subFe);
+            var subEs = exports.flattenFormElement(subFe);
             subEs.forEach(function (e) {
                 result.push(e);
             });
