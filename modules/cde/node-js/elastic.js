@@ -122,6 +122,26 @@ exports.boardDelete = function (elt) {
     }
 };
 
+exports.dataElementDelete = function (elt, cb) {
+    if (elt) {
+        esClient.delete({
+            index: config.elastic.index.name,
+            type: "dataelement",
+            id: elt.tinyId
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to delete dataelement: " + elt.tinyId,
+                    origin: "cde.elastic.dataElementDelete",
+                    stack: err,
+                    details: ""
+                });
+                cb(err);
+            }
+        });
+    }
+};
+
 exports.elasticsearch = function (user, settings, cb) {
     var query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (!config.modules.cde.highlight) {

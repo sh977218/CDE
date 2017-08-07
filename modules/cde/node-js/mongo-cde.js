@@ -24,6 +24,13 @@ exports.User = User;
 
 var mongo_data = this;
 
+schemas.dataElementSchema.post('remove', function (next) {
+    var self = this;
+    elastic.dataElementDelete(self, function (err) {
+        if (next) next(err);
+    });
+});
+
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     var cdeError = deValidator.checkPvUnicity(self.valueDomain);

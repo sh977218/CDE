@@ -10,8 +10,8 @@ let cursor = DataElementModal.find(cond).cursor();
 function removeAttachments(de, cb) {
     let attachments = de.attachments;
     if (attachments && attachments.length > 0) {
-        async.forEachSeries(attachments, function (attachement, doneOneAttachment) {
-            mongo_data.removeAttachmentIfNotUsed(attachement.fileid, doneOneAttachment);
+        async.forEachSeries(attachments, function (attachment, doneOneAttachment) {
+            mongo_data.removeAttachmentIfNotUsed(attachment.fileid, doneOneAttachment);
         }, function doneAllAttachments() {
             cb();
         });
