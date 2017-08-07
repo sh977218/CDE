@@ -78,6 +78,7 @@ import { KeysPipe } from 'core/public/KeysPipe';
         CdeSummaryListComponent,
         CdeSummaryListContentComponent,
         ConceptsComponent,
+        CreateDataElementComponent,
         DataElementViewComponent,
         DatasetsComponent,
         DeGeneralDetailsComponent,
