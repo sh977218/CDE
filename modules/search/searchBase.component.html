@@ -34,7 +34,7 @@
         </div>
         <cde-search-export-button id="exportEverything" class="pull-right btn-group mt-3 mb-2" *ngIf="!embedded"
                                   [module]="module"
-                                  (exportType)="exportService.exportSearchResults($event, {searchSettings: searchSettings})">
+                                  (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})">
 
         </cde-search-export-button>
         <div class="mt-3">
@@ -163,7 +163,8 @@
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li *ngIf="userService?.user?._id || module === 'cde'">
                                     <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}"
-                                       (click)="exportService.exportSearchResults(key, {searchSettings: searchSettings})">{{exporters[key].display}}</a>
+                                       (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
+                                    >{{exporters[key].display}}</a>
                                 </li>
                                 <li *ngIf="userService?.user && displayValidation()">
                                     <a id="exportValidRule" (click)="openValidRulesModal()">Validation Rules</a>

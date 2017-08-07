@@ -1,24 +1,22 @@
 import { Inject, Injectable, Input } from "@angular/core";
-import { JSZip } from "jszip";
-import { JXON } from "jxon";
+import * as JSZip from "jszip";
+import * as JXON from "jxon";
 import { saveAs } from "cde/public/assets/js/FileSaver";
 import { AlertService } from "system/public/components/alert/alert.service";
 import { ElasticService } from 'core/public/elastic.service';
 import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
 import { SharedService } from "./shared.service";
-import { User } from "./models.model";
 
 @Injectable()
 export class ExportService {
-    @Input() module: string;
-    @Input() user: User;
     constructor (private alertService: AlertService,
                  private registrationValidatorService: RegistrationValidatorService,
                  private elasticService: ElasticService,
-                 @Inject("SearchSettings") private searchSettings) {}
+                 @Inject("SearchSettings") private searchSettings,
+                 @Inject('userResource') protected userService) {}
 
-    exportSearchResults(type, exportSettings) {
-        if (this.module === 'form' && (!this.user || !this.user._id))
+    exportSearchResults(type, module, exportSettings) {
+        if (module === 'form' && (!this.userService.user || !this.userService.user._id))
             return this.alertService.addAlert("danger", "Please login to access this feature");
 
         try {
@@ -33,7 +31,7 @@ export class ExportService {
 
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings),
-            this.module || 'cde',
+            module || 'cde',
             (err, result) => {
                 if (err)
                     return this.alertService.addAlert("danger",

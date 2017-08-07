@@ -15,7 +15,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild("copyFormContent") public copyFormContent: NgbModalModule;
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @ViewChild("mltPinModal") public mltPinModal: PinBoardModalComponent;
+    @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
     @Input() elt: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -121,7 +121,7 @@ export class FormViewComponent implements OnInit {
             }
         };
         this.elt.formElements.forEach(doFormElement);
-        this.mltPinModal.open();
+        this.mltPinModalCde.open();
     }
 
     isIe() {
