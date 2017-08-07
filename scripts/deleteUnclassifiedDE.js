@@ -46,7 +46,7 @@ cursor.eachAsync(function (dataElement) {
             dataElement.remove(err => {
                 if (err) throw err;
                 count++;
-                console.info("count: " + count);
+                console.log("count: " + count);
                 resolve();
             });
         });
@@ -54,10 +54,10 @@ cursor.eachAsync(function (dataElement) {
 });
 
 cursor.on('close', function () {
-    console.info("Finished all. count: " + count);
+    console.log("Finished all. count: " + count);
 });
 cursor.on('error', function (err) {
-    console.info("error: " + err);
+    console.log("error: " + err);
     process.exit(1);
 });
 
