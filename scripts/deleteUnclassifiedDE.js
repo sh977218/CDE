@@ -24,7 +24,7 @@ function removeHistories(de, cb) {
         async.forEachSeries(histories, function (history, doneOneHistory) {
             DataElementModal.findById(history).remove(err => {
                 if (err) throw err;
-                if (count % 50 === 1) setTimeout(doneOneHistory, 3000);
+                if (count % 50 === 1) setTimeout(doneOneHistory, 10000);
                 else doneOneHistory();
             });
         }, function doneAllHistories() {
