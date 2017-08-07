@@ -281,14 +281,12 @@ exports.buildElasticSearchQuery = function (user, settings) {
                             queries: [
                                 {
                                     function_score: {
-                                        query: hasSearchTerm
-                                            ? {
+                                        query: hasSearchTerm ? {
                                                 query_string: {
                                                     analyze_wildcard: true,
                                                     query: settings.searchTerm
                                                 }
-                                            }
-                                            : undefined,
+                                            } : undefined,
                                         script_score: {script: script}
                                     }
                                 }
@@ -652,7 +650,7 @@ exports.syncWithMesh = function(allMappings) {
                 scrollThrough(response._scroll_id, search);
             }
         });
-    })
+    });
 
 };
 

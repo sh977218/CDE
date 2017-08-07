@@ -35,6 +35,10 @@ import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/f
 import { StatusValidationRulesComponent } from "./components/siteAdmin/statusValidationRules/statusValidationRules.component";
 import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/editSiteAdmins.component";
 import { RegistrationValidatorService } from "./components/registrationValidator.service";
+import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serverStatus.component";
+import { TimeAgoPipe } from "time-ago-pipe";
+import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
+import { DiscussModule } from "../../discuss/discuss.module";
 
 @NgModule({
     imports: [
@@ -47,6 +51,7 @@ import { RegistrationValidatorService } from "./components/registrationValidator
         // internal
         SearchModule,
         WidgetModule,
+        DiscussModule,
     ],
     declarations: [
         AlertComponent,
@@ -65,23 +70,27 @@ import { RegistrationValidatorService } from "./components/registrationValidator
         OrgAdminComponent,
         ProfileComponent,
         ServerErrorsComponent,
+        ServerStatusComponent,
         SiteAuditComponent,
+        SiteManagementComponent,
         StatusValidationRulesComponent,
         SwaggerComponent,
         SelectBoardDirective,
+        TimeAgoPipe,
         TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
     ],
     entryComponents: [
         AlertComponent,
-        EditSiteAdminsComponent,
         HomeComponent,
         ListManagementComponent,
         NavigationComponent,
         OrgAdminComponent,
         ProfileComponent,
+        ServerStatusComponent,
         SiteAuditComponent,
+        SiteManagementComponent,
         StatusValidationRulesComponent,
         SwaggerComponent,
         UsersMgtComponent,

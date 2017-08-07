@@ -145,6 +145,7 @@
     "selenium-webdriver": "3.4.0",
     "style-loader": "0.13.1",
     "tar": "2.1.0",
+    "time-ago-pipe": "1.2.1",
     "ts-loader": "2.0.0",
     "tslint": "4.4.1",
     "tslint-loader": "3.3.0",
