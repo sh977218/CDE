@@ -470,6 +470,7 @@ angular.module('systemModule').directive('cdeOrgAuthority', downgradeComponent({
     outputs: []
 }));
 
+import {EditSiteAdminsComponent} from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
 angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
     component: EditSiteAdminsComponent,
     inputs: [],
