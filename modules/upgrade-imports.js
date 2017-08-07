@@ -71,7 +71,6 @@ import "./cde/public/js/controllers/InboxCtrl";
 import "./cde/public/js/controllers/MergeApproveCtrl";
 import "./cde/public/js/controllers/MergeRequestCtrl";
 import "./system/public/js/controllers/QuickBoardCtrl";
-import "./cde/public/js/controllers/SDCViewCtrl";
 import "./cde/public/js/controllers/DEListCtrl";
 import "./cde/public/js/controllers/MoreLikeThisModalCtrl";
 import "./cde/public/js/controllers/CdeHistoryCtrl";
