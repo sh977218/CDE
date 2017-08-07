@@ -122,6 +122,10 @@ exports.boardDelete = function (elt) {
     }
 };
 
+exports.clusterStatus = function (cb) {
+    esClient.cluster.health({}, cb);
+};
+
 exports.dataElementDelete = function (elt, cb) {
     if (elt) {
         esClient.delete({

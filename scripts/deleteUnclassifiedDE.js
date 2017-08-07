@@ -4,7 +4,8 @@ const mongo_data = require('../modules/system/node-js/mongo-data');
 const DataElementModal = mongo_cde.DataElement;
 
 let count = 0;
-let cond = {'stewardOrg.name': 'NCI', archived: false, classification: {$size: 0}};
+//let cond = {'stewardOrg.name': 'NCI', archived: false, classification: {$size: 0}};
+let cond = {archived: false, classification: {$size: 0}};
 let cursor = DataElementModal.find(cond).cursor();
 
 function removeAttachments(de, cb) {
@@ -24,8 +25,7 @@ function removeHistories(de, cb) {
         async.forEachSeries(histories, function (history, doneOneHistory) {
             DataElementModal.findById(history).remove(err => {
                 if (err) throw err;
-                if (count % 50 === 1) setTimeout(doneOneHistory, 10000);
-                else doneOneHistory();
+                doneOneHistory();
             });
         }, function doneAllHistories() {
             cb();
