@@ -31,6 +31,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
+        clickElement(By.id("closeModal"));
 
         clickElement(By.id("cde_summaryView"));
         findElement(By.linkText("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage"));

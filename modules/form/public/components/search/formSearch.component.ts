@@ -31,5 +31,7 @@ export class FormSearchComponent extends SearchBaseComponent {
                 @Inject('userResource') protected userService) {
         super(_componentFactoryResolver, alert, elasticService, elasticBoard, exportService, http, modalService,
             orgHelperService, userService);
+
+        this.exporters.odm = {id: "odmExport", display: "ODM Export"};
     }
 }

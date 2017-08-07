@@ -26,10 +26,13 @@ export abstract class SearchBaseComponent implements AfterViewInit {
     cutoffIndex: any;
     elts: Elt[];
     embedded = false;
-    exporters = {csv: {id: 'csvExport', display: 'CSV Export'}};
+    exporters: any = {
+        json: {id: "jsonExport", display: "JSON Export"},
+        xml: {id: "xmlExport", display: "XML Export"}
+    };
     filterMode = true;
     lastQueryTimeStamp: number;
-    module = 'cde';
+    module: string;
     numPages: any;
     orgs: any[];
     orgHtmlOverview: string;
@@ -342,7 +345,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
             report.searchSettings = this.searchSettings;
             delete report.searchSettings.resultPerPage;
             let params = new URLSearchParams;
-            params.set('searchSettings', report.searchSettings);
+            params.set('searchSettings', JSON.stringify(report.searchSettings));
             params.set('status', report.status);
             let uri = params.toString();
             window.location.href = '/cdeStatusReport?' + uri;

@@ -9,6 +9,7 @@ public class TwoClassifsFacet extends NlmCdeBaseTest {
     @Test
     public void twoOrgsNoClassif() {
         goToCdeSearch();
+        scrollToViewById("browseOrg-TEST");
         findElement(By.id("browseOrg-TEST")).click();
         findElement(By.id("altClassificationFilterModeToggle")).click();
         textPresent("CIP (1)");

@@ -31,5 +31,7 @@ export class CdeSearchComponent extends SearchBaseComponent {
                 @Inject('userResource') protected userService) {
         super(_componentFactoryResolver, alert, elasticService, elasticBoard, exportService, http, modalService,
             orgHelperService, userService);
+
+        this.exporters.csv = {id: 'csvExport', display: 'CSV Export'};
     }
 }
