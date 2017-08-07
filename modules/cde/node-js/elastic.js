@@ -122,10 +122,6 @@ exports.boardDelete = function (elt) {
     }
 };
 
-exports.clusterStatus = function (cb) {
-    esClient.cluster.health({}, cb);
-};
-
 exports.dataElementDelete = function (elt, cb) {
     if (elt) {
         esClient.delete({
@@ -140,8 +136,8 @@ exports.dataElementDelete = function (elt, cb) {
                     stack: err,
                     details: ""
                 });
-                cb(err);
-            } else cb();
+            }
+            cb(err);
         });
     }
 };

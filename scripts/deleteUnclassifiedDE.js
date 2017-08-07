@@ -5,7 +5,7 @@ const DataElementModal = mongo_cde.DataElement;
 
 let count = 0;
 //let cond = {'stewardOrg.name': 'NCI', archived: false, classification: {$size: 0}};
-let cond = {archived: false, classification: {$size: 0}};
+let cond = {archived: false};
 let cursor = DataElementModal.find(cond).cursor();
 
 function removeAttachments(de, cb) {
@@ -33,23 +33,27 @@ function removeHistories(de, cb) {
     } else cb();
 }
 
-cursor.on('data', function (dataElement) {
-    let de = dataElement.toObject();
-    async.series([
-        function (cb) {
-            removeHistories(de, cb);
-        },
-        function (cb) {
-            removeAttachments(de, cb);
-        }
-    ], function () {
-        dataElement.remove(err => {
-            if (err) throw err;
-            count++;
-            console.info("count: " + count);
+cursor.eachAsync(function (dataElement) {
+    return new Promise(function(resolve, reject){
+        let de = dataElement.toObject();
+        async.series([
+            function (cb) {
+                removeHistories(de, cb);
+            },
+            function (cb) {
+                removeAttachments(de, cb);
+            }
+        ], function () {
+            dataElement.remove(err => {
+                if (err) throw err;
+                count++;
+                console.info("count: " + count);
+                resolve();
+            });
         });
     });
 });
+
 cursor.on('close', function () {
     console.info("Finished all. count: " + count);
 });

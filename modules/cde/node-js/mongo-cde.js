@@ -25,25 +25,10 @@ exports.User = User;
 var mongo_data = this;
 
 schemas.dataElementSchema.post('remove', function (doc, next) {
-    elastic.clusterStatus(function (err, response) {
-        if (err) return next(err);
-        if (!doc.archived) {
-            if (response["number_of_pending_tasks"] < 199)
-                elastic.dataElementDelete(doc, function (err) {
-                    next(err);
-                });
-            else {
-                setTimeout(function () {
-                    elastic.dataElementDelete(doc, function (err) {
-                        next(err);
-                    });
-                }, 5000);
-            }
-        }
-        else next();
+    elastic.dataElementDelete(doc, function (err) {
+        next(err);
     });
-})
-;
+});
 
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
