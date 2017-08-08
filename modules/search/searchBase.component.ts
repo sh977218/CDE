@@ -480,6 +480,21 @@ export abstract class SearchBaseComponent implements AfterViewInit {
 
                 }
 
+                let orgsCreatedPromise = new Promise(resolve => {
+                    this.filterOutWorkingGroups(() => {
+                        this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
+                            this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
+                        this.aggregations.orgs.buckets.sort(function(a, b) {
+                            let A = a.key.toLowerCase();
+                            let B = b.key.toLowerCase();
+                            if (B > A) return -1;
+                            if (A === B) return 0;
+                            return 1;
+                        });
+                        resolve();
+                    });
+                });
+
                 this.aggregations.flatClassifications.sort(SearchBaseComponent.compareObjName);
                 this.aggregations.flatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
                 this.aggregations.statuses.statuses.buckets.sort(function (a, b) {
@@ -487,61 +502,47 @@ export abstract class SearchBaseComponent implements AfterViewInit {
                 });
                 this.aggregations.topics.sort(SearchBaseComponent.compareObjName);
 
-                this.filterOutWorkingGroups(() => {
-                    this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
-                        this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
-                    this.aggregations.orgs.buckets.sort(function(a, b) {
-                        let A = a.key.toLowerCase();
-                        let B = b.key.toLowerCase();
-                        if (B > A) return -1;
-                        if (A === B) return 0;
-                        return 1;
+                this.switchView(this.isSearched() ? 'results' : 'welcome');
+                if (this.view === 'welcome') {
+                    this.orgs = [];
+                    orgsCreatedPromise.then(() => {
+                        if (this.aggregations) {
+                            this.orgHelperService.orgDetails.subscribe(() => {
+                                this.aggregations.orgs.buckets.forEach(org_t => {
+                                    if (this.orgHelperService.orgsDetailedInfo[org_t.key])
+                                        this.orgs.push({
+                                            name: org_t.key,
+                                            longName: this.orgHelperService.orgsDetailedInfo[org_t.key].longName,
+                                            count: org_t.doc_count,
+                                            source: this.orgHelperService.orgsDetailedInfo[org_t.key].uri,
+                                            extraInfo: this.orgHelperService.orgsDetailedInfo[org_t.key].extraInfo,
+                                            htmlOverview: this.orgHelperService.orgsDetailedInfo[org_t.key].htmlOverview
+                                        });
+                                });
+                                this.orgs.sort(SearchBaseComponent.compareObjName);
+                            });
+                        }
                     });
 
-                    this.switchView(this.isSearched() ? 'results' : 'welcome');
-                    this.reloaded();
-                });
+                    this.topics = {};
+                    this.topicsKeys = [];
+                    if (this.aggregations) {
+                        this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(term => {
+                            let spli = term.key.split(';');
+                            if (!this.topics[spli[0]]) {
+                                this.topics[spli[0]] = [];
+                            }
+                            this.topics[spli[0]].push({name: spli[1], count: term.doc_count});
+                        });
+                        for (let prop in this.topics) {
+                            if (this.topics.hasOwnProperty(prop))
+                                this.topicsKeys.push(prop);
+                        }
+                        this.topicsKeys.sort(SearchBaseComponent.compareObjName);
+                    }
+                }
             });
         });
-    }
-
-    reloaded() {
-        if (this.view === 'welcome') {
-            this.orgs = [];
-            if (this.aggregations) {
-                this.orgHelperService.orgDetails.subscribe(() => {
-                    this.aggregations.orgs.buckets.forEach(org_t => {
-                        if (this.orgHelperService.orgsDetailedInfo[org_t.key])
-                            this.orgs.push({
-                                name: org_t.key,
-                                longName: this.orgHelperService.orgsDetailedInfo[org_t.key].longName,
-                                count: org_t.doc_count,
-                                source: this.orgHelperService.orgsDetailedInfo[org_t.key].uri,
-                                extraInfo: this.orgHelperService.orgsDetailedInfo[org_t.key].extraInfo,
-                                htmlOverview: this.orgHelperService.orgsDetailedInfo[org_t.key].htmlOverview
-                            });
-                    });
-                    this.orgs.sort(SearchBaseComponent.compareObjName);
-                });
-            }
-
-            this.topics = {};
-            this.topicsKeys = [];
-            if (this.aggregations) {
-                this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(term => {
-                    let spli = term.key.split(';');
-                    if (!this.topics[spli[0]]) {
-                        this.topics[spli[0]] = [];
-                    }
-                    this.topics[spli[0]].push({name: spli[1], count: term.doc_count});
-                });
-                for (let prop in this.topics) {
-                    if (this.topics.hasOwnProperty(prop))
-                        this.topicsKeys.push(prop);
-                }
-                this.topicsKeys.sort(SearchBaseComponent.compareObjName);
-            }
-        }
     }
 
     reset() {
