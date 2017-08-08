@@ -19,12 +19,12 @@ public class SearchResultOdmExportTest extends NlmCdeBaseTest {
         for (int i = 0; i < 30; i++) {
             zipSize = new File(downloadFolder + "/SearchExport_ODM.zip").length();
             System.out.println("Wait for zip file to appear: " + i);
-            if (zipSize == 2894) {
+            if (zipSize == 9182) {
                 i = 30;
             } else {
                 hangon(5);
             }
         }
-        Assert.assertEquals(zipSize, 2894);
+        Assert.assertEquals(zipSize, 9182);
     }
 }
