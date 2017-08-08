@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject, Input, Output, OnInit, AfterViewInit, AfterViewChecked } from "@angular/core";
 import { SharedService } from "core/public/shared.service";
 import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
     selector: "cde-navigation",
@@ -21,7 +22,8 @@ export class NavigationComponent {
     largeContext = {$implicit: ""};
     tour;
 
-    constructor(@Inject("userResource") public userService) {
+    constructor(private quickBoardService: QuickBoardListService,
+                @Inject("userResource") public userService) {
     }
 
     isPageActive(viewLocation) {

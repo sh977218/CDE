@@ -61,7 +61,7 @@
             </div>
         </li>
         <li id="menu_qb_link" class="nav-item"  [ngClass]="{ active: isPageActive('/quickBoard')}">
-            <a href="/quickBoard" [textContent]="'Quick Board (' + quickBoardCount + ')'"
+            <a href="/quickBoard" [textContent]="'Quick Board (' + quickBoardService.number_elements + ')'"
                [attr.data-toggle]="toggleaction" data-target="#main-navigation"
                attr.aria-controls="main-navigation" attr.aria-expanded="false" attr.aria-label="Quick Board"></a>
         </li>

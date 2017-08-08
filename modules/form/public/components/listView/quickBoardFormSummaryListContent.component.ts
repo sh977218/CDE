@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { QuickBoardListService } from 'board/public/components/quickBoard/quickBoardList.service';
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
     selector: 'cde-quick-board-form-summary-list-content',

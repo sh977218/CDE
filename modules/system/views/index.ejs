@@ -68,8 +68,7 @@
 	<%- include googleAnalytics.html %>
 
 	<div ng-controller="AuthCtrl">
-		<cde-navigation [quick-board-count]="quickBoard.elts.length + formQuickBoard.elts.length"
-		                (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
+		<cde-navigation (go-to-login)="goToLogin()" (logout)="logout()"></cde-navigation>
 	</div>
 
 	<!-- Main content area -->

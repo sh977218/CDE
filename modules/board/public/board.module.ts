@@ -13,7 +13,6 @@ import { MyBoardsService } from "./myBoards.service";
 import { PinBoardComponent } from "./components/pins/pinBoard.component";
 import { PinBoardModalComponent } from "./components/pins/pinBoardModal.component";
 import { PinQuickboardComponent } from "./components/pins/pinQuickboard.component";
-import { QuickBoardComponent } from 'board/public/components/quickBoard/quickBoard.component';
 import { SearchModule } from "search/search.module";
 import { UnpinBoardComponent } from "./components/listView/unpinBoard.component";
 
@@ -35,7 +34,6 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         PinBoardModalComponent,
         PinQuickboardComponent,
         CreateFormFromBoardComponent,
-        QuickBoardComponent,
         UnpinBoardComponent,
     ],
     entryComponents: [
@@ -43,7 +41,6 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         CreateFormFromBoardComponent,
         LinkedBoardsComponent,
         PinBoardModalComponent,
-        QuickBoardComponent,
     ],
     providers: [
         MyBoardsService,

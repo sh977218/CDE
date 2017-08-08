@@ -1,13 +1,27 @@
 import { Inject, Injectable } from '@angular/core';
+import { LocalStorageService } from 'angular-2-local-storage';
 
 @Injectable()
 export class QuickBoardListService {
     eltsToCompareMap = {};
     module: string;
     quickBoard: any;
+    number_dataElements: number = 0;
+    number_forms: number = 0;
+    number_elements: number = 0;
 
-    constructor(@Inject('QuickBoard') public cdeQuickBoard,
+
+
+    constructor(private localStorageService: LocalStorageService,
+                @Inject('QuickBoard') public cdeQuickBoard,
                 @Inject('FormQuickBoard') public formQuickBoard) {
+        let dataElements = <Array<any>> this.localStorageService.get("quickBoard");
+        this.number_dataElements = dataElements.length;
+        let forms = <Array<any>> this.localStorageService.get("formQuickBoard");
+        this.number_forms = forms.length;
+        this.number_elements = this.number_dataElements + this.number_forms;
+
+
         let defaultQuickBoard = window.localStorage['nlmcde.defaultQuickBoard'];
         if (defaultQuickBoard) {
             if (!this.setEltType(defaultQuickBoard)) {

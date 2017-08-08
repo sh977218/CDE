@@ -24,7 +24,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         ;
     }]);
 
-import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
+import {downgradeComponent} from "@angular/upgrade/static";
 
 import {BoardCdeSummaryListComponent} from "../components/listView/boardCdeSummaryList.component";
 angular.module('cdeModule').directive('cdeBoardCdeSummaryList',
@@ -33,7 +33,7 @@ angular.module('cdeModule').directive('cdeBoardCdeSummaryList',
 import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
 angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));
 
-import {QuickBoardComponent} from "../../../board/public/components/quickBoard/quickBoard.component";
+import {QuickBoardComponent} from "../../../quickBoard/public/quickBoard.component";
 angular.module('cdeModule').directive('cdeQuickBoard', downgradeComponent({component: QuickBoardComponent, inputs: [], outputs: []}));
 
 import {CreateDataElementComponent} from "../components/createDataElement.component";
@@ -52,7 +52,7 @@ angular.module('cdeModule').directive('cdeAccordionListNg2', downgradeComponent(
 import {ValidRulesComponent} from "../components/validationRules/validRules.component";
 angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], ouputs: []}));
 
-import {SdcViewComponent} from "../components/sdcView/sdcView.component"
+import {SdcViewComponent} from "../components/sdcView/sdcView.component";
 angular.module('cdeModule').directive('cdeSdcView', downgradeComponent({component: SdcViewComponent, inputs: ['cdeId'], ouputs: []}));
 
 import {CreateFormFromBoardComponent} from "../../../board/public/components/createFormFromBoard.component";
