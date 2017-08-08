@@ -8,7 +8,7 @@ import { Elt } from 'core/public/models.model';
 })
 export class FormAccordionListComponent {
     @Input() addMode: any = null;
-    @Input() ejsPage: string = null;
+    @Input() location: string = null;
     @Input() elts: CdeForm[];
     @Input() openInNewTab: boolean = false;
     @Output() add = new EventEmitter<CdeForm>();

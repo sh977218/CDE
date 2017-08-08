@@ -9,7 +9,7 @@
                 <span class="accordion-list-after">
                     <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
                     <cde-pin-quickboard [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-quickboard>
-                    <a href class="nonLinkAnchor" *ngIf="ejsPage=='quickBoard'"
+                    <a href class="nonLinkAnchor" *ngIf="location=='quickBoard'"
                        (click)="interruptEvent($event);formQuickBoard.remove(i)">
                         <i class="fa fa-trash-o hand-cursor" title="remove" id="remove_{{i}}" role="link"></i></a>
                     <small id="nQuestion-{{i}}" class="pull-right">{{elt.numQuestions}} questions</small>

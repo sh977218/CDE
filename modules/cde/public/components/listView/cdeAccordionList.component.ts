@@ -8,7 +8,7 @@ import { DataElement } from 'cde/public/dataElement.model';
 })
 export class CdeAccordionListComponent {
     @Input() addMode: any = null;
-    @Input() ejsPage: string = null;
+    @Input() location: string = null;
     @Input() elts: DataElement[];
     @Input() openInNewTab: boolean = false;
     @Output() add = new EventEmitter<DataElement>();

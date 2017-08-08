@@ -21,7 +21,7 @@ import { TableListComponent } from 'search/listView/tableList.component';
 export class ListViewComponent implements OnChanges, OnInit {
     @Input() board: any = null;
     @Input() currentPage = 0;
-    @Input() ejsPage: string = null;
+    @Input() location: string = null;
     @Input() elts: Elt[];
     @Input() embedded = false;
     @Input() listView: string;
@@ -39,7 +39,7 @@ export class ListViewComponent implements OnChanges, OnInit {
     ngOnChanges(changes: SimpleChanges) {
         if (changes.elts && this.viewComponentRef && this.viewComponentRef.instance)
             this.viewComponentRef.instance.elts = this.elts;
-        if (changes.board && this.viewComponentRef && this.viewComponentRef.instance && this.ejsPage === 'board') {
+        if (changes.board && this.viewComponentRef && this.viewComponentRef.instance && this.location === 'board') {
             this.viewComponentRef.instance.board = this.board;
             this.viewComponentRef.instance.currentPage = this.currentPage;
             this.viewComponentRef.instance.totalItems = this.totalItems;
@@ -50,9 +50,9 @@ export class ListViewComponent implements OnChanges, OnInit {
             this.viewsMap.set('table', TableListComponent);
             if (this.module === 'cde') {
                 this.viewsMap.set('accordion', CdeAccordionListComponent);
-                if (this.ejsPage === 'board') {
+                if (this.location === 'board') {
                     this.viewsMap.set('summary', BoardCdeSummaryListComponent);
-                } else if (this.ejsPage === 'quickBoard') {
+                } else if (this.location === 'quickBoard') {
                     this.viewsMap.set('summary', SummaryListComponent);
                     this.viewsMap.set('summaryContent', QuickBoardCdeSummaryListContentComponent);
                 } else {
@@ -62,9 +62,9 @@ export class ListViewComponent implements OnChanges, OnInit {
             }
             if (this.module === 'form') {
                 this.viewsMap.set('accordion', FormAccordionListComponent);
-                if (this.ejsPage === 'board') {
+                if (this.location === 'board') {
                     this.viewsMap.set('summary', BoardFormSummaryListComponent);
-                } else if (this.ejsPage === 'quickBoard') {
+                } else if (this.location === 'quickBoard') {
                     this.viewsMap.set('summary', SummaryListComponent);
                     this.viewsMap.set('summaryContent', QuickBoardFormSummaryListContentComponent);
                 } else {
@@ -81,7 +81,7 @@ export class ListViewComponent implements OnChanges, OnInit {
     ngOnInit() {
         if (!this._listView)
             setTimeout(() => {
-                if (!this.setListView(window.localStorage['nlmcde.' + (this.ejsPage ? this.ejsPage : '') + this.module
+                if (!this.setListView(window.localStorage['nlmcde.' + (this.location ? this.location : '') + this.module
                     + 'searchViewType']))
                     this.setListView(this.searchSettingsService.getDefaultSearchView());
             }, 0);
@@ -100,12 +100,12 @@ export class ListViewComponent implements OnChanges, OnInit {
         this.viewComponentRef = this.viewContainer.createComponent(viewFactory);
         this.viewComponentRef.instance.elts = this.elts;
         if (this._listView === 'accordion') {
-            this.viewComponentRef.instance.ejsPage = this.ejsPage;
+            this.viewComponentRef.instance.location = this.location;
             this.viewComponentRef.instance.openInNewTab = true;
             if (this.embedded)
                 this.viewComponentRef.instance.addMode = 0;
             this.viewComponentRef.instance.add.subscribe(elt => this.add.emit(elt));
-        } else if (this.ejsPage === 'board' && this._listView !== 'table') {
+        } else if (this.location === 'board' && this._listView !== 'table') {
             this.viewComponentRef.instance.board = this.board;
             this.viewComponentRef.instance.currentPage = this.currentPage;
             this.viewComponentRef.instance.totalItems = this.totalItems;
@@ -119,7 +119,7 @@ export class ListViewComponent implements OnChanges, OnInit {
     setListView(viewType) {
         if (viewType && viewType !== this._listView && ListViewComponent.RESULTVIEWS.indexOf(viewType) > -1) {
             this._listView = viewType;
-            window.localStorage['nlmcde.' + (this.ejsPage ? this.ejsPage : '') + this.module + 'searchViewType']
+            window.localStorage['nlmcde.' + (this.location ? this.location : '') + this.module + 'searchViewType']
                 = this._listView;
             this.render();
             this.listViewChange.emit(this._listView);

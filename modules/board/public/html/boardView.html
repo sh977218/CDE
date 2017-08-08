@@ -88,7 +88,7 @@
                 </div>
             </div>
 
-            <cde-list-view [board]="board" [current-page]="currentPage" ejs-page="board" [elts]="elts"
+            <cde-list-view [board]="board" [current-page]="currentPage" location="board" [elts]="elts"
                            [(list-view)]="listViewType" [module]="board.type" [total-items]="totalItems" (add)="reload()"></cde-list-view>
 
             <ul uib-pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems"

@@ -53,7 +53,7 @@ angular.module('systemModule').directive('cdeCreateFormFromBoard', downgradeComp
 
 import { ListViewComponent } from "../../../search/listView/listView.component";
 angular.module('cdeModule').directive('cdeListView', downgradeComponent({component: ListViewComponent,
-    inputs: ['board', 'currentPage', 'ejsPage', 'elts', 'listView', 'module', 'totalItems'], outputs: ['add', 'listViewChange']}));
+    inputs: ['board', 'currentPage', 'location', 'elts', 'listView', 'module', 'totalItems'], outputs: ['add', 'listViewChange']}));
 
 import { ListViewControlsComponent } from "../../../search/listView/listViewControls.component";
 angular.module('cdeModule').directive('cdeListViewControls', downgradeComponent({component: ListViewControlsComponent,

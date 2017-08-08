@@ -8,9 +8,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.elts = [];
             $scope.currentPage = 1;
 
-            // @TODO what is this?
-            $scope.ejsPage = 'board';
-
             $scope.setPage = function (p) {
                 $scope.currentPage = p;
                 $scope.reload();

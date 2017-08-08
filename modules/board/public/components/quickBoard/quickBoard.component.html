@@ -50,7 +50,7 @@
                 <a href="/{{quickBoardListService.module}}/search">Go to the search page and get started.</a></p>
         </div>
 
-        <cde-list-view *ngIf="quickBoardListService.quickBoard.elts.length > 0" ejsPage="quickBoard"
+        <cde-list-view *ngIf="quickBoardListService.quickBoard.elts.length > 0" location="quickBoard"
                        [elts]="quickBoardListService.quickBoard.elts" [(listView)]="listViews[quickBoardListService.module]"
                        [module]="quickBoardListService.module"></cde-list-view>
     </div>
