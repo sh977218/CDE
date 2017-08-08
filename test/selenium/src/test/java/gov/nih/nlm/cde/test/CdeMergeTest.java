@@ -77,6 +77,7 @@ public class CdeMergeTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
         clickElement(By.id("confirmNewVersion"));
         textPresent("CDEs successfully merged");
+        clickElement(By.id("closeModal"));
         clickElement(By.id("naming_tab"));
         textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
         clickElement(By.id("classification_tab"));

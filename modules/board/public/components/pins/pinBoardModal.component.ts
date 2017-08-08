@@ -27,25 +27,21 @@ export class PinBoardModalComponent {
     ) {}
 
     open() {
-        if (this.userService.user && this.userService.user._id) {
-            this.myBoardsSvc.loadMyBoards(this.module);
-            this.modalRef = this.modalService.open(this.pinModal);
-        } else {
-            this.modalService.open(this.ifYouLoginModal);
-            this.reject();
-        }
-
         return new Promise((resolve, reject) => {
             this.resolve = resolve;
             this.reject = reject;
+
+            if (this.userService.user && this.userService.user._id) {
+                this.myBoardsSvc.loadMyBoards(this.module);
+                this.modalRef = this.modalService.open(this.pinModal);
+            } else {
+                this.modalService.open(this.ifYouLoginModal);
+                this.reject();
+            }
         });
     }
 
-    selectBoard(board) {
-        this.resolve(board);
-    }
-
-    pinMultiple(module: string, elts: any, promise: Promise<any>) {
+    pinMultiple(elts: any, promise: Promise<any>) {
         promise.then(board => {
             let url = "/board/id/" + board._id;
             if (this.module === "cde")
@@ -59,17 +55,21 @@ export class PinBoardModalComponent {
             }, (err) => {
                 this.alert.addAlert("danger", err);
             });
-        });
+        }, () => {});
     }
 
-    pinOne(module: string, elt: any, promise: Promise<any>) {
+    pinOne(elt: any, promise: Promise<any>) {
         promise.then(board => {
-            this.http.put('/pin/' + module + '/' + elt.tinyId + '/' + board._id, {}).subscribe((r) => {
+            this.http.put('/pin/' + this.module + '/' + elt.tinyId + '/' + board._id, {}).subscribe((r) => {
                 this.alert.addAlert(r.status === 200 ? 'success' : 'warning', r.text());
                 this.modalRef.close();
             }, (err) => {
                 this.alert.addAlert('danger', err);
             });
-        });
+        }, () => {});
+    }
+
+    selectBoard(board) {
+        this.resolve(board);
     }
 }

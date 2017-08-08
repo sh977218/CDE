@@ -29,7 +29,6 @@ export class FormViewComponent implements OnInit {
     eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
-    cdes = [];
     isFormValid = true;
 
     formInput;
@@ -112,16 +111,15 @@ export class FormViewComponent implements OnInit {
     }
 
     pinAllCdesIntoBoard() {
-        this.cdes = [];
+        let cdes = [];
         let doFormElement = formElt => {
-            if (formElt.elementType === 'question') {
-                this.cdes.push(formElt.question.cde);
-            } else if (formElt.elementType === 'section' || formElt.elementType === 'form') {
+            if (formElt.elementType === 'question')
+                cdes.push(formElt.question.cde);
+            else if (formElt.elementType === 'section' || formElt.elementType === 'form')
                 formElt.formElements.forEach(doFormElement);
-            }
         };
         this.elt.formElements.forEach(doFormElement);
-        this.mltPinModalCde.open();
+        this.mltPinModalCde.pinMultiple(cdes, this.mltPinModalCde.open());
     }
 
     isIe() {

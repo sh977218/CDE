@@ -5,8 +5,8 @@
                    [checked]="elt.checked" (click)="checkboxClick(elt, $event)"/>
         </span>
         <span class="summary-list-after">
-            <a href class="nonLinkAnchor" (click)="removeElt(eltIndex,$event)">
-                <i class="fa fa-trash-o hand-cursor" title="remove" id="remove_{{eltIndex}}" role="link"></i></a>
+            <span class="nonLinkAnchor" (click)="removeElt(eltIndex,$event)">
+                <i class="fa fa-trash-o hand-cursor" title="remove" id="remove_{{eltIndex}}" role="link"></i></span>
         </span>
     </cde-summary-heading>
 </h4>
