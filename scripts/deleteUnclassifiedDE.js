@@ -10,8 +10,8 @@ let cursor = DataElementModal.find(cond).cursor();
 function removeAttachments(de, cb) {
     let attachments = de.attachments;
     if (attachments && attachments.length > 0) {
-        async.forEachSeries(attachments, function (attachement, doneOneAttachment) {
-            mongo_data.removeAttachmentIfNotUsed(attachement.fileid, doneOneAttachment);
+        async.forEachSeries(attachments, function (attachment, doneOneAttachment) {
+            mongo_data.removeAttachmentIfNotUsed(attachment.fileid, doneOneAttachment);
         }, function doneAllAttachments() {
             cb();
         });
@@ -32,28 +32,32 @@ function removeHistories(de, cb) {
     } else cb();
 }
 
-cursor.on('data', function (dataElement) {
-    let de = dataElement.toObject();
-    async.series([
-        function (cb) {
-            removeHistories(de, cb);
-        },
-        function (cb) {
-            removeAttachments(de, cb);
-        }
-    ], function () {
-        dataElement.remove(err => {
-            if (err) throw err;
-            count++;
-            console.info("count: " + count);
+cursor.eachAsync(function (dataElement) {
+    return new Promise(function(resolve){
+        let de = dataElement.toObject();
+        async.series([
+            function (cb) {
+                removeHistories(de, cb);
+            },
+            function (cb) {
+                removeAttachments(de, cb);
+            }
+        ], function () {
+            dataElement.remove(err => {
+                if (err) throw err;
+                count++;
+                console.log("count: " + count);
+                resolve();
+            });
         });
     });
 });
+
 cursor.on('close', function () {
-    console.info("Finished all. count: " + count);
+    console.log("Finished all. count: " + count);
 });
 cursor.on('error', function (err) {
-    console.info("error: " + err);
+    console.log("error: " + err);
     process.exit(1);
 });
 
