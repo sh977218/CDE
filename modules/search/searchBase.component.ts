@@ -480,6 +480,13 @@ export abstract class SearchBaseComponent implements AfterViewInit {
 
                 }
 
+                this.aggregations.flatClassifications.sort(SearchBaseComponent.compareObjName);
+                this.aggregations.flatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
+                this.aggregations.statuses.statuses.buckets.sort(function (a, b) {
+                    return SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b);
+                });
+                this.aggregations.topics.sort(SearchBaseComponent.compareObjName);
+
                 this.filterOutWorkingGroups(() => {
                     this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
                         this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
@@ -490,17 +497,10 @@ export abstract class SearchBaseComponent implements AfterViewInit {
                         if (A === B) return 0;
                         return 1;
                     });
-                });
 
-                this.aggregations.flatClassifications.sort(SearchBaseComponent.compareObjName);
-                this.aggregations.flatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
-                this.aggregations.statuses.statuses.buckets.sort(function (a, b) {
-                    return SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b);
+                    this.switchView(this.isSearched() ? 'results' : 'welcome');
+                    this.reloaded();
                 });
-                this.aggregations.topics.sort(SearchBaseComponent.compareObjName);
-
-                this.switchView(this.isSearched() ? 'results' : 'welcome');
-                this.reloaded();
             });
         });
     }
