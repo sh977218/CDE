@@ -19,8 +19,7 @@
 <ng-template #quickBoardContent>
     <div class="container-fluid mt20">
         <ng-container *ngIf="quickBoardListService.quickBoard.elts.length > 0">
-            <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"
-                                    [module]="quickBoardListService.module"></cde-list-view-controls>
+            <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"></cde-list-view-controls>
             <div class="btn-group ml-3">
                 <button id="qb_{{quickBoardListService.module}}_empty" class="btn btn-default" value="Empty Quick Board"
                         (click)="quickBoardListService.quickBoard.empty()">

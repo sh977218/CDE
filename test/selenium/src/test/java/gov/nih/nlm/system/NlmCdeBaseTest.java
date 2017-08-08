@@ -390,11 +390,13 @@ public class NlmCdeBaseTest {
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
+
+        // counteract save summary/table view
         try {
             textPresent(name, By.id("searchResult_0"));
         } catch (Exception e) {
-            if (driver.findElements(By.id("cde_summaryView")).size() > 0)
-                findElement(By.id("cde_summaryView")).click();
+            if (driver.findElements(By.id("list_summaryView")).size() > 0)
+                clickElement(By.id("list_summaryView"));
             textPresent(name, By.id("searchResult_0"));
         }
     }

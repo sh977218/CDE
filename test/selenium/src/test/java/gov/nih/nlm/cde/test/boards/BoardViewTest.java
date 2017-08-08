@@ -10,14 +10,14 @@ public class BoardViewTest extends BoardTest {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
         textPresent("Ventilator assistance utilization indicator");
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("VentilatorAssistanceUtilznInd");
         textPresent("HMQMstFreqHlthProfCareTyp");
-        clickElement(By.id("cde_summaryView"));
+        clickElement(By.id("list_summaryView"));
         textPresent("Rome III Constipation Module (RCM3) - abdomen discomfort relieve bowel movement frequency");
         textNotPresent("VentilatorAssistanceUtilznInd");
         textNotPresent("HMQMstFreqHlthProfCareTyp");
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
         clickElement(By.linkText("Next"));
         textNotPresent("Ventilator assistance utilization indicator");
         textPresent("Surgery radiosurgery lobe location text");
@@ -40,7 +40,7 @@ public class BoardViewTest extends BoardTest {
         goToBoard(boardName);
         textPresent("CODE_FOR");
 
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
 
         textPresent("Fluorescence in situ");
         textPresent("Anaplastic Lymp");

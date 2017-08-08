@@ -1,13 +1,14 @@
-import { Component, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, DoCheck, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
     selector: 'cde-table-list',
     templateUrl: './tableList.component.html',
 })
-export class TableListComponent implements OnChanges {
+export class TableListComponent implements DoCheck, OnChanges {
     @Input() elts: any[];
     @Input() module: string;
 
+    cacheElts: any[];
     headings: string[];
     rows: any[];
     tableSetup: any;
@@ -19,6 +20,12 @@ export class TableListComponent implements OnChanges {
                 this.render();
             }
         });
+    }
+
+    ngDoCheck() {
+        // TODO: remove DoCheck when OnChanges is implemented for Dynamic Components
+        if (this.elts !== this.cacheElts)
+            this.render();
     }
 
     ngOnChanges(changes: SimpleChanges) {

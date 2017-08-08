@@ -81,8 +81,8 @@ export class ListViewComponent implements OnChanges, OnInit {
     ngOnInit() {
         if (!this._listView)
             setTimeout(() => {
-                if (!this.setListView(window.localStorage['nlmcde.' + (this.location ? this.location : '') + this.module
-                    + 'searchViewType']))
+                if (!this.setListView(window.localStorage['nlmcde.' + (this.location ? this.location + '-' : '')
+                    + this.module + '-searchViewType']))
                     this.setListView(this.searchSettingsService.getDefaultSearchView());
             }, 0);
     }
@@ -119,7 +119,7 @@ export class ListViewComponent implements OnChanges, OnInit {
     setListView(viewType) {
         if (viewType && viewType !== this._listView && ListViewComponent.RESULTVIEWS.indexOf(viewType) > -1) {
             this._listView = viewType;
-            window.localStorage['nlmcde.' + (this.location ? this.location : '') + this.module + 'searchViewType']
+            window.localStorage['nlmcde.' + (this.location ? this.location + '-' : '') + this.module + '-searchViewType']
                 = this._listView;
             this.render();
             this.listViewChange.emit(this._listView);

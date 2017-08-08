@@ -190,13 +190,13 @@ export abstract class SearchBaseComponent implements AfterViewInit {
         return this.generateSearchForTerm(p);
     }
 
-    private filterOutWorkingGroups(aggregations) {
+    private filterOutWorkingGroups(cb) {
         this.orgHelperService.orgDetails.subscribe(() => {
             this.userService.getPromise().then(() => {
-                aggregations.orgs.buckets = aggregations.orgs.orgs.buckets.filter(bucket => {
+                this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket => {
                     return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user) || this.userService.user.siteAdmin;
                 });
-                this.aggregations = aggregations;
+                cb();
             });
         });
     }
@@ -480,13 +480,20 @@ export abstract class SearchBaseComponent implements AfterViewInit {
 
                 }
 
-                this.filterOutWorkingGroups(this.aggregations);
-                this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
-                    this.aggregations.orgs.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
+                this.filterOutWorkingGroups(() => {
+                    this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
+                        this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
+                    this.aggregations.orgs.buckets.sort(function(a, b) {
+                        let A = a.key.toLowerCase();
+                        let B = b.key.toLowerCase();
+                        if (B > A) return -1;
+                        if (A === B) return 0;
+                        return 1;
+                    });
+                });
 
                 this.aggregations.flatClassifications.sort(SearchBaseComponent.compareObjName);
                 this.aggregations.flatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
-                this.aggregations.orgs.orgs.buckets.sort(function(a, b) { return a.key - b.key; });
                 this.aggregations.statuses.statuses.buckets.sort(function (a, b) {
                     return SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b);
                 });
@@ -503,7 +510,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
             this.orgs = [];
             if (this.aggregations) {
                 this.orgHelperService.orgDetails.subscribe(() => {
-                    this.aggregations.orgs.orgs.buckets.forEach(org_t => {
+                    this.aggregations.orgs.buckets.forEach(org_t => {
                         if (this.orgHelperService.orgsDetailedInfo[org_t.key])
                             this.orgs.push({
                                 name: org_t.key,
