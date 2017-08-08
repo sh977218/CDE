@@ -9,7 +9,9 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
             description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
         }).
         when('/quickBoard', {template: '<div ng-include="\'/system/public/html/eltsCompareButton.html\'" ng-init="eltsToCompare=[{},{}]" style="display: none"></div></div><cde-quick-board></cde-quick-board>', title: "Quickboard"}).
-        when('/sdcview', {controller: 'SDCViewCtrl', templateUrl: '/cde/public/html/sdcView.html'}).
+        when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
+            $scope.cdeId = $routeParams.cdeId;
+        }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
         when('/cdeSearchExport', {templateUrl: '/cde/public/html/exportCdeSearch.html'}).
         when('/myboards', {controller: 'MyBoardsCtrl', templateUrl: '/cde/public/html/myBoards.html'}).
         when('/board/:boardId', {templateUrl: '/board/public/html/boardView.html'}).
@@ -18,7 +20,6 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
-        when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'}).
         when('/cdeStatusReport', {controller: 'ExportCtrl', templateUrl: '/system/public/html/cdeStatusReport.html'})
         ;
     }]);
@@ -47,6 +48,12 @@ angular.module('cdeModule').directive('cdeDataElementView', downgradeComponent({
 
 import {CdeAccordionListNg2Component} from "../components/cdeAccordionListNg2.component";
 angular.module('cdeModule').directive('cdeAccordionListNg2', downgradeComponent({component: CdeAccordionListNg2Component, inputs: ['cdes'], outputs: []}));
+
+import {ValidRulesComponent} from "../components/validationRules/validRules.component";
+angular.module('cdeModule').directive('cdeValidRules', downgradeComponent({component: ValidRulesComponent, inputs: ['elt'], ouputs: []}));
+
+import {SdcViewComponent} from "../components/sdcView/sdcView.component"
+angular.module('cdeModule').directive('cdeSdcView', downgradeComponent({component: SdcViewComponent, inputs: ['cdeId'], ouputs: []}));
 
 import {CreateFormFromBoardComponent} from "../../../board/public/components/createFormFromBoard.component";
 angular.module('systemModule').directive('cdeCreateFormFromBoard', downgradeComponent({component: CreateFormFromBoardComponent, inputs: ['board'], outputs: []}));

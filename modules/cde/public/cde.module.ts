@@ -27,6 +27,7 @@ import { PermissibleValueComponent } from "./components/permissibleValue.compone
 import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
+import { SdcViewComponent } from "./components/sdcView/sdcView.component";
 import { DataElementService } from "./dataElement.service";
 import { DataElementViewComponent } from "./components/dataElementView.component";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
@@ -55,6 +56,7 @@ import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
         CreateDataElementComponent,
         CdeAccordionListNg2Component,
         ConceptsComponent,
+        DataElementViewComponent,
         DerivationRulesComponent,
         DatasetsComponent,
         DeGeneralDetailsComponent,
@@ -62,28 +64,30 @@ import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
         MoreLikeThisComponent,
         PermissibleValueComponent,
         QuickBoardCdeSummaryListContentComponent,
+        SdcViewComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
     ],
     entryComponents: [
-        CdeAccordionListComponent,
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
+        CdeAccordionListComponent,
+        CdeAccordionListNg2Component,
         CdeGeneralDetailsComponent,
         CdeSearchComponent,
         CdeSummaryListContentComponent,
         ConceptsComponent,
+        CreateDataElementComponent,
+        DataElementViewComponent,
         DatasetsComponent,
         DeGeneralDetailsComponent,
         DerivationRulesComponent,
         MoreLikeThisComponent,
         PermissibleValueComponent,
         QuickBoardCdeSummaryListContentComponent,
+        SdcViewComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
-        CdeAccordionListNg2Component,
-        CreateDataElementComponent,
-        DataElementViewComponent
     ],
     exports: [
         CdeAccordionListComponent,

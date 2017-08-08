@@ -2,6 +2,5 @@ User-agent: *
 Disallow: /boardList
 Disallow: /quickBoard
 Disallow: /help
-Disallow: /stats
 Disallow: /login
 Disallow: /searchSettings
