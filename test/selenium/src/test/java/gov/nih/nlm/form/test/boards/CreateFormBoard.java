@@ -29,7 +29,7 @@ public class CreateFormBoard extends BoardTest {
         clickElement(By.xpath("//div[@id='addClassification-Classify Board']/button"));
         textPresent("All Elements classified.");
         closeAlert();
-        clickElement(By.id("form_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("Steward");
         textPresent("Registration Status");
 
@@ -55,7 +55,15 @@ public class CreateFormBoard extends BoardTest {
         textPresent(formName2);
         textPresent(formName3);
 
-        clickElement(By.id("unpin_1"));
+
+        // counteract save summary/table view
+        try {
+            clickElement(By.id("unpin_1"));
+        } catch (Exception e) {
+            if (driver.findElements(By.id("list_summaryView")).size() > 0)
+                clickElement(By.id("list_summaryView"));
+            clickElement(By.id("unpin_1"));
+        }
         textPresent("Unpinned.");
         closeAlert();
         textNotPresent(formName2);

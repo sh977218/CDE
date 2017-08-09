@@ -48,7 +48,7 @@ export class NativeRenderService {
 
         if (!this.profile)
             this.profile = {
-                _id: false,
+                _id: null,
                 name: "Default Config",
                 displayInstructions: true,
                 displayNumbering: true,

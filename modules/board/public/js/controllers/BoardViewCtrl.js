@@ -8,11 +8,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.elts = [];
             $scope.currentPage = 1;
 
-            // @TODO what is this?
-            $scope.ejsPage = 'board';
-
-            $scope.includeInQuickBoard = ["/cde/public/html/accordion/sortCdes.html"];
-
             $scope.setPage = function (p) {
                 $scope.currentPage = p;
                 $scope.reload();
@@ -43,17 +38,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     $scope.accordionListStyle = "";
                     if (response.data.board) {
                         $scope.board = response.data.board;
-                        if ($scope.board.type === "form") {
+                        if ($scope.board.type === "form")
                             $scope.quickBoard = $scope.formQuickBoard;
-                        }
-                        var elts = $scope[$scope.board.type + 's'] = [];
+                        $scope.elts = $scope[$scope.board.type + 's'] = [];
+
                         $scope.module = $scope.board.type;
-                        $scope.setViewTypes($scope.module);
-                        $scope.includeInAccordion =
-                            [
-                                "/system/public/html/accordion/boardAccordionActions.html",
-                                "/system/public/html/accordion/addToQuickBoardActions.html"
-                            ];
                         $scope.totalItems = response.data.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
                         var pins = $scope.board.pins;
@@ -63,11 +52,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             respElts.forEach(function (elt) {
                                 if (pinId === elt.tinyId) {
                                     pins.elt = elt;
-                                    elts.push(elt);
+                                    $scope.elts.push(elt);
                                 }
                             });
                         });
-                        elts.forEach(function (elt) {
+                        $scope.elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
                         $scope.board.users.filter(function (u) {

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Input, Output, OnInit, AfterViewInit, AfterViewChecked } from "@angular/core";
-import { SharedService } from "../../../core/public/shared.service";
+import { SharedService } from "core/public/shared.service";
 import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
 
 @Component({
@@ -27,6 +27,4 @@ export class NavigationComponent {
     isPageActive(viewLocation) {
         return viewLocation === window.location.pathname;
     }
-
-
 }

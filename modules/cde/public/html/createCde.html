@@ -8,6 +8,8 @@
 
     <div class="col-md-7" ng-if="cdes && cdes.length > 0">
         <h4>Possible Matches</h4>
-        <cde-accordion-list-ng2 [cdes]="cdes"></cde-accordion-list-ng2>
+        <div class="panel-group" id="accordion">
+            <cde-list-view [elts]="cdes" list-view="accordion" module="cde"></cde-list-view>
+        </div>
     </div>
 </div>

@@ -2,9 +2,9 @@ import * as authShared from "../../../../system/shared/authorizationShared";
 
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
+        '$interval', '$window', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
         function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                  $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard) {
+                  $interval, $window, OrgHelpers, QuickBoard, FormQuickBoard) {
 
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
@@ -60,13 +60,16 @@ angular.module('systemModule').controller('MainCtrl',
                 "&classification=" + encodeURIComponent(elts.join(";")));
             };
 
-            // Gets screen size and also updates it in the callboack on screen resize
-            $scope.isScreenSizeXsSm = screenSize.on('xs, sm', function (isScreenSize) {
-                $scope.isScreenSizeXsSm = isScreenSize;
-            });
-
             // Retrieves orgs details from database at an interval
             OrgHelpers.getOrgsDetailedInfoAPI();
 
+            // part of Angular SearchBaseComponent, goes with the router
+            $scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
+                if (newUrl !== oldUrl) {
+                    var match = /\/(cde|form)\/search\?.*/.exec(oldUrl);
+                    if (match)
+                        window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
+                }
+            });
         }
     ]);

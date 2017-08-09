@@ -1,32 +1,32 @@
-import { Component, Inject, Input, Output, ViewChild, OnInit, EventEmitter } from "@angular/core";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import "rxjs/add/operator/map";
-import { Http } from "@angular/http";
-import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { Component, EventEmitter, Inject, Input, Output, ViewChild, OnInit } from '@angular/core';
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import 'rxjs/add/operator/map';
+import { Http } from '@angular/http';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { SharedService } from 'core/public/shared.service';
 
 @Component({
-    selector: "cde-registration",
-    templateUrl: "./registration.component.html",
+    selector: 'cde-registration',
+    templateUrl: './registration.component.html',
     providers: [NgbActiveModal]
 })
 
 export class RegistrationComponent implements OnInit {
-    @ViewChild("regStatusEdit") public regStatusEditModal: NgbModalModule;
+    @ViewChild('regStatusEdit') public regStatusEditModal: NgbModalModule;
     @Input() public elt: any;
     @Output() save = new EventEmitter();
-    regStatusShared: any = require("../../../../system/shared/regStatusShared");
     helpMessage: string;
     newState: any = {};
     public modalRef: NgbModalRef;
 
-    validRegStatuses: string[] = ["Retired", "Incomplete", "Candidate"];
+    validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
 
     constructor (private http: Http,
                  private parserFormatter: NgbDateParserFormatter,
                  private alert: AlertService,
-                 @Inject("isAllowedModel") public isAllowedModel,
-                 @Inject("userResource") private userService,
+                 @Inject('isAllowedModel') public isAllowedModel,
+                 @Inject('userResource') private userService,
                  public modalService: NgbModal
     ) {}
 
@@ -35,32 +35,29 @@ export class RegistrationComponent implements OnInit {
     }
 
     openRegStatusUpdate() {
-
-        //noinspection TypeScriptValidateTypes
-        this.http.get("/comments/eltId/" + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
+        this.http.get('/comments/eltId/' + this.elt.tinyId).map(res => res.json()).subscribe((response) => {
             if (response.filter && response.filter(function (a) {
-                    return a.status !== "resolved" && a.status !== "deleted";
+                    return a.status !== 'resolved' && a.status !== 'deleted';
                 }).length > 0) {
-                this.alert.addAlert("info", "Info: There are unresolved comments. ");
+                this.alert.addAlert('info', 'Info: There are unresolved comments. ');
             }
 
-            //noinspection TypeScriptValidateTypes
-            this.http.get("/org/" + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
+            this.http.get('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).map(res => res.json()).subscribe((res) => {
                 if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
-                    this.validRegStatuses = this.validRegStatuses.concat(["Recorded", "Qualified"]);
+                    this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
                     if (this.userService.user.siteAdmin) {
-                        this.validRegStatuses = this.validRegStatuses.concat(["Standard", "Preferred Standard"]);
+                        this.validRegStatuses = this.validRegStatuses.concat(['Standard', 'Preferred Standard']);
                     }
                 }
                 this.validRegStatuses.reverse();
             });
 
-            this.modalRef = this.modalService.open(this.regStatusEditModal, {size: "lg"});
+            this.modalRef = this.modalService.open(this.regStatusEditModal, {size: 'lg'});
         });
     }
 
     setHelpMessage(newValue) {
-        this.regStatusShared.statusList.forEach((status) => {
+        SharedService.regStatusShared.statusList.forEach((status) => {
             if (status.name === newValue) this.helpMessage = status.curHelp;
         });
     };

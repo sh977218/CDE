@@ -4,7 +4,7 @@ angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'systemTemplates',
-    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
+    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'ui.sortable',
     'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
     'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive',
     'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
@@ -159,6 +159,50 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 };
                 $scope.cancel = function () {
                     $scope.editMode = false;
+                };
+            }]
+        };
+    }])
+    .directive('cdeSelectBoard', [function () {
+        return {
+            restrict: 'AE',
+            controller: 'SelectBoardModalCtrl',
+            templateUrl: '/system/public/html/selectBoardModal.html',
+        };
+    }])
+    .directive('cdeEltsCompare', [function () {
+        return {
+            restrict: 'AE',
+            scope: {
+                module: '=',
+                eltsToCompare: '=',
+            },
+            templateUrl: '/system/public/html/eltsCompareButton.html',
+            controller: ['$scope', '$uibModal', 'AlertService', 'userResource', function ($scope, $modal, Alert) {
+                $scope.showSideBySideView = function() {
+                    if ($scope.eltsToCompare.length !== 2) {
+                        Alert.addAlert("danger", "You may only compare 2 elements side by side.");
+                        return;
+                    }
+                    $scope.eltsToCompare.sort();
+                    $modal.open({
+                        animation: false,
+                        templateUrl: '/system/public/html/eltsCompare.html',
+                        controller: ['$scope', 'userResource', 'module', 'eltsToCompare',
+                            function ($scope, userResource, module, eltsToCompare) {
+                                $scope.module = module;
+                                $scope.eltsToCompare = eltsToCompare;
+                                userResource.getPromise().then(function () {
+                                    $scope.user = userResource.user;
+                                });
+                            }
+                        ],
+                        resolve: {
+                            module: function() {return $scope.module;},
+                            eltsToCompare: function() {return $scope.eltsToCompare;}
+                        },
+                        size: 'lg'
+                    });
                 };
             }]
         };
@@ -536,7 +580,10 @@ angular.module('systemModule').directive('cdeRegistration', downgradeComponent({
     outputs: []
 }));
 
-import { TableListComponent } from "../../../search/searchResults/tableList.component";
+import {RegistrationValidatorService} from "../components/registrationValidator.service";
+angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
+
+import { TableListComponent } from "../../../search/listView/tableList.component";
 angular.module('systemModule').directive('cdeTableList', downgradeComponent({
     component: TableListComponent,
     inputs: ['elts', 'module'],

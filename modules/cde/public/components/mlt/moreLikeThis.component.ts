@@ -2,8 +2,8 @@ import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import { PinModalComponent } from "../../../../board/public/components/pinModal/pinModal.component";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 @Component({
     selector: "cde-mlt",
@@ -14,7 +14,7 @@ import { AlertService } from "../../../../system/public/components/alert/alert.s
 export class MoreLikeThisComponent {
 
     @ViewChild("mltModal") public mltModal: NgbModalModule;
-    @ViewChild("mltPinModal") public mltPinModal: PinModalComponent;
+    @ViewChild("mltPinModal") public mltPinModal: PinBoardModalComponent;
     @Input() elt: any;
 
     public modalRef: NgbModalRef;
