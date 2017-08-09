@@ -113,7 +113,8 @@ public class CdeMergeTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Retire & Merge"));
         textPresent("Fields to be Imported");
         clickElement(By.cssSelector("[ng-click='sendMergeRequest()']"));
-        hangon(5);
+        hangon(1);
+        closeAlert();
         clickElement(By.id("closeModal"));
         clickElement(By.linkText("Classification"));
         textPresent("caBIG");

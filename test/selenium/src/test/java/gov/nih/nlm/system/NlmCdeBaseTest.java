@@ -1230,10 +1230,10 @@ public class NlmCdeBaseTest {
 
     public void startEditQuestionSectionById(String id) {
         try {
-            scrollToViewById(id);
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         } catch (Exception e) {
+            scrollToViewById(id);
             scrollDownBy(50);
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
