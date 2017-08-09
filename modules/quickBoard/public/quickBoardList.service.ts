@@ -4,32 +4,41 @@ import { LocalStorageService } from 'angular-2-local-storage';
 @Injectable()
 export class QuickBoardListService {
     eltsToCompareMap = {};
-    module: string;
+    module: string = 'cde';
     quickBoard: any;
     number_dataElements: number = 0;
     number_forms: number = 0;
     number_elements: number = 0;
 
+    dataElements = [];
+    forms = [];
 
 
-    constructor(private localStorageService: LocalStorageService,
-                @Inject('QuickBoard') public cdeQuickBoard,
-                @Inject('FormQuickBoard') public formQuickBoard) {
-        let dataElements = <Array<any>> this.localStorageService.get("quickBoard");
-        this.number_dataElements = dataElements.length;
-        let forms = <Array<any>> this.localStorageService.get("formQuickBoard");
-        this.number_forms = forms.length;
+    constructor(private localStorageService: LocalStorageService) {
+        let dataElementLocalStorage = <Array<any>> this.localStorageService.get("quickBoard");
+        if (dataElementLocalStorage) {
+            this.dataElements = dataElementLocalStorage;
+            this.number_dataElements = this.dataElements.length;
+        }
+        let formLocalStorage = <Array<any>> this.localStorageService.get("formQuickBoard");
+        if (formLocalStorage) {
+            this.forms = formLocalStorage;
+            this.number_forms = this.forms.length;
+        }
         this.number_elements = this.number_dataElements + this.number_forms;
+        this.module = <string>this.localStorageService.get('defaultQuickBoard');
+    }
 
+    saveFormQuickBoard() {
+        this.localStorageService.set("formQuickBoard", this.forms);
+        this.number_forms = this.forms.length;
+        this.number_elements = this.number_dataElements + this.number_forms;
+    }
 
-        let defaultQuickBoard = window.localStorage['nlmcde.defaultQuickBoard'];
-        if (defaultQuickBoard) {
-            if (!this.setEltType(defaultQuickBoard)) {
-                window.localStorage.removeItem('nlmcde.defaultQuickBoard');
-                this.setEltType('cde');
-            }
-        } else
-            this.setEltType('cde');
+    saveDataElementQuickBoard() {
+        this.localStorageService.set("quickBoard", this.dataElements);
+        this.number_dataElements = this.dataElements.length;
+        this.number_elements = this.number_dataElements + this.number_forms;
     }
 
     getSelectedElts() {
@@ -47,23 +56,55 @@ export class QuickBoardListService {
         return selectedElts;
     }
 
-    setEltType(type) {
-        if (type === 'cde')
-            this.quickBoard = this.cdeQuickBoard;
-        else if (type === 'form')
-            this.quickBoard = this.formQuickBoard;
-        else
-            return false;
-
+    setDefaultQuickBoard(type) {
         this.module = type;
-        window.localStorage['nlmcde.defaultQuickBoard'] = type;
-        return true;
+        this.localStorageService.set('defaultQuickBoard', type);
     }
 
-    toggleEltsToCompare(elt) {
-        if (this.eltsToCompareMap[elt.tinyId])
-            delete this.eltsToCompareMap[elt.tinyId];
-        else
-            this.eltsToCompareMap[elt.tinyId] = elt;
+    /*
+        toggleEltsToCompare(elt) {
+            if (this.eltsToCompareMap[elt.tinyId])
+                delete this.eltsToCompareMap[elt.tinyId];
+            else
+                this.eltsToCompareMap[elt.tinyId] = elt;
+        }
+    */
+
+    removeForm(index) {
+        this.forms.splice(index, 1);
+        this.saveFormQuickBoard();
+    }
+
+    removeDataElement(index) {
+        this.dataElements.splice(index, 1);
+        this.saveDataElementQuickBoard();
+    }
+
+    canAddForm(elt) {
+        let result = true;
+        this.forms.forEach(form => {
+            if (form.tinyId === elt.tinyId)
+                result = false;
+        });
+        return result;
+    }
+
+    canAddDataElement(elt) {
+        let result = true;
+        this.dataElements.forEach(dataElement => {
+            if (dataElement.tinyId === elt.tinyId)
+                result = false;
+        });
+        return result;
+    }
+
+    addForm(elt) {
+        this.forms.push(elt);
+        this.saveFormQuickBoard();
+    }
+
+    addDataElement(elt) {
+        this.dataElements.push(elt);
+        this.saveDataElementQuickBoard();
     }
 }

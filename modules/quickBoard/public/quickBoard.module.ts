@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SearchModule } from 'search/search.module';
+import { QuickBoardComponent } from 'quickBoard/public/quickBoard.component';
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @NgModule({
     imports: [
@@ -12,8 +14,8 @@ import { SearchModule } from 'search/search.module';
         NgbModule,
         SearchModule
     ],
-    declarations: [],
-    entryComponents: [],
+    declarations: [QuickBoardComponent],
+    entryComponents: [QuickBoardComponent],
     exports: [],
     providers: [],
 })

@@ -12,15 +12,10 @@ export class QuickBoardFormSummaryListContentComponent {
 
     constructor(private quickBoardListService: QuickBoardListService) {}
 
-    checkboxClick(elt, $event) {
-        this.quickBoardListService.toggleEltsToCompare(elt);
-        $event.stopPropagation();
-    }
-
     defaultAttachmentsFilter = a => a.isDefault === true;
 
     removeElt(index, $event) {
         $event.stopPropagation();
-        this.quickBoardListService.quickBoard.remove(index);
+        this.quickBoardListService.removeForm(index);
     }
 }

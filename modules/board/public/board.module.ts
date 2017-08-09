@@ -6,7 +6,6 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CreateBoardComponent } from "./components/createBoard/createBoard.component";
 import { CreateFormFromBoardComponent } from 'board/public/components/createFormFromBoard.component';
-import { EltsCompareDirective } from 'board/public/upgrade-components';
 import { LinkedBoardsComponent } from "./components/linkedBoards/linkedBoards.component";
 import { ListSortComponent } from "./components/listView/listSort.component";
 import { MyBoardsService } from "./myBoards.service";
@@ -27,7 +26,6 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
     ],
     declarations: [
         CreateBoardComponent,
-        EltsCompareDirective,
         LinkedBoardsComponent,
         ListSortComponent,
         PinBoardComponent,

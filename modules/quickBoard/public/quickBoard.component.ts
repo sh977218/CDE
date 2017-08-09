@@ -5,8 +5,7 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
 
 @Component({
     selector: 'cde-quick-board',
-    templateUrl: './quickBoard.component.html',
-    providers: [QuickBoardListService],
+    templateUrl: './quickBoard.component.html'
 })
 export class QuickBoardComponent {
     listViews = {};
@@ -14,12 +13,12 @@ export class QuickBoardComponent {
 
     constructor(private alertService: AlertService,
                 public exportService: ExportService,
-                public quickBoardListService: QuickBoardListService) {
-        setTimeout(() => this.ng1TemplateLoaded.sideBySide = true, 10 );
+                public quickBoardService: QuickBoardListService) {
+        setTimeout(() => this.ng1TemplateLoaded.sideBySide = true, 10);
     }
 
     setDefaultQuickBoard(selectedQuickBoard: string) {
-        this.quickBoardListService.eltsToCompareMap = {};
-        this.quickBoardListService.setEltType(selectedQuickBoard);
+        this.quickBoardService.eltsToCompareMap = {};
+        this.quickBoardService.setDefaultQuickBoard(selectedQuickBoard);
     }
 }

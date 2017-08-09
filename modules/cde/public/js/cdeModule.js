@@ -8,7 +8,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
             keywords: 'cde, common data element, promis, neuro-qol, phenx, ahrq, ninds, repository',
             description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
         }).
-        when('/quickBoard', {template: '<div ng-include="\'/system/public/html/eltsCompareButton.html\'" ng-init="eltsToCompare=[{},{}]" style="display: none"></div></div><cde-quick-board></cde-quick-board>', title: "Quickboard"}).
+        when('/quickBoard', {template: '<cde-quick-board></cde-quick-board>', title: "Quickboard"}).
         when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.cdeId = $routeParams.cdeId;
         }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).

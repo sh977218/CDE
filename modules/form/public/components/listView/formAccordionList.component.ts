@@ -16,6 +16,6 @@ export class FormAccordionListComponent {
     module = 'form';
     Elt = Elt;
 
-    constructor(@Inject('FormQuickBoard') public formQuickBoard) {
+    constructor(@Inject('QuickBoardListService') public quickBoardService) {
     }
 }
