@@ -53,7 +53,6 @@ import "./system/public/js/controllers/FeedbackBtnCtrl";
 import "./system/public/js/controllers/MeshMappingMgtCtrl";
 import "./system/public/js/controllers/EmbedCtrl";
 import "./system/public/js/SearchSettings";
-import "./system/public/js/controllers/LinkedFormsModalCtrl";
 import "./cde/public/js/controllers/BoardListCtrl";
 import "./system/public/js/controllers/CompareCtrl";
 import "./cde/public/js/controllers/CreateCdeCtrl";

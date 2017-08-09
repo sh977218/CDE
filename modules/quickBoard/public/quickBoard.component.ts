@@ -9,12 +9,10 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
 })
 export class QuickBoardComponent {
     listViews = {};
-    ng1TemplateLoaded = {sideBySide: false};
 
     constructor(private alertService: AlertService,
                 public exportService: ExportService,
                 public quickBoardService: QuickBoardListService) {
-        setTimeout(() => this.ng1TemplateLoaded.sideBySide = true, 10);
     }
 
     setDefaultQuickBoard(selectedQuickBoard: string) {
