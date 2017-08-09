@@ -16,7 +16,7 @@ paths:
       tags:
       - "CDE"
       summary: "CDE element"
-      description: "One question.\n"
+      description: "A single data element.\n"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -38,7 +38,7 @@ paths:
       tags:
       - "CDE"
       summary: "CDE element"
-      description: "One question.\n"
+      description: "A single data element.\n"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -65,7 +65,7 @@ paths:
       tags:
       - "Form"
       summary: "CDE Form"
-      description: "CDE Form for filling out.\n"
+      description: "Form template for data collection.\n"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -87,7 +87,7 @@ paths:
       tags:
       - "Form"
       summary: "CDE Form"
-      description: "CDE Form for filling out.\n"
+      description: "Form template for data collection.\n"
       parameters:
       - name: "tinyId"
         in: "path"
