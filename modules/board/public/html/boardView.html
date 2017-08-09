@@ -57,11 +57,11 @@
                 <div class="pull-right">
                     <cde-list-view-controls [(list-view)]="listViewType"></cde-list-view-controls>
 
-                    <span ng-if="board.type === 'cde'" ng-controller="ExportCtrl">
+                    <span ng-if="board.type === 'cde'" ng-controller="ExportCtrl" class="btn-group">
                         <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-download"></i>
-                            Export Board<span class="caret"></span>
+                            Export Board <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
                             <li><a id="csvExport" ng-click="exportBoard()" onmouseover="" class="hand-cursor"> CSV
