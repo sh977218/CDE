@@ -2,7 +2,7 @@
     <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/deView?tinyId=">
         <span class="summary-list-before">
             <input id="qb_elt_compare_{{eltIndex}}" type="checkbox" title="Select Elt"
-                   [checked]="elt.checked" (click)="checkboxClick(elt, $event)"/>
+                   [ngModel]="elt.checked"/>
         </span>
         <span class="summary-list-after">
             <span class="nonLinkAnchor" (click)="removeElt(eltIndex,$event)">

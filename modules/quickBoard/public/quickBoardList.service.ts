@@ -56,7 +56,10 @@ export class QuickBoardListService {
         return selectedElts;
     }
 
-    setDefaultQuickBoard(type) {
+    setDefaultQuickBoard(tab) {
+        let type;
+        if (tab.nextId === 'formQuickBoard') type = 'form';
+        if (tab.nextId === 'dataElementQuickBoard') type = 'cde';
         this.module = type;
         this.localStorageService.set('defaultQuickBoard', type);
     }
@@ -107,4 +110,15 @@ export class QuickBoardListService {
         this.dataElements.push(elt);
         this.saveDataElementQuickBoard();
     }
+
+    emptyDataElementQuickBoard() {
+        this.dataElements = [];
+        this.saveDataElementQuickBoard();
+    }
+
+    emptyFormQuickBoard() {
+        this.forms = [];
+        this.saveFormQuickBoard();
+    }
+
 }

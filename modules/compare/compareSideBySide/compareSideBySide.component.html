@@ -1,0 +1,18 @@
+<button id="qb_de_compare" class="btn btn-default" (click)="doCompare();">
+    <i class="fa fa-search"></i> Side by Side View
+</button>
+
+
+<ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="compareSideBySideModalHeader">
+        <h4 class="modal-title">Compare</h4>
+    </div>
+    <div class="modal-body" id="compareSideBySideModalBody">
+        {{left | json}}
+    </div>
+    <div class="modal-footer" id="compareSideBySideModalFooter">
+        <button class="btn btn-warning" id="closeCompareSideBySideBtn"
+                (click)="c();">Close
+        </button>
+    </div>
+</ng-template>

@@ -5,16 +5,19 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SearchModule } from 'search/search.module';
 import { QuickBoardComponent } from 'quickBoard/public/quickBoard.component';
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { DataElementQuickBoardComponent } from 'quickBoard/public/dataElementQuickBoard/dataElementQuickBoardComponent';
+import { FormQuickBoardComponent } from 'quickBoard/public/formQuickBoard/formQuickBoardComponent';
+import { CompareModule } from 'compare/compare.module';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
-        SearchModule
+        SearchModule,
+        CompareModule
     ],
-    declarations: [QuickBoardComponent],
+    declarations: [DataElementQuickBoardComponent, FormQuickBoardComponent, QuickBoardComponent],
     entryComponents: [QuickBoardComponent],
     exports: [],
     providers: [],

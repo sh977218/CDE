@@ -1,0 +1,25 @@
+<div style="height:30px;"></div>
+<div class="container-fluid">
+    <div *ngIf="quickBoardService.number_forms === 0">
+        <h3>The quick board is empty.</h3>
+        <p>Note: Click on <i class="fa fa-plus"></i> to add an element to the quick board.
+            <a href="/form/search">Go to the search page and get started.</a></p>
+    </div>
+    <div *ngIf="quickBoardService.number_forms > 0">
+        <button id="qb_form_compare" class="btn btn-default">
+            <i class="fa fa-search"></i> Side by Side View
+        </button>
+        <button id="qb_form_empty" class="btn btn-default" value="Empty Quick Board"
+                (click)="quickBoardService.emptyFormQuickBoard();">
+            <i class="fa fa-trash-o"></i> Empty Quick Board
+        </button>
+        <button id="qb_form_export" class="btn btn-default"
+                value="Export Quick Board">
+            <i class="fa fa-download"></i> Export Quick Board
+        </button>
+        <hr>
+        <cde-list-view *ngIf="quickBoardService.number_forms > 0" location="quickBoard"
+                       [elts]="quickBoardService.forms" [(listView)]="listViews"
+                       [module]="'form'"></cde-list-view>
+    </div>
+</div>
