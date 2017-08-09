@@ -25,7 +25,7 @@ module.exports = {
     },
 
     closeAlert: function () {
-        element(by.css("button.close")).click();
+        element(by.css("button.close span")).click();
     }
 
 };
