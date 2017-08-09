@@ -15,10 +15,10 @@
                 <dl class="dl-horizontal">
                     <dt><label>Name:</label></dt>
                     <dd>
-                        <inline-edit id="profileNameEdit_{{index}}"
+                        <cde-inline-edit id="profileNameEdit_{{index}}"
                                      [(model)]="profile.name"
                                      [isAllowed]="isAllowedModel.isAllowed(elt)"
-                                     (onOk)="elt.unsaved = true"></inline-edit>
+                                     (modelChange)="elt.unsaved = true"></cde-inline-edit>
                     </dd>
                     <dt><label for="displayAsMatrix_{{index}}">Sections as matrices:</label></dt>
                     <dd>

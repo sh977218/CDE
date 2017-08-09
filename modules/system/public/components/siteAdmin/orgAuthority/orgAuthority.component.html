@@ -1,0 +1,40 @@
+<div class="container">
+
+    <ngb-tabset class="pt40 pb40" >
+
+        <ngb-tab title="Org Admins">
+            <ng-template ngbTabContent>
+                <cde-org-admin></cde-org-admin>
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Organizations">
+            <ng-template ngbTabContent>
+                <cde-orgs-edit></cde-orgs-edit>
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="List Management">
+           <ng-template ngbTabContent>
+                <cde-list-management></cde-list-management>
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Status Validation Rules">
+            <ng-template ngbTabContent>
+                <cde-status-validation-rules></cde-status-validation-rules>
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Users">
+            <ng-template ngbTabContent>
+                <cde-users-mgt></cde-users-mgt>
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Comments">
+            <div ng-include="'/system/public/html/latestComments.html'"></div>
+        </ngb-tab>
+
+    </ngb-tabset>
+</div>

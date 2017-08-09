@@ -33,6 +33,8 @@ import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.c
 import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
 import { StatusValidationRulesComponent } from "./components/siteAdmin/statusValidationRules/statusValidationRules.component";
 import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/editSiteAdmins.component";
+import { OrgAuthorityComponent } from "./components/siteAdmin/orgAuthority/orgAuthority.component";
+import { OrgsEditComponent } from "./components/siteAdmin/orgsEdit/orgEdits.component";
 import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serverStatus.component";
 import { TimeAgoPipe } from "time-ago-pipe";
 import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
@@ -67,6 +69,8 @@ import { DiscussModule } from "../../discuss/discuss.module";
         LogAuditComponent,
         NavigationComponent,
         OrgAdminComponent,
+        OrgAuthorityComponent,
+        OrgsEditComponent,
         ProfileComponent,
         ServerErrorsComponent,
         ServerStatusComponent,
@@ -82,9 +86,9 @@ import { DiscussModule } from "../../discuss/discuss.module";
     entryComponents: [
         AlertComponent,
         HomeComponent,
-        ListManagementComponent,
         NavigationComponent,
         OrgAdminComponent,
+        OrgAuthorityComponent,
         ProfileComponent,
         ServerStatusComponent,
         SiteAuditComponent,
