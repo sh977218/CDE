@@ -330,8 +330,7 @@
                         <strong [hidden]="!aggregations.datatype.datatype.buckets.length" id="datatype_filter">Data Types</strong>
                         <div class="pl5" id="datatypeListHolder">
                         <span class="hand-cursor"
-                              *ngFor="let t of aggregations.datatype.datatype.buckets"
-                              [ngbTooltip]="'a'" placement="right" container="body">
+                              *ngFor="let t of aggregations.datatype.datatype.buckets">
                             <span class="nonLinkAnchor displayBlock" *ngIf="t.doc_count > 0"
                                   style="margin-right: 0" (click)="addDatatypeFilter(t.key)">
                                 <ng-container *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
