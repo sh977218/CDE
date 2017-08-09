@@ -44,8 +44,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             controller: 'ClassificationManagementCtrl',
             templateUrl: '/system/public/html/classificationManagement.html'
         }).when('/orgAuthority', {
-            controller: 'AccountManagementCtrl',
-            templateUrl: '/system/public/html/orgAuthority.html'
+            template: '<cde-org-authority></cde-org-authority>'
         }).when('/profile', {
             template: '<cde-profile></cde-profile>'
         }).when('/triggerClientException', {
@@ -500,16 +499,7 @@ angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     outputs: []
 }));
 
-import { ListManagementComponent } from "../components/siteAdmin/listManagement/listManagement.component";
-
-angular.module('systemModule').directive('cdeListManagement', downgradeComponent({
-    component: ListManagementComponent,
-    inputs: [],
-    outputs: []
-}));
-
 import { OrgAdminComponent } from "../components/siteAdmin/orgAdmin/orgAdmin.component";
-
 angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({
     component: OrgAdminComponent,
     inputs: [],
@@ -524,10 +514,16 @@ angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
     outputs: []
 }));
 
-import { StatusValidationRulesComponent } from "../components/siteAdmin/statusValidationRules/statusValidationRules.component";
+import {OrgAuthorityComponent} from "../components/siteAdmin/orgAuthority/orgAuthority.component"
+angular.module('systemModule').directive('cdeOrgAuthority', downgradeComponent({
+    component: OrgAuthorityComponent,
+    inputs: [],
+    outputs: []
+}));
 
-angular.module('systemModule').directive('cdeStatusValidationRules', downgradeComponent({
-    component: StatusValidationRulesComponent,
+import {EditSiteAdminsComponent} from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
+angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
+    component: EditSiteAdminsComponent,
     inputs: [],
     outputs: []
 }));

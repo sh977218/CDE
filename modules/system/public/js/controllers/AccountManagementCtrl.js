@@ -91,19 +91,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         );
     };
 
-    $scope.addOrg = function() {
-        AccountManagement.addOrg(
-            {name: $scope.newOrg.name, longName: $scope.newOrg.longName, workingGroupOf: $scope.newOrg.workingGroupOf}
-            , function(res) {
-                Alert.addAlert("success", res);
-                $scope.orgs = $scope.getOrgs();
-                $scope.newOrg = {};
-            }, function() {
-                Alert.alert("An error occured.");
-            }
-        );
-    };
-
     $scope.removeOrg = function(byId) {
        AccountManagement.removeOrg({
             id: byId
@@ -115,23 +102,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                Alert.alert("An error occured.");
            }
         );
-    };
-
-    $scope.updateOrg = function (org) {
-        $timeout(function(){
-            AccountManagement.updateOrg(org,
-                function(res) {
-                    $scope.orgs = $scope.getOrgs(function () {
-                        OrgHelpers.getOrgsDetailedInfoAPI(function () {
-                            Alert.addAlert("success", res);
-                        });
-                    });
-                },
-                function(res) {
-                    Alert.addAlert("danger", res);
-                }
-            );
-        },0);
     };
 
     $scope.transferStewardFunc = function() {

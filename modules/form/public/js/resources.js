@@ -4,8 +4,4 @@ angular.module('resourcesForm', ['ngResource'])
             update: {method: 'PUT'},
             save: {method: 'POST', params: {type: null}}
         });
-    }])
-    .factory('CdesInForm', ["$resource", function ($resource) {
-        return $resource('/cdesinform/:formId', {formId: '@formId'},
-            {'getCdes': {method: 'GET', isArray: true}});
     }]);
