@@ -294,7 +294,6 @@ public class NlmCdeBaseTest {
         hangon(.5);
         clickElement(By.linkText("Classifications"));
         textPresent("Classifications");
-        hangon(2);
     }
 
     protected void mustBeLoggedOut() {
@@ -725,7 +724,6 @@ public class NlmCdeBaseTest {
     protected void scrollToView(By by) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         je.executeScript("arguments[0].scrollIntoView(true);", findElement(by));
-        hangon(2);
     }
 
     protected void scrollToViewById(String id) {
