@@ -18,20 +18,14 @@ class Alert {
 export class AlertService {
 
     private  _alertSubject = new Subject<Alert>();
-
     public allAlerts: Alert[] = [];
 
-    constructor(
-    ) {
+    constructor() {
         let alertTime = (window as any).userAlertTime;
-        this._alertSubject.subscribe((oneAlert) => {
+        this._alertSubject.subscribe(oneAlert => {
             this.allAlerts.push(oneAlert);
+            if (alertTime > 1) setTimeout(() => this.remove(oneAlert.id), alertTime);
         });
-        if (alertTime > 1) {
-            this._alertSubject.debounceTime(alertTime).subscribe((oneAlert) => {
-                this.remove(oneAlert.id);
-            });
-        }
     }
 
     public addAlert(type: string, message: string) {
