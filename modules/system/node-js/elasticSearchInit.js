@@ -344,7 +344,7 @@ var shortHash = function (content) {
 };
 
 if (config.elastic.index.name === "auto") {
-    config.elastic.index.name = "cde_" + shortHash(exports.createIndexJson);
+    config.elastic.index.name = "cde_v1_" + shortHash(exports.createIndexJson);
 }
 if (config.elastic.formIndex.name === "auto") {
     config.elastic.formIndex.name = "form_" + shortHash(exports.createFormIndexJson);

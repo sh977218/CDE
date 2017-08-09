@@ -2,10 +2,7 @@
 
 <dl class="dl-horizontal">
     <dt>Datatype:</dt>
-    <dd>
-        <div inline-edit id="listDatatype" model="elt.valueDomain.datatypeValueList.datatype" is-allowed="canCurate"
-             on-ok="stageElt(elt)"></div>
-    </dd>
+    <dd>{{elt.valueDomain.datatypeValueList.datatype}}</dd>
 </dl>
 <hr/>
 
@@ -53,10 +50,7 @@
             <tbody>
             <tr id="pvtr-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit"
                 itemscope itemtype="http://schema.org/MedicalCode">
-                <td headers="value" id="pv-{{$index}}" class="codeNameCell">
-                    <div inline-edit model="pv.permissibleValue" is-allowed="canCurate"
-                         on-ok="stageElt(elt);checkPvUnicity();"></div>
-                </td>
+                <td headers="value" id="pv-{{$index}}" class="codeNameCell">{{pv.permissibleValue}}</td>
                 <td headers="codeName" class="codeNameCell" id="pvName-{{$index}}" itemprop="name">
                     {{pv.valueMeaningName}}
                 </td>
@@ -100,10 +94,7 @@
                     class="codeCell">
                     {{pv.SNOMEDCT_US.valueMeaningCode}}
                 </td>
-                <td headers="code" id="pvCodeDesc-{{$index}}" style="width: 20%" itemprop="description">
-                    <div inline-area-edit model="pv.valueMeaningDefinition" is-allowed="canCurate"
-                         on-ok="stageElt(elt); runDelayedManualValidation();"></div>
-                </td>
+                <td headers="code" id="pvCodeDesc-{{$index}}" style="width: 20%" itemprop="description">{{pv.valueMeaningDefinition}}</td>
                 <td headers="validation" ng-show="vsacMappingExists() || compareView">
                      <span ng-switch="pv.isValid">
                          <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
