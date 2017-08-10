@@ -56,12 +56,12 @@ var commonEmbedSchema = {
     nameLabel: String,
     pageSize: Number,
     primaryDefinition: {
-        show: Boolean,
+        show: {type: Boolean, default: false},
         label: String,
         style: String
     },
     registrationStatus: {
-        show: Boolean,
+        show: {type: Boolean, default: false},
         label: String
     },
     lowestRegistrationStatus: {type: String, enum:regStatusShared.orderedList},
@@ -102,12 +102,12 @@ var embedJson = {
 };
 embedJson.cde.permissibleValues = Boolean;
 embedJson.cde.linkedForms = {
-    show: Boolean,
+    show: {type: Boolean, default: false},
     label: String
 };
-embedJson.form.sdcLink = Boolean;
-embedJson.form.nbOfQuestions = Boolean;
-embedJson.form.cdes = Boolean;
+embedJson.form.sdcLink = {type: Boolean, default: false};
+embedJson.form.nbOfQuestions = {type: Boolean, default: false};
+embedJson.form.cdes = {type: Boolean, default: false};
 
 schemas.embedSchema = new mongoose.Schema(embedJson);
 

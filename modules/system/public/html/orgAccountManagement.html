@@ -71,7 +71,7 @@
             </form>
         </uib-tab>
         <uib-tab heading="Embedding" ng-if="myOrgAdmins.length > 0" id="embeddingTab">
-            <div ng-include="'/system/public/html/embed.html'" ng-controller="EmbedCtrl"></div>
+            <cde-embed></cde-embed>
         </uib-tab>
     </uib-tabset>
 </div>

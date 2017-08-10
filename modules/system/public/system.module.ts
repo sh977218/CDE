@@ -41,6 +41,8 @@ import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serve
 import { TimeAgoPipe } from "time-ago-pipe";
 import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
 import { DiscussModule } from "../../discuss/discuss.module";
+import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
+import { EmbedComponent } from "./components/embed/embed.component";
 
 @NgModule({
     imports: [
@@ -64,6 +66,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         ClientErrorsComponent,
         DailyUsageComponent,
         EditSiteAdminsComponent,
+        EmbedComponent,
         FeedbackIssuesComponent,
         HomeComponent,
         ListManagementComponent,
@@ -73,6 +76,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         OrgAuthorityComponent,
         OrgsEditComponent,
         ProfileComponent,
+        SearchPreferencesComponent,
         ServerErrorsComponent,
         ServerStatusComponent,
         SiteAuditComponent,
@@ -87,12 +91,14 @@ import { DiscussModule } from "../../discuss/discuss.module";
     ],
     entryComponents: [
         AlertComponent,
+        EmbedComponent,
         HomeComponent,
         NavigationComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
         ProfileComponent,
         ServerStatusComponent,
+        SearchPreferencesComponent,
         SiteAuditComponent,
         SiteManagementComponent,
         StatusValidationRulesComponent,
