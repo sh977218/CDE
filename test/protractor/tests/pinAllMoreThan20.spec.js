@@ -12,11 +12,9 @@ describe('Pin All', () => {
 
         browser.get("/cde/search");
 
-        browser.waitForAngular();
         element(by.id("browseOrg-NINDS")).click();
         element(by.id("li-blank-Disease")).click();
         element(by.xpath("//*[@id='li-blank-Amyotrophic Lateral Sclerosis']")).click();
-        browser.waitForAngular();
         element(by.id("li-blank-Classification")).click();
         element(by.id("li-blank-Core")).click();
 
