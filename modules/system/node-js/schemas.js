@@ -171,7 +171,7 @@ schemas.userSchema = new mongoose.Schema({
         , defaultSearchView: {type: String, enum: ["accordion", "table", "summary"]}
         , lowestRegistrationStatus: String
         , tableViewFields: {
-            name: Boolean
+            name: {type: Boolean, default: true}
             , naming: Boolean
             , questionTexts: Boolean
             , permissibleValues: Boolean

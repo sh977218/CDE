@@ -94,7 +94,7 @@ export class EmbedComponent implements OnInit {
         if (!this.selection.cde.ids) this.selection.cde.ids = [];
         this.selection.cde.ids.push({source: "", idLabel: "Id", versionLabel: ""});
     };
-    adCdeName () {
+    addCdeName () {
         if (!this.selection.cde.otherNames) this.selection.cde.otherNames = [];
         this.selection.cde.otherNames.push({contextName: "", label: ""});
     }

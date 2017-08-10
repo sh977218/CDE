@@ -11,7 +11,7 @@ export class SearchPreferencesComponent implements OnInit {
     constructor(@Inject('SearchSettings') public SearchSettings,
                 private alert: AlertService) {}
 
-    searchSettings: any = {};
+    searchSettings: any = {tableViewFields: {}};
 
     ngOnInit () {
         this.SearchSettings.getPromise().then(settings => {
