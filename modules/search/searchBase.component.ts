@@ -1,4 +1,7 @@
-import { Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener } from '@angular/core';
+import {
+    Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener,
+    OnInit
+} from '@angular/core';
 import { SearchSettings } from './search.model';
 import { SharedService } from 'core/public/shared.service';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
@@ -7,7 +10,7 @@ import { CdeForm } from 'form/public/form.model';
 import { DataElement } from 'cde/public/dataElement.model';
 import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
 
-export abstract class SearchBaseComponent implements AfterViewInit {
+export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname))
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
@@ -56,6 +59,10 @@ export abstract class SearchBaseComponent implements AfterViewInit {
             SearchBaseComponent.waitScroll(2, previousSpot);
     }
 
+    ngOnInit () {
+        this.search();
+    }
+
     constructor(protected _componentFactoryResolver,
                 protected alert,
                 protected elasticService,
@@ -66,7 +73,6 @@ export abstract class SearchBaseComponent implements AfterViewInit {
                 protected orgHelperService,
                 protected userService) {
         this.searchSettings.page = 1;
-        setTimeout(() => this.search(), 0);
 
         // TODO: upgrade to Angular when router is available
         // scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
