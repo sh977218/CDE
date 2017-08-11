@@ -8,6 +8,8 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
             title: "Find protocol forms",
             keywords: 'form, protocol, protocol form, crf, case report form, repository',
             description: 'Repository of Protocol Forms and Common Data Elements. Search Forms and CDEs.'
+        }).when('/form', {
+            redirectTo: '/form/search'
         }).when('/createForm', {
             controller: 'CreateFormCtrl',
             templateUrl: '/form/public/html/createForm.html'
