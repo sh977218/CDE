@@ -3,6 +3,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
 {
     $routeProvider.
         when('/cde/search', {
+            reloadOnSearch: false,
             template: '<cde-cde-search></cde-cde-search>',
             title: "Find Common Data Elements",
             keywords: 'cde, common data element, promis, neuro-qol, phenx, ahrq, ninds, repository',

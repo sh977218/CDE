@@ -23,12 +23,12 @@
 <ng-template #topMenu let-toggleaction>
     <ul class="nav navbar-nav">
         <li class="nav-item" [ngClass]="{active: isPageActive('/cde/search')}">{{toggleaction}}
-            <a id="menu_cdes_link" href="/cde/search" [attr.data-toggle]="toggleaction" data-target="#main-navigation"
-               attr.aria-controls="main-navigation" attr.aria-expanded="false">CDEs</a>
+            <a id="menu_cdes_link" href (click)="goto('/cde/search')" [attr.data-toggle]="toggleaction"
+               data-target="#main-navigation" attr.aria-controls="main-navigation" attr.aria-expanded="false">CDEs</a>
         </li>
         <li class="nav-item" [ngClass]="{active: isPageActive('/form/search')}">
-            <a id="menu_forms_link" href="/form/search" [attr.data-toggle]="toggleaction" data-target="#main-navigation"
-               attr.aria-controls="main-navigation" attr.aria-expanded="false">Forms</a>
+            <a id="menu_forms_link" href (click)="goto('/form/search')" [attr.data-toggle]="toggleaction"
+               data-target="#main-navigation" attr.aria-controls="main-navigation" attr.aria-expanded="false">Forms</a>
         </li>
         <li ngbDropdown class="nav-item" [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}"
             *ngIf="userService.user?._id">

@@ -3,6 +3,7 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
 {
     $routeProvider.
         when('/form/search', {
+            reloadOnSearch: false,
             template: '<cde-form-search></cde-form-search>',
             title: "Find protocol forms",
             keywords: 'form, protocol, protocol form, crf, case report form, repository',

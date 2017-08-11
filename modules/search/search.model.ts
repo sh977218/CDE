@@ -1,6 +1,6 @@
 export class SearchSettings {
-    classification: string[];
-    classificationAlt: string[];
+    classification: string[] = [];
+    classificationAlt: string[] = [];
     datatypes: string[];
     meshTree: string;
     page = 1;

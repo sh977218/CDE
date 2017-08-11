@@ -24,6 +24,10 @@ export class NavigationComponent {
     constructor(@Inject("userResource") public userService) {
     }
 
+    goto(url) {
+        location.assign(url);
+    }
+
     isPageActive(viewLocation) {
         return viewLocation === window.location.pathname;
     }
