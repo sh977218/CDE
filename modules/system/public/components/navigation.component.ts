@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Inject, Input, Output, OnInit, AfterViewInit, AfterViewChecked } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 import { SharedService } from "../../../core/public/shared.service";
 import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
+import { LoginService } from "./login/login.service";
 
 @Component({
     selector: "cde-navigation",
@@ -21,7 +22,8 @@ export class NavigationComponent {
     largeContext = {$implicit: ""};
     tour;
 
-    constructor(@Inject("userResource") public userService) {
+    constructor(@Inject("userResource") public userService,
+                public loginSvc: LoginService) {
     }
 
     isPageActive(viewLocation) {

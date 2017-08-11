@@ -36,7 +36,6 @@ import "./cde/public/assets/js/match-media";
 import "./cde/public/assets/js/FileSaver";
 import "./system/public/js/exceptionHandler";
 import "./system/public/js/controllers/AccountManagementCtrl";
-import "./system/public/js/controllers/AuthCtrl";
 import "./system/public/js/controllers/ListCtrl";
 import "./system/public/js/controllers/ClassificationCtrl";
 import "./system/public/js/controllers/AddClassificationModalCtrl";

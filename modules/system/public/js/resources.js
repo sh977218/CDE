@@ -60,24 +60,6 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
 }
 
 angular.module('resourcesSystem', ['ngResource'])
-    .factory('Auth', ["$http", function ($http) {
-        return {
-            login: function (user, success, error) {
-                $http.post('/login', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            },
-            logout: function (success, error) {
-                $http.post('/logout').then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-        };
-    }])
     .factory("Attachment", ["$http", function ($http) {
         return {
             remove: function (dat, success, error) {
@@ -249,17 +231,6 @@ angular.module('resourcesSystem', ['ngResource'])
     .factory("SearchResultResource", [function () {
         return {
             elts: []
-        };
-    }])
-    .factory('LoginRedirect', ["$location", function ($location) {
-        var lastRoute;
-        return {
-            storeRoute: function () {
-                if ($location.$$url.indexOf('login') === -1) lastRoute = $location.$$url;
-            }
-            , getPreviousRoute: function () {
-                return lastRoute;
-            }
         };
     }])
     .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",

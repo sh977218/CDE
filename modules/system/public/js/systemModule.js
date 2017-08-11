@@ -26,8 +26,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/home', {
             template: '<cde-home></cde-home>'
         }).when('/login', {
-            controller: 'AuthCtrl',
-            templateUrl: '/system/public/html/login.html'
+            template: '<cde-login></cde-login>'
         }).when('/siteAudit', {
             template: '<cde-site-audit></cde-site-audit>'
         }).when('/inbox', {
@@ -579,3 +578,7 @@ angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent
 import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
 angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
     {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
+
+import {LoginComponent} from "../components/login/login.component"
+angular.module('systemModule').directive('cdeLogin', downgradeComponent(
+    {component: LoginComponent, inputs: [], outputs: []}));
