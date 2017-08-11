@@ -15,8 +15,8 @@ export class LoginService {
 
     public logout() {
         this.http.post("/logout", {}).subscribe(() => {
-            (document.querySelector('#homeLink')as any).click();
-        });
+            window.location.href = "/login";
+       });
     }
 
     goToLogin () {
