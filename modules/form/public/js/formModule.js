@@ -3,8 +3,9 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
 {
     $routeProvider.
         when('/form/search', {
+            controller: 'SearchCtrl',
             reloadOnSearch: false,
-            template: '<cde-form-search></cde-form-search>',
+            template: '<cde-form-search [reloads]="searchReloadCount"></cde-form-search>',
             title: "Find protocol forms",
             keywords: 'form, protocol, protocol form, crf, case report form, repository',
             description: 'Repository of Protocol Forms and Common Data Elements. Search Forms and CDEs.'
@@ -49,7 +50,7 @@ angular.module('formModule').directive('cdeBoardFormSummaryList',
     downgradeComponent({component: BoardFormSummaryListComponent, inputs: ['board', 'forms', 'module', 'currentPage', 'totalItems'], outputs: ['reload']}));
 
 import {FormSearchComponent} from "../components/search/formSearch.component";
-angular.module('formModule').directive('cdeFormSearch', downgradeComponent({component: FormSearchComponent, inputs: [], outputs: []}));
+angular.module('formModule').directive('cdeFormSearch', downgradeComponent({component: FormSearchComponent, inputs: ['reloads'], outputs: []}));
 
 import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
 

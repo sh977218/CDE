@@ -117,7 +117,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         for (int i = 1; i < expectedNumberOfPages; i++) {
             findElement(By.partialLinkText("" + i));
         }
-        Assert.assertEquals(0, driver.findElements(By.partialLinkText("" + (expectedNumberOfPages + 1))).size());
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@class='page-link'][contains(.,'" + (expectedNumberOfPages + 1) + "')]")).size(), 0);
     }
 
 

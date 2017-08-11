@@ -3,8 +3,9 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
 {
     $routeProvider.
         when('/cde/search', {
+            controller: 'SearchCtrl',
             reloadOnSearch: false,
-            template: '<cde-cde-search></cde-cde-search>',
+            template: '<cde-cde-search [reloads]="searchReloadCount"></cde-cde-search>',
             title: "Find Common Data Elements",
             keywords: 'cde, common data element, promis, neuro-qol, phenx, ahrq, ninds, repository',
             description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
@@ -45,7 +46,7 @@ angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent
 
 import {CdeSearchComponent} from "../components/search/cdeSearch.component";
 angular.module('systemModule').directive('cdeCdeSearch', downgradeComponent({component: CdeSearchComponent,
-    inputs: ['addMode'], outputs: []}));
+    inputs: ['reloads'], outputs: []}));
 
 import {DataElementViewComponent} from "../components/dataElementView.component";
 angular.module('cdeModule').directive('cdeDataElementView', downgradeComponent({component: DataElementViewComponent, inputs: ['elt'], outputs: ['reload','stageElt']}));

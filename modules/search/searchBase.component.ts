@@ -1,6 +1,6 @@
 import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener,
-    OnInit
+    OnInit, Input, OnChanges, SimpleChanges
 } from '@angular/core';
 import { SearchSettings } from './search.model';
 import { SharedService } from 'core/public/shared.service';
@@ -10,7 +10,8 @@ import { CdeForm } from 'form/public/form.model';
 import { DataElement } from 'cde/public/dataElement.model';
 import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
 
-export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
+export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnChanges {
+    @Input() reloads: number;
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname))
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
@@ -57,6 +58,11 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
         let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
         if (previousSpot != null)
             SearchBaseComponent.waitScroll(2, previousSpot);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.reloads)
+            this.search();
     }
 
     ngOnInit () {
