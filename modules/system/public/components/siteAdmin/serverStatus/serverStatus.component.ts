@@ -68,8 +68,12 @@ export class ServerStatusComponent implements OnInit {
         this.http.post("/syncWithMesh", {}).subscribe();
         let indexFn = setInterval(() => {
             this.http.get('/syncWithMesh').map(r => r.json()).subscribe(response => {
-                this.meshSyncs = response.data;
-                if (response.cde.done === response.cde.total
+                this.meshSyncs = [];
+                for (let p in response) {
+                    if (response.hasOwnProperty(p))
+                        this.meshSyncs.push(response[p]);
+                }
+                if (response.dataelement.done === response.dataelement.total
                     && response.form.done === response.form.total) {
                     clearInterval(indexFn);
                     this.meshSyncs = null;

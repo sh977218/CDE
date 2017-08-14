@@ -1,4 +1,7 @@
-import { Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener } from '@angular/core';
+import {
+    Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener,
+    OnInit, Input, OnChanges, SimpleChanges
+} from '@angular/core';
 import { SearchSettings } from './search.model';
 import { SharedService } from 'core/public/shared.service';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
@@ -7,7 +10,8 @@ import { CdeForm } from 'form/public/form.model';
 import { DataElement } from 'cde/public/dataElement.model';
 import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
 
-export abstract class SearchBaseComponent implements AfterViewInit {
+export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnChanges {
+    @Input() reloads: number;
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname))
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
@@ -56,6 +60,15 @@ export abstract class SearchBaseComponent implements AfterViewInit {
             SearchBaseComponent.waitScroll(2, previousSpot);
     }
 
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.reloads)
+            this.search();
+    }
+
+    ngOnInit () {
+        this.search();
+    }
+
     constructor(protected _componentFactoryResolver,
                 protected alert,
                 protected elasticService,
@@ -66,7 +79,6 @@ export abstract class SearchBaseComponent implements AfterViewInit {
                 protected orgHelperService,
                 protected userService) {
         this.searchSettings.page = 1;
-        setTimeout(() => this.search(), 0);
 
         // TODO: upgrade to Angular when router is available
         // scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
@@ -121,10 +133,12 @@ export abstract class SearchBaseComponent implements AfterViewInit {
             classifToAlter.length = 0;
         }
         delete this.aggregations.groups;
-
-        this.doSearch();
-        if (!this.embedded)
-            SearchBaseComponent.focusClassification();
+        if (this.isSearched()) {
+            this.doSearch();
+            if (!this.embedded)
+                SearchBaseComponent.focusClassification();
+        } else
+            this.reset();
     }
 
     autocompleteSuggest(searchTerm) {
@@ -179,8 +193,9 @@ export abstract class SearchBaseComponent implements AfterViewInit {
             let loc = this.generateSearchForTerm();
             window.sessionStorage.removeItem('nlmcde.scroll.' + loc);
             this.redirect(loc);
-        } else
-            this.reload();
+        }
+
+        this.reload();
     }
 
     fakeNextPageLink() {
@@ -206,7 +221,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
         $('#classif_filter_title').focus(); // jshint ignore:line
     }
 
-    private focusTopic() {
+    static focusTopic() {
         $('#meshTrees_filter').focus();
     }
 
@@ -228,9 +243,9 @@ export abstract class SearchBaseComponent implements AfterViewInit {
         if (this.altClassificationFilterMode)
             if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0)
                 searchTerms.push('classificationAlt=' + encodeURIComponent(this.searchSettings.classificationAlt.join(';')));
-        if (pageNumber)
+        if (pageNumber && pageNumber > 1)
             searchTerms.push('page=' + pageNumber);
-        else if (this.searchSettings.page)
+        else if (this.searchSettings.page && this.searchSettings.page > 1)
             searchTerms.push('page=' + this.searchSettings.page);
         if (this.searchSettings.meshTree)
             searchTerms.push('topic=' + encodeURIComponent(this.searchSettings.meshTree));
@@ -480,15 +495,18 @@ export abstract class SearchBaseComponent implements AfterViewInit {
 
                 }
 
-                this.filterOutWorkingGroups(() => {
-                    this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
-                        this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
-                    this.aggregations.orgs.buckets.sort(function(a, b) {
-                        let A = a.key.toLowerCase();
-                        let B = b.key.toLowerCase();
-                        if (B > A) return -1;
-                        if (A === B) return 0;
-                        return 1;
+                let orgsCreatedPromise = new Promise(resolve => {
+                    this.filterOutWorkingGroups(() => {
+                        this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
+                            this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
+                        this.aggregations.orgs.buckets.sort(function(a, b) {
+                            let A = a.key.toLowerCase();
+                            let B = b.key.toLowerCase();
+                            if (B > A) return -1;
+                            if (A === B) return 0;
+                            return 1;
+                        });
+                        resolve();
                     });
                 });
 
@@ -500,48 +518,46 @@ export abstract class SearchBaseComponent implements AfterViewInit {
                 this.aggregations.topics.sort(SearchBaseComponent.compareObjName);
 
                 this.switchView(this.isSearched() ? 'results' : 'welcome');
-                this.reloaded();
+                if (this.view === 'welcome') {
+                    this.orgs = [];
+                    orgsCreatedPromise.then(() => {
+                        if (this.aggregations) {
+                            this.orgHelperService.orgDetails.subscribe(() => {
+                                this.aggregations.orgs.buckets.forEach(org_t => {
+                                    if (this.orgHelperService.orgsDetailedInfo[org_t.key])
+                                        this.orgs.push({
+                                            name: org_t.key,
+                                            longName: this.orgHelperService.orgsDetailedInfo[org_t.key].longName,
+                                            count: org_t.doc_count,
+                                            source: this.orgHelperService.orgsDetailedInfo[org_t.key].uri,
+                                            extraInfo: this.orgHelperService.orgsDetailedInfo[org_t.key].extraInfo,
+                                            htmlOverview: this.orgHelperService.orgsDetailedInfo[org_t.key].htmlOverview
+                                        });
+                                });
+                                this.orgs.sort(SearchBaseComponent.compareObjName);
+                            });
+                        }
+                    });
+
+                    this.topics = {};
+                    this.topicsKeys = [];
+                    if (this.aggregations) {
+                        this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(term => {
+                            let spli = term.key.split(';');
+                            if (!this.topics[spli[0]]) {
+                                this.topics[spli[0]] = [];
+                            }
+                            this.topics[spli[0]].push({name: spli[1], count: term.doc_count});
+                        });
+                        for (let prop in this.topics) {
+                            if (this.topics.hasOwnProperty(prop))
+                                this.topicsKeys.push(prop);
+                        }
+                        this.topicsKeys.sort(SearchBaseComponent.compareObjName);
+                    }
+                }
             });
         });
-    }
-
-    reloaded() {
-        if (this.view === 'welcome') {
-            this.orgs = [];
-            if (this.aggregations) {
-                this.orgHelperService.orgDetails.subscribe(() => {
-                    this.aggregations.orgs.buckets.forEach(org_t => {
-                        if (this.orgHelperService.orgsDetailedInfo[org_t.key])
-                            this.orgs.push({
-                                name: org_t.key,
-                                longName: this.orgHelperService.orgsDetailedInfo[org_t.key].longName,
-                                count: org_t.doc_count,
-                                source: this.orgHelperService.orgsDetailedInfo[org_t.key].uri,
-                                extraInfo: this.orgHelperService.orgsDetailedInfo[org_t.key].extraInfo,
-                                htmlOverview: this.orgHelperService.orgsDetailedInfo[org_t.key].htmlOverview
-                            });
-                    });
-                    this.orgs.sort(SearchBaseComponent.compareObjName);
-                });
-            }
-
-            this.topics = {};
-            this.topicsKeys = [];
-            if (this.aggregations) {
-                this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(term => {
-                    let spli = term.key.split(';');
-                    if (!this.topics[spli[0]]) {
-                        this.topics[spli[0]] = [];
-                    }
-                    this.topics[spli[0]].push({name: spli[1], count: term.doc_count});
-                });
-                for (let prop in this.topics) {
-                    if (this.topics.hasOwnProperty(prop))
-                        this.topicsKeys.push(prop);
-                }
-                this.topicsKeys.sort(SearchBaseComponent.compareObjName);
-            }
-        }
     }
 
     reset() {
@@ -637,7 +653,7 @@ export abstract class SearchBaseComponent implements AfterViewInit {
 
         this.doSearch();
         if (!this.embedded)
-            this.focusTopic();
+            SearchBaseComponent.focusTopic();
     }
 
     selectedTopicsAsString() {
