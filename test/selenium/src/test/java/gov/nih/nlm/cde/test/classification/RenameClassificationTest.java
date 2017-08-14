@@ -13,17 +13,17 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
     public void renameClassification() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]")).click();
+        clickElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]"));
         findElement(By.id("renameClassifInput")).clear();
         textPresent("Name is required");
-        findElement(By.id("cancelRename")).click();
+        clickElement(By.id("cancelRename"));
         modalGone();
-        driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]")).click();
+        clickElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]"));
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("renameClassifInput")).sendKeys("ies;");
         textPresent("Classification Name cannot contain ;");
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.xpath("//button[text()='Save']")).click();
+        clickElement(By.xpath("//button[text()='Save']"));
         textPresent("Renaming in progress.");
         closeAlert();
         hangon(20);
@@ -36,7 +36,7 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
         }
         findElement(By.xpath("//*[@id='classification-Disease,Spinal Cord Injuries,Classification']"));
         findElement(By.xpath("//*[@id='classification-Disease,Spinal Cord Injuries,Classification,Supplemental']"));
-        findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a")).click();
+        clickElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a"));
         textPresent("Spinal Cord Injuries");
 
         openClassificationAudit("NINDS > Disease > Spinal Cord Injury");

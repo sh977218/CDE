@@ -1,3 +1,6 @@
+import { CdeForm } from 'form/public/form.model';
+import { DataElement } from 'cde/public/dataElement.model';
+
 export class Attachment {
     comment: string;
     fileid: string;
@@ -15,7 +18,7 @@ export class Attachment {
 }
 
 export class CdeId {
-    _id: false;
+    _id: ObjectId;
     id: string;
     source: string;
     version: string;
@@ -63,6 +66,35 @@ export class DataSource {
     registrationStatus: string;
     sourceName: string;
     updated: Date;
+}
+
+export interface ElasticQueryResponse {
+    aggregations: any; // Elastic aggregated grouping
+    cdes: DataElement[]; // optional
+    forms: CdeForm[]; // optional
+    maxScore: number; // Elastic highest score on query
+    took: number; // Elastic time to process query in milliseconds
+    totalNumber: number; // Elastic number of results
+}
+
+export abstract class Elt {
+    _id: ObjectId;
+    attachments: Attachment[];
+    primaryDefinitionCopy: string; // calculated, Elastic
+    score: number; // calculated, Elastic _score
+    tinyId: string;
+    usedBy: string[]; // calculated, Classification stewardOrg names
+
+    abstract getEltUrl();
+    abstract getLabel();
+
+    static isDefault(a) {
+        return a.isDefault === true;
+    }
+
+    static trackByElt(index: number, elt: any): number {
+        return elt.tinyId;
+    }
 }
 
 export class FormattedValue {
@@ -115,7 +147,7 @@ export class DerivationRule {
 }
 
 export class Property {
-    _id: false;
+    _id: ObjectId;
     key: string;
     source: string;
     value: string;
@@ -123,7 +155,7 @@ export class Property {
 }
 
 export class ReferenceDocument {
-    _id: false;
+    _id: ObjectId;
     document: string;
     docType: string;
     languageCode: string;
@@ -148,6 +180,7 @@ export class RegistrationState {
 }
 
 export class User {
+    _id: ObjectId;
     accessToken: string;
     avatarUrl: string;
     email: string;

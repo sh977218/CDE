@@ -5,10 +5,11 @@ import { JsonpModule } from "@angular/http";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { Select2Module } from "ng2-select2";
 import { CKEditorModule } from 'ng2-ckeditor';
-import { WidgetModule } from "../../widget/widget.module";
+import { SearchModule } from 'search/search.module';
+import { WidgetModule } from 'widget/widget.module';
 import { RecaptchaModule } from 'ng2-recaptcha';
 
-import { CdeAccordionListDirective, FormAccordionListDirective } from "./upgrade-components";
+import { SelectBoardDirective } from "./upgrade-components";
 import { ProfileComponent } from "./components/profile.component";
 import { UserCommentsComponent } from "./components/userComments.component";
 import { HomeComponent } from "./components/home/home.component";
@@ -27,13 +28,14 @@ import { AuditLogComponent } from "./components/siteAdmin/auditLog/auditLog.comp
 import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffPopulate.service";
 import { ClassificationAuditLogComponent } from "./components/siteAdmin/classificationAuditLog/classificationAuditLog.component";
 
-import { CamelCaseToHumanPipe } from "../../core/public/camelCaseToHumanPipe";
+import { CamelCaseToHumanPipe } from 'core/public/camelCaseToHumanPipe';
 import { ClientErrorsComponent } from "./components/siteAdmin/clientErrors/clientErrors.component";
 import { ServerErrorsComponent } from "./components/siteAdmin/serverErrors/serverErrors.component";
 import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.component";
 import { FeedbackIssuesComponent } from "./components/siteAdmin/feedbackIssues/feedbackIssues.component";
 import { StatusValidationRulesComponent } from "./components/siteAdmin/statusValidationRules/statusValidationRules.component";
 import { EditSiteAdminsComponent } from "./components/siteAdmin/editSiteAdmins/editSiteAdmins.component";
+import { RegistrationValidatorService } from "./components/registrationValidator.service";
 import { OrgAuthorityComponent } from "./components/siteAdmin/orgAuthority/orgAuthority.component";
 import { OrgsEditComponent } from "./components/siteAdmin/orgsEdit/orgEdits.component";
 import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serverStatus.component";
@@ -53,6 +55,7 @@ import { LoginService } from "./components/login/login.service";
         RecaptchaModule.forRoot(),
         Select2Module,
         // internal
+        SearchModule,
         WidgetModule,
         DiscussModule,
     ],
@@ -60,14 +63,12 @@ import { LoginService } from "./components/login/login.service";
         AlertComponent,
         AppLogComponent,
         AuditLogComponent,
-        CdeAccordionListDirective,
         CamelCaseToHumanPipe,
         ClassificationAuditLogComponent,
         ClientErrorsComponent,
         DailyUsageComponent,
         EditSiteAdminsComponent,
         FeedbackIssuesComponent,
-        FormAccordionListDirective,
         HomeComponent,
         ListManagementComponent,
         LogAuditComponent,
@@ -83,6 +84,7 @@ import { LoginService } from "./components/login/login.service";
         SiteManagementComponent,
         StatusValidationRulesComponent,
         SwaggerComponent,
+        SelectBoardDirective,
         TimeAgoPipe,
         TruncateLongNamePipe,
         UserCommentsComponent,
@@ -104,15 +106,14 @@ import { LoginService } from "./components/login/login.service";
         UsersMgtComponent,
     ],
     exports: [
-        CdeAccordionListDirective
     ],
     providers: [
         AlertService,
         CdeDiffPopulateService,
-        LoginService
+        LoginService,
+        RegistrationValidatorService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-
 export class SystemModule {
 }

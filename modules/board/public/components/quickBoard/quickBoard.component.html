@@ -1,0 +1,57 @@
+<ngb-tabset #tbset="ngbTabset" [activeId]="quickBoardListService.module === 'cde' ? 'qb_cde_tab' : 'qb_form_tab'"
+            (tabChange)="setDefaultQuickBoard($event.nextId === 'qb_cde_tab' ? 'cde' : 'form')">
+    <ngb-tab id="qb_cde_tab" title="CDE QuickBoard ({{quickBoardListService.cdeQuickBoard.elts.length}})">
+        <ng-template ngbTabContent>
+            <div class="quickBoardContent">
+                <ng-container *ngIf="true; then quickBoardContent"></ng-container>
+            </div>
+        </ng-template>
+    </ngb-tab>
+    <ngb-tab id="qb_form_tab" title="Form QuickBoard ({{quickBoardListService.formQuickBoard.elts.length}})">
+        <ng-template ngbTabContent>
+            <div class="quickBoardContent">
+                <ng-container *ngIf="true; then quickBoardContent"></ng-container>
+            </div>
+        </ng-template>
+    </ngb-tab>
+</ngb-tabset>
+
+<ng-template #quickBoardContent>
+    <div class="container-fluid mt20">
+        <ng-container *ngIf="quickBoardListService.quickBoard.elts.length > 0">
+            <cde-list-view-controls [(listView)]="listViews[quickBoardListService.module]"></cde-list-view-controls>
+            <div class="btn-group ml-3">
+                <button id="qb_{{quickBoardListService.module}}_empty" class="btn btn-default" value="Empty Quick Board"
+                        (click)="quickBoardListService.quickBoard.empty()">
+                    <i class="fa fa-trash-o"></i> Empty Quick Board
+                </button>
+                <ng-container *ngIf="quickBoardListService.module==='cde'">
+                    <button id="qb_{{quickBoardListService.module}}_export" class="btn btn-default" value="Export Quick Board"
+                            (click)="exportService.quickBoardExport(quickBoardListService.quickBoard)">
+                        <i class="fa fa-download"></i> Export Quick Board
+                    </button>
+                </ng-container>
+            </div>
+            <cde-elts-compare *ngIf="ng1TemplateLoaded.sideBySide && listViews[quickBoardListService.module] === 'summary'"
+                              [eltsToCompare]="quickBoardListService.getSelectedElts()"
+                              [module]="quickBoardListService.module"></cde-elts-compare>
+
+            <hr/>
+        </ng-container>
+
+        <div *ngIf="quickBoardListService.quickBoard.loading" class="container pt40 pb40 text-center">
+            <h1><i class="fa fa-spinner fa-pulse"></i> Loading...</h1>
+        </div>
+
+        <div *ngIf="quickBoardListService.quickBoard.elts.length < 1" class="container">
+            <h3 class="mt-1">The quick board is empty.</h3>
+            <p>Note: Click on <i class="fa fa-plus"></i> to add an element to the quick board.
+                <a href="/{{quickBoardListService.module}}/search">Go to the search page and get started.</a></p>
+        </div>
+
+        <cde-list-view *ngIf="quickBoardListService.quickBoard.elts.length > 0" location="quickBoard"
+                       [elts]="quickBoardListService.quickBoard.elts" [(listView)]="listViews[quickBoardListService.module]"
+                       [module]="quickBoardListService.module"></cde-list-view>
+    </div>
+</ng-template>
+

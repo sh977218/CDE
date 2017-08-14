@@ -1,0 +1,9 @@
+<div *ngFor="let elt of elts; trackBy: trackByElt; let i = index">
+    <div *ngIf="i === cutoffIndex" style="margin-top:40px">
+        <h3>More results</h3>
+    </div>
+    <div class="singleSearchResult" id="searchResult_{{i}}">
+        <cde-summary-list-item [contentComponent]="contentComponent" [elt]="elt" [eltIndex]="i"
+                               (select)="select.emit($event)"></cde-summary-list-item>
+    </div>
+</div>

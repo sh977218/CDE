@@ -1,0 +1,64 @@
+<ngb-accordion id="accordionList">
+    <ngb-panel class='panel-default' *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index"
+               is-open="elt.isOpen">
+        <ng-template ngbPanelTitle>
+            <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="i"
+                                        [openInNewTab]="openInNewTab" (add)="add.emit($event)">
+                <span class="accordion-list-before">
+                </span>
+                <span class="accordion-list-after">
+                    <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
+                    <cde-pin-quickboard [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-quickboard>
+                    <a href class="nonLinkAnchor" *ngIf="location=='quickBoard'"
+                       (click)="interruptEvent($event);formQuickBoard.remove(i)">
+                        <i class="fa fa-trash-o hand-cursor" title="remove" id="remove_{{i}}" role="link"></i></a>
+                    <small id="nQuestion-{{i}}" class="pull-right">{{elt.numQuestions}} questions</small>
+                </span>
+            </cde-accordion-list-heading>
+        </ng-template>
+        <ng-template ngbPanelContent>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>General Details</h4>
+                    <dl class="dl-horizontal">
+                        <dt>Name:</dt>
+                        <dd id="dd_general_name" [innerHtml]="elt.naming[0].designation">
+                        </dd>
+                        <dt>Steward:</dt>
+                        <dd [innerHtml]="elt.stewardOrg.name"></dd>
+                        <dt>Definition:</dt>
+                        <dd id="dd_def" [innerHtml]="elt.naming[0].definition || 'N/A'"></dd>
+                        <dt [hidden]="elt.classification.length <= 0">Used By:</dt>
+                        <dd [hidden]="elt.classification.length <= 0" id="dd_usedBy">
+                            <span *ngIf="elt.classification.length <= 0">None</span>
+                            <span *ngIf="elt.classification.length > 0">
+                                <ng-container
+                                        *ngFor="let cl of elt.classification">{{cl.stewardOrg.name}} </ng-container>
+                            </span>
+                        </dd>
+                        <dt id="dt_status">Status:</dt>
+                        <dd id="dd_status">{{elt.registrationState.registrationStatus}}</dd>
+                    </dl>
+                </div>
+                <div class="col-md-2">
+                    <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
+                         alt="Image attached to the elt"
+                         src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+                </div>
+            </div>
+            <div class="row">
+                <a *ngIf="formQuickBoard.canAddElt(elt)" class="btn btn-small btn-default"
+                   (click)="formQuickBoard.add(elt)" id="compare_{{i}}">
+                    <i class="fa fa-plus"></i> Add to Quick Board</a>
+
+                <a class='btn btn-small btn-default' id="openEltInCurrentTab_{{i}}" *ngIf="openInNewTab"
+                   target="_blank"
+                   [href]="elt.getEltUrl()" title="Full Detail for {{elt.naming[0].designation}}"><i
+                        class="fa fa-eye"></i> View Full Detail</a>
+                <a class='btn btn-small btn-default' id="openEltInCurrentTab_{{i}}" *ngIf="!openInNewTab"
+                   [href]="elt.getEltUrl()" title="Full Detail for {{elt.naming[0].designation}}"><i
+                        class="fa fa-eye"></i> View Full Detail</a>
+            </div>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>

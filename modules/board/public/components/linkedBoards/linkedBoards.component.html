@@ -8,26 +8,28 @@
     <div class="modal-body">
         <div class="overflowHidden">
             <div *ngIf="!(boards?.length > 0)">No boards using this element</div>
-            <div ng-if="boards?.length > 0" *ngFor="let board of boards; let $index = index">
-                <div class="my-board-card" data-id="boardDiv_{{board.name}}">
-                    <h4><a href="/board/{{board._id}}" id="viewBoard_{{board.name}}"
-                           target="_blank">{{board.name}}</a></h4>
+            <ng-container *ngIf="boards?.length > 0">
+                <div *ngFor="let board of boards; let i = index">
+                    <div class="my-board-card" attr.data-id="boardDiv_{{board.name}}">
+                        <h4><a href="/board/{{board._id}}" id="viewBoard_{{board.name}}"
+                               target="_blank">{{board.name}}</a></h4>
 
-                    <div>
-                        <span id="board_num_cdes_{{$index}}">{{board.pins.length}}</span
-                        > {{board.type ==='form'?'Forms':'CDEs'}}</div>
+                        <div><span id="board_num_cdes_{{i}}">{{board.pins.length}}</span>
+                            {{board.type ==='form'?'Forms':'CDEs'}}</div>
 
-                    <div id="board_desc_{{$index}}">{{board.description}}</div>
+                        <div id="board_desc_{{i}}">{{board.description}}</div>
 
-                    <small class="myBoardLastModified" id="board_mod_{{$index}}">Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>
+                        <small class="myBoardLastModified" id="board_mod_{{i}}">Modified
+                            {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>
 
-                    <div id="board_tag_{{$index}}" class="myBoardTags">
+                        <div id="board_tag_{{i}}" class="myBoardTags">
                         <span *ngFor="let tag of board.tags">
                             <span class="label label-default"><i class="fa fa-hashtag"></i>{{tag}}</span>
                         </span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </ng-container>
         </div>
     </div>
     <div class="modal-footer">

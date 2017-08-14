@@ -1,0 +1,69 @@
+<ngb-accordion id="accordionList">
+    <ngb-panel class='panel-default' *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index"
+               is-open="elt.isOpen">
+        <ng-template ngbPanelTitle>
+            <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="i"
+                                        [openInNewTab]="openInNewTab" (add)="add.emit($event)">
+                <span class="accordion-list-before">
+                </span>
+                <span class="accordion-list-after">
+                    <small class="matched-by hidden-xs" *ngIf="elt?.highlight?.matchedBy">Matched by: <strong>
+                        <span [innerHtml]="elt.highlight.matchedBy"></span></strong></small>
+
+                    <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
+                    <cde-pin-quickboard [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-quickboard>
+                </span>
+            </cde-accordion-list-heading>
+        </ng-template>
+        <ng-template ngbPanelContent>
+            <div class="row">
+                <div class="col-md-4 col-sm-12 col-xs-12">
+                    <cde-cde-general-details [elt]="elt"></cde-cde-general-details>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <cde-value-domain-summary [elt]="elt"></cde-value-domain-summary>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <table [hidden]="elt.ids.length <= 0" class="table cdeTable" summary="Identifiers List">
+                        <tr>
+                            <th id="id" class="col-xs-6">Id</th>
+                            <th id="version" class="col-xs-2">Vers.</th>
+                            <th id="source" class="col-xs-4">Src.</th>
+                        </tr>
+                        <tr *ngFor="let id of elt.ids">
+                            <td headers="id" class="col-xs-6">{{id.id}}</td>
+                            <td headers="version" class="col-xs-2">{{id.version}}</td>
+                            <td headers="source" class="col-xs-4">{{id.source}}</td>
+                        </tr>
+                    </table>
+                    <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
+                         alt="Image attached to the CDE"
+                         src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <a *ngIf="!openInNewTab" class='btn btn-small btn-default'
+                       href="/deView?tinyId={{elt.tinyId}}" id="openEltInCurrentTab_{{index}}"
+                       (click)="$dismiss();">
+                        <i class="fa fa-eye"></i> View Full Detail</a>
+                    <a *ngIf="openInNewTab" target="_blank" class='btn btn-small btn-default'
+                       href="/deView?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{index}}">
+                        <i class="fa fa-eye"></i> View Full Detail</a>
+                    <a *ngIf="location!='board'" class="btn btn-small btn-default"
+                       (click)="pinModal.openPinModal(elt)" id="pin_{{index}}">
+                        <i class="fa fa-thumb-tack"></i> Attach to Board</a>
+                    <a *ngIf="user._id && location=='board'" class="btn btn-small btn-default"
+                       (click)="unpin(elt)" id="unpin_{{index}}">
+                        <i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
+                    <a *ngIf="quickBoard.canAddElt(elt)" class="btn btn-small btn-default"
+                       (click)="quickBoard.add(elt)" id="compare_{{index}}">
+                        <i class="fa fa-plus-square-o"></i> Add to Quick Board</a>
+                    <a class="pull-right" href="/sdcview/?tinyId={{elt.tinyId}}" target="_blank" aria-label="SDC View"
+                       id="sdcView_{{index}}">
+                        <i class="fa fa-share-square-o"></i> SDC View</a>
+                </div>
+            </div>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>

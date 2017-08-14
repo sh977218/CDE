@@ -20,6 +20,7 @@ public class FormSideBySideCompare2 extends NlmCdeBaseTest {
         textPresent("Tumor Characteristics: T1 Sig", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'leftObj') and @data-title='Label']"));
         textPresent("Pain location anatomic site", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj') and @data-title='Label']"));
         textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][3]//*[contains(@class, 'leftObj') and @data-title='Label']"));
+        clickElement(By.id("closeModal"));
 
         clickElement(By.id("qb_form_empty"));
         textPresent("Form QuickBoard (0)");

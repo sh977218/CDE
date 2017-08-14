@@ -6,6 +6,8 @@ import { Select2Module } from "ng2-select2";
 
 import { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 import { ClassificationService } from "./classification.service";
+import { ElasticService } from 'core/public/elastic.service';
+import { ExportService } from "./export.service";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
@@ -45,8 +47,8 @@ export function getPinModalFactory(i: any) {
     return i.get("PinModal");
 }
 
-export function getElasticFactory(i: any) {
-    return i.get("Elastic");
+export function getElasticBoardFactory(i: any) {
+    return i.get("ElasticBoard");
 }
 
 @NgModule({
@@ -57,10 +59,11 @@ export function getElasticFactory(i: any) {
     providers: [
         {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
         ClassificationService,
+        ElasticService,
+        ExportService,
         MergeCdeService,
         MergeFormService,
         MergeShareService,
-        SharedService,
         CompareService,
         OrgHelperService,
         // upgraded
@@ -72,7 +75,7 @@ export function getElasticFactory(i: any) {
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
         {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
         {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
-        {provide: "Elastic", useFactory: getElasticFactory, deps: ["$injector"]},
+        {provide: "ElasticBoard", useFactory: getElasticBoardFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,

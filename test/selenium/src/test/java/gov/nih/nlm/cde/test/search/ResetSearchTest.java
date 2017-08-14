@@ -13,16 +13,16 @@ public class ResetSearchTest extends NlmCdeBaseTest {
     @Test
     public void resetSearch() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-caCORE")).click();
+        clickElement(By.id("browseOrg-caCORE"));
         textPresent("caCORE 3.2");
-        findElement(By.id("li-blank-caCORE")).click();
-        findElement(By.id("li-blank-CSM")).click();
+        clickElement(By.id("li-blank-caCORE"));
+        clickElement(By.id("li-blank-CSM"));
         textPresent("2 results");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
-        findElement(By.id("menu_cdes_link")).click();
+        clickElement(By.id("menu_cdes_link"));
         textPresent("Browse by Classification");
-        findElement(By.id("browseOrg-NINDS")).click();
+        clickElement(By.id("browseOrg-NINDS"));
         textPresent("Population (");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertTrue(linkList.size() > 10);
@@ -33,9 +33,9 @@ public class ResetSearchTest extends NlmCdeBaseTest {
     public void resetFromWelcome() {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("some search");
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         textPresent("results for some search");
-        findElement(By.id("menu_cdes_link")).click();
+        clickElement(By.id("menu_cdes_link"));
         textPresent("Browse by Classification");
     }
 

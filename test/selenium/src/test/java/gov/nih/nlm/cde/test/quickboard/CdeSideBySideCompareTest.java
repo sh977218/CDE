@@ -44,6 +44,7 @@ public class CdeSideBySideCompareTest extends NlmCdeBaseTest{
         textPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj')]"));
         textPresent("concept name 1", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj')]"));
         textNotPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
+        clickElement(By.id("closeModal"));
 
         clickElement(By.id("qb_cde_empty"));
         textPresent("CDE QuickBoard (0)");

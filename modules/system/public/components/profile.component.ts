@@ -1,8 +1,9 @@
-import { Component, Inject } from "@angular/core";
-import { Http } from "@angular/http";
-import "rxjs/add/operator/map";
-import { User } from "../../../core/public/models.model";
-import { AlertService } from "./alert/alert.service";
+import { Component, Inject } from '@angular/core';
+import { Http } from '@angular/http';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { CdeForm } from 'form/public/form.model';
+import { DataElement } from 'cde/public/dataElement.model';
+import { User } from 'core/public/models.model';
 
 @Component({
     selector: "cde-profile",
@@ -22,18 +23,22 @@ export class ProfileComponent {
 
         this.http.get('/viewingHistory/dataElement').map(res => res.json())
             .subscribe(
-                res => {
-                    this.cdes = [];
-                    if (Array.isArray(res))
-                        this.cdes = res;
+                response => {
+                    this.cdes = response;
+                    if (Array.isArray(response))
+                        this.cdes.forEach((elt, i, elts) => elts[i] = Object.assign(new DataElement, elt));
+                    else
+                        this.cdes = [];
                 }, err => this.alert.addAlert("danger", "Error, unable to retrieve data element view history. " + err)
             );
         this.http.get('/viewingHistory/form').map(res => res.json())
             .subscribe(
-                res => {
-                    this.forms = [];
-                    if (Array.isArray(res))
-                        this.forms = res;
+                response => {
+                    this.forms = response;
+                    if (Array.isArray(response))
+                        this.forms.forEach((elt, i, elts) => elts[i] = Object.assign(new CdeForm, elt));
+                    else
+                        this.forms = [];
                 }, err => this.alert.addAlert("danger", "Error, unable to retrieve form view history. " + err)
             );
         this.reloadUser();

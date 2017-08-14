@@ -389,7 +389,15 @@ public class NlmCdeBaseTest {
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
-        textPresent(name, By.id("searchResult_0"));
+
+        // counteract save summary/table view
+        try {
+            textPresent(name, By.id("searchResult_0"));
+        } catch (Exception e) {
+            if (driver.findElements(By.id("list_summaryView")).size() > 0)
+                clickElement(By.id("list_summaryView"));
+            textPresent(name, By.id("searchResult_0"));
+        }
     }
 
     protected void openEltInList(String name, String type) {
@@ -452,6 +460,8 @@ public class NlmCdeBaseTest {
         } catch (Exception e) {
         }
         try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(by));
+            scrollToView(by);
             wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
@@ -644,7 +654,7 @@ public class NlmCdeBaseTest {
 
     public void goToQuickBoardByModule(String module) {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
-        clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));
+        clickElement(By.id("qb_" + module + "_tab"));
         String quickBoardTabText = ("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (";
         textPresent(quickBoardTabText);
     }
@@ -664,7 +674,7 @@ public class NlmCdeBaseTest {
         textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
-        clickElement(By.xpath("//*[@id='qb_cde_tab']/a"));
+        clickElement(By.id("qb_cde_tab"));
         textPresent(cdeName1);
         textPresent(cdeName2);
         clickElement(By.id("qb_elt_compare_0"));
@@ -706,21 +716,39 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jsScroll, c);
     }
 
+    protected void scrollModalsToBottom() {
+        // Angular
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        List<WebElement> modals = driver.findElements(By.cssSelector("ngb-modal-window"));
+        for (WebElement modal : modals) {
+            je.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", modal);
+        }
+
+        // AngularJS
+        modals = driver.findElements(By.cssSelector("div.modal"));
+        for (WebElement modal : modals) {
+            je.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", modal);
+        }
+    }
+
     private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
     }
 
-    protected void scrollToViewById(String id) {
+    protected void scrollToView(By by) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.id(id)));
-        hangon(2);
+        je.executeScript(
+                "window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2));",
+                findElement(by));
+    }
+
+    protected void scrollToViewById(String id) {
+        scrollToView(By.id(id));
     }
 
     protected void scrollToViewByXpath(String xpath) {
-        JavascriptExecutor je = (JavascriptExecutor) driver;
-        je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.xpath(xpath)));
-        hangon(2);
+        scrollToView(By.xpath(xpath));
     }
 
     protected void hoverOverElement(WebElement ele) {
@@ -1217,10 +1245,10 @@ public class NlmCdeBaseTest {
 
     public void startEditQuestionSectionById(String id) {
         try {
-            scrollToViewById(id);
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         } catch (Exception e) {
+            scrollToViewById(id);
             scrollDownBy(50);
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));

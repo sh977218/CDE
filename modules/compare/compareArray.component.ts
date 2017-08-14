@@ -286,8 +286,8 @@ let formCompareArrayOption = [
         data: [
             {label: 'Label', property: 'label'},
             {label: 'Element Type', property: 'elementType'},
-            {label: 'Form', property: 'inForm.form.tinyId', url: '/formView/?tinyId='},
-            {label: 'CDE', property: 'question.cde.tinyId', url: '/deView/?tinyId='},
+            {label: 'Form', property: 'inForm.form.tinyId', url: '/formView?tinyId='},
+            {label: 'CDE', property: 'question.cde.tinyId', url: '/deView?tinyId='},
             {label: 'Unit of Measurement', property: 'question.uoms'},
             {label: 'repeat', property: 'repeat'},
             {label: 'Skip Logic', property: 'skipLogic.condition'},

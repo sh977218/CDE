@@ -1,8 +1,16 @@
-angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', 'isAllowedModel',
-    function ($scope, QuickBoard, isAllowedModel) {
+angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', 'isAllowedModel', '$cacheFactory',
+    function ($scope, QuickBoard, isAllowedModel, $cacheFactory) {
         $scope.compareView = true;
         $scope.pvLimit = 30;
 
+        if (!$scope.initCache)
+            $scope.initCache = function () {
+                if ($cacheFactory.get("deListCache") === undefined) {
+                    $scope.cache = $cacheFactory("deListCache");
+                } else {
+                    $scope.cache = $cacheFactory.get("deListCache");
+                }
+            };
         $scope.initCache();
         $scope.openAllCompareModel = $scope.cache.get("openAllCompare");
         $scope.quickBoard = QuickBoard;
@@ -167,7 +175,7 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', '
                 return a.question.cde.tinyId === b.question.cde.tinyId;
             },
             properties: [{label: 'Label', property: 'label'},
-                {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/deView/?tinyId='},
+                {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/deView?tinyId='},
                 {label: 'Unit of Measurement', property: 'question.uoms'},
                 {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
             ],

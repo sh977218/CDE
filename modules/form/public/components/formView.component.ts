@@ -5,9 +5,7 @@ import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import * as formShared from '../../shared/formShared.js';
-import { CdeForm } from 'form/public/form.model';
-import { PinModalComponent } from 'board/public/components/pinModal/pinModal.component';
+import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 
 @Component({
     selector: "cde-form-view",
@@ -17,7 +15,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild("copyFormContent") public copyFormContent: NgbModalModule;
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @ViewChild("mltPinModal") public mltPinModal: PinModalComponent;
+    @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
     @Input() elt: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -31,7 +29,6 @@ export class FormViewComponent implements OnInit {
     eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
-    cdes = [];
     isFormValid = true;
 
     formInput;
@@ -114,16 +111,15 @@ export class FormViewComponent implements OnInit {
     }
 
     pinAllCdesIntoBoard() {
-        this.cdes = [];
+        let cdes = [];
         let doFormElement = formElt => {
-            if (formElt.elementType === 'question') {
-                this.cdes.push(formElt.question.cde);
-            } else if (formElt.elementType === 'section' || formElt.elementType === 'form') {
+            if (formElt.elementType === 'question')
+                cdes.push(formElt.question.cde);
+            else if (formElt.elementType === 'section' || formElt.elementType === 'form')
                 formElt.formElements.forEach(doFormElement);
-            }
         };
         this.elt.formElements.forEach(doFormElement);
-        this.mltPinModal.open(this.cdes, "cde");
+        this.mltPinModalCde.pinMultiple(cdes, this.mltPinModalCde.open());
     }
 
     isIe() {

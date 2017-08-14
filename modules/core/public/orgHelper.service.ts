@@ -16,7 +16,7 @@ export class OrgHelperService  {
     orgsDetailedInfo: any = {};
 
     addLongNameToOrgs (buckets) {
-        buckets.forEach( v => {
+        buckets && buckets.forEach( v => {
             if (this.orgsDetailedInfo[v.key] && this.orgsDetailedInfo[v.key].longName) {
                 v.longName = this.orgsDetailedInfo[v.key].longName;
             }

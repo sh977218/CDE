@@ -47,6 +47,7 @@ export class PermissibleValueComponent implements OnInit {
         "LOINC": {source: "LNC", termType: "LA", codes: {}, selected: false, disabled: true},
         "SNOMEDCT US": {source: "SNOMEDCT_US", termType: "PT", codes: {}, selected: false, disabled: true}
     };
+    keys = Object.keys;
 
     options = {
         multiple: false,
