@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { CdeForm } from 'form/public/form.model';
 import { DataElement } from 'cde/public/dataElement.model';
 import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
+import { HelperObjectsService } from 'widget/helperObjects.service';
 
 export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnChanges {
     @Input() reloads: number;
@@ -35,6 +36,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         xml: {id: "xmlExport", display: "XML Export"}
     };
     filterMode = true;
+    helperObjectsService = HelperObjectsService;
     lastQueryTimeStamp: number;
     module: string;
     numPages: any;
@@ -206,10 +208,11 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     private filterOutWorkingGroups(cb) {
-        this.orgHelperService.orgDetails.subscribe(() => {
+        this.orgHelperService.then(() => {
             this.userService.getPromise().then(() => {
                 this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket => {
-                    return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user) || this.userService.user.siteAdmin;
+                    return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user)
+                        || this.userService.user.siteAdmin;
                 });
                 cb();
             });
@@ -454,7 +457,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                 }
 
                 this.elts.forEach(elt => {
-                    this.orgHelperService.orgDetails.subscribe(() => {
+                    this.orgHelperService.then(() => {
                         elt.usedBy = this.orgHelperService.getUsedBy(elt, this.userService.user);
                     });
                 });
@@ -497,9 +500,9 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
 
                 let orgsCreatedPromise = new Promise(resolve => {
                     this.filterOutWorkingGroups(() => {
-                        this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
+                        this.orgHelperService.then(() => this.orgHelperService.addLongNameToOrgs(
                             this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
-                        this.aggregations.orgs.buckets.sort(function(a, b) {
+                        this.aggregations.orgs.buckets.sort(function (a, b) {
                             let A = a.key.toLowerCase();
                             let B = b.key.toLowerCase();
                             if (B > A) return -1;
@@ -520,9 +523,10 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                 this.switchView(this.isSearched() ? 'results' : 'welcome');
                 if (this.view === 'welcome') {
                     this.orgs = [];
-                    orgsCreatedPromise.then(() => {
-                        if (this.aggregations) {
-                            this.orgHelperService.orgDetails.subscribe(() => {
+
+                    if (this.aggregations) {
+                        orgsCreatedPromise.then(() => {
+                            this.orgHelperService.then(() => {
                                 this.aggregations.orgs.buckets.forEach(org_t => {
                                     if (this.orgHelperService.orgsDetailedInfo[org_t.key])
                                         this.orgs.push({
@@ -536,8 +540,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                                 });
                                 this.orgs.sort(SearchBaseComponent.compareObjName);
                             });
-                        }
-                    });
+                        });
+                    }
 
                     this.topics = {};
                     this.topicsKeys = [];
