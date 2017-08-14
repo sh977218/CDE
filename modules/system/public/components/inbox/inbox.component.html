@@ -4,7 +4,7 @@
         class="centerText">Your Inbox is empty.</h4>
 
     <h3 *ngIf="mail.received.length > 0">Received</h3>
-    <ng-container *ngTemplateOutlet="mailTemplate; type: 'received'"></ng-container>
+    <ng-container *ngTemplateOutlet="mailTemplate; context: {type: 'received'}"></ng-container>
 
     <h3 *ngIf="mail.sent.length > 0">Sent</h3>
     <h3 *ngIf="mail.archived.length > 0">Archived</h3>
@@ -22,7 +22,7 @@
 
 <ng-template #mailTemplate let-type>
     <ngb-accordion [closeOthers]="true">
-        <div *ngFor="message in mail[type] | orderBy: 'date' : true | limitTo: 20">
+        <div *ngFor="let message of mail[type] | slice:0:20">
 
             <div *ngIf="message.type === 'CommentReply'">
                 <ngb-panel title="">
@@ -57,6 +57,7 @@
                     </ng-template>
                     <!--<div ng-include="'/system/public/html/messages/commentReplyMessage.html'"></div>-->
                     <!--</div>-->
+                </ngb-panel>
             </div>
 
             <!--<div uib-accordion-group class='panel-default' ng-if="message.type === 'MergeRequest'">-->

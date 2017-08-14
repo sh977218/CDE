@@ -31,8 +31,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/siteAudit', {
             template: '<cde-site-audit></cde-site-audit>'
         }).when('/inbox', {
-            controller: 'InboxCtrl',
-            templateUrl: '/system/public/html/inbox.html'
+            template: '<cde-inbox></cde-inbox>'
         }).when('/orgComments', {
             template: '<cde-latest-comments [comments-url]="\'/orgComments/\'"></cde-latest-comments>'
         }).when('/siteaccountmanagement', {
@@ -633,3 +632,7 @@ angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent
 import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
 angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
     {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
+
+import {InboxComponent} from "../components/inbox/inbox.component"
+angular.module('systemModule').directive('cdeInbox', downgradeComponent(
+    {component: InboxComponent, inputs: [], outputs: []}));

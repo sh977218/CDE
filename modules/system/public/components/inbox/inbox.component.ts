@@ -21,10 +21,10 @@ export class InboxComponent implements OnInit {
     }
 
     getMail (type) {
-        this.http.post("/mail/messages/" + type, {}).map(r => r.json()).subscribe(response => {
-            cb(response.data);
-            $scope.mail[type] = mail;
-            $scope.fetchMRCdes(type);
+        // TODO make sure it's ordered by date
+        this.http.post("/mail/messages/" + type, {}).map(r => r.json()).subscribe(mail => {
+            this.mail[type] = mail;
+            // this.fetchMRCdes(type);
         });
     };
 
