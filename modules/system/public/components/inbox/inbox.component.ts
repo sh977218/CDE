@@ -1,33 +1,39 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
+import {Http} from "@angular/http";
 
 @Component({
     selector: "cde-inbox",
     templateUrl: "inbox.component.html"
 })
-export class InboxComponent {
+export class InboxComponent implements OnInit {
 
+
+    constructor(private http: Http) {}
 
     // $scope.mailTypeReceived = "received";
     // $scope.mailTypeSent = "sent";
     // $scope.mailTypeArchived = "archived";
     //
-    // $scope.mail = {received: [], sent: [], archived:[]};
-    //
-    // $scope.getMail = function(type) {
-    //     Mail.getMail(type, null, function(mail) {
-    //         $scope.mail[type] = mail;
-    //         $scope.fetchMRCdes(type);
-    //     });
-    // };
-    //
-    // $scope.getAllMail = function() {
-    //     $scope.getMail($scope.mailTypeReceived);
-    //     $scope.getMail($scope.mailTypeSent);
-    //     $scope.getMail($scope.mailTypeArchived);
-    // };
-    //
-    // $scope.getAllMail();
-    //
+    mail: any = {received: [], sent: [], archived: []};
+
+    ngOnInit () {
+        this.getAllMail();
+    }
+
+    getMail (type) {
+        this.http.post("/mail/messages/" + type, {}).map(r => r.json()).subscribe(response => {
+            cb(response.data);
+            $scope.mail[type] = mail;
+            $scope.fetchMRCdes(type);
+        });
+    };
+
+    getAllMail = function() {
+        this.getMail('received');
+        this.getMail('sent');
+        this.getMail('archived');
+    };
+
     // $scope.fetchMRCdes = function(type) {
     //     var tinyIdList = $scope.mail[type].map(function(m) {if (m.typeRequest) return m.typeRequest.source.tinyId;});
     //     tinyIdList = tinyIdList.concat($scope.mail[type].map(function(m) {if (m.typeRequest) return m.typeRequest.destination.tinyId;}));
