@@ -13,7 +13,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textNotPresent("Admin Status");
         textNotPresent("Identifiers");
 
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("Permissible Values");
         textPresent("Steward");
         textPresent("Question Texts");
@@ -36,7 +36,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Settings saved");
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
@@ -56,7 +55,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         clearStorage();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("Question Texts");
         textNotPresent("Other Names");
         textPresent("Permissible Values");
@@ -74,7 +73,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         clearStorage();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");

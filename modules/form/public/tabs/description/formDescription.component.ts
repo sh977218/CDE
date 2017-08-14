@@ -43,7 +43,6 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
             top: 50px;
             border-bottom-left-radius: 50px;
             right: 0;
-            z-index: 1029;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -74,10 +73,8 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
     `]
 })
 export class FormDescriptionComponent implements OnInit {
-    @Input() cache: any;
     @Input() elt: CdeForm;
     @Input() inScoreCdes: any;
-    @Output() cachePut: EventEmitter<any> = new EventEmitter<any>();
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 

@@ -9,11 +9,11 @@ public class TwoClassifsFacet extends NlmCdeBaseTest {
     @Test
     public void twoOrgsNoClassif() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-TEST")).click();
-        findElement(By.id("altClassificationFilterModeToggle")).click();
+        clickElement(By.id("browseOrg-TEST"));
+        clickElement(By.id("altClassificationFilterModeToggle"));
         textPresent("CIP (1)");
         textPresent("NHLBI (");
-        findElement(By.id("li-blank-CIP")).click();
+        clickElement(By.id("li-blank-CIP"));
         textNotPresent("Person Birth Date");
         textPresent("1 results for");
     }

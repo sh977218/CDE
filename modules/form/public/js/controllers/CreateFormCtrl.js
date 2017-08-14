@@ -10,8 +10,8 @@ angular.module('formModule').controller('CreateFormCtrl', ['$scope', '$window', 
         $controller('CreateFormAbstractCtrl', {$scope: $scope});
         $scope.openFormInNewTab = true;
 
-        $scope.$on('$locationChangeStart', function (event) {
-            if (!$scope.saving) {
+        $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+            if (!$scope.saving && oldUrl.indexOf("createForm") > -1) {
                 var txt = "You have unsaved changes, are you sure you want to leave this page? ";
                 if (window.debugEnabled) {
                     txt = txt + window.location.pathname;

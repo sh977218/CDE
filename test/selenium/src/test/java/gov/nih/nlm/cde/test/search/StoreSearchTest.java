@@ -28,7 +28,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
 
         textPresent("More Like This");
         driver.navigate().back();
-        Assert.assertTrue(findElement(By.xpath("//li[a = '2']")).getAttribute("ng-class").contains("active"));
+        Assert.assertTrue(findElement(By.xpath("//li[contains(a,'2')]")).getAttribute("class").contains("active"));
     }
 
 }

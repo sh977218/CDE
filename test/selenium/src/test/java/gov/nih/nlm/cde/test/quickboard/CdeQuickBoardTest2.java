@@ -25,7 +25,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("3436564");
         textPresent("pN0");
         textPresent("Prior BMSCT Administered Indicator");

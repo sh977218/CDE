@@ -9,9 +9,9 @@ public class FormTableView extends BaseFormTest {
     public void seeFormSource() {
         mustBeLoggedOut();
 
-        findElement(By.id("menu_forms_link")).click();
-        findElement(By.id("browseOrg-TEST")).click();
-        findElement(By.id("form_gridView")).click();
+        clickElement(By.id("menu_forms_link"));
+        clickElement(By.id("browseOrg-TEST"));
+        clickElement(By.id("list_gridView"));
 
         textNotPresent("Other Names");
         textPresent("Steward");

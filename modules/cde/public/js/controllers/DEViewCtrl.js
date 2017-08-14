@@ -18,8 +18,8 @@ angular.module('cdeModule').controller('DEViewCtrl', ['$scope', '$routeParams', 
         });
 
 
-        $scope.$on('$locationChangeStart', function (event) {
-            if ($scope.elt && $scope.elt.unsaved) {
+        $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+            if ($scope.elt && $scope.elt.unsaved && oldUrl.indexOf("deView") > -1) {
                 var txt = "You have unsaved changes, are you sure you want to leave this page? ";
                 if (window.debugEnabled) {
                     txt = txt + window.location.pathname;

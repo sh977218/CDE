@@ -3,56 +3,50 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
 {
     $routeProvider.
         when('/cde/search', {
-            controller: 'ListCtrl',
-            subCtrl: 'DEListCtrl',
-            templateUrl: '/system/public/html/list.html',
+            controller: 'SearchCtrl',
             reloadOnSearch: false,
+            template: '<cde-cde-search [reloads]="searchReloadCount"></cde-cde-search>',
             title: "Find Common Data Elements",
             keywords: 'cde, common data element, promis, neuro-qol, phenx, ahrq, ninds, repository',
             description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
         }).
-        when('/quickBoard', {controller: 'QuickBoardCtrl', templateUrl: '/cde/public/html/quickBoard.html', title: "Quickboard"}).
+        when('/cde', {
+            redirectTo: '/cde/search'
+        }).
+        when('/quickBoard', {template: '<div ng-include="\'/system/public/html/eltsCompareButton.html\'" ng-init="eltsToCompare=[{},{}]" style="display: none"></div></div><cde-quick-board></cde-quick-board>', title: "Quickboard"}).
         when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.cdeId = $routeParams.cdeId;
         }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
-        when('/cdeSearchExport', {controller: 'DEListCtrl', templateUrl: '/cde/public/html/exportCdeSearch.html'}).
+        when('/cdeSearchExport', {templateUrl: '/cde/public/html/exportCdeSearch.html'}).
         when('/myboards', {controller: 'MyBoardsCtrl', templateUrl: '/cde/public/html/myBoards.html'}).
-        when('/board/:boardId', {controller: 'SwitchListViewCtrl', templateUrl: '/board/public/html/boardView.html'}).
+        when('/board/:boardId', {templateUrl: '/board/public/html/boardView.html'}).
         when('/boardList', {controller: 'BoardListCtrl', templateUrl: '/cde/public/html/boardList.html'}).
         when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/cde/public/html/createCde.html'}).
         when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
-            keywords: 'cde, common data element, question, detail, value set, description',
-            description: "Detailed view of selected Common Data Element (CDE)."}).
-        when('/deview', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
         when('/cdeStatusReport', {controller: 'ExportCtrl', templateUrl: '/system/public/html/cdeStatusReport.html'})
         ;
     }]);
 
-// Angular 2 upgraded
-angular.module('cdeModule').directive('cdeAccordionList', function () {
-    return {
-        scope: {cdes: '=', ejsPage: '=', module: '='},
-        template: require('../html/cdeAccordionList.html')};
-});
-
 import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
 
-import {BoardCdeSummaryListComponent} from "../components/searchResults/boardCdeSummaryList.component";
-angular.module('cdeModule').directive('cdeBoardCdeSummaryList', downgradeComponent({component: BoardCdeSummaryListComponent, inputs: ['board', 'cdes', 'currentPage', 'totalItems'], outputs: ['reload']}));
+import {BoardCdeSummaryListComponent} from "../components/listView/boardCdeSummaryList.component";
+angular.module('cdeModule').directive('cdeBoardCdeSummaryList',
+    downgradeComponent({component: BoardCdeSummaryListComponent, inputs: ['board', 'cdes', 'module', 'currentPage', 'totalItems'], outputs: ['reload']}));
 
 import {CreateBoardComponent} from "../../../board/public/components/createBoard/createBoard.component";
 angular.module('systemModule').directive('cdeCreateBoard', downgradeComponent({component: CreateBoardComponent, inputs: [], outputs: []}));
 
-import {RegistrationValidatorService} from "../components/validationRules/registrationValidator.service";
-angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
-
-import {CdeSummaryListComponent} from "../components/searchResults/cdeSummaryList.component";
-angular.module('cdeModule').directive('cdeCdeSummaryList', downgradeComponent({component: CdeSummaryListComponent, inputs: ['cdes'], outputs: []}));
+import {QuickBoardComponent} from "../../../board/public/components/quickBoard/quickBoard.component";
+angular.module('cdeModule').directive('cdeQuickBoard', downgradeComponent({component: QuickBoardComponent, inputs: [], outputs: []}));
 
 import {CreateDataElementComponent} from "../components/createDataElement.component";
 angular.module('cdeModule').directive('cdeCreateDataElement', downgradeComponent({component: CreateDataElementComponent, inputs: ['elt'], outputs: ['cancel','modelChange']}));
+
+import {CdeSearchComponent} from "../components/search/cdeSearch.component";
+angular.module('systemModule').directive('cdeCdeSearch', downgradeComponent({component: CdeSearchComponent,
+    inputs: ['reloads'], outputs: []}));
 
 import {DataElementViewComponent} from "../components/dataElementView.component";
 angular.module('cdeModule').directive('cdeDataElementView', downgradeComponent({component: DataElementViewComponent, inputs: ['elt'], outputs: ['reload','stageElt']}));
@@ -68,3 +62,11 @@ angular.module('cdeModule').directive('cdeSdcView', downgradeComponent({componen
 
 import {CreateFormFromBoardComponent} from "../../../board/public/components/createFormFromBoard.component";
 angular.module('systemModule').directive('cdeCreateFormFromBoard', downgradeComponent({component: CreateFormFromBoardComponent, inputs: ['board'], outputs: []}));
+
+import { ListViewComponent } from "../../../search/listView/listView.component";
+angular.module('cdeModule').directive('cdeListView', downgradeComponent({component: ListViewComponent,
+    inputs: ['board', 'currentPage', 'location', 'elts', 'listView', 'module', 'totalItems'], outputs: ['add', 'listViewChange']}));
+
+import { ListViewControlsComponent } from "../../../search/listView/listViewControls.component";
+angular.module('cdeModule').directive('cdeListViewControls', downgradeComponent({component: ListViewControlsComponent,
+    inputs: ['listView'], outputs: ['listViewChange']}));
