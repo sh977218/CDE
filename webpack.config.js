@@ -2,6 +2,7 @@ const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 console.log("Are we prod? " + prod);
 
@@ -56,7 +57,8 @@ module.exports = {
                 $: 'jquery',
                 jQuery: 'jquery',
                 'windows.jQuery': 'jquery'
-            })
+            }),
+            new BundleAnalyzerPlugin()
         ] : [
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
                 /angular(\\|\/)core(\\|\/)@angular/,

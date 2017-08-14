@@ -8,7 +8,7 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
 export class DataElementQuickBoardComponent implements OnInit {
     listViews = {};
 
-    constructor(private quickBoardService: QuickBoardListService) {
+    constructor(public quickBoardService: QuickBoardListService) {
     }
 
     ngOnInit(): void {

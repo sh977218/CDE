@@ -1,14 +1,63 @@
-<button id="qb_de_compare" class="btn btn-default" (click)="doCompare();">
+<button id="qb_de_compare" class="btn btn-default" (click)="openCompareSideBySideContent();">
     <i class="fa fa-search"></i> Side by Side View
 </button>
-
 
 <ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="compareSideBySideModalHeader">
         <h4 class="modal-title">Compare</h4>
     </div>
     <div class="modal-body" id="compareSideBySideModalBody">
-        {{left | json}}
+        <ng-container *ngFor="let option of options">
+            <div class="col-xs-12" *ngIf="option.displayAs.display">
+                <label>{{option.displayAs.label}}</label>
+                <div *ngFor="let fullMatch of option.fullMatches" class="row">
+                    <div class="col-xs-6">
+                        <div *ngFor="let d of option.displayAs.data" class="fullMatch">
+                            <label>{{d.label}}</label>
+                            <span>{{fullMatch.left[d.property]}}</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div *ngFor="let d of option.displayAs.data" class="fullMatch">
+                            <label>{{d.label}}</label>
+                            <span>{{fullMatch.right[d.property]}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let partialMatch of option.partialMatches" class="row">
+                    <div class="col-xs-6">
+                        <div *ngFor="let d of option.displayAs.data" class="partialMatch">
+                            <label>{{d.label}}</label>
+                            <span>{{partialMatch.left[d.property]}}</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div *ngFor="let d of option.displayAs.data" class="partialMatch">
+                            <label>{{d.label}}</label>
+                            <span>{{partialMatch.right[d.property]}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
+                            <div *ngFor="let d of option.displayAs.data">
+                                <label>{{d.label}}</label>
+                                <span>{{leftNotMatch[d.property]}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch">
+                            <div *ngFor="let d of option.displayAs.data">
+                                <label>{{d.label}}</label>
+                                <span>{{rightNotMatch[d.property]}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
     </div>
     <div class="modal-footer" id="compareSideBySideModalFooter">
         <button class="btn btn-warning" id="closeCompareSideBySideBtn"

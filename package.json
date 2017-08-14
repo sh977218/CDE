@@ -6,6 +6,7 @@
     "buildApp": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
     "buildNative": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackNative.config.js",
     "install": "napa",
+    "analyz": "node ./node_modules/webpack/bin/webpack --profile --json > stats.json",
     "start": "node app.js",
     "dev": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
     "devNative": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackNative.config.js"
@@ -150,7 +151,7 @@
     "tslint": "4.4.1",
     "tslint-loader": "3.3.0",
     "typescript": "2.2.2",
-    "webpack": "2.6.1",
+    "webpack": "3.5.4",
     "zone.js": "0.8.12"
   }
 }
