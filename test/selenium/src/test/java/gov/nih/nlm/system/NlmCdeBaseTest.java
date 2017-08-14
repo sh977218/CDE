@@ -716,6 +716,21 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jsScroll, c);
     }
 
+    protected void scrollModalsToBottom() {
+        // Angular
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        List<WebElement> modals = driver.findElements(By.cssSelector("ngb-modal-window"));
+        for (WebElement modal : modals) {
+            je.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", modal);
+        }
+
+        // AngularJS
+        modals = driver.findElements(By.cssSelector("div.modal"));
+        for (WebElement modal : modals) {
+            je.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", modal);
+        }
+    }
+
     private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");

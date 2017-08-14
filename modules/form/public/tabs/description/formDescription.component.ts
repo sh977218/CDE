@@ -43,7 +43,6 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
             top: 50px;
             border-bottom-left-radius: 50px;
             right: 0;
-            z-index: 1029;
             -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);

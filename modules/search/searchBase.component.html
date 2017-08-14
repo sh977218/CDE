@@ -234,9 +234,9 @@
                                 <ng-template #else01>
                                     <i class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>
                                 </ng-template>
-                                <small id="classifications-text-{{t.key}}"> {{t.key}}
+                                <a href class="nonLinkAnchor" id="classifications-text-{{t.key}}"> {{t.key}}
                                     (<span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)
-                                </small>
+                                </a>
                             </span>
                             <div id="classification-facets">
                                 <span class="nonLinkAnchor displayBlock hand-cursor"
@@ -248,9 +248,9 @@
                                     <ng-template #else02>
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
-                                    <span>
+                                    <a href class="nonLinkAnchor">
                                         <small>{{e}}</small>
-                                    </span>
+                                    </a>
                                 </span>
                                 <span class="nonLinkAnchor displayBlock hand-cursor" (click)="selectElement(b.name)"
                                       *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications)"
@@ -261,11 +261,11 @@
                                     <ng-template #else03>
                                         <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
                                     </ng-template>
-                                    <span>
+                                    <a href class="nonLinkAnchor">
                                         <small style="word-break: break-all">{{b.name}}
                                             (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
                                         </small>
-                                    </span>
+                                    </a>
                                 </span>
                             </div>
                         </div>
@@ -284,9 +284,9 @@
                                     <ng-template #else04>
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
-                                    <span>
+                                    <a href class="nonLinkAnchor">
                                         <small>{{e}}</small>
-                                    </span>
+                                    </a>
                                 </span>
                                 <span class="nonLinkAnchor displayBlock hand-cursor" (click)="selectTopic(b.name)"
                                       *ngFor="let b of aggregations.topics"
@@ -297,11 +297,11 @@
                                     <ng-template #else05>
                                         <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
                                     </ng-template>
-                                    <span>
+                                    <a href class="nonLinkAnchor">
                                         <small style="word-break: break-all">{{b.name}}
                                             (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
                                         </small>
-                                    </span>
+                                    </a>
                                 </span>
                             </div>
                         </div>
@@ -321,7 +321,9 @@
                             <ng-template #else06>
                                 <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                             </ng-template>
-                            <small id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                            <a href class="nonLinkAnchor">
+                                <small id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                            </a>
                         </span>
                     </span>
                     </div>
@@ -331,7 +333,7 @@
                         <div class="pl5" id="datatypeListHolder">
                         <span class="hand-cursor"
                               *ngFor="let t of aggregations.datatype.datatype.buckets">
-                            <span class="nonLinkAnchor displayBlock" *ngIf="t.doc_count > 0"
+                            <span class="displayBlock" *ngIf="t.doc_count > 0"
                                   style="margin-right: 0" (click)="addDatatypeFilter(t.key)">
                                 <ng-container *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
                                     <i class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
@@ -339,7 +341,9 @@
                                 <ng-template #else07>
                                     <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                                 </ng-template>
-                                <small id="datatype-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                                <a href class="nonLinkAnchor">
+                                    <small id="datatype-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                                </a>
                             </span>
                         </span>
                         </div>

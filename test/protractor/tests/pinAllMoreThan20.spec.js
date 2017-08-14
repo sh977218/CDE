@@ -12,7 +12,6 @@ describe('Pin All', () => {
 
         browser.get("/cde/search");
 
-        u.textPresent("NIDCR");
         element(by.id("browseOrg-NINDS")).click();
         element(by.id("li-blank-Disease")).click();
         element(by.xpath("//*[@id='li-blank-Amyotrophic Lateral Sclerosis']")).click();

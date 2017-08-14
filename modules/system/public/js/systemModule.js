@@ -402,6 +402,13 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
     return isAllowedModel;
 }]);
 
+angular.module('systemModule').controller('SearchCtrl', ['$scope', function ($scope) {
+    $scope.searchReloadCount = 0;
+    $scope.$on('$routeUpdate',function() {
+        $scope.searchReloadCount++;
+    });
+}]);
+
 angular.module('systemModule').config(['$compileProvider', function ($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);

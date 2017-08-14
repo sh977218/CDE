@@ -1,6 +1,6 @@
 import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener,
-    OnInit
+    OnInit, Input, OnChanges, SimpleChanges
 } from '@angular/core';
 import { SearchSettings } from './search.model';
 import { SharedService } from 'core/public/shared.service';
@@ -10,7 +10,8 @@ import { CdeForm } from 'form/public/form.model';
 import { DataElement } from 'cde/public/dataElement.model';
 import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
 
-export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
+export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnChanges {
+    @Input() reloads: number;
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname))
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
@@ -57,6 +58,11 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
         let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
         if (previousSpot != null)
             SearchBaseComponent.waitScroll(2, previousSpot);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.reloads)
+            this.search();
     }
 
     ngOnInit () {
@@ -127,10 +133,12 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
             classifToAlter.length = 0;
         }
         delete this.aggregations.groups;
-
-        this.doSearch();
-        if (!this.embedded)
-            SearchBaseComponent.focusClassification();
+        if (this.isSearched()) {
+            this.doSearch();
+            if (!this.embedded)
+                SearchBaseComponent.focusClassification();
+        } else
+            this.reset();
     }
 
     autocompleteSuggest(searchTerm) {
@@ -185,8 +193,9 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
             let loc = this.generateSearchForTerm();
             window.sessionStorage.removeItem('nlmcde.scroll.' + loc);
             this.redirect(loc);
-        } else
-            this.reload();
+        }
+
+        this.reload();
     }
 
     fakeNextPageLink() {
@@ -212,7 +221,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
         $('#classif_filter_title').focus(); // jshint ignore:line
     }
 
-    private focusTopic() {
+    static focusTopic() {
         $('#meshTrees_filter').focus();
     }
 
@@ -234,9 +243,9 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
         if (this.altClassificationFilterMode)
             if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0)
                 searchTerms.push('classificationAlt=' + encodeURIComponent(this.searchSettings.classificationAlt.join(';')));
-        if (pageNumber)
+        if (pageNumber && pageNumber > 1)
             searchTerms.push('page=' + pageNumber);
-        else if (this.searchSettings.page)
+        else if (this.searchSettings.page && this.searchSettings.page > 1)
             searchTerms.push('page=' + this.searchSettings.page);
         if (this.searchSettings.meshTree)
             searchTerms.push('topic=' + encodeURIComponent(this.searchSettings.meshTree));
@@ -644,7 +653,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
 
         this.doSearch();
         if (!this.embedded)
-            this.focusTopic();
+            SearchBaseComponent.focusTopic();
     }
 
     selectedTopicsAsString() {
