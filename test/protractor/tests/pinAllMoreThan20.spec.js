@@ -3,7 +3,7 @@ const b = require('./boardUtils');
 
 describe('Pin All', () => {
 
-    xit('should pin more than 20', done => {
+    it('should pin more than 20', done => {
         // browser.driver.manage().window().maximize();
         browser.get("");
 
