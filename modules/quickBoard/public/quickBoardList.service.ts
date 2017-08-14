@@ -19,6 +19,9 @@ export class QuickBoardListService implements OnInit {
     constructor(private localStorageService: LocalStorageService,
                 private alert: AlertService,
                 private http: Http) {
+    }
+
+    ngOnInit(): void {
         let dataElementLocalStorage = <Array<any>> this.localStorageService.get("quickBoard");
         if (dataElementLocalStorage) {
             let l = dataElementLocalStorage.map(d => d.tinyId);
@@ -41,26 +44,9 @@ export class QuickBoardListService implements OnInit {
                     }
                 }, err => this.alert.addAlert("danger", err));
         }
-        this.number_elements = this.number_dataElements + this.number_forms;
+        this.number_elements = dataElementLocalStorage.length + formLocalStorage.length;
         this.module = <string>this.localStorageService.get('defaultQuickBoard');
     }
-
-    ngOnInit(): void {
-
-    }
-
-    test() {
-        let dataElementLocalStorage = <Array<any>> this.localStorageService.get("quickBoard");
-        let l = dataElementLocalStorage.map(d => d.tinyId);
-        this.http.get("/deByTinyIdList/" + l).map(res => res.json())
-            .subscribe(res => {
-                if (res) {
-                    this.dataElements = res;
-                    this.number_dataElements = this.dataElements.length;
-                }
-            }, err => this.alert.addAlert("danger", err));
-    }
-
 
     saveFormQuickBoard() {
         this.localStorageService.set("formQuickBoard", this.forms);
@@ -96,15 +82,6 @@ export class QuickBoardListService implements OnInit {
         this.module = type;
         this.localStorageService.set('defaultQuickBoard', type);
     }
-
-    /*
-        toggleEltsToCompare(elt) {
-            if (this.eltsToCompareMap[elt.tinyId])
-                delete this.eltsToCompareMap[elt.tinyId];
-            else
-                this.eltsToCompareMap[elt.tinyId] = elt;
-        }
-    */
 
     removeForm(index) {
         this.forms.splice(index, 1);
