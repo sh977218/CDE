@@ -1,4 +1,5 @@
-<button id="qb_de_compare" class="btn btn-default" (click)="openCompareSideBySideContent();">
+<button *ngIf="elements.length > 1" id="qb_de_compare" class="btn btn-default"
+        (click)="openCompareSideBySideContent();">
     <i class="fa fa-search"></i> Side by Side View
 </button>
 
@@ -6,52 +7,54 @@
     <div class="modal-header" id="compareSideBySideModalHeader">
         <h4 class="modal-title">Compare</h4>
     </div>
-    <div class="modal-body" id="compareSideBySideModalBody">
+    <div class="modal-body col-xs-12" id="compareSideBySideModalBody">
         <ng-container *ngFor="let option of options">
-            <div class="col-xs-12" *ngIf="option.displayAs.display">
-                <label>{{option.displayAs.label}}</label>
-                <div *ngFor="let fullMatch of option.fullMatches" class="row">
-                    <div class="col-xs-6">
-                        <div *ngFor="let d of option.displayAs.data" class="fullMatch">
-                            <label>{{d.label}}</label>
-                            <span>{{fullMatch.left[d.property]}}</span>
+            <div *ngIf="option.displayAs.display">
+                <div class="overflowHidden">
+                    <label>{{option.displayAs.label}}</label>
+                    <div *ngFor="let fullMatch of option.fullMatches" class="col-xs-12">
+                        <div class="col-xs-6 noLeftPadding">
+                            <div *ngFor="let d of option.displayAs.data" class="fullMatch">
+                                <label>{{d.label?d.label+":":d.label}}</label>
+                                <span [innerHTML]=getValue(fullMatch.left,d)></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <div *ngFor="let d of option.displayAs.data" class="fullMatch">
-                            <label>{{d.label}}</label>
-                            <span>{{fullMatch.right[d.property]}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div *ngFor="let partialMatch of option.partialMatches" class="row">
-                    <div class="col-xs-6">
-                        <div *ngFor="let d of option.displayAs.data" class="partialMatch">
-                            <label>{{d.label}}</label>
-                            <span>{{partialMatch.left[d.property]}}</span>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <div *ngFor="let d of option.displayAs.data" class="partialMatch">
-                            <label>{{d.label}}</label>
-                            <span>{{partialMatch.right[d.property]}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <label>{{d.label}}</label>
-                                <span>{{leftNotMatch[d.property]}}</span>
+                        <div class="col-xs-6">
+                            <div *ngFor="let d of option.displayAs.data" class="fullMatch">
+                                <label>{{d.label?d.label+":":d.label}}</label>
+                                <span [innerHTML]=getValue(fullMatch.right,d)></span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-6">
-                        <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <label>{{d.label}}</label>
-                                <span>{{rightNotMatch[d.property]}}</span>
+                    <div *ngFor="let partialMatch of option.partialMatches">
+                        <div class="col-xs-6">
+                            <div *ngFor="let d of option.displayAs.data" class="partialMatch">
+                                <label>{{d.label?d.label+":":d.label}}</label>
+                                <span [innerHTML]=getValue(partialMatch.left,d)></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div *ngFor="let d of option.displayAs.data" class="partialMatch">
+                                <label>{{d.label?d.label+":":d.label}}</label>
+                                <span [innerHTML]=getValue(partialMatch.right,d)></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-xs-6">
+                            <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <span [innerHTML]=getValue(leftNotMatch,d)></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <span [innerHTML]=getValue(rightNotMatch,d)></span>
+                                </div>
                             </div>
                         </div>
                     </div>

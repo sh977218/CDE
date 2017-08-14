@@ -5,12 +5,9 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
     selector: "cde-data-element-quick-board",
     templateUrl: "dataElementQuickBoard.component.html"
 })
-export class DataElementQuickBoardComponent implements OnInit {
+export class DataElementQuickBoardComponent {
     listViews = {};
 
     constructor(public quickBoardService: QuickBoardListService) {
-    }
-
-    ngOnInit(): void {
     }
 }

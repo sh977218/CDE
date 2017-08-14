@@ -73,6 +73,15 @@ exports.byTinyIdVersion = function (req, res) {
         res.send(dataElement);
     });
 };
+exports.byTinyIdList = function (req, res) {
+    let tinyIdList = req.params.tinyIdList;
+    if (!tinyIdList) return res.status(400).send();
+    tinyIdList = tinyIdList.split(",");
+    mongo_cde.byTinyIdList(tinyIdList, function (err, dataElements) {
+        if (err) return res.status(500).send("ERROR");
+        res.send(dataElements);
+    });
+};
 
 exports.latestVersionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;

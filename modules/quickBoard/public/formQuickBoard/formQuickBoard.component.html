@@ -6,9 +6,8 @@
             <a href="/form/search">Go to the search page and get started.</a></p>
     </div>
     <div *ngIf="quickBoardService.number_forms > 0">
-        <button id="qb_form_compare" class="btn btn-default">
-            <i class="fa fa-search"></i> Side by Side View
-        </button>
+        <cde-compare-side-by-side [(elements)]="quickBoardService.forms"></cde-compare-side-by-side>
+        <cde-list-view-controls [(listView)]="listViews"></cde-list-view-controls>
         <button id="qb_form_empty" class="btn btn-default" value="Empty Quick Board"
                 (click)="quickBoardService.emptyFormQuickBoard();">
             <i class="fa fa-trash-o"></i> Empty Quick Board

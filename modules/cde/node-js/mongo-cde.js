@@ -72,7 +72,7 @@ exports.latestVersionByTinyId = function (tinyId, cb) {
     });
 };
 exports.byTinyIdList = function (tinyIdList, cb) {
-    DataElement.find({}).where("tinyId").in(tinyIdList).exec(cb);
+    DataElement.find({archived: false}).where("tinyId").in(tinyIdList).exec(cb);
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */

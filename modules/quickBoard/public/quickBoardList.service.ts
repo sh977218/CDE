@@ -1,8 +1,10 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
+import { Http } from '@angular/http';
 import { LocalStorageService } from 'angular-2-local-storage';
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 @Injectable()
-export class QuickBoardListService {
+export class QuickBoardListService implements OnInit {
     eltsToCompareMap = {};
     module: string = 'cde';
     quickBoard: any;
@@ -14,20 +16,51 @@ export class QuickBoardListService {
     forms = [];
 
 
-    constructor(private localStorageService: LocalStorageService) {
+    constructor(private localStorageService: LocalStorageService,
+                private alert: AlertService,
+                private http: Http) {
         let dataElementLocalStorage = <Array<any>> this.localStorageService.get("quickBoard");
         if (dataElementLocalStorage) {
-            this.dataElements = dataElementLocalStorage;
-            this.number_dataElements = this.dataElements.length;
+            let l = dataElementLocalStorage.map(d => d.tinyId);
+            this.http.get("/deByTinyIdList/" + l).map(res => res.json())
+                .subscribe(res => {
+                    if (res) {
+                        this.dataElements = res;
+                        this.number_dataElements = this.dataElements.length;
+                    }
+                }, err => this.alert.addAlert("danger", err));
         }
         let formLocalStorage = <Array<any>> this.localStorageService.get("formQuickBoard");
         if (formLocalStorage) {
-            this.forms = formLocalStorage;
-            this.number_forms = this.forms.length;
+            let l = formLocalStorage.map(d => d.tinyId);
+            this.http.get("/formByTinyIdList/" + l).map(res => res.json())
+                .subscribe(res => {
+                    if (res) {
+                        this.forms = formLocalStorage;
+                        this.number_forms = this.forms.length;
+                    }
+                }, err => this.alert.addAlert("danger", err));
         }
         this.number_elements = this.number_dataElements + this.number_forms;
         this.module = <string>this.localStorageService.get('defaultQuickBoard');
     }
+
+    ngOnInit(): void {
+
+    }
+
+    test() {
+        let dataElementLocalStorage = <Array<any>> this.localStorageService.get("quickBoard");
+        let l = dataElementLocalStorage.map(d => d.tinyId);
+        this.http.get("/deByTinyIdList/" + l).map(res => res.json())
+            .subscribe(res => {
+                if (res) {
+                    this.dataElements = res;
+                    this.number_dataElements = this.dataElements.length;
+                }
+            }, err => this.alert.addAlert("danger", err));
+    }
+
 
     saveFormQuickBoard() {
         this.localStorageService.set("formQuickBoard", this.forms);

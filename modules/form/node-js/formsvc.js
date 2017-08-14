@@ -188,6 +188,16 @@ exports.byTinyIdVersion = function (req, res) {
     });
 };
 
+exports.byTinyIdList = function (req, res) {
+    let tinyIdList = req.params.tinyIdList;
+    if (!tinyIdList) return res.status(400).send();
+    tinyIdList = tinyIdList.split(",");
+    mongo_form.byTinyIdList(tinyIdList, function (err, forms) {
+        if (err) res.status(500).send("ERROR");
+        res.send(forms);
+    });
+};
+
 exports.latestVersionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();

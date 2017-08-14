@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
+import { AlertService } from "system/public/components/alert/alert.service";
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
     selector: "cde-compare-side-by-side",
@@ -21,37 +23,31 @@ import * as _ from "lodash";
         }
     `]
 })
-export class CompareSideBySideComponent implements OnInit {
+export class CompareSideBySideComponent {
     @ViewChild("compareSideBySideContent") public compareSideBySideContent: NgbModalModule;
     public modalRef: NgbModalRef;
-    @Input() left: any = {};
-    @Input() right: any = {};
+    @Input() elements: any = [];
     options = [];
 
-    constructor(public modalService: NgbModal) {
-    }
-
-    ngOnInit(): void {
-        if (this.left.elementType === "form")
-            this.flatFormQuestions(this.left);
-        if (this.right.elementType === "form")
-            this.flatFormQuestions(this.left);
+    constructor(public modalService: NgbModal,
+                public quickBoardService: QuickBoardListService,
+                private alert: AlertService) {
     }
 
     flatFormQuestions(fe) {
-        if (!fe.questions) fe.questions = [];
-        if (fe.formElements !== undefined) {
-            fe.formElements.forEach(function (e) {
+        let questions = [];
+        if (fe.formElements) {
+            fe.formElements.forEach(e => {
                 if (e.elementType && e.elementType === "question") {
                     delete e.formElements;
-                    fe.questions.push(_.cloneDeep(e));
-                }
-                else this.flatFormQuestions(e, fe.questions);
+                    questions.push(_.cloneDeep(e));
+                } else questions = questions.concat(this.flatFormQuestions(e));
             });
         }
+        return questions;
     };
 
-    openCompareSideBySideContent() {
+    getOptions(left, right) {
         let commonOption = [
             {
                 displayAs: {
@@ -102,7 +98,11 @@ export class CompareSideBySideComponent implements OnInit {
                     data: [
                         {label: "Name", property: "designation"},
                         {label: "Definition", property: "definition"},
-                        {label: "Tags", property: "tags"}
+                        {
+                            label: "Tags", property: "tags", properties: {
+                            label: "Tag", property: "tag"
+                        }
+                        }
                     ]
                 },
                 fullMatchFn: (a, b) => {
@@ -161,7 +161,12 @@ export class CompareSideBySideComponent implements OnInit {
                 displayAs: {
                     label: "Properties",
                     property: "properties",
-                    data: []
+                    data: [
+                        {label: "Key", property: "key"},
+                        {label: "Value", property: "value"},
+                        {label: "Source", property: "source"},
+                        {label: "Value Format", property: "valueFormat"}
+                    ]
                 },
                 fullMatchFn: (a, b) => {
                     return _.isEqual(a, b);
@@ -212,7 +217,11 @@ export class CompareSideBySideComponent implements OnInit {
                 displayAs: {
                     label: "Data Element Concept",
                     property: "property.concepts",
-                    data: []
+                    data: [
+                        {label: "Name", property: "name"},
+                        {label: "Origin", property: "origin"},
+                        {label: "Origin Id", property: "originId"}
+                    ]
                 },
                 fullMatchFn: (a, b) => {
                     return _.isEqual(a, b);
@@ -233,7 +242,10 @@ export class CompareSideBySideComponent implements OnInit {
                 displayAs: {
                     label: "Object Class Concept",
                     property: "objectClass.concepts",
-                    data: []
+                    data: [{label: "Name", property: "name"},
+                        {label: "Origin", property: "origin"},
+                        {label: "Origin Id", property: "originId"}
+                    ]
                 },
                 fullMatchFn: (a, b) => {
                     return _.isEqual(a, b);
@@ -254,7 +266,10 @@ export class CompareSideBySideComponent implements OnInit {
                 displayAs: {
                     label: "Property Concept",
                     property: "property.concepts",
-                    data: []
+                    data: [{label: "Name", property: "name"},
+                        {label: "Origin", property: "origin"},
+                        {label: "Origin Id", property: "originId"}
+                    ]
                 },
                 fullMatchFn: (a, b) => {
                     return _.isEqual(a, b);
@@ -498,7 +513,11 @@ export class CompareSideBySideComponent implements OnInit {
                         {label: "Label", property: "label"},
                         {label: "CDE", property: "question.cde.tinyId", url: "/deView?tinyId="},
                         {label: "Unit of Measurement", property: "question.uoms"},
-                        {label: "Answer", property: "question.answers", displayAs: "valueMeaningName"}
+                        {
+                            label: "Answer", property: "question.answers", properties: {
+                            label: "Permissible Value", property: "permissibleValue"
+                        }
+                        }
                     ]
                 },
                 fullMatchFn: (a, b) => {
@@ -522,21 +541,40 @@ export class CompareSideBySideComponent implements OnInit {
                 rightNotMatches: []
             }
         ];
-        if (this.left.elementType === "cde" && this.right.elementType === "cde")
+        if (left.elementType === "cde" && right.elementType === "cde")
             this.options = commonOption.concat(dataElementOption);
-        if (this.left.elementType === "form" && this.right.elementType === "form")
+        if (left.elementType === "form" && right.elementType === "form")
             this.options = commonOption.concat(formOption);
-        let leftCopy = _.cloneDeep(this.left);
-        let rightCopy = _.cloneDeep(this.right);
+    }
+
+    openCompareSideBySideContent() {
+        this.quickBoardService.test();
+        let selectedDEs = this.elements.filter(d => d.checked);
+        if (this.elements.length === 2)
+            selectedDEs = this.elements;
+        if (selectedDEs < 2) {
+            this.alert.addAlert("warning", "Please select two elements to compare.");
+            return;
+        }
+        let left = selectedDEs[0];
+        let right = selectedDEs[1];
+
+        if (left.elementType === "form")
+            left.questions = this.flatFormQuestions(left);
+        if (right.elementType === "form")
+            right.questions = this.flatFormQuestions(right);
+        this.getOptions(left, right);
+        let leftCopy = _.cloneDeep(left);
+        let rightCopy = _.cloneDeep(right);
         this.options.forEach(option => {
             let l = _.get(leftCopy, option.displayAs.property);
             let r = _.get(rightCopy, option.displayAs.property);
             if (!l) l = [];
             if (!r) r = [];
             if (typeof l !== "object") l = [{data: l}];
-            if (!Array.isArray(l)) l = [l];
+            if (!_.isArray(l)) l = [l];
             if (typeof r !== "object") r = [{data: r}];
-            if (!Array.isArray(r)) r = [r];
+            if (!_.isArray(r)) r = [r];
             _.intersectionWith(l, r, (a, b) => {
                 if (option.fullMatchFn(a, b)) {
                     option.displayAs.display = true;
@@ -558,5 +596,17 @@ export class CompareSideBySideComponent implements OnInit {
                 option.displayAs.display = true;
         });
         this.modalRef = this.modalService.open(this.compareSideBySideContent, {size: "lg"});
+    }
+
+    getValue(o, d) {
+        let value = _.get(o, d.property);
+        if (d.url) return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>';
+        else if (d.properties) {
+            let v = value.map(v => _.get(v, d.properties.property));
+            if (!_.isEmpty(v)) return d.properties.label + ": " + v;
+            else return "";
+        } else if (_.isArray(value))
+            return JSON.stringify(value);
+        else return value;
     }
 }
