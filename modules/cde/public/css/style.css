@@ -1030,7 +1030,6 @@ div + .questionPlaceholder {
 }
 
 #resultList {
-    max-width: 1200px;
     font-size: small;
 }
 
@@ -1207,6 +1206,11 @@ div + .questionPlaceholder {
 @media (min-width: 768px) {
     div .col-sm-2-4 {
         width: 20%;
+    }
+
+    .modal-xl, .modal-dialog.modal-lg {
+        width: 90%;
+        max-width: 1200px;
     }
 }
 

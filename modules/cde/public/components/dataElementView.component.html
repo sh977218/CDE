@@ -34,7 +34,7 @@
                     <i class="fa fa-plus"></i> Add to Quick Board
                 </button>
                 <button id="addToBoard" class="btn btn-small btn-default" role="button" title="Add to Board"
-                        type="button" (click)="mltPinModal.open([elt], 'cde')">
+                        type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
                     <i class="fa fa-thumb-tack"></i> Add to Board
                 </button>
                 <div class="btn-group" role="group">
@@ -206,4 +206,4 @@
         <cde-create-data-element [elt]="eltCopy" (cancel)="c()"></cde-create-data-element>
     </div>
 </ng-template>
-<cde-pin-modal #mltPinModal></cde-pin-modal>
+<cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>

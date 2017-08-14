@@ -30,7 +30,7 @@ export class MyBoardsService {
     public boards: any[];
     public reloading: boolean = false;
 
-    public loadMyBoards() {
+    public loadMyBoards(type = null) {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.http.post("/myBoards", this.filter).map(res => res.json()).subscribe(res => {
@@ -47,6 +47,8 @@ export class MyBoardsService {
                 this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
             }
             this.reloading = false;
+            if (type)
+                this.boards = this.boards.filter(b => b.type === type);
         });
     };
 

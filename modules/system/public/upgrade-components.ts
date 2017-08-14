@@ -3,28 +3,11 @@ import { UpgradeComponent } from "@angular/upgrade/static";
 
 /* tslint:disable */
 @Directive({
-    selector: "cde-accordion-list"
+    selector: "cde-select-board"
 })
-export class CdeAccordionListDirective extends UpgradeComponent {
-    @Input() cdes: any;
-    @Input() ejsPage: any;
-    @Input() module: any;
-
+export class SelectBoardDirective extends UpgradeComponent {
     constructor(elementRef: ElementRef, injector: Injector) {
-        super("cdeAccordionList", elementRef, injector);
-    }
-}
-
-@Directive({
-    selector: "form-accordion-list"
-})
-export class FormAccordionListDirective extends UpgradeComponent {
-    @Input() forms: any;
-    @Input() ejsPage: any;
-    @Input() module: any;
-
-    constructor(elementRef: ElementRef, injector: Injector) {
-        super("formAccordionList", elementRef, injector);
+        super("cdeSelectBoard", elementRef, injector);
     }
 }
 /* tslint:enable */

@@ -4,19 +4,18 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { Select2Module } from "ng2-select2";
 
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
-import { BoardModule } from 'board/public/board.module';
+import { AdminItemModule } from "adminItem/public/adminItem.module";
+import { BoardModule } from "board/public/board.module";
 import { DiscussModule } from 'discuss/discuss.module';
-import { FormModule } from 'form/public/form.module';
-import { SearchModule } from 'search/index';
-import { SystemModule } from 'system/public/system.module';
-import { WidgetModule } from 'widget/widget.module';
+import { SearchModule } from "search/search.module";
+import { WidgetModule } from "widget/widget.module";
 
-import { BoardCdeSummaryListComponent } from "./components/searchResults/boardCdeSummaryList.component";
-import { BoardCdeSummaryListContentComponent } from "./components/searchResults/boardCdeSummaryListContent.component";
+import { BoardCdeSummaryListComponent } from "./components/listView/boardCdeSummaryList.component";
+import { BoardCdeSummaryListContentComponent } from "./components/listView/boardCdeSummaryListContent.component";
+import { CdeAccordionListComponent } from "./components/listView/cdeAccordionList.component";
 import { CdeGeneralDetailsComponent } from "./components/summary/cdeGeneralDetails.component";
-import { CdeSummaryListComponent } from "./components/searchResults/cdeSummaryList.component";
-import { CdeSummaryListContentComponent } from "./components/searchResults/cdeSummaryListContent.component";
+import { CdeSearchComponent } from "./components/search/cdeSearch.component";
+import { CdeSummaryListContentComponent } from "./components/listView/cdeSummaryListContent.component";
 import { CdeAccordionListNg2Component } from "./components/cdeAccordionListNg2.component";
 import { ConceptsComponent } from "./components/concepts.component";
 import { CreateDataElementComponent } from "./components/createDataElement.component";
@@ -25,14 +24,13 @@ import { DerivationRulesComponent } from "./components/derivationRules.component
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
 import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
-import { RegistrationValidatorService } from "./components/validationRules/registrationValidator.service";
+import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { ValueDomainSummaryComponent } from "./components/summary/valueDomainSummary.component";
 import { SdcViewComponent } from "./components/sdcView/sdcView.component";
 import { DataElementService } from "./dataElement.service";
 import { DataElementViewComponent } from "./components/dataElementView.component";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
-import { KeysPipe } from 'core/public/KeysPipe';
 
 @NgModule({
     imports: [
@@ -40,21 +38,20 @@ import { KeysPipe } from 'core/public/KeysPipe';
         FormsModule,
         NgbModule,
         Select2Module,
+        TreeModule,
         // internal
         AdminItemModule,
         BoardModule,
-        FormModule,
+        DiscussModule,
         SearchModule,
         WidgetModule,
-        TreeModule,
-        SystemModule,
-        DiscussModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
+        CdeAccordionListComponent,
         CdeGeneralDetailsComponent,
-        CdeSummaryListComponent,
+        CdeSearchComponent,
         CdeSummaryListContentComponent,
         CreateDataElementComponent,
         CdeAccordionListNg2Component,
@@ -66,17 +63,18 @@ import { KeysPipe } from 'core/public/KeysPipe';
         DataElementViewComponent,
         MoreLikeThisComponent,
         PermissibleValueComponent,
+        QuickBoardCdeSummaryListContentComponent,
         SdcViewComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
-        PermissibleValueComponent,
-        KeysPipe
     ],
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
+        CdeAccordionListComponent,
         CdeAccordionListNg2Component,
-        CdeSummaryListComponent,
+        CdeGeneralDetailsComponent,
+        CdeSearchComponent,
         CdeSummaryListContentComponent,
         ConceptsComponent,
         CreateDataElementComponent,
@@ -86,14 +84,17 @@ import { KeysPipe } from 'core/public/KeysPipe';
         DerivationRulesComponent,
         MoreLikeThisComponent,
         PermissibleValueComponent,
+        QuickBoardCdeSummaryListContentComponent,
         SdcViewComponent,
         ValidRulesComponent,
         ValueDomainSummaryComponent,
     ],
-    exports: [],
+    exports: [
+        CdeAccordionListComponent,
+        CdeSearchComponent,
+    ],
     providers: [
-        RegistrationValidatorService,
-        DataElementService
+        DataElementService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

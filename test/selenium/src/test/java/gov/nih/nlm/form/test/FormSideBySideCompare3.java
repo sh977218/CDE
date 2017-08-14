@@ -25,6 +25,7 @@ public class FormSideBySideCompare3 extends NlmCdeBaseTest {
         textPresent("Race Category Text", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][4]//*[contains(@class, 'leftObj') and @data-title='Label']"));
         textPresent("Race Category Text", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][4]//*[contains(@class, 'leftObj') and @data-title='Label']"));
         textPresent("Ethnic Group Category Text", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][5]//*[contains(@class, 'leftObj') and @data-title='Label']"));
+        clickElement(By.id("closeModal"));
 
         clickElement(By.id("qb_form_empty"));
         textPresent("Form QuickBoard (0)");

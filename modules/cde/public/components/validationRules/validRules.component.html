@@ -6,9 +6,9 @@
         This CDE is used by the following <b>Stewards</b>: {{elt.usedBy?.join(', ')}}<br>
         In order to promote this CDE to a different registration status, it must obey the following validation rules:
         <div>
-            <div *ngFor="let statusName of cdeStatusRules | cdeKeys" [hidden]="!showStatus(cdeStatusRules[statusName])">
+            <div *ngFor="let statusName of keys(cdeStatusRules)" [hidden]="!showStatus(cdeStatusRules[statusName])">
                 <h3>Validation Rules for {{statusName}} Status</h3>
-                <div *ngFor="let orgName of cdeStatusRules[statusName] | cdeKeys">
+                <div *ngFor="let orgName of keys(cdeStatusRules[statusName])">
                     <h5>Steward <b>{{orgName}}</b> requires the following conditions to be met, in order to promote this
                         CDE to <b>{{statusName}}</b> status:</h5>
                     <div *ngFor="let rule of cdeStatusRules[statusName][orgName]; let i=index"

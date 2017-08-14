@@ -107,7 +107,7 @@
                              [selectOptions]="dataTypeValueListOptions"></cde-inline-edit>
         </div>
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
-            <span *ngFor="let source of SOURCES | cdeKeys" style="margin-left: 50px">
+            <span *ngFor="let source of keys(SOURCES)" style="margin-left: 50px">
                 <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox"
                        [(ngModel)]="SOURCES[source].selected"
                        [disabled]="SOURCES[source].disabled && !isAllowedModel.loggedIn()"

@@ -4,8 +4,11 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { Select2Module } from "ng2-select2";
+import { LocalStorageModule } from "angular-2-local-storage";
 
-import { WidgetModule } from "../../widget/widget.module";
+import { CompareModule } from 'compare/compare.module';
+import { SearchModule } from 'search/search.module';
+import { WidgetModule } from 'widget/widget.module';
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
 import { HistoryComponent } from "./components/history.component";
@@ -14,7 +17,6 @@ import { ClassifyCdesModalComponent } from "./components/classification/classify
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
 import {
-    FormSummaryListDirective,
     InlineEditDirective,
     InlineSelectEditDirective,
     SortableArrayDirective
@@ -24,11 +26,8 @@ import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { SourcesComponent } from "./components/sources/sources.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
-import { LocalStorageModule } from "angular-2-local-storage";
 import { LinkedFormsComponent } from "./components/linkedForms.component";
-import { CompareModule } from "../../compare/compare.module";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
-import { SystemModule } from "../../system/public/system.module";
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 import { CreateFormComponent } from 'form/public/components/createForm.component';
 
@@ -42,11 +41,11 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
             prefix: "nlmcde",
             storageType: "localStorage"
         }),
-        // internal
-        WidgetModule,
-        CompareModule,
         TreeModule,
-        SystemModule
+        // internal
+        CompareModule,
+        SearchModule,
+        WidgetModule,
     ],
     declarations: [
         AttachmentsComponent,
@@ -56,7 +55,6 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
         CreateFormComponent,
-        FormSummaryListDirective,
         IdentifiersComponent,
         InlineEditDirective,
         InlineSelectEditDirective,
@@ -67,9 +65,8 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         ReferenceDocumentComponent,
         RegistrationComponent,
         SortableArrayDirective,
-        SourcesComponent
+        SourcesComponent,
     ],
-    entryComponents: [],
     exports: [
         AttachmentsComponent,
         ClassificationComponent,
@@ -88,7 +85,6 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         RegistrationComponent,
         SortableArrayDirective,
         SourcesComponent,
-        SystemModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
