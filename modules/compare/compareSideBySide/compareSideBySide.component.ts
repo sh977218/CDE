@@ -14,6 +14,7 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
         }
 
         .partialMatch {
+            background-color: rgba(240, 225, 53, .79);
             margin: 2px 0;
         }
 
