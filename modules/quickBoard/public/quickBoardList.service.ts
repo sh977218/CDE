@@ -19,6 +19,7 @@ export class QuickBoardListService {
     constructor(private localStorageService: LocalStorageService,
                 private alert: AlertService,
                 private http: Http) {
+        this.loadElements();
     }
 
     loadElements(): void {
