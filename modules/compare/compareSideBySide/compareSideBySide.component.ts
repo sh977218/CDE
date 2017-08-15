@@ -3,6 +3,13 @@ import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstra
 import * as _ from "lodash";
 import { AlertService } from "system/public/components/alert/alert.service";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { Observable } from "rxjs/Observable";
+import { Http } from '@angular/http';
+
+const URL_MAP = {
+    "cde": "/de/",
+    "form": "/form/"
+};
 
 @Component({
     selector: "cde-compare-side-by-side",
@@ -30,7 +37,8 @@ export class CompareSideBySideComponent {
     @Input() elements: any = [];
     options = [];
 
-    constructor(public modalService: NgbModal,
+    constructor(private http: Http,
+                public modalService: NgbModal,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService) {
     }
@@ -512,6 +520,7 @@ export class CompareSideBySideComponent {
                     property: "questions",
                     data: [
                         {label: "Label", property: "label"},
+                        {label: "Data Type", property: "question.datatype"},
                         {label: "CDE", property: "question.cde.tinyId", url: "/deView?tinyId="},
                         {label: "Unit of Measure", property: "question.uoms"},
                         {
@@ -522,13 +531,14 @@ export class CompareSideBySideComponent {
                     ]
                 },
                 fullMatchFn: (a, b) => {
-                    return _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
+                    return _.isEqual(a, b);
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
                     if (!_.isEqual(a, b) && _.isEqual(a.question.cde.tinyId, b.question.cde.tinyId)) {
                         if (!_.isEqual(a.label, b.label)) diff.push("label");
+                        if (!_.isEqual(a.question.datatype, b.question.datatype)) diff.push("question.datatype");
                         if (!_.isEqual(a.question.uoms, b.question.uoms)) diff.push("question.uoms");
                         if (!_.isEqual(a.question.answers, b.question.answers)) diff.push("question.answers");
                     }
@@ -558,44 +568,48 @@ export class CompareSideBySideComponent {
         }
         let left = selectedDEs[0];
         let right = selectedDEs[1];
-
-        if (left.elementType === "form")
-            left.questions = this.flatFormQuestions(left);
-        if (right.elementType === "form")
-            right.questions = this.flatFormQuestions(right);
-        this.getOptions(left, right);
-        let leftCopy = _.cloneDeep(left);
-        let rightCopy = _.cloneDeep(right);
-        this.options.forEach(option => {
-            let l = _.get(leftCopy, option.displayAs.property);
-            let r = _.get(rightCopy, option.displayAs.property);
-            if (!l) l = [];
-            if (!r) r = [];
-            if (typeof l !== "object") l = [{data: l}];
-            if (!_.isArray(l)) l = [l];
-            if (typeof r !== "object") r = [{data: r}];
-            if (!_.isArray(r)) r = [r];
-            _.intersectionWith(l, r, (a, b) => {
-                if (option.fullMatchFn(a, b)) {
+        let leftObservable = this.http.get(URL_MAP[left.elementType] + left.tinyId).map(res => res.json());
+        let rightObservable = this.http.get(URL_MAP[right.elementType] + right.tinyId).map(res => res.json());
+        Observable.forkJoin([leftObservable, rightObservable]).subscribe(results => {
+            let leftCopy = <any>results[0];
+            let rightCopy = <any>results[1];
+            if (leftCopy.elementType === "form")
+                leftCopy.questions = this.flatFormQuestions(leftCopy);
+            if (rightCopy.elementType === "form")
+                rightCopy.questions = this.flatFormQuestions(rightCopy);
+            this.getOptions(leftCopy, rightCopy);
+            this.options.forEach(option => {
+                let l = _.get(leftCopy, option.displayAs.property);
+                let r = _.get(rightCopy, option.displayAs.property);
+                if (!l) l = [];
+                if (!r) r = [];
+                if (typeof l !== "object") l = [{data: l}];
+                if (!_.isArray(l)) l = [l];
+                if (typeof r !== "object") r = [{data: r}];
+                if (!_.isArray(r)) r = [r];
+                _.intersectionWith(l, r, (a, b) => {
+                    if (option.fullMatchFn(a, b)) {
+                        option.displayAs.display = true;
+                        option.fullMatches.push({left: a, right: b});
+                        return true;
+                    }
+                });
+                _.intersectionWith(l, r, (a, b) => {
+                    let partialMatchDiff = option.partialMatchFn(a, b);
+                    if (partialMatchDiff.length > 0) {
+                        option.displayAs.display = true;
+                        option.partialMatches.push({left: a, right: b, diff: partialMatchDiff});
+                        return true;
+                    }
+                });
+                option.leftNotMatches = _.differenceWith(l, r, option.notMatchFn);
+                option.rightNotMatches = _.differenceWith(r, l, option.notMatchFn);
+                if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0)
                     option.displayAs.display = true;
-                    option.fullMatches.push({left: a, right: b});
-                    return true;
-                }
             });
-            _.intersectionWith(l, r, (a, b) => {
-                let partialMatchDiff = option.partialMatchFn(a, b);
-                if (partialMatchDiff.length > 0) {
-                    option.displayAs.display = true;
-                    option.partialMatches.push({left: a, right: b, diff: partialMatchDiff});
-                    return true;
-                }
-            });
-            option.leftNotMatches = _.differenceWith(l, r, option.notMatchFn);
-            option.rightNotMatches = _.differenceWith(r, l, option.notMatchFn);
-            if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0)
-                option.displayAs.display = true;
-        });
-        this.modalRef = this.modalService.open(this.compareSideBySideContent, {size: "lg"});
+            this.modalRef = this.modalService.open(this.compareSideBySideContent, {size: "lg"});
+        }, err => {
+        })
     }
 
     getValue(o, d) {

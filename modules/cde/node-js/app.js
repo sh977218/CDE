@@ -30,7 +30,7 @@ exports.init = function (app, daoManager) {
 
     app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
     app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
-    app.get("/deByTinyIdList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
+    app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
     app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
 

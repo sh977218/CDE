@@ -194,13 +194,8 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     });
 };
 
-exports.byTinyIdList = function (idList, callback) {
-    Form.find({'archived': false}).where('tinyId')
-        .in(idList)
-        .exec(function (err, forms) {
-            forms.forEach(mongo_data_system.formatElt);
-            callback(err, forms);
-        });
+exports.byTinyIdList = function (tinyIdList, callback) {
+    Form.find({archived: false}).where("tinyId").in(tinyIdList).exec(callback);
 };
 
 exports.byTinyIdListInOrder = function (idList, callback) {

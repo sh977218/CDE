@@ -13,7 +13,6 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
     `]
 })
 export class NavigationComponent {
-    @Input() quickBoardCount: number;
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
 
@@ -22,7 +21,7 @@ export class NavigationComponent {
     largeContext = {$implicit: ""};
     tour;
 
-    constructor(private quickBoardService: QuickBoardListService,
+    constructor(public quickBoardService: QuickBoardListService,
                 @Inject("userResource") public userService) {
     }
 

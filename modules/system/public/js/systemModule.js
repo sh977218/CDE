@@ -478,7 +478,7 @@ import { NavigationComponent } from "../components/navigation.component";
 
 angular.module('systemModule').directive('cdeNavigation', downgradeComponent({
     component: NavigationComponent,
-    inputs: ['quickBoardCount'], outputs: ['goToLogin', 'logout']
+    inputs: [], outputs: ['goToLogin', 'logout']
 }));
 
 import { ProfileComponent } from "../components/profile.component";
