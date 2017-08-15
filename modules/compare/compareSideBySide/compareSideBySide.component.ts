@@ -548,7 +548,6 @@ export class CompareSideBySideComponent {
     }
 
     openCompareSideBySideContent() {
-        this.quickBoardService.test();
         let selectedDEs = this.elements.filter(d => d.checked);
         if (this.elements.length === 2)
             selectedDEs = this.elements;
