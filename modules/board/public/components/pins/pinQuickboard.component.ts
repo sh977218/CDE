@@ -1,6 +1,7 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { BrowserService } from 'widget/browser.service';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 @Component({
     selector: 'cde-pin-quickboard',
@@ -14,7 +15,8 @@ export class PinQuickboardComponent {
     quickBoard: any;
     BrowserService = BrowserService;
 
-    constructor(private quickBoardService: QuickBoardListService) {
+    constructor(private quickBoardService: QuickBoardListService,
+                private alert: AlertService) {
     }
 
     canAddElt(elt) {
@@ -29,5 +31,6 @@ export class PinQuickboardComponent {
             this.quickBoardService.addDataElement(elt);
         if (this.module === 'form')
             this.quickBoardService.addForm(elt);
+        this.alert.addAlert("success", "Added to QuickBoard!");
     }
 }
