@@ -289,7 +289,7 @@ export class CompareSideBySideComponent {
             },
             {
                 displayAs: {
-                    label: "Unit Of Measurement",
+                    label: "Unit of Measure",
                     property: "valueDomain.uom",
                     data: [
                         {label: "", property: "data"},
@@ -513,7 +513,7 @@ export class CompareSideBySideComponent {
                     data: [
                         {label: "Label", property: "label"},
                         {label: "CDE", property: "question.cde.tinyId", url: "/deView?tinyId="},
-                        {label: "Unit of Measurement", property: "question.uoms"},
+                        {label: "Unit of Measure", property: "question.uoms"},
                         {
                             label: "Answer", property: "question.answers", properties: {
                             label: "Permissible Value", property: "permissibleValue"
@@ -600,6 +600,7 @@ export class CompareSideBySideComponent {
 
     getValue(o, d) {
         let value = _.get(o, d.property);
+        if (!value) return;
         if (d.url) return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>';
         else if (d.properties) {
             let v = value.map(v => _.get(v, d.properties.property));

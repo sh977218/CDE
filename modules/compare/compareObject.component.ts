@@ -19,7 +19,7 @@ export class CompareObjectComponent implements OnInit {
         {label: "Steward Org", match: false, property: "stewardOrg.name"},
         {label: "Version", match: false, property: "version"},
         {label: "Status", match: false, property: "registrationState.registrationStatus"},
-        {label: "Unit Of Measurement", match: false, property: "valueDomain.uom"},
+        {label: "Unit of Measure", match: false, property: "valueDomain.uom"},
         {label: "Data Type", match: false, property: "valueDomain.datatype"},
         {
             label: "Data Type Text", match: false, property: "valueDomain.datatypeText",

@@ -45,16 +45,16 @@
                         </div>
                     </div>
                     <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="col-xs-12">
-                        <div class="col-xs-6 noLeftPadding notMatch">
-                            <div *ngFor="let leftNotMatch of option.leftNotMatches">
+                        <div class="col-xs-6 noLeftPadding">
+                            <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
                                 <div *ngFor="let d of option.displayAs.data">
                                     <label>{{d.label?d.label+":":d.label}}</label>
                                     <span [innerHTML]=getValue(leftNotMatch,d)></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-6 noRightPadding notMatch">
-                            <div *ngFor="let rightNotMatch of option.rightNotMatches">
+                        <div class="col-xs-6 noRightPadding">
+                            <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch">
                                 <div *ngFor="let d of option.displayAs.data">
                                     <label>{{d.label?d.label+":":d.label}}</label>
                                     <span [innerHTML]=getValue(rightNotMatch,d)></span>

@@ -176,7 +176,7 @@ angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', '
             },
             properties: [{label: 'Label', property: 'label'},
                 {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/deView?tinyId='},
-                {label: 'Unit of Measurement', property: 'question.uoms'},
+                {label: 'Unit of Measure', property: 'question.uoms'},
                 {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
             ],
             wipeUseless: $scope.wipeUseless
