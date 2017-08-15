@@ -102,7 +102,7 @@
 
 <ng-template #searchResults>
     <ng-container *ngIf="aggregations">
-        <nav class="navbar navbar-default" id="searchInfo">
+        <nav class="navbar navbar-default" id="searchInfo"> <!-- SEARCH BAR -->
             <div class="mt-3 mb-2">
                 <div class="navbar-header mb-md-1 mr-md-2">
                     <form class="input-group" style="max-width: 768px">
@@ -177,29 +177,62 @@
             </div>
         </nav>
 
-        <div id="searchInfoBar">
-        <span class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
-            <!--TODO: try OR-->
-            <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
-            <span class="label label-success" id="classif_filter">{{getSelectedClassifications()}}</span>
-            <span [hidden]="!altClassificationFilterMode">and
-                <span class="label label-success">{{getSelectedClassificationsAlt()}}
-                    <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"
-                       (click)="toggleAltClassificationFilterMode()"
-                       ngbTooltip="Remove this classifications filter" placement="right" container="body">
-                    </i>
+        <div id="searchInfoBar"> <!-- BREADCRUMBS -->
+            <span class="pt-3 pb-3 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
+                <span>
+                    <span *ngIf="!currentSearchTerm" class="label label-default">All Terms</span>
+                    <span *ngIf="currentSearchTerm" class="label label-success mr-2">{{currentSearchTerm}}
+                        <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
+                           (click)="currentSearchTerm = ''"
+                           ngbTooltip="Remove this search term filter" placement="right" container="body"></i>
+                    </span>
+                </span>
+                <span id="classif_filter">
+                    | <span *ngIf="!hasSelectedClassifications()" class="label label-default">All Classifications</span>
+                    <span *ngIf="hasSelectedClassifications()" class="label label-success mr-2">{{getSelectedClassifications()}}
+                        <i id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-2"
+                           (click)="clearSelectedClassifications()"
+                           ngbTooltip="Remove this classification filter" placement="right" container="body"></i>
+                    </span>
+                    <span *ngIf="altClassificationFilterMode">and
+                        <span class="label label-success mr-2">{{getSelectedClassificationsAlt()}}
+                            <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-2"
+                               (click)="clearSelectedClassificationsAlt()"
+                               ngbTooltip="Remove this classifications filter" placement="right" container="body">
+                            </i>
+                        </span>
+                    </span>
+                </span>
+                <span id="topic_crumb">
+                    | <span *ngIf="!hasSelectedTopics()" class="label label-default">All Topics</span>
+                    <span *ngIf="hasSelectedTopics()" class="label label-success mr-2">{{getSelectedTopics()}}
+                        <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
+                           (click)="clearSelectedTopics()"
+                           ngbTooltip="Remove this topics filter" placement="right" container="body"></i>
+                    </span>
+                </span>
+                <span id="status_crumb">
+                    | <span *ngIf="!hasSelectedStatuses()" class="label label-default">All Statuses</span>
+                    <span *ngIf="hasSelectedStatuses()" class="label label-success mr-2">{{getSelectedStatuses()}}
+                        <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
+                           (click)="clearSelectedStatuses()"
+                           ngbTooltip="Remove this registration statuses filter" placement="right" container="body"></i>
+                    </span>
+                </span>
+                <span *ngIf="module === 'cde'" id="datatype_crumb">
+                    | <span *ngIf="!hasSelectedDatatypes()" class="label label-default">All Datatypes</span>
+                    <span *ngIf="hasSelectedDatatypes()" class="label label-success mr-2">{{getSelectedDatatypes()}}
+                        <i id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
+                           (click)="clearSelectedDatatypes()"
+                           ngbTooltip="Remove this datatypes filter" placement="right" container="body"></i>
+                    </span>
                 </span>
             </span>
-            | <span class="label label-success" id="topic_crumb">{{selectedTopicsAsString()}}</span>
-            | <span class="label label-success" id="status_crumb">{{getSelectedStatuses()}}</span>
-            | <span class="label label-success" id="datatype_crumb"
-                    *ngIf="module === 'cde'">{{getSelectedDatatypes()}}</span>
-        </span>
             <small> ({{this.took / 1000}} secs)</small>
         </div>
         <div class="container-fluid" style="max-width: 1200px; margin-left: 0">
             <div class="row">
-                <div id="resultList" [ngClass]="filterMode?'col-xs-12 col-sm-10 push-md-2':'col-xs-12'">
+                <div id="resultList" [ngClass]="filterMode?'col-xs-12 col-sm-10 push-md-2':'col-xs-12'"> <!-- SEARCH RESULTS -->
                     <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
                         Searching...</span>
                     <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
@@ -212,17 +245,17 @@
                     <!-- link for google indexer only -->
                     <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                 </div>
-                <div [hidden]="!filterMode" [ngClass]="filterMode?'col-xs-12 col-sm-2 pull-md-10 ':'col-xs-12'">
+                <div [hidden]="!filterMode" [ngClass]="filterMode?'col-xs-12 col-sm-2 pull-md-10 ':'col-xs-12'"> <!-- FILTERS -->
                     <p class="gray">Filter by:</p>
-                    <div>
+                    <div> <!-- CLASSIFICATION AGGREGATIONS -->
                         <strong [hidden]="!aggregations.orgs.buckets" id="classif_filter_title">Classification
                             <span class="nonLinkAnchor" id="altClassificationFilterModeToggle"
                                   [hidden]="altClassificationFilterMode || embedded"
-                                  (click)="toggleAltClassificationFilterMode()"
+                                  (click)="setAltClassificationFilterMode()"
                                   ngbTooltip="Add a second classifications filter as an AND condition"
                                   placement="right" container="body">
                                 <i class="fa fa-plus-square hand-cursor"></i></span></strong>
-                        <div class="pl5" id="classificationListHolder">
+                        <div class="pl-2" id="classificationListHolder">
                             <span class="nonLinkAnchor displayBlock hand-cursor" (click)="alterOrgFilter(t.key)"
                                   [ngbTooltip]="t.longName" placement="right" container="body"
                                   *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey"
@@ -273,7 +306,7 @@
 
                     <div *ngIf="searchSettings.meshTree || aggregations.topics.length"> <!-- TOPIC AGGREGATIONS -->
                         <strong id="meshTrees_filter">Topics</strong>
-                        <div class="pl5" id="meshTreesListHolder">
+                        <div class="pl-2" id="meshTreesListHolder">
                             <div id="topic-facets">
                                 <span class="nonLinkAnchor displayBlock hand-cursor"
                                       *ngFor="let e of getCurrentSelectedTopic(); index as i"
@@ -309,7 +342,7 @@
                     </div>
 
                     <strong [hidden]="!aggregations.statuses.statuses.buckets" id="status_filter">Registration Status</strong>
-                    <div class="pl5" id="registrationStatusListHolder">
+                    <div class="pl-2" id="registrationStatusListHolder">
                     <span class="hand-cursor"
                           *ngFor="let t of aggregations.statuses.statuses.buckets"
                           [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
@@ -331,7 +364,7 @@
 
                     <ng-container *ngIf="module === 'cde'">
                         <strong [hidden]="!aggregations.datatype.datatype.buckets.length" id="datatype_filter">Data Types</strong>
-                        <div class="pl5" id="datatypeListHolder">
+                        <div class="pl-2" id="datatypeListHolder">
                         <span class="hand-cursor"
                               *ngFor="let t of aggregations.datatype.datatype.buckets">
                             <span class="displayBlock" *ngIf="t.doc_count > 0"

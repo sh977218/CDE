@@ -68,7 +68,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     ngOnInit () {
-        this.search();
+        // TODO: bring back when ngOnChanges is no longer necessary for AngularJS events
+        // this.search();
     }
 
     constructor(protected _componentFactoryResolver,
@@ -170,6 +171,53 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         this.doSearch();
     }
 
+    clearSelectedClassifications() {
+        this.searchSettings.selectedOrg = null;
+        if (this.searchSettings.classification)
+            this.searchSettings.classification.length = 0;
+
+        if (this.hasSelectedClassificationsAlt()) {
+            this.searchSettings.selectedOrg = this.searchSettings.selectedOrgAlt;
+            if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0) {
+                this.searchSettings.classification = this.searchSettings.classificationAlt;
+                this.searchSettings.classificationAlt = null;
+            }
+        }
+
+        this.clearSelectedClassificationsAlt();
+    }
+
+    clearSelectedClassificationsAlt() {
+        this.altClassificationFilterMode = false;
+        this.searchSettings.selectedOrgAlt = null;
+        if (this.searchSettings.classificationAlt)
+            this.searchSettings.classificationAlt.length = 0;
+
+        this.doSearch();
+    }
+
+    clearSelectedDatatypes() {
+        if (this.searchSettings.datatypes) {
+            this.searchSettings.datatypes.length = 0;
+
+            this.doSearch();
+        }
+    }
+
+    clearSelectedStatuses() {
+        if (this.searchSettings.regStatuses) {
+            this.searchSettings.regStatuses.length = 0;
+
+            this.doSearch();
+        }
+    }
+
+    clearSelectedTopics() {
+        this.searchSettings.meshTree = '';
+
+        this.doSearch();
+    }
+
     static compareObjName(a: any, b: any): number {
         return SearchBaseComponent.compareString(a.name, b.name);
     }
@@ -195,9 +243,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             let loc = this.generateSearchForTerm();
             window.sessionStorage.removeItem('nlmcde.scroll.' + loc);
             this.redirect(loc);
-        }
-
-        this.reload();
+        } else
+            this.reload();
     }
 
     fakeNextPageLink() {
@@ -292,44 +339,54 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         return SharedService.regStatusShared.orderedList.indexOf(rg.key);
     }
 
-    // Create string representation of what classification filters are selected
+    // Create string representation of what filters are selected. Use the hasSelected...() first.
     getSelectedClassifications() {
-        if (this.searchSettings.selectedOrg) {
-            let result = this.searchSettings.selectedOrg;
-            if (this.searchSettings.classification && this.searchSettings.classification.length > 0)
-                result += ' > ' + this.searchSettings.classification.join(' > ');
-            return result;
-        } else
-            return 'All Classifications';
+        let result = this.searchSettings.selectedOrg;
+        if (this.searchSettings.classification && this.searchSettings.classification.length > 0)
+            result += ' > ' + this.searchSettings.classification.join(' > ');
+        return result;
     }
 
     getSelectedClassificationsAlt() {
-        if (this.searchSettings.selectedOrgAlt) {
-            let result = this.searchSettings.selectedOrgAlt;
-            if (this.searchSettings.classificationAlt.length > 0)
-                result += ' > ' + this.searchSettings.classificationAlt.join(' > ');
-            return result;
-        } else
-            return 'All Classifications';
+        let result = this.searchSettings.selectedOrgAlt;
+        if (this.searchSettings.classificationAlt.length > 0)
+            result += ' > ' + this.searchSettings.classificationAlt.join(' > ');
+        return result;
     }
 
-    // Create string representation of what datatype filters are selected
     getSelectedDatatypes() {
-        if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0)
-            return this.searchSettings.datatypes.join(', ');
-        else
-            return 'All Datatypes';
+        return this.searchSettings.datatypes.join(', ');
     }
 
-    // Create string representation of what status filters are selected
     getSelectedStatuses() {
-        if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0) {
-            if (this.searchSettings.regStatuses.length === 6)
-                return 'All Statuses';
-            else
-                return this.searchSettings.regStatuses.join(', ');
-        } else
-            return 'All Statuses';
+        return this.searchSettings.regStatuses.join(', ');
+    }
+
+    getSelectedTopics() {
+        let res = this.searchSettings.meshTree.split(';').join(' > ');
+        return res.length > 50 ? res.substr(0, 49) + '...' : res;
+    }
+
+    hasSelectedClassifications() {
+        return this.searchSettings.selectedOrg;
+    }
+
+    hasSelectedClassificationsAlt() {
+        return this.searchSettings.selectedOrgAlt;
+    }
+
+    hasSelectedDatatypes() {
+        return this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0;
+    }
+
+    hasSelectedStatuses() {
+        return this.searchSettings.regStatuses
+            && this.searchSettings.regStatuses.length > 0
+            && this.searchSettings.regStatuses.length !== 6;
+    }
+
+    hasSelectedTopics() {
+        return this.searchSettings.meshTree && this.searchSettings.meshTree.length > 0;
     }
 
     hideShowFilter() {
@@ -660,12 +717,12 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             SearchBaseComponent.focusTopic();
     }
 
-    selectedTopicsAsString() {
-        if (this.searchSettings.meshTree && this.searchSettings.meshTree.length > 0) {
-            let res = this.searchSettings.meshTree.split(';').join(' > ');
-            return res.length > 50 ? res.substr(0, 49) + '...' : res;
-        } else
-            return 'All Topics';
+    setAltClassificationFilterMode() {
+        this.altClassificationFilterMode = true;
+
+        this.doSearch();
+        if (!this.embedded)
+            SearchBaseComponent.focusClassification();
     }
 
     switchView(view) {
@@ -702,18 +759,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         this.altClassificationFilterMode = false;
 
         this.doSearch();
-    }
-
-    toggleAltClassificationFilterMode() {
-        this.altClassificationFilterMode = !this.altClassificationFilterMode;
-        if (!this.altClassificationFilterMode) {
-            this.searchSettings.selectedOrgAlt = '';
-            this.searchSettings.classificationAlt = [];
-        }
-
-        this.doSearch();
-        if (!this.embedded)
-            SearchBaseComponent.focusClassification();
     }
 
     static waitScroll(count, previousSpot) {
