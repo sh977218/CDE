@@ -27,7 +27,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     aggregations: any;
     altClassificationFilterMode: boolean;
     byTopic: boolean;
-    currentSearchTerm: string;
     cutoffIndex: any;
     elts: Elt[];
     embedded = false;
@@ -40,6 +39,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     lastQueryTimeStamp: number;
     module: string;
     numPages: any;
+    oninit = false;
     orgs: any[];
     orgHtmlOverview: string;
     pinComponent: Type<Component>;
@@ -63,13 +63,16 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.reloads)
+        if (changes.reloads) {
+            this.oninit = true;
             this.search();
+        }
     }
 
     ngOnInit () {
-        // TODO: bring back when ngOnChanges is no longer necessary for AngularJS events
-        // this.search();
+        // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
+        if (!this.oninit)
+            this.search();
     }
 
     constructor(protected _componentFactoryResolver,
@@ -468,7 +471,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     reload() {
-        this.currentSearchTerm = this.searchSettings.q;
         this.userService.getPromise().then(() => {
             let timestamp = new Date().getTime();
             this.lastQueryTimeStamp = timestamp;
@@ -476,7 +478,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
 
             this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
-                if (corrected && this.searchSettings.q) this.currentSearchTerm = this.searchSettings.q.replace(/[^\w\s]/gi, '');
+                if (corrected && this.searchSettings.q)
+                    this.searchSettings.q = this.searchSettings.q.replace(/[^\w\s]/gi, '');
                 if (err) {
                     this.accordionListStyle = '';
                     this.alert.addAlert('danger', 'There was a problem with your query');
@@ -636,7 +639,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     search() {
         // TODO: replace with router
         let params = SearchBaseComponent.searchParamsGet();
-        this.searchSettings.q = this.currentSearchTerm = params['q'];
+        this.searchSettings.q = params['q'];
         this.searchSettings.page = params['page'];
         if (!this.searchSettings.page)
             this.searchSettings.page = 1;

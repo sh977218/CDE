@@ -180,10 +180,10 @@
         <div id="searchInfoBar"> <!-- BREADCRUMBS -->
             <span class="pt-3 pb-3 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
                 <span>
-                    <span *ngIf="!currentSearchTerm" class="label label-default">All Terms</span>
-                    <span *ngIf="currentSearchTerm" class="label label-success mr-2">{{currentSearchTerm}}
+                    <span *ngIf="!searchSettings.q" class="label label-default">All Terms</span>
+                    <span *ngIf="searchSettings.q" class="label label-success mr-2">{{searchSettings.q}}
                         <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
-                           (click)="currentSearchTerm = ''"
+                           (click)="searchSettings.q = ''; doSearch()"
                            ngbTooltip="Remove this search term filter" placement="right" container="body"></i>
                     </span>
                 </span>
