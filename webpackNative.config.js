@@ -42,7 +42,7 @@ module.exports = {
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.optimize.UglifyJsPlugin({ // sourcemap
-                mangle: false,
+                mangle: true,
                 sourceMap: true,
                 output: {
                     comments: false
