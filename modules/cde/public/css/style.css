@@ -1003,10 +1003,6 @@ div + .questionPlaceholder {
     margin-bottom: 0 !important;
 }
 
-#searchInfoBar {
-    margin: 10px;
-}
-
 .singleSearchResult {
     padding-left: 10px;
     margin-bottom: 20px;
