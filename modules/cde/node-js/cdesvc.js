@@ -79,7 +79,7 @@ exports.byTinyIdList = function (req, res) {
     tinyIdList = tinyIdList.split(",");
     mongo_cde.byTinyIdList(tinyIdList, function (err, dataElements) {
         if (err) return res.status(500).send("ERROR");
-        res.send(dataElements);
+        res.send(dataElements.map(mongo_data_system.formatElt));
     });
 };
 

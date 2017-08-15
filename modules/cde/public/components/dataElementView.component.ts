@@ -6,6 +6,7 @@ import * as _ from "lodash";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { CdeForm } from 'form/public/form.model';
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
     selector: "cde-data-element-view",
@@ -30,7 +31,7 @@ export class DataElementViewComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("QuickBoard") public quickBoard,
+                public quickBoardService: QuickBoardListService,
                 @Inject("PinModal") public PinModal,
                 private alert: AlertService,
                 @Inject("userResource") public userService) {

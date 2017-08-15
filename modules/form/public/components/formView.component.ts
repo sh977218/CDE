@@ -6,6 +6,7 @@ import * as _ from "lodash";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { QuickBoardListService } from "quickBoard/public/quickBoardList.service";
 
 @Component({
     selector: "cde-form-view",
@@ -36,7 +37,7 @@ export class FormViewComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
-                @Inject("FormQuickBoard") public quickBoard,
+                public quickBoardService: QuickBoardListService,
                 @Inject("PinModal") public PinModal,
                 private alert: AlertService,
                 @Inject("userResource") public userService) {

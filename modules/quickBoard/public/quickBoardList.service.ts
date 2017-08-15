@@ -42,7 +42,7 @@ export class QuickBoardListService {
                 this.http.get("/formList/" + l).map(res => res.json())
                     .subscribe(res => {
                         if (res) {
-                            this.forms = formLocalStorage;
+                            this.forms = res;
                             this.number_forms = this.forms.length;
                         }
                     }, err => this.alert.addAlert("danger", err));

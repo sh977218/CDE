@@ -1,5 +1,6 @@
 <ng-content select=".summary-list-before"></ng-content>
-<a href="{{urlPrefix}}{{elt.tinyId}}" [innerHtml]="elt.primaryNameCopy" id="linkToElt_{{eltIndex}}" (click)="select.emit(elt.tinyId)"></a>
+<a href="{{urlPrefix}}{{elt.tinyId}}" [(innerHtml)]="elt.primaryNameCopy" id="linkToElt_{{eltIndex}}"
+   (click)="select.emit(elt.tinyId)"></a>
 <small>{{elt.registrationState.registrationStatus}}</small>
 <ng-content select=".summary-list-after"></ng-content>
 <small class="matched-by hidden-xs" *ngIf="elt.highlight?.matchedBy">Matched by: <strong>

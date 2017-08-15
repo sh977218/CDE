@@ -17,7 +17,7 @@
         </button>
         <hr>
         <cde-list-view *ngIf="quickBoardService.number_dataElements > 0" location="quickBoard"
-                       [(elts)]="quickBoardService.dataElements" [(listView)]="listViews"
+                       [elts]="quickBoardService.dataElements" [(listView)]="listViews"
                        [module]="'cde'"></cde-list-view>
     </div>
 </div>

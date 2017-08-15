@@ -194,7 +194,7 @@ exports.byTinyIdList = function (req, res) {
     tinyIdList = tinyIdList.split(",");
     mongo_form.byTinyIdList(tinyIdList, function (err, forms) {
         if (err) res.status(500).send("ERROR");
-        res.send(forms);
+        res.send(forms.map(mongo_data_system.formatElt));
     });
 };
 

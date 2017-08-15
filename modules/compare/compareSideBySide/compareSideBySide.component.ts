@@ -68,9 +68,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -236,9 +235,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -260,9 +258,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -284,9 +281,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -307,9 +303,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -330,9 +325,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -353,9 +347,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -379,9 +372,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -404,9 +396,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -430,9 +421,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -453,9 +443,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -476,9 +465,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -501,9 +489,8 @@ export class CompareSideBySideComponent {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
+                partialMatchFn: () => {
+                    return [];
                 },
                 partialMatches: [],
                 notMatchFn: (a, b) => {
@@ -608,8 +595,7 @@ export class CompareSideBySideComponent {
                     option.displayAs.display = true;
             });
             this.modalRef = this.modalService.open(this.compareSideBySideContent, {size: "lg"});
-        }, err => {
-        })
+        }, err => this.alert.addAlert("danger", err));
     }
 
     getValue(o, d) {

@@ -44,8 +44,8 @@ exports.byId = function (id, cb) {
     Form.findById(id, cb);
 };
 
-exports.byIdList = function (idList, cb) {
-    Form.find({}).where("_id").in(idList).exec(cb);
+exports.byTinyIdList = function (tinyIdList, callback) {
+    Form.find({'archived': false}).where('tinyId').in(tinyIdList).exec(callback);
 };
 
 exports.byTinyId = function (tinyId, cb) {
@@ -192,10 +192,6 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
         if (err) callback(err);
         else callback("", elt);
     });
-};
-
-exports.byTinyIdList = function (tinyIdList, callback) {
-    Form.find({archived: false}).where("tinyId").in(tinyIdList).exec(callback);
 };
 
 exports.byTinyIdListInOrder = function (idList, callback) {
