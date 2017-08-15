@@ -2,7 +2,6 @@ const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 console.log("Are we prod? " + prod);
 
