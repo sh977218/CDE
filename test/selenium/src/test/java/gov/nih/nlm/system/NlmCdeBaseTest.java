@@ -629,12 +629,15 @@ public class NlmCdeBaseTest {
     protected void addCdeToQuickBoard(String cdeName) {
         goToCdeByName(cdeName);
         clickElement(By.id("addToQuickBoard"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
+
     }
 
     protected void addFormToQuickBoard(String formName) {
         searchForm(formName);
         clickElement(By.id("addToCompare_0"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
         findElement(By.name("q")).clear();
     }
@@ -649,6 +652,7 @@ public class NlmCdeBaseTest {
         hangon(0.5);
         clickElement(By.id("search.submit"));
         clickElement(By.id("addToCompare_0"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
     }
 

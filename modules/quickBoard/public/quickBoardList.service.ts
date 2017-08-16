@@ -87,10 +87,12 @@ export class QuickBoardListService {
         if (elt.elementType === "cde") {
             _.remove(this.dataElements, e => e.tinyId === elt.tinyId);
             this.saveDataElementQuickBoard();
+            this.alert.addAlert("success", "Removed from QuickBoard!");
         }
         if (elt.elementType === "form") {
             _.remove(this.dataElements, e => e.tinyId === elt.tinyId);
             this.saveFormQuickBoard();
+            this.alert.addAlert("success", "Removed from QuickBoard!");
         }
     }
 
@@ -107,12 +109,12 @@ export class QuickBoardListService {
         if (elt.elementType === "cde") {
             this.dataElements.push(elt);
             this.saveDataElementQuickBoard();
-            return;
+            this.alert.addAlert("success", "Added to QuickBoard!");
         }
         if (elt.elementType === "form") {
             this.forms.push(elt);
             this.saveFormQuickBoard();
-            return;
+            this.alert.addAlert("success", "Added to QuickBoard!");
         }
     }
 
