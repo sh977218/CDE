@@ -12,7 +12,6 @@ import { SummaryListComponent } from "./listView/summaryList.component";
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from "./listView/summaryListItem.component";
 import { TableListComponent } from "./listView/tableList.component";
 import { ListViewComponent } from 'search/listView/listView.component';
-import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
 
 @NgModule({
     imports: [

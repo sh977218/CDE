@@ -119,8 +119,9 @@ export class ListViewComponent implements OnChanges, OnInit {
     setListView(viewType) {
         if (viewType && viewType !== this._listView && ListViewComponent.RESULTVIEWS.indexOf(viewType) > -1) {
             this._listView = viewType;
-            window.localStorage['nlmcde.' + (this.location ? this.location + '-' : '') + this.module + '-searchViewType']
-                = this._listView;
+            if (this._listView === 'summary' || this._listView === 'table')
+                window.localStorage['nlmcde.' + (this.location ? this.location + '-' : '') + this.module + '-searchViewType']
+                    = this._listView;
             this.render();
             this.listViewChange.emit(this._listView);
             return true;
