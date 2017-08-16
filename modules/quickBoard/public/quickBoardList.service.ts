@@ -96,10 +96,10 @@ export class QuickBoardListService {
 
     canAddElement(elt) {
         if (elt.elementType === "cde") {
-            return !_.isEmpty(_.find(this.dataElements, {tinyId: elt.tinyId}));
+            return _.isEmpty(_.find(this.dataElements, {tinyId: elt.tinyId}));
         }
         if (elt.elementType === "form") {
-            return !_.isEmpty(_.find(this.forms, {tinyId: elt.tinyId}));
+            return _.isEmpty(_.find(this.forms, {tinyId: elt.tinyId}));
         }
     }
 

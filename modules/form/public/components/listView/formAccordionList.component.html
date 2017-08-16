@@ -46,7 +46,7 @@
             </div>
             <div class="row">
                 <a *ngIf="quickBoardService.canAddElement(elt)" class="btn btn-small btn-default"
-                   (click)="quickBoardService.addForm(elt)" id="compare_{{i}}">
+                   (click)="quickBoardService.addToQuickBoard(elt)" id="compare_{{i}}">
                     <i class="fa fa-plus"></i> Add to Quick Board</a>
 
                 <a class='btn btn-small btn-default' id="openEltInCurrentTab_{{i}}" *ngIf="openInNewTab"
