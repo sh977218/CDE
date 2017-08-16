@@ -36,6 +36,8 @@ export class CompareSideBySideComponent {
     public modalRef: NgbModalRef;
     @Input() elements: any = [];
     options = [];
+    leftUrl;
+    rightUrl;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -539,10 +541,17 @@ export class CompareSideBySideComponent {
                 rightNotMatches: []
             }
         ];
-        if (left.elementType === "cde" && right.elementType === "cde")
+        if (left.elementType === "cde" && right.elementType === "cde") {
             this.options = commonOption.concat(dataElementOption);
-        if (left.elementType === "form" && right.elementType === "form")
+            this.leftUrl = "deView?tinyId=" + left.tinyId;
+            this.rightUrl = "deView?tinyId=" + left.tinyId;
+        }
+        if (left.elementType === "form" && right.elementType === "form") {
             this.options = commonOption.concat(formOption);
+            this.leftUrl = "formView?tinyId=" + left.tinyId;
+            this.rightUrl = "formView?tinyId=" + left.tinyId;
+
+        }
     }
 
     openCompareSideBySideContent() {
@@ -560,10 +569,12 @@ export class CompareSideBySideComponent {
         Observable.forkJoin([leftObservable, rightObservable]).subscribe(results => {
             let leftCopy = <any>results[0];
             let rightCopy = <any>results[1];
-            if (leftCopy.elementType === "form")
+            if (leftCopy.elementType === "form") {
                 leftCopy.questions = this.flatFormQuestions(leftCopy);
-            if (rightCopy.elementType === "form")
+            }
+            if (rightCopy.elementType === "form") {
                 rightCopy.questions = this.flatFormQuestions(rightCopy);
+            }
             this.getOptions(leftCopy, rightCopy);
             this.options.forEach(option => {
                 let l = _.get(leftCopy, option.displayAs.property);
