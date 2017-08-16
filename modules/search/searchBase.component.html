@@ -179,7 +179,7 @@
 
         <div class="m-3"> <!-- BREADCRUMBS -->
             <span class="pt-3 pb-3"><strong id="searchResultNum">{{totalItems}}</strong> results for
-                <span>
+                <span id="term_crumb">
                     <span *ngIf="!searchSettings.q" class="label label-default">All Terms</span>
                     <span *ngIf="searchSettings.q" class="label label-success mr-2">{{searchSettings.q}}
                         <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"

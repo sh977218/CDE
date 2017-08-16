@@ -757,9 +757,18 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
 
     termSearch() {
         this.searchSettings.page = 1;
-        this.searchSettings.regStatuses = [];
-        this.searchSettings.classification = [];
+        this.searchSettings.regStatuses.length = 0;
+        this.searchSettings.datatypes.length = 0;
+        this.searchSettings.classification.length = 0;
+        this.searchSettings.classificationAlt.length = 0;
+        this.searchSettings.selectedOrgAlt = null;
         this.altClassificationFilterMode = false;
+
+        let index = this.searchSettings.meshTree.indexOf(';');
+        if (index > -1)
+            index = this.searchSettings.meshTree.indexOf(';', index + 1);
+        if (index > -1)
+            this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index);
 
         this.doSearch();
     }
