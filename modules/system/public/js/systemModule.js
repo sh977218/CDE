@@ -169,43 +169,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             templateUrl: '/system/public/html/selectBoardModal.html',
         };
     }])
-    .directive('cdeEltsCompare', [function () {
-        return {
-            restrict: 'AE',
-            scope: {
-                module: '=',
-                eltsToCompare: '=',
-            },
-            templateUrl: '/system/public/html/eltsCompareButton.html',
-            controller: ['$scope', '$uibModal', 'AlertService', 'userResource', function ($scope, $modal, Alert) {
-                $scope.showSideBySideView = function() {
-                    if ($scope.eltsToCompare.length !== 2) {
-                        Alert.addAlert("danger", "You may only compare 2 elements side by side.");
-                        return;
-                    }
-                    $scope.eltsToCompare.sort();
-                    $modal.open({
-                        animation: false,
-                        templateUrl: '/system/public/html/eltsCompare.html',
-                        controller: ['$scope', 'userResource', 'module', 'eltsToCompare',
-                            function ($scope, userResource, module, eltsToCompare) {
-                                $scope.module = module;
-                                $scope.eltsToCompare = eltsToCompare;
-                                userResource.getPromise().then(function () {
-                                    $scope.user = userResource.user;
-                                });
-                            }
-                        ],
-                        resolve: {
-                            module: function() {return $scope.module;},
-                            eltsToCompare: function() {return $scope.eltsToCompare;}
-                        },
-                        size: 'lg'
-                    });
-                };
-            }]
-        };
-    }])
     .directive('sortableArray', [function () {
         return {
             restrict: 'AE',

@@ -1,14 +1,12 @@
-<ngb-accordion id="accordionList">
-    <ngb-panel class='panel-default' *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index"
-               is-open="elt.isOpen">
+<ngb-accordion id="accordionList" *ngIf="elts">
+    <ngb-panel class='panel-default' *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
         <ng-template ngbPanelTitle>
             <cde-accordion-list-heading [addMode]="addMode" [elt]="elt" [eltIndex]="i"
                                         [openInNewTab]="openInNewTab" (add)="add.emit($event)">
-                <span class="accordion-list-before">
-                </span>
+                <span class="accordion-list-before"></span>
                 <span class="accordion-list-after">
                     <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-board>
-                    <cde-pin-quickboard [elt]="elt" [eltIndex]="i" [module]="module"></cde-pin-quickboard>
+                    <cde-pin-quickboard [elt]="elt" [eltIndex]="i"></cde-pin-quickboard>
                     <a href class="nonLinkAnchor" *ngIf="location=='quickBoard'"
                        (click)="interruptEvent($event);quickBoardService.removeForm(i)">
                         <i class="fa fa-trash-o hand-cursor" title="remove" id="remove_{{i}}" role="link"></i></a>
@@ -47,7 +45,7 @@
                 </div>
             </div>
             <div class="row">
-                <a *ngIf="quickBoardService.canAddForm(elt)" class="btn btn-small btn-default"
+                <a *ngIf="quickBoardService.canAddElement(elt)" class="btn btn-small btn-default"
                    (click)="quickBoardService.addForm(elt)" id="compare_{{i}}">
                     <i class="fa fa-plus"></i> Add to Quick Board</a>
 

@@ -84,8 +84,10 @@ export abstract class Elt {
     score: number; // calculated, Elastic _score
     tinyId: string;
     usedBy: string[]; // calculated, Classification stewardOrg names
+    naming: Naming[];
 
     abstract getEltUrl();
+
     abstract getLabel();
 
     static isDefault(a) {

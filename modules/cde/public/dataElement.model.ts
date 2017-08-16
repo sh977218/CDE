@@ -8,6 +8,8 @@ export class DataElement extends Elt {
     }
 
     getLabel() {
-        return this.primaryNameCopy;
+        if (this.primaryNameCopy)
+            return this.primaryNameCopy;
+        else return this.naming[0].designation;
     }
 }

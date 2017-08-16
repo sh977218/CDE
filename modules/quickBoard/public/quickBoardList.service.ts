@@ -83,42 +83,37 @@ export class QuickBoardListService {
         this.localStorageService.set('defaultQuickBoard', type);
     }
 
-    removeForm(index) {
-        this.forms.splice(index, 1);
-        this.saveFormQuickBoard();
+    removeElement(elt) {
+        if (elt.elementType === "cde") {
+            _.remove(this.dataElements, e => e.tinyId === elt.tinyId);
+            this.saveDataElementQuickBoard();
+        }
+        if (elt.elementType === "form") {
+            _.remove(this.dataElements, e => e.tinyId === elt.tinyId);
+            this.saveFormQuickBoard();
+        }
     }
 
-    removeDataElement(index) {
-        this.dataElements.splice(index, 1);
-        this.saveDataElementQuickBoard();
+    canAddElement(elt) {
+        if (elt.elementType === "cde") {
+            return !_.isEmpty(_.find(this.dataElements, {tinyId: elt.tinyId}));
+        }
+        if (elt.elementType === "form") {
+            return !_.isEmpty(_.find(this.forms, {tinyId: elt.tinyId}));
+        }
     }
 
-    canAddForm(elt) {
-        let result = true;
-        this.forms.forEach(form => {
-            if (form.tinyId === elt.tinyId)
-                result = false;
-        });
-        return result;
-    }
-
-    canAddDataElement(elt) {
-        let result = true;
-        this.dataElements.forEach(dataElement => {
-            if (dataElement.tinyId === elt.tinyId)
-                result = false;
-        });
-        return result;
-    }
-
-    addForm(elt) {
-        this.forms.push(elt);
-        this.saveFormQuickBoard();
-    }
-
-    addDataElement(elt) {
-        this.dataElements.push(elt);
-        this.saveDataElementQuickBoard();
+    addToQuickBoard(elt) {
+        if (elt.elementType === "cde") {
+            this.dataElements.push(elt);
+            this.saveDataElementQuickBoard();
+            return;
+        }
+        if (elt.elementType === "form") {
+            this.forms.push(elt);
+            this.saveFormQuickBoard();
+            return;
+        }
     }
 
     emptyDataElementQuickBoard() {

@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('CreateCdeCtrl',
-    ['$scope', '$window', '$timeout', '$uibModal', 'DataElement', 'Elastic', 'userResource', '$controller'
-        , function ($scope, $window, $timeout, $modal, DataElement, Elastic, userResource, $controller) {
+    ['$scope', '$window', '$timeout', '$uibModal', 'DataElement', 'Elastic',
+        function ($scope, $window, $timeout, $modal, DataElement, Elastic) {
 
         $scope.elt = {
             classification: [], stewardOrg: {}, naming: [{
@@ -39,7 +39,9 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
                         return "/deView?tinyId=" + this.tinyId;
                     };
                     cde.getLabel = function () {
-                        return this.primaryNameCopy;
+                        if (this.primaryNameCopy)
+                            return this.primaryNameCopy;
+                        else return this.naming[0].designation;
                     };
                 });
             });

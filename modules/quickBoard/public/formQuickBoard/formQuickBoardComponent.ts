@@ -5,7 +5,7 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
     selector: "cde-form-quick-board",
     templateUrl: "formQuickBoard.component.html"
 })
-export class FormQuickBoardComponent{
+export class FormQuickBoardComponent {
     listViews = {};
 
     constructor(public quickBoardService: QuickBoardListService) {

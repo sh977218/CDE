@@ -1,3 +1,4 @@
-<a href class="nonLinkAnchor" *ngIf="canAddElt(elt)" (click)="BrowserService.interruptEvent($event);addElt(elt)">
+<a href class="nonLinkAnchor" *ngIf="quickBoardService.canAddElement(elt)"
+   (click)="BrowserService.interruptEvent($event);quickBoardService.addToQuickBoard(elt)">
     <i class="fa fa-plus-square-o  hand-cursor" title="Add to Quick Board"
        id="addToCompare_{{eltIndex}}" role="link"> </i></a>

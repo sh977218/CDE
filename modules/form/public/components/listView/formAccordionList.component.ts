@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { CdeForm } from 'form/public/form.model';
 import { Elt } from 'core/public/models.model';
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
     selector: 'cde-form-accordion-list',
@@ -16,6 +17,6 @@ export class FormAccordionListComponent {
     module = 'form';
     Elt = Elt;
 
-    constructor(@Inject('QuickBoardListService') public quickBoardService) {
+    constructor(public quickBoardService: QuickBoardListService) {
     }
 }

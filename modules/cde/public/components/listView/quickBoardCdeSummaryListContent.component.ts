@@ -10,12 +10,13 @@ export class QuickBoardCdeSummaryListContentComponent {
     @Input() eltIndex: any;
     @Output() select = new EventEmitter<string>();
 
-    constructor(private quickBoardService: QuickBoardListService) {}
+    constructor(private quickBoardService: QuickBoardListService) {
+    }
 
     defaultAttachmentsFilter = a => a.isDefault === true;
 
-    removeElt(index, $event) {
-        $event.stopPropagation();
-        this.quickBoardService.removeDataElement(index);
+    removeElt(event) {
+        event.stopPropagation();
+        this.quickBoardService.removeElement(this.elt);
     }
 }

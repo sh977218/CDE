@@ -38,7 +38,7 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <h1 class="page-header">{{elt.naming[0].designation}}
-                <button *ngIf="quickBoardService.canAddForm(elt)" id="addToQuickBoard" class="btn btn-small btn-default"
+                <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" class="btn btn-small btn-default"
                         title="Add to Compare List" type="button" (click)="quickBoardService.addForm(elt)">
                     <i class="fa fa-plus"></i> Add to Quick Board
                 </button>
