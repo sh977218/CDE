@@ -764,11 +764,13 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         this.searchSettings.selectedOrgAlt = null;
         this.altClassificationFilterMode = false;
 
-        let index = this.searchSettings.meshTree.indexOf(';');
-        if (index > -1)
-            index = this.searchSettings.meshTree.indexOf(';', index + 1);
-        if (index > -1)
-            this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index);
+        if (this.searchSettings.meshTree) {
+            let index = this.searchSettings.meshTree.indexOf(';');
+            if (index > -1)
+                index = this.searchSettings.meshTree.indexOf(';', index + 1);
+            if (index > -1)
+                this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index);
+        }
 
         this.doSearch();
     }
