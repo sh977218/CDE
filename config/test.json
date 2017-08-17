@@ -19,9 +19,6 @@
     "username": "cdevsac",
     "password": "DO_NOT_TRY_TO_GUESS"
   },
-  "oauth": {
-    "enabled": "true"
-  },
   "elastic": {
     "index": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},

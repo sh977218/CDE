@@ -141,13 +141,6 @@
   },
   "pmRunOnStartup": [],
   "multer": {"inMemory": true},
-  "oauth": {
-    "enabled": false,
-    "clientId": "localhost",
-    "clientSecret": "ssh-secret",
-    "callbackURL": "http://localhost:3001/nlmoauth/callback",
-    "serverBaseURL": "https://enigmatic-chamber-8005.herokuapp.com"
-  },
   "prodDump": {
     "enabled": true
   , "url": "https://local-cde-1.nlm.nih.gov/cde/public/assets/dailyDump.tz"
