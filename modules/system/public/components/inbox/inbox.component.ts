@@ -3,6 +3,7 @@ import { Http } from "@angular/http";
 import { AlertService } from "../alert/alert.service";
 import { SaveModalComponent } from "../../../../adminItem/public/components/saveModal/saveModal.component";
 import { MergeCdeService } from "../../../../core/public/mergeCde.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-inbox",
@@ -11,10 +12,12 @@ import { MergeCdeService } from "../../../../core/public/mergeCde.service";
 export class InboxComponent implements OnInit {
 
     @ViewChild("saveModal") public saveModal: SaveModalComponent;
+    @ViewChild("approveUserModal") public approveUserModal: SaveModalComponent;
 
     constructor(private http: Http,
                 private alert: AlertService,
-                private mergeSvc: MergeCdeService) {}
+                private mergeSvc: MergeCdeService,
+                public modalService: NgbModal) {}
 
     mail: any = {received: [], sent: [], archived: []};
     currentMessage: any;
@@ -97,43 +100,43 @@ export class InboxComponent implements OnInit {
     }
 
     approveAttachment (msg) {
-        // $http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid).then(function onSuccess(response) {
-        //     Alert.addAlert("success", response.data);
-        //     $scope.archiveMessage(msg);
-        // }).catch(function onError(response) {
-        //     Alert.addAlert("danger", response.data);
-        // });
+        this.http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid).map(r => r.text()).subscribe(response => {
+            this.alert.addAlert("success", response);
+            this.closeMessage(msg);
+        }, response => {
+            this.alert.addAlert("danger", response);
+        });
     }
 
     declineAttachment (msg) {
-//     $http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid).then(function onSuccess(response) {
-//         Alert.addAlert("success", response.data);
-//         $scope.archiveMessage(msg);
-//     }).catch(function onError(response) {
-//         Alert.addAlert("danger", response.data);
-//     });
+        this.http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid).map(r => r.text()).subscribe(response => {
+            this.alert.addAlert("success", response);
+            this.closeMessage(msg);
+        }, response => {
+            this.alert.addAlert("danger", response);
+        });
     }
 
     approveComment (msg) {
-        // this.http.post('/comments/approve', {
-        //     commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
-        // }).map(r => r.text()).subscribe(response => {
-        //     this.alert.addAlert("success", response);
-        //     // $scope.archiveMessage(msg);
-        // // }).catch(function onError(response) {
-        // //     Alert.addAlert("danger", response.data);
-        // // });
+        this.http.post('/comments/approve', {
+            commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
+        }).map(r => r.text()).subscribe(response => {
+            this.alert.addAlert("success", response);
+            this.closeMessage(msg);
+        }, response => {
+            this.alert.addAlert("danger", response);
+        });
     }
 
     declineComment (msg) {
-        // $http.post('/comments/decline', {
+        this.http.post('/comments/decline', {
         //     commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
-        // }).then(function onSuccess(response) {
-        //     Alert.addAlert("success", response.data);
-        //     $scope.archiveMessage(msg);
-        // }).catch(function onError(response) {
-        //     Alert.addAlert("danger", response.data);
-        // });
+        }).map(r => r.text()).subscribe(response => {
+            this.alert.addAlert("success", response);
+            this.closeMessage(msg);
+        }, response => {
+            this.alert.addAlert("danger", response);
+        });
     }
 
     authorizeUser (msg) {
@@ -145,14 +148,9 @@ export class InboxComponent implements OnInit {
         });
     };
 
-
     openAuthorizeUserModal (message) {
-        // $modal.open({
-        //     animation: false, templateUrl: '/system/public/html/messages/approveUser.html'
-        // }).result.then(function () {
-        //     $scope.authorizeUser(message);
-        // }, function () {
-        // });
+        this.currentMessage = message;
+        this.modalService.open(this.approveUserModal);
     };
 
 }

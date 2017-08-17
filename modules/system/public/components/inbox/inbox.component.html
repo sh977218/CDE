@@ -1,5 +1,4 @@
 <div class="container-fluid">
-
     <h4 *ngIf='mail.received.length==0 && mail.sent.length==0 && mail.archived.length==0'
         class="centerText">Your Inbox is empty.</h4>
 
@@ -17,10 +16,23 @@
         <h3>Sent</h3>
         <ng-container *ngTemplateOutlet="mailTemplate; context: {type: 'archived'}"></ng-container>
     </div>
-
 </div>
 
 <cde-save-modal #saveModal [elt]="currentMessage.typeRequest.destination.object" (save)="approveMergeMessage(currentMessage)"></cde-save-modal>
+
+<ng-template #approveUserModal let-d="dismiss">
+    <div class="modal-header">
+        <h3 class="modal-title">Please confirm</h3>
+    </div>
+    <div class="modal-body">
+        The user will be able to post comments without an approval.<br>
+        Do you want to proceed?
+    </div>
+    <div class="modal-footer">
+        <button id="authorizeUserOK" class="btn btn-primary" (click)="authorizeUser(currentMessage)">Yes</button>
+        <button class="btn btn-warning" ng-click="d()">No</button>
+    </div>
+</ng-template>
 
 <ng-template #mailTemplate let-type="type">
 
@@ -241,13 +253,13 @@
 
 
                         <span *ngIf="type === 'received'">
-                            <!--<button class="approveAttachment btn btn-sm btn-default" id='approve-{{message.typeAttachmentApproval.filename}}'-->
-                                    <!--ng-controller="ApproveAttachmentCtrl" ng-click="approveAttachment(message)"-->
-                                    <!--ng-class="{disabled: message.states[0].action==='Approved'}" type="button">Approve Attachment</button>-->
-                            <!--<span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>-->
-                            <!--<button class="declineAttachment btn btn-sm btn-default" id='decline-{{message.typeAttachmentApproval.filename}}'-->
-                                    <!--ng-controller="ApproveAttachmentCtrl" ng-click="declineAttachment(message)"-->
-                                    <!--ng-class="{disabled: message.states[0].action==='Approved'}" type="button">Decline Attachment</button>-->
+                            <button class="approveAttachment btn btn-sm btn-default" id='approve-{{message.typeAttachmentApproval.filename}}'
+                                    (click)="approveAttachment(message)"
+                                    [ngClass]="{disabled: message.states[0].action === 'Approved'}" type="button">Approve Attachment</button>
+                            <span *ngIf="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date }}</span>
+                            <button class="declineAttachment btn btn-sm btn-default" id='decline-{{message.typeAttachmentApproval.filename}}'
+                                    (click)="declineAttachment(message)"
+                                    [ngClass]="{disabled: message.states[0].action === 'Approved'}" type="button">Decline Attachment</button>
                         </span>
                     </ng-template>
                 </ngb-panel>
