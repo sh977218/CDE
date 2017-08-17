@@ -26,10 +26,10 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
         goToQuickBoardByModule("cde");
         textPresent("Export Quick Board");
 
-        clickElement(By.id("qb_cde_export"));
+        clickElement(By.id("qb_de_export"));
         textPresent("Export downloaded.");
         closeAlert();
-        clickElement(By.id("qb_cde_empty"));
+        clickElement(By.id("qb_de_empty"));
 
         String[] expected = {
                 "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",

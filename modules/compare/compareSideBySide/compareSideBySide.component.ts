@@ -233,7 +233,7 @@ export class CompareSideBySideComponent implements OnInit {
             {
                 displayAs: {
                     label: "Data Element Concept",
-                    property: "property.concepts",
+                    property: "dataElementConcept.concepts",
                     data: [
                         {label: "Name", property: "name"},
                         {label: "Origin", property: "origin"},
@@ -552,12 +552,12 @@ export class CompareSideBySideComponent implements OnInit {
         if (left.elementType === "cde" && right.elementType === "cde") {
             this.options = commonOption.concat(dataElementOption);
             this.leftUrl = "deView?tinyId=" + left.tinyId;
-            this.rightUrl = "deView?tinyId=" + left.tinyId;
+            this.rightUrl = "deView?tinyId=" + right.tinyId;
         }
         if (left.elementType === "form" && right.elementType === "form") {
             this.options = commonOption.concat(formOption);
             this.leftUrl = "formView?tinyId=" + left.tinyId;
-            this.rightUrl = "formView?tinyId=" + left.tinyId;
+            this.rightUrl = "formView?tinyId=" + right.tinyId;
             isForm = true;
         }
         this.canMergeForm = isForm && this.isAllowedModel.isAllowed(left) &&

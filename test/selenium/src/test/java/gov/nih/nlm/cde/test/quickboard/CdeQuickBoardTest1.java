@@ -18,7 +18,7 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_2"));
         clickElement(By.id("qb_compare"));
         textPresent("You may only compare 2 elements side by side.");
-        clickElement(By.id("qb_cde_empty"));
+        clickElement(By.id("qb_de_empty"));
         textPresent("CDE QuickBoard (0)");
     }
 
@@ -32,7 +32,7 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_compare"));
         textPresent("You may only compare 2 elements side by side.");
-        clickElement(By.id("qb_cde_empty"));
+        clickElement(By.id("qb_de_empty"));
         textPresent("CDE QuickBoard (0)");
     }
 

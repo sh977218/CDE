@@ -90,7 +90,7 @@ export class QuickBoardListService {
             this.alert.addAlert("success", "Removed from QuickBoard!");
         }
         if (elt.elementType === "form") {
-            _.remove(this.dataElements, e => e.tinyId === elt.tinyId);
+            _.remove(this.forms, e => e.tinyId === elt.tinyId);
             this.saveFormQuickBoard();
             this.alert.addAlert("success", "Removed from QuickBoard!");
         }
