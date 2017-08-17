@@ -1,4 +1,3 @@
-// WORKAROUND: for no multiple entry points issue https://github.com/angular/angular-cli/issues/5072
 const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run build"
 const path = require('path');
 const webpack = require('webpack');
@@ -9,7 +8,7 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        print: './modules/formStandaloneApp/nativeRenderStandalone.ts'
+        embed: './modules/embedded/public/js/embeddedApp.js'
     },
     output: {
         path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
@@ -34,7 +33,8 @@ module.exports = {
             ),
             new AotPlugin.AotPlugin({
                 tsConfigPath: './tsconfig.json',
-                entryModule: path.join(__dirname, 'modules', 'formStandaloneApp', 'nativeRenderStandalone.module') + '#NativeRenderStandaloneModule'
+                entryModule: path.join(__dirname, 'modules', 'app.module') + '#CdeAppModule',
+                mainPath: 'modules/main-aot'
             }),
             new webpack.DefinePlugin({
                 PRODUCTION: JSON.stringify(true),
@@ -42,7 +42,7 @@ module.exports = {
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.optimize.UglifyJsPlugin({ // sourcemap
-                mangle: true,
+                mangle: false,
                 sourceMap: true,
                 output: {
                     comments: false
@@ -66,7 +66,12 @@ module.exports = {
             }),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
-            new webpack.ProgressPlugin() // show progress in ConEmu window
+            new webpack.ProgressPlugin(), // show progress in ConEmu window
+            new webpack.ProvidePlugin({
+                $: 'jquery',
+                jQuery: 'jquery',
+                'windows.jQuery': 'jquery'
+            })
         ],
     resolve: {
         unsafeCache: false,
