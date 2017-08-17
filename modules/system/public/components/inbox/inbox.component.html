@@ -20,7 +20,7 @@
 
 </div>
 
-<cde-save-modal #saveModal [elt]="currentMessage.typeRequest.destination.object"></cde-save-modal>
+<cde-save-modal #saveModal [elt]="currentMessage.typeRequest.destination.object" (save)="approveMergeMessage(currentMessage)"></cde-save-modal>
 
 <ng-template #mailTemplate let-type="type">
 
@@ -149,7 +149,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3"><b>Size</b></div>
-                                    <!--<div class="col-sm-9">{{attachment.filesize | bytes}}</div>-->
+                                    <div class="col-sm-9">{{attachment.filesize / 1024 | number:'1.0-1'}}</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3"><b>Uploaded by</b></div>
@@ -159,9 +159,9 @@
                         </div>
 
                         <span *ngIf="type === 'received'">
-                            <!--<button ng-controller="MergeApproveCtrl" ng-click="showMergeApproveDialog(message)" -->
-                                    <!--ng-class="{disabled: message.states[0].action==='Approved'}" -->
-                                    <!--class="btn btn-sm btn-default">Approve & Merge</button>-->
+                            <button (click)="showMergeApproveDialog(message)"
+                                    [ngClass]="{disabled: message.states[0].action === 'Approved'}"
+                                    class="btn btn-sm btn-default">Approve & Merge</button>
                             <span *ngIf="message.states[0].action === 'Approved'">Approved on
                                 {{ message.states[0].date | date:medium }}</span>
                         </span>
@@ -180,11 +180,10 @@
                         <dl class="dl-horizontal">
                             <dt>User</dt>
                             <dd>{{message.author.name}}
-                                <!--<button class="btn btn-xs btn-default authorizeUser"-->
-                                        <!--ng-controller="ApproveCommentCtrl"-->
-                                        <!--ng-click="openAuthorizeUserModal(message)"-->
-                                        <!--type="button">Authorize User Permanently-->
-                                <!--</button>-->
+                                <button class="btn btn-xs btn-default authorizeUser"
+                                        (click)="openAuthorizeUserModal(message)"
+                                        type="button">Authorize User Permanently
+                                </button>
                             </dd>
                         </dl>
                         <dl class="dl-horizontal">
@@ -198,15 +197,16 @@
                                    href="/{{message.typeCommentApproval.element.eltType==='cde'?'deView':'formView'}}?tinyId={{message.typeCommentApproval.element.eltId}}">{{message.typeCommentApproval.element.name}}</a>
                             </dd>
                         </dl>
-                        <!--<span *ngIf="type === 'received'" ng-controller="ApproveCommentCtrl">-->
-                            <!--<button class="approveComment btn btn-sm btn-default"-->
-                                    <!--ng-click="approveComment(message)" ng-class="{disabled: message.states[0].action==='Approved'}"-->
-                                    <!--type="button">Approve Comment</button>-->
-                            <!--<button class="declineComment btn btn-sm btn-default"-->
-                                    <!--ng-click="declineComment(message)" ng-class="{disabled: message.states[0].action==='Approved'}"-->
-                                    <!--type="button">Decline Comment</button>-->
-                            <!--<span ng-show="message.states[0].action==='Approved'">Approved on {{ message.states[0].date | date:medium }}</span>-->
-                        <!--</span>-->
+                        <span *ngIf="type === 'received'">
+                            <button class="approveComment btn btn-sm btn-default"
+                                    (click)="approveComment(message)"
+                                    [ngClass]="{disabled: message.states[0].action === 'Approved'}"
+                                    type="button">Approve Comment</button>
+                            <button class="declineComment btn btn-sm btn-default"
+                                    (click)="declineComment(message)" [ngClass]="{disabled: message.states[0].action === 'Approved'}"
+                                    type="button">Decline Comment</button>
+                            <span *ngIf="message.states[0].action === 'Approved'">Approved on {{ message.states[0].date | date }}</span>
+                        </span>
                     </ng-template>
                 </ngb-panel>
             </div>

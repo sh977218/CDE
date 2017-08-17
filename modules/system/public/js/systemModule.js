@@ -467,7 +467,6 @@ import { ClassificationService } from "../../../core/public/classification.servi
 angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
 
 import { HomeComponent } from "../components/home/home.component";
-
 angular.module('systemModule').directive('cdeHome', downgradeComponent({
     component: HomeComponent,
     inputs: [],
@@ -636,3 +635,6 @@ angular.module('systemModule').directive('cdeLatestComments', downgradeComponent
 import {InboxComponent} from "../components/inbox/inbox.component"
 angular.module('systemModule').directive('cdeInbox', downgradeComponent(
     {component: InboxComponent, inputs: [], outputs: []}));
+
+import { MergeCdeService } from "../../../core/public/mergeCde.service";
+angular.module('systemModule').factory('MergeCdeService', downgradeInjectable(MergeCdeService));

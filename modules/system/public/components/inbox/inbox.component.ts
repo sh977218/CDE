@@ -93,25 +93,66 @@ export class InboxComponent implements OnInit {
 
     showMergeApproveDialog (message) {
         this.currentMessage = message;
-
-
+        this.saveModal.openSaveModal();
     }
-    //     $modal.open({
-    //         animation: false,
-    //         templateUrl: '/system/public/html/saveModal.html',
-    //         controller: 'MergeApproveModalCtrl',
-    //         resolve: {
-    //             elt: function () {
-    //                 return message.typeRequest.destination.object;
-    //             }, user: function () {
-    //                 return userResource.user;
-    //             }
-    //         }
-    //     }).result.then(function () {
-    //         $scope.approveMergeMessage(message);
-    //     }, function () {
-    //     });
-    // };
 
+    approveAttachment (msg) {
+        // $http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid).then(function onSuccess(response) {
+        //     Alert.addAlert("success", response.data);
+        //     $scope.archiveMessage(msg);
+        // }).catch(function onError(response) {
+        //     Alert.addAlert("danger", response.data);
+        // });
+    }
+
+    declineAttachment (msg) {
+//     $http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid).then(function onSuccess(response) {
+//         Alert.addAlert("success", response.data);
+//         $scope.archiveMessage(msg);
+//     }).catch(function onError(response) {
+//         Alert.addAlert("danger", response.data);
+//     });
+    }
+
+    approveComment (msg) {
+        // this.http.post('/comments/approve', {
+        //     commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
+        // }).map(r => r.text()).subscribe(response => {
+        //     this.alert.addAlert("success", response);
+        //     // $scope.archiveMessage(msg);
+        // // }).catch(function onError(response) {
+        // //     Alert.addAlert("danger", response.data);
+        // // });
+    }
+
+    declineComment (msg) {
+        // $http.post('/comments/decline', {
+        //     commentId: msg.typeCommentApproval.comment.commentId, replyIndex: msg.typeCommentApproval.comment.replyIndex
+        // }).then(function onSuccess(response) {
+        //     Alert.addAlert("success", response.data);
+        //     $scope.archiveMessage(msg);
+        // }).catch(function onError(response) {
+        //     Alert.addAlert("danger", response.data);
+        // });
+    }
+
+    authorizeUser (msg) {
+        let request = {username: msg.author.name, role: "CommentAuthor"};
+        this.http.post('/addUserRole', request).map(r => r.text()).subscribe(response => {
+            this.alert.addAlert("success", response);
+        }, response => {
+            this.alert.addAlert("danger", response);
+        });
+    };
+
+
+    openAuthorizeUserModal (message) {
+        // $modal.open({
+        //     animation: false, templateUrl: '/system/public/html/messages/approveUser.html'
+        // }).result.then(function () {
+        //     $scope.authorizeUser(message);
+        // }, function () {
+        // });
+    };
 
 }
