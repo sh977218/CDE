@@ -1,35 +1,42 @@
 import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { SortableModule } from 'ngx-bootstrap';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { DiffMatchPatchModule, DiffDirective } from "ng-diff-match-patch";
-import { CompareObjectComponent } from "./compareObject.component";
-import { CompareArrayComponent } from "./compareArray.component";
 import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
-import { FormModule } from 'form/public/form.module';
+import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
+import { CompareArrayComponent } from 'compare/compareArray/compareArray.component';
+import { CompareObjectComponent } from 'compare/compareObject/compareObject.component';
+import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        SortableModule.forRoot(),
         DiffMatchPatchModule,
     ],
     declarations: [
+        CdeSortableComponent,
         CompareSideBySideComponent,
         CompareArrayComponent,
         CompareObjectComponent,
+        MergeFormComponent,
     ],
-    entryComponents: [CompareArrayComponent, CompareObjectComponent],
+    entryComponents: [
+        CompareArrayComponent,
+        CompareObjectComponent
+    ],
     providers: [],
     exports: [
         CompareSideBySideComponent,
         CompareArrayComponent,
         CompareObjectComponent,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: []
 })
 
 export class CompareModule {
-
 }

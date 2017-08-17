@@ -1,8 +1,8 @@
 import { Component, Inject, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import { MergeFormService } from "../../../../core/public/mergeForm.service";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { MergeFormService } from 'core/public/mergeForm.service';
 
 @Component({
     selector: "cde-merge-form",

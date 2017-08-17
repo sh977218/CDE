@@ -4,7 +4,6 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
-import { SortableModule } from "ngx-bootstrap";
 import { NouisliderModule } from 'ng2-nouislider';
 
 import { AdminItemModule } from "adminItem/public/adminItem.module";
@@ -16,7 +15,6 @@ import { WidgetModule } from "widget/widget.module";
 import { ArrayListPipe } from "./arrayList.pipe";
 import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "./components/listView/boardFormSummaryListContent.component";
-import { CdeSortableComponent } from "./components/mergeForm/cdeSortable.component";
 import { FormAccordionListComponent } from "./components/listView/formAccordionList.component";
 import { FormDescriptionComponent } from "./tabs/description/formDescription.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
@@ -24,7 +22,6 @@ import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formD
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
 import { FormSearchComponent } from "./components/search/formSearch.component";
 import { FormSummaryListContentComponent } from "./components/listView/formSummaryListContent.component";
-import { MergeFormComponent } from "./components/mergeForm/mergeForm.component";
 import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
 import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
 import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
@@ -49,7 +46,6 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         NgbModule,
         NouisliderModule,
         Select2Module,
-        SortableModule.forRoot(),
         TreeModule,
         // internal
         AdminItemModule,
@@ -63,7 +59,6 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         ArrayListPipe,
         BoardFormSummaryListComponent,
         BoardFormSummaryListContentComponent,
-        CdeSortableComponent,
         DisplayProfileComponent,
         FormViewComponent,
         FormAccordionListComponent,
@@ -75,7 +70,6 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         FormSearchComponent,
         FormSummaryListContentComponent,
         FormTermMappingComponent,
-        MergeFormComponent,
         NativeRenderFullComponent,
         NativeRenderComponent,
         NativeSectionComponent,
@@ -96,7 +90,6 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         FormDescriptionComponent,
         FormSearchComponent,
         FormSummaryListContentComponent,
-        MergeFormComponent,
         NativeRenderComponent,
         QuickBoardFormSummaryListContentComponent,
         NativeRenderFullComponent,
@@ -104,7 +97,6 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
     exports: [
         FormAccordionListComponent,
         NativeRenderComponent,
-        MergeFormComponent,
     ],
     providers: [
         FormService,

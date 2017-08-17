@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
-import { CompareService } from "../core/public/compare.service";
+import { CompareService } from "../../core/public/compare.service";
 import * as _ from "lodash";
 
 

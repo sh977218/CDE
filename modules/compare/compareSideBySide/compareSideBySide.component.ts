@@ -572,23 +572,21 @@ export class CompareSideBySideComponent implements OnInit {
             this.alert.addAlert("warning", "Please select two elements to compare.");
             return;
         }
-        this.left = selectedDEs[0];
-        this.right = selectedDEs[1];
-        let leftObservable = this.http.get(URL_MAP[this.left.elementType] + this.left.tinyId).map(res => res.json());
-        let rightObservable = this.http.get(URL_MAP[this.right.elementType] + this.right.tinyId).map(res => res.json());
+        let leftObservable = this.http.get(URL_MAP[selectedDEs[0].elementType] + selectedDEs[0].tinyId).map(res => res.json());
+        let rightObservable = this.http.get(URL_MAP[selectedDEs[1].elementType] + selectedDEs[1].tinyId).map(res => res.json());
         Observable.forkJoin([leftObservable, rightObservable]).subscribe(results => {
-            let leftCopy = <any>results[0];
-            let rightCopy = <any>results[1];
-            if (leftCopy.elementType === "form") {
-                leftCopy.questions = this.flatFormQuestions(leftCopy);
+            this.left = <any>results[0];
+            this.right = <any>results[1];
+            if (this.left.elementType === "form") {
+                this.left.questions = this.flatFormQuestions(this.left);
             }
-            if (rightCopy.elementType === "form") {
-                rightCopy.questions = this.flatFormQuestions(rightCopy);
+            if (this.right.elementType === "form") {
+                this.right.questions = this.flatFormQuestions(this.right);
             }
-            this.getOptions(leftCopy, rightCopy);
+            this.getOptions(this.left, this.right);
             this.options.forEach(option => {
-                let l = _.get(leftCopy, option.displayAs.property);
-                let r = _.get(rightCopy, option.displayAs.property);
+                let l = _.get(this.left, option.displayAs.property);
+                let r = _.get(this.right, option.displayAs.property);
                 if (!l) l = [];
                 if (!r) r = [];
                 if (typeof l !== "object") l = [{data: l}];

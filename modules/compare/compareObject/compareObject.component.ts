@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
-import { CompareService } from "../core/public/compare.service";
-import { ClassificationService } from "../core/public/classification.service";
+import { CompareService } from "../../core/public/compare.service";
+import { ClassificationService } from "../../core/public/classification.service";
 import * as _ from "lodash";
 
 @Component({
