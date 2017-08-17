@@ -7,6 +7,7 @@ import { Select2Module } from "ng2-select2";
 import { CKEditorModule } from 'ng2-ckeditor';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
+import { RecaptchaModule } from 'ng2-recaptcha';
 
 import { SelectBoardDirective } from "./upgrade-components";
 import { ProfileComponent } from "./components/profile.component";
@@ -41,6 +42,8 @@ import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serve
 import { TimeAgoPipe } from "time-ago-pipe";
 import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
 import { DiscussModule } from "../../discuss/discuss.module";
+import { LoginComponent } from "./components/login/login.component";
+import { LoginService } from "./components/login/login.service";
 
 @NgModule({
     imports: [
@@ -49,6 +52,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         FormsModule,
         JsonpModule,
         NgbModule,
+        RecaptchaModule.forRoot(),
         Select2Module,
         // internal
         SearchModule,
@@ -68,6 +72,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         HomeComponent,
         ListManagementComponent,
         LogAuditComponent,
+        LoginComponent,
         NavigationComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
@@ -88,6 +93,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
     entryComponents: [
         AlertComponent,
         HomeComponent,
+        LoginComponent,
         NavigationComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
@@ -104,6 +110,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
     providers: [
         AlertService,
         CdeDiffPopulateService,
+        LoginService,
         RegistrationValidatorService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
