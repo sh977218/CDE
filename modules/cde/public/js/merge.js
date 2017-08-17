@@ -8,44 +8,7 @@ angular.module('CdeMerge', [])
                 service.closeMessage(message);
             });
         };
-        service.approveMerge = function (source, destination, fields, callback) {
-            $http.get('/de/' + source.tinyId).then(function (result) {
-                service.source = result.data;
-                return $http.get('/de/' + destination.tinyId);
-            }).then(function (result) {
-                service.destination = result.data;
-                Object.keys(fields).forEach(function (field) {
-                    if (fields[field]) {
-                        service.transferFields(service.source, service.destination, field);
-                    }
-                });
 
-                if (fields.ids || fields.properties || fields.naming) {
-                    classificationShared.transferClassifications(service.source, service.destination);
-                    $http.put("/de/" + result.data.tinyId, result.data).then(function () {
-                        service.retireSource(service.source, service.destination, function (response) {
-                            if (callback) callback(response);
-                        });
-                    });
-                } else {
-                    CdeClassificationTransfer.byTinyIds(service.source.tinyId, service.destination.tinyId, callback);
-                }
-            });
-        };
-        service.transferFields = function (source, destination, type) {
-            if (!source[type]) return;
-            var fieldsTransfer = this;
-            service.alreadyExists = function (obj) {
-                delete obj.$$hashKey;
-                return destination[type].map(function (obj) {
-                    return JSON.stringify(obj);
-                }).indexOf(JSON.stringify(obj)) >= 0;
-            };
-            source[type].forEach(function (obj) {
-                if (fieldsTransfer.alreadyExists(obj)) return;
-                destination[type].push(obj);
-            });
-        };
 
         service.retireSource = function (source, destination, cb) {
             CDE.retire(source, destination, function (response) {
@@ -79,12 +42,6 @@ angular.module('CdeMerge', [])
             }, getMail: function (type, query, cb) {
                 $http.post("/mail/messages/" + type, query).then(function (response) {
                     cb(response.data);
-                });
-            }, updateMessage: function (msg, success, error) {
-                $http.post('/mail/messages/update', msg).then(function onSuccess(response) {
-                    success(response.data);
-                }, function onError(response) {
-                    error(response.data);
                 });
             }
         };
