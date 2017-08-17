@@ -19,7 +19,7 @@ export class ListManagementComponent implements OnInit {
     constructor(
         private http: Http,
         private Alert: AlertService,
-        public orgHelper: OrgHelperService
+        private orgHelperService: OrgHelperService
     ) {}
 
     ngOnInit () {
@@ -63,8 +63,8 @@ export class ListManagementComponent implements OnInit {
 
     saveOrg (org) {
         this.http.post("/updateOrg", org).subscribe(() => {
-            this.orgHelper.getOrgsDetails();
-            this.orgHelper.orgDetails.subscribe(() => this.Alert.addAlert("success", "Org Updated"));
+            this.orgHelperService.reload().then(
+                () => this.Alert.addAlert("success", "Org Updated"));
         }, () => this.Alert.addAlert("danger", "Error. Unable to save."));
     }
 

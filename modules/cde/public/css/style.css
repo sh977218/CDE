@@ -63,10 +63,6 @@ body {
     padding-left: 130px;
 }
 
-.pt8 {
-    padding-top: 8px;
-}
-
 .mr2 {
     margin-right: 2px;
 }
@@ -83,10 +79,6 @@ body {
     padding: 10px;
 }
 
-.padding3 {
-    padding: 3px;
-}
-
 .pt20 {
     padding-top: 20px;
 }
@@ -99,36 +91,9 @@ body {
     padding-top: 60px;
 }
 
-.pb8 {
-    padding-bottom: 8px;
-}
-
-.pb30 {
-    padding-bottom: 30px;
-}
 
 .pb40 {
     padding-bottom: 40px;
-}
-
-.pb60 {
-    padding-bottom: 60px;
-}
-
-.pl5 {
-    padding-left: 5px;
-}
-
-.pr5 {
-    padding-right: 5px;
-}
-
-.pr18 {
-    padding-right: 18px;
-}
-
-.pr20 {
-    padding-right: 20px;
 }
 
 .mt10 {
@@ -147,21 +112,12 @@ body {
     margin-bottom: 3px;
 }
 
-.mb5 {
-    margin-bottom: 5px;
-}
-
 .ib {
     display: inline-block;
 }
 
 .searchInfo {
     padding-top: 2px;
-}
-
-.searchInfoHr {
-    margin-top: 0;
-    margin-bottom: 0;
 }
 
 .gray {
@@ -690,12 +646,13 @@ button#selectDefault {
     display: block;
 }
 
-.feedback-btn-gray {
+.feedback-btn.feedback-btn-gray {
     font-family: inherit !important;
     border-top-left-radius: 6px !important;
     border-top-right-radius: 6px !important;
     font-size: 11px;
     right: 20px !important;
+    z-index: auto;
 }
 
 #feedback-note-tmp {
@@ -1044,10 +1001,6 @@ div + .questionPlaceholder {
 
 .navbar {
     margin-bottom: 0 !important;
-}
-
-#searchInfoBar {
-    margin: 10px;
 }
 
 .singleSearchResult {

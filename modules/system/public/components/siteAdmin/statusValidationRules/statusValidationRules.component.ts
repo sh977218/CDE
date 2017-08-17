@@ -1,7 +1,7 @@
 import { Http } from "@angular/http";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import { OrgHelperService } from "../../../../../core/public/orgHelper.service";
+import { OrgHelperService } from 'core/public/orgHelper.service';
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -13,7 +13,7 @@ export class StatusValidationRulesComponent implements OnInit {
 
     constructor(
         private http: Http,
-        public orgHelper: OrgHelperService,
+        private orgHelperService: OrgHelperService,
         public modalService: NgbModal
     ) {}
 
@@ -67,10 +67,10 @@ export class StatusValidationRulesComponent implements OnInit {
     ];
 
     ngOnInit () {
-        this.orgHelper.orgDetails.subscribe(() => {
-            this.orgNames = Object.keys(this.orgHelper.orgsDetailedInfo);
-            Object.keys(this.orgHelper.orgsDetailedInfo).forEach(orgName => {
-                this.userOrgs[orgName] = this.orgHelper.orgsDetailedInfo[orgName].cdeStatusValidationRules;
+        this.orgHelperService.then(() => {
+            this.orgNames = Object.keys(this.orgHelperService.orgsDetailedInfo);
+            Object.keys(this.orgHelperService.orgsDetailedInfo).forEach(orgName => {
+                this.userOrgs[orgName] = this.orgHelperService.orgsDetailedInfo[orgName].cdeStatusValidationRules;
             });
             this.userOrgsArray = Object.keys(this.userOrgs).sort();
         });
