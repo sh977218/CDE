@@ -15,7 +15,7 @@ public class FormSideBySideCompare3 extends NlmCdeBaseTest {
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_form_compare"));
+        clickElement(By.id("qb_compare"));
 
         textPresent("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class,'quickBoardContentCompareArray')][1]//*[contains(@class, 'leftObj') and @data-title='Label']"));
         textPresent("Adverse Event Ongoing Event Indicator", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj') and @data-title='Label']"));

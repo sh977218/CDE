@@ -16,7 +16,7 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_elt_compare_2"));
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
         textPresent("CDE QuickBoard (0)");
@@ -30,7 +30,7 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
         textPresent("Quick Board (3)");
         goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
         textPresent("CDE QuickBoard (0)");
@@ -42,7 +42,7 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
         addCdeToQuickBoard("Right upper extremity upper motor neuron clinical indicator");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("The status of shoulder function as part of the test in spinal cord injury.");
         textPresent("Indicator of whether the examination found clinical evidence of upper motor neuron (UMN) dysfunction in the right upper extremity (RUE) region.");
     }

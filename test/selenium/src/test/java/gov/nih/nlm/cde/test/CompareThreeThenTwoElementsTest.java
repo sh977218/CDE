@@ -21,13 +21,13 @@ public class CompareThreeThenTwoElementsTest extends NlmCdeBaseTest {
         textPresent(cde1);
         textPresent(cde2);
         textPresent(cde3);
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("You may only compare 2 elements side by side.");
         closeAlert();
         clickElement(By.id("remove_2"));
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));

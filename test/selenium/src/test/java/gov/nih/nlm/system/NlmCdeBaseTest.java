@@ -688,7 +688,7 @@ public class NlmCdeBaseTest {
         textPresent(cdeName2);
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
     }
 
     public void scrollToTop() {

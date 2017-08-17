@@ -22,7 +22,7 @@ public class compareMeWithMltTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("in CTC category Blood/Bone Marrow");
         textPresent("CTC Adverse Event Platelets Grade");
     }

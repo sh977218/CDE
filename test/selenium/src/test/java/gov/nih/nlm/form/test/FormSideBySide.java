@@ -19,7 +19,7 @@ public class FormSideBySide extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_elt_compare_2"));
-        clickElement(By.id("qb_form_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_form_empty"));
         textPresent("Form QuickBoard (0)");
@@ -36,7 +36,7 @@ public class FormSideBySide extends NlmCdeBaseTest {
         textPresent("Quick Board (3)");
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_form_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_form_empty"));
         textPresent("Form QuickBoard (0)");
