@@ -89,7 +89,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.id("topicTab"));
         clickElement(By.partialLinkText("Environment and Public Health"));
         textPresent("results for");
-        Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText()) >= 20);
+        Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText()) >= 17);
 
         findElement(By.id("ftsearch-input")).sendKeys("type");
         clickElement(By.id("search.submit"));
