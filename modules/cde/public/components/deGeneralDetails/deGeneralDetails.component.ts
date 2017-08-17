@@ -14,7 +14,7 @@ export class DeGeneralDetailsComponent {
                 @Inject("isAllowedModel") public isAllowedModel,
                 @Inject("userResource") public userService,
                 private alert: AlertService,
-                public orgHelpers: OrgHelperService) {
+                public orgHelperService: OrgHelperService) {
     }
 
     @Input() elt: any;

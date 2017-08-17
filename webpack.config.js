@@ -8,8 +8,7 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        main: './modules/main.ts',
-        embed: './modules/embedded/public/js/embeddedApp.js'
+        main: './modules/main.ts'
     },
     output: {
         path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
@@ -43,7 +42,7 @@ module.exports = {
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.optimize.UglifyJsPlugin({ // sourcemap
-                mangle: false,
+                mangle: true,
                 sourceMap: true,
                 output: {
                     comments: false

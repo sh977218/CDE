@@ -227,7 +227,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     let script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
     // Search for the query term given by user
-    let hasSearchTerm = settings.searchTerm !== undefined && settings.searchTerm !== "";
+    let hasSearchTerm = !!settings.searchTerm;
 
     // last resort, we sort.
     let sort = !hasSearchTerm;
@@ -333,10 +333,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     // Filter by selected org
-    if (settings.selectedOrg !== undefined) {
+    if (settings.selectedOrg) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
     }
-    if (settings.selectedOrgAlt !== undefined) {
+    if (settings.selectedOrgAlt) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
     }
 
@@ -358,8 +358,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {flatMeshTrees: settings.meshTree}});
     }
 
-    let flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
-    if (flatSelection !== "") {
+    let flatSelection = settings.selectedElements?settings.selectedElements.join(";"):"";
+    if (settings.selectedOrg && flatSelection !== "") {
         sort = false;
         // boost for those elts classified fewer times
         queryStuff.query.bool.must.push({
@@ -377,7 +377,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     let flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(";") : "";
-    if (flatSelectionAlt !== "") {
+    if (settings.selectedOrgAlt && flatSelectionAlt !== "") {
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
@@ -457,10 +457,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
             };
             queryStuff.aggregations[variableName].aggs[variableName] = flatClassifications;
         };
-        if (settings.selectedOrg !== undefined) {
+        if (settings.selectedOrg) {
             flattenClassificationAggregations('flatClassifications', 'selectedOrg', flatSelection);
         }
-        if (settings.selectedOrgAlt !== undefined) {
+        if (settings.selectedOrgAlt) {
             flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
         }
 

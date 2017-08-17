@@ -23,7 +23,7 @@ export class TableListComponent implements DoCheck, OnChanges {
     }
 
     ngDoCheck() {
-        // TODO: remove DoCheck when OnChanges is implemented for Dynamic Components
+        // TODO: remove DoCheck when OnChanges inputs is implemented for Dynamic Components
         if (this.elts !== this.cacheElts)
             this.render();
     }

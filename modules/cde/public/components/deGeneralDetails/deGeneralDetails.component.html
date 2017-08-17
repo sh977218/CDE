@@ -24,7 +24,9 @@
                        (click)="oldStewardName = elt.stewardOrg.name; editDtMode = true"
                        id="dd_edit_steward"></i>
                     <ng-template #stewardTooltip>
-                        <span [innerHtml]="orgHelpers.createOrgDetailedInfoHtml(elt.stewardOrg.name)"></span></ng-template>
+                        <span *ngIf="orgHelperService.orgsDetailedInfo"
+                              [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"></span>
+                    </ng-template>
                     <a [ngbTooltip]="stewardTooltip" placement="right"
                        id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>
                 </span>
