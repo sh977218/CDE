@@ -20,7 +20,7 @@
 
 </div>
 
-<cde-save-modal #saveModal></cde-save-modal>
+<cde-save-modal #saveModal [elt]="currentMessage.typeRequest.destination.object"></cde-save-modal>
 
 <ng-template #mailTemplate let-type="type">
 

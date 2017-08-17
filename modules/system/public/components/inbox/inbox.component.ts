@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { AlertService } from "../alert/alert.service";
 import { SaveModalComponent } from "../../../../adminItem/public/components/saveModal/saveModal.component";
-
-import * as ClassificationShared from "../../../system/shared/classificationShared.js";
+import { MergeCdeService } from "../../../../core/public/mergeCde.service";
 
 @Component({
     selector: "cde-inbox",
@@ -14,7 +13,8 @@ export class InboxComponent implements OnInit {
     @ViewChild("saveModal") public saveModal: SaveModalComponent;
 
     constructor(private http: Http,
-                private alert: AlertService) {}
+                private alert: AlertService,
+                private mergeSvc: MergeCdeService) {}
 
     mail: any = {received: [], sent: [], archived: []};
     currentMessage: any;
@@ -80,50 +80,8 @@ export class InboxComponent implements OnInit {
         });
     }
 
-
-    transferFields (source, destination, type) {
-        if (!source[type]) return;
-
-        let alreadyExists = function (obj) {
-            delete obj.$$hashKey;
-            return destination[type].map(function (obj) {
-                return JSON.stringify(obj);
-            }).indexOf(JSON.stringify(obj)) >= 0;
-        };
-        source[type].forEach(obj => {
-            if (alreadyExists(obj)) return;
-            destination[type].push(obj);
-        });
-    };
-
-    approveMerge (source, destination, fields, callback) {
-        this.http.get('/de/' + source.tinyId).map(r => r.json()).subscribe(result => {
-            source = result;
-            this.http.get('/de/' + destination.tinyId).map(r => r.json()).subscribe(result => {
-                destination = result;
-                Object.keys(fields).forEach(field => {
-                    if (fields[field]) {
-                        this.transferFields(source, destination, field);
-                    }
-                });
-
-                if (fields.ids || fields.properties || fields.naming) {
-                    ClassificationShared.transferClassifications(source, destination);
-                    this.http.put("/de/" + result.tinyId, result).then(function () {
-                        service.retireSource(service.source, service.destination, function (response) {
-                            if (callback) callback(response);
-                        });
-                    });
-                } else {
-                    CdeClassificationTransfer.byTinyIds(service.source.tinyId, service.destination.tinyId, callback);
-                }
-            });
-
-        })
-    };
-
     approveMergeMessage (message) {
-        this.approveMerge(
+        this.mergeSvc.approveMerge(
             this.currentMessage.typeRequest.source.object,
             this.currentMessage.typeRequest.destination.object,
             this.currentMessage.typeRequest.mergeFields,

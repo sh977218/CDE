@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('MergeRequestCtrl',
-    ['$scope', '$uibModal', '$location', '$http', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'AlertService',
-        function ($scope, $modal, $location, $http, MergeRequest, DataElement, MergeCdes, isAllowedModel, Alert) {
+    ['$scope', '$uibModal', '$location', '$http', 'DataElement', 'MergeCdes', 'isAllowedModel', 'AlertService',
+        function ($scope, $modal, $location, $http, DataElement, MergeCdes, isAllowedModel, Alert) {
             $scope.openMergeModal = function (retiredIndex) {
                 $scope.retiredIndex = retiredIndex;
                 $modal.open({
