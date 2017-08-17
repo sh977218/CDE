@@ -34,7 +34,7 @@ export class NamingComponent implements OnInit {
 
     constructor(private alert: AlertService,
                 @Inject("isAllowedModel") public isAllowedModel,
-                public orgHelpers: OrgHelperService,
+                private orgHelperService: OrgHelperService,
                 public modalService: NgbModal) {
     }
 
@@ -47,8 +47,8 @@ export class NamingComponent implements OnInit {
                 }
             });
         });
-        this.orgHelpers.orgDetails.subscribe(() => {
-            this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach(nt => {
+        this.orgHelperService.then(() => {
+            this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach(nt => {
                 if (!this.orgNamingTags.find((elt) => nt === elt.text)) {
                     this.orgNamingTags.push({"id": nt, "text": nt});
                 }

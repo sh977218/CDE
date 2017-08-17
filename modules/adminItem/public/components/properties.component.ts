@@ -25,13 +25,13 @@ export class PropertiesComponent implements OnInit {
     constructor(private alert: AlertService,
                 private http: Http,
                 @Inject("isAllowedModel") public isAllowedModel,
-                public orgHelpers: OrgHelperService,
+                private orgHelperService: OrgHelperService,
                 public modalService: NgbModal) {
     }
 
     ngOnInit() {
-        this.orgHelpers.orgDetails.subscribe(() => {
-            this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+        this.orgHelperService.then(() => {
+            this.orgPropertyKeys = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
             this.onInitDone = true;
         });
     }

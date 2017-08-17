@@ -52,7 +52,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         textPresent( "NINDS > Disease > Neuromuscular Disease" );
 
         clickElement(By.id("altClassificationFilterModeToggle"));
-        textPresent( "and All Classifications" );
+        textPresent("and", By.id("classif_filter"));
         hangon(1);
         clickElement(By.id("li-blank-NINDS"));
         clickElement(By.id("li-blank-Domain"));
