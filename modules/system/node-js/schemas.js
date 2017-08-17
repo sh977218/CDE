@@ -208,6 +208,7 @@ schemas.namingSchema = new mongoose.Schema({
     tags: [new mongoose.Schema({
         tag: String
     }, {_id: false})],
+    newTags: [String],
     source: {type: String}
 }, {_id: false});
 
