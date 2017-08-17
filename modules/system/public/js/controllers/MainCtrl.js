@@ -1,10 +1,8 @@
 import * as authShared from "../../../../system/shared/authorizationShared";
 
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'OrgHelpers',
-        function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                  $interval, $window, OrgHelpers) {
+    ['$scope', '$uibModal', 'userResource', '$location', '$anchorScroll', '$cacheFactory', 'OrgHelpers',
+        function ($scope, $modal, userResource, $location, $anchorScroll, $cacheFactory, OrgHelpers) {
             $scope.prodDumpEnabled = window.prodDumpEnabled;
 
             $scope.resultPerPage = 20;
@@ -16,14 +14,6 @@ angular.module('systemModule').controller('MainCtrl',
 
             $scope.canCreateForms = function () {
                 return authShared.hasRole(userResource.user, "FormEditor");
-            };
-
-            $scope.reloadUser = function () {
-                userResource.getRemoteUser();
-                userResource.getPromise().then(function () {
-                    $scope.user = userResource.user;
-                    $scope.myOrgs = userResource.userOrgs;
-                });
             };
 
             $scope.isOrgAdmin = function () {
