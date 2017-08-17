@@ -44,6 +44,10 @@ exports.byId = function (id, cb) {
     Form.findById(id, cb);
 };
 
+exports.byIdList = function (idList, cb) {
+    Form.find({}).where("_id").in(idList).exec(cb);
+};
+
 exports.byTinyIdList = function (tinyIdList, callback) {
     Form.find({'archived': false}).where('tinyId').in(tinyIdList).exec(callback);
 };

@@ -21,7 +21,7 @@ export class NavigationComponent {
     smallContext = {$implicit: "collapse"};
     largeContext = {$implicit: ""};
     tour;
-    
+
     constructor(@Inject("userResource") public userService,
             public quickBoardService: QuickBoardListService,
             public loginSvc: LoginService) {
