@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class MeshTopics extends NlmCdeBaseTest {
@@ -87,7 +88,9 @@ public class MeshTopics extends NlmCdeBaseTest {
 
         clickElement(By.id("topicTab"));
         clickElement(By.partialLinkText("Environment and Public Health"));
-        hangon(1);
+        textPresent("results for");
+        Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText()) >= 20);
+
         findElement(By.id("ftsearch-input")).sendKeys("type");
         clickElement(By.id("search.submit"));
         clickElement(By.id("classifications-text-NINDS"));
