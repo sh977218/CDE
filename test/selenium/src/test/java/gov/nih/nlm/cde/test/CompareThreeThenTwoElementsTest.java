@@ -17,7 +17,7 @@ public class CompareThreeThenTwoElementsTest extends NlmCdeBaseTest {
         addCdeToQuickBoard(cde2);
         addCdeToQuickBoard(cde3);
         clickElement(By.linkText("Quick Board (3)"));
-        clickElement(By.id("qb_cde_tab"));
+        clickElement(By.id("dataElementQuickBoard"));
         textPresent(cde1);
         textPresent(cde2);
         textPresent(cde3);

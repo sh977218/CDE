@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 import { AlertService } from "system/public/components/alert/alert.service";
@@ -31,18 +31,25 @@ const URL_MAP = {
         }
     `]
 })
-export class CompareSideBySideComponent {
+export class CompareSideBySideComponent implements OnInit {
+    ngOnInit(): void {
+    }
+
     @ViewChild("compareSideBySideContent") public compareSideBySideContent: NgbModalModule;
     public modalRef: NgbModalRef;
     @Input() elements: any = [];
     options = [];
     leftUrl;
     rightUrl;
+    left;
+    right;
+    canMergeForm: boolean = false;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
                 public quickBoardService: QuickBoardListService,
-                private alert: AlertService) {
+                private alert: AlertService,
+                @Inject("isAllowedModel") public isAllowedModel) {
     }
 
     flatFormQuestions(fe) {
@@ -541,6 +548,7 @@ export class CompareSideBySideComponent {
                 rightNotMatches: []
             }
         ];
+        let isForm = false;
         if (left.elementType === "cde" && right.elementType === "cde") {
             this.options = commonOption.concat(dataElementOption);
             this.leftUrl = "deView?tinyId=" + left.tinyId;
@@ -550,8 +558,10 @@ export class CompareSideBySideComponent {
             this.options = commonOption.concat(formOption);
             this.leftUrl = "formView?tinyId=" + left.tinyId;
             this.rightUrl = "formView?tinyId=" + left.tinyId;
-
+            isForm = true;
         }
+        this.canMergeForm = isForm && this.isAllowedModel.isAllowed(left) &&
+            this.isAllowedModel.isAllowed(right);
     }
 
     openCompareSideBySideContent() {
@@ -562,10 +572,10 @@ export class CompareSideBySideComponent {
             this.alert.addAlert("warning", "Please select two elements to compare.");
             return;
         }
-        let left = selectedDEs[0];
-        let right = selectedDEs[1];
-        let leftObservable = this.http.get(URL_MAP[left.elementType] + left.tinyId).map(res => res.json());
-        let rightObservable = this.http.get(URL_MAP[right.elementType] + right.tinyId).map(res => res.json());
+        this.left = selectedDEs[0];
+        this.right = selectedDEs[1];
+        let leftObservable = this.http.get(URL_MAP[this.left.elementType] + this.left.tinyId).map(res => res.json());
+        let rightObservable = this.http.get(URL_MAP[this.right.elementType] + this.right.tinyId).map(res => res.json());
         Observable.forkJoin([leftObservable, rightObservable]).subscribe(results => {
             let leftCopy = <any>results[0];
             let rightCopy = <any>results[1];

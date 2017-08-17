@@ -13,7 +13,6 @@ import { CdeModule } from "cde/public/cde.module";
 import { SearchModule } from "search/search.module";
 import { WidgetModule } from "widget/widget.module";
 
-import {  } from "./upgrade-components";
 import { ArrayListPipe } from "./arrayList.pipe";
 import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "./components/listView/boardFormSummaryListContent.component";
@@ -105,6 +104,7 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
     exports: [
         FormAccordionListComponent,
         NativeRenderComponent,
+        MergeFormComponent,
     ],
     providers: [
         FormService,
