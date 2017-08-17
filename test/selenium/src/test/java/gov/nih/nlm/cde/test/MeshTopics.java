@@ -88,6 +88,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.id("topicTab"));
         clickElement(By.partialLinkText("Environment and Public Health"));
         textPresent("results for");
+        findElement(By.id("classifications-text-NINDS"));
         findElement(By.id("ftsearch-input")).sendKeys("type");
         clickElement(By.id("search.submit"));
         clickElement(By.id("classifications-text-NINDS"));
