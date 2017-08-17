@@ -1,0 +1,80 @@
+<a class='btn btn-small btn-default fa fa-clipboard MergeDataElement'
+   id="openMergeDataElementModalBtn" (click)="openMergeDataElementModal()">Merge CDE</a>
+
+<ng-template #MergeDataElementContent let-c="close" let-d="dismiss">
+    <div class="modal-header" id="MergeDataElementModalHeader">
+        <div class="col-xs-10 col-xs-offset-1">
+            <a target="_blank" href="/deView?tinyId={{source.tinyId}}">{{source.naming[0].designation}}</a>
+            [{{ source.stewardOrg.name }}]
+            <br><i class="fa fa-arrow-down"></i><br>
+            <a target="_blank" href="/deView?tinyId={{target.tinyId}}">{{target.naming[0].designation}}</a>
+            [{{ target.stewardOrg.name }}]
+        </div>
+    </div>
+    <div class="modal-body" id="MergeDataElementModalBody">
+        <div class="col-xs-10 col-xs-offset-1">
+            Fields to be Imported
+            <button class="btn btn-default" (click)="checkAllMergerFields();">Check All</button>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldClassifications"
+                           [ngModel]="mergeRequest.mergeFields.classifications">Classifications
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldIdentifiers" [ngModel]="mergeRequest.mergeFields.ids">Identifiers
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldsNaming" [ngModel]="mergeRequest.mergeFields.naming">Names
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldsProperties"
+                           [ngModel]="mergeRequest.mergeFields.properties">Properties
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldsAttachments"
+                           [ngModel]="mergeRequest.mergeFields.attachments">Attachments
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldsSources" [ngModel]="mergeRequest.mergeFields.sources">Sources
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldsReferenceDocuments"
+                           [ngModel]="mergeRequest.mergeFields.referenceDocuments">Reference Document
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldsDataSets" [ngModel]="mergeRequest.mergeFields.dataSets">Data
+                    Sets
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldsDerivationRules"
+                           [ngModel]="mergeRequest.mergeFields.derivationRules">Derivation Rules
+                </div>
+            </div>
+        </div>
+        <div *ngIf="showApprovalAlert()" class="alert alert-warning">
+            <i class="fa fa-exclamation-triangle"></i> The action will require an approval.
+        </div>
+    </div>
+    <div class="modal-footer" id="MergeDataElementModalFooter">
+        <button class="btn btn-default cancel" (click)="c()">Cancel</button>
+        <button class="btn btn-warning cancel" (click)="sendMergeRequest()" id="sendMergeRequest">
+            Retire & Merge
+        </button>
+    </div>
+</ng-template>

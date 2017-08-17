@@ -44,6 +44,7 @@ export class CompareSideBySideComponent implements OnInit {
     left;
     right;
     canMergeForm: boolean = false;
+    canMergeDataElement: boolean = false;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -548,11 +549,13 @@ export class CompareSideBySideComponent implements OnInit {
                 rightNotMatches: []
             }
         ];
+        let isDataElement = false;
         let isForm = false;
         if (left.elementType === "cde" && right.elementType === "cde") {
             this.options = commonOption.concat(dataElementOption);
             this.leftUrl = "deView?tinyId=" + left.tinyId;
             this.rightUrl = "deView?tinyId=" + right.tinyId;
+            isDataElement = true;
         }
         if (left.elementType === "form" && right.elementType === "form") {
             this.options = commonOption.concat(formOption);
@@ -561,6 +564,8 @@ export class CompareSideBySideComponent implements OnInit {
             isForm = true;
         }
         this.canMergeForm = isForm && this.isAllowedModel.isAllowed(left) &&
+            this.isAllowedModel.isAllowed(right);
+        this.canMergeDataElement = isDataElement && this.isAllowedModel.isAllowed(left) &&
             this.isAllowedModel.isAllowed(right);
     }
 

@@ -31,7 +31,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
-        clickElement(By.id("closeModal"));
+        clickElement(By.id("closeCompareSideBySideBtn"));
 
         // counteract save summary/table view
         if (driver.findElements(By.id("list_summaryView")).size() > 0)
