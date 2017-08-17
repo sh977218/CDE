@@ -2,9 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { AlertService } from "../../alert/alert.service";
-import { OrgHelperService } from "../../../../../core/public/orgHelper.service";
-// import { User } from "../../../core/public/models.model";
-// import { AlertService } from "./alert/alert.service";
+import { OrgHelperService } from 'core/public/orgHelper.service';
 
 @Component({
     selector: "cde-orgs-edit",
@@ -15,7 +13,7 @@ export class OrgsEditComponent implements OnInit {
     constructor(@Inject("AccountManagement") private AccountManagement,
                 private Alert: AlertService,
                 private http: Http,
-                public orgHelper: OrgHelperService
+                private orgHelperService: OrgHelperService
     ) {}
 
     newOrg: any = {};
@@ -50,8 +48,7 @@ export class OrgsEditComponent implements OnInit {
     updateOrg (org) {
         this.AccountManagement.updateOrg(org, res => {
             this.orgs = this.getOrgs(() => {
-                this.orgHelper.getOrgsDetails();
-                this.Alert.addAlert("success", res);
+                this.orgHelperService.reload().then(() => this.Alert.addAlert("success", res));
             });
         }, res => this.Alert.addAlert("danger", res)
         );

@@ -5,17 +5,19 @@ import { SharedService } from "./shared.service";
 
 @Injectable()
 export class OrgHelperService  {
+    orgsDetailedInfo: any;
+    orgIsWorkingGroupOf = orgName => this.orgsDetailedInfo[orgName].workingGroupOf
+        && this.orgsDetailedInfo[orgName].workingGroupOf.trim() !== '';
+    private promise: Promise<void>;
 
     constructor(private http: Http,
                 @Inject("userResource") private userService,
                 @Inject("isAllowedModel") private isAllowedModel) {
 
-        this.getOrgsDetails();
+        this.reload();
     }
 
-    orgsDetailedInfo: any = {};
-
-    addLongNameToOrgs (buckets) {
+    addLongNameToOrgs(buckets) {
         buckets && buckets.forEach( v => {
             if (this.orgsDetailedInfo[v.key] && this.orgsDetailedInfo[v.key].longName) {
                 v.longName = this.orgsDetailedInfo[v.key].longName;
@@ -23,7 +25,7 @@ export class OrgHelperService  {
         });
     }
 
-    createOrgDetailedInfoHtml (orgName) {
+    createOrgDetailedInfoHtml(orgName) {
         if (this.orgsDetailedInfo[orgName]) {
             let anOrg = this.orgsDetailedInfo[orgName];
             if (anOrg.longName || anOrg.mailAddress || anOrg.emailAddress || anOrg.phoneNumber || anOrg.uri) {
@@ -40,26 +42,37 @@ export class OrgHelperService  {
         return '';
     }
 
-    orgIsWorkingGroupOf = orgName => this.orgsDetailedInfo[orgName].workingGroupOf
-        && this.orgsDetailedInfo[orgName].workingGroupOf.trim() !== '';
+    getStatusValidationRules(orgName) {
+        if (this.orgsDetailedInfo[orgName]) return this.orgsDetailedInfo[orgName].cdeStatusValidationRules;
+        else return [];
+    }
 
+    getUsedBy(elt) {
+        if (elt.classification) {
+            let arr = elt.classification.filter(c => this.showWorkingGroup(c.stewardOrg.name)).map(e => e.stewardOrg.name);
+            return arr.filter((item, pos) => arr.indexOf(item) === pos);
+        } else return [];
+    }
 
-    orgDetails: Observable<any>;
-
-    getOrgsDetails () {
-        this.orgDetails = this.http.get('/listOrgsDetailedInfo').map(r => r.json());
-        this.orgDetails.subscribe(response => {
-            response.forEach(org => {
-                if (org) {
-                    if (!org.propertyKeys) org.propertyKeys = [];
-                    if (!org.nameTags) org.nameTags = [];
-                    this.orgsDetailedInfo[org.name] = org;
-                }
-            });
+    reload() {
+        return this.promise = new Promise<void>(resolve => {
+            this.http.get('/listOrgsDetailedInfo')
+                .map(r => r.json())
+                .subscribe(response => {
+                    this.orgsDetailedInfo = {};
+                    response.forEach(org => {
+                        if (org) {
+                            if (!org.propertyKeys) org.propertyKeys = [];
+                            if (!org.nameTags) org.nameTags = [];
+                            this.orgsDetailedInfo[org.name] = org;
+                        }
+                    });
+                    resolve();
+                });
         });
     }
 
-    showWorkingGroup (orgToHide) {
+    showWorkingGroup(orgToHide) {
         if (!this.userService.user) return false;
         let parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
         let isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
@@ -80,19 +93,9 @@ export class OrgHelperService  {
         return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;
     }
 
-    getUsedBy (elt) {
-        if (elt.classification) {
-            let arr = elt.classification.filter(c => this.showWorkingGroup(c.stewardOrg.name)).map(e => e.stewardOrg.name);
-            return arr.filter((item, pos) => arr.indexOf(item) === pos);
-        } else return [];
+    then(cb) {
+        return this.promise.then(cb);
     }
-
-    getStatusValidationRules (orgName) {
-        if (this.orgsDetailedInfo[orgName]) return this.orgsDetailedInfo[orgName].cdeStatusValidationRules;
-        else return [];
-    }
-
-
 }
 
 

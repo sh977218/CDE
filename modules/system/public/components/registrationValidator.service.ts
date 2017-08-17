@@ -3,7 +3,7 @@ import { OrgHelperService } from "core/public/orgHelper.service";
 
 @Injectable()
 export class RegistrationValidatorService {
-    constructor (public orgHelpers: OrgHelperService) {}
+    constructor (private orgHelperService: OrgHelperService) {}
 
     evalCde(cde, orgName, status, cdeOrgRules) {
         let orgRules = cdeOrgRules[orgName];
@@ -63,7 +63,7 @@ export class RegistrationValidatorService {
     getOrgRulesForCde(cde) {
         let result = {};
         cde.classification.forEach((org) => {
-            result[org.stewardOrg.name] = this.orgHelpers.getStatusValidationRules(org.stewardOrg.name);
+            result[org.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(org.stewardOrg.name);
         });
         return result;
     }

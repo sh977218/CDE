@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { CdeForm } from 'form/public/form.model';
 import { DataElement } from 'cde/public/dataElement.model';
 import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
+import { HelperObjectsService } from 'widget/helperObjects.service';
 
 export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnChanges {
     @Input() reloads: number;
@@ -26,7 +27,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     aggregations: any;
     altClassificationFilterMode: boolean;
     byTopic: boolean;
-    currentSearchTerm: string;
     cutoffIndex: any;
     elts: Elt[];
     embedded = false;
@@ -35,9 +35,11 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         xml: {id: "xmlExport", display: "XML Export"}
     };
     filterMode = true;
+    helperObjectsService = HelperObjectsService;
     lastQueryTimeStamp: number;
     module: string;
     numPages: any;
+    oninit = false;
     orgs: any[];
     orgHtmlOverview: string;
     pinComponent: Type<Component>;
@@ -61,12 +63,16 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.reloads)
+        if (changes.reloads) {
+            this.oninit = true;
             this.search();
+        }
     }
 
     ngOnInit () {
-        this.search();
+        // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
+        if (!this.oninit)
+            this.search();
     }
 
     constructor(protected _componentFactoryResolver,
@@ -168,6 +174,53 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         this.doSearch();
     }
 
+    clearSelectedClassifications() {
+        this.searchSettings.selectedOrg = null;
+        if (this.searchSettings.classification)
+            this.searchSettings.classification.length = 0;
+
+        if (this.hasSelectedClassificationsAlt()) {
+            this.searchSettings.selectedOrg = this.searchSettings.selectedOrgAlt;
+            if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0) {
+                this.searchSettings.classification = this.searchSettings.classificationAlt;
+                this.searchSettings.classificationAlt = null;
+            }
+        }
+
+        this.clearSelectedClassificationsAlt();
+    }
+
+    clearSelectedClassificationsAlt() {
+        this.altClassificationFilterMode = false;
+        this.searchSettings.selectedOrgAlt = null;
+        if (this.searchSettings.classificationAlt)
+            this.searchSettings.classificationAlt.length = 0;
+
+        this.doSearch();
+    }
+
+    clearSelectedDatatypes() {
+        if (this.searchSettings.datatypes) {
+            this.searchSettings.datatypes.length = 0;
+
+            this.doSearch();
+        }
+    }
+
+    clearSelectedStatuses() {
+        if (this.searchSettings.regStatuses) {
+            this.searchSettings.regStatuses.length = 0;
+
+            this.doSearch();
+        }
+    }
+
+    clearSelectedTopics() {
+        this.searchSettings.meshTree = '';
+
+        this.doSearch();
+    }
+
     static compareObjName(a: any, b: any): number {
         return SearchBaseComponent.compareString(a.name, b.name);
     }
@@ -193,9 +246,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             let loc = this.generateSearchForTerm();
             window.sessionStorage.removeItem('nlmcde.scroll.' + loc);
             this.redirect(loc);
-        }
-
-        this.reload();
+        } else
+            this.reload();
     }
 
     fakeNextPageLink() {
@@ -206,10 +258,11 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     private filterOutWorkingGroups(cb) {
-        this.orgHelperService.orgDetails.subscribe(() => {
+        this.orgHelperService.then(() => {
             this.userService.getPromise().then(() => {
                 this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket => {
-                    return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user) || this.userService.user.siteAdmin;
+                    return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user)
+                        || this.userService.user.siteAdmin;
                 });
                 cb();
             });
@@ -289,44 +342,54 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         return SharedService.regStatusShared.orderedList.indexOf(rg.key);
     }
 
-    // Create string representation of what classification filters are selected
+    // Create string representation of what filters are selected. Use the hasSelected...() first.
     getSelectedClassifications() {
-        if (this.searchSettings.selectedOrg) {
-            let result = this.searchSettings.selectedOrg;
-            if (this.searchSettings.classification && this.searchSettings.classification.length > 0)
-                result += ' > ' + this.searchSettings.classification.join(' > ');
-            return result;
-        } else
-            return 'All Classifications';
+        let result = this.searchSettings.selectedOrg;
+        if (this.searchSettings.classification && this.searchSettings.classification.length > 0)
+            result += ' > ' + this.searchSettings.classification.join(' > ');
+        return result;
     }
 
     getSelectedClassificationsAlt() {
-        if (this.searchSettings.selectedOrgAlt) {
-            let result = this.searchSettings.selectedOrgAlt;
-            if (this.searchSettings.classificationAlt.length > 0)
-                result += ' > ' + this.searchSettings.classificationAlt.join(' > ');
-            return result;
-        } else
-            return 'All Classifications';
+        let result = this.searchSettings.selectedOrgAlt;
+        if (this.searchSettings.classificationAlt.length > 0)
+            result += ' > ' + this.searchSettings.classificationAlt.join(' > ');
+        return result;
     }
 
-    // Create string representation of what datatype filters are selected
     getSelectedDatatypes() {
-        if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0)
-            return this.searchSettings.datatypes.join(', ');
-        else
-            return 'All Datatypes';
+        return this.searchSettings.datatypes.join(', ');
     }
 
-    // Create string representation of what status filters are selected
     getSelectedStatuses() {
-        if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0) {
-            if (this.searchSettings.regStatuses.length === 6)
-                return 'All Statuses';
-            else
-                return this.searchSettings.regStatuses.join(', ');
-        } else
-            return 'All Statuses';
+        return this.searchSettings.regStatuses.join(', ');
+    }
+
+    getSelectedTopics() {
+        let res = this.searchSettings.meshTree.split(';').join(' > ');
+        return res.length > 50 ? res.substr(0, 49) + '...' : res;
+    }
+
+    hasSelectedClassifications() {
+        return this.searchSettings.selectedOrg;
+    }
+
+    hasSelectedClassificationsAlt() {
+        return this.searchSettings.selectedOrgAlt;
+    }
+
+    hasSelectedDatatypes() {
+        return this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0;
+    }
+
+    hasSelectedStatuses() {
+        return this.searchSettings.regStatuses
+            && this.searchSettings.regStatuses.length > 0
+            && this.searchSettings.regStatuses.length !== 6;
+    }
+
+    hasSelectedTopics() {
+        return this.searchSettings.meshTree && this.searchSettings.meshTree.length > 0;
     }
 
     hideShowFilter() {
@@ -408,7 +471,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     reload() {
-        this.currentSearchTerm = this.searchSettings.q;
         this.userService.getPromise().then(() => {
             let timestamp = new Date().getTime();
             this.lastQueryTimeStamp = timestamp;
@@ -416,7 +478,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
 
             this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
-                if (corrected && this.searchSettings.q) this.currentSearchTerm = this.searchSettings.q.replace(/[^\w\s]/gi, '');
+                if (corrected && this.searchSettings.q)
+                    this.searchSettings.q = this.searchSettings.q.replace(/[^\w\s]/gi, '');
                 if (err) {
                     this.accordionListStyle = '';
                     this.alert.addAlert('danger', 'There was a problem with your query');
@@ -454,7 +517,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                 }
 
                 this.elts.forEach(elt => {
-                    this.orgHelperService.orgDetails.subscribe(() => {
+                    this.orgHelperService.then(() => {
                         elt.usedBy = this.orgHelperService.getUsedBy(elt, this.userService.user);
                     });
                 });
@@ -497,9 +560,9 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
 
                 let orgsCreatedPromise = new Promise(resolve => {
                     this.filterOutWorkingGroups(() => {
-                        this.orgHelperService.orgDetails.subscribe(() => this.orgHelperService.addLongNameToOrgs(
+                        this.orgHelperService.then(() => this.orgHelperService.addLongNameToOrgs(
                             this.aggregations.orgs.buckets, this.orgHelperService.orgsDetailedInfo));
-                        this.aggregations.orgs.buckets.sort(function(a, b) {
+                        this.aggregations.orgs.buckets.sort(function (a, b) {
                             let A = a.key.toLowerCase();
                             let B = b.key.toLowerCase();
                             if (B > A) return -1;
@@ -520,9 +583,10 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                 this.switchView(this.isSearched() ? 'results' : 'welcome');
                 if (this.view === 'welcome') {
                     this.orgs = [];
-                    orgsCreatedPromise.then(() => {
-                        if (this.aggregations) {
-                            this.orgHelperService.orgDetails.subscribe(() => {
+
+                    if (this.aggregations) {
+                        orgsCreatedPromise.then(() => {
+                            this.orgHelperService.then(() => {
                                 this.aggregations.orgs.buckets.forEach(org_t => {
                                     if (this.orgHelperService.orgsDetailedInfo[org_t.key])
                                         this.orgs.push({
@@ -536,8 +600,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                                 });
                                 this.orgs.sort(SearchBaseComponent.compareObjName);
                             });
-                        }
-                    });
+                        });
+                    }
 
                     this.topics = {};
                     this.topicsKeys = [];
@@ -575,7 +639,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     search() {
         // TODO: replace with router
         let params = SearchBaseComponent.searchParamsGet();
-        this.searchSettings.q = this.currentSearchTerm = params['q'];
+        this.searchSettings.q = params['q'];
         this.searchSettings.page = params['page'];
         if (!this.searchSettings.page)
             this.searchSettings.page = 1;
@@ -656,12 +720,12 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             SearchBaseComponent.focusTopic();
     }
 
-    selectedTopicsAsString() {
-        if (this.searchSettings.meshTree && this.searchSettings.meshTree.length > 0) {
-            let res = this.searchSettings.meshTree.split(';').join(' > ');
-            return res.length > 50 ? res.substr(0, 49) + '...' : res;
-        } else
-            return 'All Topics';
+    setAltClassificationFilterMode() {
+        this.altClassificationFilterMode = true;
+
+        this.doSearch();
+        if (!this.embedded)
+            SearchBaseComponent.focusClassification();
     }
 
     switchView(view) {
@@ -693,23 +757,22 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
 
     termSearch() {
         this.searchSettings.page = 1;
-        this.searchSettings.regStatuses = [];
-        this.searchSettings.classification = [];
+        this.searchSettings.regStatuses.length = 0;
+        this.searchSettings.datatypes.length = 0;
+        this.searchSettings.classification.length = 0;
+        this.searchSettings.classificationAlt.length = 0;
+        this.searchSettings.selectedOrgAlt = null;
         this.altClassificationFilterMode = false;
 
-        this.doSearch();
-    }
-
-    toggleAltClassificationFilterMode() {
-        this.altClassificationFilterMode = !this.altClassificationFilterMode;
-        if (!this.altClassificationFilterMode) {
-            this.searchSettings.selectedOrgAlt = '';
-            this.searchSettings.classificationAlt = [];
+        if (this.searchSettings.meshTree) {
+            let index = this.searchSettings.meshTree.indexOf(';');
+            if (index > -1)
+                index = this.searchSettings.meshTree.indexOf(';', index + 1);
+            if (index > -1)
+                this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index);
         }
 
         this.doSearch();
-        if (!this.embedded)
-            SearchBaseComponent.focusClassification();
     }
 
     static waitScroll(count, previousSpot) {
