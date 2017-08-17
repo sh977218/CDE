@@ -26,8 +26,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/home', {
             template: '<cde-home></cde-home>'
         }).when('/login', {
-            controller: 'AuthCtrl',
-            templateUrl: '/system/public/html/login.html'
+            template: '<cde-login></cde-login>'
         }).when('/siteAudit', {
             template: '<cde-site-audit></cde-site-audit>'
         }).when('/inbox', {
@@ -639,3 +638,7 @@ angular.module('systemModule').directive('cdeSearchPreferences', downgradeCompon
 
 import {EmbedComponent} from "../components/embed/embed.component"
 angular.module('systemModule').directive('cdeEmbed', downgradeComponent({component: EmbedComponent, inputs: [], outputs: []}));
+
+import {LoginComponent} from "../components/login/login.component"
+angular.module('systemModule').directive('cdeLogin', downgradeComponent(
+    {component: LoginComponent, inputs: [], outputs: []}));
