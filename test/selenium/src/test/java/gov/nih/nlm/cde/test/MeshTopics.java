@@ -93,6 +93,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         while (count < 5 && Integer.parseInt(findElement(By.id("searchResultNum")).getText()) < 17) {
             hangon(20);
             count++;
+            driver.navigate().refresh();
         }
         Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText()) >= 17);
 
