@@ -634,4 +634,9 @@ export class CompareSideBySideComponent implements OnInit {
             return JSON.stringify(value);
         else return value;
     }
+
+    doneMerge(event) {
+        this.left = event.left;
+        this.right = event.right;
+    }
 }

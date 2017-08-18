@@ -197,55 +197,6 @@ exports.init = function (app, daoManager) {
         res.send(elastic.pVCodeSystemList);
     });
 
-    app.post('/retireCde', function (req, res) {
-        let cdeMergeTo = req.body.merge;
-        let cdeMergeFrom = req.body.cde;
-        req.params.type = "received";
-        cdeMergeFrom.registrationState.registrationStatus = "Retired";
-        if (cdeMergeTo && cdeMergeTo.tinyId)
-            cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
-        mongo_cde.update(cdeMergeFrom, req.user, function (err, newDe) {
-            if (err) return res.status(500).send("ERROR");
-            res.send(newDe);
-        });
-    });
-    app.post('/mergeCde', function (req, res) {
-        let cdeMergeTo = req.body.mergeTo;
-        let cdeMergeFrom = req.body.mergeFrom;
-        if (cdeMergeTo && cdeMergeTo.tinyId)
-            cdeMergeFrom.changeNote = "Merged to tinyId " + cdeMergeTo.tinyId;
-        cdeMergeTo.changeNote = "Merged from tinyId " + cdeMergeFrom.tinyId;
-        if (req.body.retireCde) {
-            elastic.esClient.search({
-                type: 'form',
-                index: config.elastic.formIndex.name,
-                q: cdeMergeFrom.tinyId
-            }, function (err, result) {
-                if (err) return req.status(500).send(err);
-                if (result.hits.hits.length === 1) {
-                    cdeMergeFrom.registrationState.registrationStatus = "Retired";
-                    cdesvc.checkEligibleToRetire(req, res, cdeMergeFrom, () => {
-                        mongo_cde.update(cdeMergeFrom, req.user, function (err) {
-                            if (err) return res.status(500).send("ERROR");
-                            mongo_cde.update(cdeMergeTo, req.user, function (err) {
-                                if (err) return res.status(500).send("ERROR");
-                                res.status(200).send("retired");
-                            });
-                        });
-                    });
-                } else res.status(200).end();
-            });
-        } else {
-            mongo_cde.update(cdeMergeFrom, req.user, function (err) {
-                if (err) return res.status(500).send("ERROR");
-                mongo_cde.update(cdeMergeTo, req.user, function (err) {
-                    if (err) return res.status(500).send("ERROR");
-                    res.status(200).end();
-                });
-            });
-        }
-    });
-
     app.get('/sdc/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         sdc.byTinyIdVersion(req, res);
     });

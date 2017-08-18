@@ -10,10 +10,12 @@
                 <i class="fa fa-eye"></i> View Full Detail</a>
 
             <ng-container *ngIf="canMergeDataElement">
-                <cde-merge-data-element [source]="left" [destination]="right"></cde-merge-data-element>
+                <cde-merge-data-element [source]="left" [destination]="right"
+                                        (doneMerge)="doneMerge($event)"></cde-merge-data-element>
             </ng-container>
             <ng-container *ngIf="canMergeForm">
-                <cde-merge-form [left]="left" [right]="right"></cde-merge-form>
+                <cde-merge-form [left]="left" [right]="right"
+                                (doneMerge)="doneMerge($event)"></cde-merge-form>
             </ng-container>
         </div>
         <div class="col-xs-6 rightObj">

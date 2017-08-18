@@ -1,14 +1,14 @@
 <a class='btn btn-small btn-default fa fa-clipboard MergeDataElement'
-   id="openMergeDataElementModalBtn" (click)="openMergeDataElementModal()">Merge CDE</a>
+   id="openMergeDataElementModalBtn" (click)="openMergeDataElementModal()">Merge Data Element</a>
 
-<ng-template #MergeDataElementContent let-c="close" let-d="dismiss">
+<ng-template #mergeDataElementContent id="mergeDataElementModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="MergeDataElementModalHeader">
         <div class="col-xs-10 col-xs-offset-1">
             <a target="_blank" href="/deView?tinyId={{source.tinyId}}">{{source.naming[0].designation}}</a>
             [{{ source.stewardOrg.name }}]
             <br><i class="fa fa-arrow-down"></i><br>
-            <a target="_blank" href="/deView?tinyId={{target.tinyId}}">{{target.naming[0].designation}}</a>
-            [{{ target.stewardOrg.name }}]
+            <a target="_blank" href="/deView?tinyId={{destination.tinyId}}">{{destination.naming[0].designation}}</a>
+            [{{ destination.stewardOrg.name }}]
         </div>
     </div>
     <div class="modal-body" id="MergeDataElementModalBody">
@@ -18,52 +18,58 @@
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
                     <input type="checkbox" id="mergeFieldClassifications"
-                           [ngModel]="mergeRequest.mergeFields.classifications">Classifications
+                           [ngModel]="mergeFields.classifications">Classifications
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
-                    <input type="checkbox" id="mergeFieldIdentifiers" [ngModel]="mergeRequest.mergeFields.ids">Identifiers
+                    <input type="checkbox" id="mergeFieldIdentifiers" [ngModel]="mergeFields.ids">Identifiers
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
-                    <input type="checkbox" id="mergeFieldsNaming" [ngModel]="mergeRequest.mergeFields.naming">Names
+                    <input type="checkbox" id="mergeFieldsNaming" [ngModel]="mergeFields.naming">Names
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
                     <input type="checkbox" id="mergeFieldsProperties"
-                           [ngModel]="mergeRequest.mergeFields.properties">Properties
+                           [ngModel]="mergeFields.properties">Properties
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
                     <input type="checkbox" id="mergeFieldsAttachments"
-                           [ngModel]="mergeRequest.mergeFields.attachments">Attachments
+                           [ngModel]="mergeFields.attachments">Attachments
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
-                    <input type="checkbox" id="mergeFieldsSources" [ngModel]="mergeRequest.mergeFields.sources">Sources
+                    <input type="checkbox" id="mergeFieldsSources" [ngModel]="mergeFields.sources">Sources
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
                     <input type="checkbox" id="mergeFieldsReferenceDocuments"
-                           [ngModel]="mergeRequest.mergeFields.referenceDocuments">Reference Document
+                           [ngModel]="mergeFields.referenceDocuments">Reference Document
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
-                    <input type="checkbox" id="mergeFieldsDataSets" [ngModel]="mergeRequest.mergeFields.dataSets">Data
+                    <input type="checkbox" id="mergeFieldsDataSets" [ngModel]="mergeFields.dataSets">Data
                     Sets
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-offset-1 col-xs-10">
                     <input type="checkbox" id="mergeFieldsDerivationRules"
-                           [ngModel]="mergeRequest.mergeFields.derivationRules">Derivation Rules
+                           [ngModel]="mergeFields.derivationRules">Derivation Rules
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-1 col-xs-10">
+                    <input type="checkbox" id="mergeFieldsRetireCde"
+                           [ngModel]="mergeFields.retireCde">Retire Cde?
                 </div>
             </div>
         </div>
@@ -73,7 +79,7 @@
     </div>
     <div class="modal-footer" id="MergeDataElementModalFooter">
         <button class="btn btn-default cancel" (click)="c()">Cancel</button>
-        <button class="btn btn-warning cancel" (click)="sendMergeRequest()" id="sendMergeRequest">
+        <button class="btn btn-warning cancel" (click)="doMerge()" id="sendMergeRequest">
             Retire & Merge
         </button>
     </div>

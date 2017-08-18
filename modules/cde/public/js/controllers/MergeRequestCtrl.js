@@ -4,16 +4,6 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
             $scope.openMergeModal = function (retiredIndex) {
                 $scope.retiredIndex = retiredIndex;
                 $modal.open({
-                    animation: false,
-                    controller: 'MergeModalCtrl',
-                    resolve: {
-                        cdeSource: function () {
-                            return $http.get('/de/' + $scope.cdes[$scope.retiredIndex].tinyId);
-                        },
-                        cdeTarget: function () {
-                            return $http.get('/de/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);
-                        }
-                    }
                 }).result.then(function (dat) {
                     if (dat.approval.fieldsRequireApproval && !dat.approval.ownDestinationCde) {
                         MergeRequest.create(dat, function () {

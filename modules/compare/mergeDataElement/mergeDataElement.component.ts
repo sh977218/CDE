@@ -1,90 +1,87 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { AlertService } from 'system/public/components/alert/alert.service';
-import { MergeFormService } from 'core/public/mergeForm.service';
+import { Http } from '@angular/http';
+import { MergeCdeService } from 'core/public/mergeCde.service';
 
 @Component({
     selector: "cde-merge-data-element",
     providers: [NgbActiveModal],
     templateUrl: "./mergeDataElement.component.html"
 })
-export class MergeDataElementComponent implements OnInit {
+export class MergeDataElementComponent {
     @ViewChild("mergeDataElementContent") public mergeDataElementContent: NgbModalModule;
     @Input() public source: any;
     @Input() public destination: any;
+    @Output() doneMerge = new EventEmitter();
     public modalRef: NgbModalRef;
-    mergeRequest: any;
+    mergeFields: any = {
+        classifications: true,
+        ids: false,
+        naming: false,
+        properties: false,
+        attachments: false,
+        sources: false,
+        referenceDocuments: false,
+        dataSets: false,
+        derivationRules: false,
+        retireCde: true
+    };
 
-    constructor(private alert: AlertService,
-                public mergeFormService: MergeFormService,
+    constructor(private http: Http,
+                public modalService: NgbModal,
+                private alert: AlertService,
+                public mergeCdeService: MergeCdeService,
                 @Inject("isAllowedModel") private isAllowedModel,
-                @Inject('userResource') private userService,
-                public modalService: NgbModal) {
+                @Inject('userResource') private userService) {
     }
-
-    ngOnInit(): void {
-        this.mergeRequest = {
-            source: {tinyId: this.source.tinyId, object: this.destination.source},
-            destination: {tinyId: this.destination.target.tinyId, object: this.destination.target},
-            mergeFields: {
-                classifications: true,
-                ids: false,
-                naming: false,
-                properties: false,
-                attachments: false,
-                sources: false,
-                referenceDocuments: false,
-                dataSets: false,
-                derivationRules: false
-            }
-        };
-    }
-
 
     checkAllMergerFields() {
-        this.mergeRequest.mergeFields.classifications = true;
-        this.mergeRequest.mergeFields.ids = true;
-        this.mergeRequest.mergeFields.naming = true;
-        this.mergeRequest.mergeFields.properties = true;
-        this.mergeRequest.mergeFields.attachments = true;
-        this.mergeRequest.mergeFields.sources = true;
-        this.mergeRequest.mergeFields.referenceDocuments = true;
-        this.mergeRequest.mergeFields.dataSets = true;
-        this.mergeRequest.mergeFields.derivationRules = true;
+        this.mergeFields.classifications = true;
+        this.mergeFields.ids = true;
+        this.mergeFields.naming = true;
+        this.mergeFields.properties = true;
+        this.mergeFields.attachments = true;
+        this.mergeFields.sources = true;
+        this.mergeFields.referenceDocuments = true;
+        this.mergeFields.dataSets = true;
+        this.mergeFields.derivationRules = true;
+        this.mergeFields.retireCde = true;
     }
 
     approvalNecessary() {
         return {
-            fieldsRequireApproval: this.mergeRequest.mergeFields.ids ||
-            this.mergeRequest.mergeFields.naming ||
-            this.mergeRequest.mergeFields.properties ||
-            this.mergeRequest.mergeFields.attachments ||
-            this.mergeRequest.mergeFields.sources ||
-            this.mergeRequest.mergeFields.referenceDocuments ||
-            this.mergeRequest.mergeFields.dataSets ||
-            this.mergeRequest.mergeFields.derivationRules,
-            ownDestinationCde: this.userService.user.orgAdmin.concat(this.userService.user.orgCurator).indexOf(this.mergeRequest.destination.object.stewardOrg.name) > -1
+            fieldsRequireApproval: this.mergeFields.ids ||
+            this.mergeFields.naming ||
+            this.mergeFields.properties ||
+            this.mergeFields.attachments ||
+            this.mergeFields.sources ||
+            this.mergeFields.referenceDocuments ||
+            this.mergeFields.dataSets ||
+            this.mergeFields.derivationRules,
+            ownDestinationCde: this.userService.user.orgAdmin.concat(this.userService.user.orgCurator).indexOf(this.destination.stewardOrg.name) > -1
         };
     };
 
     showApprovalAlert() {
-        return this.approvalNecessary().fieldsRequireApproval &&
-            !this.approvalNecessary().ownDestinationCde;
+        return this.approvalNecessary().fieldsRequireApproval && !this.approvalNecessary().ownDestinationCde;
     }
 
     openMergeDataElementModal() {
         this.modalRef = this.modalService.open(this.mergeDataElementContent, {size: "lg"});
     }
 
-    sendMergeRequest() {
-        return {
-            /*
-                        mergeRequest: this.mergeRequest,
-                        recipient: this.target.stewardOrg.name,
-                        author: this.userService.user.username,
-                        approval: this.approvalNecessary()
-            */
-        }
+    doMerge() {
+        let tinyIdFrom = this.source.tinyId;
+        let tinyIdTo = this.destination.tinyId;
+        this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, this.mergeFields, (err, results) => {
+            if (err) return this.alert.addAlert("danger", err);
+            else {
+                this.alert.addAlert("success", "Finished merging");
+                this.doneMerge.emit({left: results[0], right: results[1]});
+                this.modalRef.close();
+            }
+        });
     }
 }
