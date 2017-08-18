@@ -30,7 +30,7 @@ public class CdeSideBySideCompareTest extends NlmCdeBaseTest {
         textPresent("reference document title 2", By.xpath(getSideBySideXpath("left", "reference documents", "notmatch", 1)));
         textPresent("reference document title 1", By.xpath(getSideBySideXpath("right", "reference documents", "notmatch", 1)));
 
-        textNotPresent("key 2", By.xpath(getSideBySideXpath("left", "properties", "notmatch", 1)));
+        textPresent("key 2", By.xpath(getSideBySideXpath("left", "properties", "notmatch", 1)));
         textPresent("key 1", By.xpath(getSideBySideXpath("right", "properties", "notmatch", 1)));
 
         textPresent("concept name 2", By.xpath(getSideBySideXpath("left", "data element concept", "notmatch", 1)));

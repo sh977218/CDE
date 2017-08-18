@@ -22,7 +22,7 @@ public class FormSideBySideCompare3 extends NlmCdeBaseTest {
         textPresent("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage",
                 By.xpath(getSideBySideXpath("left", "questions", "notmatch", 1)));
         textPresent("Ethnic Group Category Text",
-                By.xpath(getSideBySideXpath("left", "questions", "notmatch", 1)));
+                By.xpath(getSideBySideXpath("left", "questions", "notmatch", 2)));
 
         textPresent("Adverse Event Ongoing Event Indicator",
                 By.xpath(getSideBySideXpath("left", "questions", "fullmatch", 1)));

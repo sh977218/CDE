@@ -60,21 +60,6 @@ export class QuickBoardListService {
         this.number_dataElements = this.dataElements.length;
     }
 
-    getSelectedElts() {
-        if (this.quickBoard.elts.length === 2
-            && Object.keys(this.eltsToCompareMap).length === 0)
-            this.quickBoard.elts.forEach(e => {
-                this.eltsToCompareMap[e.tinyId] = e;
-            });
-
-        let selectedElts = [];
-        for (let key in this.eltsToCompareMap) {
-            if (this.eltsToCompareMap.hasOwnProperty(key))
-                selectedElts.push(this.eltsToCompareMap[key]);
-        }
-        return selectedElts;
-    }
-
     setDefaultQuickBoard(tab) {
         let type;
         if (tab.nextId === 'formQuickBoard') type = 'form';

@@ -24,8 +24,8 @@ public class CompareThreeThenTwoElementsTest extends NlmCdeBaseTest {
         closeAlert();
         clickElement(By.id("remove_2"));
         clickElement(By.id("qb_compare"));
-        textPresent("an observational assessment that is used to measure");
-        textPresent("pain/discomfort, and anxiety/depression");
+        textPresent("Text term to signify a completed assessment using the Assessment of Motor and Process Skills Assessment (AMPS)");
+        textPresent("the indicator whether the EuroQOL (EQ-5D), a descriptive questionnaire that consists of 5");
     }
 
 }
