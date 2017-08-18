@@ -68,7 +68,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         textPresent("National Institute of Neurological Disorders and Stroke");
         textPresent("results for All Terms | All Classifications | Health Care > Health Care Economics and Organizat... | All St");
         clickElement(By.id("menu_forms_link"));
-        clickElement(By.linkText("Browse by Topic");
+        clickElement(By.linkText("Browse by Topic"));
         clickElement(By.partialLinkText("Health Care Economics and Organizations"));
         clickElement(By.id("li-blank-Organizations"));
         clickElement(By.id("li-blank-Government"));
