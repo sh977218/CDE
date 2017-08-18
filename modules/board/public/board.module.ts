@@ -14,6 +14,8 @@ import { PinBoardModalComponent } from "./components/pins/pinBoardModal.componen
 import { PinQuickboardComponent } from "./components/pins/pinQuickboard.component";
 import { SearchModule } from "search/search.module";
 import { UnpinBoardComponent } from "./components/listView/unpinBoard.component";
+import { BoardViewTemplateComponent } from "./components/boardViewTemplate/boardViewTemplate.component";
+import { MyBoardsComponent } from "./components/myBoards/myBoards.component";
 
 @NgModule({
     imports: [
@@ -25,9 +27,11 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         AdminItemModule,
     ],
     declarations: [
+        BoardViewTemplateComponent,
         CreateBoardComponent,
         LinkedBoardsComponent,
         ListSortComponent,
+        MyBoardsComponent,
         PinBoardComponent,
         PinBoardModalComponent,
         PinQuickboardComponent,

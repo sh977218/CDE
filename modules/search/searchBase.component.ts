@@ -48,6 +48,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     resultsView: string;
     resultPerPage = 20;
     searchSettings: SearchSettings = new SearchSettings;
+    searchedTerm: string;
     took: any;
     topics: any;
     topicsKeys: string[];
@@ -476,10 +477,10 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             this.lastQueryTimeStamp = timestamp;
             this.accordionListStyle = 'semi-transparent';
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-
             this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
+                this.searchedTerm = this.searchSettings.q;
                 if (corrected && this.searchSettings.q)
-                    this.searchSettings.q = this.searchSettings.q.replace(/[^\w\s]/gi, '');
+                    this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
                 if (err) {
                     this.accordionListStyle = '';
                     this.alert.addAlert('danger', 'There was a problem with your query');
