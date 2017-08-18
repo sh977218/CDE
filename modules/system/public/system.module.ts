@@ -42,6 +42,8 @@ import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serve
 import { TimeAgoPipe } from "time-ago-pipe";
 import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
 import { DiscussModule } from "../../discuss/discuss.module";
+import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
+import { EmbedComponent } from "./components/embed/embed.component";
 import { LoginComponent } from "./components/login/login.component";
 import { LoginService } from "./components/login/login.service";
 
@@ -68,6 +70,7 @@ import { LoginService } from "./components/login/login.service";
         ClientErrorsComponent,
         DailyUsageComponent,
         EditSiteAdminsComponent,
+        EmbedComponent,
         FeedbackIssuesComponent,
         HomeComponent,
         ListManagementComponent,
@@ -78,6 +81,7 @@ import { LoginService } from "./components/login/login.service";
         OrgAuthorityComponent,
         OrgsEditComponent,
         ProfileComponent,
+        SearchPreferencesComponent,
         ServerErrorsComponent,
         ServerStatusComponent,
         SiteAuditComponent,
@@ -92,6 +96,7 @@ import { LoginService } from "./components/login/login.service";
     ],
     entryComponents: [
         AlertComponent,
+        EmbedComponent,
         HomeComponent,
         LoginComponent,
         NavigationComponent,
@@ -99,6 +104,7 @@ import { LoginService } from "./components/login/login.service";
         OrgAuthorityComponent,
         ProfileComponent,
         ServerStatusComponent,
+        SearchPreferencesComponent,
         SiteAuditComponent,
         SiteManagementComponent,
         StatusValidationRulesComponent,
