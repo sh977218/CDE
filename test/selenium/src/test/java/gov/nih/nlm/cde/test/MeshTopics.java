@@ -96,6 +96,7 @@ public class MeshTopics extends NlmCdeBaseTest {
             driver.navigate().refresh();
         }
         Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText()) >= 17);
+        findElement(By.id("classifications-text-NINDS"));
 
         findElement(By.id("ftsearch-input")).sendKeys("type");
         clickElement(By.id("search.submit"));
