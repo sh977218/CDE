@@ -47,11 +47,10 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/profile', {
             template: '<cde-profile></cde-profile>'
         }).when('/triggerClientException', {
-            controller: 'TriggerClientExceptionCtrl',
+            controller:  ['$scope', function($scope) {trigger.error();}],
             template: 'An exception in your browser has been triggered.'
-        }).when('/searchSettings', {
-            controller: 'SearchSettingsCtrl',
-            templateUrl: '/system/public/html/searchSettings.html'
+        }).when('/searchPreferences', {
+            template: '<cde-search-preferences></cde-search-preferences>'
         });
     }])
     .directive('inlineEdit', ["$timeout", function ($timeout) {
@@ -632,6 +631,13 @@ angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent
 import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
 angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
     {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
+
+import {SearchPreferencesComponent} from "../components/searchPreferences/searchPreferences.component"
+angular.module('systemModule').directive('cdeSearchPreferences', downgradeComponent(
+    {component: SearchPreferencesComponent, inputs: [], outputs: []}));
+
+import {EmbedComponent} from "../components/embed/embed.component"
+angular.module('systemModule').directive('cdeEmbed', downgradeComponent({component: EmbedComponent, inputs: [], outputs: []}));
 
 import {LoginComponent} from "../components/login/login.component"
 angular.module('systemModule').directive('cdeLogin', downgradeComponent(
