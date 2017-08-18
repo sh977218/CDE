@@ -16,6 +16,7 @@ export class MergeDataElementComponent {
     @Input() public destination: any;
     @Output() doneMerge = new EventEmitter();
     public modalRef: NgbModalRef;
+    allow = true;
     mergeFields: any = {
         classifications: true,
         ids: false,
@@ -83,5 +84,22 @@ export class MergeDataElementComponent {
                 this.modalRef.close();
             }
         });
+    }
+
+    allowToMerge() {
+        this.allow = true;
+        if (this.mergeFields.retireCde) {
+            this.allow = this.allow && this.isAllowedModel.isAllowed(this.source);
+        }
+        if (this.mergeFields.ids ||
+            this.mergeFields.naming ||
+            this.mergeFields.properties ||
+            this.mergeFields.attachments ||
+            this.mergeFields.sources ||
+            this.mergeFields.referenceDocuments ||
+            this.mergeFields.dataSets ||
+            this.mergeFields.derivationRules) {
+            this.allow = this.allow && this.isAllowedModel.isAllowed(this.destination);
+        }
     }
 }

@@ -1312,4 +1312,22 @@ public class NlmCdeBaseTest {
         else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));
     }
 
+    protected String getSideBySideXpath(String side, String section, String type, int index) {
+        if (side.equalsIgnoreCase("left")) side = "Left";
+        if (side.equalsIgnoreCase("right")) side = "Right";
+
+        if (section.equalsIgnoreCase("steward")) section = "Steward";
+        if (section.equalsIgnoreCase("status")) section = "Status";
+        if (section.equalsIgnoreCase("naming")) section = "Naming";
+        if (section.equalsIgnoreCase("reference documents")) section = "Reference Documents";
+        if (section.equalsIgnoreCase("properties")) section = "Properties";
+        if (section.equalsIgnoreCase("data element concept")) section = "Data Element Concept";
+        if (section.equalsIgnoreCase("questions")) section = "Questions";
+
+        if (type.equalsIgnoreCase("fullmatch")) type = "fullMatch";
+        if (type.equalsIgnoreCase("partialmatch")) type = "partialMatch";
+        if (type.equalsIgnoreCase("notmatch")) type = "notMatch";
+        return "(//*[@id='" + section + "']//*[contains(@class,'no" + side + "Padding')]//*[contains(@class,'" + type + "')])[" + index + "]";
+    }
+
 }

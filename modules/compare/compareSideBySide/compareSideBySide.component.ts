@@ -59,6 +59,7 @@ export class CompareSideBySideComponent implements OnInit {
             fe.formElements.forEach(e => {
                 if (e.elementType && e.elementType === "question") {
                     delete e.formElements;
+                    delete e._id;
                     questions.push(_.cloneDeep(e));
                 } else questions = questions.concat(this.flatFormQuestions(e));
             });
@@ -565,16 +566,15 @@ export class CompareSideBySideComponent implements OnInit {
         }
         this.canMergeForm = isForm && this.isAllowedModel.isAllowed(left) &&
             this.isAllowedModel.isAllowed(right);
-        this.canMergeDataElement = isDataElement && this.isAllowedModel.isAllowed(left) &&
-            this.isAllowedModel.isAllowed(right);
+        this.canMergeDataElement = isDataElement;
     }
 
     openCompareSideBySideContent() {
         let selectedDEs = this.elements.filter(d => d.checked);
         if (this.elements.length === 2)
             selectedDEs = this.elements;
-        if (selectedDEs < 2) {
-            this.alert.addAlert("warning", "Please select two elements to compare.");
+        if (selectedDEs.length !== 2) {
+            this.alert.addAlert("warning", "Please select only two elements to compare.");
             return;
         }
         this.doCompare(selectedDEs[0], selectedDEs[1], () => {

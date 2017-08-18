@@ -34,7 +34,6 @@ exports.init = function (app, daoManager) {
 
     app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
 
-
     app.post("/de/:id?", cdesvc.createDataElement);
     app.put("/de/:tinyId", cdesvc.updateDataElement);
 
@@ -297,7 +296,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/classification/cde', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send();
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) return res.status(401).send("Not Authorized.");
         classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
             if (!err) {
                 res.send({code: 200, msg: "Classification Added"});

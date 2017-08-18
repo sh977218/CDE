@@ -53,7 +53,7 @@ export class MergeCdeService {
                 let putDeToObservable = this.putDeByTinyId(cdeTo);
                 Observable.forkJoin([putDeFromObservable, putDeToObservable]).subscribe(results => {
                     cb(null, results);
-                }, err => cb("Unable to mergeCde " + tinyIdFrom));
+                }, err => cb("Unable to mergeCde " + tinyIdFrom + ". Err:" + err));
             }, err => cb("unable to get cde " + err)
         );
     }

@@ -6,9 +6,8 @@
 <ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="compareSideBySideModalHeader">
         <div class="col-xs-6 leftObj">
-            <a class='btn btn-small btn-default' target="_blank" [href]=leftUrl>
+            <a id="sourceElement" class='btn btn-small btn-default' target="_blank" [href]=leftUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
-
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="left" [destination]="right"
                                         (doneMerge)="doneMerge($event)"></cde-merge-data-element>
@@ -19,7 +18,7 @@
             </ng-container>
         </div>
         <div class="col-xs-6 rightObj">
-            <a class='btn btn-small btn-default' target="_blank" [href]=rightUrl>
+            <a id="destinationElement" class='btn btn-small btn-default' target="_blank" [href]=rightUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="left" [destination]="right"
@@ -37,34 +36,42 @@
                 <div class="overflowHidden">
                     <label>{{option.displayAs.label}}</label>
                     <div *ngFor="let fullMatch of option.fullMatches" class="col-xs-12">
-                        <div class="col-xs-6 noLeftPadding fullMatch">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <label>{{d.label?d.label+":":d.label}}</label>
-                                <span [innerHTML]=getValue(fullMatch.left,d)></span>
+                        <div class="col-xs-6 noLeftPadding">
+                            <div class="fullMatch">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <span [innerHTML]=getValue(fullMatch.left,d)></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-6 noRightPadding fullMatch">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <label>{{d.label?d.label+":":d.label}}</label>
-                                <span [innerHTML]=getValue(fullMatch.right,d)></span>
+                        <div class="col-xs-6 noRightPadding">
+                            <div class="fullMatch">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <span [innerHTML]=getValue(fullMatch.right,d)></span>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div *ngFor="let partialMatch of option.partialMatches" class="col-xs-12">
-                        <div class="col-xs-6 noLeftPadding partialMatch">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <label>{{d.label?d.label+":":d.label}}</label>
-                                <span [innerHTML]=getValue(partialMatch.left,d)></span>
-                                <i *ngIf="partialMatch.diff.indexOf(d.property)>-1"
-                                   class="fa fa-exclamation-triangle"></i>
+                        <div class="col-xs-6 noLeftPadding">
+                            <div class="partialMatch">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <span [innerHTML]=getValue(partialMatch.left,d)></span>
+                                    <i *ngIf="partialMatch.diff.indexOf(d.property)>-1"
+                                       class="fa fa-exclamation-triangle"></i>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-6 noRightPadding partialMatch">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <label>{{d.label?d.label+":":d.label}}</label>
-                                <span [innerHTML]=getValue(partialMatch.right,d)></span>
-                                <i *ngIf="partialMatch.diff.indexOf(d.property)>-1"
-                                   class="fa fa-exclamation-triangle"></i>
+                        <div class="col-xs-6 noRightPadding">
+                            <div class="partialMatch">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <label>{{d.label?d.label+":":d.label}}</label>
+                                    <span [innerHTML]=getValue(partialMatch.right,d)></span>
+                                    <i *ngIf="partialMatch.diff.indexOf(d.property)>-1"
+                                       class="fa fa-exclamation-triangle"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -91,8 +98,7 @@
         </ng-container>
     </div>
     <div class="modal-footer" id="compareSideBySideModalFooter">
-        <button class="btn btn-warning" id="closeCompareSideBySideBtn"
-                (click)="c();">Close
+        <button class="btn btn-warning" id="closeCompareSideBySideBtn" (click)="c();">Close
         </button>
     </div>
 </ng-template>

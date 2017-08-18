@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.quickboard;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
@@ -12,25 +12,18 @@ public class CompareThreeThenTwoElementsTest extends NlmCdeBaseTest {
         String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
         String cde2 = "EuroQOL Complete Indicator";
         String cde3 = "Administration Route of Administration java.lang.String";
-
         addCdeToQuickBoard(cde1);
         addCdeToQuickBoard(cde2);
         addCdeToQuickBoard(cde3);
-        clickElement(By.linkText("Quick Board (3)"));
-        clickElement(By.id("dataElementQuickBoard"));
-        textPresent(cde1);
-        textPresent(cde2);
-        textPresent(cde3);
-        clickElement(By.id("qb_compare"));
-        textPresent("You may only compare 2 elements side by side.");
-        closeAlert();
-        clickElement(By.id("remove_2"));
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
+        clickElement(By.id("qb_elt_compare_2"));
         clickElement(By.id("qb_compare"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));
+        textPresent("Please select only two elements to compare.");
+        closeAlert();
+        clickElement(By.id("remove_2"));
+        clickElement(By.id("qb_compare"));
         textPresent("an observational assessment that is used to measure");
         textPresent("pain/discomfort, and anxiety/depression");
     }
