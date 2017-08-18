@@ -8,7 +8,7 @@
                 Make
                 <div class="form-group">
                     <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"
-                           placeholder="enter user name" ng-model="orgCurator.username"
+                           placeholder="enter user name" ng-model="orgCurator.username" autocomplete="off"
                            uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
                            typeahead-min-length="3" required>
                 </div>
