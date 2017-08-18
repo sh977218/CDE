@@ -13,6 +13,7 @@ module.exports = {
         element(by.id("passwd")).clear();
         element(by.id("passwd")).sendKeys(password);
         element(by.id("login_button")).click();
+        this.textPresent("has been designed to provide");
         expect(element(by.id("username_link")).getText()).toContain(usernameStr);
     },
 

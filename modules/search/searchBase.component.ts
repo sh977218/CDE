@@ -479,9 +479,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
             this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
                 this.searchedTerm = this.searchSettings.q;
-                if (this.searchedTerm) this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
                 if (corrected && this.searchSettings.q)
-                    this.searchSettings.q = this.searchSettings.q.replace(/[^\w\s]/gi, '');
+                    this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
                 if (err) {
                     this.accordionListStyle = '';
                     this.alert.addAlert('danger', 'There was a problem with your query');
