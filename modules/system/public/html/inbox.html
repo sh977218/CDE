@@ -10,14 +10,6 @@
             <div ng-include="'/system/public/html/messages/commentReplyMessage.html'"></div>
         </div>
 
-        <div uib-accordion-group class='panel-default' ng-if="message.type === 'MergeRequest'">
-            <uib-accordion-heading>
-                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} |
-                {{message.typeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
-            </uib-accordion-heading>
-            <div ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
-        </div>
-
         <div uib-accordion-group class='panel-default' ng-if="message.type === 'CommentApproval'">
             <uib-accordion-heading>
                 {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}} |

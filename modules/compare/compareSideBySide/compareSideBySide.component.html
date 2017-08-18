@@ -22,10 +22,12 @@
             <a class='btn btn-small btn-default' target="_blank" [href]=rightUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
-                <cde-merge-data-element [source]="left" [destination]="right"></cde-merge-data-element>
+                <cde-merge-data-element [source]="left" [destination]="right"
+                                        (doneMerge)="doneMerge($event)"></cde-merge-data-element>
             </ng-container>
             <ng-container *ngIf="canMergeForm">
-                <cde-merge-form [left]="right" [right]="left"></cde-merge-form>
+                <cde-merge-form [left]="right" [right]="left"
+                                (doneMerge)="doneMerge($event)"></cde-merge-form>
             </ng-container>
         </div>
     </div>

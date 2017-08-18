@@ -577,8 +577,14 @@ export class CompareSideBySideComponent implements OnInit {
             this.alert.addAlert("warning", "Please select two elements to compare.");
             return;
         }
-        let leftObservable = this.http.get(URL_MAP[selectedDEs[0].elementType] + selectedDEs[0].tinyId).map(res => res.json());
-        let rightObservable = this.http.get(URL_MAP[selectedDEs[1].elementType] + selectedDEs[1].tinyId).map(res => res.json());
+        this.doCompare(selectedDEs[0], selectedDEs[1], () => {
+            this.modalRef = this.modalService.open(this.compareSideBySideContent, {size: "lg"});
+        });
+    };
+
+    doCompare(l, r, cb) {
+        let leftObservable = this.http.get(URL_MAP[l.elementType] + l.tinyId).map(res => res.json());
+        let rightObservable = this.http.get(URL_MAP[r.elementType] + r.tinyId).map(res => res.json());
         Observable.forkJoin([leftObservable, rightObservable]).subscribe(results => {
             this.left = <any>results[0];
             this.right = <any>results[1];
@@ -618,7 +624,7 @@ export class CompareSideBySideComponent implements OnInit {
                 if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0)
                     option.displayAs.display = true;
             });
-            this.modalRef = this.modalService.open(this.compareSideBySideContent, {size: "lg"});
+            cb();
         }, err => this.alert.addAlert("danger", err));
     }
 
@@ -638,5 +644,7 @@ export class CompareSideBySideComponent implements OnInit {
     doneMerge(event) {
         this.left = event.left;
         this.right = event.right;
+        this.doCompare(this.left, this.right, () => {
+        });
     }
 }
