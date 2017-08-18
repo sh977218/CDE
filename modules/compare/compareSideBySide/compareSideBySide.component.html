@@ -33,7 +33,7 @@
     </div>
     <div class="modal-body col-xs-12" id="compareSideBySideModalBody">
         <ng-container *ngFor="let option of options">
-            <div *ngIf="option.displayAs.display">
+            <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
                 <div class="overflowHidden">
                     <label>{{option.displayAs.label}}</label>
                     <div *ngFor="let fullMatch of option.fullMatches" class="col-xs-12">
