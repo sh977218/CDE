@@ -108,7 +108,6 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='li-blank-Public Health']"));
         clickElement(By.id("status-text-Qualified"));
         clickElement(By.xpath("//*[@id='datatype-text-Value List']"));
-        clickElement(By.id("datatype-text-Text"));
 
         textPresent("type", By.id("term_crumb"));
         textPresent("NINDS > Domain", By.id("classif_filter"));
@@ -116,7 +115,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         textPresent("NINDS > Disease", By.id("classif_filter"));
         textPresent("Health Care > Environment and Public Health > Pub...", By.id("topic_crumb"));
         textPresent("Qualified", By.id("status_crumb"));
-        textPresent("Value List, Text", By.id("datatype_crumb"));
+        textPresent("Value List", By.id("datatype_crumb"));
 
         clickElement(By.id("removeDatatypes"));
         clickElement(By.id("removeStatuses"));
