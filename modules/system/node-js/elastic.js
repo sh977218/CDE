@@ -195,9 +195,11 @@ exports.initEs = function (cb) {
     async.forEach(esInit.indices, function (index, doneOneIndex) {
         createIndex(index, doneOneIndex);
     }, function doneAllIndices() {
-        if (process.env.NODE_ENV === "dev-test" || process.env.NODE_ENV === "dev2-test") {
+        let allowMeshAutoStart = ["test", "dev-test", "dev2-test"];
+        let node_env = process.env.NODE_ENV;
+        if (node_env && allowMeshAutoStart.indexOf(node_env) > -1) {
             console.log("Starting sync meSH");
-            syncWithMesh();
+            exports.syncWithMesh();
         }
         if (cb) cb();
     });
@@ -566,11 +568,11 @@ let searchTemplate = {
 
 exports.syncWithMesh = function () {
     mongo_data.findMeshClassification({}, function (err, allMappings) {
-        syncWithMesh(allMappings);
+        doSyncWithMesh(allMappings);
     });
 };
 
-function syncWithMesh(allMappings) {
+function doSyncWithMesh(allMappings) {
     exports.meshSyncStatus = {
         dataelement: {done: 0},
         form: {done: 0}
