@@ -9,11 +9,12 @@ import { SharedService } from "./shared.service";
 
 @Injectable()
 export class ExportService {
-    constructor (private alertService: AlertService,
-                 private registrationValidatorService: RegistrationValidatorService,
-                 private elasticService: ElasticService,
-                 @Inject("SearchSettings") private searchSettings,
-                 @Inject('userResource') protected userService) {}
+    constructor(private alertService: AlertService,
+                private registrationValidatorService: RegistrationValidatorService,
+                private elasticService: ElasticService,
+                @Inject("SearchSettings") private searchSettings,
+                @Inject('userResource') protected userService) {
+    }
 
     exportSearchResults(type, module, exportSettings) {
         if (module === 'form' && (!this.userService.user || !this.userService.user._id))
@@ -87,8 +88,8 @@ export class ExportService {
                                     validationRules: this.registrationValidatorService.evalCde(oneElt, orgName, status, cdeOrgRules)
                                 };
                                 if (!record.validationRules.every(function (x) {
-                                    return x.cdePassingRule;
-                                })) cdes.push(record);
+                                        return x.cdePassingRule;
+                                    })) cdes.push(record);
                             }
                         });
                         if (exportSettings.cb) exportSettings.cb(cdes.slice(0, 100));
@@ -113,6 +114,10 @@ export class ExportService {
         this.searchSettings.getPromise().then((settings) => {
             let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
             quickBoard.elts.forEach(function (ele) {
+                // @TODO remove after convert tags
+                ele.naming.forEach(n => {
+                    delete n.newTags;
+                });
                 result += SharedService.exportShared.convertToCsv(
                     SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
             });
