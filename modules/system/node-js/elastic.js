@@ -12,7 +12,7 @@ const async = require('async')
     , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery")
     , mongo_data = require("../../system/node-js/mongo-data")
     , noDbLogger = require("../../system/node-js/noDbLogger")
-    ;
+;
 
 let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
@@ -20,7 +20,7 @@ let esClient = new elasticsearch.Client({
 
 exports.esClient = esClient;
 
-exports.removeElasticFields = function(elt) {
+exports.removeElasticFields = function (elt) {
     delete elt.classificationBoost;
     delete elt.flatClassifications;
     delete elt.primaryNameCopy;
@@ -37,12 +37,12 @@ exports.removeElasticFields = function(elt) {
 };
 
 exports.nbOfCdes = function (cb) {
-    esClient.count({index: config.elastic.index.name}, function(err, result){
+    esClient.count({index: config.elastic.index.name}, function (err, result) {
         cb(err, result.count);
     });
 };
 exports.nbOfForms = function (cb) {
-    esClient.count({index: config.elastic.formIndex.name}, function(err, result){
+    esClient.count({index: config.elastic.formIndex.name}, function (err, result) {
         cb(err, result.count);
     });
 };
@@ -63,7 +63,8 @@ function EsInjector(esClient, indexName, documentType) {
         }
     };
     this.inject = function (cb) {
-        if (!cb) cb = function(){};
+        if (!cb) cb = function () {
+        };
         let request = {
             body: []
         };
@@ -82,7 +83,7 @@ function EsInjector(esClient, indexName, documentType) {
         esClient.bulk(request, function (err) {
             if (err) {
                 // a few random fails, pause 2 seconds and try again.
-                setTimeout(function() {
+                setTimeout(function () {
                     esClient.bulk(request, function (err) {
                         if (err) {
                             dbLogger.logError({
@@ -162,7 +163,7 @@ exports.reIndex = function (index, cb) {
                 if (cb) cb();
             });
         });
-        stream.on('error', function(err) {
+        stream.on('error', function (err) {
             dbLogger.consoleLog("Error getting stream: " + err);
         });
     });
@@ -194,7 +195,10 @@ exports.initEs = function (cb) {
     async.forEach(esInit.indices, function (index, doneOneIndex) {
         createIndex(index, doneOneIndex);
     }, function doneAllIndices() {
-        syncWithMesh();
+        if (process.env.NODE_ENV === "dev-test" || process.env.NODE_ENV === "dev2-test") {
+            console.log("Starting sync meSH");
+            syncWithMesh();
+        }
         if (cb) cb();
     });
 };
@@ -211,7 +215,7 @@ exports.completionSuggest = function (term, cb) {
     esClient.suggest({
         index: config.elastic.storedQueryIndex.name,
         body: suggestQuery
-    }, function(error, response) {
+    }, function (error, response) {
         if (error) {
             cb(error);
         } else {
@@ -284,11 +288,11 @@ exports.buildElasticSearchQuery = function (user, settings) {
                                 {
                                     function_score: {
                                         query: hasSearchTerm ? {
-                                                query_string: {
-                                                    analyze_wildcard: true,
-                                                    query: settings.searchTerm
-                                                }
-                                            } : undefined,
+                                            query_string: {
+                                                analyze_wildcard: true,
+                                                query: settings.searchTerm
+                                            }
+                                        } : undefined,
                                         script_score: {script: script}
                                     }
                                 }
@@ -360,7 +364,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {flatMeshTrees: settings.meshTree}});
     }
 
-    let flatSelection = settings.selectedElements?settings.selectedElements.join(";"):"";
+    let flatSelection = settings.selectedElements ? settings.selectedElements.join(";") : "";
     if (settings.selectedOrg && flatSelection !== "") {
         sort = false;
         // boost for those elts classified fewer times
@@ -387,25 +391,33 @@ exports.buildElasticSearchQuery = function (user, settings) {
         settings.visibleStatuses = regStatusShared.orderedList;
 
     // show statuses that either you selected, or it's your org and it's not retired.
-    let regStatusAggFilter = {"bool": {"should": [
-        {
-            "bool": {
-                "should": settings.visibleStatuses.map(regStatus => {return {"term": {"registrationState.registrationStatus": regStatus}};})
-            }
+    let regStatusAggFilter = {
+        "bool": {
+            "should": [
+                {
+                    "bool": {
+                        "should": settings.visibleStatuses.map(regStatus => {
+                            return {"term": {"registrationState.registrationStatus": regStatus}};
+                        })
+                    }
+                }
+            ]
         }
-    ]}};
+    };
     if (usersvc.myOrgs(user).length > 0)
         regStatusAggFilter.bool.should.push({
             "bool": {
                 "must_not": {term: {"registrationState.registrationStatus": "Retired"}},
-                "should": usersvc.myOrgs(user).map(org => {return {"term": {"stewardOrg.name": org}};})
+                "should": usersvc.myOrgs(user).map(org => {
+                    return {"term": {"stewardOrg.name": org}};
+                })
             }
         });
 
     if (sort) {
         //noinspection JSAnnotator
         queryStuff.sort = {
-            "_score" : 'desc',
+            "_score": 'desc',
             "views": {
                 order: 'desc'
             }
@@ -515,7 +527,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         , "fields": {
             "stewardOrgCopy.name": {}
             , "primaryNameCopy": {}
-            , "primaryDefinitionCopy": {"number_of_fragments" : 1}
+            , "primaryDefinitionCopy": {"number_of_fragments": 1}
             , "naming.designation": {}
             , "naming.definition": {}
             , "dataElementConcept.concepts.name": {}
@@ -565,12 +577,12 @@ function syncWithMesh(allMappings) {
     };
 
     let classifToTrees = {};
-    allMappings.forEach(function(m) {
+    allMappings.forEach(function (m) {
         // from a;b;c to a a;b a;b;c
         classifToTrees[m.flatClassification] = [];
         m.flatTrees.forEach(function (treeNode) {
             classifToTrees[m.flatClassification].push(treeNode);
-            while(treeNode.indexOf(";") > -1) {
+            while (treeNode.indexOf(";") > -1) {
                 treeNode = treeNode.substr(0, treeNode.lastIndexOf(";"));
                 classifToTrees[m.flatClassification].push(treeNode);
             }
@@ -578,7 +590,7 @@ function syncWithMesh(allMappings) {
     });
 
     let classifToSimpleTrees = {};
-    allMappings.forEach(function(m) {
+    allMappings.forEach(function (m) {
         classifToSimpleTrees[m.flatClassification] = m.flatTrees;
     });
 
@@ -622,8 +634,10 @@ function syncWithMesh(allMappings) {
                                     _index: s.index,
                                     _type: s.type,
                                     _id: thisElt.tinyId
-                                }});
-                            request.body.push({doc: {
+                                }
+                            });
+                            request.body.push({
+                                doc: {
                                     flatMeshTrees: Array.from(trees),
                                     flatMeshSimpleTrees: Array.from(simpleTrees)
                                 }
@@ -668,7 +682,7 @@ exports.elasticsearch = function (query, type, cb) {
     let search = searchTemplate[type];
     if (!search) return cb("Invalid query");
     search.body = query;
-    esClient.search(search, function(error, response) {
+    esClient.search(search, function (error, response) {
         if (error) {
             if (response.status === 400) {
                 if (response.error.type !== 'search_phase_execution_exception') {
