@@ -46,7 +46,6 @@ import "./cde/public/js/controllers/BoardListCtrl";
 import "./cde/public/js/controllers/CreateCdeCtrl";
 import "./cde/public/js/controllers/DEViewCtrl";
 import "./cde/public/js/controllers/BoardExportCtrl";
-import "./cde/public/js/controllers/MyBoardsCtrl";
 import "./cde/public/js/controllers/InboxCtrl";
 import "./cde/public/js/controllers/MergeApproveCtrl";
 import "./cde/public/js/controllers/MergeRequestCtrl";
