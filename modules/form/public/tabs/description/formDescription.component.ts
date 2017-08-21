@@ -47,6 +47,7 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
             -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             background-clip: padding-box;
+            z-index: 9;
         }
         .descriptionToolbox .btn.formDescriptionTool {
             margin-left: 0;
