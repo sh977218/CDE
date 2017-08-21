@@ -109,10 +109,10 @@ export class ExportService {
             });
     }
 
-    quickBoardExport(quickBoard) {
+    quickBoardExport(elts) {
         this.searchSettings.getPromise().then((settings) => {
             let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-            quickBoard.elts.forEach(function (ele) {
+            elts.forEach(function (ele) {
                 result += SharedService.exportShared.convertToCsv(
                     SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
             });
