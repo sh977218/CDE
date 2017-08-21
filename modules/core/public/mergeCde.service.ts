@@ -3,10 +3,14 @@ import { Http } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/observable/forkJoin";
 import { MergeShareService } from "./mergeShare.service";
+import { ElasticService } from 'core/public/elastic.service';
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 @Injectable()
 export class MergeCdeService {
     constructor(private http: Http,
+                private elasticService: ElasticService,
+                private alert: AlertService,
                 private mergeShareService: MergeShareService,
                 @Inject("isAllowedModel") private isAllowedModel) {
     }
@@ -45,15 +49,22 @@ export class MergeCdeService {
                 if (fields.classifications)
                     this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
                 if (fields.retireCde) {
-                    cdeFrom.changeNote = "Merged to tinyId " + cdeTo.tinyId;
-                    cdeFrom.registrationState.registrationStatus = "Retired";
+                    let searchSettings = this.elasticService.defaultSearchSettings;
+                    searchSettings.q = '"' + cdeFrom.tinyId + '"';
+                    this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err, result) => {
+                        if (err) return this.alert.addAlert("danger", err);
+                        if (!result || !result.forms || result.forms.length < 2) {
+                            cdeFrom.changeNote = "Merged to tinyId " + cdeTo.tinyId;
+                            cdeFrom.registrationState.registrationStatus = "Retired";
+                        }
+                        cdeTo.changeNote = "Merged from tinyId " + cdeFrom.tinyId;
+                        let putDeFromObservable = this.putDeByTinyId(cdeFrom);
+                        let putDeToObservable = this.putDeByTinyId(cdeTo);
+                        Observable.forkJoin([putDeFromObservable, putDeToObservable]).subscribe(results => {
+                            cb(null, results);
+                        }, err => cb("Unable to mergeCde " + tinyIdFrom + ". Err:" + err));
+                    });
                 }
-                cdeTo.changeNote = "Merged from tinyId " + cdeFrom.tinyId;
-                let putDeFromObservable = this.putDeByTinyId(cdeFrom);
-                let putDeToObservable = this.putDeByTinyId(cdeTo);
-                Observable.forkJoin([putDeFromObservable, putDeToObservable]).subscribe(results => {
-                    cb(null, results);
-                }, err => cb("Unable to mergeCde " + tinyIdFrom + ". Err:" + err));
             }, err => cb("unable to get cde " + err)
         );
     }
