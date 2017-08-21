@@ -116,14 +116,13 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer" id="mergeFormModalFooter">
         <div *ngIf="mergeFormService.error.error" id="mergeFormErrorDiv" class="alert alert-danger">
             {{mergeFormService.error.error}}
         </div>
-
-        <div style="width:100%">
-            <ngb-progressbar *ngIf="showProgressBar" type="success" [value]="numMergedQuestions">
+    </div>
+    <div class="modal-footer" id="mergeFormModalFooter">
+        <div *ngIf="showProgressBar" style="width:100%">
+            <ngb-progressbar type="success" [value]="numMergedQuestions">
                 {{numMergedQuestions}}/{{maxNumberQuestions}}
             </ngb-progressbar>
         </div>

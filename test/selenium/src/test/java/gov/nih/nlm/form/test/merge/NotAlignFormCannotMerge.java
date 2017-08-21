@@ -8,7 +8,7 @@ public class NotAlignFormCannotMerge extends NlmCdeBaseTest {
 
     @Test
     public void notAlignFormCannotMerge() {
-        mustBeLoggedInAs(promis_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         String form1 = "PROMIS SF v1.0-Sleep Disturbance 4a";
         String form2 = "PROMIS SF v1.0-Sleep Disturbance 6a";
         addFormToQuickBoardByTinyId(form1);
