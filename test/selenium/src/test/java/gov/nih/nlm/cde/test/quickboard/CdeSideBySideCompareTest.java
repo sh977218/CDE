@@ -35,7 +35,7 @@ public class CdeSideBySideCompareTest extends NlmCdeBaseTest {
 
         textPresent("concept name 1", By.xpath(getSideBySideXpath("left", "data element concept", "notmatch", 1)));
         textPresent("concept name 2", By.xpath(getSideBySideXpath("right", "data element concept", "notmatch", 1)));
-        clickElement(By.id("closeModal"));
+        clickElement(By.id("closeCompareSideBySideBtn"));
 
         clickElement(By.id("qb_de_empty"));
         textPresent("CDE QuickBoard (0)");

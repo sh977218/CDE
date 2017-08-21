@@ -15,7 +15,7 @@ public class NotAlignFormCannotMerge extends NlmCdeBaseTest {
         addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_compare"));
-        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
+        clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeFormModalBtn']"));
 
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormErrorDiv");
