@@ -10,6 +10,7 @@ const async = require('async')
     , mongo_form = require("../../form/node-js/mongo-form")
     , mongo_board = require("../../board/node-js/mongo-board")
     , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery")
+    , mongo_data = require("../../system/node-js/mongo-data")
     , noDbLogger = require("../../system/node-js/noDbLogger")
     ;
 
@@ -193,6 +194,7 @@ exports.initEs = function (cb) {
     async.forEach(esInit.indices, function (index, doneOneIndex) {
         createIndex(index, doneOneIndex);
     }, function doneAllIndices() {
+        syncWithMesh();
         if (cb) cb();
     });
 };
@@ -549,7 +551,14 @@ let searchTemplate = {
     }
 };
 
-exports.syncWithMesh = function(allMappings) {
+
+exports.syncWithMesh = function () {
+    mongo_data.findMeshClassification({}, function (err, allMappings) {
+        syncWithMesh(allMappings);
+    });
+};
+
+function syncWithMesh(allMappings) {
     exports.meshSyncStatus = {
         dataelement: {done: 0},
         form: {done: 0}

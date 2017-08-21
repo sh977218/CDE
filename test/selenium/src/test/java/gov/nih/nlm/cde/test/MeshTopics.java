@@ -81,9 +81,8 @@ public class MeshTopics extends NlmCdeBaseTest {
         scrollToViewById("status_filter");
     }
 
-    @Test(dependsOnMethods = {"meshTopics"})
     public void cdeSearchBreadcrumb() {
-        mustBeLoggedOut();;
+        mustBeLoggedOut();
         goToCdeSearch();
 
         clickElement(By.id("topicTab"));

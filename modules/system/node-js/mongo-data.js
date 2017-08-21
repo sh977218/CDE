@@ -66,12 +66,16 @@ exports.findMeshClassification = function (query, cb) {
 };
 
 exports.addToViewHistory = function (elt, user) {
-    if (!elt || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
-        origin: "system.mongo-system.addToViewHistory",
-        stack: new Error().stack,
-        details: {"elt": elt, user: user}
-    });
-    var updStmt = {
+    if (!user) return;
+    if (!elt) {
+        logging.errorLogger.error("Error: Cannot update viewing history", {
+            origin: "system.mongo-system.addToViewHistory",
+            stack: new Error().stack,
+            details: {"elt": elt, user: user}
+        });
+        return;
+    }
+    let updStmt = {
         viewHistory: {
             $each: [elt.tinyId]
             , $position: 0
@@ -87,9 +91,7 @@ exports.addToViewHistory = function (elt, user) {
             }
         };
     }
-    User.update({'_id': user._id}, {
-        $push: updStmt
-    }).exec(function (err) {
+    User.update({'_id': user._id}, {$push: updStmt}).exec(function (err) {
         if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
             origin: "cde.mongo-cde.addToViewHistory",
             stack: new Error().stack,

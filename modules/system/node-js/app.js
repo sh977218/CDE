@@ -903,7 +903,7 @@ exports.init = function (app) {
 
     app.post("/syncWithMesh", function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-        syncWithMesh();
+        elastic.syncWithMesh();
         res.send();
     });
 
@@ -911,17 +911,11 @@ exports.init = function (app) {
         res.send(elastic.meshSyncStatus);
     });
 
-    function syncWithMesh() {
-        mongo_data_system.findMeshClassification({}, function (err, allMappings) {
-            elastic.syncWithMesh(allMappings);
-        });
-    }
-
     new CronJob({
         cronTime: '00 00 4 * * *',
         //noinspection JSUnresolvedFunction
         onTick: function () {
-            syncWithMesh();
+            elastic.syncWithMesh();
         },
         start: false,
         timeZone: "America/New_York"
