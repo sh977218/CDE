@@ -97,6 +97,12 @@ export class ExportService {
                 };
 
                 if (result) {
+                    // @TODO remove after convert tags
+                    result.forEach(r => {
+                        r.naming.forEach(n => {
+                            delete n.newTags;
+                        });
+                    });
                     let exporter = exporters[type];
                     if (!exporter) {
                         this.alertService.addAlert("danger", "This export format is not supported.");
