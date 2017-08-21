@@ -677,7 +677,7 @@ function doSyncWithMesh(allMappings) {
         });
     });
 
-};
+}
 
 
 exports.elasticsearch = function (query, type, cb) {
