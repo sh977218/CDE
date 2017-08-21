@@ -18,11 +18,11 @@ public class FormSideBySideCompare2 extends NlmCdeBaseTest {
         clickElement(By.id("qb_compare"));
 
         textPresent("Tumor Characteristics: T1 Sig",
-                By.xpath(getSideBySideXpath("right", "questions", "notmatch", 1)));
+                By.xpath(getSideBySideXpath("left", "questions", "notmatch", 1)));
         textPresent("Pain location anatomic site",
-                By.xpath(getSideBySideXpath("right", "questions", "notmatch", 2)));
+                By.xpath(getSideBySideXpath("left", "questions", "notmatch", 2)));
         textPresent("DCE-MRI Kinetics T1 Mapping Quality Type",
-                By.xpath(getSideBySideXpath("right", "questions", "notmatch", 3)));
+                By.xpath(getSideBySideXpath("left", "questions", "notmatch", 3)));
         clickElement(By.id("closeCompareSideBySideBtn"));
 
         clickElement(By.id("qb_form_empty"));
