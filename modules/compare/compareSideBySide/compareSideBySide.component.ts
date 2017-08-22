@@ -566,7 +566,8 @@ export class CompareSideBySideComponent implements OnInit {
         }
         this.canMergeForm = isForm && this.isAllowedModel.isAllowed(left) &&
             this.isAllowedModel.isAllowed(right);
-        this.canMergeDataElement = isDataElement;
+        this.canMergeDataElement = isDataElement && this.isAllowedModel.isAllowed(left) &&
+            this.isAllowedModel.isAllowed(right);
     }
 
     openCompareSideBySideContent() {

@@ -91,7 +91,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         textPresent("results for");
         int count = 0;
         while (count < 10 && Integer.parseInt(findElement(By.id("searchResultNum")).getText()) < 11) {
-            hangon(20);
+            hangon(40);
             count++;
             driver.navigate().refresh();
         }

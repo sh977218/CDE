@@ -1,4 +1,5 @@
 const async = require('async')
+    , _ = require('lodash')
     , config = require('./parseConfig')
     , logging = require('./logging')
     , regStatusShared = require('../shared/regStatusShared') //jshint ignore:line
@@ -56,15 +57,14 @@ function EsInjector(esClient, indexName, documentType) {
     this.queueDocument = function (doc, cb) {
         if (!doc) return;
         _esInjector.buffer.push(doc);
-        if (_esInjector.buffer.length >= _esInjector.injectThreshold) {
+        if (_esInjector.buffer.length >= _esInjector.injectThreshold)
             _esInjector.inject(cb);
-        } else {
-            cb();
-        }
+        else cb();
     };
     this.inject = function (cb) {
-        if (!cb) cb = function () {
-        };
+        if (!cb)
+            cb = function () {
+            };
         let request = {
             body: []
         };
@@ -94,8 +94,8 @@ function EsInjector(esClient, indexName, documentType) {
                             });
                             cb();
                         } else {
-                            cb();
                             dbLogger.consoleLog("ingested: " + request.body.length / 2);
+                            cb();
                         }
                     });
                 }, 2000);
@@ -141,9 +141,7 @@ exports.reIndex = function (index, cb) {
     let condition = exports.daoMap[index.name].condition;
     index.count = 0;
     exports.daoMap[index.name].dao.count(condition, function (err, totalCount) {
-        if (err) {
-            dbLogger.consoleLog("Error getting count: " + err, 'error');
-        }
+        if (err) dbLogger.consoleLog("Error getting count: " + err, 'error');
         dbLogger.consoleLog("Total count for " + index.name + " is " + totalCount);
         index.totalCount = totalCount;
         let stream = exports.daoMap[index.name].dao.getStream(condition);
@@ -158,8 +156,9 @@ exports.reIndex = function (index, cb) {
         });
         stream.on('end', function () {
             injector.inject(function () {
-                noDbLogger.noDbLogger.info("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
-                dbLogger.consoleLog("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                let info = "done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.";
+                noDbLogger.noDbLogger.info(info);
+                dbLogger.consoleLog(info);
                 if (cb) cb();
             });
         });
@@ -172,21 +171,21 @@ exports.reIndex = function (index, cb) {
 function createIndex(index, cb) {
     let indexName = index.indexName;
     let indexMapping = index.indexJson;
-    esClient.indices.exists({index: indexName}, function (error, doesIt) {
-        if (doesIt) {
+    esClient.indices.exists({index: indexName}, function (err, indiceExists) {
+        if (err) noDbLogger.noDbLogger.info(err);
+        if (indiceExists) {
             dbLogger.consoleLog("index already exists.");
-        }
-        if (!doesIt) {
+            cb();
+        } else {
             dbLogger.consoleLog("creating index: " + indexName);
-            esClient.indices.create({index: indexName, timeout: "10s", body: indexMapping},
-                function (error) {
-                    if (error) {
-                        dbLogger.consoleLog("error creating index. " + error, 'error');
-                    } else {
-                        dbLogger.consoleLog("index Created");
-                        exports.reIndex(index, cb);
-                    }
-                });
+            let cond = {index: indexName, timeout: "10s", body: indexMapping};
+            esClient.indices.create(cond, function (error) {
+                if (error) dbLogger.consoleLog("error creating index. " + error, 'error');
+                else {
+                    dbLogger.consoleLog("index Created");
+                    exports.reIndex(index, cb);
+                }
+            });
         }
     });
 }
@@ -595,7 +594,7 @@ function doSyncWithMesh(allMappings) {
         classifToSimpleTrees[m.flatClassification] = m.flatTrees;
     });
 
-    let searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
+    let searches = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
     searches.forEach(search => {
         search.scroll = '1m';
         search.body = {};
@@ -646,17 +645,13 @@ function doSyncWithMesh(allMappings) {
                         }
                         exports.meshSyncStatus[s.type].done++;
                     });
-                    if (request.body.length > 0) {
+                    if (request.body.length > 0)
                         esClient.bulk(request, err => {
                             if (err) dbLogger.consoleLog("ERR: " + err, 'error');
                             scrollThrough(newScrollId, s);
                         });
-                    } else {
-                        scrollThrough(newScrollId, s);
-                    }
-                } else {
-                    dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
-                }
+                    else scrollThrough(newScrollId, s);
+                } else dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
             }
         });
     };
