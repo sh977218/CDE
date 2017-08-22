@@ -90,7 +90,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.partialLinkText("Environment and Public Health"));
         textPresent("results for");
         int count = 0;
-        while (count < 5 && Integer.parseInt(findElement(By.id("searchResultNum")).getText()) < 11) {
+        while (count < 10 && Integer.parseInt(findElement(By.id("searchResultNum")).getText()) < 11) {
             hangon(20);
             count++;
             driver.navigate().refresh();
