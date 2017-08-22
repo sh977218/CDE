@@ -97,7 +97,7 @@ export class ExportService {
                 };
 
                 if (result) {
-                    // @TODO remove after convert tags
+                    // @TODO remove after convert newTags
                     result.forEach(r => {
                         r.naming.forEach(n => {
                             delete n.newTags;
@@ -120,7 +120,7 @@ export class ExportService {
         this.searchSettings.getPromise().then((settings) => {
             let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
             quickBoard.elts.forEach(function (ele) {
-                // @TODO remove after convert tags
+                // @TODO remove after convert newTags
                 ele.naming.forEach(n => {
                     delete n.newTags;
                 });
