@@ -13,7 +13,7 @@ public class FormQBRemove extends NlmCdeBaseTest {
         goToQuickBoardByModule("form");
         textPresent("Hamilton Anxiety Rating Scale (HAM-A)");
         textPresent("Grooved Pegboard Test");
-        findElement(By.id("remove_1")).click();
+        clickElement(By.id("remove_1"));
         textNotPresent("Grooved Pegboard Test");
         textPresent("Hamilton Anxiety Rating Scale (HAM-A)");
     }

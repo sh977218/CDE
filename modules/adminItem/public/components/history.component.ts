@@ -102,7 +102,7 @@ export class HistoryComponent implements OnInit {
         }
     }
 
-    openCompareSideBySideModal() {
+    openHistoryCompareModal() {
         this.modalRef = this.modalService.open(this.compareContent, {size: "lg"});
     }
 

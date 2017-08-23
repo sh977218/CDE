@@ -56,10 +56,12 @@
     </div>
 
     <h3>CDE Viewing History</h3>
-    <cde-list-view id="accordionList" [elts]="cdes" listView="accordion" module="cde"></cde-list-view>
+    <cde-list-view *ngIf="cdes.length > 0" id="accordionList" [elts]="cdes" listView="accordion" module="cde">
+    </cde-list-view>
 
     <h3>Form Viewing History</h3>
-    <cde-list-view id="formAccordionList" [elts]="forms" listView="accordion" module="form"></cde-list-view>
+    <cde-list-view *ngIf="forms.length > 0" id="formAccordionList" [elts]="forms" listView="accordion" module="form">
+    </cde-list-view>
 
     <cde-user-comments [user]="user"></cde-user-comments>
 </div>

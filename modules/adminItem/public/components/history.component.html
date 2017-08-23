@@ -8,7 +8,7 @@
             <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
             <label for="showVersionedHistory">Only show versioned revisions.</label>
             <button *ngIf="numberSelected===2" class="btn btn-default" id="historyCompareBtn"
-                    (click)="openCompareSideBySideModal()">
+                    (click)="openHistoryCompareModal()">
                 <i class="fa fa-files-o"></i> Compare
             </button>
         </div>

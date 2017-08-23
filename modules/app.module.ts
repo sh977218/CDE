@@ -13,12 +13,14 @@ import { CoreModule } from "./core/public/core.module";
 import { DiscussModule } from "./discuss/discuss.module";
 import { FormModule } from "./form/public/form.module";
 import { SystemModule } from "./system/public/system.module";
+import { QuickBoardModule } from 'quickBoard/public/quickBoard.module';
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @NgModule({
     declarations: [
         CdeAppComponent
     ],
-    providers: [],
+    providers: [QuickBoardListService],
     imports: [
         BrowserModule,
         CommonModule,
@@ -32,7 +34,8 @@ import { SystemModule } from "./system/public/system.module";
         CoreModule,
         DiscussModule,
         FormModule,
-        SystemModule
+        SystemModule,
+        QuickBoardModule
     ],
     bootstrap: [CdeAppComponent]
 })

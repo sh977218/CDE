@@ -15,21 +15,24 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
 
     @Test
     public void cdeQuickBoardExport() {
+        String cdeName1 = "Intravesical Protocol Agent Administered Specify";
+        String cdeName2 = "Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing scale";
+        String cdeName3 = "User Login Name java.lang.String";
         mustBeLoggedOut();
         loadDefaultSettings();
 
-        addCdeToQuickBoard("Intravesical Protocol Agent Administered Specify");
-        addCdeToQuickBoard("Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing scale");
-        addCdeToQuickBoard("User Login Name java.lang.String");
+        addCdeToQuickBoard(cdeName1);
+        addCdeToQuickBoard(cdeName2);
+        addCdeToQuickBoard(cdeName3);
 
         textPresent("Quick Board (3)");
         goToQuickBoardByModule("cde");
         textPresent("Export Quick Board");
 
-        clickElement(By.id("qb_cde_export"));
+        clickElement(By.id("qb_de_export"));
         textPresent("Export downloaded.");
         closeAlert();
-        clickElement(By.id("qb_cde_empty"));
+        clickElement(By.id("qb_de_empty"));
 
         String[] expected = {
                 "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",

@@ -43,7 +43,7 @@ angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$pa
     };
 }]);
 
-import {downgradeComponent, downgradeInjectable} from "@angular/upgrade/static";
+import {downgradeComponent} from "@angular/upgrade/static";
 
 import {BoardFormSummaryListComponent} from "../components/listView/boardFormSummaryList.component";
 angular.module('formModule').directive('cdeBoardFormSummaryList',
@@ -52,16 +52,8 @@ angular.module('formModule').directive('cdeBoardFormSummaryList',
 import {FormSearchComponent} from "../components/search/formSearch.component";
 angular.module('formModule').directive('cdeFormSearch', downgradeComponent({component: FormSearchComponent, inputs: ['reloads'], outputs: []}));
 
-import {MergeFormComponent} from "../components/mergeForm/mergeForm.component";
-
-angular.module('formModule').directive('cdeMergeForm', downgradeComponent({
-    component: MergeFormComponent,
-    inputs: ['left', 'right'],
-    outputs: []
-}));
 
 import {CreateFormComponent} from "../components/createForm.component";
-
 angular.module('formModule').directive('cdeCreateForm', downgradeComponent({
     component: CreateFormComponent,
     inputs: ['elt'],
@@ -69,7 +61,6 @@ angular.module('formModule').directive('cdeCreateForm', downgradeComponent({
 }));
 
 import {FormViewComponent} from "../components/formView.component";
-
 angular.module('formModule').directive('cdeFormView', downgradeComponent({
     component: FormViewComponent,
     inputs: ['elt'],

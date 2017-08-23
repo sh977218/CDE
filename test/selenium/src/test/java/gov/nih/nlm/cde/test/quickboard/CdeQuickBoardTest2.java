@@ -30,7 +30,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         textPresent("pN0");
         textPresent("Prior BMSCT Administered Indicator");
         textPresent("2320242");
-        clickElement(By.id("qb_cde_empty"));
+        clickElement(By.id("qb_de_empty"));
         textPresent("CDE QuickBoard (0)");
     }
 

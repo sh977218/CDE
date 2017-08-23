@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { QuickBoardListService } from 'board/public/components/quickBoard/quickBoardList.service';
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
     selector: 'cde-quick-board-form-summary-list-content',
@@ -10,17 +10,13 @@ export class QuickBoardFormSummaryListContentComponent {
     @Input() eltIndex: any;
     @Output() select = new EventEmitter<string>();
 
-    constructor(private quickBoardListService: QuickBoardListService) {}
-
-    checkboxClick(elt, $event) {
-        this.quickBoardListService.toggleEltsToCompare(elt);
-        $event.stopPropagation();
+    constructor(private quickBoardListService: QuickBoardListService) {
     }
 
     defaultAttachmentsFilter = a => a.isDefault === true;
 
-    removeElt(index, $event) {
+    removeElt($event) {
         $event.stopPropagation();
-        this.quickBoardListService.quickBoard.remove(index);
+        this.quickBoardListService.removeElement(this.elt);
     }
 }

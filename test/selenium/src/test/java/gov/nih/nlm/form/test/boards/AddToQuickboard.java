@@ -15,7 +15,7 @@ public class AddToQuickboard extends BoardTest {
         clickElement(By.id("addToCompare_0"));
         textPresent("Quick Board (1)");
         clickElement(By.id("menu_qb_link"));
-        clickElement(By.id("qb_form_tab"));
+        clickElement(By.id("formQuickBoard"));
         clickElement(By.linkText("Walking Speed"));
     }
 

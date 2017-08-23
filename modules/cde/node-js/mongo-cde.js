@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const config = require('../../system/node-js/parseConfig');
 const schemas = require('./schemas');
 const schemas_system = require('../../system/node-js/schemas');
@@ -71,8 +72,20 @@ exports.latestVersionByTinyId = function (tinyId, cb) {
         cb(err, dataElement.version);
     });
 };
-exports.byTinyIdList = function (tinyIdList, cb) {
-    DataElement.find({}).where("tinyId").in(tinyIdList).exec(cb);
+
+exports.byTinyIdList = function (tinyIdList, callback) {
+    DataElement.find({'archived': false}).where('tinyId')
+        .in(tinyIdList)
+        .slice('valueDomain.permissibleValues', 10)
+        .exec((err, cdes) => {
+            let result = [];
+            cdes.forEach(mongo_data_system.formatElt);
+            _.forEach(tinyIdList, t => {
+                let c = _.find(cdes, cde => cde.tinyId === t);
+                result.push(c);
+            });
+            callback(err, result);
+        });
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
@@ -137,16 +150,6 @@ exports.cdesByIdList = function (idList, callback) {
         .slice('valueDomain.permissibleValues', 10)
         .exec(function (err, cdes) {
             cdes.forEach(mongo_data.formatCde);
-            callback(err, cdes);
-        });
-};
-
-exports.byTinyIdList = function (tinyIdList, callback) {
-    DataElement.find({'archived': false}).where('tinyId')
-        .in(tinyIdList)
-        .slice('valueDomain.permissibleValues', 10)
-        .exec(function (err, cdes) {
-            cdes.forEach(mongo_data_system.formatElt);
             callback(err, cdes);
         });
 };

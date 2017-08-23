@@ -629,12 +629,15 @@ public class NlmCdeBaseTest {
     protected void addCdeToQuickBoard(String cdeName) {
         goToCdeByName(cdeName);
         clickElement(By.id("addToQuickBoard"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
+
     }
 
     protected void addFormToQuickBoard(String formName) {
         searchForm(formName);
         clickElement(By.id("addToCompare_0"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
         findElement(By.name("q")).clear();
     }
@@ -649,14 +652,20 @@ public class NlmCdeBaseTest {
         hangon(0.5);
         clickElement(By.id("search.submit"));
         clickElement(By.id("addToCompare_0"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
     }
 
     public void goToQuickBoardByModule(String module) {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
-        clickElement(By.id("qb_" + module + "_tab"));
-        String quickBoardTabText = ("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (";
-        textPresent(quickBoardTabText);
+        if (module.equals("cde")) {
+            clickElement(By.id("dataElementQuickBoard"));
+            textPresent("CDE QuickBoard (");
+        }
+        if (module.equals("form")) {
+            clickElement(By.id("formQuickBoard"));
+            textPresent("Form QuickBoard (");
+        }
     }
 
     protected void emptyQuickBoardByModule(String module) {
@@ -674,12 +683,12 @@ public class NlmCdeBaseTest {
         textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
-        clickElement(By.id("qb_cde_tab"));
+        clickElement(By.id("dataElementQuickBoard"));
         textPresent(cdeName1);
         textPresent(cdeName2);
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
     }
 
     public void scrollToTop() {
@@ -1301,6 +1310,24 @@ public class NlmCdeBaseTest {
         if (newSectionCardinality.equals("1"))
             textNotPresent("Repeats", By.xpath("//*[@id='" + sectionId + "']"));
         else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));
+    }
+
+    protected String getSideBySideXpath(String side, String section, String type, int index) {
+        if (side.equalsIgnoreCase("left")) side = "Left";
+        if (side.equalsIgnoreCase("right")) side = "Right";
+
+        if (section.equalsIgnoreCase("steward")) section = "Steward";
+        if (section.equalsIgnoreCase("status")) section = "Status";
+        if (section.equalsIgnoreCase("naming")) section = "Naming";
+        if (section.equalsIgnoreCase("reference documents")) section = "Reference Documents";
+        if (section.equalsIgnoreCase("properties")) section = "Properties";
+        if (section.equalsIgnoreCase("data element concept")) section = "Data Element Concept";
+        if (section.equalsIgnoreCase("questions")) section = "Questions";
+
+        if (type.equalsIgnoreCase("fullmatch")) type = "fullMatch";
+        if (type.equalsIgnoreCase("partialmatch")) type = "partialMatch";
+        if (type.equalsIgnoreCase("notmatch")) type = "notMatch";
+        return "(//*[@id='" + section + "']//*[contains(@class,'no" + side + "Padding')]//*[contains(@class,'" + type + "')])[" + index + "]";
     }
 
 }
