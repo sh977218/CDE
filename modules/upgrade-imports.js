@@ -45,7 +45,6 @@ import "./system/public/js/SearchSettings";
 import "./cde/public/js/controllers/BoardListCtrl";
 import "./cde/public/js/controllers/CreateCdeCtrl";
 import "./cde/public/js/controllers/DEViewCtrl";
-import "./cde/public/js/controllers/BoardExportCtrl";
 import "./cde/public/js/controllers/InboxCtrl";
 import "./cde/public/js/controllers/MergeApproveCtrl";
 import "./cde/public/js/controllers/MergeRequestCtrl";
@@ -57,6 +56,4 @@ import "./form/public/js/controllers/ClassifyFormCdesModalCtrl";
 import "./form/public/js/controllers/CreateFormAbstractCtrl";
 import "./form/public/js/controllers/PublishedFormExportCtrl";
 
-import "./board/public/js/controllers/ShareBoardCtrl";
-import "./board/public/js/controllers/BoardViewCtrl";
 import "./board/public/js/controllers/SelectBoardModalCtrl";

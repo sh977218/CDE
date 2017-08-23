@@ -22,25 +22,25 @@
     </div>
     <div class="col-md-2 col-xs-4 noLeftRightPadding">
         <div id="sidebar-wrapper">
-            <div *ngIf="myBoardsSvc.filter.types.length > 0">
+            <div *ngIf="myBoardsSvc.filter.types?.length > 0">
                 <h4>Type</h4>
-                <label *ngFor="let type of filter.types" class="my-board-tag">
+                <label *ngFor="let type of myBoardsSvc.filter.types" class="my-board-tag">
                     <!--<input type="checkbox" data-checklist-model="filter.selectedTypes" data-checklist-value="type.key"-->
                            <!--checklist-change="loadMyBoards()" data-id="type-{{type.key}}">-->
                     {{type.key}} ({{type.doc_count}})
                 </label>
             </div>
-            <div *ngIf="filter.tags.length > 0">
+            <div *ngIf="myBoardsSvc.filter.tags?.length > 0">
                 <h4>Tags</h4>
-                <label *ngFor="let tag of filter.tags" class="my-board-tag">
+                <label *ngFor="let tag of myBoardsSvc.filter.tags" class="my-board-tag">
                     <!--<input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"-->
                            <!--checklist-change="loadMyBoards()" data-id="tag-{{tag.key}}">-->
                     {{tag.key}} ({{tag.doc_count}})
                 </label>
             </div>
-            <div *ngIf="filter.shareStatus.length">
+            <div *ngIf="myBoardsSvc.filter.shareStatus?.length">
                 <h4>Share Status</h4>
-                <label *ngFor="let ss of filter.shareStatus" class="my-board-tag">
+                <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="my-board-tag">
                     <!--<input type="checkbox" data-checklist-model="filter.selectedShareStatus"-->
                            <!--data-checklist-value="ss.key" data-id="status-{{ss.key}}"-->
                            <!--checklist-change="loadMyBoards()">-->
@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="col-md-10 col-xs-8 dragDiv" id="my-board-container">
-        <div *ngFor="let board of boards; let $index = index" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+        <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
             <div class="my-board-card" data-id="boardDiv_{{board.name}}">
                 <div class="myBoardEditButtons pull-right">
                     <div class="text-right">
@@ -75,7 +75,7 @@
                         <i class="fa fa-lock" *ngIf="board.shareStatus !== 'Public'"
                            (click)="showChangeStatus = true" id="privateIcon_{{$index}}"></i>
                     </span>
-                    <cde-inline-edit id="viewBoard_{{board.name}}" [(model)]="board.name" [linkSource]="'/board/{{board._id}}'"
+                    <cde-inline-edit id="viewBoard_{{board.name}}" [(model)]="board.name" [linkSource]="getLinkSource(board._id)"
                         [isAllowed]="true" (modelChange)="save(board)"></cde-inline-edit>
                 </h4>
 

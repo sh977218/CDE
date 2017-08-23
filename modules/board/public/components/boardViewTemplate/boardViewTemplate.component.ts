@@ -1,5 +1,4 @@
-import {Component, Input, Output} from "@angular/core";
-import {EventEmitter} from "selenium-webdriver";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
     selector: 'cde-board-view-template',

@@ -75,6 +75,10 @@ export class MyBoardsComponent implements OnInit {
 //         return true;
 //     }
 
+    getLinkSource(id) {
+        return '/board/' + id;
+    }
+
     removeBoard (index) {
         this.showDelete = false;
         this.http.delete("/board/" + this.myBoardsSvc.boards[index]._id).subscribe( () => this.myBoardsSvc.waitAndReload());

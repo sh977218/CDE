@@ -18,9 +18,11 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
             $scope.cdeId = $routeParams.cdeId;
         }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
         when('/cdeSearchExport', {templateUrl: '/cde/public/html/exportCdeSearch.html'}).
-        when('/myboards', {controller: 'MyBoardsCtrl', templateUrl: '/cde/public/html/myBoards.html'}).
-        when('/board/:boardId', {templateUrl: '/board/public/html/boardView.html'}).
-        when('/boardList', {controller: 'BoardListCtrl', templateUrl: '/cde/public/html/boardList.html'}).
+        when('/myboards', {template: '<cde-my-boards></cde-my-boards>'}).
+        when('/board/:boardId', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
+            $scope.boardId = $routeParams.boardId;
+        }], template: '<cde-board-view [board-id]="boardId"></cde-board-view>'}).
+        when('/boardList', {template: ''}).
         when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/cde/public/html/createCde.html'}).
         when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
@@ -70,3 +72,9 @@ angular.module('cdeModule').directive('cdeListView', downgradeComponent({compone
 import { ListViewControlsComponent } from "../../../search/listView/listViewControls.component";
 angular.module('cdeModule').directive('cdeListViewControls', downgradeComponent({component: ListViewControlsComponent,
     inputs: ['listView'], outputs: ['listViewChange']}));
+
+import { MyBoardsComponent } from "../../../board/public/components/myBoards/myBoards.component";
+angular.module('cdeModule').directive('cdeMyBoards', downgradeComponent({component: MyBoardsComponent, inputs: [], ouputs: []}));
+
+import { BoardViewComponent } from "../../../board/public/components/boardView/boardView.component";
+angular.module('cdeModule').directive('cdeBoardView', downgradeComponent({component: BoardViewComponent, inputs: ['boardId'], ouputs: []}));

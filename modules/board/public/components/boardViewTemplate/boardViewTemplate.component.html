@@ -1,8 +1,8 @@
-<div ><span id="board_num_cdes_{{index}}">{{board.pins.length}}</span> {{board.type ==='form'?'Forms':'CDEs'}}</div>
+<div><span id="board_num_cdes_{{index}}">{{board.pins.length}}</span> {{board.type ==='form'?'Forms':'CDEs'}}</div>
 
 <cde-inline-edit
         id="board_desc_{{index}}"
-        [(model)]="baord.description" [isAllowed]="canEditBoard"
+        [(model)]="board.description" [isAllowed]="canEditBoard"
         (modelChange)="save.emit(board)"></cde-inline-edit>
 
 <small class="myBoardLastModified" id="board_mod_{{index}}">Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>

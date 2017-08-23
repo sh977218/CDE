@@ -16,6 +16,8 @@ import { SearchModule } from "search/search.module";
 import { UnpinBoardComponent } from "./components/listView/unpinBoard.component";
 import { BoardViewTemplateComponent } from "./components/boardViewTemplate/boardViewTemplate.component";
 import { MyBoardsComponent } from "./components/myBoards/myBoards.component";
+import { WidgetModule } from "../../widget/widget.module";
+import {BoardViewComponent} from "./components/boardView/boardView.component";
 
 @NgModule({
     imports: [
@@ -23,10 +25,12 @@ import { MyBoardsComponent } from "./components/myBoards/myBoards.component";
         FormsModule,
         NgbModule,
         // internal
-        SearchModule,
         AdminItemModule,
+        SearchModule,
+        WidgetModule,
     ],
     declarations: [
+        BoardViewComponent,
         BoardViewTemplateComponent,
         CreateBoardComponent,
         LinkedBoardsComponent,
@@ -39,9 +43,11 @@ import { MyBoardsComponent } from "./components/myBoards/myBoards.component";
         UnpinBoardComponent,
     ],
     entryComponents: [
+        BoardViewComponent,
         CreateBoardComponent,
         CreateFormFromBoardComponent,
         LinkedBoardsComponent,
+        MyBoardsComponent,
         PinBoardModalComponent,
     ],
     providers: [

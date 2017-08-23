@@ -5,7 +5,6 @@ import { ClassifyItemModalComponent } from "./classifyItemModal.component";
 import { ClassifyCdesModalComponent } from "./classifyCdesModal.component";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
 import { LocalStorageService } from "angular-2-local-storage/dist";
-import * as _ from "lodash";
 
 const urlMap = {
     "cde": {
@@ -74,42 +73,24 @@ export class ClassificationComponent {
         this.elt = event;
     }
 
+    // afterClassified(event) {
+    //     let postBody = {
+    //         categories: event.classificationArray,
+    //         eltId: this.elt._id,
+    //         orgName: event.selectedOrg
+    //     };
+    //     this.http.post(urlMap[this.elt.elementType].add, postBody).subscribe(
+    //         () => {
+    //             this.updateClassificationLocalStorage(postBody);
+    //             this.reloadElt(() => {
+    //                 this.modalRef.close("success");
+    //                 this.alert.addAlert("success", "Classification added.");
+    //             });
+    //         }, err => {
+    //             this.alert.addAlert("danger", err._body);
+    //             this.modalRef.close("error");
+    //         });
+    // }
 
-    afterClassified(event) {
-        let postBody = {
-            categories: event.classificationArray,
-            eltId: this.elt._id,
-            orgName: event.selectedOrg
-        };
-        this.http.post(urlMap[this.elt.elementType].add, postBody).subscribe(
-            () => {
-                this.updateClassificationLocalStorage(postBody);
-                this.reloadElt(() => {
-                    this.modalRef.close("success");
-                    this.alert.addAlert("success", "Classification added.");
-                });
-            }, err => {
-                this.alert.addAlert("danger", err._body);
-                this.modalRef.close("error");
-            });
-    }
-
-    updateClassificationLocalStorage(item) {
-        let allPossibleCategories = [];
-        let accumulateCategories = [];
-        item.categories.forEach(i => {
-            allPossibleCategories.push(accumulateCategories.concat([i]));
-            accumulateCategories.push(i);
-        });
-        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
-        if (!recentlyClassification) recentlyClassification = [];
-        allPossibleCategories.forEach(i => recentlyClassification.unshift({
-            categories: i,
-            eltId: item.eltId,
-            orgName: item.orgName
-        }));
-        recentlyClassification = _.uniqWith(recentlyClassification, (a, b) => _.isEqual(a.categories, b.categories) && _.isEqual(a.orgName, b.orgName));
-        this.localStorageService.set("classificationHistory", recentlyClassification);
-    }
 
 }

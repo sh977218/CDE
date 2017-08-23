@@ -52,22 +52,8 @@ export class ClassifyCdesModalComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.getChildren(this.elt.formElements, this.allCdeId);
     }
 
-    getChildren(formElements, ids) {
-        if (formElements)
-            formElements.forEach(formElement => {
-                if (formElement.elementType === "section" || formElement.elementType === "form") {
-                    this.getChildren(formElement.formElements, ids);
-                } else if (formElement.elementType === "question") {
-                    ids.push({
-                        id: formElement.question.cde.tinyId,
-                        version: formElement.question.cde.version
-                    });
-                }
-            });
-    }
 
     openCdesModal() {
         this.modalRef = this.modalService.open(this.classifyCdesContent, {size: "lg"});
@@ -83,6 +69,7 @@ export class ClassifyCdesModalComponent implements OnInit {
             });
         }, () => {
         });
+        return this.modalRef;
     }
 
     onChangeOrg(value) {
@@ -109,47 +96,7 @@ export class ClassifyCdesModalComponent implements OnInit {
 
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
         classificationRecentlyAdd.eltId = this.elt._id;
-        this.doClassifyPost(classificationRecentlyAdd);
-    }
-
-    doClassifyPost(post) {
-        post["elements"] = this.allCdeId;
-        //noinspection TypeScriptValidateTypes
-        this.http.post("/classification/bulk/tinyId", post)
-            .subscribe(res => {
-                if (res["_body"] === "Done") {
-                    this.modalRef.close("success");
-                    this.alert.addAlert("success", "finished");
-                }
-                else if (res["_body"] === "Processing") {
-                    let fn = setInterval(() => {
-                        //noinspection TypeScriptValidateTypes
-                        this.http.get("/bulkClassifyCdeStatus/" + this.elt._id).map(res => res.json())
-                            .subscribe(
-                                res => {
-                                    this.showProgressBar = true;
-                                    this.numberProcessed = res.numberProcessed;
-                                    this.numberTotal = res.numberTotal;
-                                    if (this.numberProcessed >= this.numberTotal) {
-                                        this.http.get("/resetBulkClassifyCdesStatus/" + this.elt._id)
-                                            .subscribe(() => {
-                                                //noinspection TypeScriptUnresolvedFunction
-                                                clearInterval(fn);
-                                                this.modalRef.close("success");
-                                            }, err => {
-                                                this.alert.addAlert("danger", err);
-                                            });
-                                    }
-                                },
-                                err => {
-                                    this.alert.addAlert("danger", err);
-                                    this.modalRef.close("error");
-                                });
-                    }, 5000);
-                }
-            }, err => {
-                this.alert.addAlert("danger", err);
-            });
+        // this.doClassifyPost(classificationRecentlyAdd);
     }
 
     classifyItemByTree(treeNode) {
@@ -166,7 +113,7 @@ export class ClassifyCdesModalComponent implements OnInit {
             eltId: this.elt._id,
             orgName: this.selectedOrg
         };
-        this.doClassifyPost(postBody);
+        // this.doClassifyPost(postBody);
     }
 
     reloadElt(cb) {

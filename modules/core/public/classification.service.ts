@@ -1,7 +1,47 @@
 import { Injectable } from "@angular/core";
+import { Http } from "@angular/http";
+import { LocalStorageService } from "angular-2-local-storage";
+import * as _ from 'lodash';
 
 @Injectable()
 export class ClassificationService {
+
+    constructor(public http: Http,
+                private localStorageService: LocalStorageService) {}
+
+    public updateClassificationLocalStorage(item) {
+        let allPossibleCategories = [];
+        let accumulateCategories = [];
+        item.categories.forEach(i => {
+            allPossibleCategories.push(accumulateCategories.concat([i]));
+            accumulateCategories.push(i);
+        });
+        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
+        if (!recentlyClassification) recentlyClassification = [];
+        allPossibleCategories.forEach(i => recentlyClassification.unshift({
+            categories: i,
+            eltId: item.eltId,
+            orgName: item.orgName
+        }));
+        recentlyClassification = _.uniqWith(recentlyClassification, (a, b) =>
+            _.isEqual(a.categories, b.categories) && _.isEqual(a.orgName, b.orgName));
+        this.localStorageService.set("classificationHistory", recentlyClassification);
+    }
+
+
+    public classifyItem(elt, org, classifArray, endPoint, cb) {
+        let postBody = {
+            categories: classifArray,
+            eltId: elt._id,
+            orgName: org
+        };
+        this.http.post(endPoint, postBody).subscribe(
+            () => {
+                this.updateClassificationLocalStorage(postBody);
+                cb();
+            }, err => cb(err));
+    }
+
     sortClassification(elt) {
         elt.classification = elt.classification.sort(function (c1, c2) {
             return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
@@ -53,4 +93,7 @@ export class ClassificationService {
         }
         return result;
     }
+
+
+
 }
