@@ -318,7 +318,7 @@ schemas.message = new mongoose.Schema({
     , date: Date,
     type: {
         type: String,
-        enum: ["MergeRequest", "CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]
+        enum: ["CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]
     }
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema

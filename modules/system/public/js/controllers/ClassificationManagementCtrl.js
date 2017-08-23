@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ClassificationManagementCtrl',
-    ['$scope', '$http', '$uibModal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log', 'AlertService',
-        function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings, $log, Alert)
+    ['$scope', '$http', '$q','$uibModal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log', 'AlertService',
+        function($scope, $http, $q, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings, $log, Alert)
 {
 
     $scope.module = "cde";
@@ -16,8 +16,12 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
     $scope.org = {};
 
     $scope.$watch('orgToManage', function() {
+        if ($scope.canceler) {
+            $scope.canceler.resolve();
+        }
+        $scope.canceler = $q.defer();
         if ($scope.orgToManage !== undefined) {
-            $http.get("/org/" + encodeURIComponent($scope.orgToManage)).then(function(response) {
+            $scope.currentQuery = $http.get("/org/" + encodeURIComponent($scope.orgToManage),{timeout: $scope.canceler.promise}).then(function(response) {
                 $scope.org = response.data;
             }, function (err) {
                 $log.error("Error retrieving org classifs. ");

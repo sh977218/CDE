@@ -1,0 +1,137 @@
+<a class='btn btn-small btn-default fa fa-clipboard mergeForm'
+   id="openMergeFormModalBtn" (click)="openMergeFormModal()">Merge Form</a>
+
+<ng-template #mergeFormContent id="mergeFormModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="mergeFormModalHeader">
+        <h4>Merge <a target=_blank href="formView?tinyId={{left.tinyId}}">
+            {{left.naming[0].designation}}</a>
+            Into <a target=_blank href="formView?tinyId={{right.tinyId}}">
+                {{right.naming[0].designation}}</a>
+        </h4>
+    </div>
+    <div class="modal-body" id="mergeFormModalBody">
+        <div class="row">
+            <div class="col-xs-12 col-md-2 col-lg-2 noRightPadding">
+                <div class="row">
+                    <div class="col-xs-6 col-md-12 col-lg-12">
+                        <h4>Form fields:</h4>
+                        <div>
+                            <button class="btn btn-default btn-xs" (click)="selectAllFormMergerFields();"
+                                    [disabled]="!ownTargetForm">All
+                            </button>
+                            <button class="btn btn-default btn-xs" (click)="deselectAllFormMergerFields();"
+                                    [disabled]="!ownTargetForm">None
+                            </button>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.naming"
+                                          [disabled]="!ownTargetForm"> Naming</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.referenceDocuments"
+                                          [disabled]="!ownTargetForm">Ref Documents</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.properties"
+                                          [disabled]="!ownTargetForm">Properties</label>
+                        </div>
+                        <div>
+                            <label> <input type="checkbox" [(ngModel)]="mergeFields.ids"
+                                           [disabled]="!ownTargetForm"> IDs</label>
+                        </div>
+                        <div>
+                            <label> <input type="checkbox" [(ngModel)]="mergeFields.classifications"
+                                           [disabled]="!ownTargetForm"> Classifications</label>
+                        </div>
+                        <div>
+                            <label> <input type="checkbox" [(ngModel)]="mergeFields.questions"
+                                           [disabled]="!ownTargetForm"> Questions</label>
+                        </div>
+                    </div>
+                    <div class="smallSpace left"></div>
+                    <div class="col-xs-6 col-md-12 col-lg-12" *ngIf="mergeFields.questions">
+                        <h4>CDE fields:</h4>
+                        <div>
+                            <button class="btn btn-default btn-xs" (click)="selectAllCdeMergerFields();">All</button>
+                            <button class="btn btn-default btn-xs" (click)="deselectAllCdeMergerFields();">None</button>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.naming"> Naming</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.referenceDocuments">Ref Documents</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.properties">Properties</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.ids"> IDs</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.attachments">Attachment</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.dataSets">Data Set</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.derivationRules">Derivation Rules</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.sources">Sources</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.classifications">Classifications</label>
+                        </div>
+                        <div class="smallSpace left"></div>
+                        <div>
+                            <label>Retire CDE?<input type="checkbox" [(ngModel)]="mergeFields.cde.retireCde"
+                                                     id="retireCde"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-10 col-lg-10 noLeftRightPadding">
+                <div class="row">
+                    <div class="col-xs-12" *ngIf="mergeFields.questions">
+                        <div class="col-xs-6" id="dropArea">
+                            <cde-sortable [left]="left" [right]="right" [mergeFields]="mergeFields"></cde-sortable>
+                        </div>
+                        <div class="col-xs-6">
+                            <div *ngFor="let rightQuestion of right.questions; let i = index"
+                                 class="boxed-div overflowHidden" id="targetQuestion_{{i}}">
+                                <div class="col-xs-3 Label noLeftRightPadding">CDE Name:</div>
+                                <div class="col-xs-9 noLeftRightPadding mergeCdeName">
+                                    <a *ngIf="rightQuestion.question.cde.name" target="_blank"
+                                       href="deView?tinyId={{rightQuestion.question.cde.tinyId}}">
+                                        {{rightQuestion.question.cde.name}}
+                                    </a>
+                                    <a *ngIf="!rightQuestion.question.cde.name" target="_blank"
+                                       href="deView?tinyId={{rightQuestion.question.cde.tinyId}}">
+                                        {{rightQuestion.label}}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="mergeFormService.error.error" id="mergeFormErrorDiv" class="alert alert-danger">
+            {{mergeFormService.error.error}}
+        </div>
+    </div>
+    <div class="modal-footer" id="mergeFormModalFooter">
+        <div *ngIf="showProgressBar" style="width:100%">
+            <ngb-progressbar type="success" [value]="numMergedQuestions">
+                {{numMergedQuestions}}/{{maxNumberQuestions}}
+            </ngb-progressbar>
+        </div>
+        <button class="btn cancel" id="cancelMergeFormBtn" (click)="c('Close click')" type="button">
+            {{doneMerge?'Close':'Cancel'}}
+        </button>
+        <button *ngIf="!doneMerge && !mergeFormService.error.error" class="btn btn-warning" id="mergeFormBtn"
+                (click)="doMerge()">
+            Merge
+        </button>
+    </div>
+</ng-template>

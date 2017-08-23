@@ -1,20 +1,44 @@
 import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { SortableModule } from 'ngx-bootstrap';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { DiffMatchPatchModule, DiffDirective } from "ng-diff-match-patch";
-import { CompareObjectComponent } from "./compareObject.component";
-import { CompareArrayComponent } from "./compareArray.component";
+import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
+import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
+import { CompareArrayComponent } from 'compare/compareArray/compareArray.component';
+import { CompareObjectComponent } from 'compare/compareObject/compareObject.component';
+import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
+import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 
 @NgModule({
-    declarations: [CompareArrayComponent, CompareObjectComponent],
-    entryComponents: [CompareArrayComponent, CompareObjectComponent],
+    imports: [
+        CommonModule,
+        FormsModule,
+        NgbModule,
+        SortableModule.forRoot(),
+        DiffMatchPatchModule,
+    ],
+    declarations: [
+        CdeSortableComponent,
+        CompareSideBySideComponent,
+        CompareArrayComponent,
+        CompareObjectComponent,
+        MergeDataElementComponent,
+        MergeFormComponent,
+    ],
+    entryComponents: [
+        CompareArrayComponent,
+        CompareObjectComponent
+    ],
     providers: [],
-    imports: [CommonModule, FormsModule, NgbModule, DiffMatchPatchModule],
-    exports: [CompareArrayComponent, CompareObjectComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    exports: [
+        CompareSideBySideComponent,
+        CompareArrayComponent,
+        CompareObjectComponent,
+    ],
+    schemas: []
 })
 
 export class CompareModule {
-
 }

@@ -18,7 +18,7 @@ public class EmptyCdeQuickboard extends NlmCdeBaseTest {
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
         goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_cde_empty"));
+        clickElement(By.id("qb_de_empty"));
         textPresent("CDE QuickBoard (0)");
     }
 }

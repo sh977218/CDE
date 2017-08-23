@@ -54,20 +54,6 @@ angular.module('CdeMerge', [])
         };
         return service;
     }])
-    .factory('MergeRequest', ['Mail', function (Mail) {
-        return {
-            create: function (dat, success, error) {
-                var message = {
-                    recipient: {recipientType: "stewardOrg", name: dat.recipient},
-                    author: {authorType: "user", name: dat.author},
-                    date: new Date(),
-                    type: "MergeRequest",
-                    typeRequest: dat.mergeRequest
-                };
-                Mail.sendMessage(message, success, error);
-            }
-        };
-    }])
     .factory('Mail', ["$http", function ($http) {
         return {
             sendMessage: function (dat, success, error) {

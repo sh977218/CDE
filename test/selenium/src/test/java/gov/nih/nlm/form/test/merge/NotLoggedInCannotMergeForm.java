@@ -14,7 +14,7 @@ public class NotLoggedInCannotMergeForm extends NlmCdeBaseTest {
         addFormToQuickBoardByTinyId(form1);
         addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
-        clickElement(By.id("qb_form_compare"));
+        clickElement(By.id("qb_compare"));
         textNotPresent("Merge Form");
     }
 }

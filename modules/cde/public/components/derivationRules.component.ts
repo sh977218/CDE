@@ -1,6 +1,7 @@
 import { Http } from "@angular/http";
 import { Component, DoCheck, Inject, Input, ViewChild, OnChanges, } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
     selector: "cde-derivation-rules",
@@ -18,12 +19,12 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         formula: "sumAll",
         inputs: []
     };
-    invalidCdeMessage: string;
+    invalidCdeMessage: string = "";
     previousCdeId: string;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
-                @Inject("QuickBoard") private quickBoard,
+                public quickBoardService: QuickBoardListService,
                 @Inject("isAllowedModel") private isAllowedModel) {
     }
 
@@ -95,7 +96,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
 
     addNewScore() {
         if (!this.elt.derivationRules) this.elt.derivationRules = [];
-        this.quickBoard.elts.forEach((qbElt: any) => {
+        this.quickBoardService.dataElements.forEach((qbElt: any) => {
             this.newDerivationRule.inputs.push(qbElt.tinyId);
         });
         this.elt.derivationRules.push(this.newDerivationRule);
@@ -120,16 +121,16 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     };
 
     someCdesInvalid() {
-        this.invalidCdeMessage = undefined;
-        if (this.quickBoard.elts.length === 0) {
+        this.invalidCdeMessage = "";
+        if (this.quickBoardService.dataElements.length === 0) {
             this.invalidCdeMessage = "There are no CDEs in your Quick Board. Add some before you can create a rule.";
             return true;
         }
-        this.quickBoard.elts.forEach((qbElt: any) => {
+        this.quickBoardService.dataElements.forEach((qbElt: any) => {
             if (qbElt.tinyId === this.elt.tinyId)
                 this.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board.";
         });
-        this.quickBoard.elts.forEach((qbElt: any) => {
+        this.quickBoardService.dataElements.forEach((qbElt: any) => {
             if (qbElt.valueDomain.datatype === "Number") return;
             if (qbElt.valueDomain.datatype === "Value List")
                 qbElt.valueDomain.permissibleValues.forEach((pv: any) => {

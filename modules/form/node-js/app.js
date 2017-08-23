@@ -25,6 +25,7 @@ exports.init = function (app, daoManager) {
 
     app.get("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.byTinyId);
     app.get("/form/:tinyId/version/:version?", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
+    app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
 
     app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
 

@@ -1,13 +1,8 @@
 import * as authShared from "../../../../system/shared/authorizationShared";
 
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$uibModal', 'userResource', '$location', '$anchorScroll', '$cacheFactory',
-        'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
-        function ($scope, $modal, userResource, $location, $anchorScroll, $cacheFactory,
-                  OrgHelpers, QuickBoard, FormQuickBoard) {
-
-            $scope.quickBoard = QuickBoard;
-            $scope.formQuickBoard = FormQuickBoard;
+    ['$scope', '$uibModal', 'userResource', '$location', '$anchorScroll', '$cacheFactory', 'OrgHelpers',
+        function ($scope, $modal, userResource, $location, $anchorScroll, $cacheFactory, OrgHelpers) {
             $scope.prodDumpEnabled = window.prodDumpEnabled;
 
             $scope.resultPerPage = 20;

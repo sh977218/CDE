@@ -14,4 +14,15 @@ export class AccordionListHeadingComponent {
     @Output() add = new EventEmitter<Elt>();
 
     BrowserService = BrowserService;
+
+    clickAdd(event) {
+        this.BrowserService.interruptEvent(event);
+        this.add.emit(this.elt);
+    }
+
+    clickView(event) {
+        this.BrowserService.openUrl(this.elt.getEltUrl(), event);
+        this.BrowserService.interruptEvent(event);
+    }
+
 }

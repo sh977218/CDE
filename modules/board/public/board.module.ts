@@ -6,14 +6,12 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CreateBoardComponent } from "./components/createBoard/createBoard.component";
 import { CreateFormFromBoardComponent } from 'board/public/components/createFormFromBoard.component';
-import { EltsCompareDirective } from 'board/public/upgrade-components';
 import { LinkedBoardsComponent } from "./components/linkedBoards/linkedBoards.component";
 import { ListSortComponent } from "./components/listView/listSort.component";
 import { MyBoardsService } from "./myBoards.service";
 import { PinBoardComponent } from "./components/pins/pinBoard.component";
 import { PinBoardModalComponent } from "./components/pins/pinBoardModal.component";
 import { PinQuickboardComponent } from "./components/pins/pinQuickboard.component";
-import { QuickBoardComponent } from 'board/public/components/quickBoard/quickBoard.component';
 import { SearchModule } from "search/search.module";
 import { UnpinBoardComponent } from "./components/listView/unpinBoard.component";
 
@@ -28,14 +26,12 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
     ],
     declarations: [
         CreateBoardComponent,
-        EltsCompareDirective,
         LinkedBoardsComponent,
         ListSortComponent,
         PinBoardComponent,
         PinBoardModalComponent,
         PinQuickboardComponent,
         CreateFormFromBoardComponent,
-        QuickBoardComponent,
         UnpinBoardComponent,
     ],
     entryComponents: [
@@ -43,7 +39,6 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         CreateFormFromBoardComponent,
         LinkedBoardsComponent,
         PinBoardModalComponent,
-        QuickBoardComponent,
     ],
     providers: [
         MyBoardsService,

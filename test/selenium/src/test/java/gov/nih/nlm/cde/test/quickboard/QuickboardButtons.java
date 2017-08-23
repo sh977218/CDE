@@ -27,11 +27,11 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         goToQuickBoardByModule("cde");
         textPresent("Prostate Cancer American Joint Committee");
         textPresent("Fluorescence in situ");
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
-        clickElement(By.id("closeModal"));
+        clickElement(By.id("closeCompareSideBySideBtn"));
 
         // counteract save summary/table view
         if (driver.findElements(By.id("list_summaryView")).size() > 0)
@@ -53,7 +53,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         clickElement(By.id("list_summaryView"));
         findElement(By.linkText("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage"));
 
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
