@@ -10,11 +10,11 @@
         <i class="fa fa-indent"></i> Classify CDEs
     </button>
     <div id="classificationBody">
-        <cde-classification-view [elt]="elt" (confirmDelete)="confirmDelete($event);"></cde-classification-view>
+        <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
     </div>
 </div>
-<cde-classify-item-modal #classifyItemComponent [elt]="elt"
+<cde-classify-item-modal #classifyItemComponent [elt]="elt" [modalTitle]="'Classify this Form'"
                          (onEltSelected)="classifyItem($event)"></cde-classify-item-modal>
-<cde-classify-item-modal #classifyCdesComponent [elt]="elt"
-                         (onEltSelected)="updateThisElt($event)"></cde-classify-item-modal>
+<cde-classify-item-modal #classifyCdesComponent [elt]="elt" [modalTitle]="'Classify all CDEs in this Form'"
+                         (onEltSelected)="classifyAllCdesInForm($event)"></cde-classify-item-modal>
 

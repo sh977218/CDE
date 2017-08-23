@@ -45,7 +45,7 @@ export class FormClassificationComponent {
     }
 
     reloadElt (cb) {
-        this.http.get("/form/").map(res => res.json()).subscribe(res => {
+        this.http.get("form/" + this.elt.tinyId).map(res => res.json()).subscribe(res => {
             this.elt = res;
             if (cb) cb();
         }, err => {
@@ -80,17 +80,34 @@ export class FormClassificationComponent {
             });
     }
 
-    classifyAllCdesInForm(post) {
+    removeClassif (event) {
+        this.classificationSvc.removeClassification(this.elt, event.deleteOrgName,
+            event.deleteClassificationArray, "/removeFormClassification/", err => {
+                if (err) {
+                    this.alert.addAlert("danger", err);
+                } else {
+                    this.reloadElt(() => this.alert.addAlert("success", "Classification removed."));
+                }
+            });
+    }
+
+    classifyAllCdesInForm(event) {
         let allCdeIds = [];
         this.getChildren(this.elt.formElements, allCdeIds);
 
-        post["elements"] = allCdeIds;
+        let postBody = {
+            categories: event.classificationArray,
+            eltId: this.elt._id,
+            orgName: event.selectedOrg,
+            elements: allCdeIds
+        };
+
         //noinspection TypeScriptValidateTypes
-        this.http.post("/classification/bulk/tinyId", post)
+        this.http.post("/classification/bulk/tinyId", postBody)
             .subscribe(res => {
                 if (res["_body"] === "Done") {
                     this.classifyCdesModalRef.close("success");
-                    this.alert.addAlert("success", "finished");
+                    this.alert.addAlert("success", "All CDEs Classified");
                 }
                 else if (res["_body"] === "Processing") {
                     let fn = setInterval(() => {

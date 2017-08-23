@@ -6,7 +6,7 @@ import { LocalStorageService } from "angular-2-local-storage/dist";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
-import {ClassificationService} from "../../../../core/public/classification.service";
+import { ClassificationService } from "../../../../core/public/classification.service";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -23,7 +23,8 @@ const actionMapping: IActionMapping = {
 export class ClassifyItemModalComponent {
     @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
     @Input() elt: any;
-    @Output() onElementSelected = new EventEmitter();
+    @Input() modalTitle: string = "Classify this CDE";
+    @Output() onEltSelected = new EventEmitter();
 
     public modalRef: NgbModalRef;
     selectedOrg: any;
@@ -81,7 +82,7 @@ export class ClassifyItemModalComponent {
             categories: classificationRecentlyAdd.categories,
             orgName: classificationRecentlyAdd.orgName
         });
-        this.onElementSelected.emit({
+        this.onEltSelected.emit({
             eltId: this.elt._id,
             classificationArray: classificationRecentlyAdd.categories,
             selectedOrg: classificationRecentlyAdd.orgName,
@@ -102,7 +103,7 @@ export class ClassifyItemModalComponent {
             categories: classificationArray,
             orgName: this.selectedOrg
         });
-        this.onElementSelected.emit({
+        this.onEltSelected.emit({
             classificationArray: classificationArray,
             selectedOrg: this.selectedOrg
         });

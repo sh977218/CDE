@@ -42,6 +42,16 @@ export class ClassificationService {
             }, err => cb(err));
     }
 
+    public removeClassification(elt, org, classifArray, endPoint, cb) {
+        let deleteBody = {
+            categories: classifArray,
+            eltId: elt._id,
+            orgName: org
+        };
+        this.http.post(endPoint, deleteBody).map(res => res.json()).subscribe(res => cb(), (err) => cb(err));
+    }
+
+
     sortClassification(elt) {
         elt.classification = elt.classification.sort(function (c1, c2) {
             return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
