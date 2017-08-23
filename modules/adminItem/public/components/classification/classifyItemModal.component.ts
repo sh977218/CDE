@@ -75,7 +75,6 @@ export class ClassifyItemModalComponent {
         }
     }
 
-
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
         this.classificationSvc.updateClassificationLocalStorage({
             eltId: this.elt._id,

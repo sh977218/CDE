@@ -564,13 +564,6 @@ angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
     outputs: []
 }));
 
-import { ClassificationComponent } from "../../../adminItem/public/components/classification/classification.component";
-angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({
-    component: ClassificationComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
 import { DiscussAreaComponent } from "../../../discuss/components/discussArea/discussArea.component";
 angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
     {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));

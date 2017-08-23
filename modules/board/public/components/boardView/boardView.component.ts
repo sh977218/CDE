@@ -4,6 +4,7 @@ import { AlertService } from "../../../../system/public/components/alert/alert.s
 import {NgbModal, NgbModalModule, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import { SharedService } from "../../../../core/public/shared.service";
 import { saveAs } from "cde/public/assets/js/FileSaver";
+import {ClassifyItemModalComponent} from "../../../../adminItem/public/components/classification/classifyItemModal.component";
 
 @Component({
     selector: 'cde-board-view',
@@ -17,7 +18,7 @@ export class BoardViewComponent implements OnInit {
     // @Output() save = new EventEmitter();
 
     @ViewChild("shareBoardModal") public shareBoardModal: NgbModalModule;
-    @ViewChild("classifyCdesModal") public classifyCdesModal: NgbModalModule;
+    @ViewChild("classifyCdesModal") public classifyCdesModal: ClassifyItemModalComponent;
 
     currentPage: number = 1;
     totalItems: number;
@@ -31,6 +32,7 @@ export class BoardViewComponent implements OnInit {
     boardStatus: any;
     feedbackClass: string[] = [""];
     users: any[] = [];
+    modalTitle: string;
 
     shareModalRef: NgbModalRef;
 
@@ -49,6 +51,7 @@ export class BoardViewComponent implements OnInit {
         this.http.get("/board/" + this.boardId + "/" + ((this.currentPage - 1) * 20)).map(r => r.json()).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
+                this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
                 // if (this.board.type === "form")
                 //     $scope.quickBoard = $scope.formQuickBoard;
                 // $scope.elts = $scope[$scope.board.type + 's'] = [];
@@ -190,12 +193,15 @@ export class BoardViewComponent implements OnInit {
     // };
 
 
-    addClassification (newClassification) {
+    addClassification (event) {
         let _timeout = setInterval(() => this.alert.addAlert("warning", "Classification task is still in progress. Please hold on."), 3000);
         this.http.post(this.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
             {
                 boardId: this.board._id,
-                newClassification: newClassification
+                newClassification: {
+                    categories: event.classificationArray,
+                    orgName: event.selectedOrg
+                }
             }
         ).subscribe(() => {
             clearInterval(_timeout);
@@ -204,11 +210,10 @@ export class BoardViewComponent implements OnInit {
             this.alert.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
             clearInterval(_timeout);
         });
-        // $modalInstance.close();
     }
 
     classifyEltBoard () {
-        this.modalService.open(this.classifyCdesModal, {size: "lg"});
+        this.classifyCdesModal.openModal();
 
         // var $modalInstance = $modal.open({
         //     animation: false,

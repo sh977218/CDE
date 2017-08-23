@@ -17,7 +17,7 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
 import { BoardViewTemplateComponent } from "./components/boardViewTemplate/boardViewTemplate.component";
 import { MyBoardsComponent } from "./components/myBoards/myBoards.component";
 import { WidgetModule } from "../../widget/widget.module";
-import {BoardViewComponent} from "./components/boardView/boardView.component";
+import { BoardViewComponent } from "./components/boardView/boardView.component";
 
 @NgModule({
     imports: [

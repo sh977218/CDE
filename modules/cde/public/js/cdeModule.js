@@ -22,7 +22,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/board/:boardId', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.boardId = $routeParams.boardId;
         }], template: '<cde-board-view [board-id]="boardId"></cde-board-view>'}).
-        when('/boardList', {template: ''}).
+        when('/boardList', {template: '<cde-my-boards></cde-my-boards>'}).
         when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/cde/public/html/createCde.html'}).
         when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
