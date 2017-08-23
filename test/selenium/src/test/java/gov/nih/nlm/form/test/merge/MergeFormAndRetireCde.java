@@ -16,7 +16,7 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_compare"));
 
-        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
+        clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeFormModalBtn']"));
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormBtn");
         clickElement(By.id("mergeFormBtn"));

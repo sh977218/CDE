@@ -12,7 +12,8 @@
                 (click)="quickBoardService.emptyDataElementQuickBoard();">
             <i class="fa fa-trash-o"></i> Empty Quick Board
         </button>
-        <button id="qb_de_export" class="btn btn-default" value="Export Quick Board">
+        <button id="qb_de_export" class="btn btn-default" value="Export Quick Board"
+                (click)="exportService.quickBoardExport(quickBoardService.dataElements)">
             <i class="fa fa-download"></i> Export Quick Board
         </button>
         <hr>

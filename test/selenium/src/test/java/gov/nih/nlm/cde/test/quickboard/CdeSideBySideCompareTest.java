@@ -4,47 +4,38 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class CdeSideBySideCompareTest extends NlmCdeBaseTest{
+public class CdeSideBySideCompareTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeSideBySideCompare() {
-        mustBeLoggedInAs(testAdmin_username,password);
-        addCdeToQuickBoard("cdeCompare1");
-        addCdeToQuickBoard("cdeCompare2");
+        String cdeName1 = "cdeCompare1";
+        String cdeName2 = "cdeCompare2";
+        mustBeLoggedInAs(testAdmin_username, password);
+        addCdeToQuickBoard(cdeName1);
+        addCdeToQuickBoard(cdeName2);
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_compare"));
 
-        textPresent("View Full Detail", By.xpath("//*[@id='qb_compare_viewDetail']//*[contains(@class, 'leftObj')]/a"));
-        textPresent("View Full Detail", By.xpath("//*[@id='qb_compare_viewDetail']//*[contains(@class, 'rightObj')]/a"));
+        textPresent("TEST", By.xpath(getSideBySideXpath("left", "steward", "fullmatch", 1)));
+        textPresent("TEST", By.xpath(getSideBySideXpath("right", "steward", "fullmatch", 1)));
+        textPresent("Incomplete", By.xpath(getSideBySideXpath("left", "status", "fullmatch", 1)));
+        textPresent("Incomplete", By.xpath(getSideBySideXpath("right", "status", "fullmatch", 1)));
 
-        textPresent("TEST", By.xpath("//*[@id='qb_compare_gd']//*[contains(@class, 'leftObj')]//*[contains(@class, 'Steward')]/following-sibling::div[1]"));
-        textPresent("TEST", By.xpath("//*[@id='qb_compare_gd']//*[contains(@class, 'rightObj')]//*[contains(@class, 'Steward')]/following-sibling::div[1]"));
-        textPresent("Incomplete", By.xpath("//*[@id='qb_compare_gd']//*[contains(@class, 'leftObj')]//*[contains(@class, 'Status')]/following-sibling::div[1]"));
-        textPresent("Incomplete", By.xpath("//*[@id='qb_compare_gd']//*[contains(@class, 'rightObj')]//*[contains(@class, 'Status')]/following-sibling::div[1]"));
+        textPresent("cdeCompare1", By.xpath(getSideBySideXpath("left", "naming", "notmatch", 1)));
+        textPresent("cdeCompare2", By.xpath(getSideBySideXpath("right", "naming", "notmatch", 1)));
 
-        textNotPresent("cdeCompare1", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'leftObj')]"));
-        textPresent("cdeCompare2", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("cdeCompare1", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj')]"));
-        textNotPresent("cdeCompare2", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
+        textPresent("reference document title 1", By.xpath(getSideBySideXpath("left", "reference documents", "notmatch", 1)));
+        textPresent("reference document title 2", By.xpath(getSideBySideXpath("right", "reference documents", "notmatch", 1)));
 
-        textNotPresent("reference document title 1", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'leftObj')]"));
-        textPresent("reference document title 2", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("reference document title 1", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj')]"));
-        textNotPresent("reference document title 2", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
+        textPresent("key 1", By.xpath(getSideBySideXpath("left", "properties", "notmatch", 1)));
+        textPresent("key 2", By.xpath(getSideBySideXpath("right", "properties", "notmatch", 1)));
 
-        textNotPresent("key 1", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'leftObj')]"));
-        textPresent("key 2", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("key 1", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj')]"));
-        textNotPresent("key 2", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
-
-        textNotPresent("concept name 1", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'leftObj')]"));
-        textPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("concept name 1", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj')]"));
-        textNotPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
-        clickElement(By.id("closeModal"));
+        textPresent("concept name 1", By.xpath(getSideBySideXpath("left", "data element concept", "notmatch", 1)));
+        textPresent("concept name 2", By.xpath(getSideBySideXpath("right", "data element concept", "notmatch", 1)));
+        clickElement(By.id("closeCompareSideBySideBtn"));
 
         clickElement(By.id("qb_de_empty"));
         textPresent("CDE QuickBoard (0)");

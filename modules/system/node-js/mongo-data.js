@@ -83,9 +83,7 @@ exports.addToViewHistory = function (elt, user) {
             }
         };
     }
-    User.update({'_id': user._id}, {
-        $push: updStmt
-    }).exec(function (err) {
+    User.update({'_id': user._id}, {$push: updStmt}).exec(function (err) {
         if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
             origin: "cde.mongo-cde.addToViewHistory",
             stack: new Error().stack,

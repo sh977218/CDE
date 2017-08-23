@@ -46,7 +46,7 @@ export class MergeFormService {
                     if (err) return cb(err);
                     else {
                         index++;
-                        if (result === "retired")
+                        if (result && result[0].registrationState.registrationStatus === "Retired")
                             questionFrom.isRetired = true;
                         doneOne(index, doneOneQuestion);
                     }

@@ -8,14 +8,14 @@ public class NotAlignFormCannotMerge extends NlmCdeBaseTest {
 
     @Test
     public void notAlignFormCannotMerge() {
-        mustBeLoggedInAs(promis_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         String form1 = "PROMIS SF v1.0-Sleep Disturbance 4a";
         String form2 = "PROMIS SF v1.0-Sleep Disturbance 6a";
         addFormToQuickBoardByTinyId(form1);
         addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_compare"));
-        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
+        clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeFormModalBtn']"));
 
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormErrorDiv");

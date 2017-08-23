@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { AlertService } from 'system/public/components/alert/alert.service';
@@ -13,6 +13,7 @@ export class MergeFormComponent {
     @ViewChild("mergeFormContent") public mergeFormContent: NgbModalModule;
     @Input() public left: any;
     @Input() public right: any;
+    @Output() doneMerging = new EventEmitter();
     public modalRef: NgbModalRef;
     public mergeFields: any = {
         naming: true,
@@ -132,6 +133,7 @@ export class MergeFormComponent {
                             this.alert.addAlert("success", "Form merged");
                             setTimeout(() => {
                                 this.showProgressBar = false;
+                                this.doneMerging.emit({left: this.left, right: this.right});
                                 return;
                             }, 3000);
                         }

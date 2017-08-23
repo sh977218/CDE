@@ -22,16 +22,21 @@
                             <a href class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
                             <a href="#" class="nonLinkAnchor">
                                 <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
-                                    (click)="$event.stopPropagation(); view(cde)"></i>
+                                   (click)="$event.stopPropagation(); view(cde)"></i>
                             </a>
                             <a href="#" class="nonLinkAnchor" (click)="$event.stopPropagation()">
                                 <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
-                                   title="Attach to Board" role="link" (click)="$event.stopPropagation(); mltPinModal.pinOne(cde, mltPinModal.open())"></i>
+                                   title="Attach to Board" role="link"
+                                   (click)="$event.stopPropagation(); mltPinModal.pinOne(cde, mltPinModal.open())"></i>
                             </a>
-                            <a href="#"  class="nonLinkAnchor" *ngIf="quickBoard.canAddElt(cde)"
-                               (click)="$event.stopPropagation(); quickBoard.add(cde)">
+                            <cde-pin-quickboard [elt]="cde" [eltIndex]="i"></cde-pin-quickboard>
+<!--
+
+                            <a href="#" class="nonLinkAnchor" *ngIf="quickBoardService.canAddElement(cde)"
+                               (click)="BrowserService.interruptEvent($event); quickBoardService.addToQuickBoard(cde)">
                                 <i class="fa fa-plus-square-o  hand-cursor" title="Add to Quick Board"
                                    id="addToCompare_{{i}}" role="link"></i></a>
+-->
                         </ng-template>
                         <ng-template ngbPanelContent>
                             <div class="col-md-4 col-sm-12 col-xs-12">

@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const config = require('../../system/node-js/parseConfig');
 const schemas = require('./schemas');
 const mongo_data_system = require('../../system/node-js/mongo-data');
@@ -49,7 +50,18 @@ exports.byIdList = function (idList, cb) {
 };
 
 exports.byTinyIdList = function (tinyIdList, callback) {
-    Form.find({'archived': false}).where('tinyId').in(tinyIdList).exec(callback);
+    Form.find({'archived': false})
+        .where('tinyId')
+        .in(tinyIdList)
+        .exec((err, forms) => {
+            let result = [];
+            forms.forEach(mongo_data_system.formatElt);
+            _.forEach(tinyIdList, t => {
+                let c = _.find(forms, form => form.tinyId === t);
+                result.push(c);
+            });
+            callback(err, result);
+        });
 };
 
 exports.byTinyId = function (tinyId, cb) {

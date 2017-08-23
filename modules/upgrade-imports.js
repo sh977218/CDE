@@ -47,7 +47,6 @@ import "./cde/public/js/controllers/CreateCdeCtrl";
 import "./cde/public/js/controllers/DEViewCtrl";
 import "./cde/public/js/controllers/InboxCtrl";
 import "./cde/public/js/controllers/MergeApproveCtrl";
-import "./cde/public/js/controllers/MergeRequestCtrl";
 import "./cde/public/js/controllers/CdeHistoryCtrl";
 import "./cde/shared/deValidator";
 import "./form/public/js/controllers/CreateFormCtrl";

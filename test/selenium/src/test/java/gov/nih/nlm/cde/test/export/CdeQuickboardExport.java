@@ -15,12 +15,15 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
 
     @Test
     public void cdeQuickBoardExport() {
+        String cdeName1 = "Intravesical Protocol Agent Administered Specify";
+        String cdeName2 = "Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing scale";
+        String cdeName3 = "User Login Name java.lang.String";
         mustBeLoggedOut();
         loadDefaultSettings();
 
-        addCdeToQuickBoard("Intravesical Protocol Agent Administered Specify");
-        addCdeToQuickBoard("Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing scale");
-        addCdeToQuickBoard("User Login Name java.lang.String");
+        addCdeToQuickBoard(cdeName1);
+        addCdeToQuickBoard(cdeName2);
+        addCdeToQuickBoard(cdeName3);
 
         textPresent("Quick Board (3)");
         goToQuickBoardByModule("cde");

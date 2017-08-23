@@ -8,7 +8,6 @@ import { QuickBoardComponent } from 'quickBoard/public/quickBoard.component';
 import { DataElementQuickBoardComponent } from 'quickBoard/public/dataElementQuickBoard/dataElementQuickBoardComponent';
 import { FormQuickBoardComponent } from 'quickBoard/public/formQuickBoard/formQuickBoardComponent';
 import { CompareModule } from 'compare/compare.module';
-import { CompareSideBySideService } from 'compare/compareSideBySide/compareSideBySide.service';
 
 @NgModule({
     imports: [
@@ -25,7 +24,7 @@ import { CompareSideBySideService } from 'compare/compareSideBySide/compareSideB
     ],
     entryComponents: [QuickBoardComponent],
     exports: [],
-    providers: [CompareSideBySideService],
+    providers: [],
 })
 export class QuickBoardModule {
 }
