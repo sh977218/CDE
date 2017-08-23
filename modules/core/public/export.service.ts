@@ -9,11 +9,12 @@ import { SharedService } from "./shared.service";
 
 @Injectable()
 export class ExportService {
-    constructor (private alertService: AlertService,
-                 private registrationValidatorService: RegistrationValidatorService,
-                 private elasticService: ElasticService,
-                 @Inject("SearchSettings") private searchSettings,
-                 @Inject('userResource') protected userService) {}
+    constructor(private alertService: AlertService,
+                private registrationValidatorService: RegistrationValidatorService,
+                private elasticService: ElasticService,
+                @Inject("SearchSettings") private searchSettings,
+                @Inject('userResource') protected userService) {
+    }
 
     exportSearchResults(type, module, exportSettings) {
         if (module === 'form' && (!this.userService.user || !this.userService.user._id))
@@ -87,8 +88,8 @@ export class ExportService {
                                     validationRules: this.registrationValidatorService.evalCde(oneElt, orgName, status, cdeOrgRules)
                                 };
                                 if (!record.validationRules.every(function (x) {
-                                    return x.cdePassingRule;
-                                })) cdes.push(record);
+                                        return x.cdePassingRule;
+                                    })) cdes.push(record);
                             }
                         });
                         if (exportSettings.cb) exportSettings.cb(cdes.slice(0, 100));
@@ -96,6 +97,12 @@ export class ExportService {
                 };
 
                 if (result) {
+                    // @TODO remove after convert newTags
+                    result.forEach(r => {
+                        r.naming.forEach(n => {
+                            delete n.newTags;
+                        });
+                    });
                     let exporter = exporters[type];
                     if (!exporter) {
                         this.alertService.addAlert("danger", "This export format is not supported.");
