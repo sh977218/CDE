@@ -7,15 +7,14 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 import "rxjs/add/operator/map";
 
 @Component({
-    selector: "cde-admin-item-properties",
+    selector: "cde-properties",
     providers: [],
     templateUrl: "./properties.component.html"
 })
 export class PropertiesComponent implements OnInit {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: any;
-    @Output() save = new EventEmitter();
-    @Output() remove = new EventEmitter();
+    @Output() onEltChange = new EventEmitter();
     orgPropertyKeys: string[] = [];
     public newProperty: any = {};
     public modalRef: NgbModalRef;
@@ -52,18 +51,8 @@ export class PropertiesComponent implements OnInit {
             this.alert.addAlert("info", "Property added. Save to confirm.");
             this.modalRef.close();
         } else {
-            let url;
-            if (this.elt.elementType === "cde")
-                url = "/de/";
-            if (this.elt.elementType === "form")
-                url = "/form/";
-            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                if (res) {
-                    this.elt = res;
-                    this.alert.addAlert("success", "Property added");
-                    this.modalRef.close();
-                }
-            }, err => this.alert.addAlert("danger", err));
+            this.onEltChange.emit({type: "success", message: "Property added"});
+            this.modalRef.close();
         }
     }
 
@@ -72,52 +61,21 @@ export class PropertiesComponent implements OnInit {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property removed. Save to confirm.");
         } else {
-            let url;
-            if (this.elt.elementType === "cde")
-                url = "/de/";
-            if (this.elt.elementType === "form")
-                url = "/form/";
-            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                if (res) {
-                    this.elt = res;
-                    this.alert.addAlert("success", "Property removed.");
-                    this.modalRef.close();
-                }
-            }, err => this.alert.addAlert("danger", err));
+            this.onEltChange.emit({type: "success", message: "Property removed"});
+            this.modalRef.close();
         }
     }
 
     saveProperty() {
-        let url;
-        if (this.elt.elementType === "cde")
-            url = "/de/";
-        if (this.elt.elementType === "form")
-            url = "/form/";
-        this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-            if (res) {
-                this.elt = res;
-                this.alert.addAlert("success", "Property saved.");
-                if (this.modalRef) this.modalRef.close();
-            }
-        }, err => this.alert.addAlert("danger", err));
+        this.onEltChange.emit({type: "success", message: "Property saved."});
     };
 
     reorderProperty() {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Property reordered. Save to confirm.");
         } else {
-            let url;
-            if (this.elt.elementType === "cde")
-                url = "/de/";
-            if (this.elt.elementType === "form")
-                url = "/form/";
-            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                if (res) {
-                    this.elt = res;
-                    this.alert.addAlert("success", "Property reordered.");
-                    this.modalRef.close();
-                }
-            }, err => this.alert.addAlert("danger", err));
+            this.onEltChange.emit({type: "success", message: "Property reordered."});
+            this.modalRef.close();
         }
     }
 

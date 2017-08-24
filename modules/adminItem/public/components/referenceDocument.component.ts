@@ -5,12 +5,13 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 import { Http } from "@angular/http";
 
 @Component({
-    selector: "cde-admin-item-reference-document",
+    selector: "cde-reference-document",
     providers: [NgbActiveModal],
     templateUrl: "./referenceDocument.component.html"
 })
 export class ReferenceDocumentComponent {
     @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: NgbModalModule;
+    @Output() onEltChange = new EventEmitter();
     @Output() save = new EventEmitter();
     @Output() remove = new EventEmitter();
     @Input() public elt: any;
@@ -37,18 +38,8 @@ export class ReferenceDocumentComponent {
             this.alert.addAlert("info", "Reference document added. Save to confirm.");
             this.modalRef.close();
         } else {
-            let url;
-            if (this.elt.elementType === "cde")
-                url = "/de/";
-            if (this.elt.elementType === "form")
-                url = "/form/";
-            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                if (res) {
-                    this.elt = res;
-                    this.alert.addAlert("success", "Reference document added");
-                    this.modalRef.close();
-                }
-            }, err => this.alert.addAlert("danger", err));
+            this.onEltChange.emit({type: "success", message: "Reference document added."});
+            this.modalRef.close();
         }
     }
 
@@ -57,18 +48,8 @@ export class ReferenceDocumentComponent {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Reference document removed. Save to confirm.");
         } else {
-            let url;
-            if (this.elt.elementType === "cde")
-                url = "/de/";
-            if (this.elt.elementType === "form")
-                url = "/form/";
-            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                if (res) {
-                    this.elt = res;
-                    this.alert.addAlert("success", "Reference document removed.");
-                    this.modalRef.close();
-                }
-            }, err => this.alert.addAlert("danger", err));
+            this.onEltChange.emit({type: "success", message: "Reference document removed."});
+            this.modalRef.close();
         }
     }
 

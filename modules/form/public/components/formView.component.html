@@ -38,7 +38,8 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <h1 class="page-header">{{elt.naming[0].designation}}
-                <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" class="btn btn-small btn-default"
+                <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
+                        class="btn btn-small btn-default"
                         title="Add to Compare List" type="button" (click)="quickBoardService.addToQuickBoard(elt)">
                     <i class="fa fa-plus"></i> Add to Quick Board
                 </button>
@@ -141,7 +142,7 @@
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <cde-admin-item-naming [elt]="elt"></cde-admin-item-naming>
+                        <cde-naming [elt]="elt" (onEltChange)="doStageElt();"></cde-naming>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="classification_tab">
@@ -161,7 +162,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-admin-item-reference-document [elt]="elt"></cde-admin-item-reference-document>
+                        <cde-reference-document [elt]="elt" (onEltChange)="doStageElt($event);">
+                        </cde-reference-document>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="displayProfiles_tab">
@@ -182,7 +184,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-admin-item-properties [elt]="elt"></cde-admin-item-properties>
+                        <cde-properties [elt]="elt" (onEltChange)="doStageElt($event);"></cde-properties>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="ids_tab">
@@ -192,7 +194,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-admin-item-ids [elt]="elt"></cde-admin-item-ids>
+                        <cde-identifiers [elt]="elt"(onEltChange)="doStageElt($event);"></cde-identifiers>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="attachments_tab">

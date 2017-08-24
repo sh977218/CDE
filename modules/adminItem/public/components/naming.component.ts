@@ -1,17 +1,18 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnInit, EventEmitter, Output } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { OrgHelperService } from "../../../core/public/orgHelper.service";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
-    selector: "cde-admin-item-naming",
+    selector: "cde-naming",
     templateUrl: "./naming.component.html"
 })
 export class NamingComponent implements OnInit {
 
     @ViewChild("newNamingContent") public newNamingContent: NgbModalModule;
     @Input() public elt: any;
+    @Output() onEltChange = new EventEmitter();
     public newNaming: any = {};
     public modalRef: NgbModalRef;
     public orgNamingTags: { id: string; text: string }[] = [];
@@ -75,13 +76,13 @@ export class NamingComponent implements OnInit {
     addNewNaming() {
         this.elt.naming.push(this.newNaming);
         this.modalRef.close();
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
         this.getCurrentTags();
     }
 
     removeNamingByIndex(index) {
         this.elt.naming.splice(index, 1);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     changedTags(name, data: { value: string[] }, needToSave = true) {
@@ -94,7 +95,7 @@ export class NamingComponent implements OnInit {
             return d;
         });
         if (needToSave)
-            this.elt.unsaved = true;
+            this.onEltChange.emit();
     }
 
 }

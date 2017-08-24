@@ -85,4 +85,10 @@ export class DataElementViewComponent implements OnInit {
         if (this.commentMode)
             this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
+
+    doStageElt(event) {
+        this.elt.unsaved = true;
+        if (event && event.type && event.message)
+            this.alert.addAlert(event.type, event.message);
+    }
 }

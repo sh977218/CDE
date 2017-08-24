@@ -8,17 +8,17 @@ import "rxjs/add/operator/map";
     selector: "cde-form-display-profile",
     templateUrl: "./displayProfile.component.html"
 })
-export class DisplayProfileComponent  {
+export class DisplayProfileComponent {
 
     constructor(@Inject("isAllowedModel") public isAllowedModel,
-                @Inject("userResource") public userService
-    ) {}
+                @Inject("userResource") public userService) {
+    }
 
     @Input() elt: any;
 
     showDelete: boolean;
 
-    addProfile () {
+    addProfile() {
         let newProfile = {
             name: "New Profile",
             displayInstructions: true,
@@ -37,12 +37,12 @@ export class DisplayProfileComponent  {
         this.elt.unsaved = true;
     };
 
-    removeDisplayProfile (index) {
+    removeDisplayProfile(index) {
         this.elt.displayProfiles.splice(index, 1);
         this.elt.unsaved = true;
     };
 
-    setDisplayType (profile, $event) {
+    setDisplayType(profile, $event) {
         profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
         this.elt.unsaved = true;
     }
@@ -97,7 +97,7 @@ export class DisplayProfileComponent  {
                                     "editable": true,
                                     "required": false,
                                     "uoms": [],
-                                    "cde" : {
+                                    "cde": {
                                         "ids": []
                                     }
                                 },
@@ -142,7 +142,7 @@ export class DisplayProfileComponent  {
                                     "invisible": true,
                                     "required": false,
                                     "uoms": [],
-                                    "cde" : {
+                                    "cde": {
                                         "ids": []
                                     }
                                 },
@@ -166,78 +166,78 @@ export class DisplayProfileComponent  {
                         "hideLabel": false
                     },
                     {
-                        "elementType" : "question",
-                        "label" : "Education level USA type",
-                        "skipLogic" : {
-                            "condition" : ""
+                        "elementType": "question",
+                        "label": "Education level USA type",
+                        "skipLogic": {
+                            "condition": ""
                         },
-                        "formElements" : [],
-                        "question" : {
-                            "datatype" : "Value List",
-                            "defaultAnswer" : "Never attended/Kindergarten only",
-                            "answer" : "Never attended/Kindergarten only",
-                            "answers" : [
+                        "formElements": [],
+                        "question": {
+                            "datatype": "Value List",
+                            "defaultAnswer": "Never attended/Kindergarten only",
+                            "answer": "Never attended/Kindergarten only",
+                            "answers": [
                                 {
-                                    "permissibleValue" : "Never attended/Kindergarten only",
-                                    "valueMeaningName" : "Never attended/Kindergarten only"
+                                    "permissibleValue": "Never attended/Kindergarten only",
+                                    "valueMeaningName": "Never attended/Kindergarten only"
                                 },
                                 {
-                                    "permissibleValue" : "1st Grade",
-                                    "valueMeaningName" : "1st Grade"
+                                    "permissibleValue": "1st Grade",
+                                    "valueMeaningName": "1st Grade"
                                 },
                                 {
-                                    "permissibleValue" : "2nd Grade",
-                                    "valueMeaningName" : "2nd Grade"
+                                    "permissibleValue": "2nd Grade",
+                                    "valueMeaningName": "2nd Grade"
                                 },
                                 {
-                                    "permissibleValue" : "3rd Grade",
-                                    "valueMeaningName" : "3rd Grade"
+                                    "permissibleValue": "3rd Grade",
+                                    "valueMeaningName": "3rd Grade"
                                 },
                                 {
-                                    "permissibleValue" : "4th Grade",
-                                    "valueMeaningName" : "4th Grade"
+                                    "permissibleValue": "4th Grade",
+                                    "valueMeaningName": "4th Grade"
                                 },
                                 {
-                                    "permissibleValue" : "5th Grade",
-                                    "valueMeaningName" : "5th Grade"
+                                    "permissibleValue": "5th Grade",
+                                    "valueMeaningName": "5th Grade"
                                 },
                                 {
-                                    "permissibleValue" : "6th Grade",
-                                    "valueMeaningName" : "6th Grade"
+                                    "permissibleValue": "6th Grade",
+                                    "valueMeaningName": "6th Grade"
                                 },
                                 {
-                                    "permissibleValue" : "7th Grade",
-                                    "valueMeaningName" : "7th Grade"
+                                    "permissibleValue": "7th Grade",
+                                    "valueMeaningName": "7th Grade"
                                 },
                                 {
-                                    "permissibleValue" : "8th Grade",
-                                    "valueMeaningName" : "8th Grade"
+                                    "permissibleValue": "8th Grade",
+                                    "valueMeaningName": "8th Grade"
                                 },
                                 {
-                                    "permissibleValue" : "9th Grade",
-                                    "valueMeaningName" : "9th Grade"
+                                    "permissibleValue": "9th Grade",
+                                    "valueMeaningName": "9th Grade"
                                 },
                                 {
-                                    "permissibleValue" : "10th Grade",
-                                    "valueMeaningName" : "10th Grade"
+                                    "permissibleValue": "10th Grade",
+                                    "valueMeaningName": "10th Grade"
                                 },
                                 {
-                                    "permissibleValue" : "11th Grade",
-                                    "valueMeaningName" : "11th Grade"
+                                    "permissibleValue": "11th Grade",
+                                    "valueMeaningName": "11th Grade"
                                 }
                             ],
-                            "editable" : true,
-                            "required" : false,
-                            "uoms" : [],
-                            "cde" : {
+                            "editable": true,
+                            "required": false,
+                            "uoms": [],
+                            "cde": {
                                 "ids": []
                             }
                         },
-                        "cardinality" : {
-                            "min" : 1,
-                            "max" : 1
+                        "cardinality": {
+                            "min": 1,
+                            "max": 1
                         },
-                        "hideLabel" : false
+                        "hideLabel": false
                     },
                     {
                         "elementType": "question",
@@ -252,7 +252,7 @@ export class DisplayProfileComponent  {
                             "editable": true,
                             "required": false,
                             "uoms": [],
-                            "cde" : {
+                            "cde": {
                                 "ids": []
                             }
                         },
