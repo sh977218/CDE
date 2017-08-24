@@ -48,7 +48,7 @@ export class NamingComponent implements OnInit {
                 this.elt.naming.forEach(n => {
                     n.tags.forEach(t => {
                         this.orgNamingTags.push({"id": t, "text": t});
-                    })
+                    });
                 });
                 this.orgNamingTags = _.uniqWith(this.orgNamingTags, _.isEqual);
                 this.onInitDone = true;
