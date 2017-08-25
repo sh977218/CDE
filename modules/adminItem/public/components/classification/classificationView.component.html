@@ -7,7 +7,8 @@
             <ng-template #treeNodeTemplate let-node="node" let-index="index">
                 <a href="{{searchByClassification(node,classification.stewardOrg.name)}}" [id]="node.path">
                     {{ node.data.name }}</a>
-                <i class="fa fa-trash-o hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"
+                <i *ngIf="isAllowedModel.isAllowed(elt)"
+                   class="fa fa-trash-o hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"
                    (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)"></i>
             </ng-template>
             <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
