@@ -21,18 +21,25 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         textPresent("Org Updated");
         closeAlert();
 
-        goToCdeByName("Distance from Closest Margin Value");
+        int count = 0;
+        while (count < 5) {
+            goToCdeByName("Distance from Closest Margin Value");
 
-        clickElement(By.id("properties_tab"));
-        clickElement(By.id("openNewPropertyModalBtn"));
-        clickElement(By.id("newKey"));
+            clickElement(By.id("properties_tab"));
+            clickElement(By.id("openNewPropertyModalBtn"));
+            clickElement(By.id("newKey"));
 
-        try {
-            findElement(By.xpath("//option[@value='doYouSeeThis']"));
-            findElement(By.xpath("//option[@value='propKey0']"));
-        } catch (TimeoutException e) {
-            Assert.fail("Failed to find doYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
+            try {
+                findElement(By.xpath("//option[@value='doYouSeeThis']"));
+                findElement(By.xpath("//option[@value='propKey0']"));
+                break;
+            } catch (TimeoutException e) {}
+
+            hangon(10);
+            count++;
         }
+        findElement(By.xpath("//option[@value='doYouSeeThis']"));
+        findElement(By.xpath("//option[@value='propKey0']"));
 
         clickElement(By.id("cancelNewPropertyBtn"));
 

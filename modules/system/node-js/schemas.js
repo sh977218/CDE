@@ -56,12 +56,12 @@ var commonEmbedSchema = {
     nameLabel: String,
     pageSize: Number,
     primaryDefinition: {
-        show: Boolean,
+        show: {type: Boolean, default: false},
         label: String,
         style: String
     },
     registrationStatus: {
-        show: Boolean,
+        show: {type: Boolean, default: false},
         label: String
     },
     lowestRegistrationStatus: {type: String, enum:regStatusShared.orderedList},
@@ -102,12 +102,12 @@ var embedJson = {
 };
 embedJson.cde.permissibleValues = Boolean;
 embedJson.cde.linkedForms = {
-    show: Boolean,
+    show: {type: Boolean, default: false},
     label: String
 };
-embedJson.form.sdcLink = Boolean;
-embedJson.form.nbOfQuestions = Boolean;
-embedJson.form.cdes = Boolean;
+embedJson.form.sdcLink = {type: Boolean, default: false};
+embedJson.form.nbOfQuestions = {type: Boolean, default: false};
+embedJson.form.cdes = {type: Boolean, default: false};
 
 schemas.embedSchema = new mongoose.Schema(embedJson);
 
@@ -171,7 +171,7 @@ schemas.userSchema = new mongoose.Schema({
         , defaultSearchView: {type: String, enum: ["accordion", "table", "summary"]}
         , lowestRegistrationStatus: String
         , tableViewFields: {
-            name: Boolean
+            name: {type: Boolean, default: true}
             , naming: Boolean
             , questionTexts: Boolean
             , permissibleValues: Boolean
@@ -208,6 +208,7 @@ schemas.namingSchema = new mongoose.Schema({
     tags: [new mongoose.Schema({
         tag: String
     }, {_id: false})],
+    newTags: [String],
     source: {type: String}
 }, {_id: false});
 
@@ -317,7 +318,7 @@ schemas.message = new mongoose.Schema({
     , date: Date,
     type: {
         type: String,
-        enum: ["MergeRequest", "CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]
+        enum: ["CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]
     }
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema

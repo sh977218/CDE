@@ -45,7 +45,7 @@ exports.init = function (app) {
     ["/cde/search", "/form/search", "/home", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards", "/sdcview",
         "/cdeStatusReport", "/api", "/sdcview", "/triggerClientException",
-        "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
+        "/formView", "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
@@ -203,16 +203,6 @@ exports.init = function (app) {
             res.redirect('/login');
         });
     });
-
-    app.get('/nlmoauth/callback',
-        passport.authenticate('oauth2', {failureRedirect: '/login'}),
-        function (req, res) {
-            // Successful authentication, redirect home.
-            res.redirect('/');
-        });
-
-    app.get('/nlmoauth',
-        passport.authenticate('oauth2', {scope: 'personaldata'}));
 
     app.post('/logs', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin)
@@ -913,7 +903,7 @@ exports.init = function (app) {
 
     app.post("/syncWithMesh", function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-        syncWithMesh();
+        elastic.syncWithMesh();
         res.send();
     });
 
@@ -921,17 +911,11 @@ exports.init = function (app) {
         res.send(elastic.meshSyncStatus);
     });
 
-    function syncWithMesh() {
-        mongo_data_system.findMeshClassification({}, function (err, allMappings) {
-            elastic.syncWithMesh(allMappings);
-        });
-    }
-
     new CronJob({
         cronTime: '00 00 4 * * *',
         //noinspection JSUnresolvedFunction
         onTick: function () {
-            syncWithMesh();
+            elastic.syncWithMesh();
         },
         start: false,
         timeZone: "America/New_York"

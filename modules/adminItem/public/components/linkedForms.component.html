@@ -6,7 +6,7 @@
     <div class="modal-header" id="linkedFormsModalHeader">
         <h4 class="modal-title">Linked Forms</h4>
     </div>
-    <form role="form" #linkedFormsForm="ngForm">
+    <form #linkedFormsForm="ngForm">
         <div class="modal-body" id="linkedFormsModalBody">
             <p>{{getFormText()}}</p>
             <a *ngIf="forms && forms.length > 0" class="btn btn-default" id="seeAllLinkedFormsButton"

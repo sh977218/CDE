@@ -1,1 +1,1 @@
-angular.module("boardTemplates", [])
+angular.module("boardTemplates", []);

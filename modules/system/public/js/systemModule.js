@@ -6,8 +6,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'ui.sortable',
     'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
-    'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive',
-    'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
+    'angular-send-feedback', 'ngAnimate', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -26,8 +25,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/home', {
             template: '<cde-home></cde-home>'
         }).when('/login', {
-            controller: 'AuthCtrl',
-            templateUrl: '/system/public/html/login.html'
+            template: '<cde-login></cde-login>'
         }).when('/siteAudit', {
             template: '<cde-site-audit></cde-site-audit>'
         }).when('/inbox', {
@@ -47,11 +45,10 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/profile', {
             template: '<cde-profile></cde-profile>'
         }).when('/triggerClientException', {
-            controller: 'TriggerClientExceptionCtrl',
+            controller:  ['$scope', function($scope) {trigger.error();}],
             template: 'An exception in your browser has been triggered.'
-        }).when('/searchSettings', {
-            controller: 'SearchSettingsCtrl',
-            templateUrl: '/system/public/html/searchSettings.html'
+        }).when('/searchPreferences', {
+            template: '<cde-search-preferences></cde-search-preferences>'
         });
     }])
     .directive('inlineEdit', ["$timeout", function ($timeout) {
@@ -167,43 +164,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             restrict: 'AE',
             controller: 'SelectBoardModalCtrl',
             templateUrl: '/system/public/html/selectBoardModal.html',
-        };
-    }])
-    .directive('cdeEltsCompare', [function () {
-        return {
-            restrict: 'AE',
-            scope: {
-                module: '=',
-                eltsToCompare: '=',
-            },
-            templateUrl: '/system/public/html/eltsCompareButton.html',
-            controller: ['$scope', '$uibModal', 'AlertService', 'userResource', function ($scope, $modal, Alert) {
-                $scope.showSideBySideView = function() {
-                    if ($scope.eltsToCompare.length !== 2) {
-                        Alert.addAlert("danger", "You may only compare 2 elements side by side.");
-                        return;
-                    }
-                    $scope.eltsToCompare.sort();
-                    $modal.open({
-                        animation: false,
-                        templateUrl: '/system/public/html/eltsCompare.html',
-                        controller: ['$scope', 'userResource', 'module', 'eltsToCompare',
-                            function ($scope, userResource, module, eltsToCompare) {
-                                $scope.module = module;
-                                $scope.eltsToCompare = eltsToCompare;
-                                userResource.getPromise().then(function () {
-                                    $scope.user = userResource.user;
-                                });
-                            }
-                        ],
-                        resolve: {
-                            module: function() {return $scope.module;},
-                            eltsToCompare: function() {return $scope.eltsToCompare;}
-                        },
-                        size: 'lg'
-                    });
-                };
-            }]
         };
     }])
     .directive('sortableArray', [function () {
@@ -477,7 +437,7 @@ import { NavigationComponent } from "../components/navigation.component";
 
 angular.module('systemModule').directive('cdeNavigation', downgradeComponent({
     component: NavigationComponent,
-    inputs: ['quickBoardCount'], outputs: ['goToLogin', 'logout']
+    inputs: [], outputs: ['goToLogin', 'logout']
 }));
 
 import { ProfileComponent } from "../components/profile.component";
@@ -638,3 +598,14 @@ angular.module('systemModule').directive('cdeInbox', downgradeComponent(
 
 import { MergeCdeService } from "../../../core/public/mergeCde.service";
 angular.module('systemModule').factory('MergeCdeService', downgradeInjectable(MergeCdeService));
+
+import {SearchPreferencesComponent} from "../components/searchPreferences/searchPreferences.component"
+angular.module('systemModule').directive('cdeSearchPreferences', downgradeComponent(
+    {component: SearchPreferencesComponent, inputs: [], outputs: []}));
+
+import {EmbedComponent} from "../components/embed/embed.component"
+angular.module('systemModule').directive('cdeEmbed', downgradeComponent({component: EmbedComponent, inputs: [], outputs: []}));
+
+import {LoginComponent} from "../components/login/login.component"
+angular.module('systemModule').directive('cdeLogin', downgradeComponent(
+    {component: LoginComponent, inputs: [], outputs: []}));

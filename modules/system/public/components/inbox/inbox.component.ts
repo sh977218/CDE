@@ -31,7 +31,6 @@ export class InboxComponent implements OnInit {
         this.http.post("/mail/messages/" + type, {}).map(r => r.json()).subscribe(mail => {
             this.mail[type] = mail;
             mail.forEach(msg => msg.humanType = this.decamelize(msg.type));
-            this.fetchMRCdes(type);
         });
     };
 
@@ -49,26 +48,6 @@ export class InboxComponent implements OnInit {
         return result.charAt(0).toUpperCase() + result.slice(1);
     }
 
-    fetchMRCdes (type) {
-        let tinyIdList = this.mail[type].map(m => {
-            if (m.typeRequest) return m.typeRequest.source.tinyId;
-        });
-        tinyIdList = tinyIdList.concat(this.mail[type].map(m => {
-            if (m.typeRequest) return m.typeRequest.destination.tinyId;
-        }));
-        this.http.post("/cdesByTinyIdList", tinyIdList).map(r => r.json()).subscribe(result => {
-            if (!result) return;
-            let cdesKeyValuePair = {};
-            result.forEach(cde => cdesKeyValuePair[cde.tinyId] = cde);
-            this.mail[type].map(function (message) {
-                if (message.type !== "MergeRequest") return;
-                message.typeRequest.source.object = cdesKeyValuePair[message.typeRequest.source.tinyId];
-                message.typeRequest.destination.object = cdesKeyValuePair[message.typeRequest.destination.tinyId];
-            });
-        }, () => {});
-    }
-
-
     closeMessage (message) {
         message.states.unshift({
             "action" : "Approved",
@@ -81,22 +60,6 @@ export class InboxComponent implements OnInit {
         }, () => {
             this.alert.addAlert("danger", "Message couldn't be retired.");
         });
-    }
-
-    approveMergeMessage (message) {
-        this.mergeSvc.approveMerge(
-            this.currentMessage.typeRequest.source.object,
-            this.currentMessage.typeRequest.destination.object,
-            this.currentMessage.typeRequest.mergeFields,
-            () => {
-            this.closeMessage(this.currentMessage);
-        });
-    };
-
-
-    showMergeApproveDialog (message) {
-        this.currentMessage = message;
-        this.saveModal.openSaveModal();
     }
 
     approveAttachment (msg) {

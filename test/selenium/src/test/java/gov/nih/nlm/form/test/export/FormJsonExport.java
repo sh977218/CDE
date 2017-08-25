@@ -26,7 +26,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
                 "\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""
         };
 
-        String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
+        String response = findElement(By.cssSelector("HTML body pre")).getAttribute("innerHTML");
 
         for (String s : toCompare) {
             Assert.assertTrue(response.contains(s), "Export actually contains: " + response);
