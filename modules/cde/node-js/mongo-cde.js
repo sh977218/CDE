@@ -34,7 +34,7 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     var cdeError = deValidator.checkPvUnicity(self.valueDomain);
-    if (cdeError.pvNotValidMsg) {
+    if (cdeError && cdeError.pvNotValidMsg) {
         logging.errorLogger.error(cdeError);
         next(cdeError);
     } else {

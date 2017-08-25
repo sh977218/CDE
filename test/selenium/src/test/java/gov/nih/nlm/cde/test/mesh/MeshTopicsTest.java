@@ -80,5 +80,4 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='li-blank-National Institute of Neurological Disorders and Stroke']"));
         scrollToViewById("status_filter");
     }
-
 }
