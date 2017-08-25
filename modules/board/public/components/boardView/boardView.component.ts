@@ -204,6 +204,7 @@ export class BoardViewComponent implements OnInit {
             this.users.push(newUser);
             this.newUser = {username: '', role: 'viewer'};
             this.changesMade = true;
+            this.getReviewers();
         }
     };
 
