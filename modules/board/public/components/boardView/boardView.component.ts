@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
-import {NgbModal, NgbModalModule, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SharedService } from "../../../../core/public/shared.service";
 import { saveAs } from "cde/public/assets/js/FileSaver";
-import {ClassifyItemModalComponent} from "../../../../adminItem/public/components/classification/classifyItemModal.component";
+import { ClassifyItemModalComponent } from "../../../../adminItem/public/components/classification/classifyItemModal.component";
+import {OrgHelperService} from "../../../../core/public/orgHelper.service";
 
 @Component({
     selector: 'cde-board-view',
@@ -33,6 +34,18 @@ export class BoardViewComponent implements OnInit {
     feedbackClass: string[] = [""];
     users: any[] = [];
     modalTitle: string;
+    changesMade: boolean;
+    newUser: any = {username: '', role: 'viewer'};
+    allRoles = [{
+        label: 'can review',
+        name: 'reviewer',
+        icon: 'fa-search-plus'
+    }, {
+        label: 'can view',
+        name: 'viewer',
+        icon: 'fa-eye'
+    }];
+    url: string;
 
     shareModalRef: NgbModalRef;
 
@@ -40,11 +53,12 @@ export class BoardViewComponent implements OnInit {
                 private alert: AlertService,
                 @Inject('userResource') protected userService,
                 private modalService: NgbModal,
-                @Inject('SearchSettings') public searchSettings
-                ) {}
+                @Inject('SearchSettings') public searchSettings,
+                private orgHelper: OrgHelperService) {}
 
     ngOnInit () {
         this.reload();
+        this.url = location.href;
     }
 
     reload () {
@@ -54,13 +68,13 @@ export class BoardViewComponent implements OnInit {
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
                 // if (this.board.type === "form")
                 //     $scope.quickBoard = $scope.formQuickBoard;
-                // $scope.elts = $scope[$scope.board.type + 's'] = [];
 
                 // $scope.module = $scope.board.type;
                 this.totalItems = response.totalItems;
                 // $scope.numPages = $scope.totalItems / 20;
                 let pins = this.board.pins;
                 let respElts = response.elts;
+                this.elts = [];
                 pins.forEach(pin => {
                     let pinId = this.board.type === 'cde' ? pin.deTinyId : pin.formTinyId;
                     respElts.forEach(elt => {
@@ -87,58 +101,23 @@ export class BoardViewComponent implements OnInit {
 
                 this.getReviewers();
 
-                // $scope.elts.forEach(function (elt) {
-                //     elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
-                // });
-                // $scope.board.users.filter(function (u) {
-                //     if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
-                //     if (u.username === userResource.user.username) {
-                //         $scope.boardStatus = u.status.approval;
-                //     }
-                // });
-                // $scope.deferredEltLoaded.resolve();
+                this.elts.forEach(elt => elt.usedBy = this.orgHelper.getUsedBy(elt));
+                this.board.users.filter(u => {
+                    if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
+                    if (u.username === this.userService.user.username) {
+                        this.boardStatus = u.status.approval;
+                    }
+                });
             }
         }, () => {
             this.alert.addAlert("danger", "Board not found");
         });
     };
 
-    // $scope.setPage = function (p) {
-    //     $scope.currentPage = p;
-    //     $scope.reload();
-    // };
-    //
+    setPage (newPage) {
+        if (this.currentPage !== newPage) this.reload();
+    };
 
-    // $scope.getEltId = function () {
-    //     return $scope.board._id;
-    // };
-    // $scope.getEltName = function () {
-    //     return $scope.board.name;
-    // };
-    // $scope.getCtrlType = function () {
-    //     return "board";
-    // };
-    // $scope.doesUserOwnElt = function () {
-    //     return userResource.user.siteAdmin || (userResource.user.username === $scope.board.owner.username);
-    // };
-    //
-    // $scope.deferredEltLoaded = $q.defer();
-    //
-    //
-    // $scope.unpin = function (pin) {
-    //     var url;
-    //     if (pin.deTinyId) {
-    //         url = "/pin/cde/" + pin.deTinyId + "/" + $scope.board._id;
-    //     } else if (pin.formTinyId) {
-    //         url = "/pin/form/" + pin.formTinyId + "/" + $scope.board._id;
-    //     }
-    //     $http['delete'](url).then(function onSuccess() {
-    //         $scope.reload();
-    //         Alert.addAlert("success", "Unpinned.");
-    //     }).catch(function onError() {
-    //     });
-    // };
-    //
     exportBoard () {
         this.http.get('/board/' + this.board._id + '/0/500/?type=csv')
             .map(r => r.json()).subscribe(response => {
@@ -161,37 +140,6 @@ export class BoardViewComponent implements OnInit {
                 });
             });
     };
-    //
-    // function movePin(endPoint, pinId) {
-    //     $http.post(endPoint, {boardId: $scope.board._id, tinyId: pinId}).then(function onSuccess() {
-    //         Alert.addAlert("success", "Saved");
-    //         $scope.reload();
-    //     }).catch(function onError(response) {
-    //         Alert.addAlert("danger", response.data);
-    //         $scope.reload();
-    //     });
-    // }
-    //
-    // $scope.moveUp = function (id) {
-    //     movePin("/board/pin/move/up", id);
-    // };
-    // $scope.moveDown = function (id) {
-    //     movePin("/board/pin/move/down", id);
-    // };
-    // $scope.moveTop = function (id) {
-    //     movePin("/board/pin/move/top", id);
-    // };
-    //
-    // $scope.save = function () {
-    //     $http.post("/board", $scope.board).then(function onSuccess() {
-    //         Alert.addAlert("success", "Saved");
-    //         $scope.reload();
-    //     }).catch(function onError(response) {
-    //         Alert.addAlert("danger", response.data);
-    //         $scope.reload();
-    //     });
-    // };
-
 
     addClassification (event) {
         let _timeout = setInterval(() => this.alert.addAlert("warning", "Classification task is still in progress. Please hold on."), 3000);
@@ -214,45 +162,6 @@ export class BoardViewComponent implements OnInit {
 
     classifyEltBoard () {
         this.classifyCdesModal.openModal();
-
-        // var $modalInstance = $modal.open({
-        //     animation: false,
-        //     templateUrl: '/system/public/html/classifyCdesInBoard.html',
-        //     controller: 'AddClassificationModalCtrl',
-        //     resolve: {
-        //         module: function () {
-        //             return $scope.board.type;
-        //         },
-        //         addClassification: function () {
-        //             return {
-        //                 addClassification: function (newClassification) {
-        //                     var _timeout = $timeout(function () {
-        //                         Alert.addAlert("warning", "Classification task is still in progress. Please hold on.");
-        //                     }, 3000);
-        //                     $http({
-        //                         method: 'post',
-        //                         url: $scope.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
-        //                         data: {
-        //                             boardId: $scope.board._id,
-        //                             newClassification: newClassification
-        //                         }
-        //                     }).then(function onSuccess(response) {
-        //                         $timeout.cancel(_timeout);
-        //                         if (response.status === 200) Alert.addAlert("success", "All Elements classified.");
-        //                         else Alert.addAlert("danger", response.data.error.message);
-        //                     }).catch(function onError() {
-        //                         Alert.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
-        //                         $timeout.cancel(_timeout);
-        //                     });
-        //                     $modalInstance.close();
-        //                 }
-        //             };
-        //         }
-        //     }
-        // });
-        // $modalInstance.result.then(function () {
-        // }, function () {
-        // });
     };
 
     getReviewers () {
@@ -286,50 +195,37 @@ export class BoardViewComponent implements OnInit {
     //     });
     // };
 
-    // $scope.url = $location.absUrl();
     // $scope.searchString = '';
-    // $scope.owner = board.owner;
-    // $scope.users = angular.copy(board.users);
-    // $scope.newUser = {username: '', role: 'viewer'};
-    // $scope.allRoles = [{
-    //     label: 'can review',
-    //     name: 'reviewer',
-    //     icon: 'fa-search-plus'
-    // }, {
-    //     label: 'can view',
-    //     name: 'viewer',
-    //     icon: 'fa-eye'
-    // }];
-    // $scope.addUser = function (newUser) {
-    //     if ($scope.users.filter(function (o) {
-    //             return o.username.toLowerCase() === newUser.username.toLowerCase();
-    //         })[0]) {
-    //         Alert.addAlert('danger', 'username exists');
-    //     } else {
-    //         $scope.users.push(newUser);
-    //         $scope.newUser = {username: '', role: 'viewer'};
-    //         $scope.changesMade = true;
-    //     }
-    // };
-    // $scope.deleteUser = function (index) {
-    //     $scope.users.splice(index, 1);
-    //     $scope.changesMade = true;
-    // };
+
+    addUser (newUser) {
+        if (this.users.filter(o => o.username.toLowerCase() === newUser.username.toLowerCase())[0]) {
+            this.alert.addAlert('danger', 'username exists');
+        } else {
+            this.users.push(newUser);
+            this.newUser = {username: '', role: 'viewer'};
+            this.changesMade = true;
+        }
+    };
+
+    deleteUser (index) {
+        this.users.splice(index, 1);
+        this.changesMade = true;
+    };
+
     // $scope.saveBoardUsers = function () {
     //     if (!$scope.users) $scope.users = [];
     //     $scope.users.push({username: $scope.searchString});
     // };
-    // $scope.changeRole = function (newUser, role) {
-    //     newUser.role = role.name;
-    //     $scope.changesMade = true;
-    //     newUser.status = 'invited';
-    // };
+
+    changeRole (newUser, role) {
+        newUser.role = role.name;
+        this.changesMade = true;
+        newUser.status = 'invited';
+    };
 
     okShare () {
         this.http.post('/board/users', {
             boardId: this.board._id,
-            user: this.userService.user,
-            owner: this.board.owner,
             users: this.users
         }).subscribe(() => {
             this.shareModalRef.close();
@@ -338,20 +234,9 @@ export class BoardViewComponent implements OnInit {
     };
 
     shareBoard () {
+        this.users = [];
+        this.board.users.forEach(u => this.users.push(u));
         this.shareModalRef = this.modalService.open(this.shareBoardModal, {size: "lg"});
-        // $modal.open({
-        //     animation: false,
-        //     templateUrl: '/board/public/html/shareBoard.html',
-        //     controller: 'ShareBoardCtrl',
-        //     resolve: {
-        //         board: function () {
-        //             return $scope.board;
-        //         }
-        //     }
-        // }).result.then(function (users) {
-        //     $scope.board.users = users;
-        // }, function () {
-        // });
     };
 
     boardApproval (approval) {

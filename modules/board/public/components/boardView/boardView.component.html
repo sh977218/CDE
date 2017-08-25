@@ -85,15 +85,18 @@
             <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
                            [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems" (add)="reload()"></cde-list-view>
 
+            <ngb-pagination [collectionSize]="totalItems" [page]="currentPage" (pageChange)="setPage($event)" [maxSize]="10">
+            </ngb-pagination>
+
             <!--<ul uib-pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems"-->
                 <!--ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></ul>-->
         </div>
 
-        <!--<div ng-if="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"-->
-             <!--style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">-->
-            <!--<cde-discuss-area [elt-id]="board._id" [elt]="board"-->
-                              <!--[elt-name]="board.name"></cde-discuss-area>-->
-        <!--</div>-->
+        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+            <cde-discuss-area [eltId]="board._id" [elt]="board"
+                              [eltName]="board.name"></cde-discuss-area>
+        </div>
 
     </div>
 </div>
@@ -102,70 +105,70 @@
     <div class="modal-header">
         <h3>Share this board</h3>
     </div>
-    <!--<div class="modal-body">-->
-        <!--<label style="font-size: 13px;">Link to share (only accessible by collaborators)</label>-->
-        <!--<input id="sharedLink" readonly="readonly" type="text" value="{{url}}" onclick="this.select()">-->
+    <div class="modal-body">
+        <label style="font-size: 13px;" for="sharedLink">Link to share (only accessible by collaborators)</label>
+        <input id="sharedLink" readonly="readonly" type="text" value="{{url}}" onclick="this.select()">
 
-        <!--<div style="font-size: 13px;">Who has access</div>-->
-        <!--<div class="padding10">-->
-            <!--<table class="table">-->
-                <!--<tbody>-->
-                <!--<tr ng-repeat="user in users">-->
-                    <!--<td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>-->
-                    <!--<td>{{user.username}} {{owner.username === user.username?'(you)':''}}</td>-->
-                    <!--<td uib-dropdown>-->
-                        <!--<div uib-dropdown-toggle>-->
-                            <!--<div class="floatLeft">-->
-                                <!--<i class="fa width20"-->
-                                   <!--ng-class="{'fa-eye':user.role === 'viewer','fa-search-plus':user.role === 'reviewer'}"></i>-->
-                            <!--</div>-->
-                            <!--<div class="floatLeft">-->
-                                <!--<i class="fa fa-caret-down"></i>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<ul uib-dropdown-menu>-->
-                            <!--<li ng-repeat="role in allRoles" value="{{role.name}}" ng-click="changeRole(user,role)">-->
-                                <!--<a class="ib" style="line-height: 15px;">-->
-                                    <!--<i class="fa width20" ng-class="{'fa-check':user.role === role.name}"></i>-->
-                                    <!--<i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}-->
-                                <!--</a>-->
-                            <!--</li>-->
-                        <!--</ul>-->
-                    <!--</td>-->
-                    <!--<td><i class="fa fa-trash-o" ng-click="deleteUser($index)"></i></td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>-->
-                    <!--<td>-->
-                        <!--<input placeholder="Enter username..." style="width:100%" id="newUser_username"-->
-                               <!--ng-model="newUser.username" required/>-->
-                    <!--</td>-->
-                    <!--<td uib-dropdown>-->
-                        <!--<div uib-dropdown-toggle>-->
-                            <!--<div class="floatLeft">-->
-                                <!--<i class="fa width20" style="line-height: 15px;" id="newUser_role"-->
-                                   <!--ng-class="{'fa-eye':newUser.role === 'viewer','fa-search-plus':newUser.role === 'reviewer'}"></i>-->
-                            <!--</div>-->
-                            <!--<div class="floatLeft">-->
-                                <!--<i id="newUser_change" class="fa fa-caret-down"></i>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<ul uib-dropdown-menu>-->
-                            <!--<li ng-repeat="role in allRoles" value="{{role.name}}" ng-click="changeRole(newUser,role)"-->
-                                <!--id="newUser_role_{{role.name}}">-->
-                                <!--<a class="ib" style="line-height: 15px;">-->
-                                    <!--<i class="fa width20" ng-class="{'fa-check':newUser.role === role.name}"></i>-->
-                                    <!--<i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}-->
-                                <!--</a>-->
-                            <!--</li>-->
-                        <!--</ul>-->
-                    <!--</td>-->
-                    <!--<td><i class="fa fa-plus" id="addUserBtn" ng-click="addUser(newUser)" ng-if="newUser.username"></i></td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-            <!--</table>-->
-        <!--</div>-->
-    <!--</div>-->
+        <div style="font-size: 13px;">Who has access</div>
+        <div class="padding10">
+            <table class="table">
+                <tbody>
+                <tr *ngFor="let user of users; let $index = index">
+                    <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
+                    <td>{{user.username}} {{board.owner.username === user.username?'(you)':''}}</td>
+                    <td ngbDropdown>
+                        <div ngbDropdownToggle class="dropdown-toggle">
+                            <div class="floatLeft">
+                                <i class="fa width20"
+                                   [ngClass]="{'fa-eye':user.role === 'viewer','fa-search-plus':user.role === 'reviewer'}"></i>
+                            </div>
+                            <div class="floatLeft">
+                                <i class="fa fa-caret-down"></i>
+                            </div>
+                        </div>
+                        <ul ngbDropdownMenu class="dropdown-menu">
+                            <li *ngFor="let role of allRoles" value="{{role.name}}" (click)="changeRole(user,role)">
+                                <a class="ib" style="line-height: 15px;">
+                                    <i class="fa width20" [ngClass]="{'fa-check':user.role === role.name}"></i>
+                                    <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                    <td><i class="fa fa-trash-o" (click)="deleteUser($index)"></i></td>
+                </tr>
+                <tr>
+                    <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
+                    <td>
+                        <input placeholder="Enter username..." style="width:100%" id="newUser_username"
+                               [(ngModel)]="newUser.username" required/>
+                    </td>
+                    <td ngbDropdown>
+                        <div ngbDropdownToggle class="dropdown-toggle">
+                            <div class="floatLeft">
+                                <i class="fa width20" style="line-height: 15px;" id="newUser_role"
+                                   [ngClass]="{'fa-eye':newUser.role === 'viewer','fa-search-plus':newUser.role === 'reviewer'}"></i>
+                            </div>
+                            <div class="floatLeft">
+                                <i id="newUser_change" class="fa fa-caret-down"></i>
+                            </div>
+                        </div>
+                        <div ngbDropdownMenu class="dropdown-menu">
+                            <span *ngFor="let role of allRoles" (click)="changeRole(newUser,role)" class="dropdown-item"
+                                id="newUser_role_{{role.name}}">
+                                <a class="ib" style="line-height: 15px;">
+                                    <i class="fa width20" [ngClass]="{'fa-check':newUser.role === role.name}"></i>
+                                    <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
+                                </a>
+                            </span>
+                        </div>
+                    </td>
+                    <td><i class="fa fa-plus" id="addUserBtn" (click)="addUser(newUser)" *ngIf="newUser.username"></i></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <div class="modal-footer">
         <button class="btn btn-info" (click)="okShare()" id="sendBtn" [disabled]="!changesMade">Send</button>
         <button class="btn btn-default pull-right" (click)="d()" id="closeShareModal">Cancel</button>

@@ -18,6 +18,7 @@ import { BoardViewTemplateComponent } from "./components/boardViewTemplate/board
 import { MyBoardsComponent } from "./components/myBoards/myBoards.component";
 import { WidgetModule } from "../../widget/widget.module";
 import { BoardViewComponent } from "./components/boardView/boardView.component";
+import { DiscussModule } from "../../discuss/discuss.module";
 
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import { BoardViewComponent } from "./components/boardView/boardView.component";
         NgbModule,
         // internal
         AdminItemModule,
+        DiscussModule,
         SearchModule,
         WidgetModule,
     ],
