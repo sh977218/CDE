@@ -17,11 +17,11 @@
             </span>
             <div class="pull-right boxed-div padding0 margin0">
                 <span *ngIf="reviewers?.length > 0" class="padding10 floatLeft overflowHidden">
-                    <b *ngIf="!board.review.startDate && !board.review.endDate">Not started</b>
-                    <b *ngIf="board.review.startDate && board.review.endDate">Ended</b>
-                    <b *ngIf="board.review.startDate && !board.review.endDate">In progress</b>
-                    <span *ngIf="board.review.startDate">{{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
-                    <span *ngIf="board.review.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
+                    <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
+                    <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
+                    <b *ngIf="board.review?.startDate && !board.review?.endDate">In progress</b>
+                    <span *ngIf="board.review?.startDate">{{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
+                    <span *ngIf="board.review?.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
                     <span *ngFor="let reviewer of reviewers"
                           title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
                         <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
@@ -29,11 +29,11 @@
                            [ngClass]="{'fa-check green-icon':reviewer.status.approval === 'approved',
                                        'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
                     </span>
-                    <span *ngIf="!isReviewActive() && user.username === board.owner.username ">
+                    <span *ngIf="!isReviewActive() && userService.user?.username === board.owner.username ">
                         <button class="btn btn-default btn-sm" id="startReviewewBtn"
                                 (click)="startReview()"> Start Review</button>
                     </span>
-                    <span *ngIf="isReviewActive() && user.username === board.owner.username">
+                    <span *ngIf="isReviewActive() && userService.user?.username === board.owner.username">
                         <button class="btn btn-default btn-sm" id="endReviewBtn"
                                 (click)="endReview()"> End Review</button>
                     </span>

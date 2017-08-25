@@ -5,7 +5,7 @@ import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstra
 import { SharedService } from "../../../../core/public/shared.service";
 import { saveAs } from "cde/public/assets/js/FileSaver";
 import { ClassifyItemModalComponent } from "../../../../adminItem/public/components/classification/classifyItemModal.component";
-import {OrgHelperService} from "../../../../core/public/orgHelper.service";
+import { OrgHelperService } from "../../../../core/public/orgHelper.service";
 
 @Component({
     selector: 'cde-board-view',
@@ -247,19 +247,21 @@ export class BoardViewComponent implements OnInit {
     };
 
     startReview () {
-        this.http.post("/board/startReview", {boardId: this.board._id}).map(r => r.json()).subscribe(this.reload,
+        this.http.post("/board/startReview", {boardId: this.board._id}).map(r => r.text()).subscribe(() => {
+            this.reload();
+            },
             response => {
-                this.alert.addAlert("danger", response.text());
+                this.alert.addAlert("danger", response);
                 this.reload();
-        });
+            }
+        );
     };
 
     endReview () {
-        this.http.post("/board/endReview", {boardId: this.board._id}).subscribe(() => {
+        this.http.post("/board/endReview", {boardId: this.board._id}).map(r => r.text()).subscribe(() => {
             this.reload();
-            this.alert.addAlert('success', 'Board review started.');
         }, response =>  {
-            this.alert.addAlert("danger", response.text());
+            this.alert.addAlert("danger", response);
             this.reload();
         });
     };
