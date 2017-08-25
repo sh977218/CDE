@@ -5,27 +5,26 @@ import { OrgHelperService } from "../../../core/public/orgHelper.service";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 import "rxjs/add/operator/map";
+import { Property } from 'core/public/models.model';
+import { DataElement } from 'cde/public/dataElement.model';
 
 @Component({
     selector: "cde-properties",
-    providers: [],
     templateUrl: "./properties.component.html"
 })
 export class PropertiesComponent implements OnInit {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
-    @Input() public elt: any;
+    @Input() public elt: DataElement;
     @Output() onEltChange = new EventEmitter();
     orgPropertyKeys: string[] = [];
-    public newProperty: any = {};
+    public newProperty: Property = new Property();
     public modalRef: NgbModalRef;
+    public onInitDone: boolean = false;
 
-    public onInitDone: boolean;
-
-    constructor(private alert: AlertService,
-                private http: Http,
+    constructor(public modalService: NgbModal,
+                private alert: AlertService,
                 @Inject("isAllowedModel") public isAllowedModel,
-                private orgHelperService: OrgHelperService,
-                public modalService: NgbModal) {
+                private orgHelperService: OrgHelperService) {
     }
 
     ngOnInit() {
@@ -40,43 +39,26 @@ export class PropertiesComponent implements OnInit {
             this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
         } else {
             this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-            this.modalRef.result.then(() => this.newProperty = {}, () => {
+            this.modalRef.result.then(() => {
+                this.newProperty = new Property();
+            }, () => {
             });
         }
     }
 
     addNewProperty() {
         this.elt.properties.push(this.newProperty);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Property added. Save to confirm.");
-            this.modalRef.close();
-        } else {
-            this.onEltChange.emit({type: "success", message: "Property added"});
-            this.modalRef.close();
-        }
+        this.onEltChange.emit();
+        this.modalRef.close();
     }
 
     removePropertyByIndex(index) {
         this.elt.properties.splice(index, 1);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Property removed. Save to confirm.");
-        } else {
-            this.onEltChange.emit({type: "success", message: "Property removed"});
-            this.modalRef.close();
-        }
+        this.onEltChange.emit();
     }
 
-    saveProperty() {
-        this.onEltChange.emit({type: "success", message: "Property saved."});
-    };
-
     reorderProperty() {
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Property reordered. Save to confirm.");
-        } else {
-            this.onEltChange.emit({type: "success", message: "Property reordered."});
-            this.modalRef.close();
-        }
+        this.onEltChange.emit();
     }
 
 }
