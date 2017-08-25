@@ -31,7 +31,6 @@ import "./system/public/js/controllers/ClassificationCtrl";
 import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
 import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
-import "./system/public/js/controllers/ApproveCommentCtrl";
 import "./system/public/js/controllers/RemoveClassificationModalCtrl";
 import "./system/public/js/controllers/DatepickerCtrl";
 import "./system/public/js/controllers/ExportCtrl";
