@@ -89,7 +89,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-naming [elt]="elt" (onEltChange)="doStageElt($event);"></cde-naming>
+                        <cde-naming [elt]="elt" (onEltChange)="elt.unsaved = true"></cde-naming>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="classification_tab">
