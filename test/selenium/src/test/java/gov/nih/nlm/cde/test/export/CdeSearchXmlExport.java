@@ -26,7 +26,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected = {
-                "</definition><languageCode>EN-US</languageCode><tags><tag>Health",
+                "</definition><languageCode>EN-US</languageCode><tags>Health",
                 "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name>",
                 "<datatype>Value List</datatype>",
                 "<registrationStatus>Qualified</registrationStatus></registrationState>"
@@ -41,7 +41,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport_XML.zip"),
                             Paths.get(tempFolder + "/SearchExport_XML.zip"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s + " \n---- Actual: " + actual);
+                    Assert.fail("missing line " + s + " in export : " + s + " \n---- Actual: " + actual);
                 }
             }
         } catch (Exception e) {

@@ -22,12 +22,12 @@ var sdcExport = function(req, res, cde) {
     for (var i = 0; i < cde.naming.length; i++) {
         try {
             if (!sdcRecord.preferredQuestionText && cde.naming[i].tags.filter(function (t) {
-                    return t.tag.toLowerCase() === "preferred question text"
+                    return t.toLowerCase() === "preferred question text";
                 }).length > 0) {
                 sdcRecord.preferredQuestionText = cde.naming[i].designation;
             }
             if (!sdcRecord.alternateQuestionText && cde.naming[i].tags.filter(function (t) {
-                    return t.tag.toLowerCase() === "alternate question text"
+                    return t.toLowerCase() === "alternate question text";
                 }).length > 0) {
                 sdcRecord.alternateQuestionText = cde.naming[i].designation;
             }
