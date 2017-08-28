@@ -5,8 +5,8 @@ angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'ui.sortable',
-    'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
-    'angular-send-feedback', 'ngAnimate', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
+    'ui.select', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
+    'angular-send-feedback', 'ngAnimate', 'checklist-model', 'infinite-scroll'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])

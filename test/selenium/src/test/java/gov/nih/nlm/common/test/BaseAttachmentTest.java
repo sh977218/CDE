@@ -42,7 +42,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(attachmentReviewer_username, password);
         gotoInbox();
 
-        textPresent("attachment approval");
+        textPresent("Attachment approval");
         clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
 
         findElement(By.linkText(name));
@@ -57,7 +57,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(attachmentReviewer_username, password);
         gotoInbox();
 
-        textPresent("attachment approval");
+        textPresent("Attachment approval");
         clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
 
         findElement(By.linkText(name));

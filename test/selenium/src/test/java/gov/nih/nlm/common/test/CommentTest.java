@@ -140,7 +140,7 @@ public abstract class CommentTest extends CommonTest {
         }
     }
 
-    public void approvingComments(String eltName, String status, String user) {
+    public void approveComments(String eltName, String status, String user) {
         int randomNumber = (int) (Math.random() * 10000);
         String commentText = "Very Innocent Comment " + randomNumber;
         String censoredText = "This comment is pending approval";
@@ -156,9 +156,9 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
-        textPresent("comment approval");
+        textPresent("Comment approval");
 
-        clickElement(By.partialLinkText("comment approval | " + user + " | " + commentText));
+        clickElement(By.partialLinkText("Comment approval | " + user + " | " + commentText));
         clickElement(By.xpath("//div[@aria-expanded='true']//a[contains(., '" + eltName + "')]"));
 
         switchTab(1);
@@ -209,7 +209,7 @@ public abstract class CommentTest extends CommonTest {
         hangon(1);
         clickElement(By.id("incomingMessage"));
 
-        clickElement(By.partialLinkText("comment approval | " + user + " | " + commentText));
+        clickElement(By.partialLinkText("Comment approval | " + user + " | " + commentText));
 
         clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'linkToElt')]"));
         switchTab(1);
@@ -242,7 +242,7 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
-        clickElement(By.partialLinkText("comment approval | reguser | " + replyText));
+        clickElement(By.partialLinkText("Comment approval | reguser | " + replyText));
         clickElement(By.xpath("//div[@aria-expanded='true']//button[contains(@class, 'approveComment')]"));
 
         textPresent("Message moved");

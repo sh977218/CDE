@@ -6,7 +6,7 @@ public class ApproveCommentsTest extends FormCommentTest {
 
     @Test
     public void approvingCommentsForm() {
-        approvingComments("Vital Signs and Tests", null, anonymousFormCommentUser_username);
+        approveComments("Vital Signs and Tests", null, anonymousFormCommentUser_username);
     }
 
 }
