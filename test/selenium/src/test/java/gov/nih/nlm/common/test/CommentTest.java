@@ -159,20 +159,20 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Comment approval");
 
         clickElement(By.partialLinkText("Comment approval | " + user + " | " + commentText));
-        clickElement(By.xpath("//div[@aria-expanded='true']//a[contains(., '" + eltName + "')]"));
+        clickElement(By.xpath("//div[@class='card']//a[contains(., '" + eltName + "')]"));
 
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));
+        clickElement(By.cssSelector(".card .authorizeUser"));
         clickElement(By.id("authorizeUserOK"));
 
         textPresent("Role added");
         closeAlert();
         modalGone();
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));
+        clickElement(By.xpath(".card .approveComment"));
         textPresent("Approved");
 
         logout();
@@ -211,12 +211,12 @@ public abstract class CommentTest extends CommonTest {
 
         clickElement(By.partialLinkText("Comment approval | " + user + " | " + commentText));
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'linkToElt')]"));
+        clickElement(By.cssSelector(".card .linkToElt"));
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'declineComment')]"));
+        clickElement(By.cssSelector(".card .declineComment"));
 
         logout();
         goToEltByName(eltName, status);
@@ -243,7 +243,7 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("incomingMessage"));
 
         clickElement(By.partialLinkText("Comment approval | reguser | " + replyText));
-        clickElement(By.xpath("//div[@aria-expanded='true']//button[contains(@class, 'approveComment')]"));
+        clickElement(By.cssSelector(".card .approveComment"));
 
         textPresent("Message moved");
         textPresent("Approved");
