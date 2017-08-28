@@ -140,7 +140,12 @@ export class FormViewComponent implements OnInit {
     doStageElt() {
         this.areDerivationRulesSatisfied();
         this.validateForm();
-        this.elt.unsaved = true;
+        if (this.elt.unsaved) {
+            this.alert.addAlert("info", "Save to confirm.")
+        } else {
+            this.stageElt.emit();
+            this.modalRef.close();
+        }
     }
 
     areDerivationRulesSatisfied() {

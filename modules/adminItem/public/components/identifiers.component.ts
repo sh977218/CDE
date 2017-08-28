@@ -31,22 +31,13 @@ export class IdentifiersComponent {
 
     addNewIdentifier() {
         this.elt.ids.push(this.newIdentifier);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Identifier added. Save to confirm.");
-            this.modalRef.close();
-        } else {
-            this.onEltChange.emit();
-            this.modalRef.close();
-        }
+        this.onEltChange.emit();
+        this.modalRef.close();
     }
 
     removeIdentifierByIndex(index) {
         this.elt.ids.splice(index, 1);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Identifier removed. Save to confirm.");
-        } else {
-            this.onEltChange.emit();
-            this.modalRef.close();
-        }
+        this.onEltChange.emit();
+        this.modalRef.close();
     }
 }

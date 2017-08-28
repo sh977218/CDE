@@ -162,7 +162,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-reference-document [elt]="elt" (onEltChange)="stageElt.emit($event);">
+                        <cde-reference-document [elt]="elt" (onEltChange)="doStageElt($event);">
                         </cde-reference-document>
                     </ng-template>
                 </ngb-tab>
@@ -184,7 +184,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-properties [elt]="elt" (onEltChange)="stageElt.emit($event);"></cde-properties>
+                        <cde-properties [elt]="elt" (onEltChange)="doStageElt($event);"></cde-properties>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="ids_tab">
