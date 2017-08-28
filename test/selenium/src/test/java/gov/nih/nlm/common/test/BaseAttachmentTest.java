@@ -43,7 +43,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         gotoInbox();
 
         textPresent("Attachment approval");
-        clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
+        clickElement(By.xpath("//a[contains(text(), '" + name + "')]"));
 
         findElement(By.linkText(name));
 //        textPresent("Scanned by ClamAV");
@@ -58,7 +58,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         gotoInbox();
 
         textPresent("Attachment approval");
-        clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
+        clickElement(By.xpath("//a[contains(text(), '" + name + "')]"));
 
         findElement(By.linkText(name));
        // textPresent("Scanned by ClamAV");
