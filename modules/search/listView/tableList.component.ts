@@ -276,16 +276,20 @@ export class TableListComponent implements DoCheck, OnChanges {
     }
 
     static getQuestionTexts(e) {
-        return e.naming.filter(function (n) {
+        return e.naming.filter(n => {
             if (!n.tags) n.tags = [];
-            return n.tags.indexOf("Question Text") > -1;
+            return n.tags.filter(function (t) {
+                return t.indexOf("Question Text") > -1;
+            }).length > 0;
         });
     }
 
     static getOtherNames(cde) {
-        return cde.naming.filter(function (n) {
+        return cde.naming.filter(n => {
             if (!n.tags) n.tags = [];
-            return n.tags.indexOf("Question Text") > -1;
+            return n.tags.filter(function (t) {
+                return t.indexOf("Question Text") > -1;
+            }).length === 0;
         });
     }
 }
