@@ -204,7 +204,9 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-admin-item-attachments [elt]="elt"></cde-admin-item-attachments>
+                        <cde-attachments [elt]="elt" (removeAttachment)="removeAttachment($event);"
+                                         (setDefault)="setDefault($event);"
+                                         (upload)="upload($event);"></cde-attachments>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="history_tab">
