@@ -51,7 +51,7 @@ export class ClassifyItemModalComponent {
         this.orgClassificationsTreeView = null;
         this.orgClassificationsRecentlyAddView = null;
         this.userService.getPromise().then(() => {
-            if (this.userService.user.userOrgs.length === 1) this.selectedOrg = this.userService.user.userOrgs[0];
+            if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
         });
         return this.modalService.open(this.classifyItemContent, {size: "lg"});
     }
