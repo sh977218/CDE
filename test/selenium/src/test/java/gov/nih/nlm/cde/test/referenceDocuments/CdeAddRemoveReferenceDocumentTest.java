@@ -24,7 +24,6 @@ public class CdeAddRemoveReferenceDocumentTest extends NlmCdeBaseTest {
         clickElement(By.id("removeReferenceDocument-0"));
         textPresent("Confirm Delete");
         clickElement(By.id("confirmRemoveReferenceDocument-0"));
-        textPresent("Reference document removed");
         closeAlert();
     }
 }

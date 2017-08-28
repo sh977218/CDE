@@ -992,7 +992,6 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
-        textPresent("Property added");
         closeAlert();
     }
 
@@ -1004,7 +1003,6 @@ public class NlmCdeBaseTest {
     protected void removeProperty(int index) {
         clickElement(By.id("removeProperty-" + index));
         clickElement(By.id("confirmRemoveProperty-" + index));
-        textPresent("Property removed");
         closeAlert();
     }
 
@@ -1019,7 +1017,6 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewReferenceDocumentBtn"));
         modalGone();
-        textPresent("Reference document added");
         closeAlert();
     }
 
@@ -1041,7 +1038,6 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier added");
         closeAlert();
     }
 
@@ -1108,7 +1104,6 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier added");
         closeAlert();
         hangon(1);
     }

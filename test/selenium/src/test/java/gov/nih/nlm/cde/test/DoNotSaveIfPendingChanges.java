@@ -31,7 +31,6 @@ public class DoNotSaveIfPendingChanges extends NlmCdeBaseTest {
 
         clickElement(By.id("removeProperty-0"));
         clickElement(By.id("confirmRemoveProperty-0"));
-        textPresent("Property removed. Save to confirm.");
         closeAlert();
         clickElement(By.id("ids_tab"));
         clickElement(By.id("openNewIdentifierModalBtn"));

@@ -64,7 +64,6 @@ public class InlineEditTest extends BaseAttachmentTest {
 
         clickElement(By.cssSelector("button.fa-check"));
         textPresent("validate image url");
-        textPresent("Property saved.");
         closeAlert();
         Assert.assertTrue(findElement(By.xpath("//*[@id='value_0']//img")).getAttribute("src").contains("cde"));
     }

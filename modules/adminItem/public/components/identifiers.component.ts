@@ -35,7 +35,7 @@ export class IdentifiersComponent {
             this.alert.addAlert("info", "Identifier added. Save to confirm.");
             this.modalRef.close();
         } else {
-            this.onEltChange.emit({type: "success", message: "Identifier added"});
+            this.onEltChange.emit();
             this.modalRef.close();
         }
     }
@@ -45,7 +45,7 @@ export class IdentifiersComponent {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Identifier removed. Save to confirm.");
         } else {
-            this.onEltChange.emit({type: "success", message: "Identifier removed"});
+            this.onEltChange.emit();
             this.modalRef.close();
         }
     }

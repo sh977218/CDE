@@ -12,7 +12,6 @@ public abstract class IdentifiersTest extends CommonTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier added");
         closeAlert();
         hangon(1);
     }
