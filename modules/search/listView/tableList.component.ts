@@ -45,7 +45,8 @@ export class TableListComponent implements DoCheck, OnChanges {
             this.renderBoard();
     }
 
-    renderBoard() {}
+    renderBoard() {
+    }
 
     renderCde() {
         this.headings = [];
@@ -277,18 +278,14 @@ export class TableListComponent implements DoCheck, OnChanges {
     static getQuestionTexts(e) {
         return e.naming.filter(function (n) {
             if (!n.tags) n.tags = [];
-            return n.tags.filter(function (t) {
-                    return t.tag.indexOf("Question Text") > -1;
-                }).length > 0;
+            return n.tags.indexOf("Question Text") > -1;
         });
     }
 
     static getOtherNames(cde) {
         return cde.naming.filter(function (n) {
             if (!n.tags) n.tags = [];
-            return n.tags.filter(function (t) {
-                    return t.tag.indexOf("Question Text") > -1;
-                }).length === 0;
+            return n.tags.indexOf("Question Text") > -1;
         });
     }
 }

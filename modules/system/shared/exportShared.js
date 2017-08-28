@@ -72,9 +72,7 @@ exports.projectCdeForExport = function (ele, settings) {
     };
     if (settings.questionTexts) {
         cde.questionTexts = ele.naming.filter(function (n) {
-            return n.tags.filter(function (t) {
-                    return t.tag.indexOf("Question Text") > -1;
-                }).length > 0;
+            return n.tags.indexOf("Question Text") > -1;
         }).map(function (n) {
             return n.designation;
         }).filter(function (n) {
@@ -83,9 +81,7 @@ exports.projectCdeForExport = function (ele, settings) {
     }
     if (settings.naming) {
         cde.otherNames = ele.naming.filter(function (n) {
-            return n.tags.filter(function (t) {
-                    return t.tag.indexOf("Question Text") > -1;
-                }).length === 0;
+            return n.tags.indexOf("Question Text") > -1;
         }).map(function (n) {
             return n.designation;
         }).filter(function (n) {
