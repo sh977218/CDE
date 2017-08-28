@@ -54,8 +54,8 @@
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="searchInfo clearfix mb-3">
                 <div class="pull-right">
-                    <cde-list-view-controls [(listView)]="listViews"></cde-list-view-controls>
-                    <span *ngIf="board.type === 'cde'" class="btn-group">
+                    <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
+                    <span *ngIf="board.type === 'cde' && elts.length > 0" class="btn-group">
                         <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-download"></i>
@@ -73,14 +73,18 @@
                         </ul>
                     </span>
 
-                    <button id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-default"
+                    <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
+                            id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-default"
                             (click)="classifyEltBoard()">
                         <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                     </button>
 
-                    <cde-create-form-from-board *ngIf="board.type === 'cde'" [board]="board"></cde-create-form-from-board>
+                    <cde-create-form-from-board *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
+                                                [board]="board"></cde-create-form-from-board>
                 </div>
             </div>
+
+            <div *ngIf="elts.length === 0">The board is empty.</div>
 
             <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
                            [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems" (add)="reload()"></cde-list-view>
