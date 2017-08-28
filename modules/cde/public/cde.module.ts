@@ -31,7 +31,7 @@ import { SdcViewComponent } from "./components/sdcView/sdcView.component";
 import { DataElementService } from "./dataElement.service";
 import { DataElementViewComponent } from "./components/dataElementView.component";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
-import {CdeClassificationComponent} from "./components/cdeClassification/cdeClassification.component";
+import { CdeClassificationComponent } from "./components/cdeClassification/cdeClassification.component";
 
 @NgModule({
     imports: [

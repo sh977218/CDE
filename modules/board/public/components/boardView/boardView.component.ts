@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { AlertService } from "system/public/components/alert/alert.service";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { SharedService } from "../../../../core/public/shared.service";
-import { saveAs } from "cde/public/assets/js/FileSaver";
-import { ClassifyItemModalComponent } from "../../../../adminItem/public/components/classification/classifyItemModal.component";
-import { OrgHelperService } from "../../../../core/public/orgHelper.service";
+import { SharedService } from "core/public/shared.service";
+import { saveAs } from "cde/public/assets/js/FileSaver.js";
+import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
+import { OrgHelperService } from "core/public/orgHelper.service";
 
 @Component({
     selector: 'cde-board-view',
@@ -14,10 +14,6 @@ import { OrgHelperService } from "../../../../core/public/orgHelper.service";
 export class BoardViewComponent implements OnInit {
 
     @Input() boardId: string;
-    // @Input() canEditBoard: boolean;
-    //
-    // @Output() save = new EventEmitter();
-
     @ViewChild("shareBoardModal") public shareBoardModal: NgbModalModule;
     @ViewChild("classifyCdesModal") public classifyCdesModal: ClassifyItemModalComponent;
 
@@ -231,6 +227,7 @@ export class BoardViewComponent implements OnInit {
         }).subscribe(() => {
             this.shareModalRef.close();
             this.board.users = this.users;
+            this.reload();
         });
     };
 
