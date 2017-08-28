@@ -30,7 +30,7 @@
                                        'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
                     </span>
                     <span *ngIf="!isReviewActive() && userService.user?.username === board.owner.username ">
-                        <button class="btn btn-default btn-sm" id="startReviewewBtn"
+                        <button class="btn btn-default btn-sm" id="startReviewBtn"
                                 (click)="startReview()"> Start Review</button>
                     </span>
                     <span *ngIf="isReviewActive() && userService.user?.username === board.owner.username">
