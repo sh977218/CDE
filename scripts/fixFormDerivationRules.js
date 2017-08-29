@@ -31,10 +31,6 @@ function loopFormElements(f, cb) {
 
 cursor.eachAsync(function (form) {
     return new Promise(function (resolve) {
-        form.naming.forEach(n => {
-            n.tags = n.newTags;
-        });
-        form.markModified("naming");
         loopFormElements(form, err => {
             if (err) throw err;
             form.save(err => {
