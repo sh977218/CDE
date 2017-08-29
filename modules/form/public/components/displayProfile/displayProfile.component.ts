@@ -1,20 +1,20 @@
-import { Component, Inject, Input } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 
 import "nouislider/distribute/nouislider.min.css";
 
 import "rxjs/add/operator/map";
 
 @Component({
-    selector: "cde-form-display-profile",
+    selector: "cde-display-profile",
     templateUrl: "./displayProfile.component.html"
 })
 export class DisplayProfileComponent {
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                @Inject("userResource") public userService) {
+    constructor(@Inject("isAllowedModel") public isAllowedModel) {
     }
 
     @Input() elt: any;
+    @Output() onEltChange = new EventEmitter();
 
     showDelete: boolean;
 
@@ -31,20 +31,18 @@ export class DisplayProfileComponent {
             repeatFormat: "#."
         };
         if (!this.elt.displayProfiles) this.elt.displayProfiles = [newProfile];
-        else {
-            this.elt.displayProfiles.push(newProfile);
-        }
-        this.elt.unsaved = true;
+        else this.elt.displayProfiles.push(newProfile);
+        this.onEltChange.emit();
     };
 
     removeDisplayProfile(index) {
         this.elt.displayProfiles.splice(index, 1);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     };
 
     setDisplayType(profile, $event) {
         profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     sampleElt = {

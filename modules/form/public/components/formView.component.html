@@ -173,7 +173,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-display-profile [elt]="elt"></cde-form-display-profile>
+                        <cde-display-profile [elt]="elt" (onEltChange)="stageForm();"></cde-display-profile>
                     </ng-template>
                 </ngb-tab>
 
