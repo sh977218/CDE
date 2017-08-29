@@ -76,19 +76,33 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngSwitchCase="'Date'">
-                        <div class="input-group">
-                            <input class="form-control" [name]="formElement.questionId"
-                                   attr.id="{{formElement.label}}_{{index}}_box"
-                                   [attr.name]="formElement.questionId"
-                                   [(ngModel)]="formElement.question.answer" ngbDatepicker #d1="ngbDatepicker"
-                                   [title]="formElement.question.answer"
-                                   [required]="formElement.question.required"
-                                   [disabled]="!formElement.question.editable">
-                            <div class="input-group-addon" (click)="d1.toggle()">
-                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                    <div *ngSwitchCase="'Date'" class="row">
+                        <div class="col-xs-12" [ngClass]="{'col-sm-7': hasTime}">
+                            <div class="input-group">
+                                <input class="form-control" [name]="formElement.questionId+'_date'" [title]="formElement.question.answer"
+                                       attr.id="{{formElement.label}}_{{index}}_box"
+                                       [attr.name]="formElement.questionId+'_date'"
+                                       [(ngModel)]="formElement.question.answerDate" (ngModelChange)="updateDateTime()"
+                                       ngbDatepicker #d1="ngbDatepicker"
+                                       [required]="formElement.question.required"
+                                       [disabled]="!formElement.question.editable">
+                                <div class="input-group-addon" (click)="d1.toggle()">
+                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                </div>
                             </div>
                         </div>
+                        <div *ngIf="hasTime" class="mt-2 mt-md-0 col-sm-5 col-xs-12">
+                            <ngb-timepicker [seconds]="true" size="small" [spinners]="false"
+                                            [title]="formElement.question.answer" [name]="formElement.questionId+'_time'"
+                                            attr.id="{{formElement.label}}_{{index}}_box"
+                                            [attr.name]="formElement.questionId+'_time'"
+                                            [(ngModel)]="formElement.question.answerTime"
+                                            (ngModelChange)="updateDateTime()"
+                                            [required]="formElement.question.required"
+                                            [disabled]="!formElement.question.editable"></ngb-timepicker>
+                        </div>
+                        <input [hidden]="true" [name]="formElement.questionId"
+                               [attr.name]="formElement.questionId" [ngModel]="formElement.question.answer">
                     </div>
                     <div *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uoms.length > 0}">

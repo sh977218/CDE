@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
 import { DomSanitizer } from "@angular/platform-browser";
 import { SkipLogicService } from "../skipLogic.service";
@@ -9,7 +9,7 @@ import { CdeForm, DisplayProfile } from "../form.model";
     templateUrl: "./nativeRender.component.html",
     providers: [NativeRenderService]
 })
-export class NativeRenderComponent implements OnInit {
+export class NativeRenderComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() profile: DisplayProfile;
     @Input() submitForm: boolean;
@@ -25,12 +25,13 @@ export class NativeRenderComponent implements OnInit {
         this.endpointUrl = (<any>window).endpointUrl;
     }
 
-    ngOnInit() {
-        this.load();
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.elt)
+            this.load();
     }
 
     private load() {
-        this.nativeRenderService.elt = this.elt;
+        this.nativeRenderService.setElt(this.elt);
         this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         this.nativeRenderService.setSelectedProfile(this.profile);
 

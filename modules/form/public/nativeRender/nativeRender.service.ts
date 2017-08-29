@@ -32,7 +32,7 @@ export class NativeRenderService {
 
         if (this.getNativeRenderType() === this.FOLLOW_UP) {
             if (!this.followForm || this.elt.unsaved) {
-                this.followForm = JSON.parse(JSON.stringify(this.elt));
+                this.followForm = NativeRenderService.cloneForm(this.elt);
                 NativeRenderService.transformFormToInline(this.followForm);
                 NativeRenderService.preprocessValueLists(this.followForm.formElements);
             }
@@ -69,6 +69,12 @@ export class NativeRenderService {
                 return this.followForm;
         }
     }
+    setElt(elt) {
+        if (elt !== this.elt) {
+            this.elt = elt;
+            this.followForm = null;
+        }
+    }
 
     addError(msg: string) {
         this.errors.push(msg);
@@ -103,6 +109,21 @@ export class NativeRenderService {
         if (!Array.isArray(model.answer))
             model.answer = [];
         return model;
+    }
+
+    static cloneForm(form: CdeForm) {
+        let clone = JSON.parse(JSON.stringify(form));
+        NativeRenderService.cloneFes(clone.formElements, form.formElements);
+        return clone;
+    }
+
+    static cloneFes(newFes, oldFes) {
+        for (let i = 0, size = newFes.length; i < size; i++) {
+            if (newFes[i].elementType === 'question')
+                newFes[i].question = oldFes[i].question;
+            else
+                NativeRenderService.cloneFes(newFes[i].formElements, oldFes[i].formElements);
+        }
     }
 
     static transformFormToInline(form) {

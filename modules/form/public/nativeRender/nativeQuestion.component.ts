@@ -1,19 +1,28 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { NativeRenderService } from "./nativeRender.service";
 import { DomSanitizer } from "@angular/platform-browser";
 import { SkipLogicService } from "../skipLogic.service";
 import { FormService } from "../form.service";
 import { FormQuestion } from "../form.model";
+import * as moment from 'moment';
 
 @Component({
     selector: "cde-native-question",
     templateUrl: "./nativeQuestion.component.html"
 })
-export class NativeQuestionComponent {
+export class NativeQuestionComponent implements OnInit {
     @Input() formElement: FormQuestion;
     @Input() numSubQuestions: number;
     @Input() parentValue: any;
     @Input() index: any;
+
+    hasTime: boolean;
+    static readonly reHasTime = /[hHmsSkaAZ]/;
+
+    ngOnInit() {
+        this.hasTime = this.formElement.question.datatypeDate
+            ? !!NativeQuestionComponent.reHasTime.exec(this.formElement.question.datatypeDate.format) : false;
+    }
 
     constructor(private sanitizer: DomSanitizer,
                 public formService: FormService,
@@ -64,5 +73,16 @@ export class NativeQuestionComponent {
     isOneLiner(question, numSubQuestions) {
         return numSubQuestions && !this.hasLabel(question) && !question.instructions
             && question.elementType === "question" && question.question.datatype !== "Value List";
+    }
+
+    updateDateTime() {
+        let d = this.formElement.question.answerDate;
+        let t = this.formElement.question.answerTime;
+        if (!d || !t)
+            return;
+
+        let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute,  t.second]);
+        if (m.isValid())
+            this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
     }
 }

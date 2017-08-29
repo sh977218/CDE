@@ -1,5 +1,142 @@
-<h2 *ngIf="!elt && !errorMessage" class="text-center mt20">Loading...</h2>
-<h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
-<cde-native-render *ngIf="elt" [elt]="elt" [submitForm]="submitForm"
-                   [profile]="elt.displayProfiles.length > selectedProfile ? elt.displayProfiles[selectedProfile] : null">
-</cde-native-render>
+<div class="container-fluid">
+    <div class="row">
+        <div *ngIf="panelType === 'patient'" class="col-lg-3 col-md-4 col-12">
+            <div class="mx-3 mt-5 mb-3">
+                <div *ngIf="smart?.userId">
+                    <span class="info-heading">Logged in as:</span>
+                    <span class="info-label">{{smart.userId}}</span>
+                    <hr>
+                </div>
+                <div>
+                    <span class="info-heading">Patient:</span>
+                    <span class="info-label">{{getPatientName()}}</span>
+                </div>
+                <div>
+                    <span class="info-heading">Date of Birth:</span>
+                    <span class="info-label">{{patient?.birthDate}}</span>
+                </div>
+                <div>
+                    <span class="info-heading">Gender:</span>
+                    <span class="info-label" style="text-transform: capitalize">{{patient?.gender}}</span>
+                </div>
+                <div class="list-group mt-3">
+                    <button type="button" class="list-group-item" (click)="summary = true">
+                        Encounter
+                        <span *ngIf="selectedEncounter" class="badge badge-primary"
+                              style="background-color: #007bff;white-space: normal">
+                            {{selectedEncounter.type + ' - ' + selectedEncounter.date}}
+                        </span>
+                    </button>
+                </div>
+                <div class="list-group mt-3">
+                    <div class="info-heading">Panels:</div>
+                    <button type="button" class="list-group-item" *ngFor="let f of patientForms"
+                            (click)="summary = false; loadForm(f.tinyId)">
+                        {{f.name}}
+                        <span style="float: right">
+                            <span *ngIf="f.total" style="display: table-cell; width: 60px;">
+                                <div style="font-size: smaller; text-align: center">{{f.observed}} / {{f.total}}</div>
+                                <div class="progress" style="height: 4px; margin-bottom: auto">
+                                    <div class="progress-bar progress-bar-info" role="progressbar"
+                                         aria-valuemin="0" aria-valuemax="100" attr.aria-valuenow="{{f.percent}}"
+                                         [style.width]="f.percent + '%'"></div>
+                                </div>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div [ngClass]="panelType === 'patient'?'col-lg-9 col-md-8 col-12':'col-12'">
+            <div style="padding: 5px;max-width: 1000px;margin: 0 auto">
+                <h2 *ngIf="!elt && !errorMessage && !summary" class="text-center mt20">Loading...</h2>
+                <h2 *ngIf="errorMessage" class="text-center mt20" style="color: red">{{errorMessage}}</h2>
+                <div *ngIf="summary && patient" style="margin-top: 25px">
+                    <h1>Encounters:</h1>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th width="30px"></th>
+                            <th>Type</th>
+                            <th>Reason</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let e of patientEncounters" [class.isSelected]="e === selectedEncounter"
+                            (click)="selectedEncounter = selectedEncounter === e ? null : e; encounterSelected()">
+                            <td>
+                                <i class="fa fa-check-square-o" *ngIf="e === selectedEncounter" aria-hidden="true"></i>
+                                <i class="fa fa-square-o" *ngIf="e !== selectedEncounter" aria-hidden="true"></i>
+                            </td>
+                            <td>{{e.type}}</td>
+                            <td>{{e.reason}}</td>
+                            <td>{{e.date}}</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr [hidden]="newEncounter">
+                            <td colspan="4">
+                                <button class="btn btn-sm addBtn" (click)="newEncounter = true">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                    Add
+                                </button>
+                            </td>
+                        </tr>
+                        <tr [hidden]="!newEncounter">
+                            <td colspan="2">
+                                <button class="btn btn-sm addBtn" [disabled]="!newEncounterValid" title="Add" (click)="newEncounterAdd()">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-sm addBtn" title="Cancel" (click)="newEncounterReset()"
+                                        style="background-color: red; margin-right: 5px">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                                <input type="text" style="max-width: 61%" [(ngModel)]="newEncounterType" disabled
+                                       (ngModelChange)="newEncounterVerify()">
+                            </td>
+                            <td><input type="text" [(ngModel)]="newEncounterReason" disabled
+                                       (ngModelChange)="newEncounterVerify()"></td>
+                            <td><input type="text" [(ngModel)]="newEncounterDate"
+                                       (ngModelChange)="newEncounterVerify()"></td>
+                        </tr>
+                        <tr [hidden]="!newEncounterErrorMessage">
+                            <td colspan="4" style="color: red; text-align: center">{{newEncounterErrorMessage}}</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="mt-3">
+                        <label><input type="checkbox" [(ngModel)]="showData"/> Show Data</label>
+                    </div>
+                    <ng-container *ngIf="showData">
+                        <div class="info-heading">Observations:</div>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Observation</th>
+                                <th>Value</th>
+                                <th>Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let o of selectedObservations">
+                                <td>{{o.code}}</td>
+                                <td><pre>{{o.value}}</pre></td>
+                                <td>{{o.date}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ng-container>
+                </div>
+                <ng-container *ngIf="!summary && elt">
+                    <cde-native-render [elt]="elt" [submitForm]="submitForm && panelType !== 'patient'"
+                                       [profile]="elt.displayProfiles.length > selectedProfile ? elt.displayProfiles[selectedProfile] : null">
+                    </cde-native-render>
+                    <input *ngIf="panelType === 'patient'" type="submit" class="btn btn-default" id="button_submit" (click)="submitFhir()"
+                           style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold">
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
