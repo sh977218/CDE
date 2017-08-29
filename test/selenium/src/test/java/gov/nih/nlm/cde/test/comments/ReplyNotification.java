@@ -32,7 +32,7 @@ public class ReplyNotification extends CdeCommentTest {
         clickElement(By.id("incomingMessage"));
 
         textPresent("Comment reply | reguser | Reply will trigger");
-        clickElement(By.xpath("//span[contains(., 'Comment reply | reguser |') and contains(., 'Reply will trigger')]"));
+        clickElement(By.partialLinkText("Comment reply | reguser | Reply will trigger"));
         clickElement(By.xpath("//button[.='Archive']"));
         textPresent("Message moved to archived.");
         closeAlert();

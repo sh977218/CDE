@@ -43,7 +43,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         gotoInbox();
 
         textPresent("Attachment approval");
-        clickElement(By.partialLinkText("name"));
+        clickElement(By.partialLinkText(name));
 
         findElement(By.linkText(name));
 //        textPresent("Scanned by ClamAV");

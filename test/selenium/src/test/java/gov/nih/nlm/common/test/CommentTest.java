@@ -172,7 +172,7 @@ public abstract class CommentTest extends CommonTest {
         closeAlert();
         modalGone();
 
-        clickElement(By.xpath(".card .approveComment"));
+        clickElement(By.cssSelector(".card .approveComment"));
         textPresent("Approved");
 
         logout();
