@@ -89,7 +89,7 @@ export class DataElementViewComponent implements OnInit {
 
     doStageElt(event) {
         if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Save to confirm.")
+            this.alert.addAlert("info", "Save to confirm.");
         } else {
             this.stageElt.emit();
             this.modalRef.close();

@@ -142,11 +142,17 @@ export class FormViewComponent implements OnInit {
         this.areDerivationRulesSatisfied();
         this.validateForm();
         if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Save to confirm.")
+            this.alert.addAlert("info", "Save to confirm.");
         } else {
             this.stageElt.emit();
             this.modalRef.close();
         }
+    }
+
+    stageForm() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
+        this.elt.unsaved = true;
     }
 
     areDerivationRulesSatisfied() {

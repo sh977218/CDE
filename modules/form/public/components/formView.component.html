@@ -129,7 +129,7 @@
                     <ng-template ngbTabContent>
                         <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
                                               (isFormValid)="setIsValid($event)"
-                                              (stageElt)="doStageElt()"></cde-form-description>
+                                              (onEltChange)="stageForm()"></cde-form-description>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="naming_tab">
@@ -142,7 +142,7 @@
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <cde-naming [elt]="elt" (onEltChange)="doStageElt();"></cde-naming>
+                        <cde-naming [elt]="elt" (onEltChange)="stageForm();"></cde-naming>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="classification_tab">
@@ -216,7 +216,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-admin-item-history [elt]="elt"></cde-admin-item-history>
+                        <cde-history [elt]="elt"></cde-history>
                     </ng-template>
                 </ngb-tab>
             </ngb-tabset>
