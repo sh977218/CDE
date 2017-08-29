@@ -44,6 +44,7 @@ export class BoardViewComponent implements OnInit {
     url: string;
 
     shareModalRef: NgbModalRef;
+    classifyCdesRefModal: NgbModalRef;
 
     constructor(private http: Http,
                 private alert: AlertService,
@@ -154,10 +155,11 @@ export class BoardViewComponent implements OnInit {
             this.alert.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
             clearInterval(_timeout);
         });
+        this.classifyCdesRefModal.close();
     }
 
     classifyEltBoard () {
-        this.classifyCdesModal.openModal();
+        this.classifyCdesRefModal = this.classifyCdesModal.openModal();
     };
 
     getReviewers () {

@@ -5,7 +5,6 @@ import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import { CdeForm } from 'form/public/form.model';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({

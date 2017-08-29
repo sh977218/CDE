@@ -90,7 +90,7 @@ export class MyBoardsComponent implements OnInit {
     };
 
     changeStatus (index) {
-        let board = this.myBoardsSvc[index];
+        let board = this.myBoardsSvc.boards[index];
         if (board.shareStatus === "Private") {
             board.shareStatus = "Public";
         } else {
@@ -105,7 +105,10 @@ export class MyBoardsComponent implements OnInit {
         this.http.post("/board", board).map(r => r.text()).subscribe(() => {
             this.alert.addAlert("success", "Saved.");
             this.myBoardsSvc.waitAndReload();
-            }, (response) => this.alert.addAlert("danger", response.data)
+            }, err => {
+                console.log(err);
+                this.alert.addAlert("danger", err._body);
+            }
         );
     }
 
