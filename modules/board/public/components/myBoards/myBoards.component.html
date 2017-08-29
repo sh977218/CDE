@@ -24,26 +24,25 @@
         <div id="sidebar-wrapper">
             <div *ngIf="myBoardsSvc.filter.types?.length > 0">
                 <h4>Type</h4>
-                <label *ngFor="let type of myBoardsSvc.filter.types" class="my-board-tag">
-                    <!--<input type="checkbox" data-checklist-model="filter.selectedTypes" data-checklist-value="type.key"-->
-                           <!--checklist-change="loadMyBoards()" data-id="type-{{type.key}}">-->
+                <label *ngFor="let type of myBoardsSvc.filter.types; let $index = index" class="my-board-tag">
+                    <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
+                           (change)="selectAggregation('types', $index)">
                     {{type.key}} ({{type.doc_count}})
                 </label>
             </div>
             <div *ngIf="myBoardsSvc.filter.tags?.length > 0">
                 <h4>Tags</h4>
                 <label *ngFor="let tag of myBoardsSvc.filter.tags" class="my-board-tag">
-                    <!--<input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"-->
-                           <!--checklist-change="loadMyBoards()" data-id="tag-{{tag.key}}">-->
+                    <input type="checkbox" data-id="type-{{tag.key}}" [checked]="tag.checked"
+                           (change)="selectAggregation('tags', $index)">
                     {{tag.key}} ({{tag.doc_count}})
                 </label>
             </div>
             <div *ngIf="myBoardsSvc.filter.shareStatus?.length">
                 <h4>Share Status</h4>
                 <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="my-board-tag">
-                    <!--<input type="checkbox" data-checklist-model="filter.selectedShareStatus"-->
-                           <!--data-checklist-value="ss.key" data-id="status-{{ss.key}}"-->
-                           <!--checklist-change="loadMyBoards()">-->
+                    <input type="checkbox" data-id="type-{{ss.key}}" [checked]="ss.checked"
+                           (change)="selectAggregation('shareStatuses', $index)">
                     {{ss.key}} ({{ss.doc_count}})
                 </label>
             </div>

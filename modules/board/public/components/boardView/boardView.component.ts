@@ -112,7 +112,10 @@ export class BoardViewComponent implements OnInit {
     };
 
     setPage (newPage) {
-        if (this.currentPage !== newPage) this.reload();
+        if (this.currentPage !== newPage) {
+            this.currentPage = newPage;
+            this.reload();
+        }
     };
 
     exportBoard () {
