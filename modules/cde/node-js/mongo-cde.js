@@ -485,9 +485,15 @@ new CronJob({
 
 exports.findModifiedElementsSince = function (date, cb) {
     DataElement.aggregate([
-        {$match: {updated: {$gte: date}}},
-        {$group: {"_id": "$tinyId"}},
-        {$limit: 2000}
+        {
+            $match: {
+                archived: false,
+                updated: {$gte: date}
+            }
+        },
+        {$limit: 2000},
+        {$sort: {updated: -1}},
+        {$group: {"_id": "$tinyId"}}
     ]).exec(cb);
 
 

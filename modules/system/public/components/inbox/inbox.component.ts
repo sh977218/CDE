@@ -3,7 +3,7 @@ import { Http } from "@angular/http";
 import { AlertService } from "../alert/alert.service";
 import { SaveModalComponent } from "../../../../adminItem/public/components/saveModal/saveModal.component";
 import { MergeCdeService } from "../../../../core/public/mergeCde.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "cde-inbox",
@@ -21,6 +21,8 @@ export class InboxComponent implements OnInit {
 
     mail: any = {received: [], sent: [], archived: []};
     currentMessage: any;
+
+    approveUserModalRef: NgbModalRef;
 
     ngOnInit () {
         this.getAllMail();
@@ -109,11 +111,12 @@ export class InboxComponent implements OnInit {
         }, response => {
             this.alert.addAlert("danger", response);
         });
+        this.approveUserModalRef.close();
     };
 
     openAuthorizeUserModal (message) {
         this.currentMessage = message;
-        this.modalService.open(this.approveUserModal);
+        this.approveUserModalRef = this.modalService.open(this.approveUserModal);
     };
 
 }

@@ -21,6 +21,7 @@ public class ZCdeSearchBreadCumbTest extends NlmCdeBaseTest {
             System.out.println("searchResultNum: " + num + ".  refreshing page " + count + " times.");
             hangon(20);
             count++;
+            num = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
             driver.navigate().refresh();
         }
         Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText()) >= 11);
