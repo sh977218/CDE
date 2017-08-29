@@ -5,10 +5,10 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ZCdeSearchBreadCumbTest extends NlmCdeBaseTest {
+public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
 
     @Test
-    public void zcdeSearchBreadcrumb() {
+    public void cdeSearchBreadcrumb() {
         mustBeLoggedOut();
         goToCdeSearch();
 
@@ -16,8 +16,9 @@ public class ZCdeSearchBreadCumbTest extends NlmCdeBaseTest {
         clickElement(By.partialLinkText("Environment and Public Health"));
         textPresent("results for");
         int count = 0;
-        int num = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
+        int num = 0;
         while (count < 5 && num < 11) {
+            num = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
             System.out.println("searchResultNum: " + num + ".  refreshing page " + count + " times.");
             hangon(20);
             count++;
