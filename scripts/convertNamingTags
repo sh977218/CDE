@@ -1,6 +1,6 @@
 db.getCollection('dataelements').find({}).forEach(de => {
     de.naming.forEach(n =>  {
-        n.tags = n.tags.filter(t=> {if(t) return true;}).map(t => {
+        n.tags = n.tags.filter(t=> {if(t && t !== undefined) return true;else return false;}).map(t => {
             if(t.tag) return t.tag;
           });
         if(!n.tags) n.tags = [];
@@ -10,9 +10,9 @@ db.getCollection('dataelements').find({}).forEach(de => {
 
 db.getCollection('forms').find({}).forEach(f => {
     f.naming.forEach(n =>  {
-        n.tags = n.tags.filter(t=> {if(t) return true;}).map(t => {
-            if(t.tag) return t.tag;
-            });
+        n.tags = n.tags.filter(t=> {if(t && t !== undefined) return true;else return false;}).map(t => {
+                    if(t.tag) return t.tag;
+                  });
         if(!n.tags) n.tags = [];
     })
     db.forms.save(f);
