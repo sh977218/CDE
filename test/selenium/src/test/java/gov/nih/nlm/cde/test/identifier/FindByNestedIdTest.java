@@ -12,7 +12,7 @@ public class FindByNestedIdTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
 
         // same ID as "more injuries loss of consciousness number"
-        addIdentifier("FAKE", "C18059", "3");
+        addNewIdentifier("FAKE", "C18059", "3");
 
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("ids.id:C18059");

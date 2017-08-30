@@ -11,8 +11,8 @@ public class CdeAddIdentifierTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
 
-        addIdentifier("MyOrigin1", "MyId1", "MyVersion1");
-        addIdentifier("MyOrigin2", "MyId2", null);
+        addNewIdentifier("MyOrigin1", "MyId1", "MyVersion1");
+        addNewIdentifier("MyOrigin2", "MyId2", null);
 
         goToCdeByName(cdeName);
         clickElement(By.id("ids_tab"));

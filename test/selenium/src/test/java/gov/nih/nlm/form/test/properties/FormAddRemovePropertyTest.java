@@ -26,6 +26,7 @@ public class FormAddRemovePropertyTest extends NlmCdeBaseTest {
 
         clickElement(By.id("removeProperty-1"));
         clickElement(By.id("confirmRemoveProperty-1"));
+        textPresent("saved.");
         closeAlert();
 
         goToFormByName(formName);
