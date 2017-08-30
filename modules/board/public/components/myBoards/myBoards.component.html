@@ -78,7 +78,9 @@
                         [isAllowed]="true" (modelChange)="save(board)"></cde-inline-edit>
                 </h4>
 
-                <cde-board-view-template [board]="board" [canEditBoard]="true" [index]="$index"></cde-board-view-template>
+                <cde-board-view-template [board]="board" [canEditBoard]="true" [index]="$index"
+                                         [suggestTags]="suggestTags"
+                                         (save)="save($event)"></cde-board-view-template>
 
             </div>
         </div>

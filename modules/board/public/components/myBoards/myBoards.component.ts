@@ -11,6 +11,7 @@ export class MyBoardsComponent implements OnInit {
 
     showChangeStatus: boolean;
     showDelete: boolean;
+    suggestTags = [];
 
     constructor(public myBoardsSvc: MyBoardsService,
                 @Inject("userResource") public userService,
@@ -28,60 +29,6 @@ export class MyBoardsComponent implements OnInit {
         this.myBoardsSvc.filter[aggName][$index].checked = !this.myBoardsSvc.filter[aggName][$index].checked;
         this.myBoardsSvc.loadMyBoards();
     }
-
-    // filter: any =
-    //     { tags: [],
-    //         shareStatus: [],
-    //         type: [],
-    //         sortBy: 'createdDate',
-    //         sortDirection: 'desc',
-    //         selectedShareStatus: [],
-    //         selectedTags: [],
-    //         suggestTags: []
-    //     };
-    //
-    // getSuggestedTags (filter, search) {
-    //     let newSuggestTags = filter.suggestTags.slice();
-    //     if (search && newSuggestTags.indexOf(search) === -1) {
-    //         newSuggestTags.unshift(search);
-    //     }
-    //     return newSuggestTags;
-    // }
-
-
-    // loadMyBoards (cb) {
-        // ElasticBoard.loadMyBoards($scope.filter, function (response) {
-        //     if (response.hits) {
-        //         $scope.boards = response.hits.hits.map(function (h) {
-        //             h._source._id = h._id;
-        //             return h._source;
-        //         });
-        //         $scope.filter.tags = response.aggregations.tagAgg.buckets;
-        //         $scope.filter.types = response.aggregations.typeAgg.buckets;
-        //         $scope.filter.shareStatus = response.aggregations.ssAgg.buckets;
-        //         $scope.filter.suggestTags = response.aggregations.tagAgg.buckets.map(function (t) {
-        //             return t.key;
-        //         });
-        //         if (cb) cb();
-        //     }
-        // });
-    // }
-//
-// var waitAndReload = function(message) {
-//     if (!message) message = "Done";
-//     $scope.reloading = true;
-//     $timeout(function () {
-//         $scope.loadMyBoards(function () {
-//             $scope.reloading = false;
-//             Alert.addAlert("success", message);
-//         });
-//     }, 2000);
-// };
-//
-
-//     canEditBoard () {
-//         return true;
-//     }
 
     getLinkSource(id) {
         return '/board/' + id;

@@ -13,13 +13,6 @@ export class MyBoardsService {
         tags: [],
         shareStatus: [],
         types: [],
-        getSuggestedTags: function (search) {
-            let newSuggestTags = this.suggestTags.slice();
-            if (search && newSuggestTags.indexOf(search) === -1) {
-                newSuggestTags.unshift(search);
-            }
-            return newSuggestTags;
-        },
         sortBy: "createdDate",
         sortDirection: "desc",
         selectedShareStatus: [],

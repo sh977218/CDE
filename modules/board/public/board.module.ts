@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { Select2Module } from "ng2-select2";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CreateBoardComponent } from "./components/createBoard/createBoard.component";
@@ -25,6 +26,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         CommonModule,
         FormsModule,
         NgbModule,
+        Select2Module,
         // internal
         AdminItemModule,
         DiscussModule,
