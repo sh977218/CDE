@@ -1,9 +1,17 @@
 import {
-    Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Inject,
+    Input,
+    OnInit,
+    Output,
+    TemplateRef,
     ViewChild
 } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
+import { LocalStorageService } from 'angular-2-local-storage';
 
 import { FormService } from "../../form.service";
 import { FormElement, SkipLogic } from "../../form.model";
@@ -35,8 +43,10 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Over first question", value: "F"}
     ];
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                public skipLogicService: SkipLogicService) {}
+    constructor(private localStorageService: LocalStorageService,
+                @Inject("isAllowedModel") public isAllowedModel,
+                public skipLogicService: SkipLogicService) {
+    }
 
     ngOnInit() {
         this.section = this.node.data;
@@ -108,7 +118,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     slOptionsRetrigger() {
         setTimeout(() => {
-           this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
+            this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
         }, 0);
     }
 
@@ -120,4 +130,13 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     static inputEvent = new Event('input');
+
+    copySection(section, event) {
+        this.localStorageService.set("sectionCopied", section);
+        let pElement = event.currentTarget.parentElement.parentElement;
+        pElement.style.color = "red";
+        setTimeout(() => {
+            pElement.style.color = null;
+        }, 2000);
+    }
 }
