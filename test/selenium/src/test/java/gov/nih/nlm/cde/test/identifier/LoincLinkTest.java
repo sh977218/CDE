@@ -14,6 +14,7 @@ public class LoincLinkTest extends NlmCdeBaseTest {
         findElement(By.name("source")).sendKeys("LOINC");
         findElement(By.name("id")).sendKeys("59362-4");
         clickElement(By.id("createNewIdentifierBtn"));
+        textPresent("saved.");
         closeAlert();
         findElement(By.linkText("59362-4"));
     }
