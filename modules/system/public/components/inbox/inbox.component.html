@@ -59,7 +59,7 @@
                                    href="/{{message.typeCommentReply.element.eltType==='cde'?'deView':'formView'}}?tinyId={{message.typeCommentReply.element.eltId}}">{{message.typeCommentReply.element.name}}</a></dd>
                         </dl>
 
-                        <span *ngIf="type === mailTypeReceived">
+                        <span *ngIf="type === 'received'">
                             <button class="approveComment btn btn-sm btn-default"
                                     (click)="closeMessage(message)"
                                     [ngClass]="{disabled: message.states[0].action==='Approved'}"
