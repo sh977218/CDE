@@ -9,7 +9,7 @@ public class ApproveCommentsCdeTest extends CdeCommentTest {
         approveComments("Imaging phase encode direction text", null, "CommentUser");
     }
 
-    @Test(dependsOnMethods = {"approvingCommentsCde"})
+    @Test(dependsOnMethods = {"approveCdeComments"})
     public void declineComment() {
         declineComment("Alcohol use started age value",  null, anonymousCommentUser2_username);
     }
