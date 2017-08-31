@@ -16,8 +16,9 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         clickElement(By.partialLinkText("Environment and Public Health"));
         textPresent("results for");
         int count = 0;
-        int num = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
+        int num = 0;
         while (count < 5 && num < 11) {
+            num = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
             System.out.println("searchResultNum: " + num + ".  refreshing page " + count + " times.");
             hangon(20);
             count++;

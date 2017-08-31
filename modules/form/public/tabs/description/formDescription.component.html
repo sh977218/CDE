@@ -55,13 +55,13 @@
                                                 [node]="node"
                                                 [inScoreCdes]="inScoreCdes"
                                                 (isFormValid)="isFormValid.emit($event)"
-                                                (stageElt)="stageElt.emit()"></cde-form-description-section>
+                                                (stageElt)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
                                                 [elt]="elt"
                                                 [inScoreCdes]="inScoreCdes"
                                                 [node]="node"
-                                                (stageElt)="stageElt.emit()"></cde-form-description-question>
+                                                (stageElt)="onEltChange.emit()"></cde-form-description-question>
                                     </div>
                                 </div>
                             </div>

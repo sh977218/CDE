@@ -13,9 +13,7 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
         clickElement(By.id("ids_tab"));
 
         addNewIdentifier("MyOrigin1", "MyId1", "MyVersion1");
-        scrollToTop();
         addNewIdentifier("MyOrigin2", "MyId2", null);
-        scrollToTop();
         addNewIdentifier("MyOrigin3", "MyId3", "MyVersion3");
 
         //remove MyOrigin2

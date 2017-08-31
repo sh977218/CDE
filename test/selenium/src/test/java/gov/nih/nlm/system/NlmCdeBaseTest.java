@@ -578,10 +578,6 @@ public class NlmCdeBaseTest {
         return true;
     }
 
-    private boolean classNotPresent(String text, By by) {
-        return !findElement(by).getAttribute("class").contains(text);
-    }
-
     protected void goHome() {
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
@@ -992,7 +988,7 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
-        textPresent("Property added");
+        textPresent("saved.");
         closeAlert();
     }
 
@@ -1004,7 +1000,7 @@ public class NlmCdeBaseTest {
     protected void removeProperty(int index) {
         clickElement(By.id("removeProperty-" + index));
         clickElement(By.id("confirmRemoveProperty-" + index));
-        textPresent("Property removed");
+        textPresent("saved.");
         closeAlert();
     }
 
@@ -1019,7 +1015,7 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewReferenceDocumentBtn"));
         modalGone();
-        textPresent("Reference document added");
+        textPresent("saved.");
         closeAlert();
     }
 
@@ -1041,7 +1037,7 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier added");
+        textPresent("saved.");
         closeAlert();
     }
 
@@ -1100,18 +1096,6 @@ public class NlmCdeBaseTest {
         hangon(2);
     }
 
-    protected void addIdentifier(String source, String id, String version) {
-        clickElement(By.id("ids_tab"));
-        clickElement(By.id("openNewIdentifierModalBtn"));
-        findElement(By.id("newSource")).sendKeys(source);
-        findElement(By.id("newId")).sendKeys(id);
-        if (version != null)
-            findElement(By.name("version")).sendKeys(version);
-        clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier added");
-        closeAlert();
-        hangon(1);
-    }
 
     /**
      * This method is used to remove identifier for cde and form.
@@ -1122,6 +1106,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("ids_tab"));
         clickElement(By.id("removeIdentifier-" + index));
         clickElement(By.id("confirmRemoveIdentifier-" + index));
+        textPresent("saved.");
         closeAlert();
     }
 
@@ -1257,8 +1242,6 @@ public class NlmCdeBaseTest {
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         } catch (Exception e) {
-            scrollToViewById(id);
-            scrollDownBy(50);
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         }

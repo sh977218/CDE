@@ -24,7 +24,7 @@ public class FormAddRemoveReferenceDocumentTest extends NlmCdeBaseTest {
         clickElement(By.id("removeReferenceDocument-0"));
         textPresent("Confirm Delete");
         clickElement(By.id("confirmRemoveReferenceDocument-0"));
-        textPresent("Reference document removed");
+        textPresent("saved.");
         closeAlert();
     }
 }
