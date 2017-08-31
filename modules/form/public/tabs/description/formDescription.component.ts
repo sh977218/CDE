@@ -94,7 +94,7 @@ export class FormDescriptionComponent implements OnInit {
     @Input() elt: CdeForm;
     @Input() inScoreCdes: any;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onEltChange = new EventEmitter();
 
     @ViewChild(TreeComponent) public tree: TreeComponent;
     @ViewChild("formSearchTmpl") formSearchTmpl: TemplateRef<any>;

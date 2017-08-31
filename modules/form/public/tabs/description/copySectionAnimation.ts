@@ -1,3 +1,4 @@
+/*
 import { trigger, state, animate, transition, style } from '@angular/animations';
 
 export const copySectionAnimation =
@@ -9,4 +10,4 @@ export const copySectionAnimation =
 
             animate('.3s', style({opacity: 1}))
         ]),
-    ]);
+    ]);*/
