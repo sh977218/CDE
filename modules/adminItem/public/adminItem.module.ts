@@ -30,6 +30,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 import { CreateFormComponent } from 'form/public/components/createForm.component';
+import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 
 @NgModule({
     imports: [
@@ -64,6 +65,7 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
+        SaveModalComponent,
         SortableArrayDirective,
         SourcesComponent,
     ],

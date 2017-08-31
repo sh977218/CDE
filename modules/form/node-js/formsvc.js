@@ -53,7 +53,6 @@ function fetchWholeForm(form, callback) {
                             fe.question.cde.outdated = true;
                             formOutdated = true;
                         }
-                        fe.question.cde.derivationRules = systemDe.derivationRules;
                         doneOne();
                     }
                 });
