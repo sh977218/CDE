@@ -35,13 +35,4 @@ angular.module('resourcesCde', ['ngResource'])
     .factory('CdeDiff', ["$resource", function ($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'}, {get: {isArray: true}});
     }])
-    .factory('CDE', ["$http", function ($http) {
-        return {
-            retire: function (cdeSrc, cdeDes, cb) {
-                $http.post("/retireCde", {cde: cdeSrc, merge: cdeDes}).then(function (response) {
-                    cb(response);
-                });
-            }
-        };
-    }])
 ;

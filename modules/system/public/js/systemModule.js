@@ -5,8 +5,8 @@ angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'ui.sortable',
-    'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
-    'angular-send-feedback', 'ngAnimate', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
+    'ui.select', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
+    'angular-send-feedback', 'ngAnimate', 'checklist-model', 'infinite-scroll'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -29,8 +29,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/siteAudit', {
             template: '<cde-site-audit></cde-site-audit>'
         }).when('/inbox', {
-            controller: 'InboxCtrl',
-            templateUrl: '/system/public/html/inbox.html'
+            template: '<cde-inbox></cde-inbox>'
         }).when('/orgComments', {
             template: '<cde-latest-comments [comments-url]="\'/orgComments/\'"></cde-latest-comments>'
         }).when('/siteaccountmanagement', {
@@ -428,7 +427,6 @@ import { ClassificationService } from "../../../core/public/classification.servi
 angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
 
 import { HomeComponent } from "../components/home/home.component";
-
 angular.module('systemModule').directive('cdeHome', downgradeComponent({
     component: HomeComponent,
     inputs: [],
@@ -534,6 +532,13 @@ angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent
 import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
 angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
     {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
+
+import {InboxComponent} from "../components/inbox/inbox.component"
+angular.module('systemModule').directive('cdeInbox', downgradeComponent(
+    {component: InboxComponent, inputs: [], outputs: []}));
+
+import { MergeCdeService } from "../../../core/public/mergeCde.service";
+angular.module('systemModule').factory('MergeCdeService', downgradeInjectable(MergeCdeService));
 
 import {SearchPreferencesComponent} from "../components/searchPreferences/searchPreferences.component"
 angular.module('systemModule').directive('cdeSearchPreferences', downgradeComponent(

@@ -46,8 +46,7 @@
         <div class="row">
             <div class="col-xs-3 text-right text_label">Size:</div>
             <div class="col-xs-3" id="dd_attach_size_{{$index}}">
-                <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}} MB
-                </div>
+                <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}} MB</div>
                 <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB</div>
             </div>
         </div>

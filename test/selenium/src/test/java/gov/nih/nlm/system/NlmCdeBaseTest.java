@@ -515,8 +515,8 @@ public class NlmCdeBaseTest {
         newVersion(changeNote);
         textPresent("Data Element saved.");
         closeAlert();
-        modalGone();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+//        modalGone();
+//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
     }
 
     protected void newCdeVersion() {
@@ -918,7 +918,7 @@ public class NlmCdeBaseTest {
             textPresent("Characters:");
         }
         findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
-        hangon(2);
+//        hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
         textNotPresent("Confirm");
     }
@@ -977,7 +977,7 @@ public class NlmCdeBaseTest {
             }
         }
         clickElement(By.id("createNewNamingBtn"));
-        modalGone();
+//        modalGone();
     }
 
     protected void addNewProperty(String key, String value) {
