@@ -19,7 +19,6 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         String newDefinition = "Alternative Definition 1";
         goToCdeByName(cdeName);
 
-
         clickElement(By.id("naming_tab"));
         addNewName(newName, newDefinition, null);
 

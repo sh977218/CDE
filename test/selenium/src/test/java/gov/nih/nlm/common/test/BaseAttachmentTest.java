@@ -26,7 +26,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     protected void checkAttachmentNotReviewed() {
-        textPresent("cannot be dowloaded");
+        textPresent("cannot be downloaded");
     }
 
     protected void checkAttachmentReviewed(String name) {
