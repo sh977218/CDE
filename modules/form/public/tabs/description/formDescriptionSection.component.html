@@ -23,7 +23,7 @@
     </span>
 
     <span *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="pull-right editIconDiv">
-        <i *ngIf="section.elementType === 'section'" [copySection] class="fa fa-copy copySection"
+        <i *ngIf="section.elementType === 'section'" [@copySection] class="fa fa-copy copySection"
            (click)="copySection(section,$event)"></i>
         <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
            (click)="section.edit = true"></i>
