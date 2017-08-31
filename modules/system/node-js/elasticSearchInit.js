@@ -75,11 +75,7 @@ exports.createIndexJson = {
                 , "naming": {
                     properties: {
                         "languageCode": {"type": "string", "index": "no"},
-                        "tags": {
-                            properties: {
-                                "tag": {"type": "string", "index": "not_analyzed"}
-                            }
-                        }
+                        "tags": {"type": "string", "index": "not_analyzed"}
                     }
                 }
                 , "version": {"type": "string", "index": "no"}
@@ -344,10 +340,10 @@ var shortHash = function (content) {
 };
 
 if (config.elastic.index.name === "auto") {
-    config.elastic.index.name = "cde_v1_" + shortHash(exports.createIndexJson);
+    config.elastic.index.name = "cde_v2_" + shortHash(exports.createIndexJson);
 }
 if (config.elastic.formIndex.name === "auto") {
-    config.elastic.formIndex.name = "form_" + shortHash(exports.createFormIndexJson);
+    config.elastic.formIndex.name = "form_v2_" + shortHash(exports.createFormIndexJson);
 }
 if (config.elastic.boardIndex.name === "auto") {
     config.elastic.boardIndex.name = "board_" + shortHash(exports.createBoardIndexJson);
