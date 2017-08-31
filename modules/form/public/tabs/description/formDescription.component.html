@@ -44,7 +44,7 @@
                          [class.tree-node-focused]="node.isFocused">
                         <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index"
                                              [node]="node.parent"></tree-node-drop-slot>
-                        <div class="panel panel-default">
+                        <div class="panel panel-default" [@copySection]="node.data.isCopied">
                             <div class="panel-heading">
                                 <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
                                     <div class="node-content-wrapper w-100"

@@ -17,25 +17,27 @@ import * as _ from 'lodash';
 
 import { FormService } from "../../form.service";
 import { CdeForm, FormElement, FormSection } from "../../form.model";
+import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 
 @Component({
     selector: "cde-form-description",
     templateUrl: "formDescription.component.html",
+    animations:[copySectionAnimation],
     styles: [`
-        :host > > > .panel {
+        :host >>> .panel {
             margin-bottom: 1px;
         }
 
-        :host > > > .tree-children {
+        :host >>> .tree-children {
             padding-left: 0;
         }
 
-        :host > > > .node-drop-slot {
+        :host >>> .node-drop-slot {
             height: 10px;
             margin-bottom: 1px;
         }
 
-        :host > > > .panel-badge-btn {
+        :host >>> .panel-badge-btn {
             color: white;
             background-color: #333;
         }
