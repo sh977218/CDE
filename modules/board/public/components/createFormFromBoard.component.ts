@@ -3,6 +3,10 @@ import { Http } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'system/public/components/alert/alert.service';
 
+import * as ClassificationShared from "../../../system/shared/classificationShared.js";
+
+import * as _ from "lodash";
+
 @Component({
     selector: "cde-create-form-from-board",
     templateUrl: "./createFormFromBoard.component.html"
@@ -26,7 +30,8 @@ export class CreateFormFromBoardComponent {
             elementType: "form",
             stewardOrg: {},
             classification: [],
-            formElements: []
+            formElements: [],
+            registrationState: {registrationStatus: "Incomplete"}
         };
         if (this.board.pins && this.board.pins.length > 0) {
             this.elt.formElements.push({
@@ -58,6 +63,5 @@ export class CreateFormFromBoardComponent {
             );
         }
     }
-
 
 }
