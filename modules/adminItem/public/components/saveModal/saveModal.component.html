@@ -1,0 +1,34 @@
+<ng-template #updateElementContent id="updateElementModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="updateElementModalHeader">
+        <h4 class="modal-title">Save</h4>
+    </div>
+    <form #updateElementForm="ngForm">
+        <div class="modal-body" id="updateElementModalBody">
+            <div class="form-group">
+                <label for="changeNote">Change Note</label>
+                <textarea id="changeNote" class="form-control" name="changeNote"
+                          [(ngModel)]="elt.changeNote" placeholder="Optional Change Note"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="newVersion">Choose a new version</label>
+                <input id="newVersion" name="newVersion" type="text" #newVersion="ngModel" class="form-control"
+                       [(ngModel)]="elt.version" pattern="^[A-z0-9-=.]+$"
+                       (ngModelChange)="newVersionVersionUnicity($event)"/>
+                <div *ngIf="newVersion.errors && (newVersion.dirty || newVersion.touched)" class="help-inline">
+                    Version number cannot include characters other than letters, numbers, -, = and .
+                </div>
+                <div *ngIf="duplicatedVersion">
+                    <label for="overrideVersion">This version number has already been used. Override rule? </label>
+                    <input id="overrideVersion" name="overrideVersion" type="checkbox"
+                           [(ngModel)]="overrideVersion"/>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn cancel" (click)="c('cancel')" id="cancelSaveBtn" type="button">Cancel</button>
+            <button class="btn btn-warning" id="confirmSaveBtn" (click)="confirmSave();" type="button"
+                    [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
+            </button>
+        </div>
+    </form>
+</ng-template>

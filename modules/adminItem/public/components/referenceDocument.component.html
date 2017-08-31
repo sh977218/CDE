@@ -15,7 +15,6 @@
                           id="removeReferenceDocument-{{i}}" title="Remove" href=""></span>
                     <sortable-array [theArray]="elt.referenceDocuments" [index]="i"
                                     (cb)="elt.unsaved = true"></sortable-array>
-
                 </div>
             </div>
             <div class="col-md-11">
@@ -73,6 +72,11 @@
                        id="newTitle" name="newTitle" Placeholder="Title"/>
             </div>
             <div class="form-group">
+                <label for="newDocType">Doc Type:</label>
+                <input class="form-control" [(ngModel)]="newReferenceDocument.docType"
+                       id="newDocType" name="newDocType" Placeholder="Doc Type"/>
+            </div>
+            <div class="form-group">
                 <label for="newUri">URI:</label>
                 <input class="form-control" id="newUri" name="newUri"
                        [(ngModel)]="newReferenceDocument.uri" Placeholder="URI"/>
@@ -97,8 +101,8 @@
             <button class="btn cancel" id="cancelNewReferenceDocumentBtn" type="button" (click)="c('Close click')">
                 Cancel
             </button>
-            <button class="btn btn-warning" id="createNewReferenceDocumentBtn" type="submit"
-                    [disabled]="!newReferenceDocumentForm.form.valid" (click)="addNewReferenceDocument();">Save
+            <button class="btn btn-warning" id="createNewReferenceDocumentBtn" (click)="addNewReferenceDocument();">
+                Save
             </button>
         </div>
     </form>

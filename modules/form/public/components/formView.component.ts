@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -35,6 +35,7 @@ export class FormViewComponent implements OnInit {
     formInput;
 
     constructor(private http: Http,
+                private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
                 public quickBoardService: QuickBoardListService,
@@ -140,6 +141,17 @@ export class FormViewComponent implements OnInit {
     doStageElt() {
         this.areDerivationRulesSatisfied();
         this.validateForm();
+        if (this.elt.unsaved) {
+            this.alert.addAlert("info", "Save to confirm.");
+        } else {
+            this.stageElt.emit();
+            this.modalRef.close();
+        }
+    }
+
+    stageForm() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
         this.elt.unsaved = true;
     }
 
@@ -194,4 +206,51 @@ export class FormViewComponent implements OnInit {
         };
         loopFormElements(this.elt);
     };
+
+    removeAttachment(event) {
+        this.http.post("/attachments/form/remove", {
+            index: event,
+            id: this.elt._id
+        }).map(r => r.json()).subscribe(res => {
+            this.elt = res;
+            this.alert.addAlert("success", "Attachment Removed.");
+            this.ref.detectChanges();
+        });
+    }
+
+    setDefault(index) {
+        this.http.post("/attachments/form/setDefault",
+            {
+                index: index,
+                state: this.elt.attachments[index].isDefault,
+                id: this.elt._id
+            }).map(r => r.json()).subscribe(res => {
+            this.elt = res;
+            this.alert.addAlert("success", "Saved");
+            this.ref.detectChanges();
+        });
+    }
+
+
+    upload(event) {
+        if (event.srcElement.files) {
+            let files = event.srcElement.files;
+            let formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append("uploadedFiles", files[i]);
+            }
+            formData.append("id", this.elt._id);
+            this.http.post("/attachments/form/add", formData).map(r => r.json()).subscribe(
+                r => {
+                    if (r.message) this.alert.addAlert("info", r.text());
+                    else {
+                        this.elt = r;
+                        this.alert.addAlert("success", "Attachment added.");
+                        this.ref.detectChanges();
+                    }
+                }
+            );
+        }
+    }
+
 }

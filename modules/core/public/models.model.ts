@@ -79,12 +79,18 @@ export interface ElasticQueryResponse {
 
 export abstract class Elt {
     _id: ObjectId;
-    attachments: Attachment[];
+    stewardOrg: {
+        name: string
+    };
+    unsaved: boolean = false;
     primaryDefinitionCopy: string; // calculated, Elastic
     score: number; // calculated, Elastic _score
     tinyId: string;
     usedBy: string[]; // calculated, Classification stewardOrg names
     naming: Naming[];
+    referenceDocuments: ReferenceDocument[];
+    attachments: Attachment[];
+    properties: Property[];
 
     abstract getEltUrl();
 
