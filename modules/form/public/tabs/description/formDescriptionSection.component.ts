@@ -22,7 +22,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 @Component({
     selector: "cde-form-description-section",
     templateUrl: "formDescriptionSection.component.html",
-//    animations: [copySectionAnimation]
+    animations: [copySectionAnimation]
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
@@ -142,11 +142,11 @@ export class FormDescriptionSectionComponent implements OnInit {
                     pElement.style.color = null;
                 }, 2000);
         */
-/*
-        section.copy = "copy";
-        setTimeout(() => {
-            section.copy = "unCopy";
-        }, 2000);
-*/
+        /*
+                section.copy = "copy";
+                setTimeout(() => {
+                    section.copy = "unCopy";
+                }, 2000);
+        */
     }
 }
