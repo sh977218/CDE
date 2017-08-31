@@ -1,6 +1,14 @@
 import {
-    Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, TemplateRef,
-    ViewChild, ViewRef
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Inject,
+    Input,
+    OnInit,
+    Output,
+    TemplateRef,
+    ViewChild
 } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
@@ -14,20 +22,20 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
     selector: "cde-form-description",
     templateUrl: "formDescription.component.html",
     styles: [`
-        :host >>> .panel {
+        :host > > > .panel {
             margin-bottom: 1px;
         }
 
-        :host >>> .tree-children {
+        :host > > > .tree-children {
             padding-left: 0;
         }
 
-        :host >>> .node-drop-slot {
+        :host > > > .node-drop-slot {
             height: 10px;
             margin-bottom: 1px;
         }
 
-        :host >>> .panel-badge-btn {
+        :host > > > .panel-badge-btn {
             color: white;
             background-color: #333;
         }

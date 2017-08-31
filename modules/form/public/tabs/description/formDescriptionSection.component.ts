@@ -17,10 +17,12 @@ import { FormService } from "../../form.service";
 import { FormElement, SkipLogic } from "../../form.model";
 import { FormattedValue } from "../../../../core/public/models.model";
 import { SkipLogicService } from "../../skipLogic.service";
+import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 
 @Component({
     selector: "cde-form-description-section",
-    templateUrl: "formDescriptionSection.component.html"
+    templateUrl: "formDescriptionSection.component.html",
+    animations: [copySectionAnimation]
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
