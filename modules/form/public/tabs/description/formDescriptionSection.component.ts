@@ -17,12 +17,14 @@ import { FormService } from "../../form.service";
 import { FormElement, SkipLogic } from "../../form.model";
 import { FormattedValue } from "../../../../core/public/models.model";
 import { SkipLogicService } from "../../skipLogic.service";
+/*
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
+*/
 
 @Component({
     selector: "cde-form-description-section",
     templateUrl: "formDescriptionSection.component.html",
-    animations: [copySectionAnimation]
+//    animations: [copySectionAnimation]
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
@@ -136,9 +138,17 @@ export class FormDescriptionSectionComponent implements OnInit {
     copySection(section, event) {
         this.localStorageService.set("sectionCopied", section);
         let pElement = event.currentTarget.parentElement.parentElement;
-        pElement.style.color = "red";
+        /*
+                pElement.style.color = "red";
+                setTimeout(() => {
+                    pElement.style.color = null;
+                }, 2000);
+        */
+/*
+        section.copy = "copy";
         setTimeout(() => {
-            pElement.style.color = null;
+            section.copy = "unCopy";
         }, 2000);
+*/
     }
 }
