@@ -117,11 +117,7 @@ export class CompareSideBySideComponent implements OnInit {
                     data: [
                         {label: "Name", property: "designation"},
                         {label: "Definition", property: "definition"},
-                        {
-                            label: "Tags", property: "tags", properties: {
-                            label: "Tag", property: "tag"
-                        }
-                        }
+                        {label: "Tags", property: "tags"}
                     ]
                 },
                 fullMatchFn: (a, b) => {

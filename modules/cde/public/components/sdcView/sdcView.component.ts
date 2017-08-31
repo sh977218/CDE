@@ -13,12 +13,16 @@ export class SdcViewComponent implements OnInit {
 
     // @TODO Routing
     @Input() cdeId;
+    eltLoaded = false;
 
     sdcCde: any;
 
     ngOnInit () {
         if (this.cdeId) {
-            this.http.get("/sdc/" + this.cdeId).map(r => r.json()).subscribe(result => this.sdcCde = result);
+            this.http.get("/sdc/" + this.cdeId).map(r => r.json()).subscribe(result => {
+                this.sdcCde = result;
+                this.eltLoaded = true;
+            });
         }
     }
 
