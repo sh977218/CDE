@@ -20,6 +20,7 @@ export class BoardViewComponent implements OnInit {
     currentPage: number = 1;
     totalItems: number;
     board: any;
+    hasComments: boolean;
     isModifiedSinceReview: boolean;
     reviewers: any[];
     canReview: boolean;
@@ -105,6 +106,11 @@ export class BoardViewComponent implements OnInit {
                         this.boardStatus = u.status.approval;
                     }
                 });
+                this.http.get("/comments/eltId/" + this.board._id)
+                    .map(res => res.json()).subscribe(
+                    res => this.hasComments = res && (res.length > 0),
+                    err => this.alert.addAlert("danger", "Error on loading comments. ")
+                );
             }
         }, () => {
             this.alert.addAlert("danger", "Board not found");

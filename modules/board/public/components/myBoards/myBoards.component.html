@@ -32,7 +32,7 @@
             </div>
             <div *ngIf="myBoardsSvc.filter.tags?.length > 0">
                 <h4>Tags</h4>
-                <label *ngFor="let tag of myBoardsSvc.filter.tags" class="my-board-tag">
+                <label *ngFor="let tag of myBoardsSvc.filter.tags; let $index = index" class="my-board-tag">
                     <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
                            (change)="selectAggregation('tags', $index)">
                     {{tag.key}} ({{tag.doc_count}})
@@ -40,7 +40,7 @@
             </div>
             <div *ngIf="myBoardsSvc.filter.shareStatus?.length">
                 <h4>Share Status</h4>
-                <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="my-board-tag">
+                <label *ngFor="let ss of myBoardsSvc.filter.shareStatus; let $index = index" class="my-board-tag">
                     <input type="checkbox" data-id="ss-{{ss.key}}" [checked]="ss.checked"
                            (change)="selectAggregation('shareStatuses', $index)">
                     {{ss.key}} ({{ss.doc_count}})
