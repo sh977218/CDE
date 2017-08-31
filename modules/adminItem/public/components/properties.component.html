@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Value:</div>
                     <div class="col-xs-10 ng-binding" id="value_{{i}}">
-                        <cde-inline-area-edit [(model)]="prop.value" (save)="saveProperty()"
+                        <cde-inline-area-edit [(model)]="prop.value" (save)="onEltChange.emit()"
                                               [(defFormat)]="prop.valueFormat"
                                               [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-area-edit>
                     </div>
@@ -33,7 +33,7 @@
         </div>
         <hr>
     </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt) && this.onInitDone"
+    <button *ngIf="isAllowedModel.isAllowed(elt) && onInitDone"
             class="btn btn-small btn-default" id="openNewPropertyModalBtn"
             (click)="openNewPropertyModal();">
         <i class="fa fa-plus"></i> Add Property
@@ -65,7 +65,8 @@
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"
-                    type="submit" (click)="addNewProperty();">Save
+                    (click)="addNewProperty();">
+                Save
             </button>
         </div>
     </form>

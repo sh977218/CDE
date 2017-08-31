@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Inject, Input, Output, ViewChild } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -10,20 +10,28 @@ export class ConceptsComponent {
 
     @ViewChild("newConceptContent") public newConceptContent: NgbModalModule;
     public modalRef: NgbModalRef;
-    @Input( ) public elt: any;
+    @Input() public elt: any;
 
     constructor(@Inject("isAllowedModel") public isAllowedModel,
                 public modalService: NgbModal,
                 public activeModal: NgbActiveModal) {
     }
 
-    newConcept: {name?: string, originId?: string, origin: string, type: string} = {origin: "LOINC", type: "dec"};
+    newConcept: { name?: string, originId?: string, origin: string, type: string } = {origin: "LOINC", type: "dec"};
 
     conceptConfigurations = [
-        {type: "dataElementConcept", details: {display: "Data Element Concept", path: "dataElementConcept.concepts.name"}},
-        {type: "objectClass", details: {display: "Object Class", path: "objectClass.concepts.name"}},
-        {type: "property", details: {display: "Property", path: "property.concepts.name"}
-    }];
+        {
+            type: "dataElementConcept",
+            details: {display: "Data Element Concept", path: "dataElementConcept.concepts.name"}
+        },
+        {
+            type: "objectClass",
+            details: {display: "Object Class", path: "objectClass.concepts.name"}
+        },
+        {
+            type: "property",
+            details: {display: "Property", path: "property.concepts.name"}
+        }];
 
     addNewConcept() {
         if (!this.elt.dataElementConcept) this.elt.dataElementConcept = {};
@@ -41,12 +49,12 @@ export class ConceptsComponent {
         this.modalRef.close();
     }
 
-    dataElementConceptRemoveConcept (index) {
+    dataElementConceptRemoveConcept(index) {
         this.elt.dataElementConcept.concepts.splice(index, 1);
         this.elt.unsaved = true;
     }
 
-    objectClassRemoveConcept (index) {
+    objectClassRemoveConcept(index) {
         this.elt.objectClass.concepts.splice(index, 1);
         this.elt.unsaved = true;
     }
@@ -56,16 +64,16 @@ export class ConceptsComponent {
         this.newConcept = {origin: "LOINC", type: "dec"};
     }
 
-    propertyRemoveConcept (index) {
+    propertyRemoveConcept(index) {
         this.elt.property.concepts.splice(index, 1);
         this.elt.unsaved = true;
     }
 
-    relatedCdes (concept, config) {
+    relatedCdes(concept, config) {
         window.location.href = "/cde/search?q=" + config.details.path + `:"` + concept + `"`;
     }
 
-    removeConcept (type, i) {
+    removeConcept(type, i) {
         this[type + "RemoveConcept"](i);
     }
 }

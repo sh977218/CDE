@@ -12,7 +12,7 @@
                     </button>
                 </div>
                 <div *ngIf="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be
-                    dowloaded because it is pending approval.
+                    downloaded because it is pending approval.
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                 <div *ngIf="attachment.filesize <= 512*1024">
                     <label id="defaultCbLabel">
                         <input type="checkbox" id="defaultCb" [(ngModel)]="attachment.isDefault"
-                               (change)="setDefault($index)" [disabled]="!isAllowedModel.isAllowed(elt)"/>
+                               (change)="setDefault.emit($index)" [disabled]="!isAllowedModel.isAllowed(elt)"/>
                         Should this image be displayed in search results?</label>
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <div class="col-xs-9">
                 <div *ngIf="showDelete">
                     Confirm Delete
-                    <i class="fa fa-check" (click)="showDelete = false; removeAttachment($index)"
+                    <i class="fa fa-check" (click)="showDelete = false; removeAttachment.emit($index)"
                        id="confirmRemove-{{$index}}"></i>
                     <i class="fa fa-times" (click)="showDelete = false"></i>
                 </div>
@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-xs-9">
                     <input type="file" style="display: none" id="fileToUpload" [(ngModel)]="fileLoc"
-                           (change)="upload($event)"/>
+                           (change)="upload.emit($event)"/>
                 </div>
             </div>
             <div class="row" *ngIf="files && files.length > 0">
