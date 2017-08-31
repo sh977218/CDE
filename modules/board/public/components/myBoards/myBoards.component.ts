@@ -23,9 +23,6 @@ export class MyBoardsComponent implements OnInit {
     }
 
     selectAggregation (aggName, $index) {
-        // let i = this.myBoardsSvc.filter[aggName].indexOf(t);
-        // if (i > -1) this.myBoardsSvc.filter[aggName].splice(i, 1);
-        // else this.myBoardsSvc.filter[aggName].push(t);
         this.myBoardsSvc.filter[aggName][$index].checked = !this.myBoardsSvc.filter[aggName][$index].checked;
         this.myBoardsSvc.loadMyBoards();
     }

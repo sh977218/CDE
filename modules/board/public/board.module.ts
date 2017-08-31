@@ -20,6 +20,7 @@ import { MyBoardsComponent } from "./components/myBoards/myBoards.component";
 import { WidgetModule } from "../../widget/widget.module";
 import { BoardViewComponent } from "./components/boardView/boardView.component";
 import { DiscussModule } from "../../discuss/discuss.module";
+import { PublicBoardsComponent } from "./components/publicBoards/publicBoards.component";
 
 @NgModule({
     imports: [
@@ -37,13 +38,14 @@ import { DiscussModule } from "../../discuss/discuss.module";
         BoardViewComponent,
         BoardViewTemplateComponent,
         CreateBoardComponent,
+        CreateFormFromBoardComponent,
         LinkedBoardsComponent,
         ListSortComponent,
         MyBoardsComponent,
         PinBoardComponent,
         PinBoardModalComponent,
         PinQuickboardComponent,
-        CreateFormFromBoardComponent,
+        PublicBoardsComponent,
         UnpinBoardComponent,
     ],
     entryComponents: [
@@ -53,6 +55,7 @@ import { DiscussModule } from "../../discuss/discuss.module";
         LinkedBoardsComponent,
         MyBoardsComponent,
         PinBoardModalComponent,
+        PublicBoardsComponent,
     ],
     providers: [
         MyBoardsService,
