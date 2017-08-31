@@ -42,7 +42,7 @@
                 <h4>Share Status</h4>
                 <label *ngFor="let ss of myBoardsSvc.filter.shareStatus; let $index = index" class="my-board-tag">
                     <input type="checkbox" data-id="ss-{{ss.key}}" [checked]="ss.checked"
-                           (change)="selectAggregation('shareStatuses', $index)">
+                           (change)="selectAggregation('shareStatus', $index)">
                     {{ss.key}} ({{ss.doc_count}})
                 </label>
             </div>

@@ -33,7 +33,10 @@ export class MyBoardsComponent implements OnInit {
 
     removeBoard (index) {
         this.showDelete = false;
-        this.http.delete("/board/" + this.myBoardsSvc.boards[index]._id).subscribe( () => this.myBoardsSvc.waitAndReload());
+        this.http.delete("/board/" + this.myBoardsSvc.boards[index]._id).subscribe(() => {
+            this.alert.addAlert("success", "Done");
+            this.myBoardsSvc.waitAndReload();
+        });
     };
 
     cancelSave (board) {
