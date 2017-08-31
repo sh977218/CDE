@@ -1,6 +1,6 @@
 import { Component, Inject, Input, Output, OnInit, ViewChild, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
 import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";

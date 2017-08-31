@@ -6,7 +6,6 @@ import { Http } from "@angular/http";
     templateUrl: "./sdcView.component.html"
 })
 
-
 export class SdcViewComponent implements OnInit {
 
     constructor(private http: Http) {}
@@ -19,10 +18,7 @@ export class SdcViewComponent implements OnInit {
 
     ngOnInit () {
         if (this.cdeId) {
-            this.http.get("/sdc/" + this.cdeId).map(r => r.json()).subscribe(result => {
-                this.sdcCde = result;
-                this.eltLoaded = true;
-            });
+            this.http.get("/sdc/" + this.cdeId).map(r => r.json()).subscribe(result => this.sdcCde = result);
         }
     }
 
