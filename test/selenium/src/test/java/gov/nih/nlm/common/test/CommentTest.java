@@ -140,7 +140,7 @@ public abstract class CommentTest extends CommonTest {
         }
     }
 
-    public void approvingComments(String eltName, String status, String user) {
+    public void approveComments(String eltName, String status, String user) {
         int randomNumber = (int) (Math.random() * 10000);
         String commentText = "Very Innocent Comment " + randomNumber;
         String censoredText = "This comment is pending approval";
@@ -156,23 +156,23 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
-        textPresent("comment approval");
+        textPresent("Comment approval");
 
-        clickElement(By.partialLinkText("comment approval | " + user + " | " + commentText));
-        clickElement(By.xpath("//div[@aria-expanded='true']//a[contains(., '" + eltName + "')]"));
+        clickElement(By.partialLinkText("Comment approval | " + user + " | " + commentText));
+        clickElement(By.xpath("//div[@class='card']//a[contains(., '" + eltName + "')]"));
 
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));
+        clickElement(By.cssSelector(".card .authorizeUser"));
         clickElement(By.id("authorizeUserOK"));
 
         textPresent("Role added");
         closeAlert();
         modalGone();
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));
+        clickElement(By.cssSelector(".card .approveComment"));
         textPresent("Approved");
 
         logout();
@@ -209,14 +209,14 @@ public abstract class CommentTest extends CommonTest {
         hangon(1);
         clickElement(By.id("incomingMessage"));
 
-        clickElement(By.partialLinkText("comment approval | " + user + " | " + commentText));
+        clickElement(By.partialLinkText("Comment approval | " + user + " | " + commentText));
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'linkToElt')]"));
+        clickElement(By.cssSelector(".card .linkToElt"));
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'declineComment')]"));
+        clickElement(By.cssSelector(".card .declineComment"));
 
         logout();
         goToEltByName(eltName, status);
@@ -242,8 +242,8 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
-        clickElement(By.partialLinkText("comment approval | reguser | " + replyText));
-        clickElement(By.xpath("//div[@aria-expanded='true']//button[contains(@class, 'approveComment')]"));
+        clickElement(By.partialLinkText("Comment approval | reguser | " + replyText));
+        clickElement(By.cssSelector(".card .approveComment"));
 
         textPresent("Message moved");
         textPresent("Approved");
