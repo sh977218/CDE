@@ -88,7 +88,6 @@
     "@angular/http": "4.3.6",
     "@angular/platform-browser": "4.3.6",
     "@angular/platform-browser-dynamic": "4.3.6",
-    "@angular/animations": "4.3.6",
     "@angular/router": "4.3.6",
     "@angular/upgrade": "4.3.6",
     "@ng-bootstrap/ng-bootstrap": "1.0.0-alpha.25",
