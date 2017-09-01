@@ -22,7 +22,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 @Component({
     selector: "cde-form-description",
     templateUrl: "formDescription.component.html",
-    animations:[copySectionAnimation],
+    animations: [copySectionAnimation],
     styles: [`
         :host >>> .panel {
             margin-bottom: 1px;

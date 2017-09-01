@@ -118,7 +118,7 @@ export class CreateDataElementComponent implements OnInit {
         recentlyClassification.unshift(item);
         this.localStorageService.set("classificationHistory", recentlyClassification);
     }
-    
+
     createDataElement() {
         this.http.post("/de", this.elt).map(res => res.json())
             .subscribe(res => window.location.href = "/deView?tinyId=" + res.tinyId,

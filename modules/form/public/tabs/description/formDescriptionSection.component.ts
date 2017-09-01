@@ -133,16 +133,11 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     copySection(section, event) {
         this.localStorageService.set("sectionCopied", section);
-        let pElement = event.currentTarget.parentElement.parentElement;
-        /*
-                pElement.style.color = "red";
-                setTimeout(() => {
-                    pElement.style.color = null;
-                }, 2000);
-        */
-        section.isCopied = "copy";
+        section.isCopied = "copied";
+        this.elt.isCopied = "copied";
         setTimeout(() => {
-            section.isCopied = "unCopy";
-        }, 2000);
+            section.isCopied = "clear";
+            delete this.elt.isCopied;
+        }, 3000);
     }
 }

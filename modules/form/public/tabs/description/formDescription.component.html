@@ -19,7 +19,8 @@
             </span>
             <span role="button" *ngIf="hasCopiedSection()" id="pasteSection" class="btn btn-default formDescriptionTool"
                   [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px;">
-                <i class="fa fa-paste"></i><span class="toolCopySection"></span>
+                <i class="fa fa-paste" [ngClass]="{'pasteSectionWrench':elt.isCopied}"></i><span
+                    class="toolCopySection"></span>
             </span>
         </div>
         <div *ngIf="elt.formElements.length === 0">
