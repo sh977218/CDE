@@ -12,6 +12,17 @@ function loopFormElements(f, cb) {
     async.forEachSeries(f.formElements, function (fe, doneOne) {
         if (fe.elementType === "section") {
             loopFormElements(fe, doneOne);
+        } else if (fe.elementType === "form") {
+            let tinyId = fe.question.cde.tinyId;
+            let version = fe.question.cde.version ? fe.question.cde.version : null;
+            mongo_form.byTinyIdVersion(tinyId, version, function (err, form) {
+                if (err || !form) cb(err);
+                else {
+                    let systemForm = form.toObject();
+                    fe.inForm.form.ids = systemForm.ids;
+                    doneOne();
+                }
+            });
         } else {
             let tinyId = fe.question.cde.tinyId;
             let version = fe.question.cde.version ? fe.question.cde.version : null;
