@@ -144,7 +144,7 @@ export class NativeRenderStandaloneComponent {
                 async.forEach(form.formElements, (fe, doneOne) => {
                     if (fe.elementType === 'form') {
                         if (depth < maxDepth) {
-                            this.http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version)
+                            this.http.get('/form/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
                                 .map(res => res.json())
                                 .subscribe((response) => {
                                     fe.formElements = response.formElements;
@@ -196,6 +196,18 @@ export class NativeRenderStandaloneComponent {
             return 'unknown';
     }
 
+    getCodeSystemOut(system, fe = null) {
+        let s = system;
+        if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length)
+            s = fe.question.cde.ids[0].source;
+
+        let external = this.externalCodeSystems.filter(e => e.id === s);
+        if (external.length)
+            return external[0].uri;
+        else
+            return s;
+    }
+
     static getFormObservationNames(id) {
         let maps = mappings.filter(m => m.form === id
             && m.type === 'external'
@@ -210,9 +222,9 @@ export class NativeRenderStandaloneComponent {
         let resourceObservationMap = {};
         let observationNames = [];
         map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && !resourceObservationMap[m.resourceName] && m.resourceName !== '*') {
-                resourceObservationMap[m.resourceName] = true;
-                observationNames.push(m.resourceName);
+            if (m.resource === 'Observation' && !resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] && m.resourceCode !== '*') {
+                resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = true;
+                observationNames.push(m.resourceSystem + ' ' + m.resourceCode);
             }
         });
 
@@ -299,7 +311,11 @@ export class NativeRenderStandaloneComponent {
         if (!this.selectedEncounter)
             return;
 
-        let maps = mappings.filter(m => m.form === this.elt._id
+        this.loadFhirDataForm(this.elt);
+    }
+
+    loadFhirDataForm(form) {
+        let maps = mappings.filter(m => m.form === form._id
             && m.type === 'external'
             && m.system === 'http://hl7.org/fhir'
             && m.code === 'multi'
@@ -311,12 +327,14 @@ export class NativeRenderStandaloneComponent {
 
         let resourceObservationMap = {};
         map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[m.resourceName])) {
-                if (m.resourceName === '*')
-                    resourceObservationMap[m.resourceName] = this.selectedEncounter.observations;
+            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode])) {
+                if (m.resourceCode === '*')
+                    resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = this.selectedEncounter.observations;
                 else
-                    resourceObservationMap[m.resourceName] = this.selectedEncounter.observations.filter(
-                        o => o.raw.code.coding.filter(c => c.display === m.resourceName).length > 0
+                    resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = this.selectedEncounter.observations.filter(
+                        o => o.raw.code.coding.filter(
+                            c => c.system === m.resourceSystem && c.code === m.resourceCode
+                        ).length > 0
                     );
             }
         });
@@ -329,14 +347,110 @@ export class NativeRenderStandaloneComponent {
                 fe.question.answerTime = {hour: m.hour(), minute: m.minute(), second: m.second()};
             }
         };
-        map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && m.inFn && resourceObservationMap[m.resourceName]) {
-                resourceObservationMap[m.resourceName].forEach(o => {
-                    /* tslint:disable */ let resFn = eval('(' + m.resourceObj + ')'); /* tslint:enable */
-                    /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
-                    inFn(this.elt, resFn(o.raw)[m.resourceProperty]);
+        function getValueQuantity(fe, uomSystem, uomCode = null, feUom = null) {
+            return {
+                value: fe.question.answer,
+                unit: fe.question.answerUom || feUom && feUom.question.answer || uomCode,
+                system: this.getCodeSystemOut(uomSystem),
+                code: fe.question.answerUom || feUom && feUom.question.answer || uomCode
+            };
+        }
+        function setValueQuantity(fe, vq, feUom = null) {
+            fe.question.answer = vq.value;
+            if (feUom)
+                feUom.question.answer = vq.unit;
+            else
+                fe.question.answerUom = vq.unit;
+        }
+        function getById(form, tinyId, instance = 0) {
+            let count = -1;
+            let result = null;
+            function getByIdRecurse(fe, tinyId) {
+                fe.formElements.forEach(f => {
+                    if (f.elementType === 'section')
+                        getByIdRecurse(f, tinyId);
+                    else if (f.elementType === 'form') {
+                        if (f.inForm.form.tinyId === tinyId) {
+                            count++;
+                            if (count >= instance)
+                                return result = f;
+                        }
+                        getByIdRecurse(f, tinyId);
+                    } else {
+                        if (f.question.cde.tinyId === tinyId) {
+                            count++;
+                            if (count >= instance)
+                                return result = f;
+                            f.question.answers.forEach(a => {
+                                if (a.subQuestions && !result)
+                                    a.subQuestions.forEach(sq => !result && getByIdRecurse(sq, tinyId));
+                            });
+                        }
+                    }
+                    if (result) return;
                 });
             }
+            getByIdRecurse(form, tinyId);
+            return result;
+        }
+        map.mapping.forEach(m => {
+            function getByCode(form, instance = 0) {
+                let count = -1;
+                let result = null;
+                function getByCodeRecurse(fe) {
+                    form.formElements.forEach(f => {
+                        if (f.elementType === 'section')
+                            getByCodeRecurse(f);
+                        else if (f.elementType === 'form') {
+                            if (f.inForm.ids.filter( // bad, needs ids[]
+                                    id => id.source === m.resourceSystem && id.id === m.resourceCode).length
+                            ) {
+                                count++;
+                                if (count >= instance)
+                                    return result = f;
+                            }
+                            getByCodeRecurse(f);
+                        } else {
+                            if (f.question.cde.ids.filter(
+                                id => id.source === m.resourceSystem && id.id === m.resourceCode).length
+                            ) {
+                                count++;
+                                if (count >= instance)
+                                    return result = f;
+                                f.question.answers.forEach(a => {
+                                    if (a.subQuestions && !result)
+                                        a.subQuestions.forEach(sq => !result && getByCodeRecurse(sq));
+                                });
+                            }
+                        }
+                        if (result) return;
+                    });
+                }
+                getByCodeRecurse(form);
+                return result;
+            }
+            function getSubByCode(form, instance = 0) {
+                // use m from closure
+                // return fe by subform by system/code then by system/code
+                // inject functions as methods getValueQuantity setValueQuantity
+            }
+            if (m.resource === 'Observation' && m.inFn && resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode]) {
+                resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode].forEach(o => {
+                    /* tslint:disable */ let resFn = eval('(' + m.resourceObj + ')'); /* tslint:enable */
+                    /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
+                    if (inFn) {
+                        if (resFn)
+                            inFn(form, resFn(o.raw)[m.resourceProperty]);
+                        else
+                            inFn(form, o.raw[m.resourceProperty]);
+                    }
+                });
+            }
+        });
+
+        form.formElements.forEach(fe => {
+            if (fe.elementType === 'form')
+                this.loadFhirDataForm(fe);
         });
     }
 
@@ -430,16 +544,18 @@ export class NativeRenderStandaloneComponent {
         });
         let resourceObservationMap = {};
         map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[m.resourceName])) {
-                if (m.resourceName === '*')
-                    resourceObservationMap[m.resourceName] = this.submitFhirObservations;
+            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode])) {
+                if (m.resourceSystem + ' ' + m.resourceCode === '*')
+                    resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = this.submitFhirObservations;
                 else {
-                    resourceObservationMap[m.resourceName] = this.submitFhirObservations.filter(
-                        o => o.code.coding.filter(c => c.display === m.resourceName).length > 0
+                    resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = this.submitFhirObservations.filter(
+                        o => o.code.coding.filter(
+                            c => c.system === m.resourceSystem && c.code === m.resourceCode
+                        ).length > 0
                     );
-                    if (resourceObservationMap[m.resourceName].length === 0) {
+                    if (resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode].length === 0) {
                         let observation = NativeRenderStandaloneComponent.newObjservationGet(this.selectedEncounter);
-                        resourceObservationMap[m.resourceName].push(observation);
+                        resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode].push(observation);
                         this.submitFhirObservations.push(observation);
                         this.submitFhirPending.push({before: null, after: observation});
                     }
@@ -451,8 +567,8 @@ export class NativeRenderStandaloneComponent {
         let patient = this.patient;
         let encounter = this.selectedEncounter;
         map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && m.outFn && resourceObservationMap[m.resourceName]) {
-                resourceObservationMap[m.resourceName].forEach(o => {
+            if (m.resource === 'Observation' && m.outFn && resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode]) {
+                resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode].forEach(o => {
                     /* tslint:disable */ let resFn = eval('(' + m.resourceObj + ')'); /* tslint:enable */
                     /* tslint:disable */ let outFn = eval('(' + m.outFn + ')'); /* tslint:enable */
                     resFn(o)[m.resourceProperty] = outFn(this.elt);

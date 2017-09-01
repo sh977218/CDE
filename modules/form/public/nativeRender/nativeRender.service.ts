@@ -30,6 +30,15 @@ export class NativeRenderService {
             return;
         this.currentNativeRenderType = userType;
 
+        function clearTransform(fe) {
+            fe.formElements.forEach(f => {
+                if (f.elementType === 'question')
+                    f.question.answers = f.question.cde.permissibleValues;
+                else
+                    clearTransform(f);
+            });
+        }
+        clearTransform(this.elt);
         if (this.getNativeRenderType() === this.FOLLOW_UP) {
             if (!this.followForm || this.elt.unsaved) {
                 this.followForm = NativeRenderService.cloneForm(this.elt);

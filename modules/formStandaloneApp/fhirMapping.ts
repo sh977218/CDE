@@ -55,7 +55,8 @@ export let mappings = [
         "mapping": [
             {
                 "resource": "Observation",
-                "resourceName": "*",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
                 "resourceObj": "function (res) { return res.subject; }",
                 "resourceProperty": "reference",
                 "inFn": null,
@@ -63,215 +64,83 @@ export let mappings = [
             },
             {
                 "resource": "Observation",
-                "resourceName": "*",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
                 "resourceObj": "function (res) { return res.context; }",
                 "resourceProperty": "reference",
                 "inFn": null,
                 "outFn": "function (form) { return 'Encounter/' + encounter.raw.id; }"
             },
+
             {
                 "resource": "Observation",
-                "resourceName": "*",
-                "resourceObj": "function (res) { return res; }",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
+                "resourceObj": null,
                 "resourceProperty": "effectiveDateTime",
-                "inFn": "function (form, value) { form.formElements[0].formElements[0].question.answer = value;"
-                + " parseDateTime(form.formElements[0].formElements[0]); }",
+                "inFn": "function (form, value) { var fe = getById(form, 'abmAnDXu5my'); fe.question.answer = value;"
+                + " parseDateTime(fe); fe.question.editable = false; }",
                 "outFn": "function (form) { return encounter.date; }"
             },
+
             {
                 "resource": "Observation",
-                "resourceName": "*",
-                "resourceObj": "function (res) { return res; }",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
+                "resourceObj": null,
                 "resourceProperty": "issued",
                 "inFn": null,
                 "outFn": "function (form) { return encounter.date; }"
             },
             {
                 "resource": "Observation",
-                "resourceName": "Body Height",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "value",
-                "inFn": "function (form, value) { form.formElements[0].formElements[5].question.answer = value; }",
-                "outFn": "function (form) { return form.formElements[0].formElements[5].question.answer; }"
+                "resourceSystem": "LOINC",
+                "resourceCode": "8302-2",
+                "resourceObj": null,
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
             },
             {
                 "resource": "Observation",
-                "resourceName": "Body Height",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "unit",
-                "inFn": "function (form, value) {"
-                + " if (value === 'cm') form.formElements[0].formElements[6].question.answer = 'Centimeters';"
-                + " if (value === 'inch') form.formElements[0].formElements[6].question.answer = 'Inches';"
-                + " if (value === 'm') form.formElements[0].formElements[6].question.answer = 'meters';"
-                + " if (value === 'foot') form.formElements[0].formElements[6].question.answer = 'feet'; }",
-                "outFn": "function (form) { var value = form.formElements[0].formElements[6].question.answer;"
-                + " if (value === 'Centimeters') return 'cm';"
-                + " if (value === 'Inches') return 'inch';"
-                + " if (value === 'meters') return 'm';"
-                + " if (value === 'feet') return 'foot'; }"
+                "resourceSystem": "LOINC",
+                "resourceCode": "29463-7",
+                "resourceObj": null,
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
             },
             {
                 "resource": "Observation",
-                "resourceName": "Body Height",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "system",
-                "inFn": null,
-                "outFn": "function (form) { return 'http://unitsofmeasure.org/'; }"
+                "resourceSystem": "LOINC",
+                "resourceCode": "39156-5",
+                "resourceObj": null,
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
             },
             {
                 "resource": "Observation",
-                "resourceName": "Body Height",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "code",
-                "inFn": null,
-                "outFn": "function (form) { var value = form.formElements[0].formElements[6].question.answer;"
-                + " if (value === 'Centimeters') return 'cm';"
-                + " if (value === 'Inches') return 'inch';"
-                + " if (value === 'meters') return 'm';"
-                + " if (value === 'feet') return 'foot'; }"
+                "resourceSystem": "LOINC",
+                "resourceCode": "55284-4",
+                "resourceComponentSystem": "LOINC",
+                "resourceComponentCode": "8480-6",
+                "resourceObj": "function (res) { return getComponent(res); }",
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getSubByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getSubByCode(form), 'UNITS'); }"
             },
             {
                 "resource": "Observation",
-                "resourceName": "Body Weight",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "value",
-                "inFn": "function (form, value) { form.formElements[0].formElements[3].question.answer = value; }",
-                "outFn": "function (form) { return form.formElements[0].formElements[3].question.answer; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Body Weight",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "unit",
-                "inFn": "function (form, value) {"
-                + " if (value === 'kg') form.formElements[0].formElements[4].question.answer = 'Kilograms';"
-                + " if (value === 'lb') form.formElements[0].formElements[4].question.answer = 'Pounds'; }",
-                "outFn": "function (form) { var value = form.formElements[0].formElements[4].question.answer;"
-                + " if (value === 'Kilograms') return 'kg';"
-                + " if (value === 'Pounds') return 'lb'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Body Weight",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "system",
-                "inFn": null,
-                "outFn": "function (form) { return 'http://unitsofmeasure.org/'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Body Weight",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "code",
-                "inFn": null,
-                "outFn": "function (form) { var value = form.formElements[0].formElements[4].question.answer;"
-                + " if (value === 'Kilograms') return 'kg';"
-                + " if (value === 'Pounds') return 'lb'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Body Mass Index",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "value",
-                "inFn": "function (form, value) { form.formElements[0].formElements[7].question.answer = value; }",
-                "outFn": "function (form) { return form.formElements[0].formElements[7].question.answer; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Body Mass Index",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "unit",
-                "inFn": "function (form, value) { form.formElements[0].formElements[8].question.answer = value; }",
-                "outFn": "function (form) { return form.formElements[0].formElements[8].question.answer; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Body Mass Index",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "system",
-                "inFn": null,
-                "outFn": "function (form) { return 'http://unitsofmeasure.org/'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Body Mass Index",
-                "resourceObj": "function (res) { return res.valueQuantity; }",
-                "resourceProperty": "code",
-                "inFn": null,
-                "outFn": "function (form) { return form.formElements[0].formElements[8].question.answer; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Blood Pressure",
-                "resourceObj": "function (res) { return res.component.filter(component => component.code.coding.filter("
-                + "c => c.display === 'Systolic Blood Pressure').length > 0)[0].valueQuantity; }",
-                "resourceProperty": "value",
-                "inFn": "function (form, value) { form.formElements[0].formElements[1].question.answer = value; }",
-                "outFn": "function (form) { return form.formElements[0].formElements[1].question.answer; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Blood Pressure",
-                "resourceObj": "function (res) { return res.component.filter(component => component.code.coding.filter("
-                + "c => c.display === 'Systolic Blood Pressure').length > 0)[0].valueQuantity; }",
-                "resourceProperty": "unit",
-                "inFn": null,
-                "outFn": "function (form) { return 'mmHg'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Blood Pressure",
-                "resourceObj": "function (res) { return res.component.filter(component => component.code.coding.filter("
-                + "c => c.display === 'Systolic Blood Pressure').length > 0)[0].valueQuantity; }",
-                "resourceProperty": "system",
-                "inFn": null,
-                "outFn": "function (form) { return 'http://unitsofmeasure.org/'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Blood Pressure",
-                "resourceObj": "function (res) { return res.component.filter(component => component.code.coding.filter("
-                + "c => c.display === 'Systolic Blood Pressure').length > 0)[0].valueQuantity; }",
-                "resourceProperty": "code",
-                "inFn": null,
-                "outFn": "function (form) { return 'mmHg'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Blood Pressure",
-                "resourceObj": "function (res) { return res.component.filter(component => component.code.coding.filter("
-                + "c => c.display === 'Diastolic Blood Pressure').length > 0)[0].valueQuantity; }",
-                "resourceProperty": "value",
-                "inFn": "function (form, value) { form.formElements[0].formElements[2].question.answer = value; }",
-                "outFn": "function (form) { return form.formElements[0].formElements[2].question.answer; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Blood Pressure",
-                "resourceObj": "function (res) { return res.component.filter(component => component.code.coding.filter("
-                + "c => c.display === 'Diastolic Blood Pressure').length > 0)[0].valueQuantity; }",
-                "resourceProperty": "unit",
-                "inFn": null,
-                "outFn": "function (form) { return 'mmHg'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Blood Pressure",
-                "resourceObj": "function (res) { return res.component.filter(component => component.code.coding.filter("
-                + "c => c.display === 'Diastolic Blood Pressure').length > 0)[0].valueQuantity; }",
-                "resourceProperty": "system",
-                "inFn": null,
-                "outFn": "function (form) { return 'http://unitsofmeasure.org/'; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceName": "Blood Pressure",
-                "resourceObj": "function (res) { return res.component.filter(component => component.code.coding.filter("
-                + "c => c.display === 'Diastolic Blood Pressure').length > 0)[0].valueQuantity; }",
-                "resourceProperty": "code",
-                "inFn": null,
-                "outFn": "function (form) { return 'mmHg'; }"
-            },
+                "resourceSystem": "LOINC",
+                "resourceCode": "55284-4",
+                "resourceComponentSystem": "LOINC",
+                "resourceComponentCode": "8462-4",
+                "resourceObj": "function (res) { return getComponent(res); }",
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getSubByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getSubByCode(form), 'UNITS'); }"
+            }
         ]
     }
 ];
