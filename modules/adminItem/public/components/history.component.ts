@@ -11,7 +11,7 @@ const URL_MAP = {
 };
 
 @Component({
-    selector: "cde-admin-item-history",
+    selector: "cde-history",
     templateUrl: "./history.component.html",
     styles: [`
         caption {

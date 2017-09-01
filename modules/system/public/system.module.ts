@@ -42,6 +42,7 @@ import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serve
 import { TimeAgoPipe } from "time-ago-pipe";
 import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
 import { DiscussModule } from "../../discuss/discuss.module";
+import { InboxComponent } from "./components/inbox/inbox.component";
 import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
 import { EmbedComponent } from "./components/embed/embed.component";
 import { LoginComponent } from "./components/login/login.component";
@@ -74,6 +75,7 @@ import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccount
         EmbedComponent,
         FeedbackIssuesComponent,
         HomeComponent,
+        InboxComponent,
         ListManagementComponent,
         LogAuditComponent,
         LoginComponent,
@@ -99,6 +101,7 @@ import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccount
     entryComponents: [
         AlertComponent,
         HomeComponent,
+        InboxComponent,
         LoginComponent,
         NavigationComponent,
         OrgAccountManagementComponent,

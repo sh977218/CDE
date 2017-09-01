@@ -1,17 +1,19 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import { Component, Inject, Input, ViewChild, OnInit, EventEmitter, Output } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import * as _ from 'lodash';
 import { OrgHelperService } from "../../../core/public/orgHelper.service";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
-    selector: "cde-admin-item-naming",
+    selector: "cde-naming",
     templateUrl: "./naming.component.html"
 })
 export class NamingComponent implements OnInit {
 
     @ViewChild("newNamingContent") public newNamingContent: NgbModalModule;
     @Input() public elt: any;
+    @Output() onEltChange = new EventEmitter();
     public newNaming: any = {};
     public modalRef: NgbModalRef;
     public orgNamingTags: { id: string; text: string }[] = [];
@@ -39,31 +41,22 @@ export class NamingComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.getCurrentTags();
-        this.elt.naming.forEach(n => {
-            n.currentTags.forEach(ct => {
-                if (!this.orgNamingTags.find((elt) => ct === elt.text)) {
-                    this.orgNamingTags.push({"id": ct, "text": ct});
-                }
-            });
-        });
         this.orgHelperService.then(() => {
             this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach(nt => {
                 if (!this.orgNamingTags.find((elt) => nt === elt.text)) {
                     this.orgNamingTags.push({"id": nt, "text": nt});
                 }
+                this.elt.naming.forEach(n => {
+                    n.tags.forEach(t => {
+                        this.orgNamingTags.push({"id": t, "text": t});
+                    });
+                });
+                this.orgNamingTags = _.uniqWith(this.orgNamingTags, _.isEqual);
                 this.onInitDone = true;
             });
             this.loaded = true;
         });
         this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
-    }
-
-    getCurrentTags() {
-        this.elt.naming.forEach(n => {
-            if (!n.tags) n.tags = [];
-            n.currentTags = n.tags.map(t => t.tag);
-        });
     }
 
     openNewNamingModal() {
@@ -75,26 +68,18 @@ export class NamingComponent implements OnInit {
     addNewNaming() {
         this.elt.naming.push(this.newNaming);
         this.modalRef.close();
-        this.elt.unsaved = true;
-        this.getCurrentTags();
+        this.onEltChange.emit();
     }
 
     removeNamingByIndex(index) {
         this.elt.naming.splice(index, 1);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     changedTags(name, data: { value: string[] }, needToSave = true) {
-        if (!data.value) data.value = [];
-        name.tags = data.value.map(d => {
-            return {tag: d};
-        });
-        // @TODO remove after convert newTags
-        name.newTags = data.value.map(d => {
-            return d;
-        });
+        name.tags = data.value;
         if (needToSave)
-            this.elt.unsaved = true;
+            this.onEltChange.emit();
     }
 
 }

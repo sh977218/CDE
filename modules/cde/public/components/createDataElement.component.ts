@@ -1,6 +1,6 @@
 import { Component, Inject, Input, Output, OnInit, ViewChild, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
 import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
@@ -33,7 +33,8 @@ export class CreateDataElementComponent implements OnInit {
                 elementType: "cde",
                 classification: [], stewardOrg: {}, naming: [{
                     designation: "", definition: "", tags: []
-                }]
+                }],
+                registrationState: {registrationStatus: "Incomplete"}
             };
         this.validationErrors(this.elt);
     }
@@ -53,7 +54,6 @@ export class CreateDataElementComponent implements OnInit {
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
-        this.alert.addAlert("success", "Classification added.");
     }
 
     validationErrors(elt) {
@@ -118,8 +118,7 @@ export class CreateDataElementComponent implements OnInit {
         recentlyClassification.unshift(item);
         this.localStorageService.set("classificationHistory", recentlyClassification);
     }
-
-
+    
     createDataElement() {
         this.http.post("/de", this.elt).map(res => res.json())
             .subscribe(res => window.location.href = "/deView?tinyId=" + res.tinyId,

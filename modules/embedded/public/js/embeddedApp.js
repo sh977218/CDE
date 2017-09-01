@@ -205,7 +205,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                         embed4Type.otherNames.forEach(function (eName) {
                             var name = c.naming.filter(function(n) {
                                 return n.tags.filter(function (t) {
-                                        return t.tag.indexOf('Question Text') > -1
+                                        return t.indexOf('Question Text') > -1;
                                     }).length > 0;
                             })[0];
                             if (name) {

@@ -3,9 +3,12 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
         function ($scope, $window, $timeout, $modal, DataElement, Elastic) {
 
         $scope.elt = {
-            classification: [], stewardOrg: {}, naming: [{
+            classification: [],
+            stewardOrg: {},
+            naming: [{
                 designation: "", definition: "", tags: []
-            }]
+            }],
+            registrationState: {registrationStatus: "Incomplete"}
         };
 
         $scope.cdes = [];
