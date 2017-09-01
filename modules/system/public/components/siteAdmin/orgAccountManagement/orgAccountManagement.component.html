@@ -1,0 +1,85 @@
+<div class="container">
+    <ngb-tabset class="pt20">
+        <ngb-tab title="Organizations Admins">
+            <ng-template ngbTabContent>
+                <cde-org-admin></cde-org-admin>
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Organizations Curators">
+            <ng-template ngbTabContent>
+                <form class="form-inline pt40 pb40" #newCuratorForm="ngForm" id="newOrgCuratorForm" name="newOrgCuratorForm" novalidate>
+                    Make
+                    <div class="form-group">
+                        <!--<input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"-->
+                               <!--placeholder="enter user name" ng-model="orgCurator.username" autocomplete="off"-->
+                               <!--uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"-->
+                               <!--typeahead-min-length="3" required>-->
+                    </div>
+                    a curator for
+                    <div class="form-group">
+                        <!--<select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control"-->
+                                <!--ng-model="curator.orgName"-->
+                                <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>-->
+                            <!--<option value="">select organization</option>-->
+                        <!--</select>-->
+                    </div>
+                    <button type="submit" class="btn btn-success" id="newOrgCuratorSubmit" (click)="addOrgCurator()"
+                            [disabled]="!newCuratorForm.valid">
+                        Make Curator
+                    </button>
+                </form>
+                <table class="table table-border table-responsive">
+                    <tr>
+                        <th>Organization Name:</th>
+                        <th>Curators for this Organization:</th>
+                    </tr>
+                    <!--<tr ng-repeat="orgCurator in orgCurators | orderBy:'name'">-->
+                        <!--<td id="existingOrgCuratorOrgName-{{orgCurator.name}}">-->
+                            <!--{{orgCurator.name}}-->
+                        <!--</td>-->
+                        <!--<td>-->
+                            <!--<div ng-repeat="user in orgCurator.users">-->
+                                <!--<span id="existingOrgCuratorUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span>-->
+                                <!--<i class="fa fa-trash-o hand-cursor" ng-click="removeOrgCurator(orgCurator.name, user._id)"-->
+                                   <!--id="removeOrgCuratorUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>-->
+                            <!--</div>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                </table>
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab title="CDE & Form Management" *ngIf="userService.user?.orgAdmin.length > 1">
+            <ng-template ngbTabContent>
+                <form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm"
+                      novalidate>
+                    Transfer CDEs and forms owned by
+                    <div class="form-group">
+                        <!--<select id="transferSteward_from" name="transferSteward_from" class="form-control"-->
+                                <!--ng-model="transferStewardObj.from"-->
+                                <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>-->
+                            <!--<option value="">select organization</option>-->
+                        <!--</select>-->
+                    </div>
+                    to
+                    <div class="form-group">
+                        <!--<select id="transferSteward_to" name="transferSteward_to" class="form-control"-->
+                                <!--ng-model="transferStewardObj.to"-->
+                                <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>-->
+                            <!--<option value="">select organization</option>-->
+                        <!--</select>-->
+                    </div>
+                    <!--<button type="submit" class="btn btn-success" id="transferStewardButton"-->
+                            <!--ng-click="transferStewardFunc()"-->
+                            <!--ng-disabled="transferStewardForm.transferSteward_from.$error.required || transferStewardForm.transferSteward_to.$error.required">-->
+                        <!--Transfer Now-->
+                    <!--</button>-->
+                </form>
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Embedding" *ngIf="userService.user?.orgAdmin.length > 0" id="embeddingTab">
+            <ng-template ngbTabContent>
+                <cde-embed></cde-embed>
+            </ng-template>
+        </ngb-tab>
+    </ngb-tabset>
+</div>
