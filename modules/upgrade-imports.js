@@ -26,7 +26,6 @@ import "./system/public/js/controllers/MainCtrl";
 import "./cde/public/assets/js/diff_match_patch";
 import "./cde/public/assets/js/FileSaver";
 import "./system/public/js/exceptionHandler";
-import "./system/public/js/controllers/AccountManagementCtrl";
 import "./system/public/js/controllers/ClassificationCtrl";
 import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
