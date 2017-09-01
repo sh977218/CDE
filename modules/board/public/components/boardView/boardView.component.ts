@@ -64,10 +64,7 @@ export class BoardViewComponent implements OnInit {
             if (response.board) {
                 this.board = response.board;
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
-                // if (this.board.type === "form")
-                //     $scope.quickBoard = $scope.formQuickBoard;
 
-                // $scope.module = $scope.board.type;
                 this.totalItems = response.totalItems;
                 // $scope.numPages = $scope.totalItems / 20;
                 let pins = this.board.pins;
@@ -189,21 +186,6 @@ export class BoardViewComponent implements OnInit {
         return this.board.review && this.isReviewStarted() && !this.isReviewEnded();
     };
 
-    // $scope.getPendingReviewers = function () {
-    //     return $scope.getReviewers().filter(function (u) {
-    //         return u.status.approval === 'invited';
-    //     })
-    // };
-    // $scope.remindReview = function () {
-    //     $http.post('/board/remindReview', {
-    //         boardId: $scope.board._id
-    //     }).then(function () {
-    //         Alert.addAlert('success', "Reminder sent.");
-    //     });
-    // };
-
-    // $scope.searchString = '';
-
     addUser (newUser) {
         if (this.users.filter(o => o.username.toLowerCase() === newUser.username.toLowerCase())[0]) {
             this.alert.addAlert('danger', 'username exists');
@@ -219,11 +201,6 @@ export class BoardViewComponent implements OnInit {
         this.users.splice(index, 1);
         this.changesMade = true;
     };
-
-    // $scope.saveBoardUsers = function () {
-    //     if (!$scope.users) $scope.users = [];
-    //     $scope.users.push({username: $scope.searchString});
-    // };
 
     changeRole (newUser, role) {
         newUser.role = role.name;
