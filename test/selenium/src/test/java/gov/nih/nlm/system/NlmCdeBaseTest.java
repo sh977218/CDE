@@ -1189,6 +1189,10 @@ public class NlmCdeBaseTest {
     }
 
     protected void addClassificationByTree(String org, String[] classificationArray) {
+        addClassificationByTree(org, classificationArray, "Classification added.");
+    }
+
+    protected void addClassificationByTree(String org, String[] classificationArray, String alertText) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
 
@@ -1201,8 +1205,10 @@ public class NlmCdeBaseTest {
             expanderStr += ",";
         }
         clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
-        textPresent("Classification added.");
-        closeAlert();
+        if (alertText != null) {
+            textPresent(alertText);
+            closeAlert();
+        }
         for (int i = 1; i < classificationArray.length; i++)
             textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
     }
