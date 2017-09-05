@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
     , Schema = mongoose.Schema
     , sharedSchemas = require('../../system/node-js/schemas.js')
     , config = require("config")
-    ;
+;
 
 var questionSchema = {
     cde: {
@@ -43,7 +43,8 @@ var inFormSchema = {
     form: {
         tinyId: String,
         version: String,
-        name: String
+        name: String,
+        ids: [sharedSchemas.idSchema]
     }
 };
 
