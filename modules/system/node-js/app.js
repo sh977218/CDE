@@ -386,7 +386,7 @@ exports.init = function (app) {
     });
 
     app.get('/searchUsers/:username?', function (req, res) {
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
+        if (!authorization.isSiteOrgAdmin(req))
             return res.status(401).send("Not Authorized");
         mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
             res.send({users: users});

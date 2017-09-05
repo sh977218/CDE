@@ -40,7 +40,11 @@ export class OrgAdminComponent implements OnInit {
     }
 
     getAdmins () {
-        this.http.get("/orgAdmins").map(r => r.json()).subscribe(r => this.setOrgs(r));
+        if (this.isAllowedModel.hasRole("OrgAuthority")) {
+            return this.http.get("/orgAdmins").map(r => r.json()).subscribe(r => this.setOrgs(r));
+        } else {
+            return this.http.get("/myOrgsAdmins").map(r => r.json()).subscribe(r => this.setOrgs(r));
+        }
     }
 
     removeOrgAdmin (orgName, userId) {

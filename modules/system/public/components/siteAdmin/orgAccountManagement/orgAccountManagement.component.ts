@@ -24,6 +24,7 @@ export class OrgAccountManagementComponent implements OnInit {
     }
 
     getOrgCurators () {
+        console.log("HELLO");
         this.http.get("/orgCurators").map(r => r.json()).subscribe(response => {
             this.orgCurators = response.orgs.sort((a, b) => a.name - b.name);
         });
@@ -62,8 +63,8 @@ export class OrgAccountManagementComponent implements OnInit {
     formatter = (result: any) => result.username;
 
     transferSteward () {
-        this.http.post('/transferSteward', this.transferStewardObj).subscribe(() => {
-            this.alert.addAlert("success", "Saved");
+        this.http.post('/transferSteward', this.transferStewardObj).map(r => r.text()).subscribe(r => {
+            this.alert.addAlert("success", r);
             this.transferStewardObj = {};
         }, function onError(response) {
             this.alert.addAlert("danger", "An error occured.");

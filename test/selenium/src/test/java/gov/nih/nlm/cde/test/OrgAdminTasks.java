@@ -16,8 +16,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         findElement(By.linkText("Organizations Curators")).click();       
         new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
         findElement(By.name("newOrgCuratorUsername")).sendKeys("userToPromote");
-        Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).getText(), "userToPromote");
-        findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).click();
+        clickElement(By.xpath("//ngb-highlight//span[. = 'userToPromote']"));
         findElement(By.id("newOrgCuratorSubmit")).click();
         textPresent("Organization Curator Added");
         closeAlert();
