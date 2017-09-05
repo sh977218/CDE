@@ -35,7 +35,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
                 }
             }
         }
-        textPresent("Organization Curator Removed");
+        textPresent("Saved");
         closeAlert();
         textNotPresent("userToPromote");
 
@@ -43,7 +43,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
         findElement(By.id("newOrgAdminUsername")).sendKeys("userToPromote");
         findElement(By.id("newOrgAdminSubmit")).click();
-        textPresent("Organization Administrator Added");
+        textPresent("Saved");
         closeAlert();
         textPresent("userToPromote");
         orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgAdminOrgName-')]")).size();
@@ -59,7 +59,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
                 }
             }
         }
-        textPresent("Organization Administrator Removed");
+        textPresent("Saved");
         textNotPresent("userToPromote");
     }
     
