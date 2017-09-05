@@ -18,7 +18,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         findElement(By.name("newOrgCuratorUsername")).sendKeys("userToPromote");
         clickElement(By.xpath("//ngb-highlight//span[. = 'userToPromote']"));
         findElement(By.id("newOrgCuratorSubmit")).click();
-        textPresent("Organization Curator Added");
+        textPresent("Saved");
         closeAlert();
         textPresent("userToPromote");
         int orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgCuratorOrgName-')]")).size();
