@@ -31,6 +31,7 @@ import { SdcViewComponent } from "./components/sdcView/sdcView.component";
 import { DataElementService } from "./dataElement.service";
 import { DataElementViewComponent } from "./components/dataElementView.component";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import { CdeStatusReportComponent } from "./components/statusReport/cdeStatusReport.component";
 import { CdeClassificationComponent } from "./components/cdeClassification/cdeClassification.component";
 
 @NgModule({
@@ -54,6 +55,7 @@ import { CdeClassificationComponent } from "./components/cdeClassification/cdeCl
         CdeClassificationComponent,
         CdeGeneralDetailsComponent,
         CdeSearchComponent,
+        CdeStatusReportComponent,
         CdeSummaryListContentComponent,
         CreateDataElementComponent,
         CdeAccordionListNg2Component,
@@ -77,6 +79,7 @@ import { CdeClassificationComponent } from "./components/cdeClassification/cdeCl
         CdeAccordionListNg2Component,
         CdeGeneralDetailsComponent,
         CdeSearchComponent,
+        CdeStatusReportComponent,
         CdeSummaryListContentComponent,
         ConceptsComponent,
         CreateDataElementComponent,
