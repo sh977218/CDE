@@ -550,3 +550,7 @@ angular.module('systemModule').directive('cdeEmbed', downgradeComponent({compone
 import {LoginComponent} from "../components/login/login.component"
 angular.module('systemModule').directive('cdeLogin', downgradeComponent(
     {component: LoginComponent, inputs: [], outputs: []}));
+
+import {PublicBoardsComponent} from "../../../board/public/components/publicBoards/publicBoards.component";
+angular.module('systemModule').directive('cdePublicBoards', downgradeComponent(
+    {component: PublicBoardsComponent, inputs: [], outputs: []}));

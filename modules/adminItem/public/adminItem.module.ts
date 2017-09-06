@@ -12,8 +12,6 @@ import { WidgetModule } from 'widget/widget.module';
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
 import { HistoryComponent } from "./components/history.component";
-import { ClassificationComponent } from "./components/classification/classification.component";
-import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
 import {
@@ -50,9 +48,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
     ],
     declarations: [
         AttachmentsComponent,
-        ClassificationComponent,
         ClassificationViewComponent,
-        ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
         CreateFormComponent,
@@ -71,7 +67,6 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
     ],
     exports: [
         AttachmentsComponent,
-        ClassificationComponent,
         ClassificationViewComponent,
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,

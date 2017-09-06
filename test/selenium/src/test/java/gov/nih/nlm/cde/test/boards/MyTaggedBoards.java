@@ -14,14 +14,14 @@ public class MyTaggedBoards extends BoardTest {
         textPresent("Leukemia Board");
         textPresent("Epilepsy Board");
 
-        clickElement(By.cssSelector("[data-id='tag-Disease']"));
+        clickElement(By.id("tag-Disease"));
         textNotPresent("X-Ray Board");
         textPresent("Leukemia Board");
         textPresent("Epilepsy Board");
 
-        clickElement(By.cssSelector("[data-id='tag-Disease']"));
+        clickElement(By.id("tag-Disease"));
         textPresent("X-Ray Board");
-        clickElement(By.cssSelector("[data-id='status-Private']"));
+        clickElement(By.id("ss-Private"));
         textPresent("X-Ray Board");
         textNotPresent("Leukemia Board");
         textNotPresent("Epilepsy Board");

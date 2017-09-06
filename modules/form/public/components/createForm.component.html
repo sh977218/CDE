@@ -42,5 +42,5 @@
     </div>
     <hr/>
 </form>
-<cde-classify-item-modal #classifyItemComponent [elt]="elt"
-                         (afterClassified)="afterClassified($event)"></cde-classify-item-modal>
+<cde-classify-item-modal #classifyItemComponent [elt]="elt" [modalTitle]="'Classify this Form'"
+                         (onEltSelected)="afterClassified($event)"></cde-classify-item-modal>
