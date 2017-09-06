@@ -23,7 +23,7 @@ public class NoLabelLogic extends BaseFormTest {
         textPresent("Walking speed value");
         clickElement(By.xpath("//label[contains(., 'Printable Logic')]"));
         textNotPresent("Walking speed value");
-        clickElement(By.xpath("//input[@value='Unknown']"));
+        clickElement(By.xpath("//span[. ='Unknown']"));
         textPresent("Walking speed value");
     }
 

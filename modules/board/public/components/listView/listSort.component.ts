@@ -37,7 +37,7 @@ export class ListSortComponent {
             this.alert.addAlert('success', 'Saved');
             this.boardListService.reload.emit();
         }, (response) => {
-            this.alert.addAlert('danger', response.data);
+            this.alert.addAlert('danger', response);
             this.boardListService.reload.emit();
         });
     }
