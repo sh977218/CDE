@@ -7,15 +7,11 @@
             </tr>
             </thead>
             <tr *ngFor="let cde of cdes">
-                <td *ngFor="let key of cde.keys">
-                    <span *ngIf="key.indexOf('rule') === -1">
-                        <span *ngIf="key === 'cdeName'">
-                            <a href="/deView?tinyId={{cde.tinyId}}" target="_blank">{{field}}</a>
-                        </span>
-                        <span *ngIf="key !== 'cdeName'">{{field}}</span>
-                    </span>
-                    <span *ngIf="key.indexOf('rule') > -1">{{field}}</span>
+                <td>
+                    <a href="/deView?tinyId={{cde.tinyId}}" target="_blank">{{cde.cdeName}}</a>
                 </td>
+                <td>{{cde.tinyId}}</td>
+                <td *ngFor="let key of cde.keys">{{cde[key]}}</td>
             </tr>
         </table>
     </div>

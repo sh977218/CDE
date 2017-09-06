@@ -27,18 +27,20 @@ export class CdeStatusReportComponent implements OnInit {
                     this.cdes = [];
                     return;
                 }
+                if (cdes.length > 100) cdes.length = 100;
                 cdes[0].validationRules.forEach((r, i) => {
                     this.gridOptionsReport.columnDefs.push({field: 'rule' + i, displayName: r.ruleName});
                 });
                 this.cdes = cdes.map(cde => {
-                    let output: any = {cdeName: cde.cdeName, tinyId: cde.tinyId};
+                    let output: any = {};
                     cde.validationRules.forEach((rule, i) => {
                         output['rule' + i] = rule.cdePassingRule ? "Yes" : "No";
                     });
                     output.keys = Object.keys(output);
+                    output.cdeName = cde.cdeName;
+                    output.tinyId = cde.tinyId;
                     return output;
                 });
-                this.cdes.length = 100;
             }
         };
 
