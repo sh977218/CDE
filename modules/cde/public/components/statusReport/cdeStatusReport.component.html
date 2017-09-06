@@ -1,0 +1,28 @@
+<div>
+    <div *ngIf="cdes?.length > 0">
+        <table class="table">
+            <thead>
+            <tr>
+                <th *ngFor="let field of gridOptionsReport.columnDefs">{{field.displayName}}</th>
+            </tr>
+            </thead>
+            <tr *ngFor="let cde of cdes">
+                <td>
+                    <a href="/deView?tinyId={{cde.tinyId}}" target="_blank">{{cde.cdeName}}</a>
+                </td>
+                <td>{{cde.tinyId}}</td>
+                <td *ngFor="let key of cde.keys">{{cde[key]}}</td>
+            </tr>
+        </table>
+    </div>
+    <div *ngIf="cdes?.length === 0">
+        <br><br><br>
+        <h3 class="text-center">All CDEs pass validation rules.</h3>
+        <br><br>
+    </div>
+    <div *ngIf="!cdes">
+        <br><br><br>
+        <h3 class="text-center"><i class="fa fa-spinner fa-pulse"></i> Retrieving report...</h3>
+        <br><br>
+    </div>
+</div>
