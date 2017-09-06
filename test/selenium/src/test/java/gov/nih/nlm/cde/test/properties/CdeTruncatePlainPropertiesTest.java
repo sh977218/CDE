@@ -10,11 +10,21 @@ public class CdeTruncatePlainPropertiesTest extends NlmCdeBaseTest {
     public void cdeTruncatePlainPropertiesTest() {
         String cdeName = "Skull fracture morphology findings type";
         String newValue = "TBI:\n" +
-                "Duhaime AC, Gean AD, Haacke EM, Hicks R, Wintermark M, Mukherjee P, Brody D, Latour L, Riedy G; Common Data Elements Neuroimaging Working Group Members, Pediatric Working Group Members. Common data elements in radiologic imaging of traumatic brain injury. Arch Phys Med Rehabil. 2010 Nov;91(11):1661-6. [DOI: 10.1016/j.apmr.2010.07.238] Haacke, E.M., Duhaime, A.C., Gean, A.D., Riedy, G., Wintermark, M., Mukherjee, P., Brody, D.L., DeGraba, T., Duncan, T.D., and Elovic, E. (2010). Common data elements in radiologic imaging of traumatic brain injury. Journal of Magnetic Resonance Imaging 32, 516-543, DOI:10.1002/jmri.22259";
+                "Duhaime AC, Gean AD, Haacke EM, Hicks R, Wintermark M, Mukherjee P, Brody D, " +
+                "Latour L, Riedy G; Common Data Elements Neuroimaging Working Group Members, " +
+                "Pediatric Working Group Members. Common data elements in radiologic imaging of " +
+                "traumatic brain injury. Arch Phys Med Rehabil. 2010 Nov;91(11):1661-6. " +
+                "[DOI: 10.1016/j.apmr.2010.07.238] Haacke, E.M., Duhaime, A.C., Gean, A.D., Riedy, G., " +
+                "Wintermark, M., Mukherjee, P., Brody, D.L., DeGraba, T., Duncan, T.D., and Elovic, E. (2010). " +
+                "Common data elements in radiologic imaging of traumatic brain injury. Journal of Magnetic Resonance " +
+                "Imaging 32, 516-543, DOI:10.1002/jmri.22259";
+        newValue = newValue + newValue + newValue;
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("properties_tab"));
         editPropertyValueByIndex(1, newValue, false);
+        textPresent("Data Element saved.");
+        closeAlert();
 
         scrollToViewById("openNewPropertyModalBtn");
         clickElement(By.xpath("//*[@id='value_1']/descendant::span[text()='More']"));

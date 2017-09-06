@@ -194,11 +194,6 @@ exports.initEs = function (cb) {
     async.forEach(esInit.indices, function (index, doneOneIndex) {
         createIndex(index, doneOneIndex);
     }, function doneAllIndices() {
-        let node_env = process.env.NODE_ENV;
-        if (node_env && node_env !== "prod") {
-            console.log("Starting sync meSH");
-            exports.syncWithMesh();
-        }
         if (cb) cb();
     });
 };

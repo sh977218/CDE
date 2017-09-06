@@ -902,7 +902,8 @@ exports.init = function (app) {
     });
 
     app.post("/syncWithMesh", function (req, res) {
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
+        if (!config.autoSyncMesh && !authorizationShared.hasRole(req.user, "OrgAuthority"))
+            return res.status(403).send("Not Authorized");
         elastic.syncWithMesh();
         res.send();
     });

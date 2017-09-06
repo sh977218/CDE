@@ -26,7 +26,7 @@ describe('Pin All', () => {
             u.textPresent("All elements pinned.");
             u.closeAlert();
             b.goToMyBoards();
-            element(by.xpath("//*[@data-id = 'boardDiv_" + board_name + "']//*[contains(@id, 'board_num_cdes_')]"))
+            element(by.xpath("//*[@id = 'boardDiv_" + board_name + "']//*[contains(@id, 'board_num_cdes_')]"))
                 .getText().then(text2 => {
                     expect(text).toEqual(text2);
                     done();

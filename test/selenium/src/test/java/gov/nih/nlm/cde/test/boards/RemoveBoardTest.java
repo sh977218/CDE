@@ -9,9 +9,9 @@ public class RemoveBoardTest extends BoardTest {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Remove me board";
         gotoMyBoards();
-        clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'removeBoard-')]"));
+        clickElement(By.xpath("//*[@id='boardDiv_" + boardName + "']//*[contains(@id,'removeBoard-')]"));
         textPresent("Confirm Delete");
-        clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'confirmRemove-')]"));
+        clickElement(By.xpath("//*[@id='boardDiv_" + boardName + "']//*[contains(@id,'confirmRemove-')]"));
         textPresent("Done");
         closeAlert();
         textNotPresent(boardName);

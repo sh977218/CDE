@@ -1,6 +1,6 @@
 <ng-template #classifyItemContent id="newClassifyItemModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="newClassifyItemModalHeader">
-        <h4 class="modal-title">Classify This {{elt.elementType | uppercase}}</h4>
+        <h4 class="modal-title">{{modalTitle}}</h4>
     </div>
     <div class="modal-body" id="newClassifyItemModalBody">
         <ngb-tabset (tabChange)="onChangeClassifyView($event)">
@@ -8,7 +8,7 @@
                 <ng-template ngbTabContent>
                     <hr>
                     <select class="form-control" id="selectClassificationOrg" name="selectClassifyItemOrg"
-                            (change)="onChangeOrg($event.target.value)" required>
+                            (change)="onChangeOrg($event.target.value)" [ngModel]="selectedOrg" required>
                         <option value="">Start by selecting an organization...</option>
                         <option *ngFor="let myOrg of userService.userOrgs" value="{{myOrg}}">{{myOrg}}</option>
                     </select>
