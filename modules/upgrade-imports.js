@@ -38,7 +38,6 @@ import "./cde/public/js/controllers/CreateCdeCtrl";
 import "./cde/public/js/controllers/DEViewCtrl";
 import "./cde/shared/deValidator";
 import "./form/public/js/controllers/CreateFormCtrl";
-import "./form/public/js/controllers/FormViewCtrl";
 import "./form/public/js/controllers/CreateFormAbstractCtrl";
 
 import "./board/public/js/controllers/SelectBoardModalCtrl";

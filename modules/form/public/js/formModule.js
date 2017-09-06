@@ -14,7 +14,16 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
         }).when('/createForm', {
             controller: 'CreateFormCtrl',
             templateUrl: '/form/public/html/createForm.html'
-        }).when('/formView', {controller:'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
+        }).when('/formView', {controller: ['$scope', '$routeParams',
+        function ($scope, $routeParams) {
+            $scope.cbLocChange = function (cb) {
+                $scope.cbMethod = cb;
+            };
+            $scope.routeParams  = $routeParams;
+            $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+                $scope.cbMethod.fn(event, newUrl, oldUrl, $scope.cbMethod.elt);
+            });
+        }], template: '<cde-form-view [route-params]="routeParams" (h)="cbLocChange($event)"></cde-form-view>'});
     }]);
 
 angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$parse", function ($compile, $timeout, $parse) {
@@ -63,7 +72,7 @@ angular.module('formModule').directive('cdeCreateForm', downgradeComponent({
 import {FormViewComponent} from "../components/formView.component";
 angular.module('formModule').directive('cdeFormView', downgradeComponent({
     component: FormViewComponent,
-    inputs: ['elt'],
-    outputs: ['stageElt', 'reload']
+    inputs: ['routeParams'],
+    outputs: ['h']
 }));
 
