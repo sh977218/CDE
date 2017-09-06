@@ -12,8 +12,19 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
         }).when('/form', {
             redirectTo: '/form/search'
         }).when('/createForm', {
-            controller: 'CreateFormCtrl',
-            templateUrl: '/form/public/html/createForm.html'
+            controller: ['$scope', function ($scope) {
+                $scope.$on('$locationChangeStart', function (event) {
+                    var txt = "You have unsaved changes, are you sure you want to leave this page? ";
+                    if (window.debugEnabled) {
+                        txt = txt + window.location.pathname;
+                    }
+                    var answer = confirm(txt);
+                    if (!answer) {
+                        event.preventDefault();
+                    }
+                });
+            }],
+            template: '<cde-create-form></cde-create-form>'
         }).when('/formView', {controller: ['$scope', '$routeParams',
         function ($scope, $routeParams) {
             $scope.cbLocChange = function (cb) {
