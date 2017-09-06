@@ -29,7 +29,7 @@ public class PinAllLessThan20 extends BoardTest {
 
         // find nb of cdes for the boards.
         int num_cde_after_pinAll_int =
-                Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
+                Integer.valueOf(findElement(By.xpath("//*[@id = 'boardDiv_"
                         + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText());
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
     }

@@ -26,7 +26,7 @@ public class PinAllMoreThan20 extends BoardTest {
         textPresent("All elements pinned.");
         gotoMyBoards();
         int num_cde_after_pinAll_int =
-                Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
+                Integer.valueOf(findElement(By.xpath("//*[@id = 'boardDiv_"
                         + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText());
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
     }

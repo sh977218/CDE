@@ -1,6 +1,0 @@
-<div ng-repeat="board in boards" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-    <div class="my-board-card" data-id="boardDiv_{{board.name}}">
-        <h4><a href="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank" ng-bind="board.name"></a></h4>
-        <div ng-include="'/cde/public/html/boardTemplate.html'"></div>
-    </div>
-</div>

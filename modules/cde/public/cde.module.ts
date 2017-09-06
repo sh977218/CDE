@@ -32,6 +32,7 @@ import { DataElementService } from "./dataElement.service";
 import { DataElementViewComponent } from "./components/dataElementView.component";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { CdeStatusReportComponent } from "./components/statusReport/cdeStatusReport.component";
+import { CdeClassificationComponent } from "./components/cdeClassification/cdeClassification.component";
 
 @NgModule({
     imports: [
@@ -51,6 +52,7 @@ import { CdeStatusReportComponent } from "./components/statusReport/cdeStatusRep
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
         CdeAccordionListComponent,
+        CdeClassificationComponent,
         CdeGeneralDetailsComponent,
         CdeSearchComponent,
         CdeStatusReportComponent,
