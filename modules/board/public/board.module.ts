@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { Select2Module } from "ng2-select2";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CreateBoardComponent } from "./components/createBoard/createBoard.component";
@@ -14,31 +15,47 @@ import { PinBoardModalComponent } from "./components/pins/pinBoardModal.componen
 import { PinQuickboardComponent } from "./components/pins/pinQuickboard.component";
 import { SearchModule } from "search/search.module";
 import { UnpinBoardComponent } from "./components/listView/unpinBoard.component";
+import { BoardViewTemplateComponent } from "./components/boardViewTemplate/boardViewTemplate.component";
+import { MyBoardsComponent } from "./components/myBoards/myBoards.component";
+import { WidgetModule } from "../../widget/widget.module";
+import { BoardViewComponent } from "./components/boardView/boardView.component";
+import { DiscussModule } from "../../discuss/discuss.module";
+import { PublicBoardsComponent } from "./components/publicBoards/publicBoards.component";
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        Select2Module,
         // internal
-        SearchModule,
         AdminItemModule,
+        DiscussModule,
+        SearchModule,
+        WidgetModule,
     ],
     declarations: [
+        BoardViewComponent,
+        BoardViewTemplateComponent,
         CreateBoardComponent,
+        CreateFormFromBoardComponent,
         LinkedBoardsComponent,
         ListSortComponent,
+        MyBoardsComponent,
         PinBoardComponent,
         PinBoardModalComponent,
         PinQuickboardComponent,
-        CreateFormFromBoardComponent,
+        PublicBoardsComponent,
         UnpinBoardComponent,
     ],
     entryComponents: [
+        BoardViewComponent,
         CreateBoardComponent,
         CreateFormFromBoardComponent,
         LinkedBoardsComponent,
+        MyBoardsComponent,
         PinBoardModalComponent,
+        PublicBoardsComponent,
     ],
     providers: [
         MyBoardsService,

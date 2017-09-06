@@ -12,17 +12,11 @@ export class MyBoardsService {
     filter: any = {
         tags: [],
         shareStatus: [],
-        type: [],
-        getSuggestedTags: function (search) {
-            let newSuggestTags = this.suggestTags.slice();
-            if (search && newSuggestTags.indexOf(search) === -1) {
-                newSuggestTags.unshift(search);
-            }
-            return newSuggestTags;
-        },
+        types: [],
         sortBy: "createdDate",
         sortDirection: "desc",
         selectedShareStatus: [],
+        selectedTypes: [],
         selectedTags: [],
         suggestTags: []
     };
@@ -33,6 +27,7 @@ export class MyBoardsService {
     public loadMyBoards(type = null) {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
+        this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
         this.http.post("/myBoards", this.filter).map(res => res.json()).subscribe(res => {
             if (res.hits) {
                 this.boards = res.hits.hits.map(h => {
@@ -44,6 +39,7 @@ export class MyBoardsService {
                 this.filter.types = res.aggregations.typeAgg.buckets;
                 this.filter.shareStatus = res.aggregations.ssAgg.buckets;
                 this.filter.shareStatus.forEach(ss => ss.checked = (this.filter.selectedShareStatus.indexOf(ss.key) > -1));
+                this.filter.types.forEach(t => t.checked = (this.filter.selectedTypes.indexOf(t.key) > -1));
                 this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
             }
             this.reloading = false;

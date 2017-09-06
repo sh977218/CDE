@@ -1,7 +1,7 @@
 import { Inject, Injectable, Input } from "@angular/core";
 import * as JSZip from "jszip";
 import * as JXON from "jxon";
-import { saveAs } from "cde/public/assets/js/FileSaver";
+import { saveAs } from "cde/public/assets/js/FileSaver.js";
 import { AlertService } from "system/public/components/alert/alert.service";
 import { ElasticService } from 'core/public/elastic.service';
 import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";

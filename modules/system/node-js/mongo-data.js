@@ -66,16 +66,8 @@ exports.findMeshClassification = function (query, cb) {
 };
 
 exports.addToViewHistory = function (elt, user) {
-    if (!user) return;
-    if (!elt) {
-        logging.errorLogger.error("Error: Cannot update viewing history", {
-            origin: "system.mongo-system.addToViewHistory",
-            stack: new Error().stack,
-            details: {"elt": elt, user: user}
-        });
-        return;
-    }
-    let updStmt = {
+    if (!elt || !user) return;
+    var updStmt = {
         viewHistory: {
             $each: [elt.tinyId]
             , $position: 0

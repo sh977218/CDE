@@ -73,6 +73,7 @@ exports.byTinyIdVersion = function (req, res) {
         res.send(dataElement);
     });
 };
+
 exports.byTinyIdList = function (req, res) {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();

@@ -13,9 +13,9 @@ public class PublicBoardsTest extends BoardTest {
         clickElement(By.id("search.submit"));
         textPresent("Leukemia Board");
         textPresent("Epilepsy Board");
-        clickElement(By.id("tag_Cancer"));
+        clickElement(By.id("tag-Cancer"));
         textNotPresent("Epilepsy Board");
-        clickElement(By.id("tag_Cancer"));
+        clickElement(By.id("tag-Cancer"));
         textPresent("Epilepsy Board");
     }
 
