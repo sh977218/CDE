@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output, ViewChild } from "@angular/core";
+import { Component, Inject, Input, Output, ViewChild } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -13,8 +13,7 @@ export class ConceptsComponent {
     @Input() public elt: any;
 
     constructor(@Inject("isAllowedModel") public isAllowedModel,
-                public modalService: NgbModal,
-                public activeModal: NgbActiveModal) {
+                public modalService: NgbModal) {
     }
 
     newConcept: { name?: string, originId?: string, origin: string, type: string } = {origin: "LOINC", type: "dec"};

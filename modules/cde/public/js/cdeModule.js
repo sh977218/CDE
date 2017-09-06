@@ -25,8 +25,11 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
-        when('/cdeStatusReport', {controller: 'ExportCtrl', templateUrl: '/system/public/html/cdeStatusReport.html'})
-        ;
+        when('/cdeStatusReport', {controller: ['$scope', '$routeParams',
+            function ($scope, $routeParams) {
+                $scope.searchSettings  = JSON.parse($routeParams.searchSettings);
+            }], template: '<cde-cde-status-report [search-settings]="searchSettings"></cde-cde-status-report>'
+        });
     }]);
 
 import {downgradeComponent} from "@angular/upgrade/static";
@@ -70,3 +73,7 @@ angular.module('cdeModule').directive('cdeListView', downgradeComponent({compone
 import { ListViewControlsComponent } from "../../../search/listView/listViewControls.component";
 angular.module('cdeModule').directive('cdeListViewControls', downgradeComponent({component: ListViewControlsComponent,
     inputs: ['listView'], outputs: ['listViewChange']}));
+
+import { CdeStatusReportComponent } from "../components/statusReport/cdeStatusReport.component";
+angular.module('cdeModule').directive('cdeCdeStatusReport', downgradeComponent({component: CdeStatusReportComponent,
+    inputs: ['searchSettings'], outputs: []}));
