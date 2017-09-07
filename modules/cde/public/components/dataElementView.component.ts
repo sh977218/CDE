@@ -36,7 +36,6 @@ export class DataElementViewComponent implements OnInit {
                 @Inject("userResource") public userService) {}
 
     ngOnInit(): void {
-
         let cdeId = this.routeParams.cdeId;
         let url = "/de/" + this.routeParams.tinyId;
         if (cdeId) url = "/deById/" + cdeId;
@@ -53,7 +52,7 @@ export class DataElementViewComponent implements OnInit {
         );
     }
 
-    onLocationChange (event, newUrl, oldUrl, elt) {
+    onLocationChange (event, oldUrl, elt) {
         if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
             let txt = "You have unsaved changes, are you sure you want to leave this page? ";
             if ((window as any).debugEnabled) {
@@ -124,7 +123,7 @@ export class DataElementViewComponent implements OnInit {
             this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
-    doStageElt(event) {
+    doStageElt() {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Save to confirm.");
         } else {

@@ -33,7 +33,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
                 };
                 $scope.routeParams  = $routeParams;
                 $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
-                    $scope.cbMethod.fn(event, newUrl, oldUrl, $scope.cbMethod.elt);
+                    $scope.cbMethod.fn(event, oldUrl, $scope.cbMethod.elt);
                 });
             }], template: '<cde-data-element-view [route-params]="routeParams" (h)="cbLocChange($event)"></cde-data-element-view>'}).
         when('/cdeStatusReport', {controller: ['$scope', '$routeParams',
