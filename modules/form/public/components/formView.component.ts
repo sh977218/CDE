@@ -46,9 +46,8 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let tinyId = this.routeParams.tinyId;
         let formId = this.routeParams.formId;
-        let url = "/form/" + tinyId;
+        let url = "/form/" + this.routeParams.tinyId;
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(r => r.json()).subscribe(response => {
                 this.elt = response;
@@ -82,6 +81,7 @@ export class FormViewComponent implements OnInit {
     reloadForm () {
         this.http.get("/form/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
                 this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
                 this.validateForm();
                 this.alert.addAlert("success", "Changes discarded.");

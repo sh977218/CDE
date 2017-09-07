@@ -26,6 +26,16 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
+        when('/deView', {controller: ['$scope', '$routeParams',
+            function ($scope, $routeParams) {
+                $scope.cbLocChange = function (cb) {
+                    $scope.cbMethod = cb;
+                };
+                $scope.routeParams  = $routeParams;
+                $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+                    $scope.cbMethod.fn(event, newUrl, oldUrl, $scope.cbMethod.elt);
+                });
+            }], template: '<cde-data-element-view [route-params]="routeParams" (h)="cbLocChange($event)"></cde-data-element-view>'}).
         when('/cdeStatusReport', {controller: ['$scope', '$routeParams',
             function ($scope, $routeParams) {
                 $scope.searchSettings  = JSON.parse($routeParams.searchSettings);
