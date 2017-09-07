@@ -158,13 +158,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }])
-    .directive('cdeSelectBoard', [function () {
-        return {
-            restrict: 'AE',
-            controller: 'SelectBoardModalCtrl',
-            templateUrl: '/system/public/html/selectBoardModal.html',
-        };
-    }])
     .directive('sortableArray', [function () {
         return {
             restrict: 'AE',

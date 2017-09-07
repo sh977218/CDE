@@ -93,10 +93,28 @@ export class FormViewComponent implements OnInit {
     stageElt () {
         this.http.put("/form/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
             this.elt = response;
+            this.h.emit({elt: this.elt, fn: this.onLocationChange});
             this.alert.addAlert("success", "Form saved.");
         }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
     };
+
+    doStageElt() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
+        if (this.elt.unsaved) {
+            this.alert.addAlert("info", "Save to confirm.");
+        } else {
+            this.stageElt();
+            this.modalRef.close();
+        }
+    }
+
+    stageForm() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
+        this.elt.unsaved = true;
+    }
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
@@ -180,23 +198,6 @@ export class FormViewComponent implements OnInit {
 
     setIsValid(valid) {
         this.isFormValid = valid;
-    }
-
-    doStageElt() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Save to confirm.");
-        } else {
-            this.stageElt();
-            this.modalRef.close();
-        }
-    }
-
-    stageForm() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        this.elt.unsaved = true;
     }
 
     areDerivationRulesSatisfied() {

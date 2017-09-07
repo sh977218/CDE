@@ -33,8 +33,5 @@ import "./system/public/js/controllers/TableViewCtrl";
 import "./system/public/js/controllers/FeedbackBtnCtrl";
 import "./system/public/js/controllers/MeshMappingMgtCtrl";
 import "./system/public/js/SearchSettings";
-import "./cde/public/js/controllers/CreateCdeCtrl";
 import "./cde/public/js/controllers/DEViewCtrl";
 import "./cde/shared/deValidator";
-
-import "./board/public/js/controllers/SelectBoardModalCtrl";
