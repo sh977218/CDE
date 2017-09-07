@@ -67,11 +67,13 @@ import {downgradeComponent} from "@angular/upgrade/static";
 
 import {BoardFormSummaryListComponent} from "../components/listView/boardFormSummaryList.component";
 angular.module('formModule').directive('cdeBoardFormSummaryList',
-    downgradeComponent({component: BoardFormSummaryListComponent, inputs: ['board', 'forms', 'module', 'currentPage', 'totalItems'], outputs: ['reload']}));
+    downgradeComponent({component: BoardFormSummaryListComponent,
+        inputs: ['board', 'forms', 'module', 'currentPage', 'totalItems'],
+        outputs: ['reload']}));
 
 import {FormSearchComponent} from "../components/search/formSearch.component";
-angular.module('formModule').directive('cdeFormSearch', downgradeComponent({component: FormSearchComponent, inputs: ['reloads'], outputs: []}));
-
+angular.module('formModule').directive('cdeFormSearch', downgradeComponent({component: FormSearchComponent,
+    inputs: ['reloads'], outputs: []}));
 
 import {CreateFormComponent} from "../components/createForm.component";
 angular.module('formModule').directive('cdeCreateForm', downgradeComponent({

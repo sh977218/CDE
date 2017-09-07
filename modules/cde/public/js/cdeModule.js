@@ -17,7 +17,6 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.cdeId = $routeParams.cdeId;
         }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
-        when('/cdeSearchExport', {templateUrl: '/cde/public/html/exportCdeSearch.html'}).
         when('/myboards', {template: '<cde-my-boards></cde-my-boards>'}).
         when('/board/:boardId', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.boardId = $routeParams.boardId;
