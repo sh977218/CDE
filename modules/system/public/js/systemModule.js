@@ -50,114 +50,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             template: '<cde-search-preferences></cde-search-preferences>'
         });
     }])
-    .directive('inlineEdit', ["$timeout", function ($timeout) {
-        return {
-            restrict: 'AE',
-            scope: {
-                model: '=',
-                inputType: '=?',
-                isAllowed: '=',
-                onOk: '&',
-                typeaheadSource: '=',
-                linkSource: '@'
-            },
-            template: require('../html/systemTemplate/inlineEdit.html'),
-            controller: ["$scope", function ($scope) {
-                $scope.inputType = $scope.inputType || 'text';
-                $scope.value = $scope.model;
-                $scope.discard = function () {
-                    $scope.editMode = false;
-                };
-                $scope.save = function () {
-                    $scope.model = angular.copy(this.value);
-                    $scope.editMode = false;
-                    $timeout($scope.onOk, 0);
-                };
-                $scope.edit = function () {
-                    $scope.value = $scope.model;
-                    $scope.editMode = true;
-                };
-            }]
-        };
-    }])
-    .directive('inlineSelectEdit', ["$timeout", function ($timeout) {
-        return {
-            restrict: 'AE',
-            scope: {
-                model: '=',
-                isAllowed: '=',
-                onOk: '&',
-                allOptions: '='
-            },
-            template: require('../html/systemTemplate/inlineSelectEdit.html'),
-            controller: ["$scope", function ($scope) {
-                $scope.discard = function () {
-                    $scope.editMode = false;
-                };
-                $scope.save = function () {
-                    $scope.editMode = false;
-                    $timeout($scope.onOk, 0);
-                };
-                $scope.edit = function () {
-                    $scope.editMode = true;
-                };
-            }]
-        };
-    }])
-    .directive('inlineAreaEdit', ["$timeout", function ($timeout) {
-        return {
-            restrict: 'AE',
-            scope: {
-                model: '=',
-                isAllowed: '=',
-                onOk: '&',
-                onErr: '&',
-                defFormat: '=',
-            },
-            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
-            controller: ["$scope", "$element", function ($scope) {
-                $scope.setHtml = function (html) {
-                    $scope.defFormat = html ? 'html' : '';
-                };
-                $scope.clickEdit = function () {
-                    $scope.inScope = {
-                        value: $scope.model
-                    };
-                    $scope.editMode = true;
-                };
-                $scope.isInvalidHtml = function (html) {
-                    var srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
-                    if (srcs) {
-                        for (var i = 0; i < srcs.length; i++) {
-                            var src = srcs[i];
-                            var urls = src.match(/\s*["'](.+?)["']/ig);
-                            if (urls) {
-                                for (var j = 0; j < urls.length; j++) {
-                                    var url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
-                                    if (url.indexOf("/data/") !== 0 && url.indexOf(window.publicUrl + "/data/") !== 0) {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return false;
-                };
-                $scope.confirm = function () {
-                    if ($scope.isInvalidHtml($scope.inScope.value)) {
-                        alert('Error. Img src may only be a relative url starting with /data');
-                    } else {
-                        $scope.model = $scope.inScope.value;
-                        $scope.editMode = false;
-                        $timeout($scope.onOk, 0);
-                    }
-                };
-                $scope.cancel = function () {
-                    $scope.editMode = false;
-                };
-            }]
-        };
-    }])
     .directive('sortableArray', [function () {
         return {
             restrict: 'AE',
@@ -188,24 +80,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         };
     }]);
 
-angular.module('systemModule').filter('placeHoldEmpty', [function () {
-    return function (input) {
-        if (!(input === undefined || input === null || input === "")) {
-            return input;
-        } else {
-            return "N/A";
-        }
-    };
-}]);
-
-angular.module('systemModule').filter('truncateTo', [function () {
-    return function (input, l) {
-        if (input && input.length > l) {
-            return input.substr(0, l) + '...';
-        } else return input;
-    };
-}]);
-
 angular.module('systemModule').filter('bytes', [function () {
     return function (bytes, precision) {
         if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
@@ -224,48 +98,6 @@ angular.module('systemModule').filter('tagsToArray', [function () {
         }).join(', ');
     };
 }]);
-
-angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'AlertService',
-    function (userResource, $modal, $http, Alert) {
-        return {
-            new: function (type) {
-                return {
-                    openPinModal: function (elt) {
-                        if (userResource.user.username) {
-                            $modal.open({
-                                animation: false,
-                                templateUrl: '/system/public/html/selectBoardModal.html',
-                                controller: 'SelectBoardModalCtrl',
-                                resolve: {
-                                    type: function () {
-                                        return type;
-                                    }
-                                }
-                            }).result.then(function (selectedBoard) {
-                                $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
-                                    if (response.status === 200) {
-                                        Alert.addAlert("success", response.data);
-                                    } else
-                                        Alert.addAlert("warning", response.data);
-                                }, function (response) {
-                                    Alert.addAlert("danger", response.data);
-                                });
-                            }, function () {
-                            });
-                        } else {
-                            $modal.open({
-                                animation: false,
-                                templateUrl: '/system/public/html/ifYouLogInModal.html'
-                            }).result.then(function () {
-                            }, function () {
-                            });
-                        }
-                    }
-                };
-            }
-        };
-    }]);
-
 
 angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
     var isAllowedModel = {};

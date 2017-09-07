@@ -14,11 +14,7 @@ import { AttachmentsComponent } from "./components/attachments/attachments.compo
 import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
-import {
-    InlineEditDirective,
-    InlineSelectEditDirective,
-    SortableArrayDirective
-} from "./upgrade-components";
+import { SortableArrayDirective } from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
@@ -53,8 +49,6 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         CdeUpdateElementComponent,
         CreateFormComponent,
         IdentifiersComponent,
-        InlineEditDirective,
-        InlineSelectEditDirective,
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,
@@ -72,8 +66,6 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         CdeUpdateElementComponent,
         CreateFormComponent,
         IdentifiersComponent,
-        InlineEditDirective,
-        InlineSelectEditDirective,
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,

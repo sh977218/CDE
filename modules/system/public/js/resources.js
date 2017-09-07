@@ -78,73 +78,6 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
-    .factory("AccountManagement", ["$http", function ($http) {
-        return {
-            addSiteAdmin: function (user, success, error) {
-                $http.post('/addSiteAdmin', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , removeSiteAdmin: function (user, success, error) {
-                $http.post('/removeSiteAdmin', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , addOrgCurator: function (user, success, error) {
-                $http.post('/addOrgCurator', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , removeOrgCurator: function (data, success, error) {
-                $http.post('/removeOrgCurator', data).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , addOrg: function (data, success, error) {
-                $http.post('/addOrg', data).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , removeOrg: function (id, success, error) {
-                $http.post('/removeOrg', id).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , updateOrg: function (org, success, error) {
-                $http.post('/updateOrg', org).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , transferSteward: function (transferStewardObj, success, error) {
-                $http.post('/transferSteward', transferStewardObj).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , getAllUsernames: function (success, error) {
-                $http.get('/getAllUsernames').then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-        };
-    }])
     .factory("Organization", ["$http", function ($http) {
         return {
             getByName: function (orgName, cb) {
@@ -211,12 +144,6 @@ angular.module('resourcesSystem', ['ngResource'])
                 });
             }
         };
-
-        // $interval(function () {
-        //     OrgHelpers.getOrgsDetailedInfoAPI();
-        //     userResource.checkMail();
-        // }, 600000);
-
         return this;
     }])
     .factory("SearchResultResource", [function () {

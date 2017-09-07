@@ -29,7 +29,6 @@ export class UsersMgtComponent {
 
     constructor(private http: Http,
                 private Alert: AlertService,
-                @Inject("AccountManagement") private AccountManagement,
                 public modalService: NgbModal
                 ) {}
 

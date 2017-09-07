@@ -10,8 +10,7 @@ import { OrgHelperService } from 'core/public/orgHelper.service';
 })
 export class OrgsEditComponent implements OnInit {
 
-    constructor(@Inject("AccountManagement") private AccountManagement,
-                private Alert: AlertService,
+    constructor(private Alert: AlertService,
                 private http: Http,
                 private orgHelperService: OrgHelperService
     ) {}
@@ -33,10 +32,10 @@ export class OrgsEditComponent implements OnInit {
     }
 
     addOrg () {
-        this.AccountManagement.addOrg(
-            {name: this.newOrg.name, longName: this.newOrg.longName, workingGroupOf: this.newOrg.workingGroupOf}
-            , res => {
-                this.Alert.addAlert("success", res);
+        this.http.post('/addOrg',
+            {name: this.newOrg.name, longName: this.newOrg.longName, workingGroupOf: this.newOrg.workingGroupOf})
+            .subscribe(res => {
+                this.Alert.addAlert("success", "Saved");
                 this.getOrgs();
                 this.newOrg = {};
             }, () => {
@@ -46,11 +45,11 @@ export class OrgsEditComponent implements OnInit {
     }
 
     updateOrg (org) {
-        this.AccountManagement.updateOrg(org, res => {
+        this.http.post('/updateOrg', org).subscribe(res => {
             this.orgs = this.getOrgs(() => {
-                this.orgHelperService.reload().then(() => this.Alert.addAlert("success", res));
+                this.orgHelperService.reload().then(() => this.Alert.addAlert("success", "Saved"));
             });
-        }, res => this.Alert.addAlert("danger", res)
+        }, res => this.Alert.addAlert("danger", "There was an issue updating this org.")
         );
     }
 
