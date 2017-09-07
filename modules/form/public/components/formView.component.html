@@ -123,7 +123,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-general-details [elt]="elt" (save)="stageElt.emit();"></cde-form-general-details>
+                        <cde-form-general-details [elt]="elt" (save)="stageElt()"></cde-form-general-details>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="description_tab">
@@ -235,8 +235,8 @@
         </div>
     </div>
     <div class="row" *ngIf="elt.unsaved && isFormValid">
-        <cde-update-element [elt]="elt" (discard)="reload.emit();"
-                            (save)="stageElt.emit();"></cde-update-element>
+        <cde-update-element [elt]="elt" (discard)="reloadForm();"
+                            (save)="stageElt();"></cde-update-element>
     </div>
 </div>
 
