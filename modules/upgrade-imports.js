@@ -7,7 +7,6 @@ import "./system/public/js/angularTemplates";
 import "./system/public/js/ng-text-truncate";
 
 import "./cde/public/js/cdeModule";
-import "./cde/public/js/resources";
 import "./cde/public/js/merge";
 import "./cde/public/js/angularTemplates";
 

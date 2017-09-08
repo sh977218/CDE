@@ -37,11 +37,6 @@ export function getFormQuickBoardFactory(i: any) {
     return i.get("FormQuickBoard");
 }
 
-export function getElasticBoardFactory(i: any) {
-
-    return i.get("ElasticBoard");
-}
-
 @NgModule({
     imports: [
         Select2Module,
@@ -64,7 +59,6 @@ export function getElasticBoardFactory(i: any) {
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
-        {provide: "ElasticBoard", useFactory: getElasticBoardFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,
