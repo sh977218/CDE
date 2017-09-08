@@ -51,14 +51,14 @@
                                          [treeAllowDrop]="node.allowDrop">
                                         <cde-form-description-section
                                                 *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                [elt]="elt"
+                                                [elt]="elt" [canEdit]="canEdit"
                                                 [node]="node"
                                                 [inScoreCdes]="inScoreCdes"
                                                 (isFormValid)="isFormValid.emit($event)"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
-                                                [elt]="elt"
+                                                [elt]="elt" [canEdit]="canEdit"
                                                 [inScoreCdes]="inScoreCdes"
                                                 [node]="node"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-question>
@@ -68,7 +68,7 @@
                             <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
-                                                                      [elt]="elt" [node]="node"
+                                                                      [elt]="elt" [node]="node" [canEdit]="canEdit"
                                                                       (isFormValid)="isFormValid.emit($event)"
                                                                       (stageElt)="stageParent()"></cde-form-description-question-detail>
                             </div>
