@@ -34,6 +34,7 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
             $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
                 $scope.cbMethod.fn(event, newUrl, oldUrl, $scope.cbMethod.elt);
             });
+
         }], template: '<cde-form-view [route-params]="routeParams" (h)="cbLocChange($event)"></cde-form-view>'});
     }]);
 
