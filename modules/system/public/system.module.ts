@@ -47,6 +47,7 @@ import { SearchPreferencesComponent } from "./components/searchPreferences/searc
 import { EmbedComponent } from "./components/embed/embed.component";
 import { LoginComponent } from "./components/login/login.component";
 import { LoginService } from "./components/login/login.service";
+import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccountManagement/orgAccountManagement.component";
 
 @NgModule({
     imports: [
@@ -79,6 +80,7 @@ import { LoginService } from "./components/login/login.service";
         LogAuditComponent,
         LoginComponent,
         NavigationComponent,
+        OrgAccountManagementComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
         OrgsEditComponent,
@@ -98,12 +100,11 @@ import { LoginService } from "./components/login/login.service";
     ],
     entryComponents: [
         AlertComponent,
-        EmbedComponent,
         HomeComponent,
         InboxComponent,
         LoginComponent,
         NavigationComponent,
-        OrgAdminComponent,
+        OrgAccountManagementComponent,
         OrgAuthorityComponent,
         ProfileComponent,
         ServerStatusComponent,
