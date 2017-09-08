@@ -29,7 +29,6 @@ export class CreateFormComponent implements OnInit {
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
     @Output() eltChange = new EventEmitter();
-    @Output() cancel = new EventEmitter();
     modalRef: NgbModalRef;
 
     constructor(@Inject("userResource") public userService,
@@ -129,7 +128,7 @@ export class CreateFormComponent implements OnInit {
     }
 
     cancelCreateForm() {
-        this.cancel.emit('cancel');
+        window.location.href = "/";
     }
 
 }

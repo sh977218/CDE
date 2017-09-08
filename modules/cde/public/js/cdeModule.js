@@ -17,16 +17,25 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
         when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.cdeId = $routeParams.cdeId;
         }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
-        when('/cdeSearchExport', {templateUrl: '/cde/public/html/exportCdeSearch.html'}).
         when('/myboards', {template: '<cde-my-boards></cde-my-boards>'}).
         when('/board/:boardId', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.boardId = $routeParams.boardId;
         }], template: '<cde-board-view [board-id]="boardId"></cde-board-view>'}).
         when('/boardList', {template: '<cde-public-boards></cde-public-boards>'}).
-        when('/createCde', {controller: 'CreateCdeCtrl', templateUrl:'/cde/public/html/createCde.html'}).
+        when('/createCde', {template:' <cde-create-data-element></cde-create-data-element>'}).
         when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
+        when('/deView', {controller: ['$scope', '$routeParams',
+            function ($scope, $routeParams) {
+                $scope.cbLocChange = function (cb) {
+                    $scope.cbMethod = cb;
+                };
+                $scope.routeParams  = $routeParams;
+                $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+                    $scope.cbMethod.fn(event, oldUrl, $scope.cbMethod.elt);
+                });
+            }], template: '<cde-data-element-view [route-params]="routeParams" (h)="cbLocChange($event)"></cde-data-element-view>'}).
         when('/cdeStatusReport', {controller: ['$scope', '$routeParams',
             function ($scope, $routeParams) {
                 $scope.searchSettings  = JSON.parse($routeParams.searchSettings);

@@ -17,21 +17,22 @@ export class FormViewComponent implements OnInit {
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
-    @Input() elt: any;
+
+    @Input() routeParams: any;
+
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
-    @Output() public stageElt = new EventEmitter();
-    @Output() public reload = new EventEmitter();
 
+    @Output() public h = new EventEmitter();
+
+    public elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
     hasComments;
     commentMode;
-    eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
     isFormValid = true;
-
     formInput;
 
     constructor(private http: Http,
@@ -45,12 +46,74 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.areDerivationRulesSatisfied();
-        this.http.get("/comments/eltId/" + this.elt.tinyId)
-            .map(res => res.json()).subscribe(
-            res => this.hasComments = res && (res.length > 0),
-            err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+        let formId = this.routeParams.formId;
+        let url = "/form/" + this.routeParams.tinyId;
+        if (formId) url = "/formById/" + formId;
+        this.http.get(url).map(r => r.json()).subscribe(response => {
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.areDerivationRulesSatisfied();
+                this.http.get("/comments/eltId/" + this.elt.tinyId)
+                    .map(res => res.json()).subscribe(
+                    res => this.hasComments = res && (res.length > 0),
+                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+                );
+
+            },
+            () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
+
+    }
+
+    onLocationChange (event, newUrl, oldUrl, elt) {
+        if (elt && elt.unsaved && oldUrl.indexOf("formView") > -1) {
+            let txt = "You have unsaved changes, are you sure you want to leave this page? ";
+            if ((window as any).debugEnabled) {
+                txt = txt + window.location.pathname;
+            }
+            let answer = confirm(txt);
+            if (!answer) {
+                event.preventDefault();
+            }
+        }
+    }
+
+    reloadForm () {
+        this.http.get("/form/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.areDerivationRulesSatisfied();
+                this.validateForm();
+                this.alert.addAlert("success", "Changes discarded.");
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
+        );
+    };
+
+
+    stageElt () {
+        this.http.put("/form/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
+            this.elt = response;
+            this.h.emit({elt: this.elt, fn: this.onLocationChange});
+            this.alert.addAlert("success", "Form saved.");
+        }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
+        );
+    };
+
+    doStageElt() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
+        if (this.elt.unsaved) {
+            this.alert.addAlert("info", "Save to confirm.");
+        } else {
+            this.stageElt();
+            this.modalRef.close();
+        }
+    }
+
+    stageForm() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
+        this.elt.unsaved = true;
     }
 
     openCopyElementModal() {
@@ -103,7 +166,7 @@ export class FormViewComponent implements OnInit {
             publishedFormName: this.formInput.publishedFormName,
             endpointUrl: this.formInput.endpointUrl
         }).subscribe(
-            res => {
+            () => {
                 this.alert.addAlert("info", "Done. Go to your profile to see all your published forms");
                 this.modalRef.close();
             }, err => {
@@ -126,8 +189,7 @@ export class FormViewComponent implements OnInit {
 
     isIe() {
         let userAgent = window.navigator.userAgent;
-        if (/internet explorer/i.test(userAgent)) return true;
-        else return false;
+        return /internet explorer/i.test(userAgent);
     }
 
     loadHighlightedTabs($event) {
@@ -136,23 +198,6 @@ export class FormViewComponent implements OnInit {
 
     setIsValid(valid) {
         this.isFormValid = valid;
-    }
-
-    doStageElt() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Save to confirm.");
-        } else {
-            this.stageElt.emit();
-            this.modalRef.close();
-        }
-    }
-
-    stageForm() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        this.elt.unsaved = true;
     }
 
     areDerivationRulesSatisfied() {
