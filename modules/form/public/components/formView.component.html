@@ -173,7 +173,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-display-profile [elt]="elt" (onEltChange)="stageForm();"></cde-display-profile>
+                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="stageForm();">
+                        </cde-display-profile>
                     </ng-template>
                 </ngb-tab>
 

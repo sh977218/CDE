@@ -1,7 +1,5 @@
-import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
-
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import "nouislider/distribute/nouislider.min.css";
-
 import "rxjs/add/operator/map";
 
 @Component({
@@ -9,11 +7,8 @@ import "rxjs/add/operator/map";
     templateUrl: "./displayProfile.component.html"
 })
 export class DisplayProfileComponent {
-
-    constructor(@Inject("isAllowedModel") public isAllowedModel) {
-    }
-
     @Input() elt: any;
+    @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
 
     showDelete: boolean;
