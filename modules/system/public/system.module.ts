@@ -41,13 +41,14 @@ import { OrgsEditComponent } from "./components/siteAdmin/orgsEdit/orgEdits.comp
 import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serverStatus.component";
 import { TimeAgoPipe } from "time-ago-pipe";
 import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
-import { DiscussModule } from "../../discuss/discuss.module";
+import { DiscussModule } from 'discuss/discuss.module';
 import { InboxComponent } from "./components/inbox/inbox.component";
 import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
 import { EmbedComponent } from "./components/embed/embed.component";
 import { LoginComponent } from "./components/login/login.component";
 import { LoginService } from "./components/login/login.service";
 import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccountManagement/orgAccountManagement.component";
+import { OrgClassificationManagementComponent } from 'system/public/components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component';
 
 @NgModule({
     imports: [
@@ -83,6 +84,7 @@ import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccount
         OrgAccountManagementComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
+        OrgClassificationManagementComponent,
         OrgsEditComponent,
         ProfileComponent,
         SearchPreferencesComponent,
@@ -106,6 +108,7 @@ import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccount
         NavigationComponent,
         OrgAccountManagementComponent,
         OrgAuthorityComponent,
+        OrgClassificationManagementComponent,
         ProfileComponent,
         ServerStatusComponent,
         SearchPreferencesComponent,

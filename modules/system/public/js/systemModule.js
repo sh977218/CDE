@@ -37,8 +37,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/orgaccountmanagement', {
             template: '<cde-org-account-management></cde-org-account-management>'
         }).when('/classificationmanagement', {
-            controller: 'ClassificationManagementCtrl',
-            templateUrl: '/system/public/html/classificationManagement.html'
+            template: '<cde-org-classification-management></cde-org-classification-management>'
         }).when('/orgAuthority', {
             template: '<cde-org-authority></cde-org-authority>'
         }).when('/profile', {
@@ -461,7 +460,7 @@ angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
     outputs: []
 }));
 
-import {OrgAuthorityComponent} from "../components/siteAdmin/orgAuthority/orgAuthority.component"
+import {OrgAuthorityComponent} from "../components/siteAdmin/orgAuthority/orgAuthority.component";
 angular.module('systemModule').directive('cdeOrgAuthority', downgradeComponent({
     component: OrgAuthorityComponent,
     inputs: [],
@@ -503,15 +502,15 @@ import { AlertComponent } from "../components/alert/alert.component";
 angular.module('systemModule').directive('cdeAlert', downgradeComponent(
     {component: AlertComponent, inputs: [], outputs: []}));
 
-import {ServerStatusComponent} from "../components/siteAdmin/serverStatus/serverStatus.component"
+import {ServerStatusComponent} from "../components/siteAdmin/serverStatus/serverStatus.component";
 angular.module('systemModule').directive('cdeServerStatus', downgradeComponent(
     {component: ServerStatusComponent, inputs: [], outputs: []}));
 
-import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component"
+import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component";
 angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent(
     {component: SiteManagementComponent, inputs: [], outputs: []}));
 
-import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
+import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component";
 angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
     {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
 
@@ -522,7 +521,7 @@ angular.module('systemModule').directive('cdeInbox', downgradeComponent(
 import { MergeCdeService } from "../../../core/public/mergeCde.service";
 angular.module('systemModule').factory('MergeCdeService', downgradeInjectable(MergeCdeService));
 
-import {SearchPreferencesComponent} from "../components/searchPreferences/searchPreferences.component"
+import {SearchPreferencesComponent} from "../components/searchPreferences/searchPreferences.component";
 angular.module('systemModule').directive('cdeSearchPreferences', downgradeComponent(
     {component: SearchPreferencesComponent, inputs: [], outputs: []}));
 
@@ -530,7 +529,11 @@ import {OrgAccountManagementComponent} from "../components/siteAdmin/orgAccountM
 angular.module('systemModule').directive('cdeOrgAccountManagement', downgradeComponent(
     {component: OrgAccountManagementComponent, inputs: [], outputs: []}));
 
-import {LoginComponent} from "../components/login/login.component"
+import {OrgClassificationManagementComponent} from "../components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component";
+angular.module('systemModule').directive('cdeOrgClassificationManagement', downgradeComponent(
+    {component: OrgClassificationManagementComponent, inputs: [], outputs: []}));
+
+import {LoginComponent} from "../components/login/login.component";
 angular.module('systemModule').directive('cdeLogin', downgradeComponent(
     {component: LoginComponent, inputs: [], outputs: []}));
 
