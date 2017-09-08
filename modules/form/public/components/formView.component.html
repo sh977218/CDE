@@ -184,7 +184,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-properties [elt]="elt" (onEltChange)="doStageElt($event);"></cde-properties>
+                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        </cde-properties>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="ids_tab">
