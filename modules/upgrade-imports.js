@@ -10,10 +10,7 @@ import "./cde/public/js/cdeModule";
 import "./cde/public/js/merge";
 import "./cde/public/js/angularTemplates";
 
-import "./board/public/js/angularTemplates";
-
 import "./form/public/js/formModule";
-import "./form/public/js/resources";
 import "./form/public/js/angularTemplates";
 
 import "./system/shared/classificationShared";
@@ -28,7 +25,6 @@ import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
 import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
 import "./system/public/js/controllers/RemoveClassificationModalCtrl";
-import "./system/public/js/controllers/TableViewCtrl";
 import "./system/public/js/controllers/FeedbackBtnCtrl";
 import "./system/public/js/controllers/MeshMappingMgtCtrl";
 import "./system/public/js/SearchSettings";

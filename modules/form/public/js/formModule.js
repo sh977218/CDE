@@ -1,4 +1,4 @@
-angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'formTemplates']).config(
+angular.module('formModule', ['ngRoute', 'ui.scrollpoint', 'formTemplates']).config(
     ["$routeProvider", function($routeProvider)
 {
     $routeProvider.
