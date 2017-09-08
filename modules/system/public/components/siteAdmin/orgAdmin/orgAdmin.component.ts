@@ -18,21 +18,20 @@ export class OrgAdminComponent implements OnInit {
 
     constructor(
         private http: Http,
-        private Alert: AlertService,
+        private alert: AlertService,
         @Inject("isAllowedModel") public isAllowedModel
-    ) {
+    ) {}
+
+    ngOnInit() {
+        this.getAdmins();
     }
 
     searchTypeahead = (text$: Observable<string>) =>
         text$.debounceTime(300).distinctUntilChanged()
             .switchMap(term => term.length < 3 || !this.isAllowedModel.hasRole("OrgAuthority") ? [] :
             this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users.map(u => u.username))
-                .catch(() => {
-                    //noinspection TypeScriptUnresolvedFunction
-                    return Observable.of([]);
-                })
-        )
-
+                .catch(() => Observable.of([]))
+        );
     formatter = (result: any) => result.username;
 
     setOrgs (r)  {
@@ -48,28 +47,24 @@ export class OrgAdminComponent implements OnInit {
         }
     }
 
-    ngOnInit() {
-        this.getAdmins();
-    }
-
     removeOrgAdmin (orgName, userId) {
         this.http.post("/removeOrgAdmin", {
             orgName: orgName
             , userId: userId
-        }).subscribe(r => {
-            this.Alert.addAlert("success", r.text());
+        }).subscribe(() => {
+            this.alert.addAlert("success", "Removed");
             this.getAdmins();
-        }, () => this.Alert.addAlert("danger", "An error occured."));
+        }, () => this.alert.addAlert("danger", "An error occured."));
     }
 
     addOrgAdmin () {
         this.http.post("/addOrgAdmin", {
             username: this.newAdmin.username
             , org: this.newAdmin.orgName
-        }).subscribe(r => {
-            this.Alert.addAlert("success", r.text());
+        }).subscribe(() => {
+            this.alert.addAlert("success", "Saved");
             this.getAdmins();
-        }, () => this.Alert.addAlert("danger", "There was an issue adding this administrator."));
+        }, () => this.alert.addAlert("danger", "There was an issue adding this administrator."));
         this.newAdmin.username = "";
     };
 
