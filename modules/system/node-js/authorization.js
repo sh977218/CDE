@@ -13,7 +13,11 @@ exports.checkOwnership = function (dao, id, req, cb) {
 
 // Check if user is site admin or org admin for at least one org
 exports.isSiteOrgAdmin = function (req) {
-    return !!(req.isAuthenticated() && (req.user.siteAdmin || (req.user.orgAdmin && req.user.orgAdmin.length >= 0)));
+    return !!(req.isAuthenticated() && (
+        req.user.siteAdmin ||
+        authorizationShared.hasRole(req.user, "OrgAuthority") ||
+        (req.user.orgAdmin && req.user.orgAdmin.length >= 0))
+    );
 };
 
 exports.isOrgAdmin = function (req, org) {
