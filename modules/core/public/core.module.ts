@@ -37,6 +37,10 @@ export function getFormQuickBoardFactory(i: any) {
     return i.get("FormQuickBoard");
 }
 
+export function getPinModalFactory(i: any) {
+    return i.get("PinModal");
+}
+
 @NgModule({
     imports: [
         Select2Module,
@@ -59,6 +63,7 @@ export function getFormQuickBoardFactory(i: any) {
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
+        {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,
