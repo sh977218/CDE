@@ -75,6 +75,7 @@ import { CdeForm, FormElement, FormSection } from "../../form.model";
 })
 export class FormDescriptionComponent implements OnInit {
     @Input() elt: CdeForm;
+    @Input() canEdit: boolean = false;
     @Input() inScoreCdes: any;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
@@ -132,8 +133,7 @@ export class FormDescriptionComponent implements OnInit {
     };
 
     constructor(private formService: FormService,
-                public modalService: NgbModal,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                public modalService: NgbModal) {
         this.toolSection = {insert: "section", data: this.getNewSection()};
     }
 
