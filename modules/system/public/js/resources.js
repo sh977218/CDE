@@ -60,24 +60,6 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
 }
 
 angular.module('resourcesSystem', ['ngResource'])
-    .factory("Attachment", ["$http", function ($http) {
-        return {
-            remove: function (dat, success, error) {
-                $http.post('/removeAttachment', dat).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , setDefault: function (dat, success, error) {
-                $http.post('/setAttachmentDefault', dat).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-        };
-    }])
     .factory("Organization", ["$http", function ($http) {
         return {
             getByName: function (orgName, cb) {
@@ -85,12 +67,6 @@ angular.module('resourcesSystem', ['ngResource'])
                     if (cb) cb(response);
                 });
             }
-        };
-    }])
-    .factory("TourContent", [function () {
-        return {
-            stop: null
-            , steps: []
         };
     }])
     .factory("userResource", ["$http", "$q", "$interval", "OrgHelpers", function ($http, $q, $interval, OrgHelpers) {

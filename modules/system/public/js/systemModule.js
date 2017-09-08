@@ -4,9 +4,9 @@ angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'systemTemplates',
-    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'ui.sortable',
-    'ui.select', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
-    'angular-send-feedback', 'ngAnimate', 'checklist-model', 'infinite-scroll'])
+    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'LocalStorageModule', 'ui.sortable',
+    'ui.select', 'ngTextTruncate',
+    'angular-send-feedback', 'checklist-model'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -258,7 +258,6 @@ angular.module('systemModule').directive('cdeHome', downgradeComponent({
 }));
 
 import { NavigationComponent } from "../components/navigation.component";
-
 angular.module('systemModule').directive('cdeNavigation', downgradeComponent({
     component: NavigationComponent,
     inputs: [], outputs: ['goToLogin', 'logout']
@@ -271,24 +270,9 @@ angular.module('systemModule').directive('cdeProfile', downgradeComponent({
     outputs: []
 }));
 
-import { UserCommentsComponent } from "../components/userComments.component";
-angular.module('systemModule').directive('user-comments', downgradeComponent({
-    component: UserCommentsComponent,
-    inputs: ['user'],
-    outputs: []
-}));
-
-
 import { SiteAuditComponent } from "../components/siteAdmin/siteAudit/siteAudit.component";
 angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     component: SiteAuditComponent,
-    inputs: [],
-    outputs: []
-}));
-
-import { UsersMgtComponent } from "../components/siteAdmin/usersMgt/usersMgt.component";
-angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
-    component: UsersMgtComponent,
     inputs: [],
     outputs: []
 }));
@@ -300,22 +284,8 @@ angular.module('systemModule').directive('cdeOrgAuthority', downgradeComponent({
     outputs: []
 }));
 
-import {EditSiteAdminsComponent} from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
-angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
-    component: EditSiteAdminsComponent,
-    inputs: [],
-    outputs: []
-}));
-
 import {RegistrationValidatorService} from "../components/registrationValidator.service";
 angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
-
-import { TableListComponent } from "../../../search/listView/tableList.component";
-angular.module('systemModule').directive('cdeTableList', downgradeComponent({
-    component: TableListComponent,
-    inputs: ['elts', 'module'],
-    outputs: []
-}));
 
 import { SwaggerComponent } from "../components/swagger.component";
 angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
@@ -324,10 +294,6 @@ angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
     outputs: []
 }));
 
-import { DiscussAreaComponent } from "../../../discuss/components/discussArea/discussArea.component";
-angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
-    {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));
-
 import { AlertService } from "../components/alert/alert.service";
 angular.module('systemModule').factory('AlertService', downgradeInjectable(AlertService));
 
@@ -335,17 +301,9 @@ import { AlertComponent } from "../components/alert/alert.component";
 angular.module('systemModule').directive('cdeAlert', downgradeComponent(
     {component: AlertComponent, inputs: [], outputs: []}));
 
-import {ServerStatusComponent} from "../components/siteAdmin/serverStatus/serverStatus.component"
-angular.module('systemModule').directive('cdeServerStatus', downgradeComponent(
-    {component: ServerStatusComponent, inputs: [], outputs: []}));
-
 import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component"
 angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent(
     {component: SiteManagementComponent, inputs: [], outputs: []}));
-
-import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
-angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
-    {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
 
 import {InboxComponent} from "../components/inbox/inbox.component"
 angular.module('systemModule').directive('cdeInbox', downgradeComponent(
