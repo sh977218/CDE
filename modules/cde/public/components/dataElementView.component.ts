@@ -14,16 +14,15 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
 export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @Input() elt: any;
-    @Output() public stageElt = new EventEmitter();
-    @Output() public reload = new EventEmitter();
+    @Input() routeParams: any;
+    @Output() public h = new EventEmitter();
 
+    elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
     displayStatusWarning;
     hasComments;
     commentMode;
-    eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
 
@@ -34,16 +33,54 @@ export class DataElementViewComponent implements OnInit {
                 public quickBoardService: QuickBoardListService,
                 @Inject("PinModal") public PinModal,
                 private alert: AlertService,
-                @Inject("userResource") public userService) {
-    }
+                @Inject("userResource") public userService) {}
 
     ngOnInit(): void {
-        this.http.get("/comments/eltId/" + this.elt.tinyId)
-            .map(res => res.json()).subscribe(
-            res => this.hasComments = res && (res.length > 0),
-            err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+        let cdeId = this.routeParams.cdeId;
+        let url = "/de/" + this.routeParams.tinyId;
+        if (cdeId) url = "/deById/" + cdeId;
+        this.http.get(url).map(r => r.json()).subscribe(response => {
+            this.elt = response;
+            this.h.emit({elt: this.elt, fn: this.onLocationChange});
+            this.http.get("/comments/eltId/" + this.elt.tinyId)
+                .map(res => res.json()).subscribe(
+                res => this.hasComments = res && (res.length > 0),
+                err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+            );
+            this.isAllowedModel.setDisplayStatusWarning(this);
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
-        this.isAllowedModel.setDisplayStatusWarning(this);
+    }
+
+    onLocationChange (event, oldUrl, elt) {
+        if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
+            let txt = "You have unsaved changes, are you sure you want to leave this page? ";
+            if ((window as any).debugEnabled) {
+                txt = txt + window.location.pathname;
+            }
+            let answer = confirm(txt);
+            if (!answer) {
+                event.preventDefault();
+            }
+        }
+    }
+
+    reloadDataElement () {
+        this.http.get("/de/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
+            this.elt = response;
+            this.h.emit({elt: this.elt, fn: this.onLocationChange});
+            this.alert.addAlert("success", "Changes discarded.");
+        }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+        );
+    }
+
+    saveDataElement () {
+        this.http.put("/de/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
+            this.elt = response;
+            this.h.emit({elt: this.elt, fn: this.onLocationChange});
+            this.alert.addAlert("success", "Data Element saved.");
+        }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+        );
     }
 
     openCopyElementModal() {
@@ -86,11 +123,11 @@ export class DataElementViewComponent implements OnInit {
             this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
-    doStageElt(event) {
+    doStageElt() {
         if (this.elt.unsaved) {
             this.alert.addAlert("info", "Save to confirm.");
         } else {
-            this.stageElt.emit();
+            this.saveDataElement();
             this.modalRef.close();
         }
     }

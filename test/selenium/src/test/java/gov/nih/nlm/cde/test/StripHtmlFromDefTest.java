@@ -9,7 +9,7 @@ public class StripHtmlFromDefTest extends BaseClassificationTest {
     @Test
     public void stripHtmlFromDef() {
         goToFormSearch();
-        findElement(By.id("browseOrg-TEST")).click();
+        clickElement(By.id("browseOrg-TEST"));
         textPresent("Form Def HTML");
         textNotPresent("<uvwxyz>");
         textNotPresent("</uvwxyz>");
