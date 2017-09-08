@@ -140,7 +140,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-identifiers [elt]="elt" (onEltChange)="doStageElt($event);"></cde-identifiers>
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        </cde-identifiers>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="attachments_tab">
