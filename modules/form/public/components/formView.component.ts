@@ -30,6 +30,7 @@ export class FormViewComponent implements OnInit {
     eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
+    canEdit: boolean = false;
     isFormValid = true;
 
     formInput;
@@ -51,6 +52,7 @@ export class FormViewComponent implements OnInit {
             res => this.hasComments = res && (res.length > 0),
             err => this.alert.addAlert("danger", "Error on loading comments. " + err)
         );
+        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
     }
 
     openCopyElementModal() {

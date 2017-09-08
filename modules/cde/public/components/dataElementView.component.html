@@ -150,7 +150,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-attachments [elt]="elt" (removeAttachment)="removeAttachment($event);"
+                        <cde-attachments [elt]="elt" [canEdit]="canEdit" (removeAttachment)="removeAttachment($event);"
                                          (setDefault)="setDefault($event)" (upload)="upload($event);"></cde-attachments>
                     </ng-template>
                 </ngb-tab>

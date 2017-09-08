@@ -26,6 +26,7 @@ export class DataElementViewComponent implements OnInit {
     eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
+    canEdit: boolean = false;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -44,6 +45,7 @@ export class DataElementViewComponent implements OnInit {
             err => this.alert.addAlert("danger", "Error on loading comments. " + err)
         );
         this.isAllowedModel.setDisplayStatusWarning(this);
+        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
     }
 
     openCopyElementModal() {
