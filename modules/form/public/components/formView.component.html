@@ -142,7 +142,7 @@
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <cde-naming [elt]="elt" (onEltChange)="stageForm();"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="stageForm();"></cde-naming>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="classification_tab">
