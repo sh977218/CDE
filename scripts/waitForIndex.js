@@ -8,10 +8,10 @@ setInterval(() => {
            body.indexOf('indices":[]') === -1 && body.indexOf('indices') > 0) {
             console.log("indexing complete, status returned: ");
             console.log(body);
-            request.post("http://localhost:3001/syncWithMesh", {}, () => {
-                setTimeout(() => {
-                   process.exit(0);
-                })
+            request.post("http://localhost:3001/syncWithMesh", {}, (err, res, body) => {
+                console.log("Started Mesh Sync, got: ");
+                console.log(body);
+                process.exit(0);
             })
        }
     });
