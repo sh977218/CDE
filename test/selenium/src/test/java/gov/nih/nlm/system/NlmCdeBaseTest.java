@@ -1244,23 +1244,11 @@ public class NlmCdeBaseTest {
 
 
     public void startEditQuestionSectionById(String id) {
-        try {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
-        } catch (Exception e) {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
-        }
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
     }
 
     public void saveEditQuestionSectionById(String id) {
-        try {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
-        } catch (Exception e) {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
-        }
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
     }
 
     /**
