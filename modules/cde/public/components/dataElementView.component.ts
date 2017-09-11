@@ -31,7 +31,6 @@ export class DataElementViewComponent implements OnInit {
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
                 public quickBoardService: QuickBoardListService,
-                @Inject("PinModal") public PinModal,
                 private alert: AlertService,
                 @Inject("userResource") public userService) {}
 
