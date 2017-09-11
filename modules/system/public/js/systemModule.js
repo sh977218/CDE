@@ -33,7 +33,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/orgComments', {
             template: '<cde-latest-comments [comments-url]="\'/orgComments/\'"></cde-latest-comments>'
         }).when('/siteaccountmanagement', {
-            template: '<cde-site-management></cde-site-management>'
+            templte: '<cde-site-management></cde-site-management>'
         }).when('/orgaccountmanagement', {
             template: '<cde-org-account-management></cde-org-account-management>'
         }).when('/classificationmanagement', {
