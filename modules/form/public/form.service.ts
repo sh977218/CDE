@@ -158,7 +158,8 @@ export class FormService {
                     form: {
                         tinyId: form.tinyId,
                         version: form.version,
-                        name: form.naming[0] ? form.naming[0].designation : ''
+                        name: form.naming[0] ? form.naming[0].designation : '',
+                        ids: form.ids
                     }
                 }
             };
