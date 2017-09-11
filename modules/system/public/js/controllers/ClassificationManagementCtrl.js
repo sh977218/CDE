@@ -113,27 +113,6 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
         }, function () {});
     };
 
-    $scope.showRemoveClassificationModal = function(orgName, pathArray) {
-        $modal.open({
-            animation: false,
-            templateUrl: '/system/public/html/removeClassificationMgtModal.html',
-            controller: 'RemoveClassificationModalCtrl',
-            resolve: {
-                classifName: function() {
-                    return pathArray[pathArray.length-1];
-                },
-                pathArray: function () {
-                    return pathArray;
-                },
-                module: function () {
-                    return $scope.module;
-                }
-            }
-        }).result.then(function () {
-            $scope.removeClassification(orgName, pathArray);
-        }, function () {});
-    };
-
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         $modal.open({
             animation: false,

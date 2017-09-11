@@ -17,7 +17,7 @@
             <ng-template #treeNodeTemplate let-node="node" let-index="index">
                 <a [id]="node.path">{{ node.data.name }}</a>
                 <a title="Edit"><i class="fa fa-pencil"></i></a>
-                <a title="Remove"><i class="fa fa-trash-o"></i></a>
+                <a title="Remove" (click)="openDeleteClassificationModal(node);"><i class="fa fa-trash-o"></i></a>
                 <a title="Reclassify"><i class="fa fa-retweet"></i></a>
                 <a title="Add Child Classification"><i class="fa fa-share fa-rotate-180"></i></a>
                 <a title="Mesh Mapping"><i class="fa fa-link"></i></a>
@@ -41,7 +41,22 @@
         <h4 class="modal-title">Remove Classification</h4>
     </div>
     <div class="modal-body" id="deleteClassificationModalBody">
-        You are about to delete <b>{{deleteClassificationString}}</b> classification. Are you sure?
+        You are about to delete the following classification:
+        <br>
+        <br>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                {{selectedClassificationArray}}
+            </div>
+        </div>
+
+        <br/>This will affect multiple CDEs.
+        <br/>Are you sure you want to proceed?
+        <br/>
+        <br/>Please confirm your decision by typing the name of the classification:
+        <input id="removeClassificationUserTyped" ng-model="userTyped.name" (change)="checkUserTypedName()"
+               class="form-control" placeholder="">
+
     </div>
     <div class="modal-footer" id="deleteClassificationModalFooter">
         <button class="btn cancel" (click)="c('cancel')" id="cancelDeleteClassificationBtn"

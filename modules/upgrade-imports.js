@@ -28,7 +28,6 @@ import "./system/public/js/exceptionHandler";
 import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
 import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
-import "./system/public/js/controllers/RemoveClassificationModalCtrl";
 import "./system/public/js/controllers/TableViewCtrl";
 import "./system/public/js/controllers/FeedbackBtnCtrl";
 import "./system/public/js/controllers/MeshMappingMgtCtrl";
