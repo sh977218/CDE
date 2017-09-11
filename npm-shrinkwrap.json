@@ -31,6 +31,17 @@
         "@angular/tsc-wrapped": "4.3.6",
         "minimist": "1.2.0",
         "reflect-metadata": "0.1.9"
+      },
+      "dependencies": {
+        "@angular/tsc-wrapped": {
+          "version": "4.3.6",
+          "resolved": "https://registry.npmjs.org/@angular/tsc-wrapped/-/tsc-wrapped-4.3.6.tgz",
+          "integrity": "sha1-GqZuCrLEeZpK0UtnXhOVOqX81DY=",
+          "dev": true,
+          "requires": {
+            "tsickle": "0.21.6"
+          }
+        }
       }
     },
     "@angular/core": {
@@ -87,15 +98,6 @@
         "tslib": "1.7.1"
       }
     },
-    "@angular/tsc-wrapped": {
-      "version": "4.3.6",
-      "resolved": "https://registry.npmjs.org/@angular/tsc-wrapped/-/tsc-wrapped-4.3.6.tgz",
-      "integrity": "sha1-GqZuCrLEeZpK0UtnXhOVOqX81DY=",
-      "dev": true,
-      "requires": {
-        "tsickle": "0.21.6"
-      }
-    },
     "@angular/upgrade": {
       "version": "4.3.6",
       "resolved": "https://registry.npmjs.org/@angular/upgrade/-/upgrade-4.3.6.tgz",
@@ -126,7 +128,7 @@
         "enhanced-resolve": {
           "version": "3.3.0",
           "resolved": "https://registry.npmjs.org/enhanced-resolve/-/enhanced-resolve-3.3.0.tgz",
-          "integrity": "sha1-lQlk7MfwMypCMhtnOzjcj/FVNbM=",
+          "integrity": "sha512-2qbxE7ek3YxPJ1ML6V+satHkzHpJQKWkRHmRx6mfAoW59yP8YH8BFplbegSP+u2hBd6B6KCOpvJQ3dZAP+hkpg==",
           "dev": true,
           "requires": {
             "graceful-fs": "4.1.11",
@@ -2787,7 +2789,7 @@
     "enhanced-resolve": {
       "version": "3.3.0",
       "resolved": "https://registry.npmjs.org/enhanced-resolve/-/enhanced-resolve-3.3.0.tgz",
-      "integrity": "sha1-lQlk7MfwMypCMhtnOzjcj/FVNbM=",
+      "integrity": "sha512-2qbxE7ek3YxPJ1ML6V+satHkzHpJQKWkRHmRx6mfAoW59yP8YH8BFplbegSP+u2hBd6B6KCOpvJQ3dZAP+hkpg==",
       "dev": true,
       "requires": {
         "graceful-fs": "4.1.11",
@@ -9880,16 +9882,16 @@
           "integrity": "sha1-EV+eO2s9rylZmDyzjxSaLUDrXVM="
         },
         "mime-db": {
-          "version": "1.29.0",
-          "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.29.0.tgz",
-          "integrity": "sha1-SNJtI1WJZRcErFkWygYAGRQmaHg="
+          "version": "1.30.0",
+          "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.30.0.tgz",
+          "integrity": "sha1-dMZD2i3Z1qRTmZY0ZbJtXKfXHwE="
         },
         "mime-types": {
-          "version": "2.1.16",
-          "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.16.tgz",
-          "integrity": "sha1-K4WKUuXs1RbbiXrCvodIeDBpjiM=",
+          "version": "2.1.17",
+          "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.17.tgz",
+          "integrity": "sha1-Cdejk/A+mVp5+K+Fe3Cp4KsWVXo=",
           "requires": {
-            "mime-db": "1.29.0"
+            "mime-db": "1.30.0"
           }
         },
         "ms": {
@@ -10005,7 +10007,7 @@
           "integrity": "sha1-yrEPtJCeRByChC6v4a1kbIGARBA=",
           "requires": {
             "media-typer": "0.3.0",
-            "mime-types": "2.1.16"
+            "mime-types": "2.1.17"
           }
         }
       }

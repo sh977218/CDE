@@ -1,4 +1,10 @@
-<div class="container-fluid" itemscope="http://schema.org/MedicalCode">
+<div *ngIf="!elt">
+    <h1 class="pt60 pb40 text-center">
+        <i class="fa fa-spinner fa-pulse"></i>Loading...
+    </h1>
+</div>
+
+<div *ngIf="elt" class="container-fluid" itemscope="http://schema.org/MedicalCode">
     <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this form is archived. You can
@@ -117,7 +123,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="stageElt.emit();">
+                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="stageElt()">
                         </cde-form-general-details>
                     </ng-template>
                 </ngb-tab>
@@ -234,8 +240,8 @@
         </div>
     </div>
     <div class="row" *ngIf="elt.unsaved && isFormValid">
-        <cde-update-element [elt]="elt" (discard)="reload.emit();"
-                            (save)="stageElt.emit();"></cde-update-element>
+        <cde-update-element [elt]="elt" (discard)="reloadForm();"
+                            (save)="stageElt();"></cde-update-element>
     </div>
 </div>
 

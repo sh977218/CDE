@@ -35,8 +35,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/siteaccountmanagement', {
             template: '<cde-site-management></cde-site-management>'
         }).when('/orgaccountmanagement', {
-            controller: 'AccountManagementCtrl',
-            templateUrl: '/system/public/html/orgAccountManagement.html'
+            template: '<cde-org-account-management></cde-org-account-management>'
         }).when('/classificationmanagement', {
             controller: 'ClassificationManagementCtrl',
             templateUrl: '/system/public/html/classificationManagement.html'
@@ -157,13 +156,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                     $scope.editMode = false;
                 };
             }]
-        };
-    }])
-    .directive('cdeSelectBoard', [function () {
-        return {
-            restrict: 'AE',
-            controller: 'SelectBoardModalCtrl',
-            templateUrl: '/system/public/html/selectBoardModal.html',
         };
     }])
     .directive('sortableArray', [function () {
@@ -441,7 +433,6 @@ angular.module('systemModule').directive('cdeNavigation', downgradeComponent({
 }));
 
 import { ProfileComponent } from "../components/profile.component";
-
 angular.module('systemModule').directive('cdeProfile', downgradeComponent({
     component: ProfileComponent,
     inputs: ['commentsUrl'],
@@ -449,7 +440,6 @@ angular.module('systemModule').directive('cdeProfile', downgradeComponent({
 }));
 
 import { UserCommentsComponent } from "../components/userComments.component";
-
 angular.module('systemModule').directive('user-comments', downgradeComponent({
     component: UserCommentsComponent,
     inputs: ['user'],
@@ -464,15 +454,7 @@ angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     outputs: []
 }));
 
-import { OrgAdminComponent } from "../components/siteAdmin/orgAdmin/orgAdmin.component";
-angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({
-    component: OrgAdminComponent,
-    inputs: [],
-    outputs: []
-}));
-
 import { UsersMgtComponent } from "../components/siteAdmin/usersMgt/usersMgt.component";
-
 angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
     component: UsersMgtComponent,
     inputs: [],
@@ -544,8 +526,9 @@ import {SearchPreferencesComponent} from "../components/searchPreferences/search
 angular.module('systemModule').directive('cdeSearchPreferences', downgradeComponent(
     {component: SearchPreferencesComponent, inputs: [], outputs: []}));
 
-import {EmbedComponent} from "../components/embed/embed.component"
-angular.module('systemModule').directive('cdeEmbed', downgradeComponent({component: EmbedComponent, inputs: [], outputs: []}));
+import {OrgAccountManagementComponent} from "../components/siteAdmin/orgAccountManagement/orgAccountManagement.component";
+angular.module('systemModule').directive('cdeOrgAccountManagement', downgradeComponent(
+    {component: OrgAccountManagementComponent, inputs: [], outputs: []}));
 
 import {LoginComponent} from "../components/login/login.component"
 angular.module('systemModule').directive('cdeLogin', downgradeComponent(
