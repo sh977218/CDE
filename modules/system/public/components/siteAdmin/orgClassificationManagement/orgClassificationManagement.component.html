@@ -8,15 +8,19 @@
     </select>
     <br/>
     <div class="boxed-div">
-        <h4 id="org-{{selectedOrg.name}}"> {{selectedOrg.name}}
-            <a id="addClassification" title="Add Child Classification" class="hand-cursor">
-                <i class="fa fa-share fa-rotate-180"></i>
+        <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
+            <a title="Add Child Classification" href>
+                <i id="addClassification" class="fa fa-share fa-rotate-180"></i>
             </a>
         </h4>
         <tree-root #treeRoot [nodes]="selectedOrg.classifications" [options]="options">
             <ng-template #treeNodeTemplate let-node="node" let-index="index">
                 <a [id]="node.path">{{ node.data.name }}</a>
-                <i class="fa fa-trash-o hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"></i>
+                <a title="Edit"><i class="fa fa-pencil"></i></a>
+                <a title="Remove"><i class="fa fa-trash-o"></i></a>
+                <a title="Reclassify"><i class="fa fa-retweet"></i></a>
+                <a title="Add Child Classification"><i class="fa fa-share fa-rotate-180"></i></a>
+                <a title="Mesh Mapping"><i class="fa fa-link"></i></a>
             </ng-template>
             <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
                 <div [class.tree-node-expanded]="true" [ngClass]="{'floatLeft boxed-div':node.level===1}">

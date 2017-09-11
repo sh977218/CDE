@@ -14,7 +14,12 @@ const actionMapping: IActionMapping = {
 
 @Component({
     selector: "cde-org-classification-management",
-    templateUrl: "./orgClassificationManagement.component.html"
+    templateUrl: "./orgClassificationManagement.component.html",
+    styles: [`
+        host >>> .tree {
+            cursor: default !important;
+        }
+    `]
 })
 export class OrgClassificationManagementComponent implements OnInit {
     onInitDone: boolean = false;
