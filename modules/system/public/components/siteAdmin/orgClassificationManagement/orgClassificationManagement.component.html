@@ -1,33 +1,50 @@
-<div class="container-fluid" *ngIf="onInitDone">
+<div *ngIf="onInitDone" class="container-fluid" id="classMgt">
     <h1 class="page-header">
         <label for="orgToManage" id="manageClassificationsLabel">Classifications</label>
     </h1>
-    <select class="form-control" [(ngModel)]="orgToManage" name="orgToManage" id="orgToManage">
+    <select class="form-control" [(ngModel)]="orgToManage" name="orgToManage" id="orgToManage"
+            (change)="onChangeOrg($event.target.value,null)">
         <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
     </select>
     <br/>
-    <div id="classMgt" class="boxed-div">
-    </div>
-    <!--
-            <h4 id="org-{{org.name}}"> {{org.name}}
-                <a ng-if="isOrgAdmin()" id="addClassification" title="Add Child Classification" class="hand-cursor"
-                   ng-click="openAddClassificationModal(org.name, null)"><i class="fa fa-share fa-rotate-180"></i></a>
-            </h4>
-
-            <hr/>
-
-            <div id="repeatCs" class="container-fluid">
-                <div id="repeatCm" class="container-fluid">
-                    <div ng-repeat="elt in classificationToFilter()" class="pull-left boxed-div"
-                         ng-init='pathArray = [elt.name]; myOrg = true;' id="classification-{{pathArray.join()}}-div">
-                        <div ng-include="'/system/public/html/classifEltLoop.html'"
-                             ng-init="orgName = orgToManage; page = 'management';"></div>
+    <div class="boxed-div">
+        <h4 id="org-{{selectedOrg.name}}"> {{selectedOrg.name}}
+            <a id="addClassification" title="Add Child Classification" class="hand-cursor">
+                <i class="fa fa-share fa-rotate-180"></i>
+            </a>
+        </h4>
+        <tree-root #treeRoot [nodes]="selectedOrg.classifications" [options]="options">
+            <ng-template #treeNodeTemplate let-node="node" let-index="index">
+                <a [id]="node.path">{{ node.data.name }}</a>
+                <i class="fa fa-trash-o hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"></i>
+            </ng-template>
+            <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                <div [class.tree-node-expanded]="true" [ngClass]="{'floatLeft boxed-div':node.level===1}">
+                    <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+                        <tree-node-content [node]="node" [index]="index"
+                                           [template]="templates.treeNodeTemplate">
+                        </tree-node-content>
                     </div>
+                    <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                 </div>
-            </div>
--->
+            </ng-template>
+        </tree-root>
+    </div>
 </div>
-<!--
-<script type="text/ng-template" id="renameClassificationModal.html">
-    <div ng-include="'/system/public/html/renameClassificationModal.html'"></div>
-</script>-->
+
+<ng-template #deleteClassificationContent id="deleteClassificationModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="deleteClassificationModalHeader">
+        <h4 class="modal-title">Remove Classification</h4>
+    </div>
+    <div class="modal-body" id="deleteClassificationModalBody">
+        You are about to delete <b>{{deleteClassificationString}}</b> classification. Are you sure?
+    </div>
+    <div class="modal-footer" id="deleteClassificationModalFooter">
+        <button class="btn cancel" (click)="c('cancel')" id="cancelDeleteClassificationBtn"
+                name="cancelDeleteClassificationBtn" type="button">Cancel
+        </button>
+        <button class="btn btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
+                name="confirmDeleteClassificationBtn" type="button">OK
+        </button>
+    </div>
+</ng-template>

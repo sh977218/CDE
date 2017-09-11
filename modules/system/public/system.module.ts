@@ -49,6 +49,7 @@ import { LoginComponent } from "./components/login/login.component";
 import { LoginService } from "./components/login/login.service";
 import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccountManagement/orgAccountManagement.component";
 import { OrgClassificationManagementComponent } from 'system/public/components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component';
+import { TreeModule } from 'angular-tree-component';
 
 @NgModule({
     imports: [
@@ -59,6 +60,7 @@ import { OrgClassificationManagementComponent } from 'system/public/components/s
         NgbModule,
         RecaptchaModule.forRoot(),
         Select2Module,
+        TreeModule,
         // internal
         SearchModule,
         WidgetModule,
@@ -118,8 +120,7 @@ import { OrgClassificationManagementComponent } from 'system/public/components/s
         SwaggerComponent,
         UsersMgtComponent,
     ],
-    exports: [
-    ],
+    exports: [],
     providers: [
         AlertService,
         CdeDiffPopulateService,
