@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { Elt, User } from 'core/public/models.model';
 import { DataElement } from 'cde/public/dataElement.model';
+import { PinBoardModalComponent } from "../../../../board/public/components/pins/pinBoardModal.component";
 
 @Component({
     selector: 'cde-cde-accordion-list',
@@ -18,10 +19,10 @@ export class CdeAccordionListComponent {
     user: User;
     Elt = Elt;
 
+    @ViewChild("pinModalCde") public pinModalCde: PinBoardModalComponent;
+
     constructor(@Inject('userResource') private userService,
-                @Inject('PinModal') public PinModal,
                 @Inject('QuickBoard') public quickBoard) {
-        this.pinModal = this.PinModal.new('cde');
 
         this.userService.getPromise().then(() => {
             this.user = this.userService.user;

@@ -50,7 +50,7 @@
                        href="/deView?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{index}}">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a *ngIf="location!='board'" class="btn btn-small btn-default"
-                       (click)="pinModal.openPinModal(elt)" id="pin_{{index}}">
+                       (click)="pinModalCde.open([elt], 'cde')" id="pin_{{index}}">
                         <i class="fa fa-thumb-tack"></i> Attach to Board</a>
                     <a *ngIf="user._id && location=='board'" class="btn btn-small btn-default"
                        (click)="unpin(elt)" id="unpin_{{index}}">
@@ -66,3 +66,6 @@
         </ng-template>
     </ngb-panel>
 </ngb-accordion>
+
+
+<cde-pin-board-modal #pinModalCde module="cde"></cde-pin-board-modal>
