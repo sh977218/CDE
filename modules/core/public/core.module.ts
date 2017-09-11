@@ -43,10 +43,6 @@ export function getAccountManagementFactory(i: any) {
     return i.get("AccountManagement");
 }
 
-export function getPinModalFactory(i: any) {
-    return i.get("PinModal");
-}
-
 export function getElasticBoardFactory(i: any) {
     return i.get("ElasticBoard");
 }
@@ -74,7 +70,6 @@ export function getElasticBoardFactory(i: any) {
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
         {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
-        {provide: "PinModal", useFactory: getPinModalFactory, deps: ["$injector"]},
         {provide: "ElasticBoard", useFactory: getElasticBoardFactory, deps: ["$injector"]},
     ],
     exports: [
