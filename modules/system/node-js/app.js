@@ -42,12 +42,25 @@ exports.init = function (app) {
 
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
-    ["/cde/search", "/form/search", "/home", "/help/:title", "/createForm", "/createCde", "/boardList",
+    function checkHttps(req, res, next) {
+        if (config.proxy) {
+            if (req.protocol !== 'https') {
+                if (req.query.gotohttps === "1") {
+                    return res.send("Missing X-Forward-Proto Header");
+                } else {
+                    return res.redirect(config.publicUrl + "?gotohttps=1");
+                }
+            }
+        }
+        next();
+    }
+
+    ["/", "/cde/search", "/form/search", "/home", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards", "/sdcview", "/cde", "/form",
         "/cdeStatusReport", "/api", "/sdcview", "/triggerClientException",
         "/formView", "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
-        app.get(path, function (req, res) {
+        app.get(path, checkHttps, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
         });
     });
@@ -90,14 +103,6 @@ exports.init = function (app) {
 
     app.get("/supportedBrowsers", function (req, res) {
         res.render('supportedBrowsers', 'system');
-    });
-
-    app.get('/', function (req, res) {
-        res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
-    });
-
-    app.get('/gonowhere', function (req, res) {
-        res.send("<html><body>Nothing here</body></html>");
     });
 
     app.get('/listOrgs', exportShared.nocacheMiddleware, function (req, res) {
