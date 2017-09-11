@@ -58,11 +58,10 @@ export class FormViewComponent implements OnInit {
                     res => this.hasComments = res && (res.length > 0),
                     err => this.alert.addAlert("danger", "Error on loading comments. " + err)
                 );
-
+                this.canEdit = this.isAllowedModel.isAllowed(this.elt);
             },
             () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
-        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
     }
 
     onLocationChange(event, newUrl, oldUrl, elt) {
@@ -91,7 +90,8 @@ export class FormViewComponent implements OnInit {
 
 
     stageElt() {
-        this.http.put("/form/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
+        this.http.put("/form/" + this.elt.tinyId, this.elt)
+            .map(r => r.json()).subscribe(response => {
                 this.elt = response;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.alert.addAlert("success", "Form saved.");
