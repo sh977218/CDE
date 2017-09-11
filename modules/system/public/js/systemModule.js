@@ -5,8 +5,7 @@ angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'LocalStorageModule', 'ui.sortable',
-    'ui.select', 'ngTextTruncate',
-    'angular-send-feedback', 'checklist-model'])
+    'ui.select', 'angular-send-feedback', 'checklist-model'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -79,67 +78,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }]);
-
-angular.module('systemModule').filter('bytes', [function () {
-    return function (bytes, precision) {
-        if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
-        if (typeof precision === 'undefined') precision = 1;
-        var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
-            number = Math.floor(Math.log(bytes) / Math.log(1024));
-        return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
-    };
-}]);
-
-//ported
-angular.module('systemModule').filter('tagsToArray', [function () {
-    return function (input) {
-        return input.map(function (m) {
-            return m.tag;
-        }).join(', ');
-    };
-}]);
-
-angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'AlertService',
-    function (userResource, $modal, $http, Alert) {
-        return {
-            new: function (type) {
-                return {
-                    openPinModal: function (elt) {
-                        if (userResource.user.username) {
-                            $modal.open({
-                                animation: false,
-                                templateUrl: '/system/public/html/selectBoardModal.html',
-                                controller: 'SelectBoardModalCtrl',
-                                resolve: {
-                                    type: function () {
-                                        return type;
-                                    }
-                                }
-                            }).result.then(function (selectedBoard) {
-                                $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
-                                    if (response.status === 200) {
-                                        Alert.addAlert("success", response.data);
-                                    } else
-                                        Alert.addAlert("warning", response.data);
-                                }, function (response) {
-                                    Alert.addAlert("danger", response.data);
-                                });
-                            }, function () {
-                            });
-                        } else {
-                            $modal.open({
-                                animation: false,
-                                templateUrl: '/system/public/html/ifYouLogInModal.html'
-                            }).result.then(function () {
-                            }, function () {
-                            });
-                        }
-                    }
-                };
-            }
-        };
-    }]);
-
 
 angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
     var isAllowedModel = {};

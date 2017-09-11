@@ -4,7 +4,6 @@ import "./system/public/js/resources";
 import "./system/public/js/orgFactories";
 import "./system/public/js/classification";
 import "./system/public/js/angularTemplates";
-import "./system/public/js/ng-text-truncate";
 
 import "./cde/public/js/cdeModule";
 import "./cde/public/js/merge";
