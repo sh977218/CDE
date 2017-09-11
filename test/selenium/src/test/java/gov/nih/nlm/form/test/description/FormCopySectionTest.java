@@ -1,12 +1,15 @@
 package gov.nih.nlm.form.test.description;
 
 import gov.nih.nlm.form.test.BaseFormTest;
-import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
 
 public class FormCopySectionTest extends BaseFormTest {
     @Test
@@ -17,7 +20,7 @@ public class FormCopySectionTest extends BaseFormTest {
         goToFormByName(form1);
         clickElement(By.id("description_tab"));
         clickElement(By.xpath("//*[@id='section_1']//i[contains(@class,'copySection')]"));
-        findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "t");
+        ((JavascriptExecutor) driver).executeScript("window.open()");
         hangon(5);
         switchTab(1);
         goToFormByName(form2);
