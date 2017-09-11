@@ -3,6 +3,7 @@ import { OrgHelperService } from "core/public/orgHelper.service";
 import { Http } from '@angular/http';
 import { IActionMapping } from 'angular-tree-component';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ClassificationService } from "core/public/core.module";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -29,7 +30,9 @@ export class OrgClassificationManagementComponent implements OnInit {
     orgToManage;
     userOrgs;
     selectedOrg;
-    selectedClassificationArray = [];
+    selectedClassificationArray = "";
+    selectedClassificationString = "";
+    userTyped;
 
     public options = {
         idField: "name",
@@ -43,7 +46,8 @@ export class OrgClassificationManagementComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private orgHelperService: OrgHelperService,
-                @Inject("userResource") private userService) {
+                @Inject("userResource") private userService,
+                private classificationSvc: ClassificationService) {
     }
 
     ngOnInit(): void {
@@ -52,7 +56,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                 this.orgToManage = this.userService.userOrgs[0];
                 this.onChangeOrg(this.orgToManage, () => {
                     this.onInitDone = true;
-                })
+                });
             } else this.onInitDone = true;
         });
 
@@ -74,15 +78,23 @@ export class OrgClassificationManagementComponent implements OnInit {
 
 
     openDeleteClassificationModal(node) {
-        let deleteClassificationArray = [node.data.name];
+        this.userTyped = "";
+        this.selectedClassificationArray = "";
+        this.selectedClassificationString = node.data.name;
+        let classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
             if (!_treeNode.data.virtual)
-                deleteClassificationArray.unshift(_treeNode.data.name);
+                classificationArray.unshift(_treeNode.data.name);
         }
-        this.selectedClassificationArray = deleteClassificationArray;
+        classificationArray.forEach((c, i) => {
+            if (i < classificationArray.length - 1)
+                this.selectedClassificationArray = this.selectedClassificationArray.concat("<span> " + c + " </span> ->");
+            else this.selectedClassificationArray = this.selectedClassificationArray.concat(" <strong> " + c + " </strong>");
+        });
         this.modalService.open(this.deleteClassificationContent).result.then(result => {
+            this.classificationSvc.removeOrgClassification(this.selectedOrg, classificationArray);
         }, () => {
         });
     }

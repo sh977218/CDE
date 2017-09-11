@@ -45,25 +45,23 @@
         <br>
         <br>
         <div class="panel panel-default">
-            <div class="panel-body">
-                {{selectedClassificationArray}}
-            </div>
+            <div class="panel-body" [innerHTML]="selectedClassificationArray"></div>
         </div>
 
         <br/>This will affect multiple CDEs.
         <br/>Are you sure you want to proceed?
         <br/>
         <br/>Please confirm your decision by typing the name of the classification:
-        <input id="removeClassificationUserTyped" ng-model="userTyped.name" (change)="checkUserTypedName()"
-               class="form-control" placeholder="">
-
+        <input id="removeClassificationUserTyped" [(ngModel)]="userTyped" class="form-control"
+               [placeholder]="selectedClassificationString">
     </div>
     <div class="modal-footer" id="deleteClassificationModalFooter">
         <button class="btn cancel" (click)="c('cancel')" id="cancelDeleteClassificationBtn"
                 name="cancelDeleteClassificationBtn" type="button">Cancel
         </button>
         <button class="btn btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
-                name="confirmDeleteClassificationBtn" type="button">OK
+                [disabled]="userTyped !== selectedClassificationString" name="confirmDeleteClassificationBtn"
+                type="button">OK
         </button>
     </div>
 </ng-template>
