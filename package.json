@@ -91,7 +91,7 @@
     "@angular/router": "4.3.6",
     "@angular/upgrade": "4.3.6",
     "@ng-bootstrap/ng-bootstrap": "1.0.0-alpha.25",
-    "@ngtools/webpack": "1.7.0",
+    "@ngtools/webpack": "1.4.1",
     "@types/node": "7.0.5",
     "angular-2-local-storage": "1.0.1",
     "angular-tree-component": "3.7.3",
@@ -151,7 +151,7 @@
     "tslint": "4.4.1",
     "tslint-loader": "3.3.0",
     "typescript": "2.2.2",
-    "webpack": "3.5.6",
+    "webpack": "2.6.1",
     "zone.js": "0.8.12"
   }
 }
