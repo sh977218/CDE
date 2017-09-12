@@ -51,7 +51,7 @@ export class ExportService {
                         });
                     },
                     'json': function (result) {
-                        let blob = new Blob([result], {type: "application/json"});
+                        let blob = new Blob([JSON.stringify(result)], {type: "application/json"});
                         saveAs(blob, "SearchExport.json");
                     },
                     'xml': function (result) {
