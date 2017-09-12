@@ -307,3 +307,7 @@ angular.module('systemModule').directive('cdeLogin', downgradeComponent(
 import {PublicBoardsComponent} from "../../../board/public/components/publicBoards/publicBoards.component";
 angular.module('systemModule').directive('cdePublicBoards', downgradeComponent(
     {component: PublicBoardsComponent, inputs: [], outputs: []}));
+
+import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component";
+angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
+    {component: LatestCommentsComponent, inputs: [], outputs: []}));
