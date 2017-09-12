@@ -9,9 +9,20 @@ setInterval(() => {
             console.log("indexing complete, status returned: ");
             console.log(body);
             request.post("http://localhost:3001/syncWithMesh", {}, () => {
-                setTimeout(() => {
-                   process.exit(0);
-                })
+                setInterval(() => {
+                    request.get("http://localhost:3001/syncWithMesh", (err, res, body) => {
+                       if (body.dataelement.done === body.dataelement.total &&
+                           body.form.done === body.form.total
+                       ) {
+                           console.log("Done indexing");
+                           console.log(body);
+                           process.exit(0);
+                       } else {
+                           console.log("Waiting for Mesh Sync");
+                           console.log(body);
+                       }
+                    });
+                }, 3000);
             })
        }
     });
