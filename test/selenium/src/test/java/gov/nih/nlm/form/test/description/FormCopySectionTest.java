@@ -21,14 +21,12 @@ public class FormCopySectionTest extends BaseFormTest {
         switchTab(1);
         goToFormByName(form2);
         clickElement(By.id("description_tab"));
-        addSectionTop("copy section", null);
         WebElement sourceElt = findElement(By.id("pasteSection"));
         WebElement targetElt = findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'node-content-wrapper')]"));
         (new Actions(driver)).moveToElement(targetElt).perform();
         dragAndDrop(sourceElt, targetElt);
         newFormVersion();
-        switchTabAndClose(0);
-        driver.navigate().refresh();
-        textPresent("Feeling down, depressed, or hopeless?");
+        goToFormByName(form2);
+        textPresent("Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
     }
 }

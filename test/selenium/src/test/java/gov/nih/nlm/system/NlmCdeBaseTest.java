@@ -792,11 +792,16 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void switchTabAndClose(int i) {
+    /**
+     * This method is used to close current tab and switch to desired tab.
+     *
+     * @param switchTo switch to tab index, starting from 0;
+     */
+    protected void switchTabAndClose(int switchTo) {
         hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
-        driver.switchTo().window(tabs2.get(i));
+        driver.switchTo().window(tabs2.get(switchTo));
         hangon(3);
     }
 
