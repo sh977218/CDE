@@ -17,7 +17,6 @@ import "./system/shared/regStatusShared";
 import "./system/shared/authorizationShared";
 import "./system/public/js/controllers/MainCtrl";
 import "./cde/public/assets/js/diff_match_patch";
-import "./system/public/js/exceptionHandler";
 import "./system/public/js/controllers/AddClassificationModalCtrl";
 import "./system/public/js/controllers/ClassificationManagementCtrl";
 import "./system/public/js/controllers/AddClassificationToOrgModalCtrl";
