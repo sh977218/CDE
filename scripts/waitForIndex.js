@@ -11,9 +11,8 @@ setInterval(() => {
             request.post("http://localhost:3001/syncWithMesh", {}, () => {
                 setInterval(() => {
                     request.get("http://localhost:3001/syncWithMesh", (err, res, body) => {
-                       console.log(err);
-                       console.log(res);
-                       console.log(body);
+                        body = JSON.parse(body);
+                        console.log(body);
                        if (body.dataelement.done === body.dataelement.total &&
                            body.form.done === body.form.total
                        ) {
