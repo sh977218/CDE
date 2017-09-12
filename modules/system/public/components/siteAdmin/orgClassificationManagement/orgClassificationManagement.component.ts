@@ -94,7 +94,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             else this.selectedClassificationArray = this.selectedClassificationArray.concat(" <strong> " + c + " </strong>");
         });
         this.modalService.open(this.deleteClassificationContent).result.then(result => {
-            this.classificationSvc.removeOrgClassification(this.selectedOrg, classificationArray);
+            this.classificationSvc.removeOrgClassification(this.selectedOrg.name, classificationArray);
         }, () => {
         });
     }

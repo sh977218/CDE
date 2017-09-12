@@ -234,7 +234,7 @@ exports.init = function (app) {
 
 
     app.get('/org/:name', exportShared.nocacheMiddleware, function (req, res) {
-        return mongo_data_system.orgByName(req.params.name, function (result) {
+        return mongo_data_system.orgByName(req.params.name, function (err, result) {
             res.send(result);
         });
     });
@@ -450,10 +450,10 @@ exports.init = function (app) {
     });
 
     app.delete('/classification/org', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
             return res.status(403).end();
         } else {
-            classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function (err, org) {
+            classificationNode.modifyOrgClassification(req.body, classificationShared.actions.delete, function (err, org) {
                 res.send(org);
             });
         }

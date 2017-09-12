@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Http } from "@angular/http";
+import { Http, RequestOptions } from "@angular/http";
 import { LocalStorageService } from "angular-2-local-storage";
 import * as _ from 'lodash';
 import { AlertService } from 'system/public/components/alert/alert.service';
@@ -112,7 +112,8 @@ export class ClassificationService {
             orgName: orgName,
             categories: categories
         };
-        this.http.delete("/classification/org", deleteBody).map(res => res.json()).subscribe(res => {
+        let ro = new RequestOptions({body: deleteBody});
+        this.http.delete("/classification/org", ro).map(res => res.json()).subscribe(res => {
             this.alert.addAlert("success", "Classification Deleted");
         }, err => this.alert.addAlert("danger", err))
     };
