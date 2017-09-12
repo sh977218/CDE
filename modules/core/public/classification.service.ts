@@ -107,14 +107,14 @@ export class ClassificationService {
         return result;
     }
 
-    removeOrgClassification(orgName, categories) {
+    removeOrgClassification(orgName, categories, cb) {
         let deleteBody = {
             orgName: orgName,
             categories: categories
         };
         let ro = new RequestOptions({body: deleteBody});
         this.http.delete("/classification/org", ro).map(res => res.json()).subscribe(res => {
-            this.alert.addAlert("success", "Classification Deleted");
+            cb(res);
         }, err => this.alert.addAlert("danger", err))
     };
 

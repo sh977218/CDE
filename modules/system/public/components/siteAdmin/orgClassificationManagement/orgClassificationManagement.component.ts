@@ -4,6 +4,7 @@ import { Http } from '@angular/http';
 import { IActionMapping } from 'angular-tree-component';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ClassificationService } from "core/public/core.module";
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -18,7 +19,7 @@ const actionMapping: IActionMapping = {
     selector: "cde-org-classification-management",
     templateUrl: "./orgClassificationManagement.component.html",
     styles: [`
-        host > > > .tree {
+        host >>> .tree {
             cursor: default !important;
         }
     `]
@@ -46,6 +47,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private orgHelperService: OrgHelperService,
+                private alert: AlertService,
                 @Inject("userResource") private userService,
                 private classificationSvc: ClassificationService) {
     }
@@ -94,7 +96,10 @@ export class OrgClassificationManagementComponent implements OnInit {
             else this.selectedClassificationArray = this.selectedClassificationArray.concat(" <strong> " + c + " </strong>");
         });
         this.modalService.open(this.deleteClassificationContent).result.then(result => {
-            this.classificationSvc.removeOrgClassification(this.selectedOrg.name, classificationArray);
+            this.classificationSvc.removeOrgClassification(this.selectedOrg.name, classificationArray, newOrg => {
+                this.selectedOrg = newOrg;
+                this.alert.addAlert("success", "Classification Deleted");
+            });
         }, () => {
         });
     }
