@@ -11,10 +11,8 @@ import { ExportService } from "./export.service";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
-import { SharedService } from "./shared.service";
 import { CompareService } from "./compare.service";
 import { OrgHelperService } from "./orgHelper.service";
-import { TourService } from "./tour.service";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
@@ -39,14 +37,6 @@ export function getFormQuickBoardFactory(i: any) {
     return i.get("FormQuickBoard");
 }
 
-export function getAccountManagementFactory(i: any) {
-    return i.get("AccountManagement");
-}
-
-export function getElasticBoardFactory(i: any) {
-    return i.get("ElasticBoard");
-}
-
 @NgModule({
     imports: [
         Select2Module,
@@ -69,8 +59,6 @@ export function getElasticBoardFactory(i: any) {
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
-        {provide: "AccountManagement", useFactory: getAccountManagementFactory, deps: ["$injector"]},
-        {provide: "ElasticBoard", useFactory: getElasticBoardFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,

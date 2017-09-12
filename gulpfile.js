@@ -154,7 +154,7 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
 });
 
 gulp.task('angularTemplates', function () {
-    ['cde', 'form', 'system', 'embedded', 'board'].forEach(function (module) {
+    ['system', 'embedded'].forEach(function (module) {
         gulp
             .src("modules/" + module + "/public/js/angularTemplates.js")
             .pipe(gulp.dest("modules/" + module + "/public/js/bkup/"));
@@ -210,7 +210,7 @@ gulp.task('webpack', ['thirdParty'], function () {
 });
 
 gulp.task('emptyTemplates', ['usemin'], function () {
-    ['cde', 'form', 'system', 'embedded', 'board'].forEach(function (module) {
+    ['cde', 'form', 'system', 'embedded'].forEach(function (module) {
         return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
             .pipe(gulp.dest("modules/" + module + "/public/js/"));
     });

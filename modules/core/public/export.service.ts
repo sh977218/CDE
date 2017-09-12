@@ -1,7 +1,7 @@
-import { Inject, Injectable, Input } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import * as JSZip from "jszip";
 import * as JXON from "jxon";
-import { saveAs } from "cde/public/assets/js/FileSaver.js";
+import { saveAs } from "file-saver";
 import { AlertService } from "system/public/components/alert/alert.service";
 import { ElasticService } from 'core/public/elastic.service';
 import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
@@ -51,7 +51,7 @@ export class ExportService {
                         });
                     },
                     'json': function (result) {
-                        let blob = new Blob([result], {type: "application/json"});
+                        let blob = new Blob([JSON.stringify(result)], {type: "application/json"});
                         saveAs(blob, "SearchExport.json");
                     },
                     'xml': function (result) {

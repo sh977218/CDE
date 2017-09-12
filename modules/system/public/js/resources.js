@@ -60,91 +60,6 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
 }
 
 angular.module('resourcesSystem', ['ngResource'])
-    .factory("Attachment", ["$http", function ($http) {
-        return {
-            remove: function (dat, success, error) {
-                $http.post('/removeAttachment', dat).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , setDefault: function (dat, success, error) {
-                $http.post('/setAttachmentDefault', dat).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-        };
-    }])
-    .factory("AccountManagement", ["$http", function ($http) {
-        return {
-            addSiteAdmin: function (user, success, error) {
-                $http.post('/addSiteAdmin', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , removeSiteAdmin: function (user, success, error) {
-                $http.post('/removeSiteAdmin', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , addOrgCurator: function (user, success, error) {
-                $http.post('/addOrgCurator', user).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , removeOrgCurator: function (data, success, error) {
-                $http.post('/removeOrgCurator', data).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , addOrg: function (data, success, error) {
-                $http.post('/addOrg', data).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , removeOrg: function (id, success, error) {
-                $http.post('/removeOrg', id).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , updateOrg: function (org, success, error) {
-                $http.post('/updateOrg', org).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , transferSteward: function (transferStewardObj, success, error) {
-                $http.post('/transferSteward', transferStewardObj).then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-            , getAllUsernames: function (success, error) {
-                $http.get('/getAllUsernames').then(function onSuccess(response) {
-                    success(response.data)
-                }, function onError(response) {
-                    error(response.data)
-                });
-            }
-        };
-    }])
     .factory("Organization", ["$http", function ($http) {
         return {
             getByName: function (orgName, cb) {
@@ -152,12 +67,6 @@ angular.module('resourcesSystem', ['ngResource'])
                     if (cb) cb(response);
                 });
             }
-        };
-    }])
-    .factory("TourContent", [function () {
-        return {
-            stop: null
-            , steps: []
         };
     }])
     .factory("userResource", ["$http", "$q", "$interval", "OrgHelpers", function ($http, $q, $interval, OrgHelpers) {
@@ -211,12 +120,6 @@ angular.module('resourcesSystem', ['ngResource'])
                 });
             }
         };
-
-        // $interval(function () {
-        //     OrgHelpers.getOrgsDetailedInfoAPI();
-        //     userResource.checkMail();
-        // }, 600000);
-
         return this;
     }])
     .factory("SearchResultResource", [function () {
