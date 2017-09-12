@@ -6,10 +6,7 @@ import "./system/public/js/classification";
 import "./system/public/js/angularTemplates";
 
 import "./cde/public/js/cdeModule";
-import "./cde/public/js/angularTemplates";
-
 import "./form/public/js/formModule";
-import "./form/public/js/angularTemplates";
 
 import "./system/shared/classificationShared";
 import "./system/shared/regStatusShared";
