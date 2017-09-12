@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
     username: string;
     password: string;
     siteKey: string = (window as any).siteKey;
+    recaptcha: string;
     redirectRoute: string;
 
     constructor(private http: Http,
@@ -27,9 +28,12 @@ export class LoginComponent implements OnInit {
         this.redirectRoute = this.loginSvc.getPreviousRoute() ? this.loginSvc.getPreviousRoute() : "/home";
     }
 
+    resolved (e) {
+        this.recaptcha = e;
+    }
+
     getCsrf() {
         delete this.csrf;
-
         this.http.get('/csrf').map(r => r.json()).subscribe(response => {
             this.csrf = response.csrf;
             this.showCaptcha = response.showCaptcha;
@@ -40,7 +44,8 @@ export class LoginComponent implements OnInit {
         this.http.post('/login', {
             username: this.username,
             password: this.password,
-            _csrf: this.csrf
+            _csrf: this.csrf,
+            recaptcha: this.recaptcha
         }).map(r => r.text()).subscribe(res => {
             this.userService.getRemoteUser();
             if (res === "OK") {

@@ -8,10 +8,22 @@ setInterval(() => {
            body.indexOf('indices":[]') === -1 && body.indexOf('indices') > 0) {
             console.log("indexing complete, status returned: ");
             console.log(body);
-            request.post("http://localhost:3001/syncWithMesh", {}, (err, res, body) => {
-                console.log("Started Mesh Sync, got: ");
-                console.log(body);
-                process.exit(0);
+            request.post("http://localhost:3001/syncWithMesh", {}, () => {
+                setInterval(() => {
+                    request.get("http://localhost:3001/syncWithMesh", (err, res, body) => {
+                       console.log(err);
+                       console.log(res);
+                       console.log(body);
+                       if (body.dataelement.done === body.dataelement.total &&
+                           body.form.done === body.form.total
+                       ) {
+                           console.log("Done indexing");
+                           process.exit(0);
+                       } else {
+                           console.log("Waiting for Mesh Sync");
+                       }
+                    });
+                }, 3000);
             })
        }
     });
