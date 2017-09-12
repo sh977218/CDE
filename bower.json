@@ -24,7 +24,6 @@
     "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5",
     "checklist-model": "0.9.0",
     "angular-ui-sortable": "0.14.0",
-    "angular-ui-scrollpoint": "2.1.1",
     "async": "2.0.0-rc.5",
     "lforms": "11.2.1",
     "lforms-converter": "3.2.1"

@@ -1,4 +1,4 @@
-angular.module('formModule', ['ngRoute', 'ui.scrollpoint', 'formTemplates']).config(
+angular.module('formModule', ['ngRoute']).config(
     ["$routeProvider", function($routeProvider)
 {
     $routeProvider.
