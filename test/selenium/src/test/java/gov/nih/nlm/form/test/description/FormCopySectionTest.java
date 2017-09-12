@@ -22,7 +22,7 @@ public class FormCopySectionTest extends BaseFormTest {
         goToFormByName(form2);
         clickElement(By.id("description_tab"));
         WebElement sourceElt = findElement(By.id("pasteSection"));
-        WebElement targetElt = findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'node-content-wrapper')]"));
+        WebElement targetElt = findElement(By.xpath("//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']"));
         (new Actions(driver)).moveToElement(targetElt).perform();
         dragAndDrop(sourceElt, targetElt);
         newFormVersion();
