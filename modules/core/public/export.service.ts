@@ -28,7 +28,7 @@ export class ExportService {
         }
 
         if (type !== 'validationRules')
-            this.alertService.addAlert("warning", "Your export is being generated, please wait.");
+            this.alertService.addAlertn("warning", "Your export is being generated, please wait.");
 
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings),
