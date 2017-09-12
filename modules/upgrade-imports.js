@@ -6,7 +6,6 @@ import "./system/public/js/classification";
 import "./system/public/js/angularTemplates";
 
 import "./cde/public/js/cdeModule";
-import "./cde/public/js/merge";
 import "./cde/public/js/angularTemplates";
 
 import "./form/public/js/formModule";
