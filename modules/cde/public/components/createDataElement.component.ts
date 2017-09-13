@@ -149,7 +149,6 @@ export class CreateDataElementComponent implements OnInit {
         });
     };
 
-
     createDataElement() {
         this.http.post("/de", this.elt).map(res => res.json())
             .subscribe(res => window.location.href = "/deView?tinyId=" + res.tinyId,
