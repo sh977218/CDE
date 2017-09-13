@@ -42,7 +42,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport.json"),
                             Paths.get(tempFolder + "/ExportTest-searchExport.json"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s);
+                    Assert.fail("missing line in export : " + s + "\nactual: " + actual);
                 }
             }
         } catch (IOException e) {
