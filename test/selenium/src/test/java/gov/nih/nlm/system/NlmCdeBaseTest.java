@@ -280,7 +280,7 @@ public class NlmCdeBaseTest {
         }
 
         clickElement(By.id("addOrg"));
-        textPresent("Org Added");
+        textPresent("Saved");
         textPresent(orgName);
         closeAlert();
 

@@ -1,9 +1,9 @@
-import { Component, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { AlertService } from "system/public/components/alert/alert.service";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SharedService } from "core/public/shared.service";
-import { saveAs } from "cde/public/assets/js/FileSaver.js";
+import { saveAs } from "file-saver";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
 import { OrgHelperService } from "core/public/orgHelper.service";
 

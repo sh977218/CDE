@@ -5,6 +5,7 @@
   "debugEnabled": true,
   "pmRunOnStartup": [],
   "viewsIncrementThreshold": 1,
+  "autoSyncMesh": true,
   "database": {
     "local": {
       "db": "local",
@@ -25,6 +26,10 @@
     "boardIndex": {"name": "boardtest"},
     "storedQueryIndex": {"name": "storedquerytest"},
     "number_of_replicas" : 0
-  }
+  },
+  "siteKey" : "6LecRzAUAAAAAOB_LOhlf3itbTn3zOC2jYC6Er6u",
+  "captchaCode": "6LecRzAUAAAAAN5GJyrT5ZuAPOAi9GtiKo5jXgMF"
+, "useCaptcha" : true
+, "sessionKey":  "Kfji76R"
 }
 
