@@ -31,7 +31,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected = {
-                "[{\"tinyId\":\"03UmDCNQ4x7\",\"imported\":\"2015-09-21T18:20:26.298Z\",\"source\":\"NINDS\",\"version\":\"3\"",
+                "{\"tinyId\":\"03UmDCNQ4x7\",\"imported\":\"2015-09-21T18:20:26.298Z\",\"source\":\"NINDS\",\"version\":\"3\"",
                 "\"referenceDocuments\":[],\"attachments\":[],\"archived\":false,\"comments\":[],\"mappingSpecifications\":[]"
         };
 
