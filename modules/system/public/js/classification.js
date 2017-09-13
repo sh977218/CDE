@@ -1,13 +1,7 @@
 angular.module('classification', ['ngResource'])
-.factory('OrgClassification', ["$resource", "$http", function($resource, $http) {
+.factory('OrgClassification', ["$resource", "$http", function($resource) {
     return {
         resource: $resource('/classification/org')
-        , rename: function(orgName, path, newname, cb) {
-            var data = {orgName: orgName, categories: path, newname: newname};
-            $http.post('/classification/rename', data).then(function onSuccess(response) {
-                cb(response.data);
-            });
-        }
     };
 }])
 .factory('CdeClassification', ["$resource", function($resource) {

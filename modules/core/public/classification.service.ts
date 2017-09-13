@@ -113,9 +113,33 @@ export class ClassificationService {
             categories: categories
         };
         let ro = new RequestOptions({body: deleteBody});
-        this.http.delete("/classification/org", ro).map(res => res.json()).subscribe(res => {
-            cb(res);
-        }, err => this.alert.addAlert("danger", err))
+        this.http.delete("/classification/org", ro)
+            .map(res => res.json()).subscribe(
+            res => cb(res),
+            err => this.alert.addAlert("danger", err))
+    };
+
+    renameOrgClassification(orgName, categories, newClassificationName, cb) {
+        let postBody = {
+            orgName: orgName,
+            categories: categories,
+            newname: newClassificationName
+        };
+        this.http.post("/classification/rename", postBody)
+            .map(res => res.json()).subscribe(
+            res => cb(res),
+            err => this.alert.addAlert("danger", err))
+    };
+
+    addChildClassification(orgName, categories, cb) {
+        let postBody = {
+            orgName: orgName,
+            categories: categories,
+        };
+        this.http.post("/classification/org", postBody)
+            .map(res => res.json()).subscribe(
+            res => cb(res),
+            err => this.alert.addAlert("danger", err))
     };
 
 }
