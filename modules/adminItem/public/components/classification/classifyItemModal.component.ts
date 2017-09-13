@@ -54,7 +54,7 @@ export class ClassifyItemModalComponent {
         } else this.userService.getPromise().then(() => {
             if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
         });
-        return this.modalService.open(this.classifyItemContent, {size: "lg"});
+        return this.modalService.open(this.classifyItemContent);
     }
 
     onChangeOrg(value) {

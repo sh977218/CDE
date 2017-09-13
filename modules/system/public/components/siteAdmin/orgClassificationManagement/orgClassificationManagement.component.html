@@ -91,8 +91,9 @@
     </div>
 </ng-template>
 
-<cde-classify-item-modal #reclassifyComponent [modalTitle]="'Classify CDEs in Bulk'"
-                         (onEltSelected)="reclassify($event)"></cde-classify-item-modal>
+<cde-classify-item-modal #reclassifyComponent [modalTitle]="selectedClassificationArray"
+                         (onEltSelected)="reclassify($event)">
+</cde-classify-item-modal>
 
 <ng-template #addChildClassificationContent id="addChildClassificationModal" let-c="close" let-d="dismiss">
     <form #addChildClassificationForm="ngForm">
@@ -140,7 +141,8 @@
 
             <label for="meshSearchTerm">MeSH Descriptor: </label>
             <input class="form-control" [(ngModel)]="meshSearchTerm" id="meshSearchTerm" name="meshSearchTerm"
-                   id="mapClassificationMeshInput" pattern="^[^;]+$" required (change)="searchMesh()">
+                   id="mapClassificationMeshInput" pattern="^[^;]+$" (keyup)="searchMesh()"
+                   (ngModelChange)="searchMesh()" required>
             <span *ngIf="searching">searching...</span>
             <!--
                         <div ng-if="descriptorID">

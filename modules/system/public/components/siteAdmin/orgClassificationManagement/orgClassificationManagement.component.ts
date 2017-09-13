@@ -9,6 +9,7 @@ import 'rxjs/add/operator/map';
 import { ClassificationService } from "core/public/core.module";
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { Subject } from 'rxjs/Subject';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -48,6 +49,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     searchFailed: boolean = false;
     meshDescriptors = [];
     oldReclassificationArray;
+    private searchTerms = new Subject<string>();
 
     public options = {
         idField: "name",
@@ -73,6 +75,24 @@ export class OrgClassificationManagementComponent implements OnInit {
                     this.onInitDone = true;
                 });
             } else this.onInitDone = true;
+        });
+
+        this.searchTerms
+            .debounceTime(300)
+            .distinctUntilChanged()
+            .do(() => this.searching = true)
+            .switchMap(term => {
+                let url = (window as any).meshUrl + "/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=" + term;
+                if (term) return this.http.get(url).map(res => res.json());
+                else return Observable.of<string[]>([]);
+            }).subscribe(res => {
+            if (res && res.hits && res.hits.hits && res.hits.hits.length === 1) {
+                let desc = res.data.hits.hits[0]._source;
+                let descriptorName = desc.DescriptorName.String.t;
+                let descriptorID = desc.DescriptorUI.t;
+                this.meshDescriptors.push({descriptorName: descriptorName, descriptorID: descriptorID});
+            }
+            this.searching = false;
         });
 
     }
@@ -141,6 +161,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     openReclassificationModal(node) {
+        this.selectedClassificationArray = "";
         let classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
@@ -148,8 +169,14 @@ export class OrgClassificationManagementComponent implements OnInit {
             if (!_treeNode.data.virtual)
                 classificationArray.unshift(_treeNode.data.name);
         }
+        classificationArray.forEach((c, i) => {
+            if (i < classificationArray.length - 1)
+                this.selectedClassificationArray = this.selectedClassificationArray.concat(c + " / ");
+            else this.selectedClassificationArray = this.selectedClassificationArray.concat(c);
+        });
+        this.selectedClassificationArray = "Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> " + this.selectedClassificationArray + " </strong> with new classification(s).</p>";
         this.oldReclassificationArray = classificationArray;
-        this.reclassifyComponent.openModal()
+        this.reclassifyComponent.openModal();
     }
 
     reclassify(event) {
@@ -162,7 +189,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             cdeId: null,
             orgName: event.selectedOrg
         };
-        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, (err, newOrg) => {
+        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, newOrg => {
             this.selectedOrg = newOrg;
             this.alert.addAlert("success", "Elements classified.");
         });
@@ -226,52 +253,11 @@ export class OrgClassificationManagementComponent implements OnInit {
         });
     }
 
-    searchMesh = (text$: Observable<string>) => {
-        this.meshDescriptors = [];
-        text$.debounceTime(300)
-            .distinctUntilChanged()
-            .do(() => {
-                let url = (window as any).meshUrl + "/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=" + text$;
-                this.http.get(url).map(res => res.json())
-                    .subscribe(res => {
-                        if (res && res.data && res.data.hits && res.data.hits.hits && res.data.hits.hits.length === 1) {
-                            let desc = res.data.hits.hits[0]._source;
-                            let descriptorName = desc.DescriptorName.String.t;
-                            let descriptorID = desc.DescriptorUI.t;
-                            this.meshDescriptors.push({descriptorName: descriptorName, descriptorID: descriptorID});
-                            this.searchFailed = false;
-                        }
-                        this.searching = true
-                    }, err => {
-                    })
-            })
+    searchMesh() {
+        this.searchTerms.next(this.meshSearchTerm);
     }
+
     /*
-
-        loadDescriptor() {
-            if (currentTimeout) currentTimeout.cancel();
-
-            $timeout(function () {
-                $http.get(meshUrl + "/api/search/record?searchInField=termDescriptor" + // jshint ignore:line
-                    "&searchType=exactMatch&q=" + $scope.meshSearch).then(function onSuccess(response) {
-                    try {
-                        if (response.data.hits.hits.length === 1) {
-                            var desc = response.data.hits.hits[0]._source;
-                            $scope.descriptorName = desc.DescriptorName.String.t;
-                            $scope.descriptorID = desc.DescriptorUI.t;
-                        }
-                    } catch (e) {
-                        delete $scope.descriptorName;
-                        delete $scope.descriptorID;
-                    }
-                }).catch(function onError() {
-                    delete $scope.descriptorName;
-                    delete $scope.descriptorID;
-                });
-            }, 0);
-        };
-
-
         addMeshDescriptor = function () {
             $scope.mapping.meshDescriptors.push($scope.descriptorID);
             $scope.descToName[$scope.descriptorID] = $scope.descriptorName;

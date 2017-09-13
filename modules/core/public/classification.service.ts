@@ -116,7 +116,7 @@ export class ClassificationService {
         this.http.delete("/classification/org", ro)
             .map(res => res.json()).subscribe(
             res => cb(res),
-            err => this.alert.addAlert("danger", err))
+            err => this.alert.addAlert("danger", err));
     };
 
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
@@ -136,7 +136,6 @@ export class ClassificationService {
         this.http.post("/classifyEntireSearch", postBody).map(res => res.json()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
-        this.alert.addAlert("warning", "Classification task is still in progress. Please hold on.");
     }
 
     renameOrgClassification(orgName, categories, newClassificationName, cb) {
@@ -148,7 +147,7 @@ export class ClassificationService {
         this.http.post("/classification/rename", postBody)
             .map(res => res.json()).subscribe(
             res => cb(res),
-            err => this.alert.addAlert("danger", err))
+            err => this.alert.addAlert("danger", err));
     };
 
     addChildClassification(orgName, categories, cb) {
@@ -159,7 +158,7 @@ export class ClassificationService {
         this.http.post("/classification/org", postBody)
             .map(res => res.json()).subscribe(
             res => cb(res),
-            err => this.alert.addAlert("danger", err))
+            err => this.alert.addAlert("danger", err));
     };
 
 }
