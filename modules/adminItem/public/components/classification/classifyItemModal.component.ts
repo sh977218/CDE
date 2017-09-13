@@ -22,7 +22,6 @@ const actionMapping: IActionMapping = {
 })
 export class ClassifyItemModalComponent {
     @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
-    @Input() elt: any;
     @Input() modalTitle: string = "Classify this CDE";
     @Output() onEltSelected = new EventEmitter();
 
@@ -82,12 +81,10 @@ export class ClassifyItemModalComponent {
 
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
         this.classificationSvc.updateClassificationLocalStorage({
-            eltId: this.elt._id,
             categories: classificationRecentlyAdd.categories,
             orgName: classificationRecentlyAdd.orgName
         });
         this.onEltSelected.emit({
-            eltId: this.elt._id,
             classificationArray: classificationRecentlyAdd.categories,
             selectedOrg: classificationRecentlyAdd.orgName,
         });
@@ -103,7 +100,6 @@ export class ClassifyItemModalComponent {
                 classificationArray.unshift(_treeNode.data.name);
         }
         this.classificationSvc.updateClassificationLocalStorage({
-            eltId: this.elt._id,
             categories: classificationArray,
             orgName: this.selectedOrg
         });

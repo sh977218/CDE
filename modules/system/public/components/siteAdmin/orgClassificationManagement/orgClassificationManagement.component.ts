@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 
 import { ClassificationService } from "core/public/core.module";
 import { AlertService } from 'system/public/components/alert/alert.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -30,6 +31,7 @@ const actionMapping: IActionMapping = {
 export class OrgClassificationManagementComponent implements OnInit {
     @ViewChild("renameClassificationContent") public renameClassificationContent: NgbModalModule;
     @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
+    @ViewChild("reclassifyComponent") public reclassifyComponent: ClassifyItemModalComponent;
     @ViewChild("addChildClassificationContent") public addChildClassificationContent: NgbModalModule;
     @ViewChild("mapClassificationMeshContent") public mapClassificationMeshContent: NgbModalModule;
     public modalRef: NgbModalRef;
@@ -45,6 +47,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     searching: boolean = false;
     searchFailed: boolean = false;
     meshDescriptors = [];
+    oldReclassificationArray;
 
     public options = {
         idField: "name",
@@ -138,6 +141,31 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     openReclassificationModal(node) {
+        let classificationArray = [node.data.name];
+        let _treeNode = node;
+        while (_treeNode.parent) {
+            _treeNode = _treeNode.parent;
+            if (!_treeNode.data.virtual)
+                classificationArray.unshift(_treeNode.data.name);
+        }
+        this.oldReclassificationArray = classificationArray;
+        this.reclassifyComponent.openModal()
+    }
+
+    reclassify(event) {
+        let oldClassification = {
+            orgName: this.selectedOrg.name,
+            classifications: this.oldReclassificationArray
+        };
+        let newClassification = {
+            categories: event.classificationArray,
+            cdeId: null,
+            orgName: event.selectedOrg
+        };
+        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, (err, newOrg) => {
+            this.selectedOrg = newOrg;
+            this.alert.addAlert("success", "Elements classified.");
+        });
     }
 
     openAddChildClassificationModal(node) {

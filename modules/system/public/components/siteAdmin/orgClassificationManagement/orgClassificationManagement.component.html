@@ -91,6 +91,9 @@
     </div>
 </ng-template>
 
+<cde-classify-item-modal #reclassifyComponent [modalTitle]="'Classify CDEs in Bulk'"
+                         (onEltSelected)="reclassify($event)"></cde-classify-item-modal>
+
 <ng-template #addChildClassificationContent id="addChildClassificationModal" let-c="close" let-d="dismiss">
     <form #addChildClassificationForm="ngForm">
         <div class="modal-header" id="addChildClassificationModalHeader">

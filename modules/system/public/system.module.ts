@@ -50,6 +50,7 @@ import { LoginService } from "./components/login/login.service";
 import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccountManagement/orgAccountManagement.component";
 import { OrgClassificationManagementComponent } from 'system/public/components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component';
 import { TreeModule } from 'angular-tree-component';
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
 
 @NgModule({
     imports: [
@@ -62,6 +63,7 @@ import { TreeModule } from 'angular-tree-component';
         Select2Module,
         TreeModule,
         // internal
+        AdminItemModule,
         SearchModule,
         WidgetModule,
         DiscussModule,

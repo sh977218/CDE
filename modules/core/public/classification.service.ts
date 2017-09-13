@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Http, RequestOptions } from "@angular/http";
 import { LocalStorageService } from "angular-2-local-storage";
 import * as _ from 'lodash';
@@ -9,6 +9,7 @@ export class ClassificationService {
 
     constructor(public http: Http,
                 private localStorageService: LocalStorageService,
+                @Inject('SearchSettings') public SearchSettings,
                 private alert: AlertService) {
     }
 
@@ -23,7 +24,6 @@ export class ClassificationService {
         if (!recentlyClassification) recentlyClassification = [];
         allPossibleCategories.forEach(i => recentlyClassification.unshift({
             categories: i,
-            eltId: item.eltId,
             orgName: item.orgName
         }));
         recentlyClassification = _.uniqWith(recentlyClassification, (a, b) =>
@@ -118,6 +118,26 @@ export class ClassificationService {
             res => cb(res),
             err => this.alert.addAlert("danger", err))
     };
+
+    reclassifyOrgClassification(oldClassification, newClassification, cb) {
+        let settings = {
+            resultPerPage: 10000,
+            searchTerm: "",
+            selectedOrg: oldClassification.orgName,
+            selectedElements: oldClassification.classifications,
+            page: 1,
+            selectedStatuses: this.SearchSettings.getUserDefaultStatuses()
+        };
+        let postBody = {
+            query: settings,
+            newClassification: newClassification,
+            types: ["cde", "form"]
+        };
+        this.http.post("/classifyEntireSearch", postBody).map(res => res.json()).subscribe(
+            res => cb(res),
+            err => this.alert.addAlert("danger", err));
+        this.alert.addAlert("warning", "Classification task is still in progress. Please hold on.");
+    }
 
     renameOrgClassification(orgName, categories, newClassificationName, cb) {
         let postBody = {

@@ -253,35 +253,33 @@ exports.classifyEntireSearch = function (req, cb) {
 
     async.each(daoManager.getDaoList(), function (dao, oneDaoDone) {
         var query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
-        elastic.elasticsearch(query, dao.type, function (err, result) {
-            if (err) return;
-            var ids = result[dao.type + 's'].map(function (cde) {
-                return cde.tinyId;
-            });
-
-            var action = function (id, actionCallback) {
-                var classifReq = {
-                    orgName: req.body.newClassification.orgName
-                    , categories: req.body.newClassification.categories
-                    , tinyId: id
+        async.each(req.body.types, function (type, doneOneType) {
+            elastic.elasticsearch(query, type, function (err, result) {
+                if (err) return;
+                var ids = result[dao.type + 's'].map(elt => elt.tinyId);
+                var action = function (id, actionCallback) {
+                    var classifReq = {
+                        orgName: req.body.newClassification.orgName,
+                        categories: req.body.newClassification.categories,
+                        tinyId: id
+                    };
+                    classification.eltClassification(classifReq, classificationShared.actions.create, dao, actionCallback);
                 };
-                classification.eltClassification(classifReq, classificationShared.actions.create, dao, actionCallback);
-            };
 
-            adminItemSvc.bulkAction(ids, action, oneDaoDone);
+                adminItemSvc.bulkAction(ids, action, doneOneType);
 
-            mongo_data_system.addToClassifAudit({
-                date: new Date()
-                , user: {
-                    username: req.user.username
-                }
-                , elements: result[dao.type + 's'].map(function (e) {
-                    return {tinyId: e.tinyId};
-                })
-                , action: "reclassify"
-                , path: [req.body.newClassification.orgName].concat(req.body.newClassification.categories)
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {username: req.user.username},
+                    elements: result[dao.type + 's'].map(e => {
+                        return {tinyId: e.tinyId};
+                    }),
+                    action: "reclassify",
+                    path: [req.body.newClassification.orgName].concat(req.body.newClassification.categories)
+                });
             });
+        }, function doneAllTypes() {
+            oneDaoDone();
         });
     }, cb);
-
 };
