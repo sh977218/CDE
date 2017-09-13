@@ -15,6 +15,7 @@ import { FormModule } from "./form/public/form.module";
 import { SystemModule } from "./system/public/system.module";
 import { QuickBoardModule } from 'quickBoard/public/quickBoard.module';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
         CommonModule,
         FormsModule,
         HttpModule,
+        BrowserAnimationsModule,
         NgbModule.forRoot(),
         UpgradeModule,
         // internal

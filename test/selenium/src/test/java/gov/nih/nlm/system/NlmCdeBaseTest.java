@@ -792,11 +792,16 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void switchTabAndClose(int i) {
+    /**
+     * This method is used to close current tab and switch to desired tab.
+     *
+     * @param switchTo switch to tab index, starting from 0;
+     */
+    protected void switchTabAndClose(int switchTo) {
         hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
-        driver.switchTo().window(tabs2.get(i));
+        driver.switchTo().window(tabs2.get(switchTo));
         hangon(3);
     }
 
@@ -1244,23 +1249,11 @@ public class NlmCdeBaseTest {
 
 
     public void startEditQuestionSectionById(String id) {
-        try {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
-        } catch (Exception e) {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
-        }
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
     }
 
     public void saveEditQuestionSectionById(String id) {
-        try {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
-        } catch (Exception e) {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
-        }
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
     }
 
     /**

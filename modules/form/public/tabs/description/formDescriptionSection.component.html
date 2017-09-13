@@ -12,19 +12,23 @@
     </span>
 
     <cde-inline-edit *ngIf="section.elementType === 'section'"
-                 class="section_title ib" style="margin-left: 5px; width: 62%"
-                 [(model)]="section.label" [isAllowed]="canEdit()"
-                 (modelChange)="stageElt.emit()"></cde-inline-edit>
+                     class="section_title ib" style="margin-left: 5px; width: 62%"
+                     [(model)]="section.label" [isAllowed]="canEdit()"
+                     (modelChange)="stageElt.emit()"></cde-inline-edit>
     <span *ngIf="section.elementType === 'form'"
           class="section_title ib" style="margin-left: 5px; width: 62%">
         Embedded Form:
         <cde-inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"
-                     [isAllowed]="canEdit()" (modelChange)="stageElt.emit()">{{section.label}}</cde-inline-edit>
+                         [isAllowed]="canEdit()" (modelChange)="stageElt.emit()">{{section.label}}</cde-inline-edit>
     </span>
 
     <span *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="pull-right editIconDiv">
-        <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section" (click)="section.edit = true"></i>
-        <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section" (click)="section.edit = false"></i>
+        <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection"
+           (click)="copySection(section,$event)"></i>
+        <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
+           (click)="section.edit = true"></i>
+        <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
+           (click)="section.edit = false"></i>
         <i *ngIf="!section.confirmDelete" (click)="section.confirmDelete = true"
            class="fa fa-trash-o hand-cursor" title="Remove Section"></i>
         <span *ngIf="section.confirmDelete" class="badge">Confirm Delete
@@ -72,7 +76,8 @@
                 </div>
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
-                    <input type="number" title="Repeat Maximum Times" class="form-control" [(ngModel)]="section.repeatNumber"
+                    <input type="number" title="Repeat Maximum Times" class="form-control"
+                           [(ngModel)]="section.repeatNumber"
                            (change)="setRepeat(section);stageElt.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
@@ -120,9 +125,9 @@
                 <div class="section_instruction">
                     <span class="questionSectionLabel">Instructions:</span>
                     <cde-inline-area-edit [(model)]="section.instructions.value"
-                                      [(defFormat)]="section.instructions.valueFormat"
-                                      [isAllowed]="canEdit()"
-                                      (modelChange)="elt.unsaved = true">
+                                          [(defFormat)]="section.instructions.valueFormat"
+                                          [isAllowed]="canEdit()"
+                                          (modelChange)="elt.unsaved = true">
                     </cde-inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
@@ -134,7 +139,8 @@
                 </div>
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
-                    <input type="number" title="Repeats Maximum Times" class="form-control" [(ngModel)]="section.repeatNumber"
+                    <input type="number" title="Repeats Maximum Times" class="form-control"
+                           [(ngModel)]="section.repeatNumber"
                            (change)="setRepeat(section);stageElt.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
