@@ -5,6 +5,7 @@
   "debugEnabled": true,
   "pmRunOnStartup": [],
   "viewsIncrementThreshold": 1,
+  "autoSyncMesh": true,
   "database": {
     "local": {
       "db": "local",
