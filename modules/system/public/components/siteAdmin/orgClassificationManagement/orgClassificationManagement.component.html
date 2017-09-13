@@ -133,26 +133,24 @@
                 No mapping. Add more below.
             </div>
 
-            <div *ngFor="let desc of meshDescriptors">
-                <a href="" class="fa fa-trash" title="remove"></a> {{desc}} -
-                {{desc}}
+            <div *ngFor="let desc of mapping.meshDescriptors;let i=index;">
+                <a href="" (click)="removeDescriptor(i)" class="fa fa-trash" title="remove"></a>
+                {{desc}} -{{descToName[desc]}}
             </div>
-
 
             <label for="meshSearchTerm">MeSH Descriptor: </label>
             <input class="form-control" [(ngModel)]="meshSearchTerm" id="meshSearchTerm" name="meshSearchTerm"
                    id="mapClassificationMeshInput" pattern="^[^;]+$" (keyup)="searchMesh()"
                    (ngModelChange)="searchMesh()" required>
             <span *ngIf="searching">searching...</span>
-            <!--
-                        <div ng-if="descriptorID">
-                            {{descriptorID}} &#45;&#45; {{descriptorName}}
-                            <button type="submit" class="btn btn-default btn-sm"
-                                    id="addMeshDescButton" ng-click="addMeshDescriptor()"
-                                    ng-if="descriptorName.length > 0" ng-disabled="isDescriptorAlreadyMapped(descriptorID)">Add
-                            </button>
-                        </div>
-            -->
+            
+            <div *ngIf="descriptorID">
+                {{descriptorID}} -- {{descriptorName}}
+                <button *ngIf="descriptorName.length > 0" class="btn btn-default btn-sm" id="addMeshDescButton"
+                        (click)="addMeshDescriptor()" [disabled]="isDescriptorAlreadyMapped(descriptorID)">Add
+                </button>
+            </div>
+
         </div>
         <div class="modal-footer" id="mapClassificationMeshModalFooter">
             <button class="btn cancel" (click)="c('cancel')" id="cancelMapClassificationMeshBtn"

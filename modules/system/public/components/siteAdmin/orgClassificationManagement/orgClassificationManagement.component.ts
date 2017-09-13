@@ -46,11 +46,16 @@ export class OrgClassificationManagementComponent implements OnInit {
     newClassificationName;
     meshSearchTerm;
     searching: boolean = false;
-    searchFailed: boolean = false;
-    meshDescriptors = [];
     oldReclassificationArray;
     private searchTerms = new Subject<string>();
 
+    descriptorName;
+    descriptorID;
+    descToName = {};
+    mapping = {
+        flatClassification: "",
+        meshDescriptors: []
+    };
     public options = {
         idField: "name",
         childrenField: "elements",
@@ -87,12 +92,15 @@ export class OrgClassificationManagementComponent implements OnInit {
                 else return Observable.of<string[]>([]);
             }).subscribe(res => {
             if (res && res.hits && res.hits.hits && res.hits.hits.length === 1) {
-                let desc = res.data.hits.hits[0]._source;
-                let descriptorName = desc.DescriptorName.String.t;
-                let descriptorID = desc.DescriptorUI.t;
-                this.meshDescriptors.push({descriptorName: descriptorName, descriptorID: descriptorID});
+                let desc = res.hits.hits[0]._source;
+                this.descriptorName = desc.DescriptorName.String.t;
+                this.descriptorID = desc.DescriptorUI.t;
             }
             this.searching = false;
+        }, err => {
+            this.descriptorName = "";
+            this.descriptorID = "";
+            this.alert.addAlert("danger", err);
         });
 
     }
@@ -257,35 +265,30 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.searchTerms.next(this.meshSearchTerm);
     }
 
-    /*
-        addMeshDescriptor = function () {
-            $scope.mapping.meshDescriptors.push($scope.descriptorID);
-            $scope.descToName[$scope.descriptorID] = $scope.descriptorName;
-            delete $scope.descriptorID;
-            delete $scope.descriptorName;
 
-            $http.post("/meshClassification", $scope.mapping).then(function onSuccess(response) {
-                Alert.addAlert("success", "Saved");
-                $scope.mapping = response.data;
-            }).catch(function onError() {
-                Alert.addAlert("danger", "There was an issue saving this record.");
-            });
-        };
+    addMeshDescriptor = function () {
+        this.mapping.meshDescriptors.push(this.descriptorID);
+        this.descToName[this.descriptorID] = this.descriptorName;
+        this.descriptorID = "";
+        this.descriptorName = "";
+        this.http.post("/meshClassification", this.mapping).map(res => res.json()).subscribe(
+            res => {
+                this.alert.addAlert("success", "Saved");
+                this.mapping = res;
+            }, err => this.alert.addAlert("danger", "There was an issue saving this record."));
+    };
 
-        removeDescriptor = function (i) {
-            $scope.mapping.meshDescriptors.splice(i, 1);
-            $http.post("/meshClassification", $scope.mapping).then(function onSuccess(response) {
-                Alert.addAlert("success", "Saved");
-                $scope.mapping = response.data;
-            }).catch(function onError() {
-                Alert.addAlert("danger", "There was an issue saving this record.");
-            });
-        };
+    removeDescriptor = function (i) {
+        this.mapping.meshDescriptors.splice(i, 1);
+        this.http.post("/meshClassification", this.mapping).map(res => res.json()).subscribe(
+            res => {
+                this.alert.addAlert("success", "Saved");
+                this.mapping = res;
+            }, err => this.alert.addAlert("danger", "There was an issue saving this record."));
+    };
 
-
-        isDescriptorAlreadyMapped = function (desc) {
-            return $scope.mapping.meshDescriptors.indexOf(desc) > -1;
-        };
-    */
+    isDescriptorAlreadyMapped = function (desc) {
+        return this.mapping.meshDescriptors.indexOf(desc) > -1;
+    };
 
 }
