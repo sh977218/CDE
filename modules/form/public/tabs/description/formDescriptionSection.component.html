@@ -25,10 +25,14 @@
     </span>
 
     <span *ngIf="!isSubForm && canEdit" class="pull-right editIconDiv">
-        <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section" (click)="section.edit = true"></i>
-        <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section" (click)="section.edit = false"></i>
-        <i *ngIf="!section.confirmDelete" (click)="section.confirmDelete = true"
-           class="fa fa-trash-o hand-cursor" title="Remove Section"></i>
+        <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection" title="Copy section"
+           (click)="copySection(section)"></i>
+        <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
+           (click)="section.edit = true"></i>
+        <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
+           (click)="section.edit = false"></i>
+        <i *ngIf="!section.confirmDelete" class="fa fa-trash-o hand-cursor" title="Remove Section"
+           (click)="section.confirmDelete = true"></i>
         <span *ngIf="section.confirmDelete" class="badge">Confirm Delete
             <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
                   id="confirmRemoveProperty-{{i}}" title="Delete" href=""></span>
@@ -123,15 +127,9 @@
                 <div class="section_instruction">
                     <span class="questionSectionLabel">Instructions:</span>
                     <cde-inline-area-edit [(model)]="section.instructions.value"
-<<<<<<< HEAD
-                                      [(defFormat)]="section.instructions.valueFormat"
-                                      [isAllowed]="canEditSection()"
-                                      (modelChange)="elt.unsaved = true">
-=======
                                           [(defFormat)]="section.instructions.valueFormat"
-                                          [isAllowed]="canEdit()"
+                                          [isAllowed]="canEditSection()"
                                           (modelChange)="elt.unsaved = true">
->>>>>>> 70e763cca8c717cef095daa8f96936a453b9f812
                     </cde-inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
