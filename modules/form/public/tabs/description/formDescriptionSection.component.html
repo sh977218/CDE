@@ -12,14 +12,16 @@
     </span>
 
     <cde-inline-edit *ngIf="section.elementType === 'section'"
-                 class="section_title ib" style="margin-left: 5px; width: 62%"
-                 [(model)]="section.label" [isAllowed]="canEditSection()"
-                 (modelChange)="stageElt.emit()"></cde-inline-edit>
+                     class="section_title ib" style="margin-left: 5px; width: 62%"
+                     [(model)]="section.label" [isAllowed]="canEditSection()"
+                     (modelChange)="stageElt.emit()"></cde-inline-edit>
     <span *ngIf="section.elementType === 'form'"
           class="section_title ib" style="margin-left: 5px; width: 62%">
         Embedded Form:
         <cde-inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"
-                     [isAllowed]="canEditSection()" (modelChange)="stageElt.emit()">{{section.label}}</cde-inline-edit>
+                         [isAllowed]="canEditSection()" (modelChange)="stageElt.emit()">
+            {{section.label}}
+        </cde-inline-edit>
     </span>
 
     <span *ngIf="!isSubForm && canEdit" class="pull-right editIconDiv">
@@ -72,7 +74,8 @@
                 </div>
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
-                    <input type="number" title="Repeat Maximum Times" class="form-control" [(ngModel)]="section.repeatNumber"
+                    <input type="number" title="Repeat Maximum Times" class="form-control"
+                           [(ngModel)]="section.repeatNumber"
                            (change)="setRepeat(section);stageElt.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
@@ -120,9 +123,15 @@
                 <div class="section_instruction">
                     <span class="questionSectionLabel">Instructions:</span>
                     <cde-inline-area-edit [(model)]="section.instructions.value"
+<<<<<<< HEAD
                                       [(defFormat)]="section.instructions.valueFormat"
                                       [isAllowed]="canEditSection()"
                                       (modelChange)="elt.unsaved = true">
+=======
+                                          [(defFormat)]="section.instructions.valueFormat"
+                                          [isAllowed]="canEdit()"
+                                          (modelChange)="elt.unsaved = true">
+>>>>>>> 70e763cca8c717cef095daa8f96936a453b9f812
                     </cde-inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
@@ -134,7 +143,8 @@
                 </div>
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
-                    <input type="number" title="Repeats Maximum Times" class="form-control" [(ngModel)]="section.repeatNumber"
+                    <input type="number" title="Repeats Maximum Times" class="form-control"
+                           [(ngModel)]="section.repeatNumber"
                            (change)="setRepeat(section);stageElt.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:

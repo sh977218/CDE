@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
+import { LocalStorageService } from 'angular-2-local-storage';
 
 import { FormElement, SkipLogic } from "../../form.model";
 import { SkipLogicService } from 'form/public/skipLogic.service';
@@ -33,7 +34,9 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Over first question", value: "F"}
     ];
 
-    constructor(public skipLogicService: SkipLogicService) {}
+    constructor(private localStorageService: LocalStorageService,
+                public skipLogicService: SkipLogicService) {
+    }
 
     ngOnInit() {
         this.section = this.node.data;
@@ -105,7 +108,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     slOptionsRetrigger() {
         setTimeout(() => {
-           this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
+            this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
         }, 0);
     }
 
@@ -117,4 +120,14 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     static inputEvent = new Event('input');
+
+    copySection(section) {
+        this.localStorageService.set("sectionCopied", section);
+        section.isCopied = "copied";
+        this.elt.isCopied = "copied";
+        setTimeout(() => {
+            section.isCopied = "clear";
+            delete this.elt.isCopied;
+        }, 3000);
+    }
 }
