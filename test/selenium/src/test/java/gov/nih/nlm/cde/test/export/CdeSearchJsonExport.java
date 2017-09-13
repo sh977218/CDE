@@ -13,7 +13,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class CdeSearchJsonExport extends NlmCdeBaseTest {
 
-//    @Test
+    @Test
     public void cdeSearchExport() {
         mustBeLoggedOut();
         loadDefaultSettings();
