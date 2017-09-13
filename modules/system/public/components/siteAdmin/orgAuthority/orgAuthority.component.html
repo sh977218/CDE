@@ -33,7 +33,9 @@
         </ngb-tab>
 
         <ngb-tab title="Comments">
-            <div ng-include="'/system/public/html/latestComments.html'"></div>
+            <ng-template ngbTabContent>
+                <cde-latest-comments></cde-latest-comments>
+            </ng-template>
         </ngb-tab>
 
     </ngb-tabset>

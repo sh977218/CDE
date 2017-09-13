@@ -1,4 +1,4 @@
-angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'formTemplates']).config(
+angular.module('formModule', ['ngRoute']).config(
     ["$routeProvider", function($routeProvider)
 {
     $routeProvider.
@@ -34,34 +34,9 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
             $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
                 $scope.cbMethod.fn(event, newUrl, oldUrl, $scope.cbMethod.elt);
             });
+
         }], template: '<cde-form-view [route-params]="routeParams" (h)="cbLocChange($event)"></cde-form-view>'});
     }]);
-
-angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$parse", function ($compile, $timeout, $parse) {
-    return {
-        link: function ($scope, element, attrs) {
-            $timeout(function () {
-                $(function () {
-                    var handle = $(element).find(".ui-slider-handle");
-                    $(element).slider({
-                        value: $parse(attrs.jqSlider)($scope),
-                        min: $parse(attrs.jqSliderMin)($scope),
-                        max: $parse(attrs.jqSliderMax)($scope),
-                        step: $parse(attrs.jqSliderStep)($scope),
-                        create: function () {
-                            handle.text($(this).slider("value"));
-                        },
-                        slide: function (event, ui) { // jshint ignore:line
-                            handle.text(ui.value);
-                            $parse(attrs.jqSlider).assign($scope, ui.value);
-                            $scope.$apply($parse(attrs.jqSliderOnslide)($scope));
-                        }
-                    });
-                });
-            }, 0, false);
-        }
-    };
-}]);
 
 import {downgradeComponent} from "@angular/upgrade/static";
 

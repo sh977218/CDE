@@ -79,7 +79,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     constructor(protected _componentFactoryResolver,
                 protected alert,
                 protected elasticService,
-                protected elasticBoard,
                 protected exportService,
                 protected http,
                 protected modalService,
@@ -456,7 +455,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             data.query.resultPerPage = (<any>window).maxPin;
             this.http.post('/pinEntireSearchToBoard', data).subscribe(() => {
                 this.alert.addAlert('success', 'All elements pinned.');
-                this.elasticBoard.loadMyBoards(filter);
+                this.http.post('/myBoards', filter).subscribe();
             }, () => {
                 this.alert.addAlert('danger', 'Not all elements were not pinned!');
             });

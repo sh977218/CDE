@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { Http } from "@angular/http";
 
 @Component({
     selector: 'cde-my-boards',
@@ -8,7 +9,7 @@ import { AlertService } from "../../../../system/public/components/alert/alert.s
 export class PublicBoardsComponent implements OnInit {
 
     constructor (private alert: AlertService,
-                 @Inject('ElasticBoard') protected elasticBoard) {}
+                 private http: Http) {}
 
     boards = [];
     filter = {
@@ -26,15 +27,15 @@ export class PublicBoardsComponent implements OnInit {
 
     loadPublicBoards () {
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
-        this.elasticBoard.basicSearch(this.filter, (err, response) => {
-            if (err) this.alert.addAlert("danger", "An error occured");
+        this.http.post("/boardSearch", this.filter).map(r => r.json()).subscribe(response => {
             this.boards = response.hits.hits.map(h => {
                 h._source._id = h._id;
                 return h._source;
             });
             this.filter.tags = response.aggregations.aggregationsName.buckets;
             this.filter.tags.forEach(t => t.checked = (this.filter.selectedTags.indexOf(t.key) > -1));
-        });
+        }, () => this.alert.addAlert("danger", "An error occured")
+        );
     };
 
     selectAggregation (aggName, $index) {

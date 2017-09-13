@@ -32,7 +32,7 @@ app.use(auth.ticketAuth);
 app.use(compress());
 
 app.use(require('hsts')({
-    maxAge: 15552000
+    maxAge: 31536000
 }));
 
 var localRedirectProxy = httpProxy.createProxyServer({});

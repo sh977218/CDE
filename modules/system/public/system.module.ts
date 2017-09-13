@@ -7,7 +7,7 @@ import { Select2Module } from "ng2-select2";
 import { CKEditorModule } from 'ng2-ckeditor';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
-import { RecaptchaModule } from 'ng2-recaptcha';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 import { SelectBoardDirective } from "./upgrade-components";
 import { ProfileComponent } from "./components/profile.component";
