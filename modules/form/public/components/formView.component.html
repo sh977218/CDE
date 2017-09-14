@@ -5,6 +5,19 @@
 </div>
 
 <div *ngIf="elt" class="container-fluid" itemscope="http://schema.org/MedicalCode">
+    <ng-container *ngIf="isAllowedModel.isAllowed(elt)">
+        <ng-container *ngIf="drafts.length > 0">
+            <button *ngIf="!elt.isDraft" (click)="loadDraft(null);">Load Draft</button>
+        </ng-container>
+        <ng-container *ngIf="elt.isDraft">
+            <ng-container *ngIf="elt.unsaved && isFormValid">
+                <cde-update-element [(elt)]="elt" (discard)="loadForm();"
+                                    (save)="stageForm()"></cde-update-element>
+            </ng-container>
+            <button (click)="loadForm();">Stop Edit</button>
+            <button (click)="removeDraft();">Remove Draft</button>
+        </ng-container>
+    </ng-container>
     <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this form is archived. You can

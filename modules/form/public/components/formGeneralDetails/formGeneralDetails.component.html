@@ -17,17 +17,17 @@
             <div class="col-sm-5 questionSectionLabel">Copyrighted:</div>
             <div class="col-sm-7">
                 <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
-                       id="isCopyrighted" title="copyrighted" (click)="elt.unsaved = true"/>
+                       id="isCopyrighted" title="copyrighted" (change)="save.emit();"/>
 
                 <div *ngIf="elt.isCopyrighted">
                     Statement:
                     <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
                                      [isAllowed]="canEdit"
-                                     (modelChange)="elt.unsaved = true"></cde-inline-edit>
+                                     (modelChange)="save.emit();"></cde-inline-edit>
                     Authority:
                     <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
                                      [isAllowed]="canEdit"
-                                     (modelChange)="elt.unsaved = true"></cde-inline-edit>
+                                     (modelChange)="save.emit();"></cde-inline-edit>
                 </div>
             </div>
         </div>

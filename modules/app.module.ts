@@ -6,16 +6,16 @@ import { BrowserModule } from "@angular/platform-browser";
 import { UpgradeModule } from "@angular/upgrade/static";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import { BoardModule } from "./board/public/board.module";
-import { CdeAppComponent } from "./app.component";
-import { CdeModule } from "./cde/public/cde.module";
-import { CoreModule } from "./core/public/core.module";
-import { DiscussModule } from "./discuss/discuss.module";
-import { FormModule } from "./form/public/form.module";
-import { SystemModule } from "./system/public/system.module";
 import { QuickBoardModule } from 'quickBoard/public/quickBoard.module';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CdeAppComponent } from 'app.component';
+import { CdeModule } from 'cde/public/cde.module';
+import { BoardModule } from 'board/public/board.module';
+import { CoreModule } from 'core/public/core.module';
+import { DiscussModule } from 'discuss/discuss.module';
+import { FormModule } from 'form/public/form.module';
+import { SystemModule } from 'system/public/system.module';
 
 @NgModule({
     declarations: [

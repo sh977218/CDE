@@ -1,17 +1,22 @@
 <div id="classificationDiv">
-    <h4> Classification</h4>
-    <button *ngIf="isAllowedModel.isOrgCurator()" class="btn btn-small btn-default" id="openClassificationModalBtn"
-            [disabled]="elt.unsaved" value="add" (click)="openClassifyItemModal()">
-        <i class="fa fa-folder-open-o"> </i> Classify this Form
-    </button>
-    <button *ngIf="isAllowedModel.isOrgCurator() && elt.formElements.length > 0"
-            class="btn btn-default" id="openClassifyCdesModalBtn" [disabled]="elt.unsaved"
-            (click)="openClassifyCdesModal()">
-        <i class="fa fa-indent"></i> Classify CDEs
-    </button>
-    <div id="classificationBody">
-        <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
-    </div>
+    <h4 *ngIf="elt.isDraft">
+        Classification is disabled in draft. View current vision.
+    </h4>
+    <ng-container *ngIf="!elt.isDraft">
+        <h4> Classification</h4>
+        <button *ngIf="isAllowedModel.isOrgCurator()" class="btn btn-small btn-default" id="openClassificationModalBtn"
+                [disabled]="elt.unsaved" value="add" (click)="openClassifyItemModal()">
+            <i class="fa fa-folder-open-o"> </i> Classify this Form
+        </button>
+        <button *ngIf="isAllowedModel.isOrgCurator() && elt.formElements.length > 0"
+                class="btn btn-default" id="openClassifyCdesModalBtn" [disabled]="elt.unsaved"
+                (click)="openClassifyCdesModal()">
+            <i class="fa fa-indent"></i> Classify CDEs
+        </button>
+        <div id="classificationBody">
+            <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
+        </div>
+    </ng-container>
 </div>
 <cde-classify-item-modal #classifyItemComponent [elt]="elt" [modalTitle]="'Classify this Form'"
                          (onEltSelected)="classifyItem($event)"></cde-classify-item-modal>

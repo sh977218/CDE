@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
     , Schema = mongoose.Schema
+    , _ = require('lodash')
     , sharedSchemas = require('../../system/node-js/schemas.js')
     , config = require("config")
 ;
@@ -152,5 +153,9 @@ exports.formJson = {
 
 exports.formSchema = new Schema(exports.formJson);
 
+let draftJson = _.cloneDeep(exports.formJson);
+draftJson.isDraft = {type: Boolean, default: true};
+exports.draftSchema = new Schema(draftJson);
 exports.formSchema.set('collection', 'forms');
+exports.draftSchema.set('collection', 'drafts');
 

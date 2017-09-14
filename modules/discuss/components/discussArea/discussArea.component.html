@@ -1,4 +1,8 @@
-<div>
+<h4 *ngIf="elt.isDraft">
+    Comment is disabled in draft. View current vision.
+</h4>
+
+<div *ngIf="!elt.isDraft">
     <br/>
     <div *ngIf="!(userService.user?._id)">Please <a href="/login">log in</a> to comment.</div>
     <div *ngIf="userService.user?._id">

@@ -3,10 +3,10 @@ import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from "quickBoard/public/quickBoardList.service";
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 @Component({
     selector: "cde-form-view",
@@ -35,6 +35,7 @@ export class FormViewComponent implements OnInit {
     canEdit: boolean = false;
     isFormValid = true;
     formInput;
+    drafts = [];
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -46,22 +47,39 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loadForm(form => {
+            this.loadComments(form, () => {
+                this.http.get("/draftForm/" + this.elt.tinyId)
+                    .map(res => res.json()).subscribe(res => {
+                    if (res && res.length > 0) this.drafts = res;
+                    else this.drafts = [];
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft;
+                }, err => this.alert.addAlert("danger", err));
+            })
+        });
+    }
+
+    loadForm(cb) {
         let formId = this.routeParams.formId;
         let url = "/form/" + this.routeParams.tinyId;
         if (formId) url = "/formById/" + formId;
-        this.http.get(url).map(r => r.json()).subscribe(response => {
-                this.elt = response;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+                this.elt = res;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
-                this.http.get("/comments/eltId/" + this.elt.tinyId)
-                    .map(res => res.json()).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
-                );
                 this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                if (cb) cb();
             },
             () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
+    }
+
+    loadComments(form, cb) {
+        this.http.get("/comments/eltId/" + form.tinyId)
+            .map(res => res.json()).subscribe(res => {
+            this.hasComments = res && (res.length > 0);
+            if (cb) cb();
+        }, err => this.alert.addAlert("danger", "Error on loading comments. " + err));
     }
 
     onLocationChange(event, newUrl, oldUrl, elt) {
@@ -78,43 +96,15 @@ export class FormViewComponent implements OnInit {
     }
 
     reloadForm() {
-        this.http.get("/form/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
+        this.http.put("/form/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
                 this.elt = response;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
                 this.validateForm();
-                this.alert.addAlert("success", "Changes discarded.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
-        );
-    };
-
-
-    stageElt() {
-        this.http.put("/form/" + this.elt.tinyId, this.elt)
-            .map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.alert.addAlert("success", "Form saved.");
             }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
     };
-
-    doStageElt() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Save to confirm.");
-        } else {
-            this.stageElt();
-            this.modalRef.close();
-        }
-    }
-
-    stageForm() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        this.elt.unsaved = true;
-    }
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
@@ -296,6 +286,54 @@ export class FormViewComponent implements OnInit {
                 }
             );
         }
+    }
+
+    doStageElt() {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
+        this.saveDraft(res => {
+            if (res) {
+                this.alert.addAlert("success", "draft saved. publish it");
+                this.loadDraft(null);
+            }
+        });
+    }
+
+    loadDraft(cb) {
+        this.http.get("/draftForm/" + this.elt.tinyId)
+            .map(res => res.json()).subscribe(res => {
+            if (res && res.length > 0) {
+                this.drafts = res;
+                this.elt = res[0];
+            } else this.drafts = [];
+            this.alert.addAlert("success", "Draft loaded.");
+            if (cb) cb();
+        }, err => this.alert.addAlert("danger", err));
+    }
+
+    saveDraft(cb) {
+        this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
+            .map(res => res.json()).subscribe(res => {
+            if (cb) cb(res);
+        }, err => this.alert.addAlert("danger", err));
+    }
+
+    stageForm() {
+        this.http.put("/form/" + this.elt.tinyId, this.elt)
+            .map(res => res.json()).subscribe(res => {
+            if (res) this.loadDraft(() => {
+                this.alert.addAlert("success", "Form saved.");
+            });
+        }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form."));
+    }
+
+    removeDraft() {
+        this.http.delete("/draftForm/" + this.elt.tinyId)
+            .subscribe(res => {
+                if (res) this.loadForm(() => {
+                    this.alert.addAlert("success", "Draft removed. Form reloaded.");
+                });
+            }, err => this.alert.addAlert("danger", err));
     }
 
 }
