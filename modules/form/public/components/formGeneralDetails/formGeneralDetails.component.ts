@@ -5,11 +5,7 @@ import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
     templateUrl: "./formGeneralDetails.component.html"
 })
 export class FormGeneralDetailsComponent {
-
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                @Inject("userResource") public userService) {
-    }
-
     @Input() elt: any;
+    @Input() canEdit: boolean = false;
     @Output() save = new EventEmitter();
 }

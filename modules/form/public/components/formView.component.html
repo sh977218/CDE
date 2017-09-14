@@ -123,7 +123,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-general-details [elt]="elt" (save)="stageElt()"></cde-form-general-details>
+                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="stageElt()">
+                        </cde-form-general-details>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="description_tab">
@@ -133,7 +134,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-description [cache]="cache" [elt]="elt" [inScoreCdes]="inScoreCdes"
+                        <cde-form-description [cache]="cache" [elt]="elt" [canEdit]="canEdit"
+                                              [inScoreCdes]="inScoreCdes"
                                               (isFormValid)="setIsValid($event)"
                                               (onEltChange)="stageForm()"></cde-form-description>
                     </ng-template>
@@ -148,7 +150,7 @@
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <cde-naming [elt]="elt" (onEltChange)="stageForm();"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="stageForm();"></cde-naming>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="classification_tab">
@@ -168,7 +170,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-reference-document [elt]="elt" (onEltChange)="doStageElt($event);">
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
                         </cde-reference-document>
                     </ng-template>
                 </ngb-tab>
@@ -179,7 +181,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-display-profile [elt]="elt" (onEltChange)="stageForm();"></cde-display-profile>
+                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="stageForm();">
+                        </cde-display-profile>
                     </ng-template>
                 </ngb-tab>
 
@@ -190,7 +193,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-properties [elt]="elt" (onEltChange)="doStageElt($event);"></cde-properties>
+                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        </cde-properties>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="ids_tab">
@@ -200,7 +204,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-identifiers [elt]="elt" (onEltChange)="doStageElt($event);"></cde-identifiers>
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        </cde-identifiers>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="attachments_tab">
@@ -210,7 +215,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-attachments [elt]="elt" (removeAttachment)="removeAttachment($event);"
+                        <cde-attachments [elt]="elt" [canEdit]="canEdit" (removeAttachment)="removeAttachment($event);"
                                          (setDefault)="setDefault($event);"
                                          (upload)="upload($event);"></cde-attachments>
                     </ng-template>
@@ -222,7 +227,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-history [elt]="elt"></cde-history>
+                        <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
                     </ng-template>
                 </ngb-tab>
             </ngb-tabset>

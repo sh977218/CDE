@@ -17,7 +17,7 @@
     <div *ngFor="let id of elt.ids; let i = index">
         <div class="row">
             <div class="col-md-1 text-right">
-                <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
+                <div class="row" *ngIf="canEdit">
                     <span *ngIf="id.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removeIdentifierByIndex(i)"
                               id="confirmRemoveIdentifier-{{i}}" title="OK" href=""></span>
@@ -54,7 +54,7 @@
         <hr>
     </div>
 
-    <button *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-small btn-default" id="openNewIdentifierModalBtn"
+    <button *ngIf="canEdit" class="btn btn-small btn-default" id="openNewIdentifierModalBtn"
             (click)="openNewIdentifierModal();">
         <i class="fa fa-plus"></i> Add Identifier
     </button>

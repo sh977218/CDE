@@ -1,22 +1,12 @@
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    Inject,
-    Input,
-    OnInit,
-    Output,
-    TemplateRef,
-    ViewChild
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 
-import { FormService } from "../../form.service";
 import { FormElement, SkipLogic } from "../../form.model";
-import { FormattedValue } from "../../../../core/public/models.model";
-import { SkipLogicService } from "../../skipLogic.service";
+import { SkipLogicService } from 'form/public/skipLogic.service';
+import { FormattedValue } from 'core/public/models.model';
+import { FormService } from 'form/public/form.service';
 
 @Component({
     selector: "cde-form-description-section",
@@ -24,6 +14,7 @@ import { SkipLogicService } from "../../skipLogic.service";
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
+    @Input() canEdit: boolean = false;
     @Input() inScoreCdes: any;
     @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -44,7 +35,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     ];
 
     constructor(private localStorageService: LocalStorageService,
-                @Inject("isAllowedModel") public isAllowedModel,
                 public skipLogicService: SkipLogicService) {
     }
 
@@ -67,8 +57,8 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
     }
 
-    canEdit() {
-        return this.section.edit && !this.isSubForm && this.isAllowedModel.isAllowed(this.elt);
+    canEditSection() {
+        return this.section.edit && !this.isSubForm && this.canEdit;
     }
 
     removeNode(node) {
@@ -131,7 +121,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     static inputEvent = new Event('input');
 
-    copySection(section, event) {
+    copySection(section) {
         this.localStorageService.set("sectionCopied", section);
         section.isCopied = "copied";
         this.elt.isCopied = "copied";

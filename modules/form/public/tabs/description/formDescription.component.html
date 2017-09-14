@@ -1,6 +1,6 @@
 <div class="row" *ngIf="elt">
     <div class="col-xs-12">
-        <div class="descriptionToolbox" *ngIf="isAllowedModel.isAllowed(elt)" #descToolbox>
+        <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
             <span role="button" id="addSectionTop" class="btn btn-default formDescriptionTool"
                   [treeDrag]="toolSection" [treeDragEnabled]="true"
@@ -56,14 +56,14 @@
                                          [treeAllowDrop]="node.allowDrop">
                                         <cde-form-description-section
                                                 *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                [elt]="elt"
+                                                [elt]="elt" [canEdit]="canEdit"
                                                 [node]="node"
                                                 [inScoreCdes]="inScoreCdes"
                                                 (isFormValid)="isFormValid.emit($event)"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
-                                                [elt]="elt"
+                                                [elt]="elt" [canEdit]="canEdit"
                                                 [inScoreCdes]="inScoreCdes"
                                                 [node]="node"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-question>
@@ -73,7 +73,7 @@
                             <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
-                                                                      [elt]="elt" [node]="node"
+                                                                      [elt]="elt" [node]="node" [canEdit]="canEdit"
                                                                       (isFormValid)="isFormValid.emit($event)"
                                                                       (stageElt)="stageParent()"></cde-form-description-question-detail>
                             </div>

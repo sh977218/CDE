@@ -32,6 +32,7 @@ export class FormViewComponent implements OnInit {
     commentMode;
     currentTab = "general_tab";
     highlightedTabs = [];
+    canEdit: boolean = false;
     isFormValid = true;
     formInput;
 
@@ -57,14 +58,13 @@ export class FormViewComponent implements OnInit {
                     res => this.hasComments = res && (res.length > 0),
                     err => this.alert.addAlert("danger", "Error on loading comments. " + err)
                 );
-
+                this.canEdit = this.isAllowedModel.isAllowed(this.elt);
             },
             () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
-
     }
 
-    onLocationChange (event, newUrl, oldUrl, elt) {
+    onLocationChange(event, newUrl, oldUrl, elt) {
         if (elt && elt.unsaved && oldUrl.indexOf("formView") > -1) {
             let txt = "You have unsaved changes, are you sure you want to leave this page? ";
             if ((window as any).debugEnabled) {
@@ -77,7 +77,7 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    reloadForm () {
+    reloadForm() {
         this.http.get("/form/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
                 this.elt = response;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
@@ -89,12 +89,13 @@ export class FormViewComponent implements OnInit {
     };
 
 
-    stageElt () {
-        this.http.put("/form/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
-            this.elt = response;
-            this.h.emit({elt: this.elt, fn: this.onLocationChange});
-            this.alert.addAlert("success", "Form saved.");
-        }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
+    stageElt() {
+        this.http.put("/form/" + this.elt.tinyId, this.elt)
+            .map(r => r.json()).subscribe(response => {
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.alert.addAlert("success", "Form saved.");
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
     };
 
