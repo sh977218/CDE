@@ -3,7 +3,7 @@ import * as authShared from "../../../system/shared/authorizationShared";
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
-    'OrgFactories', 'classification', 'systemTemplates',
+    'OrgFactories', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'LocalStorageModule', 'ui.sortable',
     'ui.select', 'angular-send-feedback', 'checklist-model'])
     .config(['$logProvider', function ($logProvider) {

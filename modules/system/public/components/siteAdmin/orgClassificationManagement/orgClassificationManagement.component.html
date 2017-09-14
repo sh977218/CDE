@@ -15,7 +15,8 @@
         </h4>
         <tree-root #treeRoot [nodes]="selectedOrg.classifications" [options]="options">
             <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                <a [id]="node.path">{{ node.data.name }}</a>
+                <a [id]="node.path" href="{{searchByClassification(node,selectedOrg.name)}}"
+                   target="_blank">{{ node.data.name }}</a>
                 <a title="Edit" (click)="openRenameClassificationModal(node);">
                     <i class="fa fa-pencil"></i></a>
                 <a title="Remove" (click)="openDeleteClassificationModal(node);">

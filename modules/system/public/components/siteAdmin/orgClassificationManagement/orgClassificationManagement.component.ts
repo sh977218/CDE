@@ -293,4 +293,16 @@ export class OrgClassificationManagementComponent implements OnInit {
         return this.mapping.meshDescriptors.indexOf(desc) > -1;
     };
 
+    searchByClassification(node, orgName) {
+        let classificationArray = [node.data.name];
+        let _treeNode = node;
+        while (_treeNode.parent) {
+            _treeNode = _treeNode.parent;
+            if (!_treeNode.data.virtual)
+                classificationArray.unshift(_treeNode.data.name);
+        }
+        return "/cde/search?selectedOrg=" + encodeURIComponent(orgName) +
+            "&classification=" + encodeURIComponent(classificationArray.join(";"));
+    };
+
 }
