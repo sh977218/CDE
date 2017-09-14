@@ -14,7 +14,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.id("user_classifications"));
-        clickElement(By.xpath("//div[a/span/span[.='Disease']]//i[contains(@class, 'fa-link')]"));
+        clickElement(By.xpath(getOrgClassificationIconXpath("meshMapping", new String[]{"Disease"})));
         findElement(By.id("mesh.search")).clear();
         findElement(By.id("mesh.search")).sendKeys("NINDS");
         textPresent("National Institute of Neurological Disorders and Stroke");

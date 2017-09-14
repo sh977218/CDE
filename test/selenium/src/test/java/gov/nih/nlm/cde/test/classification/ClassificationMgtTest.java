@@ -36,9 +36,9 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         Assert.assertTrue(getNumberOfResults() > 40);
         gotoClassificationMgt();
 
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Classification'] .name")).getText().equals("Classification"));
-        Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Classification,Supplemental'] .name")).getText().equals("Supplemental"));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='Disease,Epilepsy']")).getText().equals("Epilepsy"));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='Disease,Epilepsy,Classification']")).getText().equals("Classification"));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='Disease,Epilepsy,Classification,Supplemental']")).getText().equals("Supplemental"));
 
         deleteNestedClassifTree();
         searchNestedClassifiedCdes();

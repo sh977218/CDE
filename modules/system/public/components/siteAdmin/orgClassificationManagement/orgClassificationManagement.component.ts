@@ -205,22 +205,24 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     openAddChildClassificationModal(node) {
         this.selectedClassificationArray = "";
-        this.selectedClassificationString = node.data.name;
         this.newClassificationName = "";
-        let classificationArray = [node.data.name];
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual)
-                classificationArray.unshift(_treeNode.data.name);
-        }
-        classificationArray.forEach((c, i) => {
-            if (i < classificationArray.length - 1)
-                this.selectedClassificationArray = this.selectedClassificationArray.concat("<span> " + c + " </span> ->");
-            else this.selectedClassificationArray = this.selectedClassificationArray.concat(" <strong> " + c + " </strong>");
-        });
-        this.modalService.open(this.addChildClassificationContent)
-            .result.then(result => {
+        let classificationArray = [];
+        if (node) {
+            this.selectedClassificationString = node.data.name;
+            classificationArray = [node.data.name];
+            let _treeNode = node;
+            while (_treeNode.parent) {
+                _treeNode = _treeNode.parent;
+                if (!_treeNode.data.virtual)
+                    classificationArray.unshift(_treeNode.data.name);
+            }
+            classificationArray.forEach((c, i) => {
+                if (i < classificationArray.length - 1)
+                    this.selectedClassificationArray = this.selectedClassificationArray.concat("<span> " + c + " </span> ->");
+                else this.selectedClassificationArray = this.selectedClassificationArray.concat(" <strong> " + c + " </strong>");
+            });
+        } else this.selectedClassificationArray = " <strong> " + this.selectedOrg.name + " </strong>";
+        this.modalService.open(this.addChildClassificationContent).result.then(result => {
             if (result === "confirm") {
                 classificationArray.push(this.newClassificationName);
                 this.classificationSvc.addChildClassification(this.selectedOrg.name, classificationArray, newOrg => {

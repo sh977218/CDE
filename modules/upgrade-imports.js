@@ -2,7 +2,6 @@ import "./system/public/js/systemModule";
 import "./system/public/js/elastic";
 import "./system/public/js/resources";
 import "./system/public/js/orgFactories";
-import "./system/public/js/classification";
 import "./system/public/js/angularTemplates";
 
 import "./cde/public/js/cdeModule";

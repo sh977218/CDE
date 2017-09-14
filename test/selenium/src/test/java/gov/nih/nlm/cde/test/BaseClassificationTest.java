@@ -56,6 +56,15 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
 
 
     protected void createClassificationName(String org, String[] categories) {
+        new Select(driver.findElement(By.id("orgToManage"))).deselectByVisibleText(org);
+
+        String id;
+        for (int i = 0; i < categories.length - 1; i++) {
+            id = String.join(",", Arrays.copyOfRange(categories, 0, i));
+            String xpath = "//*[@id='" + id + "']";
+
+        }
+
         scrollToTop();
 
         String addSelector = "";

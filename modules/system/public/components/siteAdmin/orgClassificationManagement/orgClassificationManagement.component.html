@@ -9,7 +9,7 @@
     <br/>
     <div class="boxed-div">
         <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
-            <a title="Add Child Classification" href>
+            <a title="Add Child Classification" (click)="openAddChildClassificationModal(null);">
                 <i id="addClassification" class="fa fa-share fa-rotate-180"></i>
             </a>
         </h4>
@@ -143,7 +143,7 @@
                    id="mapClassificationMeshInput" pattern="^[^;]+$" (keyup)="searchMesh()"
                    (ngModelChange)="searchMesh()" required>
             <span *ngIf="searching">searching...</span>
-            
+
             <div *ngIf="descriptorID">
                 {{descriptorID}} -- {{descriptorName}}
                 <button *ngIf="descriptorName.length > 0" class="btn btn-default btn-sm" id="addMeshDescButton"

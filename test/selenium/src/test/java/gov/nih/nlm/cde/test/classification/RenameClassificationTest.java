@@ -13,7 +13,7 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
     public void renameClassification() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
-        clickElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]"));
+        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Disease", "Spinal Cord Injury"})));
         findElement(By.id("renameClassifInput")).clear();
         textPresent("Name is required");
         clickElement(By.id("cancelRename"));

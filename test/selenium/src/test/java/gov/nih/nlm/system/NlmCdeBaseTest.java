@@ -99,6 +99,15 @@ public class NlmCdeBaseTest {
 
 
     ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
+    Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
+        {
+            put("rename", "fa-pencil");
+            put("remove", "fa-trash-o");
+            put("reclassify", "fa-retweet");
+            put("addChildClassification", "fa-share ");
+            put("meshMapping", "fa-link");
+        }
+    };
 
     private void setDriver(String b) {
         if (b == null) b = browser;
@@ -1310,6 +1319,10 @@ public class NlmCdeBaseTest {
         if (type.equalsIgnoreCase("partialmatch")) type = "partialMatch";
         if (type.equalsIgnoreCase("notmatch")) type = "notMatch";
         return "(//*[@id='" + section + "']//*[contains(@class,'no" + side + "Padding')]//*[contains(@class,'" + type + "')])[" + index + "]";
+    }
+
+    public String getOrgClassificationIconXpath(String type, String[] categories) {
+        return "//*[@id='" + String.join(",", categories) + "']/following-sibling::a/i[contains(@class, '" + PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase()) + "')]";
     }
 
 }
