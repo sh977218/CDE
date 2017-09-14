@@ -36,14 +36,13 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/orgaccountmanagement', {
             template: '<cde-org-account-management></cde-org-account-management>'
         }).when('/classificationmanagement', {
-            controller: 'ClassificationManagementCtrl',
-            templateUrl: '/system/public/html/classificationManagement.html'
+            template: '<cde-org-classification-management></cde-org-classification-management>'
         }).when('/orgAuthority', {
             template: '<cde-org-authority></cde-org-authority>'
         }).when('/profile', {
             template: '<cde-profile></cde-profile>'
         }).when('/triggerClientException', {
-            controller:  ['$scope', function($scope) {trigger.error();}],
+            controller:  ['$scope', function() {trigger.error();}],
             template: 'An exception in your browser has been triggered.'
         }).when('/searchPreferences', {
             template: '<cde-search-preferences></cde-search-preferences>'
@@ -143,7 +142,7 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
         return authShared.hasRole(userResource.user, role);
     };
 
-    isAllowedModel.isSiteAdmin = function (role) {
+    isAllowedModel.isSiteAdmin = function () {
         return authShared.isSiteAdmin(userResource.user);
     };
 
@@ -257,7 +256,7 @@ angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     outputs: []
 }));
 
-import {OrgAuthorityComponent} from "../components/siteAdmin/orgAuthority/orgAuthority.component"
+import {OrgAuthorityComponent} from "../components/siteAdmin/orgAuthority/orgAuthority.component";
 angular.module('systemModule').directive('cdeOrgAuthority', downgradeComponent({
     component: OrgAuthorityComponent,
     inputs: [],
@@ -281,18 +280,18 @@ import { AlertComponent } from "../components/alert/alert.component";
 angular.module('systemModule').directive('cdeAlert', downgradeComponent(
     {component: AlertComponent, inputs: [], outputs: []}));
 
-import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component"
+import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component";
 angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent(
     {component: SiteManagementComponent, inputs: [], outputs: []}));
 
-import {InboxComponent} from "../components/inbox/inbox.component"
+import {InboxComponent} from "../components/inbox/inbox.component";
 angular.module('systemModule').directive('cdeInbox', downgradeComponent(
     {component: InboxComponent, inputs: [], outputs: []}));
 
 import { MergeCdeService } from "../../../core/public/mergeCde.service";
 angular.module('systemModule').factory('MergeCdeService', downgradeInjectable(MergeCdeService));
 
-import {SearchPreferencesComponent} from "../components/searchPreferences/searchPreferences.component"
+import {SearchPreferencesComponent} from "../components/searchPreferences/searchPreferences.component";
 angular.module('systemModule').directive('cdeSearchPreferences', downgradeComponent(
     {component: SearchPreferencesComponent, inputs: [], outputs: []}));
 
@@ -300,7 +299,11 @@ import {OrgAccountManagementComponent} from "../components/siteAdmin/orgAccountM
 angular.module('systemModule').directive('cdeOrgAccountManagement', downgradeComponent(
     {component: OrgAccountManagementComponent, inputs: [], outputs: []}));
 
-import {LoginComponent} from "../components/login/login.component"
+import {OrgClassificationManagementComponent} from "../components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component";
+angular.module('systemModule').directive('cdeOrgClassificationManagement', downgradeComponent(
+    {component: OrgClassificationManagementComponent, inputs: [], outputs: []}));
+
+import {LoginComponent} from "../components/login/login.component";
 angular.module('systemModule').directive('cdeLogin', downgradeComponent(
     {component: LoginComponent, inputs: [], outputs: []}));
 

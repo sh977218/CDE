@@ -167,9 +167,7 @@ exports.orgCurators = function (orgs, callback) {
 
 
 exports.orgByName = function (orgName, callback) {
-    Org.findOne({"name": orgName}).exec(function (error, org) {
-        callback(org);
-    });
+    Org.findOne({"name": orgName}, callback);
 };
 
 
@@ -549,7 +547,7 @@ exports.getAllRules = function (cb) {
 };
 
 exports.disableRule = function (params, cb) {
-    exports.orgByName(params.orgName, function (org) {
+    exports.orgByName(params.orgName, function (err, org) {
         org.cdeStatusValidationRules.forEach(function (rule, i) {
             if (rule.id === params.rule.id) {
                 org.cdeStatusValidationRules.splice(i, 1);
@@ -560,7 +558,7 @@ exports.disableRule = function (params, cb) {
 };
 
 exports.enableRule = function (params, cb) {
-    exports.orgByName(params.orgName, function (org) {
+    exports.orgByName(params.orgName, function (err, org) {
         delete params.rule._id;
         org.cdeStatusValidationRules.push(params.rule);
         org.save(cb);
