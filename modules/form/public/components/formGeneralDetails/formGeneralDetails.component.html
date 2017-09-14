@@ -16,17 +16,17 @@
         <div class="row">
             <div class="col-sm-5 questionSectionLabel">Copyrighted:</div>
             <div class="col-sm-7">
-                <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!isAllowedModel.isAllowed(elt)"
+                <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
                        id="isCopyrighted" title="copyrighted" (click)="elt.unsaved = true"/>
 
                 <div *ngIf="elt.isCopyrighted">
                     Statement:
                     <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
-                                     [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                     [isAllowed]="canEdit"
                                      (modelChange)="elt.unsaved = true"></cde-inline-edit>
                     Authority:
                     <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
-                                     [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                     [isAllowed]="canEdit"
                                      (modelChange)="elt.unsaved = true"></cde-inline-edit>
                 </div>
             </div>
@@ -34,7 +34,7 @@
         <div class="row">
             <div class="col-sm-5 questionSectionLabel">Disallow Rendering:</div>
             <div class="col-sm-7">
-                <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!isAllowedModel.isAllowed(elt)"
+                <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
                        id="disallowRendering" title="disallow rendering" (click)="elt.unsaved = true"/>
             </div>
         </div>

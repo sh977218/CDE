@@ -1,12 +1,11 @@
-import { Component, Inject, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
-import { Http } from "@angular/http";
+import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { OrgHelperService } from "../../../core/public/orgHelper.service";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
-
 import "rxjs/add/operator/map";
+
 import { Property } from 'core/public/models.model';
 import { DataElement } from 'cde/public/dataElement.model';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { OrgHelperService } from 'core/public/orgHelper.service';
 
 @Component({
     selector: "cde-properties",
@@ -15,6 +14,7 @@ import { DataElement } from 'cde/public/dataElement.model';
 export class PropertiesComponent implements OnInit {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
     @Input() public elt: DataElement;
+    @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     orgPropertyKeys: string[] = [];
     public newProperty: Property = new Property();
@@ -23,7 +23,6 @@ export class PropertiesComponent implements OnInit {
 
     constructor(public modalService: NgbModal,
                 private alert: AlertService,
-                @Inject("isAllowedModel") public isAllowedModel,
                 private orgHelperService: OrgHelperService) {
     }
 

@@ -1,7 +1,7 @@
 <div>
     <h4>Display Profiles</h4>
     <div *ngFor="let profile of elt.displayProfiles; let index = index" class="hr" id="profile_{{index}}">
-        <div class="text-right" *ngIf="isAllowedModel.isAllowed(elt)">
+        <div class="text-right" *ngIf="canEdit">
             <span *ngIf="showDelete">Confirm Delete
                 <a class="fa fa-check" (click)="showDelete = false; removeDisplayProfile(index)"
                    id="confirmRemoveDisplayProfile-{{index}}" title="OK" href=""></a>
@@ -17,32 +17,32 @@
                     <dd>
                         <cde-inline-edit id="profileNameEdit_{{index}}"
                                      [(model)]="profile.name"
-                                     [isAllowed]="isAllowedModel.isAllowed(elt)"
+                                     [isAllowed]="canEdit"
                                      (modelChange)="elt.unsaved = true"></cde-inline-edit>
                     </dd>
                     <dt><label for="displayAsMatrix_{{index}}">Sections as matrices:</label></dt>
                     <dd>
-                        <input type="checkbox" [(ngModel)]="profile.sectionsAsMatrix" [disabled]="!isAllowedModel.isAllowed(elt)"
+                        <input type="checkbox" [(ngModel)]="profile.sectionsAsMatrix" [disabled]="!canEdit"
                                id="displayAsMatrix_{{index}}" (click)="elt.unsaved = true"/>
                     </dd>
                     <dt><label for="displayValues_{{index}}">Display answer values:</label></dt>
                     <dd>
-                        <input type="checkbox" [(ngModel)]="profile.displayValues" [disabled]="!isAllowedModel.isAllowed(elt)"
+                        <input type="checkbox" [(ngModel)]="profile.displayValues" [disabled]="!canEdit"
                                id="displayValues_{{index}}" (click)="elt.unsaved = true"/>
                     </dd>
                     <dt><label for="displayInstructions_{{index}}">Display Instructions:</label></dt>
                     <dd>
-                        <input type="checkbox" [(ngModel)]="profile.displayInstructions" [disabled]="!isAllowedModel.isAllowed(elt)"
+                        <input type="checkbox" [(ngModel)]="profile.displayInstructions" [disabled]="!canEdit"
                                id="displayInstructions_{{index}}" (click)="elt.unsaved = true">
                     </dd>
                     <dt><label for="displayNumbering_{{index}}">Display Question Numbers:</label></dt>
                     <dd>
-                        <input type="checkbox" [(ngModel)]="profile.displayNumbering" [disabled]="!isAllowedModel.isAllowed(elt)"
+                        <input type="checkbox" [(ngModel)]="profile.displayNumbering" [disabled]="!canEdit"
                                id="displayNumbering_{{index}}" (click)="elt.unsaved = true">
                     </dd>
                     <dt><label for="displayType_{{index}}">Display Printable Logic:</label></dt>
                     <dd>
-                        <input type="checkbox" [disabled]="!isAllowedModel.isAllowed(elt)"
+                        <input type="checkbox" [disabled]="!canEdit"
                                id="displayType_{{index}}"
                                (change)="setDisplayType(profile, $event)">
                     </dd>
@@ -57,13 +57,13 @@
                    </dd>
                     <dt><label for="displayInvisible_{{index}}">Display Invisible Questions:</label></dt>
                     <dd>
-                        <input type="checkbox" [(ngModel)]="profile.displayInvisible" [disabled]="!isAllowedModel.isAllowed(elt)"
+                        <input type="checkbox" [(ngModel)]="profile.displayInvisible" [disabled]="!canEdit"
                                id="displayInvisible_{{index}}" (click)="elt.unsaved = true">
                     </dd>
                     <dt><label for="displayRepeatFormat_{{index}}">Repeat Format String:</label></dt>
                     <dd>
                         <input type="text" class="form-control" [(ngModel)]="profile.repeatFormat"
-                               [disabled]="!isAllowedModel.isAllowed(elt)"
+                               [disabled]="!canEdit"
                                id="displayRepeatFormat_{{index}}" (click)="elt.unsaved = true"> (Use # in place of number. Ex: "#." for "1.")
                     </dd>
                 </dl>
@@ -75,7 +75,7 @@
             </div>
         </div>
     </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-small btn-default" value="add" (click)="addProfile()"
+    <button *ngIf="canEdit" class="btn btn-small btn-default" value="add" (click)="addProfile()"
             id="addDisplayProfile"><i class="fa fa-plus"> </i> Add Profile
     </button>
 </div>

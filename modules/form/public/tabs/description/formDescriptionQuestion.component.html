@@ -1,5 +1,5 @@
 <div class="question_view" [ngClass]="{'bg-warning': question.question.cde.outdated}">
-    <div *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="ib left">
+    <div *ngIf="!isSubForm && canEdit" class="ib left">
         <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
            [treeDrag]="node"
            [treeDragEnabled]="node.allowDrag()"></i>
@@ -36,7 +36,7 @@
         </a>
     </div>
     <div class="ib left">{{getDatatypeLabel(question)}}</div>
-    <div *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="ib pull-right editIconDiv" style="font-size: 16px">
+    <div *ngIf="!isSubForm && canEdit" class="ib pull-right editIconDiv" style="font-size: 16px">
         <i *ngIf="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
            (click)="question.edit = true"></i>
         <i *ngIf="question.edit" class="fa fa-check hand-cursor" title="save edit question"
