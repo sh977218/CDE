@@ -14,7 +14,8 @@
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this data element is retired.
             <span *ngIf="elt.registrationState.replacedBy">
-                        <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
+                        <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span>
+        </div>
         <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
              role="alert">
             <i class="fa fa-exclamation-triangle"></i>
@@ -61,7 +62,6 @@
                             title="Copy CDE" type="button">
                         <i class="fa fa-clone"></i> Copy
                     </button>
-
                     <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
                             type="button" (click)="commentMode = !commentMode;">
                         <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
@@ -75,7 +75,8 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-de-general-details [elt]="elt" (save)="saveDataElement()"></cde-de-general-details>
+                            <cde-de-general-details [elt]="elt" (save)="saveDataElement()">
+                            </cde-de-general-details>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="pvs_tab">
@@ -95,7 +96,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-naming [elt]="elt" (onEltChange)="elt.unsaved = true"></cde-naming>
+                            <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="elt.unsaved = true"></cde-naming>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="classification_tab">
@@ -125,7 +126,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-reference-document [elt]="elt" (onEltChange)="doStageElt($event);">
+                            <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
                             </cde-reference-document>
                         </ng-template>
                     </ngb-tab>
@@ -136,7 +137,9 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-properties [elt]="elt" (onEltChange)="doStageElt($event);"></cde-properties>
+                            <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+
+                            </cde-properties>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="ids_tab">
@@ -146,7 +149,9 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-identifiers [elt]="elt" (onEltChange)="doStageElt($event);"></cde-identifiers>
+                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+
+                            </cde-identifiers>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="attachments_tab">
@@ -156,8 +161,10 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-attachments [elt]="elt" (removeAttachment)="removeAttachment($event);"
-                                             (setDefault)="setDefault($event)" (upload)="upload($event);"></cde-attachments>
+                            <cde-attachments [elt]="elt" [canEdit]="canEdit"
+                                             (removeAttachment)="removeAttachment($event);"
+                                             (setDefault)="setDefault($event)"
+                                             (upload)="upload($event);"></cde-attachments>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="history_tab">
@@ -167,7 +174,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-history [elt]="elt"></cde-history>
+                            <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="derivationRules_tab">

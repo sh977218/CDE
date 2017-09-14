@@ -1,9 +1,8 @@
-import { Component, Inject, Input, ViewChild, OnInit, EventEmitter, Output } from "@angular/core";
+import { Component, Input, ViewChild, OnInit, EventEmitter, Output } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from 'lodash';
-import { OrgHelperService } from "../../../core/public/orgHelper.service";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { OrgHelperService } from 'core/public/orgHelper.service';
 
 @Component({
     selector: "cde-naming",
@@ -13,6 +12,7 @@ export class NamingComponent implements OnInit {
 
     @ViewChild("newNamingContent") public newNamingContent: NgbModalModule;
     @Input() public elt: any;
+    @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     public newNaming: any = {};
     public modalRef: NgbModalRef;
@@ -21,7 +21,6 @@ export class NamingComponent implements OnInit {
     loaded: boolean;
     public onInitDone: boolean;
 
-    //noinspection TypeScriptUnresolvedVariable
     public options: Select2Options = {
         multiple: true,
         tags: true,
@@ -31,12 +30,7 @@ export class NamingComponent implements OnInit {
             }
         }
     };
-
-    public isAllowed: boolean = false;
-
-    constructor(private alert: AlertService,
-                @Inject("isAllowedModel") public isAllowedModel,
-                private orgHelperService: OrgHelperService,
+    constructor(private orgHelperService: OrgHelperService,
                 public modalService: NgbModal) {
     }
 
@@ -56,7 +50,6 @@ export class NamingComponent implements OnInit {
             });
             this.loaded = true;
         });
-        this.isAllowed = this.isAllowedModel.isAllowed(this.elt);
     }
 
     openNewNamingModal() {
@@ -78,8 +71,7 @@ export class NamingComponent implements OnInit {
 
     changedTags(name, data: { value: string[] }, needToSave = true) {
         name.tags = data.value;
-        if (needToSave)
-            this.onEltChange.emit();
+        if (needToSave) this.onEltChange.emit();
     }
 
 }

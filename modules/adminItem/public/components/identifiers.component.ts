@@ -1,8 +1,6 @@
-import { Component, EventEmitter, Inject, Input, Output, ViewChild } from "@angular/core";
-import { Http } from "@angular/http";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModalRef, NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 @Component({
     selector: "cde-identifiers",
@@ -13,14 +11,12 @@ export class IdentifiersComponent {
 
     @ViewChild("newIdentifierContent") public newIdentifierContent: NgbModalModule;
     @Input() public elt: any;
+    @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
     public modalRef: NgbModalRef;
     public newIdentifier: any = {};
 
-    constructor(public modalService: NgbModal,
-                private http: Http,
-                private alert: AlertService,
-                @Inject("isAllowedModel") public isAllowedModel) {
+    constructor(public modalService: NgbModal) {
     }
 
     openNewIdentifierModal() {

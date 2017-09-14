@@ -25,6 +25,7 @@ export class DataElementViewComponent implements OnInit {
     commentMode;
     currentTab = "general_tab";
     highlightedTabs = [];
+    canEdit: boolean = false;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -32,26 +33,28 @@ export class DataElementViewComponent implements OnInit {
                 @Inject("isAllowedModel") public isAllowedModel,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                @Inject("userResource") public userService) {}
+                @Inject("userResource") public userService) {
+    }
 
     ngOnInit(): void {
         let cdeId = this.routeParams.cdeId;
         let url = "/de/" + this.routeParams.tinyId;
         if (cdeId) url = "/deById/" + cdeId;
         this.http.get(url).map(r => r.json()).subscribe(response => {
-            this.elt = response;
-            this.h.emit({elt: this.elt, fn: this.onLocationChange});
-            this.http.get("/comments/eltId/" + this.elt.tinyId)
-                .map(res => res.json()).subscribe(
-                res => this.hasComments = res && (res.length > 0),
-                err => this.alert.addAlert("danger", "Error on loading comments. " + err)
-            );
-            this.isAllowedModel.setDisplayStatusWarning(this);
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.http.get("/comments/eltId/" + this.elt.tinyId)
+                    .map(res => res.json()).subscribe(
+                    res => this.hasComments = res && (res.length > 0),
+                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+                );
+                this.isAllowedModel.setDisplayStatusWarning(this);
+                this.canEdit = this.isAllowedModel.isAllowed(this.elt);
             }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
     }
 
-    onLocationChange (event, oldUrl, elt) {
+    onLocationChange(event, oldUrl, elt) {
         if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
             let txt = "You have unsaved changes, are you sure you want to leave this page? ";
             if ((window as any).debugEnabled) {
@@ -64,22 +67,24 @@ export class DataElementViewComponent implements OnInit {
         }
     }
 
-    reloadDataElement () {
+    reloadDataElement() {
         this.http.get("/de/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
-            this.elt = response;
-            this.h.emit({elt: this.elt, fn: this.onLocationChange});
-            this.alert.addAlert("success", "Changes discarded.");
-        }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.alert.addAlert("success", "Changes discarded.");
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
     }
 
-    saveDataElement () {
+    saveDataElement() {
         this.http.put("/de/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
-            this.elt = response;
-            this.h.emit({elt: this.elt, fn: this.onLocationChange});
-            this.alert.addAlert("success", "Data Element saved.");
-        }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.alert.addAlert("success", "Data Element saved.");
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
+        this.isAllowedModel.setDisplayStatusWarning(this);
+        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
     }
 
     openCopyElementModal() {

@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Inject, Input, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
-import { Http } from "@angular/http";
+
 import { DataElement } from 'cde/public/dataElement.model';
 import { ReferenceDocument } from 'core/public/models.model';
 
@@ -15,11 +14,11 @@ export class ReferenceDocumentComponent {
     @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: NgbModalModule;
     @Output() onEltChange = new EventEmitter();
     @Input() public elt: DataElement;
+    @Input() public canEdit: boolean = false;
     public newReferenceDocument: ReferenceDocument = new ReferenceDocument();
     public modalRef: NgbModalRef;
 
-    constructor(private modalService: NgbModal,
-                @Inject("isAllowedModel") public isAllowedModel) {
+    constructor(private modalService: NgbModal) {
     }
 
     openNewReferenceDocumentModal() {

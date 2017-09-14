@@ -1,9 +1,9 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from '@angular/http';
-
 import "rxjs/add/operator/map";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
+
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 const URL_MAP = {
     "cde": "/deView?cdeId=",
@@ -40,6 +40,7 @@ const URL_MAP = {
 export class HistoryComponent implements OnInit {
     @ViewChild("compareContent") public compareContent: NgbModal;
     @Input() public elt: any;
+    @Input() public canEdit: boolean = false;
     public modalRef: NgbActiveModal;
     showVersioned: boolean = false;
     public priorElements = [];
@@ -61,9 +62,7 @@ export class HistoryComponent implements OnInit {
 
     constructor(private alert: AlertService,
                 private http: Http,
-                public modalService: NgbModal,
-                @Inject("isAllowedModel")
-                public isAllowedModel) {
+                public modalService: NgbModal) {
     }
 
     ngOnInit(): void {

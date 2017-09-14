@@ -4,7 +4,7 @@
     <div *ngFor="let rd of elt.referenceDocuments;let i = index">
         <div class="row">
             <div class="col-md-1 text-right">
-                <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
+                <div class="row" *ngIf="canEdit">
                     <span *ngIf="rd.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
                               id="confirmRemoveReferenceDocument-{{i}}" title="OK" href=""></span>
@@ -50,8 +50,8 @@
         </div>
         <hr>
     </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-small btn-default"
-            id="openNewReferenceDocumentModalBtn" (click)="openNewReferenceDocumentModal();">
+    <button *ngIf="canEdit" class="btn btn-small btn-default" id="openNewReferenceDocumentModalBtn"
+            (click)="openNewReferenceDocumentModal();">
         <i class="fa fa-plus"></i> Add ReferenceDocument
     </button>
 </div>
@@ -59,7 +59,7 @@
     <div class="modal-header" id="newReferenceDocumentModalHeader">
         <h4 class="modal-title">Add ReferenceDocument</h4>
     </div>
-    <form role="form" #newReferenceDocumentForm="ngForm">
+    <form #newReferenceDocumentForm="ngForm">
         <div class="modal-body" id="newReferenceDocumentModalBody">
             <div class="form-group">
                 <label for="newId">ID:</label>
