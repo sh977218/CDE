@@ -104,7 +104,7 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
-            if (err) res.status(500).send("ERROR");
+            if (err) res.status(500).send("ERROR - cannot classify cdes in board");
             else res.send();
         });
     });
@@ -113,14 +113,14 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
-            if (err) res.status(500).send("ERROR");
+            if (err) res.status(500).send("ERROR - cannot classify forms in board");
             else res.send();
         });
     });
 
     app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
         elastic.boardSearch(req.body, function (err, result) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR in /boardSearch");
             return res.send(result);
         });
     });
