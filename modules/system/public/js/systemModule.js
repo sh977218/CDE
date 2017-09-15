@@ -19,27 +19,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 if (!window.loggedIn) return "/home";
                 return "/cde/search";
             }
-        }).when('/siteAudit', {
-            template: '<cde-site-audit></cde-site-audit>'
-        }).when('/inbox', {
-            template: '<cde-inbox></cde-inbox>'
-        }).when('/orgComments', {
-            template: '<cde-latest-comments [comments-url]="\'/orgComments/\'"></cde-latest-comments>'
-        }).when('/siteaccountmanagement', {
-            template: '<cde-site-management></cde-site-management>'
-        }).when('/orgaccountmanagement', {
-            template: '<cde-org-account-management></cde-org-account-management>'
-        }).when('/classificationmanagement', {
-            template: '<cde-org-classification-management></cde-org-classification-management>'
-        }).when('/orgAuthority', {
-            template: '<cde-org-authority></cde-org-authority>'
-        }).when('/profile', {
-            template: '<cde-profile></cde-profile>'
         }).when('/triggerClientException', {
             controller:  ['$scope', function() {trigger.error();}],
             template: 'An exception in your browser has been triggered.'
-        }).when('/searchPreferences', {
-            template: '<cde-search-preferences></cde-search-preferences>'
         });
     }])
     .directive('sortableArray', [function () {

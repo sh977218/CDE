@@ -89,7 +89,7 @@
         </li>
         <li class="nav-item login" [ngClass]="{active: isPageActive('/login')}" [hidden]="userService.user?._id">
             <a (click)="loginSvc.goToLogin()" id="login_link" title="Log in" routerLink="/login"
-               [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+               [attr.data-toggle]="toggleaction"
                attr.aria-controls="main-navigation" attr.aria-expanded="false">Log In</a>
         </li>
         <li ngbDropdown class="nav-item login" *ngIf="userService.user?._id">
@@ -98,35 +98,35 @@
                 <span [textContent]="userService.user?.username | cdeTruncateLongName"></span><span
                     class="caret"></span></a>
             <div role="menu" class="dropdown-menu" attr.aria-labelledby="username_link">
-                <a href="/profile" id="user_profile" class="dropdown-item" [hidden]="!userService.user?._id"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+                <a routerLink="/profile" id="user_profile" class="dropdown-item" [hidden]="!userService.user?._id"
+                   [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Profile</a>
-                <a href="/inbox" id="user_inbox" class="dropdown-item"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+                <a routerLink="/inbox" id="user_inbox" class="dropdown-item"
+                   [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Inbox</a>
                 <a href="/orgComments" id="org_comments" class="dropdown-item"
                    [hidden]="!authShared.isOrgCurator(userService.user) || userService.user?.siteAdmin"
                    [attr.data-toggle]="toggleaction" data-target="#main-navigation"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Org Comments</a>
-                <a href="/classificationmanagement" id="user_classifications" class="dropdown-item"
+                <a routerLink="/classificationmanagement" id="user_classifications" class="dropdown-item"
                    [hidden]="!authShared.isOrgCurator(userService.user)"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+                   [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Classifications</a>
-                <a href="/orgAuthority" id="user_org_authority" class="dropdown-item"
+                <a routerLink="/orgAuthority" id="user_org_authority" class="dropdown-item"
                    [hidden]="!authShared.canOrgAuthority(userService.user)"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+                   [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Org Management</a>
-                <a href="/orgaccountmanagement" id="user_account_management" class="dropdown-item"
+                <a routerLink="/orgaccountmanagement" id="user_account_management" class="dropdown-item"
                    [hidden]="!authShared.isOrgAdmin(userService.user)"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+                   [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Account Management</a>
-                <a href="/siteaccountmanagement" id="user_site_management" class="dropdown-item"
+                <a routerLink="/siteaccountmanagement" id="user_site_management" class="dropdown-item"
                    [hidden]="!userService.user?._id || !userService.user?.siteAdmin"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+                   [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Site Management</a>
-                <a href="/siteAudit" id="user_audit" class="dropdown-item"
+                <a routerLink="/siteAudit" id="user_audit" class="dropdown-item"
                    [hidden]="!userService.user?._id || !userService.user?.siteAdmin"
-                   [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+                   [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Audit</a>
                 <a href="#" (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item"
                    [hidden]="!userService.user?._id"
@@ -135,8 +135,8 @@
             </div>
         </li>
         <li class="nav-item">
-            <a href="/searchPreferences" title="open search setting"
-               [attr.data-toggle]="toggleaction" data-target="#main-navigation"
+            <a routerLink="/searchPreferences" title="open search setting"
+               [attr.data-toggle]="toggleaction"
                attr.aria-controls="main-navigation" attr.aria-expanded="false">
                 <i class="fa fa-cog navbar-inverse text-muted" id="searchSettings"></i></a>
         </li>

@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
+import { Router } from "@angular/router";
 
 @Injectable()
 export class LoginService {
 
     lastRoute: string;
 
-    constructor(private http: Http) {}
+    constructor(private http: Http,
+                private router: Router) {}
 
     public getPreviousRoute () {
         return this.lastRoute;

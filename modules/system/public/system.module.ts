@@ -52,11 +52,21 @@ import { OrgClassificationManagementComponent } from 'system/public/components/s
 import { TreeModule } from 'angular-tree-component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { RouterModule, Routes } from "@angular/router";
+import { LatestCommentsComponent } from "../../discuss/components/latestComments/latestComments.component";
 
 const appRoutes: Routes = [
     {path: 'home', component: HomeComponent},
     {path: 'api', component: SwaggerComponent},
     {path: 'login', component: LoginComponent},
+    {path: 'siteAudit', component: SiteAuditComponent},
+    {path: 'inbox', component: InboxComponent},
+    {path: 'siteaccountmanagement', component: SiteManagementComponent},
+    {path: 'orgaccountmanagement', component: OrgAccountManagementComponent},
+    {path: 'classificationmanagement', component: OrgClassificationManagementComponent},
+    {path: 'orgAuthority', component: OrgAuthorityComponent},
+    {path: 'profile', component: ProfileComponent},
+    {path: 'searchPreferences', component: SearchPreferencesComponent},
+    {path: 'orgComments', component: LatestCommentsComponent, data: {commentsUrl: "orgComments"}},
 
 ];
 
