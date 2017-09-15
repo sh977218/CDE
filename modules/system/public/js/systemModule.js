@@ -19,12 +19,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 if (!window.loggedIn) return "/home";
                 return "/cde/search";
             }
-        }).when('/api', {
-            template: '<cde-swagger></cde-swagger>'
-        }).when('/home', {
-            template: '<cde-home></cde-home>'
-        }).when('/login', {
-            template: '<cde-login></cde-login>'
         }).when('/siteAudit', {
             template: '<cde-site-audit></cde-site-audit>'
         }).when('/inbox', {

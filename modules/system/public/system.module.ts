@@ -51,6 +51,14 @@ import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccount
 import { OrgClassificationManagementComponent } from 'system/public/components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component';
 import { TreeModule } from 'angular-tree-component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { RouterModule, Routes } from "@angular/router";
+
+const appRoutes: Routes = [
+    {path: 'home', component: HomeComponent},
+    {path: 'api', component: SwaggerComponent},
+    {path: 'login', component: LoginComponent},
+
+];
 
 @NgModule({
     imports: [
@@ -67,6 +75,9 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         SearchModule,
         WidgetModule,
         DiscussModule,
+        RouterModule.forChild(
+            appRoutes
+        )
     ],
     declarations: [
         AlertComponent,
@@ -122,7 +133,9 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         SwaggerComponent,
         UsersMgtComponent,
     ],
-    exports: [],
+    exports: [
+        RouterModule
+    ],
     providers: [
         AlertService,
         CdeDiffPopulateService,

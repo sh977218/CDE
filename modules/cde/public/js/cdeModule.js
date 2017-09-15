@@ -13,7 +13,6 @@ angular.module('cdeModule', ['ngRoute']).config(
         when('/cde', {
             redirectTo: '/cde/search'
         }).
-        when('/quickBoard', {template: '<cde-quick-board></cde-quick-board>', title: "Quickboard"}).
         when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.cdeId = $routeParams.cdeId;
         }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
@@ -21,7 +20,6 @@ angular.module('cdeModule', ['ngRoute']).config(
         when('/board/:boardId', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.boardId = $routeParams.boardId;
         }], template: '<cde-board-view [board-id]="boardId"></cde-board-view>'}).
-        when('/boardList', {template: '<cde-public-boards></cde-public-boards>'}).
         when('/createCde', {template:' <cde-create-data-element></cde-create-data-element>'}).
         when('/deView', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',

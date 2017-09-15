@@ -21,6 +21,11 @@ import { WidgetModule } from "../../widget/widget.module";
 import { BoardViewComponent } from "./components/boardView/boardView.component";
 import { DiscussModule } from "../../discuss/discuss.module";
 import { PublicBoardsComponent } from "./components/publicBoards/publicBoards.component";
+import { RouterModule, Routes } from "@angular/router";
+
+const boardRoutes: Routes = [
+    {path: 'boardList', component: PublicBoardsComponent},
+];
 
 @NgModule({
     imports: [
@@ -33,6 +38,7 @@ import { PublicBoardsComponent } from "./components/publicBoards/publicBoards.co
         DiscussModule,
         SearchModule,
         WidgetModule,
+        RouterModule.forChild(boardRoutes),
     ],
     declarations: [
         BoardViewComponent,
@@ -67,6 +73,7 @@ import { PublicBoardsComponent } from "./components/publicBoards/publicBoards.co
         PinBoardModalComponent,
         PinQuickboardComponent,
         UnpinBoardComponent,
+        RouterModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

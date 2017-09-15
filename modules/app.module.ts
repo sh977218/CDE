@@ -16,6 +16,12 @@ import { SystemModule } from "./system/public/system.module";
 import { QuickBoardModule } from 'quickBoard/public/quickBoard.module';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule, Routes } from "@angular/router";
+
+
+const appRoutes: Routes = [
+
+];
 
 @NgModule({
     declarations: [
@@ -37,8 +43,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         DiscussModule,
         FormModule,
         SystemModule,
-        QuickBoardModule
+        QuickBoardModule,
+        RouterModule.forRoot(
+            appRoutes,
+            { enableTracing: true } // <-- debugging purposes only
+        )
     ],
+    exports: [RouterModule],
     bootstrap: [CdeAppComponent]
 })
 export class CdeAppModule {
