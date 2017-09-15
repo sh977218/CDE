@@ -10,10 +10,7 @@
             <button *ngIf="!elt.isDraft" (click)="loadDraft(null);">Load Draft</button>
         </ng-container>
         <ng-container *ngIf="elt.isDraft">
-            <ng-container *ngIf="elt.unsaved && isFormValid">
-                <cde-update-element [(elt)]="elt" (discard)="loadForm();"
-                                    (save)="stageForm()"></cde-update-element>
-            </ng-container>
+            <button *ngIf="elt.unsaved && isFormValid" (click)="saveModalComponent.openSaveModal()"></button>
             <button (click)="loadForm();">Stop Edit</button>
             <button (click)="removeDraft();">Remove Draft</button>
         </ng-container>
@@ -136,7 +133,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="stageElt()">
+                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="doStageElt()">
                         </cde-form-general-details>
                     </ng-template>
                 </ngb-tab>
@@ -150,7 +147,7 @@
                         <cde-form-description [cache]="cache" [elt]="elt" [canEdit]="canEdit"
                                               [inScoreCdes]="inScoreCdes"
                                               (isFormValid)="setIsValid($event)"
-                                              (onEltChange)="stageForm()"></cde-form-description>
+                                              (onEltChange)="doStageElt()"></cde-form-description>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="naming_tab">
@@ -163,7 +160,7 @@
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="stageForm();"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();"></cde-naming>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="classification_tab">
@@ -183,7 +180,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();">
                         </cde-reference-document>
                     </ng-template>
                 </ngb-tab>
@@ -194,7 +191,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="stageForm();">
+                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();">
                         </cde-display-profile>
                     </ng-template>
                 </ngb-tab>
@@ -206,7 +203,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();">
                         </cde-properties>
                     </ng-template>
                 </ngb-tab>
@@ -217,7 +214,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();">
                         </cde-identifiers>
                     </ng-template>
                 </ngb-tab>
@@ -252,10 +249,7 @@
                               [eltName]="elt.naming[0].designation"></cde-discuss-area>
         </div>
     </div>
-    <div class="row" *ngIf="elt.unsaved && isFormValid">
-        <cde-update-element [elt]="elt" (discard)="reloadForm();"
-                            (save)="stageElt();"></cde-update-element>
-    </div>
+    <cde-save-modal #saveModal [elt]="elt" (save)="stageForm();"></cde-save-modal>
 </div>
 
 <ng-template #copyFormContent id="copyFormModal" let-c="close" let-d="dismiss">

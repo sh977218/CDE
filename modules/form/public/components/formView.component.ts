@@ -7,6 +7,7 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from "quickBoard/public/quickBoardList.service";
 import { AlertService } from 'system/public/components/alert/alert.service';
+import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
 @Component({
     selector: "cde-form-view",
@@ -17,6 +18,10 @@ export class FormViewComponent implements OnInit {
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
+
+    @ViewChild(SaveModalComponent) public saveModalComponent: SaveModalComponent;
+
+
 
     @Input() routeParams: any;
 
@@ -49,13 +54,13 @@ export class FormViewComponent implements OnInit {
     ngOnInit(): void {
         this.loadForm(form => {
             this.loadComments(form, () => {
-                this.http.get("/draftForm/" + this.elt.tinyId)
+                this.http.get("/draftForm/" + form.tinyId)
                     .map(res => res.json()).subscribe(res => {
                     if (res && res.length > 0) this.drafts = res;
                     else this.drafts = [];
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft;
                 }, err => this.alert.addAlert("danger", err));
-            })
+            });
         });
     }
 
@@ -68,9 +73,8 @@ export class FormViewComponent implements OnInit {
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
                 this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                if (cb) cb();
-            },
-            () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
+                if (cb) cb(res);
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
     }
 

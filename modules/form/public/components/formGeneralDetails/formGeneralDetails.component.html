@@ -22,12 +22,10 @@
                 <div *ngIf="elt.isCopyrighted">
                     Statement:
                     <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
-                                     [isAllowed]="canEdit"
-                                     (modelChange)="save.emit();"></cde-inline-edit>
+                                     [isAllowed]="canEdit" (modelChange)="save.emit();"></cde-inline-edit>
                     Authority:
                     <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
-                                     [isAllowed]="canEdit"
-                                     (modelChange)="save.emit();"></cde-inline-edit>
+                                     [isAllowed]="canEdit" (modelChange)="save.emit();"></cde-inline-edit>
                 </div>
             </div>
         </div>
@@ -35,7 +33,7 @@
             <div class="col-sm-5 questionSectionLabel">Disallow Rendering:</div>
             <div class="col-sm-7">
                 <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
-                       id="disallowRendering" title="disallow rendering" (click)="elt.unsaved = true"/>
+                       id="disallowRendering" title="disallow rendering" (change)="save.emit();"/>
             </div>
         </div>
         <div class="row">
