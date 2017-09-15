@@ -104,8 +104,8 @@ public class NlmCdeBaseTest {
             put("rename", "fa-pencil");
             put("remove", "fa-trash-o");
             put("reclassify", "fa-retweet");
-            put("addChildClassification", "fa-share ");
-            put("meshMapping", "fa-link");
+            put("addchildclassification", "fa-share ");
+            put("meshmapping", "fa-link");
         }
     };
 
@@ -1322,7 +1322,9 @@ public class NlmCdeBaseTest {
     }
 
     public String getOrgClassificationIconXpath(String type, String[] categories) {
-        return "//*[@id='" + String.join(",", categories) + "']/following-sibling::a/i[contains(@class, '" + PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase()) + "')]";
+        String id = String.join(",", categories);
+        String fa = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
+        return "//*[@id='" + id + "']/following-sibling::a/i[contains(@class, '" + fa + "')]";
     }
 
 }

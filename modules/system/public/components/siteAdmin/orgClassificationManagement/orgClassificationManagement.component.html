@@ -48,7 +48,14 @@
         </div>
         <div class="modal-body" id="renameClassificationModalBody">
             <input class="form-control" [(ngModel)]="newClassificationName" name="newClassificationName"
-                   placeholder="New Classification Name" id="renameClassifInput" pattern="^[^;]+$" required>
+                   placeholder="New Classification Name" id="newClassificationName" pattern="^[^;]+$"
+                   #newClassificationInput="ngModel" required>
+            <span *ngIf="newClassificationInput.errors && newClassificationInput.errors.required">
+                Name is required
+            </span>
+            <span *ngIf="newClassificationInput.errors && newClassificationInput.errors.pattern">
+                Classification Name cannot contain <strong>;</strong>
+            </span>
         </div>
         <div class="modal-footer" id="renameClassificationModalFooter">
             <button class="btn cancel" (click)="c('cancel')" id="cancelRenameClassificationBtn"

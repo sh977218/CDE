@@ -15,11 +15,11 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_classifications"));
         clickElement(By.xpath(getOrgClassificationIconXpath("meshMapping", new String[]{"Disease"})));
-        findElement(By.id("mesh.search")).clear();
-        findElement(By.id("mesh.search")).sendKeys("NINDS");
+        findElement(By.id("mapClassificationMeshInput")).clear();
+        findElement(By.id("mapClassificationMeshInput")).sendKeys("NINDS");
         textPresent("National Institute of Neurological Disorders and Stroke");
         clickElement(By.id("addMeshDescButton"));
-        clickElement(By.id("closeModal"));
+        clickElement(By.id("cancelMapClassificationMeshBtn"));
         textPresent("Saved");
         closeAlert();
 

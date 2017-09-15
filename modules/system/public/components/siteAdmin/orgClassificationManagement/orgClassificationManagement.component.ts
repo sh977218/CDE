@@ -245,6 +245,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             if (!_treeNode.data.virtual)
                 classificationArray.unshift(_treeNode.data.name);
         }
+        this.mapping.flatClassification = [this.selectedOrg.name].concat(classificationArray).join(";");
         classificationArray.forEach((c, i) => {
             if (i < classificationArray.length - 1)
                 this.selectedClassificationArray = this.selectedClassificationArray.concat("<span> " + c + " </span> ->");

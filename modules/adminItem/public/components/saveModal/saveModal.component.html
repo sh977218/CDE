@@ -11,7 +11,7 @@
             </div>
             <div class="form-group">
                 <label for="newVersion">Choose a new version</label>
-                <input id="newVersion" name="newVersion" type="text" #newVersion="ngModel" class="form-control"
+                <input id="newVersion" name="newVersion" #newVersion="ngModel" class="form-control"
                        [(ngModel)]="elt.version" pattern="^[A-z0-9-=.]+$"
                        (ngModelChange)="newVersionVersionUnicity($event)"/>
                 <div *ngIf="newVersion.errors && (newVersion.dirty || newVersion.touched)" class="help-inline">
