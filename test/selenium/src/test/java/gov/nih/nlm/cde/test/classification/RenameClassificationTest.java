@@ -15,16 +15,14 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
         gotoClassificationMgt();
         clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Disease", "Spinal Cord Injury"})));
         findElement(By.id("newClassificationName")).clear();
-
         // .clear doesn't trigger modal changes. this is trick
         findElement(By.id("newClassificationName")).sendKeys("a");
         findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
-
         textPresent("Name is required");
         clickElement(By.id("cancelRenameClassificationBtn"));
         modalGone();
         clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Disease", "Spinal Cord Injury"})));
-        findElement(By.id("newClassificationName")).clear();
+        findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("newClassificationName")).sendKeys("ies;");
         textPresent("Classification Name cannot contain ;");
         findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
