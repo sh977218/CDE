@@ -1321,37 +1321,41 @@ public class NlmCdeBaseTest {
 
     protected void searchNestedClassifiedCdes() {
         goToCdeSearch();
-        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Participant/Subject Characteristics");
         findElement(By.id("search.submit")).click();
     }
 
     protected void searchNestedClassifiedForms() {
         goToFormSearch();
-        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Participant/Subject Characteristics");
         findElement(By.id("search.submit")).click();
     }
 
     protected void createOrgClassification(String org, String[] categories) {
-        new Select(driver.findElement(By.id("orgToManage"))).deselectByVisibleText(org);
+        new Select(driver.findElement(By.id("orgToManage"))).selectByVisibleText(org);
         String id;
 
         // create root classification if it doesn't exist
-        List<WebElement> rootClassifications = findElements(By.xpath("//*[@id='" + categories[0] + "']"));
+        List<WebElement> rootClassifications = driver.findElements(By.xpath("//*[@id='" + categories[0] + "']"));
         if (rootClassifications.size() == 0) {
-            clickElement(By.xpath("addClassification"));
+            clickElement(By.id("addClassification"));
             findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
             hangon(2);
             clickElement(By.id("confirmAddChildClassificationBtn"));
+
         }
 
-        for (int i = 0; i < categories.length; i++) {
+        for (int i = 1; i < categories.length; i++) {
             String[] c = Arrays.copyOfRange(categories, 0, i);
             id = String.join(",", c);
             String xpath = "//*[@id='" + id + "']";
-            List<WebElement> list = findElements(By.xpath(xpath));
+            List<WebElement> list = driver.findElements(By.xpath(xpath));
             if (list.size() == 0)
                 clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", c)));
-            else System.out.println("find " + list.size() + " " + c.toString());
+            else {
+                System.out.println("xpath: " + getOrgClassificationIconXpath("addChildClassification", c));
+                System.out.println("find " + list.size() + " " + Arrays.toString(c));
+            }
             findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
             hangon(2);
             clickElement(By.id("confirmAddChildClassificationBtn"));

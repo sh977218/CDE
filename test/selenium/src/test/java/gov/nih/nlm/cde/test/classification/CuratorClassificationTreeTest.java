@@ -12,14 +12,14 @@ public class CuratorClassificationTreeTest extends NlmCdeBaseTest {
     public void curatorCantEditClassificationTree() {
         mustBeLoggedInAs("ctepOnlyCurator", password);
         gotoClassificationMgt();
-        new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText("CTEP");
+        new Select(findElement(By.id("orgToManage"))).selectByVisibleText("CTEP");
 
         textPresent("CRF_TTU");
 
-        Assert.assertEquals(0, driver.findElements(By.cssSelector(".fa-share.fa-rotate-180")).size());
-        Assert.assertEquals(0, driver.findElements(By.cssSelector(".fa-pencil")).size());
-        Assert.assertEquals(0, driver.findElements(By.cssSelector(".fa-trash-o")).size());
-        Assert.assertEquals(0, driver.findElements(By.cssSelector(".fa-retweet")).size());
+        Assert.assertEquals(0, findElements(By.cssSelector(".fa-share.fa-rotate-180")).size());
+        Assert.assertEquals(0, findElements(By.cssSelector(".fa-pencil")).size());
+        Assert.assertEquals(0, findElements(By.cssSelector(".fa-trash-o")).size());
+        Assert.assertEquals(0, findElements(By.cssSelector(".fa-retweet")).size());
 
     }
 

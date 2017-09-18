@@ -10,6 +10,7 @@ import { ClassificationService } from "core/public/core.module";
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { Subject } from 'rxjs/Subject';
+import * as authShared from "system/shared/authorizationShared";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -24,7 +25,7 @@ const actionMapping: IActionMapping = {
     selector: "cde-org-classification-management",
     templateUrl: "./orgClassificationManagement.component.html",
     styles: [`
-        host >>> .tree {
+        host > > > .tree {
             cursor: default !important;
         }
     `]
@@ -120,6 +121,10 @@ export class OrgClassificationManagementComponent implements OnInit {
         } else {
             if (cb) cb();
         }
+    }
+
+    isOrgAdmin() {
+        return authShared.isOrgAdmin(this.userService.user);
     }
 
     openRenameClassificationModal(node) {
