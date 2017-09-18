@@ -149,28 +149,28 @@ exports.init = function (app) {
         async.series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
-                       if (req.body.recaptcha) {
-                           request.post("https://www.google.com/recaptcha/api/siteverify",
-                               {
-                                   form: {
-                                       secret: config.captchaCode,
-                                       response: req.body.recaptcha,
-                                       remoteip: getRealIp(req)
-                                   },
-                                   json: true
-                               }, function (err, resp, body) {
-                                   if (err) captchaDone(err);
-                                   else if (!body.success) {
-                                       captchaDone("incorrect recaptcha");
-                                   } else {
-                                       captchaDone();
-                                   }
-                               });
-                       } else {
-                           captchaDone("missing recaptcha");
-                       }
+                        if (req.body.recaptcha) {
+                            request.post("https://www.google.com/recaptcha/api/siteverify",
+                                {
+                                    form: {
+                                        secret: config.captchaCode,
+                                        response: req.body.recaptcha,
+                                        remoteip: getRealIp(req)
+                                    },
+                                    json: true
+                                }, function (err, resp, body) {
+                                    if (err) captchaDone(err);
+                                    else if (!body.success) {
+                                        captchaDone("incorrect recaptcha");
+                                    } else {
+                                        captchaDone();
+                                    }
+                                });
+                        } else {
+                            captchaDone("missing recaptcha");
+                        }
                     } else {
-                       captchaDone();
+                        captchaDone();
                     }
                 }],
             function allDone(err) {
@@ -476,8 +476,8 @@ exports.init = function (app) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName))
             return res.status(401).send();
         classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function (err, org) {
-            if (!err) res.send(org);
-            else res.status(202).send({error: {message: "Classification does not exists."}});
+            if (err) return res.status(500).send("Error");
+            res.send(org);
         });
     });
 

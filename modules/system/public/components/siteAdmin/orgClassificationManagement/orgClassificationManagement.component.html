@@ -59,11 +59,11 @@
         </div>
         <div class="modal-footer" id="renameClassificationModalFooter">
             <button class="btn cancel" (click)="c('cancel')" id="cancelRenameClassificationBtn"
-                    name="cancelDeleteClassificationBtn" type="button">Cancel
+                    name="cancelRenameClassificationBtn" type="button">Cancel
             </button>
             <button class="btn btn-danger" (click)="c('confirm')" id="confirmRenameClassificationBtn"
                     [disabled]="!newClassificationName && !renameClassificationForm.form.valid"
-                    name="confirmDeleteClassificationBtn" type="button">OK
+                    name="confirmRenameClassificationBtn" type="button">OK
             </button>
         </div>
     </form>
