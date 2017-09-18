@@ -18,10 +18,6 @@ import { UserService } from "./user.service";
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 
-export function getSearchSettingsFactory(i: any) {
-    return i.get("SearchSettings");
-}
-
 export function getIsAllowedModelFactory(i: any) {
     return i.get("isAllowedModel");
 }
@@ -52,7 +48,6 @@ export function getFormQuickBoardFactory(i: any) {
         UserService,
         // upgraded
         UpgradeModule,
-        {provide: "SearchSettings", useFactory: getSearchSettingsFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},

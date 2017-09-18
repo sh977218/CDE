@@ -36,8 +36,7 @@ export class CreateFormComponent implements OnInit {
                 @Inject("isAllowedModel") public isAllowedModel,
                 private localStorageService: LocalStorageService,
                 private http: Http,
-                private alert: AlertService,
-                @Inject("SearchSettings") private searchSettings) {
+                private alert: AlertService) {
     }
 
     ngOnInit(): void {
