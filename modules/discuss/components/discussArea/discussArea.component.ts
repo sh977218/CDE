@@ -6,6 +6,8 @@ import "rxjs/add/operator/map";
 import * as io from "socket.io-client";
 import { TimerObservable } from "rxjs/observable/TimerObservable";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { Subject } from "rxjs/Subject";
+import { Observable } from "rxjs/Observable";
 
 const tabMap = {
     "general_tab": "general",
@@ -46,6 +48,8 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     avatarUrls: any = {};
     showAllReplies: any = {};
 
+    private emitCurrentReplying = new Subject<{_id: string, comment: string}>();
+
     @Input() public elt: any;
     @Input() public eltId: string;
     @Input() public eltName: string;
@@ -68,6 +72,12 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 }
             });
         });
+
+        this.emitCurrentReplying.debounceTime(300).distinctUntilChanged().map(obj => {
+            this.socket.emit('currentReplying', this.eltId, obj._id);
+            return Observable.of<string[]>([]);
+        }).subscribe(() => {});
+
     };
 
     ngOnDestroy() {
@@ -151,7 +161,9 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     cancelReply = (comment) => this.tempReplies[comment._id] = '';
 
-    changeOnReply = (comment) => this.socket.emit('currentReplying', this.eltId, comment._id);
+    changeOnReply (comment) {
+        this.emitCurrentReplying.next({_id: comment._id, comment: this.tempReplies[comment._id]});
+    }
 
     setCurrentTab($event) {
         if (this.eltComments)
