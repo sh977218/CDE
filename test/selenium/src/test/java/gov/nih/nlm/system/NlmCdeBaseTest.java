@@ -545,6 +545,8 @@ public class NlmCdeBaseTest {
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
+        wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(
+                By.cssSelector("#confirmSaveBtn[disabled]"))));
         clickElement(By.id("confirmSaveBtn"));
     }
 
