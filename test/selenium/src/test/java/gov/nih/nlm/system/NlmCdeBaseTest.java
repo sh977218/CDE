@@ -99,6 +99,15 @@ public class NlmCdeBaseTest {
 
 
     ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
+    Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
+        {
+            put("rename", "fa-pencil");
+            put("remove", "fa-trash-o");
+            put("reclassify", "fa-retweet");
+            put("addchildclassification", "fa-share ");
+            put("meshmapping", "fa-link");
+        }
+    };
 
     private void setDriver(String b) {
         if (b == null) b = browser;
@@ -736,11 +745,6 @@ public class NlmCdeBaseTest {
         }
     }
 
-    private void scrollToEltByCss(String css) {
-        String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
-        ((JavascriptExecutor) driver).executeScript(scrollScript, "");
-    }
-
     protected void scrollToView(By by) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         je.executeScript(
@@ -832,17 +836,14 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
-    protected void deleteMgtClassification(String classificationId, String classificationName) {
-        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
-        findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
-        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
-        modalGone();
-        try {
-            textPresent("Classification Deleted");
-        } catch (TimeoutException e) {
-            textPresent("Classification Deleted");
-        }
+    protected void deleteOrgClassification(String orgName, String[] categories) {
+        String classification = categories[categories.length - 1];
+        new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgName);
+        clickElement(By.xpath(getOrgClassificationIconXpath("remove", categories)));
+        findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
+        clickElement(By.id("confirmDeleteClassificationBtn"));
         closeAlert();
+        textNotPresent(classification);
     }
 
     protected void gotoInbox() {
@@ -1310,6 +1311,51 @@ public class NlmCdeBaseTest {
         if (type.equalsIgnoreCase("partialmatch")) type = "partialMatch";
         if (type.equalsIgnoreCase("notmatch")) type = "notMatch";
         return "(//*[@id='" + section + "']//*[contains(@class,'no" + side + "Padding')]//*[contains(@class,'" + type + "')])[" + index + "]";
+    }
+
+    public String getOrgClassificationIconXpath(String type, String[] categories) {
+        String id = String.join(",", categories);
+        String fa = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
+        return "//*[@id='" + id + "']/following-sibling::a/i[contains(@class, '" + fa + "')]";
+    }
+
+    protected void searchNestedClassifiedCdes() {
+        goToCdeSearch();
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.id("search.submit")).click();
+    }
+
+    protected void searchNestedClassifiedForms() {
+        goToFormSearch();
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
+        findElement(By.id("search.submit")).click();
+    }
+
+    protected void createOrgClassification(String org, String[] categories) {
+        new Select(driver.findElement(By.id("orgToManage"))).deselectByVisibleText(org);
+        String id;
+
+        // create root classification if it doesn't exist
+        List<WebElement> rootClassifications = findElements(By.xpath("//*[@id='" + categories[0] + "']"));
+        if (rootClassifications.size() == 0) {
+            clickElement(By.xpath("addClassification"));
+            findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
+            hangon(2);
+            clickElement(By.id("confirmAddChildClassificationBtn"));
+        }
+
+        for (int i = 0; i < categories.length; i++) {
+            String[] c = Arrays.copyOfRange(categories, 0, i);
+            id = String.join(",", c);
+            String xpath = "//*[@id='" + id + "']";
+            List<WebElement> list = findElements(By.xpath(xpath));
+            if (list.size() == 0)
+                clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", c)));
+            else System.out.println("find " + list.size() + " " + c.toString());
+            findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
+            hangon(2);
+            clickElement(By.id("confirmAddChildClassificationBtn"));
+        }
     }
 
 }

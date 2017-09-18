@@ -1,0 +1,169 @@
+<div *ngIf="onInitDone" class="container-fluid" id="classMgt">
+    <h1 class="page-header">
+        <label for="orgToManage" id="manageClassificationsLabel">Classifications</label>
+    </h1>
+    <select class="form-control" [(ngModel)]="orgToManage" name="orgToManage" id="orgToManage"
+            (change)="onChangeOrg($event.target.value,null)">
+        <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
+    </select>
+    <br/>
+    <div class="boxed-div">
+        <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
+            <a title="Add Child Classification" (click)="openAddChildClassificationModal(null);">
+                <i id="addClassification" class="fa fa-share fa-rotate-180"></i>
+            </a>
+        </h4>
+        <tree-root #treeRoot [nodes]="selectedOrg.classifications" [options]="options">
+            <ng-template #treeNodeTemplate let-node="node" let-index="index">
+                <a [id]="node.path" href="{{searchByClassification(node,selectedOrg.name)}}"
+                   target="_blank">{{ node.data.name }}</a>
+                <a title="Edit" (click)="openRenameClassificationModal(node);">
+                    <i class="fa fa-pencil"></i></a>
+                <a title="Remove" (click)="openDeleteClassificationModal(node);">
+                    <i class="fa fa-trash-o"></i></a>
+                <a title="Reclassify" (click)="openReclassificationModal(node);">
+                    <i class="fa fa-retweet"></i></a>
+                <a title="Add Child Classification" (click)="openAddChildClassificationModal(node);">
+                    <i class="fa fa-share fa-rotate-180"></i></a>
+                <a title="Mesh Mapping" (click)="openMapClassificationMeshModal(node);">
+                    <i class="fa fa-link"></i></a>
+            </ng-template>
+            <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                <div [class.tree-node-expanded]="true" [ngClass]="{'floatLeft boxed-div':node.level===1}">
+                    <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+                        <tree-node-content [node]="node" [index]="index" [template]="templates.treeNodeTemplate">
+                        </tree-node-content>
+                    </div>
+                    <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
+                </div>
+            </ng-template>
+        </tree-root>
+    </div>
+</div>
+
+<ng-template #renameClassificationContent id="renameClassificationModal" let-c="close" let-d="dismiss">
+    <form #renameClassificationForm="ngForm">
+        <div class="modal-header" id="renameClassificationModalHeader">
+            <h4 class="modal-title">Rename Classification</h4>
+        </div>
+        <div class="modal-body" id="renameClassificationModalBody">
+            <input class="form-control" [(ngModel)]="newClassificationName" name="newClassificationName"
+                   placeholder="New Classification Name" id="newClassificationName" pattern="^[^;]+$"
+                   #newClassificationInput="ngModel" required>
+            <span *ngIf="newClassificationInput.errors && newClassificationInput.errors.required">
+                Name is required
+            </span>
+            <span *ngIf="newClassificationInput.errors && newClassificationInput.errors.pattern">
+                Classification Name cannot contain <strong>;</strong>
+            </span>
+        </div>
+        <div class="modal-footer" id="renameClassificationModalFooter">
+            <button class="btn cancel" (click)="c('cancel')" id="cancelRenameClassificationBtn"
+                    name="cancelRenameClassificationBtn" type="button">Cancel
+            </button>
+            <button class="btn btn-danger" (click)="c('confirm')" id="confirmRenameClassificationBtn"
+                    [disabled]="!newClassificationName && !renameClassificationForm.form.valid"
+                    name="confirmRenameClassificationBtn" type="button">OK
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #deleteClassificationContent id="deleteClassificationModal" let-c="close" let-d="dismiss">
+    <div class="modal-header" id="deleteClassificationModalHeader">
+        <h4 class="modal-title">Remove Classification</h4>
+    </div>
+    <div class="modal-body" id="deleteClassificationModalBody">
+        You are about to delete the following classification:
+        <br>
+        <br>
+        <div class="panel panel-default">
+            <div class="panel-body" [innerHTML]="selectedClassificationArray"></div>
+        </div>
+
+        <br/>This will affect multiple CDEs.
+        <br/>Are you sure you want to proceed?
+        <br/>
+        <br/>Please confirm your decision by typing the name of the classification:
+        <input id="removeClassificationUserTyped" [(ngModel)]="userTyped" class="form-control"
+               [placeholder]="selectedClassificationString">
+    </div>
+    <div class="modal-footer" id="deleteClassificationModalFooter">
+        <button class="btn cancel" (click)="c('cancel')" id="cancelDeleteClassificationBtn"
+                name="cancelDeleteClassificationBtn" type="button">Cancel
+        </button>
+        <button class="btn btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
+                [disabled]="userTyped !== selectedClassificationString" name="confirmDeleteClassificationBtn"
+                type="button">OK
+        </button>
+    </div>
+</ng-template>
+
+<cde-classify-item-modal #reclassifyComponent [modalTitle]="selectedClassificationArray"
+                         (onEltSelected)="reclassify($event)">
+</cde-classify-item-modal>
+
+<ng-template #addChildClassificationContent id="addChildClassificationModal" let-c="close" let-d="dismiss">
+    <form #addChildClassificationForm="ngForm">
+        <div class="modal-header" id="addChildClassificationModalHeader">
+            <h4 class="modal-title"> Add Child Classification Under</h4>
+        </div>
+        <div class="modal-body" id="addChildClassificationModalBody">
+            Add a new classification under path:
+            <br>
+            <br>
+            <div class="panel panel-default">
+                <div class="panel-body" [innerHTML]="selectedClassificationArray"></div>
+            </div>
+            <input class="form-control" [(ngModel)]="newClassificationName" name="newClassificationName"
+                   placeholder="New Classification Name" id="addChildClassifInput" pattern="^[^;]+$" required>
+        </div>
+        <div class="modal-footer" id="addChildClassificationModalFooter">
+            <button class="btn cancel" (click)="c('cancel')" id="cancelAddChildClassificationBtn"
+                    name="cancelDeleteClassificationBtn">Cancel
+            </button>
+            <button class="btn btn-danger" (click)="c('confirm')" id="confirmAddChildClassificationBtn"
+                    [disabled]="!newClassificationName && !addChildClassificationForm.form.valid"
+                    name="confirmDeleteClassificationBtn">OK
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #mapClassificationMeshContent id="mapClassificationMeshModal" let-c="close" let-d="dismiss">
+    <form #mapClassificationMeshForm="ngForm">
+        <div class="modal-header" id="mapClassificationMeshModalHeader">
+            <h4 class="modal-title">Mesh Mappings</h4>
+        </div>
+        <div class="modal-body" id="mapClassificationMeshModalBody">
+            Here are MeSH Terms mapped to VSAC :
+            <div ng-if="mapping.meshDescriptors.length === 0">
+                No mapping. Add more below.
+            </div>
+
+            <div *ngFor="let desc of mapping.meshDescriptors;let i=index;">
+                <a href="" (click)="removeDescriptor(i)" class="fa fa-trash" title="remove"></a>
+                {{desc}} -{{descToName[desc]}}
+            </div>
+
+            <label for="meshSearchTerm">MeSH Descriptor: </label>
+            <input class="form-control" [(ngModel)]="meshSearchTerm" id="meshSearchTerm" name="meshSearchTerm"
+                   id="mapClassificationMeshInput" pattern="^[^;]+$" (keyup)="searchMesh()"
+                   (ngModelChange)="searchMesh()" required>
+            <span *ngIf="searching">searching...</span>
+
+            <div *ngIf="descriptorID">
+                {{descriptorID}} -- {{descriptorName}}
+                <button *ngIf="descriptorName.length > 0" class="btn btn-default btn-sm" id="addMeshDescButton"
+                        (click)="addMeshDescriptor()" [disabled]="isDescriptorAlreadyMapped(descriptorID)">Add
+                </button>
+            </div>
+
+        </div>
+        <div class="modal-footer" id="mapClassificationMeshModalFooter">
+            <button class="btn cancel" (click)="c('cancel')" id="cancelMapClassificationMeshBtn"
+                    name="cancelDeleteClassificationBtn">Close
+            </button>
+        </div>
+    </form>
+</ng-template>

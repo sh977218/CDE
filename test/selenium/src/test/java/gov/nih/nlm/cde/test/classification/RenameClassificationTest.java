@@ -13,20 +13,22 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
     public void renameClassification() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
-        clickElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]"));
-        findElement(By.id("renameClassifInput")).clear();
+        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Disease", "Spinal Cord Injury"})));
+        findElement(By.id("newClassificationName")).clear();
+
+        // .clear doesn't trigger modal changes. this is trick
+        findElement(By.id("newClassificationName")).sendKeys("a");
+        findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
+
         textPresent("Name is required");
-        clickElement(By.id("cancelRename"));
+        clickElement(By.id("cancelRenameClassificationBtn"));
         modalGone();
-        clickElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]"));
-        findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.id("renameClassifInput")).sendKeys("ies;");
+        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Disease", "Spinal Cord Injury"})));
+        findElement(By.id("newClassificationName")).clear();
+        findElement(By.id("newClassificationName")).sendKeys("ies;");
         textPresent("Classification Name cannot contain ;");
-        findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
-        clickElement(By.xpath("//button[text()='Save']"));
-        textPresent("Renaming in progress.");
-        closeAlert();
-        hangon(20);
+        findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
+        clickElement(By.id("confirmRenameClassificationBtn"));
         try {
             textPresent("Renaming complete.");
             closeAlert();
@@ -34,9 +36,9 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
             textPresent("Renaming complete.");
             closeAlert();
         }
-        findElement(By.xpath("//*[@id='classification-Disease,Spinal Cord Injuries,Classification']"));
-        findElement(By.xpath("//*[@id='classification-Disease,Spinal Cord Injuries,Classification,Supplemental']"));
-        clickElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a"));
+        findElement(By.xpath("//*[@id='Disease,Spinal Cord Injuries,Classification']"));
+        findElement(By.xpath("//*[@id='Disease,Spinal Cord Injuries,Classification,Supplemental']"));
+        clickElement(By.xpath("//*[@id='Disease,Spinal Cord Injuries,Classification']"));
         textPresent("Spinal Cord Injuries");
 
         openClassificationAudit("NINDS > Disease > Spinal Cord Injury");

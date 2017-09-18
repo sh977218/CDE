@@ -10,10 +10,10 @@ public class ReclassifyTest extends BaseClassificationTest {
     public void adminOfMultipleOrgsCanSeeDropdown() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         gotoClassificationMgt();
-        findElement(By.cssSelector(".fa-retweet")).click();
+        clickElement(By.cssSelector(".fa-retweet"));
         new Select(driver.findElement(By.id("selectClassificationOrg"))).selectByVisibleText("caBIG");
         textPresent("caNanoLab");
-        clickElement(By.id("closeModal"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
     }
 
 }
