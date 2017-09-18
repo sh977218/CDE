@@ -6,6 +6,7 @@ import { SharedService } from "core/public/shared.service";
 import { saveAs } from "file-saver";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
 import { OrgHelperService } from "core/public/orgHelper.service";
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: 'cde-board-view',
@@ -49,7 +50,7 @@ export class BoardViewComponent implements OnInit {
 
     constructor(private http: Http,
                 private alert: AlertService,
-                @Inject('userResource') protected userService,
+                protected userService: UserService,
                 private modalService: NgbModal,
                 @Inject('SearchSettings') public searchSettings,
                 private orgHelper: OrgHelperService) {}
@@ -80,7 +81,7 @@ export class BoardViewComponent implements OnInit {
                     });
                 });
 
-                this.userService.getPromise().then(() => {
+                this.userService.then(() => {
                     this.board.users.forEach(u => {
                         if (u.username === this.userService.user.username &&
                             u.role === 'reviewer' && u.status.approval === 'approved' &&

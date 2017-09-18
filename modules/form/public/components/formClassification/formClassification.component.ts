@@ -4,14 +4,7 @@ import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
 import { ClassificationService } from "../../../../core/public/classification.service";
 import { ClassifyItemModalComponent } from "../../../../adminItem/public/components/classification/classifyItemModal.component";
-
-const urlMap = {
-    "form": {
-        delete: "/removeFormClassification/",
-        add: "/addFormClassification/",
-        get: "form/"
-    }
-};
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: "cde-form-classification",
@@ -31,7 +24,7 @@ export class FormClassificationComponent {
     constructor(public http: Http,
                 private alert: AlertService,
                 private classificationSvc: ClassificationService,
-                @Inject("userResource") public userService,
+                public userService: UserService,
                 @Inject("isAllowedModel") public isAllowedModel) {
     }
 

@@ -6,6 +6,7 @@ import "rxjs/add/operator/map";
 import * as io from "socket.io-client";
 import { TimerObservable } from "rxjs/observable/TimerObservable";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { UserService } from "../../../core/public/user.service";
 
 const tabMap = {
     "general_tab": "general",
@@ -32,7 +33,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     constructor(private http: Http,
                 private alert: AlertService,
                 @Inject("isAllowedModel") private isAllowedModel,
-                @Inject("userResource") public userService) {
+                public userService: UserService) {
     };
 
     newComment: Comment = new Comment();
@@ -153,12 +154,8 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     changeOnReply = (comment) => this.socket.emit('currentReplying', this.eltId, comment._id);
 
-    setCurrentTab($event) {
+    setCurrentTab ($event) {
         if (this.eltComments)
-            this.eltComments.forEach(c => {
-                if (c.linkedTab && c.linkedTab === tabMap[$event])
-                    c.currentComment = true;
-                else c.currentComment = false;
-            });
+            this.eltComments.forEach(c => c.currentComment = !!(c.linkedTab && c.linkedTab === tabMap[$event]));
     }
 }

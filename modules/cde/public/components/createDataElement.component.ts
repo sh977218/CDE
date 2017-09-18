@@ -1,4 +1,4 @@
-import { Component, Inject, Input, Output, OnInit, ViewChild, EventEmitter } from "@angular/core";
+import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
@@ -8,6 +8,7 @@ import * as ClassificationShared from "../../../system/shared/classificationShar
 import * as _ from "lodash";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { ElasticService } from "../../../core/public/elastic.service";
+import { UserService } from "../../../core/public/user.service";
 
 @Component({
     selector: "cde-create-data-element",
@@ -21,7 +22,7 @@ export class CreateDataElementComponent implements OnInit {
     validationMessage;
     suggestedCdes: any[] = [];
 
-    constructor(@Inject("userResource") public userService,
+    constructor(public userService: UserService,
                 @Inject("isAllowedModel") public isAllowedModel,
                 private localStorageService: LocalStorageService,
                 private elasticService: ElasticService,

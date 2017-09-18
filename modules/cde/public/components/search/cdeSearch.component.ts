@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, EventEmitter, Inject, Input, Output, Type } from '@angular/core';
+import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
 import { Http } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'system/public/components/alert/alert.service';
@@ -7,6 +7,7 @@ import { ExportService } from 'core/public/export.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { SearchBaseComponent } from 'search/searchBase.component';
 import { OrgHelperService } from 'core/public/orgHelper.service';
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: 'cde-cde-search',
@@ -27,7 +28,7 @@ export class CdeSearchComponent extends SearchBaseComponent {
                 protected modalService: NgbModal,
                 protected elasticService: ElasticService,
                 protected orgHelperService: OrgHelperService,
-                @Inject('userResource') protected userService) {
+                protected userService: UserService) {
         super(_componentFactoryResolver, alert, elasticService, exportService, http, modalService,
             orgHelperService, userService);
 

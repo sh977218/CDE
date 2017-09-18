@@ -6,7 +6,7 @@ import * as formShared from "../../../form/shared/formShared";
 import * as regStatusShared from "../../../system/shared/regStatusShared";
 
 import "../../../system/public/js/elastic.js";
-import "../../../system/public/js/orgFactories.js";
+import "../../../embedded/public/js/orgFactories.js";
 import "../../../embedded/public/js/SearchSettings.js";
 import "../../../components/angular-bootstrap/ui-bootstrap-tpls.js";
 import "../../../embedded/public/js/angularTemplates.js";

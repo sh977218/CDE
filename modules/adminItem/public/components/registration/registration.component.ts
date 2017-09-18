@@ -5,6 +5,7 @@ import { Http } from '@angular/http';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { SharedService } from 'core/public/shared.service';
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: 'cde-registration',
@@ -26,7 +27,7 @@ export class RegistrationComponent implements OnInit {
                  private parserFormatter: NgbDateParserFormatter,
                  private alert: AlertService,
                  @Inject('isAllowedModel') public isAllowedModel,
-                 @Inject('userResource') private userService,
+                 private userService: UserService,
                  public modalService: NgbModal
     ) {}
 

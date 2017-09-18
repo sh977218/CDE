@@ -7,6 +7,7 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from "quickBoard/public/quickBoardList.service";
+import { UserService } from "../../../core/public/user.service";
 
 @Component({
     selector: "cde-form-view",
@@ -42,7 +43,7 @@ export class FormViewComponent implements OnInit {
                 @Inject("isAllowedModel") public isAllowedModel,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                @Inject("userResource") public userService) {
+                public userService: UserService) {
     }
 
     ngOnInit(): void {

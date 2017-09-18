@@ -1,7 +1,14 @@
 import * as regStatusShared from "../../../system/shared/regStatusShared";
 
+import { downgradeInjectable } from "@angular/upgrade/static";
+
+import { UserService } from "../../../core/public/user.service";
+angular.module('ElasticSearchResource').factory('userResource', downgradeInjectable(UserService));
+
+
 angular.module('ElasticSearchResource')
-    .factory('SearchSettings', ["localStorageService", "$q", "userResource", function (localStorageService, $q, userResource) {
+    .factory('SearchSettings', ["localStorageService", "$q", "userResource", "$http",
+        function (localStorageService, $q, userResource, $http) {
         var version = 20160329;
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
@@ -10,7 +17,7 @@ angular.module('ElasticSearchResource')
             searchSettings = JSON.parse(JSON.stringify(settings));
             delete settings.includeRetired;
             localStorageService.set("SearchSettings", settings);
-            userResource.updateSearchSettings(settings);
+            $http.post("/user/update/searchSettings", settings);
         };
         this.getDefault = function () {
             return {
@@ -56,7 +63,9 @@ angular.module('ElasticSearchResource')
             if (searchSettings.includeRetired) result.push("Retired");
             return result;
         };
-        userResource.getPromise().then(function (user) {
+
+        userResource.then(function () {
+            var user = userResource.user;
             if (user === "Not logged in.") {
             }
             else {
@@ -68,5 +77,6 @@ angular.module('ElasticSearchResource')
             if (searchSettings.version !== version) searchSettings = searchSettingsFactory.getDefault();
             searchSettingsFactory.deferred.resolve(searchSettings);
         });
+
         return this;
     }]);

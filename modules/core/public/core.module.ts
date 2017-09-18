@@ -13,13 +13,10 @@ import { MergeFormService } from "./mergeForm.service";
 import { MergeShareService } from "./mergeShare.service";
 import { CompareService } from "./compare.service";
 import { OrgHelperService } from "./orgHelper.service";
+import { UserService } from "./user.service";
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
-
-export function getUserResourceFactory(i: any) {
-    return i.get("userResource");
-}
 
 export function getSearchSettingsFactory(i: any) {
     return i.get("SearchSettings");
@@ -52,9 +49,9 @@ export function getFormQuickBoardFactory(i: any) {
         MergeShareService,
         CompareService,
         OrgHelperService,
+        UserService,
         // upgraded
         UpgradeModule,
-        {provide: "userResource", useFactory: getUserResourceFactory, deps: ["$injector"]},
         {provide: "SearchSettings", useFactory: getSearchSettingsFactory, deps: ["$injector"]},
         {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},

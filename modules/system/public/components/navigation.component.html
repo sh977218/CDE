@@ -81,9 +81,9 @@
             </div>
         </li>
     </ul>
-    <ul class="ieFix nav navbar-nav navbar-right" attr.data-userloaded="loaded-{{userService.user?.userLoaded}}">
+    <ul class="ieFix nav navbar-nav navbar-right" attr.data-userloaded="loaded-{{userService.user?true:false}}">
         <li class="nav-item">
-            <a *ngIf="userService.userHasMail" title="New messages" href="/inbox">
+            <a *ngIf="userService.user?.hasMail" title="New messages" href="/inbox">
                 <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
         </li>
         <li class="nav-item login" [ngClass]="{active: isPageActive('/login')}" [hidden]="userService.user?._id">

@@ -69,59 +69,6 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
-    .factory("userResource", ["$http", "$q", "$interval", "OrgHelpers", function ($http, $q, $interval, OrgHelpers) {
-        var userResource = this;
-        this.user = null;
-        this.userHasMail = false;
-
-        this.getRemoteUser = function () {
-            userResource.deferred = $q.defer();
-            $http.get('/user/me').then(function (response) {
-                var u = response.data;
-                if (u === "Not logged in.") {
-                    userResource.user = {userLoaded: true};
-                } else {
-                    userResource.user = u;
-                    userResource.setOrganizations();
-                    userResource.user.userLoaded = true;
-                }
-                userResource.checkMail();
-                userResource.deferred.resolve(response.data);
-            });
-        };
-        this.getRemoteUser();
-        this.getPromise = function () {
-            return userResource.deferred.promise;
-        };
-        this.setOrganizations = function () {
-            if (userResource.user && userResource.user.orgAdmin) {
-                // clone orgAdmin array
-                userResource.userOrgs = userResource.user.orgAdmin.slice(0);
-                for (var i = 0; i < userResource.user.orgCurator.length; i++) {
-                    if (userResource.userOrgs.indexOf(userResource.user.orgCurator[i]) < 0) {
-                        userResource.userOrgs.push(userResource.user.orgCurator[i]);
-                    }
-                }
-            } else {
-                userResource.userOrgs = [];
-            }
-        };
-
-        this.updateSearchSettings = function (settings) {
-            if (!userResource.user || !userResource.user.username) return;
-            $http.post("/user/update/searchSettings", settings);
-        };
-
-        this.checkMail = function () {
-            if (userResource.user) {
-                $http.get('/mailStatus').then(function onSuccess(response) {
-                    if (response.data.count > 0) userResource.userHasMail = true;
-                }, function () {
-                });
-            }
-        };
-        return this;
-    }])
     .factory("SearchResultResource", [function () {
         return {
             elts: []

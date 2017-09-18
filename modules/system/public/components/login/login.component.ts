@@ -3,6 +3,7 @@ import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { AlertService } from "../alert/alert.service";
 import { LoginService } from "./login.service";
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: "cde-login",
@@ -21,7 +22,7 @@ export class LoginComponent implements OnInit {
     constructor(private http: Http,
                 private alert: AlertService,
                 private loginSvc: LoginService,
-                @Inject("userResource") private userService) {}
+                private userService: UserService) {}
 
     ngOnInit() {
         this.getCsrf();
@@ -47,7 +48,7 @@ export class LoginComponent implements OnInit {
             _csrf: this.csrf,
             recaptcha: this.recaptcha
         }).map(r => r.text()).subscribe(res => {
-            this.userService.getRemoteUser();
+            this.userService.reload();
             if (res === "OK") {
                 (document.querySelector('#goPrevious')as any).click();
             } else {

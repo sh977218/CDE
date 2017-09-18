@@ -1,6 +1,10 @@
 import { Component, ViewChild, Inject, Input, Output, EventEmitter } from "@angular/core";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { OrgHelperService } from "../../../../core/public/orgHelper.service";
+
+import * as authShared from "system/shared/authorizationShared";
+import { UserService } from "../../../../core/public/user.service";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -10,6 +14,7 @@ const actionMapping: IActionMapping = {
         }
     }
 };
+
 @Component({
     selector: "cde-classification-view",
     providers: [NgbActiveModal],
@@ -32,8 +37,16 @@ export class ClassificationViewComponent {
     };
 
     constructor(public modalService: NgbModal,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                @Inject("isAllowedModel") public isAllowedModel,
+                protected userService: UserService,
+                private orgHelper: OrgHelperService) {
     };
+
+    showWorkingGroups = function (stewardClassifications) {
+        return this.orgHelper.showWorkingGroup(stewardClassifications.stewardOrg.name, this.userService.user) ||
+            authShared.isSiteAdmin(this.userService.user);
+    };
+
 
     searchByClassification(node, orgName) {
         let classificationArray = [node.data.name];

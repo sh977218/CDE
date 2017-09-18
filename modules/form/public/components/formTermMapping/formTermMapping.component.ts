@@ -5,6 +5,7 @@ import { Http } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: "cde-form-term-mapping",
@@ -14,7 +15,7 @@ import { AlertService } from "../../../../system/public/components/alert/alert.s
 export class FormTermMappingComponent implements OnInit {
 
     constructor(@Inject("isAllowedModel") public isAllowedModel,
-                @Inject("userResource") public userService,
+                public userService: UserService,
                 public modalService: NgbModal,
                 private http: Http,
                 private alert: AlertService

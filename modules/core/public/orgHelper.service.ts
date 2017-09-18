@@ -1,16 +1,15 @@
 import { Inject, Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import { SharedService } from "./shared.service";
+import { UserService } from "./user.service";
 
 @Injectable()
 export class OrgHelperService  {
     orgsDetailedInfo: any;
-    orgIsWorkingGroupOf = orgName => this.orgsDetailedInfo[orgName].workingGroupOf
-        && this.orgsDetailedInfo[orgName].workingGroupOf.trim() !== '';
     private promise: Promise<void>;
 
     constructor(private http: Http,
-                @Inject("userResource") private userService,
+                private userService: UserService,
                 @Inject("isAllowedModel") private isAllowedModel) {
 
         this.reload();

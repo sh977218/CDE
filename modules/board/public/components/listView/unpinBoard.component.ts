@@ -1,7 +1,8 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Http } from '@angular/http';
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { BoardListService } from 'board/public/components/listView/boardList.service';
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: 'cde-unpin-board',
@@ -16,7 +17,7 @@ export class UnpinBoardComponent {
     constructor(private http: Http,
                 private boardListService: BoardListService,
                 private alert: AlertService,
-                @Inject('userResource') public userService) {}
+                public userService: UserService) {}
 
     unpin() {
         let url = '/pin/' + this.boardListService.board.type + '/' + this.elt.tinyId + '/' + this.boardListService.board._id;

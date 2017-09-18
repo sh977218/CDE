@@ -3,8 +3,7 @@ import * as authShared from "../../../system/shared/authorizationShared";
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
-    'OrgFactories', 'classification', 'systemTemplates',
-    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'LocalStorageModule', 'ui.sortable',
+    'classification', 'systemTemplates', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'LocalStorageModule', 'ui.sortable',
     'ui.select', 'angular-send-feedback', 'checklist-model'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
@@ -79,7 +78,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         };
     }]);
 
-angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
+angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
     var isAllowedModel = {};
 
     isAllowedModel.isAllowed = function (CuratedItem) {
@@ -103,17 +102,13 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
     };
 
     isAllowedModel.setCanCurate = function ($scope) {
-        isAllowedModel.runWhenInitialized($scope, function () {
+        userResource.then(function () {
             $scope.canCurate = isAllowedModel.isAllowed($scope.elt);
         });
     };
 
-    isAllowedModel.runWhenInitialized = function ($scope, toRun) {
-        userResource.getPromise().then(toRun);
-    };
-
     isAllowedModel.setDisplayStatusWarning = function ($scope) {
-        isAllowedModel.runWhenInitialized($scope, function () {
+        userResource.then(function () {
             $scope.displayStatusWarning = isAllowedModel.displayStatusWarning($scope, $scope.elt);
         });
     };
@@ -147,9 +142,6 @@ angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHe
         return authShared.isSiteAdmin(userResource.user);
     };
 
-    isAllowedModel.showWorkingGroups = function (stewardClassifications) {
-        return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) || authShared.isSiteAdmin(userResource.user);
-    };
 
     isAllowedModel.doesUserOwnElt = function (elt) {
         if (elt.elementType === 'board') {
@@ -225,10 +217,9 @@ angular.module('systemModule').run(["$rootScope", "$location", function ($rootSc
 }]);
 
 import { downgradeComponent, downgradeInjectable } from "@angular/upgrade/static";
+import { OrgHelperService } from "../../../core/public/orgHelper.service";
 
-import { ClassificationService } from "../../../core/public/classification.service";
-
-angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
+angular.module('systemModule').factory('OrgHelpers', downgradeInjectable(OrgHelperService));
 
 import { HomeComponent } from "../components/home/home.component";
 angular.module('systemModule').directive('cdeHome', downgradeComponent({

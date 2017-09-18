@@ -6,6 +6,7 @@ import * as _ from "lodash";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { UserService } from "../../../core/public/user.service";
 
 @Component({
     selector: "cde-data-element-view",
@@ -33,7 +34,7 @@ export class DataElementViewComponent implements OnInit {
                 @Inject("isAllowedModel") public isAllowedModel,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                @Inject("userResource") public userService) {
+                public userService: UserService) {
     }
 
     ngOnInit(): void {

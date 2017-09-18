@@ -1,16 +1,11 @@
 import * as authShared from "../../../../system/shared/authorizationShared";
 
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$uibModal', 'userResource', '$location', '$anchorScroll', '$cacheFactory', 'OrgHelpers',
-        function ($scope, $modal, userResource, $location, $anchorScroll, $cacheFactory, OrgHelpers) {
+    ['$scope', '$uibModal', 'userResource', '$location', '$anchorScroll', '$cacheFactory',
+        function ($scope, $modal, userResource, $location, $anchorScroll, $cacheFactory) {
             $scope.prodDumpEnabled = window.prodDumpEnabled;
 
             $scope.resultPerPage = 20;
-
-            userResource.getPromise().then(function () {
-                $scope.user = userResource.user;
-                $scope.myOrgs = userResource.userOrgs;
-            });
 
             $scope.canCreateForms = function () {
                 return authShared.hasRole(userResource.user, "FormEditor");
@@ -47,8 +42,8 @@ angular.module('systemModule').controller('MainCtrl',
                 "&classification=" + encodeURIComponent(elts.join(";")));
             };
 
-            // Retrieves orgs details from database at an interval
-            OrgHelpers.getOrgsDetailedInfoAPI();
+            // // Retrieves orgs details from database at an interval
+            // OrgHelpers.getOrgsDetailedInfoAPI();
 
             // part of Angular SearchBaseComponent, goes with the router
             $scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {

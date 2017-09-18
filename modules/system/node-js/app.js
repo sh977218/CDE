@@ -284,9 +284,9 @@ exports.init = function (app) {
     });
 
     app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.send("Not logged in.");
+        if (!req.user) return res.send({});
         else if (!req.params.search) {
-            return res.send("search is empty.");
+            return res.send({});
         } else if (req.params.search === 'me') {
             mongo_data_system.userById(req.user._id, function (err, user) {
                 if (err) return res.status(500).send("ERROR");

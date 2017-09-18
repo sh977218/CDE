@@ -259,7 +259,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
 
     private filterOutWorkingGroups(cb) {
         this.orgHelperService.then(() => {
-            this.userService.getPromise().then(() => {
+            this.userService.then(() => {
                 this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket => {
                     return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user)
                         || this.userService.user.siteAdmin;
@@ -471,7 +471,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     reload() {
-        this.userService.getPromise().then(() => {
+        this.userService.then(() => {
             let timestamp = new Date().getTime();
             this.lastQueryTimeStamp = timestamp;
             this.accordionListStyle = 'semi-transparent';
@@ -665,19 +665,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                 params[p[0]] = null;
         });
         return params;
-    }
-
-    static searchParamsSet(params): string {
-        let search = [];
-        for (let p in params) {
-            if (params.hasOwnProperty(p)) {
-                if (params[p] !== null)
-                    search.push(p + '=' + encodeURIComponent(params[p]));
-                else
-                    search.push('' + p);
-            }
-        }
-        return location.origin + location.pathname + '?' + search.join('&');
     }
 
     selectElement(e) {

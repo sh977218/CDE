@@ -6,6 +6,7 @@ import { AlertService } from "system/public/components/alert/alert.service";
 import { ElasticService } from 'core/public/elastic.service';
 import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
 import { SharedService } from "./shared.service";
+import { UserService } from "./user.service";
 
 @Injectable()
 export class ExportService {
@@ -13,7 +14,7 @@ export class ExportService {
                 private registrationValidatorService: RegistrationValidatorService,
                 private elasticService: ElasticService,
                 @Inject("SearchSettings") private searchSettings,
-                @Inject('userResource') protected userService) {
+                protected userService: UserService) {
     }
 
     exportSearchResults(type, module, exportSettings) {
