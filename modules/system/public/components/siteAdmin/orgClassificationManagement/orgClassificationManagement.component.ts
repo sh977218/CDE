@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ViewChild, Injectable } from "@angular/core";
 import { Http, Jsonp } from '@angular/http';
-import { IActionMapping } from 'angular-tree-component';
+import { IActionMapping, TreeComponent } from 'angular-tree-component';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
@@ -24,7 +24,7 @@ const actionMapping: IActionMapping = {
     selector: "cde-org-classification-management",
     templateUrl: "./orgClassificationManagement.component.html",
     styles: [`
-        host > > > .tree {
+        host >>> .tree {
             cursor: default !important;
         }
     `]
@@ -35,6 +35,9 @@ export class OrgClassificationManagementComponent implements OnInit {
     @ViewChild("reclassifyComponent") public reclassifyComponent: ClassifyItemModalComponent;
     @ViewChild("addChildClassificationContent") public addChildClassificationContent: NgbModalModule;
     @ViewChild("mapClassificationMeshContent") public mapClassificationMeshContent: NgbModalModule;
+
+    @ViewChild(TreeComponent) private tree: TreeComponent;
+
     public modalRef: NgbModalRef;
     onInitDone: boolean = false;
     orgToManage;
@@ -133,9 +136,21 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.modalService.open(this.renameClassificationContent)
             .result.then(result => {
             if (result === "confirm")
-                this.classificationSvc.renameOrgClassification(this.selectedOrg.name, classificationArray, this.newClassificationName, newOrg => {
-                    this.selectedOrg = newOrg;
-                    this.alert.addAlert("success", "Renaming complete.");
+                this.classificationSvc.renameOrgClassification(this.selectedOrg.name, classificationArray, this.newClassificationName, r => {
+                    r.subscribe(res => {
+                        this.alert.addAlert("warning", "Renaming in progress.");
+                        let indexFn = setInterval(() => {
+                            this.http.get("/classification/rename").map(res => res.json()).subscribe(
+                                res => {
+                                    if (res.done === true) {
+                                        this.selectedOrg = res.stewardOrg;
+                                        this.tree.treeModel.update();
+                                        clearInterval(indexFn);
+                                        this.alert.addAlert("success", "Renaming complete.");
+                                    }
+                                });
+                        }, 5000);
+                    }, err => this.alert.addAlert("danger", err));
                 });
         }, () => {
         });

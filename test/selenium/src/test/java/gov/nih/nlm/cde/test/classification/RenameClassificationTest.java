@@ -29,6 +29,8 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
         textPresent("Classification Name cannot contain ;");
         findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
         clickElement(By.id("confirmRenameClassificationBtn"));
+        textPresent("Renaming in progress.");
+        closeAlert();
         try {
             textPresent("Renaming complete.");
             closeAlert();

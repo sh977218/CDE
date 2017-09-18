@@ -7,37 +7,39 @@
         <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
     </select>
     <br/>
-    <div class="boxed-div">
+    <div class="boxed-div overflowHidden">
         <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
             <a title="Add Child Classification" (click)="openAddChildClassificationModal(null);">
                 <i id="addClassification" class="fa fa-share fa-rotate-180"></i>
             </a>
         </h4>
-        <tree-root #treeRoot [nodes]="selectedOrg.classifications" [options]="options">
-            <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                <a [id]="node.path" href="{{searchByClassification(node,selectedOrg.name)}}"
-                   target="_blank">{{ node.data.name }}</a>
-                <a title="Edit" (click)="openRenameClassificationModal(node);">
-                    <i class="fa fa-pencil"></i></a>
-                <a title="Remove" (click)="openDeleteClassificationModal(node);">
-                    <i class="fa fa-trash-o"></i></a>
-                <a title="Reclassify" (click)="openReclassificationModal(node);">
-                    <i class="fa fa-retweet"></i></a>
-                <a title="Add Child Classification" (click)="openAddChildClassificationModal(node);">
-                    <i class="fa fa-share fa-rotate-180"></i></a>
-                <a title="Mesh Mapping" (click)="openMapClassificationMeshModal(node);">
-                    <i class="fa fa-link"></i></a>
-            </ng-template>
-            <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
-                <div [class.tree-node-expanded]="true" [ngClass]="{'floatLeft boxed-div':node.level===1}">
-                    <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                        <tree-node-content [node]="node" [index]="index" [template]="templates.treeNodeTemplate">
-                        </tree-node-content>
+        <ng-container *ngFor="let selectedOrgIter of [selectedOrg]">
+            <tree-root #treeRoot [nodes]="selectedOrgIter.classifications" [options]="options">
+                <ng-template #treeNodeTemplate let-node="node" let-index="index">
+                    <a [id]="node.path" href="{{searchByClassification(node,selectedOrgIter.name)}}"
+                       target="_blank">{{ node.data.name }}</a>
+                    <a title="Edit" (click)="openRenameClassificationModal(node);">
+                        <i class="fa fa-pencil"></i></a>
+                    <a title="Remove" (click)="openDeleteClassificationModal(node);">
+                        <i class="fa fa-trash-o"></i></a>
+                    <a title="Reclassify" (click)="openReclassificationModal(node);">
+                        <i class="fa fa-retweet"></i></a>
+                    <a title="Add Child Classification" (click)="openAddChildClassificationModal(node);">
+                        <i class="fa fa-share fa-rotate-180"></i></a>
+                    <a title="Mesh Mapping" (click)="openMapClassificationMeshModal(node);">
+                        <i class="fa fa-link"></i></a>
+                </ng-template>
+                <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                    <div [class.tree-node-expanded]="true" [ngClass]="{'floatLeft boxed-div':node.level===1}">
+                        <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+                            <tree-node-content [node]="node" [index]="index" [template]="templates.treeNodeTemplate">
+                            </tree-node-content>
+                        </div>
+                        <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                     </div>
-                    <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
-                </div>
-            </ng-template>
-        </tree-root>
+                </ng-template>
+            </tree-root>
+        </ng-container>
     </div>
 </div>
 

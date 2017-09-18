@@ -475,10 +475,12 @@ exports.init = function (app) {
     app.post('/classification/rename', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName))
             return res.status(401).send();
-        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function (err, org) {
-            if (err) return res.status(500).send("Error");
-            res.send(org);
-        });
+        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename);
+        res.send();
+    });
+
+    app.get('/classification/rename', function (req, res) {
+        return res.send(classificationNode.renameClassification);
     });
 
     app.post('/classifyEntireSearch', function (req, res) {
