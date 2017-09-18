@@ -15,8 +15,8 @@ export class SearchPreferencesComponent implements OnInit {
     searchSettings: any = {tableViewFields: {}};
 
     ngOnInit () {
-        this.esService.then(settings => {
-            this.searchSettings = settings;
+        this.esService.then(() => {
+            this.searchSettings = this.esService.searchSettings;
         });
     }
 

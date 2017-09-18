@@ -183,12 +183,10 @@ export class ElasticService {
         };
     };
 
+    getDefaultSearchView () {
+        return this.searchSettings.defaultSearchView;
+    };
 
-
-    //
-    // this.getDefaultSearchView = function () {
-    //     return searchSettings.defaultSearchView;
-    // };
     then (cb) {
         return this.promise.then(cb);
     };

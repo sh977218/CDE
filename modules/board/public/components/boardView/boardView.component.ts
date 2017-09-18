@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { AlertService } from "system/public/components/alert/alert.service";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -7,6 +7,7 @@ import { saveAs } from "file-saver";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
 import { OrgHelperService } from "core/public/orgHelper.service";
 import { UserService } from "../../../../core/public/user.service";
+import { ElasticService } from "../../../../core/public/elastic.service";
 
 @Component({
     selector: 'cde-board-view',
@@ -52,7 +53,7 @@ export class BoardViewComponent implements OnInit {
                 private alert: AlertService,
                 protected userService: UserService,
                 private modalService: NgbModal,
-                @Inject('SearchSettings') public searchSettings,
+                public esService: ElasticService,
                 private orgHelper: OrgHelperService) {}
 
     ngOnInit () {
@@ -125,7 +126,8 @@ export class BoardViewComponent implements OnInit {
     exportBoard () {
         this.http.get('/board/' + this.board._id + '/0/500/?type=csv')
             .map(r => r.json()).subscribe(response => {
-                this.searchSettings.getPromise().then(settings => {
+                this.esService.then(() => {
+                    let settings = this.esService.searchSettings;
                     let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
                     response.elts.forEach(ele => {
                         csv += SharedService.exportShared.convertToCsv(

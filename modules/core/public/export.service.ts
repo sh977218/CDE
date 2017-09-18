@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import * as JSZip from "jszip";
 import * as JXON from "jxon";
 import { saveAs } from "file-saver";
@@ -13,7 +13,6 @@ export class ExportService {
     constructor(private alertService: AlertService,
                 private registrationValidatorService: RegistrationValidatorService,
                 private elasticService: ElasticService,
-                @Inject("SearchSettings") private searchSettings,
                 protected userService: UserService) {
     }
 
@@ -41,7 +40,7 @@ export class ExportService {
 
                 let exporters = {
                     'csv': (result) => {
-                        this.searchSettings.getPromise().then(function (settings) {
+                        this.elasticService.then(settings => {
                             let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
                             result.forEach(function (ele) {
                                 csv += SharedService.exportShared.convertToCsv(
@@ -118,7 +117,7 @@ export class ExportService {
     }
 
     quickBoardExport(elts) {
-        this.searchSettings.getPromise().then((settings) => {
+        this.elasticService.then(settings => {
             let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
             elts.forEach(function (ele) {
                 result += SharedService.exportShared.convertToCsv(

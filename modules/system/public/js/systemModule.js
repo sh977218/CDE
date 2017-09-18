@@ -219,6 +219,7 @@ import { downgradeComponent, downgradeInjectable } from "@angular/upgrade/static
 import { OrgHelperService } from "../../../core/public/orgHelper.service";
 
 angular.module('systemModule').factory('OrgHelpers', downgradeInjectable(OrgHelperService));
+angular.module('systemModule').factory('userResource', downgradeInjectable(UserService));
 
 import { HomeComponent } from "../components/home/home.component";
 angular.module('systemModule').directive('cdeHome', downgradeComponent({
@@ -303,5 +304,6 @@ angular.module('systemModule').directive('cdePublicBoards', downgradeComponent(
     {component: PublicBoardsComponent, inputs: [], outputs: []}));
 
 import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component";
+import { UserService } from "../../../core/public/user.service";
 angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
     {component: LatestCommentsComponent, inputs: [], outputs: []}));
