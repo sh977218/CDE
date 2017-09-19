@@ -88,7 +88,7 @@ exports.setAttachmentDefault = function (req, res, dao) {
     auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
         if (err) {
             logging.expressLogger.info(err);
-            return res.status(500).send("ERROR");
+            return res.status(500).send("ERROR - attachment as default - cannot check ownership");
         }
         var state = req.body.state;
         for (var i = 0; i < elt.attachments.length; i++) {
@@ -121,7 +121,7 @@ exports.addAttachment = function (req, res, dao) {
     exports.scanFile(stream, res, function (scanned) {
         req.files.uploadedFiles.scanned = scanned;
         auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - add attachment ownership");
             dao.userTotalSpace(req.user.username, function (totalSpace) {
                 if (totalSpace > req.user.quota) {
                     res.send({message: "You have exceeded your quota"});
@@ -150,12 +150,12 @@ exports.addAttachment = function (req, res, dao) {
 
 exports.removeAttachment = function (req, res, dao) {
     auth.checkOwnership(dao, req.body.id, req, function (err, elt) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - remove attachment ownership");
         let fileid = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
 
         elt.save(function (err) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - cannot save attachment");
             res.send(elt);
             mongo_data_system.removeAttachmentIfNotUsed(fileid);
         });
@@ -341,7 +341,7 @@ exports.replyToComment = function (req, res) {
                         origin: "system.adminItemSvc.addComment",
                         stack: new Error().stack
                     });
-                    res.status(500).send("ERROR");
+                    res.status(500).send("ERROR - Cannot save comment");
                 } else {
                     ioServer.ioServer.of("/comment").emit('commentUpdated');
                     res.send({message: "Reply added"});
@@ -406,7 +406,7 @@ exports.removeComment = function (req, res, dao) {
                                     origin: "system.adminItemSvc.removeComment",
                                     stack: new Error().stack
                                 });
-                                res.status(500).send("ERROR");
+                                res.status(500).send("ERROR - cannot save/remove comment");
                             } else {
                                 ioServer.ioServer.of("/comment").emit('commentUpdated');
                                 res.send({message: "Comment removed"});
@@ -451,7 +451,7 @@ exports.updateCommentStatus = function (req, res, status) {
                             origin: "system.adminItemSvc.removeComment",
                             stack: new Error().stack
                         });
-                        res.status(500).send("ERROR");
+                        res.status(500).send("ERROR - cannot update comment");
                     } else {
                         ioServer.ioServer.of("/comment").emit('commentUpdated');
                         res.send({message: "Saved."});

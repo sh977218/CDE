@@ -35,7 +35,7 @@ exports.checkSiteAdmin = function (req, res, next) {
 exports.boardOwnership = function (req, res, boardId, next) {
     if (!req.isAuthenticated()) return res.status(401).send("You must be logged in to do this.");
     mongo_board.boardById(boardId, function (err, board) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - cannot find board ownership by id.");
         if (!board) return res.status(404).send();
         if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))
             return res.status(401).send();
