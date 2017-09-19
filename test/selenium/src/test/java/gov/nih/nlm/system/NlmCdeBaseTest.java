@@ -1333,8 +1333,6 @@ public class NlmCdeBaseTest {
 
     protected void createOrgClassification(String org, String[] categories) {
         new Select(driver.findElement(By.id("orgToManage"))).selectByVisibleText(org);
-        String id;
-
         // create root classification if it doesn't exist
         List<WebElement> rootClassifications = driver.findElements(By.xpath("//*[@id='" + categories[0] + "']"));
         if (rootClassifications.size() == 0) {
@@ -1346,19 +1344,19 @@ public class NlmCdeBaseTest {
         }
 
         for (int i = 1; i < categories.length; i++) {
-            String[] c = Arrays.copyOfRange(categories, 0, i);
-            id = String.join(",", c);
-            String xpath = "//*[@id='" + id + "']";
-            List<WebElement> list = driver.findElements(By.xpath(xpath));
-            if (list.size() == 0)
-                clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", c)));
-            else {
-                System.out.println("xpath: " + getOrgClassificationIconXpath("addChildClassification", c));
-                System.out.println("find " + list.size() + " " + Arrays.toString(c));
+            String[] nextCategories = Arrays.copyOfRange(categories, 0, i + 1);
+            String xpath = "//*[@id='" + String.join(",", nextCategories) + "']";
+            List<WebElement> nextCategoryList = driver.findElements(By.xpath(xpath));
+            if (nextCategoryList.size() == 0) {
+                System.out.println(Arrays.toString(nextCategories) + " does not exist.");
+                String[] currentCategories = Arrays.copyOfRange(categories, 0, i);
+                clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", currentCategories)));
+                findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
+                hangon(2);
+                clickElement(By.id("confirmAddChildClassificationBtn"));
+            } else {
+                System.out.println(Arrays.toString(nextCategories) + " exists.");
             }
-            findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
-            hangon(2);
-            clickElement(By.id("confirmAddChildClassificationBtn"));
         }
     }
 

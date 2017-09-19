@@ -10,7 +10,7 @@
     <div class="boxed-div overflowHidden">
         <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
             <a title="Add Child Classification" (click)="openAddChildClassificationModal(null);">
-                <i id="addClassification" class="fa fa-share fa-rotate-180"></i>
+                <i *ngIf="isOrgAdmin()" id="addClassification" class="fa fa-share fa-rotate-180"></i>
             </a>
         </h4>
         <ng-container *ngFor="let selectedOrgIter of [selectedOrg]">

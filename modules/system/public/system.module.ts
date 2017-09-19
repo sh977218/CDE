@@ -63,7 +63,6 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         Select2Module,
         TreeModule,
         // internal
-        AdminItemModule,
         SearchModule,
         WidgetModule,
         DiscussModule,

@@ -25,7 +25,7 @@ const actionMapping: IActionMapping = {
     selector: "cde-org-classification-management",
     templateUrl: "./orgClassificationManagement.component.html",
     styles: [`
-        host > > > .tree {
+        host >>> .tree {
             cursor: default !important;
         }
     `]
