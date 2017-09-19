@@ -18,16 +18,10 @@ export class FormViewComponent implements OnInit {
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
-
     @ViewChild(SaveModalComponent) public saveModalComponent: SaveModalComponent;
-
-
-
     @Input() routeParams: any;
-
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
-
     @Output() public h = new EventEmitter();
 
     public elt: any;
@@ -53,14 +47,14 @@ export class FormViewComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadForm(form => {
-            this.loadComments(form, () => {
-                this.http.get("/draftForm/" + form.tinyId)
-                    .map(res => res.json()).subscribe(res => {
-                    if (res && res.length > 0) this.drafts = res;
-                    else this.drafts = [];
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft;
-                }, err => this.alert.addAlert("danger", err));
-            });
+            this.loadComments(form, null);
+            this.http.get("/draftForm/" + form.tinyId)
+                .map(res => res.json()).subscribe(res => {
+                if (res && res.length > 0) this.drafts = res;
+                else this.drafts = [];
+                this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft;
+            }, err => this.alert.addAlert("danger", err));
+
         });
     }
 
