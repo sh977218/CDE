@@ -153,7 +153,7 @@ export class ClassificationService {
             categories: categories,
         };
         this.http.post("/classification/org", postBody)
-            .map(res => res.json()).map(res => res.json()).subscribe(
+            .map(res => res.json()).subscribe(
             res => cb(res), err => this.alert.addAlert("danger", err));
     };
 

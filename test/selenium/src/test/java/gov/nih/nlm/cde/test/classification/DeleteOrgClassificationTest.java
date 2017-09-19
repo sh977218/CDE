@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import static com.jayway.restassured.RestAssured.get;
 
-public class CdeAddClassificationTest extends NlmCdeBaseTest {
+public class DeleteOrgClassificationTest extends NlmCdeBaseTest {
     @Test
     public void cdeAddClassification() {
         String cdeName = "Surgical Procedure Other Anatomic Site Performed Indicator";

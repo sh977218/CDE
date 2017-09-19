@@ -1351,11 +1351,9 @@ public class NlmCdeBaseTest {
                 System.out.println(Arrays.toString(nextCategories) + " does not exist.");
                 String[] currentCategories = Arrays.copyOfRange(categories, 0, i);
                 clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", currentCategories)));
-                findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
+                findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
                 hangon(2);
                 clickElement(By.id("confirmAddChildClassificationBtn"));
-            } else {
-                System.out.println(Arrays.toString(nextCategories) + " exists.");
             }
         }
     }

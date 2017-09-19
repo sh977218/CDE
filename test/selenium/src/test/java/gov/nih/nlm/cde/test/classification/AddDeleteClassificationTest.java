@@ -12,7 +12,7 @@ import java.util.List;
 public class AddDeleteClassificationTest extends NlmCdeBaseTest {
 
     @Test
-    public void addDeleteClassificationMgt() {
+    public void deleteOrgClassification() {
         String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
