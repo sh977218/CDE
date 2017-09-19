@@ -18,10 +18,9 @@ public class FormCopySectionTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='section_1']//i[contains(@class,'copySection')]"));
         ((JavascriptExecutor) driver).executeScript("window.open()");
         hangon(5);
-        switchTab(1);
+        switchTabAndClose(1);
         goToFormByName(form2);
         clickElement(By.id("description_tab"));
-        textPresent("Paste");
         WebElement sourceElt = findElement(By.id("pasteSection"));
         WebElement targetElt = findElement(By.xpath("//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']"));
         (new Actions(driver)).moveToElement(targetElt).perform();

@@ -144,11 +144,7 @@ export class ClassificationService {
             categories: categories,
             newname: newClassificationName
         };
-        this.http.post("/classification/rename", postBody).map(res => res.json()).subscribe(
-            res => {
-                if (res)
-                    cb(res);
-            }, err => this.alert.addAlert("danger", err));
+        cb(this.http.post("/classification/rename", postBody));
     };
 
     addChildClassification(orgName, categories, cb) {
@@ -158,8 +154,7 @@ export class ClassificationService {
         };
         this.http.post("/classification/org", postBody)
             .map(res => res.json()).subscribe(
-            res => cb(res),
-            err => this.alert.addAlert("danger", err));
+            res => cb(res), err => this.alert.addAlert("danger", err));
     };
 
 }

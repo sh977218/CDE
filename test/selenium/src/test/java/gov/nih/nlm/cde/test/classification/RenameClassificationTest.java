@@ -13,22 +13,22 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
     public void renameClassification() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
-        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Disease", "Spinal Cord Injury"})));
+        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Domain", "Protocol Experience"})));
         findElement(By.id("newClassificationName")).clear();
-
         // .clear doesn't trigger modal changes. this is trick
         findElement(By.id("newClassificationName")).sendKeys("a");
         findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
-
         textPresent("Name is required");
         clickElement(By.id("cancelRenameClassificationBtn"));
         modalGone();
-        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Disease", "Spinal Cord Injury"})));
-        findElement(By.id("newClassificationName")).clear();
+        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Domain", "Protocol Experience"})));
+        findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("newClassificationName")).sendKeys("ies;");
         textPresent("Classification Name cannot contain ;");
         findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
         clickElement(By.id("confirmRenameClassificationBtn"));
+        textPresent("Renaming in progress.");
+        closeAlert();
         try {
             textPresent("Renaming complete.");
             closeAlert();
@@ -36,13 +36,15 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
             textPresent("Renaming complete.");
             closeAlert();
         }
-        findElement(By.xpath("//*[@id='Disease,Spinal Cord Injuries,Classification']"));
-        findElement(By.xpath("//*[@id='Disease,Spinal Cord Injuries,Classification,Supplemental']"));
-        clickElement(By.xpath("//*[@id='Disease,Spinal Cord Injuries,Classification']"));
-        textPresent("Spinal Cord Injuries");
+        findElement(By.xpath("//*[@id='Domain,Protocol Experiencies']"));
+        findElement(By.xpath("//*[@id='Domain,Protocol Experiencies,Participant/Subject Identification, Eligibility, and Enrollment']"));
+        clickElement(By.xpath("//*[@id='Domain,Protocol Experiencies,Participant/Subject Identification, Eligibility, and Enrollment']"));
+        switchTab(1);
+        textPresent("Protocol Experiencies");
+        switchTabAndClose(0);
 
-        openClassificationAudit("NINDS > Disease > Spinal Cord Injury");
-        textPresent("rename NINDS > Disease > Spinal Cord Injury to Spinal Cord Injuries");
+        openClassificationAudit("NINDS > Domain > Protocol Experience");
+        textPresent("rename NINDS > Domain > Protocol Experience to Protocol Experiencies");
         String body = findElement(By.cssSelector("body")).getText();
         Assert.assertTrue(body.contains("10+ elements") || body.contains("1281 elements"));
     }
