@@ -9,15 +9,15 @@ public class EditCdeByTinyIdTest extends NlmCdeBaseTest {
     @Test
     public void editCdeByTinyId() {
         String nameChange = "[name change number 1]";
-
         mustBeLoggedInAs(ctepCurator_username, password);
-        driver.get(baseUrl + "/deView?tinyId=xNugcDxoqKW");
+
+        goToCdeByName("Left Lymph Node Positive Total Count");
         clickElement(By.id("naming_tab"));
 
         editDesignationByIndex(0, nameChange);
         newCdeVersion();
 
-        driver.get(baseUrl + "/deView?tinyId=xNugcDxoqKW");
+        goToCdeByName("Left Lymph Node Positive Total Count");
         textPresent("General Details");
         textPresent(nameChange);
     }

@@ -9,6 +9,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -554,6 +555,14 @@ public class NlmCdeBaseTest {
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply (WebDriver driver) {
+                return driver.findElement(By.id("confirmSaveBtn")).isEnabled();
+            }
+        });
+//                (ExpectedConditions.not(ExpectedConditions.
+//                presenceOfElementLocated(
+//                By.cssSelector("//*[@id='confirmSaveBtn'[disabled]"))));
         clickElement(By.id("confirmSaveBtn"));
     }
 

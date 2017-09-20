@@ -31,8 +31,9 @@ app.use(helmet());
 app.use(auth.ticketAuth);
 app.use(compress());
 
+// set to 4 hours until AWS is tested and stable. Then switch to months.
 app.use(require('hsts')({
-    maxAge: 31536000
+    maxAge: 60 * 60 * 4
 }));
 
 var localRedirectProxy = httpProxy.createProxyServer({});
