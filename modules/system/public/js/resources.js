@@ -60,20 +60,6 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
 }
 
 angular.module('resourcesSystem', ['ngResource'])
-    .factory("Organization", ["$http", function ($http) {
-        return {
-            getByName: function (orgName, cb) {
-                $http.get("/org/" + encodeURIComponent(orgName)).then(function (response) {
-                    if (cb) cb(response);
-                });
-            }
-        };
-    }])
-    .factory("SearchResultResource", [function () {
-        return {
-            elts: []
-        };
-    }])
     .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "AlertService",
         function ($http, OrgHelpers, userResource, localStorageService, Alert) {
             var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);

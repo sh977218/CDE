@@ -322,7 +322,7 @@ exports.init = function (app) {
             password: "umls",
             quota: 1024 * 1024 * 1024
         }, function (err, newUser) {
-            if (err) return res.status(500).end("ERROR");
+            if (err) return res.status(500).end("ERROR adding user");
             res.send(newUser.username + " added.");
         });
     });
