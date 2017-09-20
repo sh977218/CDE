@@ -149,23 +149,23 @@ exports.init = function (app) {
         async.series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
-                       if (req.body.recaptcha) {
-                           request.post("https://www.google.com/recaptcha/api/siteverify",
-                               {
-                                   form: {
-                                       secret: config.captchaCode,
-                                       response: req.body.recaptcha,
-                                       remoteip: getRealIp(req)
-                                   },
-                                   json: true
-                               }, function (err, resp, body) {
-                                   if (err) captchaDone(err);
-                                   else if (!body.success) {
-                                       captchaDone("incorrect recaptcha");
-                                   } else {
+                       // if (req.body.recaptcha) {
+                       //     request.post("https://www.google.com/recaptcha/api/siteverify",
+                       //         {
+                       //             form: {
+                       //                 secret: config.captchaCode,
+                       //                 response: req.body.recaptcha,
+                       //                 remoteip: getRealIp(req)
+                       //             },
+                       //             json: true
+                       //         }, function (err, resp, body) {
+                       //             if (err) captchaDone(err);
+                       //             else if (!body.success) {
+                       //                 captchaDone("incorrect recaptcha");
+                       //             } else {
                                        captchaDone();
-                                   }
-                               });
+                               //     }
+                               // });
                        } else {
                            captchaDone("missing recaptcha");
                        }
@@ -174,6 +174,7 @@ exports.init = function (app) {
                     }
                 }],
             function allDone(err) {
+                if (failedIp) failedIp.nb = 0;
                 if (err) return res.status(412).send(err);
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
@@ -189,7 +190,6 @@ exports.init = function (app) {
                         }
                         req.logIn(user, function (err) {
                             if (err) return res.status(403).end();
-                            if (failedIp) failedIp.nb = 0;
                             req.session.passport = {user: req.user._id};
                             return res.send("OK");
                         });
