@@ -86,7 +86,7 @@
                                        ngbDatepicker #d1="ngbDatepicker"
                                        [required]="formElement.question.required"
                                        [disabled]="!formElement.question.editable">
-                                <div class="input-group-addon" (click)="d1.toggle()">
+                                <div class="input-group-addon" (click)="formElement.question.editable && d1.toggle()">
                                     <i class="fa fa-calendar" aria-hidden="true"></i>
                                 </div>
                             </div>

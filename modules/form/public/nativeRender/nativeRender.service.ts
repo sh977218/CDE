@@ -3,8 +3,8 @@ import { CdeForm, DisplayProfile } from "../form.model";
 
 @Injectable()
 export class NativeRenderService {
-    readonly SHOW_IF: string = "Dynamic";
-    readonly FOLLOW_UP: string = "Follow-up";
+    static readonly SHOW_IF: string = "Dynamic";
+    static readonly FOLLOW_UP: string = "Follow-up";
     private errors: Array<string> = [];
     private overrideNativeRenderType: string = null;
     private currentNativeRenderType: string;
@@ -24,7 +24,7 @@ export class NativeRenderService {
     setNativeRenderType(userType) {
         if (userType === this.profile.displayType)
             this.overrideNativeRenderType = null;
-        else if (userType === this.SHOW_IF || userType === this.FOLLOW_UP)
+        else if (userType === NativeRenderService.SHOW_IF || userType === NativeRenderService.FOLLOW_UP)
             this.overrideNativeRenderType = userType;
         else
             return;
@@ -33,18 +33,17 @@ export class NativeRenderService {
         function clearTransform(fe) {
             fe.formElements.forEach(f => {
                 if (f.elementType === 'question')
-                    f.question.answers = f.question.cde.permissibleValues;
+                    f.question.answers = Array.isArray(f.question.cde.permissibleValues)
+                        ? JSON.parse(JSON.stringify(f.question.cde.permissibleValues)) : undefined;
                 else
                     clearTransform(f);
             });
         }
         clearTransform(this.elt);
-        if (this.getNativeRenderType() === this.FOLLOW_UP) {
-            if (!this.followForm || this.elt.unsaved) {
-                this.followForm = NativeRenderService.cloneForm(this.elt);
-                NativeRenderService.transformFormToInline(this.followForm);
-                NativeRenderService.preprocessValueLists(this.followForm.formElements);
-            }
+        if (this.getNativeRenderType() === NativeRenderService.FOLLOW_UP) {
+            this.followForm = NativeRenderService.cloneForm(this.elt);
+            NativeRenderService.transformFormToInline(this.followForm);
+            NativeRenderService.preprocessValueLists(this.followForm.formElements);
         }
     }
     setSelectedProfile(profile = null) {
@@ -63,7 +62,7 @@ export class NativeRenderService {
                 displayNumbering: true,
                 sectionsAsMatrix: true,
                 displayValues: false,
-                displayType: this.FOLLOW_UP,
+                displayType: NativeRenderService.FOLLOW_UP,
                 numberOfColumns: 4,
                 displayInvisible: false,
                 repeatFormat: "#."
@@ -72,9 +71,9 @@ export class NativeRenderService {
     }
     getElt() {
         switch (this.getNativeRenderType()) {
-            case this.SHOW_IF:
+            case NativeRenderService.SHOW_IF:
                 return this.elt;
-            case this.FOLLOW_UP:
+            case NativeRenderService.FOLLOW_UP:
                 return this.followForm;
         }
     }

@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { Http } from "@angular/http";
+import * as _ from "lodash";
 import * as async from "async";
 import * as moment from 'moment';
 import "fhirclient";
@@ -44,7 +45,7 @@ export class NativeRenderStandaloneComponent {
     panelType: string;
     patient: any;
     patientForms: any = [
-        {name: 'FHIR: Vital Signs', tinyId: 'Xk8LrBb7V', id: '599f0e0998032c744f2f1ed9'},
+        {name: 'FHIR: Vital Signs', tinyId: 'Xk8LrBb7V', id: '59a70c4998032c744f365267'},
         {name: 'Medical History', tinyId: '7JbBE1HrKg'},
         {name: 'Vital Signs', tinyId: 'QJDOLkSHFx'}
     ];
@@ -59,7 +60,7 @@ export class NativeRenderStandaloneComponent {
     submitFhirObservations: any[];
     submitFhirPending: any[];
     summary = false;
-    externalCodeSystems = [
+    static externalCodeSystems = [
         {id: 'LOINC', uri: 'http://loinc.org'},
         {id: 'UNITS', uri: 'http://unitsofmeasure.org/'},
     ];
@@ -72,7 +73,8 @@ export class NativeRenderStandaloneComponent {
         this.panelType = args.panelType;
 
         if ((<any>window).formElt) {
-            this.fetch(null, (<any>window).formElt);
+            this.elt = JSON.parse(JSON.stringify((<any>window).formElt));
+            this.fetch();
         } else {
             let _id = args.tinyId ? args.tinyId : (args._id ? args._id + "" : undefined);
             if (_id)
@@ -104,12 +106,14 @@ export class NativeRenderStandaloneComponent {
 
     encounterSelected() {
         this.filterObservations();
+        if (!this.selectedEncounter)
+            return;
 
         this.patientForms.forEach(f => {
-            let names = f.id ? NativeRenderStandaloneComponent.getFormObservationNames(f.id) : [];
+            let names = f.id ? NativeRenderStandaloneComponent.getFormObservations(f.id) : [];
             if (names.length) {
                 f.observed = this.selectedEncounter.observations.filter(
-                    o => o.raw.code.coding.filter(c => names.indexOf(c.display) > -1).length > 0
+                    o => o.raw.code.coding.some(c => names.indexOf(c.system + ' ' + c.code) > -1)
                 ).length;
                 f.total = names.length;
                 f.percent = 100 * f.observed / f.total;
@@ -121,60 +125,39 @@ export class NativeRenderStandaloneComponent {
         });
     }
 
-    fetch(error, form = null, cb = null) {
+    fetch(error = null, cb = _.noop) {
         if (error) {
             this.errorMessage = "Sorry, we are unable to retrieve this element.";
             return;
         }
 
-        let formCopy = JSON.parse(JSON.stringify(form));
-        this.fetchWholeForm(formCopy, (wholeForm) => {
-            this.elt = wholeForm;
-            if (cb)
-                cb();
-        });
+        this.fetchWholeForm(this.elt, cb);
     }
 
-    fetchWholeForm(form, callback) {
-        let maxDepth = 8;
-        let depth = 0;
-        let loopFormElements = (form, cb) => {
-            depth++;
-            if (form.formElements) {
-                async.forEach(form.formElements, (fe, doneOne) => {
-                    if (fe.elementType === 'form') {
-                        if (depth < maxDepth) {
-                            this.http.get('/form/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
-                                .map(res => res.json())
-                                .subscribe((response) => {
-                                    fe.formElements = response.formElements;
-                                    loopFormElements(fe, function () {
-                                        depth--;
-                                        doneOne();
-                                    });
-                                });
-                        }
-                        else doneOne();
-                    } else if (fe.elementType === 'section') {
-                        loopFormElements(fe, doneOne);
-                    } else {
-                        if (fe.question.cde.derivationRules)
-                            fe.question.cde.derivationRules.forEach(function (derRule) {
-                                delete fe.incompleteRule;
-                                if (derRule.ruleType === 'score') {
-                                    fe.question.isScore = true;
-                                    fe.question.scoreFormula = derRule.formula;
-                                }
-                            });
-                        doneOne();
-                    }
-                }, cb);
-            }
-            else cb();
-        };
-        loopFormElements(form, function () {
-            callback(form);
-        });
+    fetchWholeForm(form, callback = _.noop) {
+        let self = this;
+        if (form.formElements)
+            form.formElements.forEach(fe => {
+                if (fe.elementType === 'form')
+                    this.http.get('/form/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
+                        .map(function (res) { return res.json(); })
+                        .subscribe(function (response: any) {
+                            fe.formElements = response.formElements;
+                            self.fetchWholeForm(fe);
+                        });
+                else if (fe.elementType === 'section')
+                    this.fetchWholeForm(fe);
+                else
+                    if (fe.question.cde.derivationRules)
+                        fe.question.cde.derivationRules.forEach(function (derRule) {
+                            delete fe.incompleteRule;
+                            if (derRule.ruleType === 'score') {
+                                fe.question.isScore = true;
+                                fe.question.scoreFormula = derRule.formula;
+                            }
+                        });
+            });
+        callback();
     }
 
     filterObservations() {
@@ -182,13 +165,13 @@ export class NativeRenderStandaloneComponent {
             ? this.selectedEncounter.observations : this.patientObservations;
     }
 
-    getCodings(coding) {
+    static getCodings(coding) {
         return coding.reduce(
             (a, v) => a += v.display + ' ' + this.getCodeSystem(v.system) + ':' + v.code + '\n', ''
         );
     }
 
-    getCodeSystem(uri) {
+    static getCodeSystem(uri) {
         let results = this.externalCodeSystems.filter(c => c.uri === uri);
         if (results.length)
             return results[0].id;
@@ -196,7 +179,7 @@ export class NativeRenderStandaloneComponent {
             return 'unknown';
     }
 
-    getCodeSystemOut(system, fe = null) {
+    static getCodeSystemOut(system, fe = null) {
         let s = system;
         if (fe && fe.question && fe.question.cde && Array.isArray(fe.question.cde.ids) && fe.question.cde.ids.length)
             s = fe.question.cde.ids[0].source;
@@ -208,7 +191,7 @@ export class NativeRenderStandaloneComponent {
             return s;
     }
 
-    static getFormObservationNames(id) {
+    static getFormObservations(id) {
         let maps = mappings.filter(m => m.form === id
             && m.type === 'external'
             && m.system === 'http://hl7.org/fhir'
@@ -222,16 +205,17 @@ export class NativeRenderStandaloneComponent {
         let resourceObservationMap = {};
         let observationNames = [];
         map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && !resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] && m.resourceCode !== '*') {
-                resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = true;
-                observationNames.push(m.resourceSystem + ' ' + m.resourceCode);
+            let key = m.resourceSystem + ' ' + m.resourceCode;
+            if (m.resource === 'Observation' && !resourceObservationMap[key] && m.resourceCode !== '*') {
+                resourceObservationMap[key] = true;
+                observationNames.push(this.getCodeSystemOut(m.resourceSystem) + ' ' + m.resourceCode);
             }
         });
 
         return observationNames;
     }
 
-    getObservationValue(observation) {
+    static getObservationValue(observation) {
         if (observation.valueCodeableConcept)
             return this.getCodings(observation.valueCodeableConcept.coding);
         else if (observation.valueQuantity) {
@@ -275,8 +259,10 @@ export class NativeRenderStandaloneComponent {
                         .then((results, refs) => {
                             results.forEach(observation => {
                                 this.patientObservations.push({
-                                    code: observation.code ? this.getCodings(observation.code.coding) : JSON.stringify(observation),
-                                    value: this.getObservationValue(observation),
+                                    code: observation.code
+                                        ? NativeRenderStandaloneComponent.getCodings(observation.code.coding)
+                                        : JSON.stringify(observation),
+                                    value: NativeRenderStandaloneComponent.getObservationValue(observation),
                                     date: observation.issued,
                                     encounter: observation.context.reference,
                                     raw: observation
@@ -327,15 +313,18 @@ export class NativeRenderStandaloneComponent {
 
         let resourceObservationMap = {};
         map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode])) {
+            let key = m.resourceSystem + ' ' + m.resourceCode;
+            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[key])) {
                 if (m.resourceCode === '*')
-                    resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = this.selectedEncounter.observations;
-                else
-                    resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = this.selectedEncounter.observations.filter(
-                        o => o.raw.code.coding.filter(
-                            c => c.system === m.resourceSystem && c.code === m.resourceCode
-                        ).length > 0
+                    resourceObservationMap[key] = this.selectedEncounter.observations;
+                else {
+                    let system = NativeRenderStandaloneComponent.getCodeSystemOut(m.resourceSystem);
+                    resourceObservationMap[key] = this.selectedEncounter.observations.filter(
+                        o => o.raw.code.coding.some(
+                            c => c.system === system && c.code === m.resourceCode
+                        )
                     );
+                }
             }
         });
 
@@ -394,16 +383,20 @@ export class NativeRenderStandaloneComponent {
             return result;
         }
         map.mapping.forEach(m => {
-            function getByCode(form, instance = 0) {
+            function getByCode(form, instance = 0, system = null, code = null) {
+                if (!system)
+                    system = m.resourceSystem;
+                if (!code)
+                    code = m.resourceCode;
                 let count = -1;
                 let result = null;
                 function getByCodeRecurse(fe) {
-                    form.formElements.forEach(f => {
+                    fe.formElements.forEach(f => {
                         if (f.elementType === 'section')
                             getByCodeRecurse(f);
                         else if (f.elementType === 'form') {
-                            if (f.inForm.ids.filter( // bad, needs ids[]
-                                    id => id.source === m.resourceSystem && id.id === m.resourceCode).length
+                            if (f.inForm.form.ids.filter(
+                                    id => id.source === system && id.id === code).length
                             ) {
                                 count++;
                                 if (count >= instance)
@@ -412,7 +405,7 @@ export class NativeRenderStandaloneComponent {
                             getByCodeRecurse(f);
                         } else {
                             if (f.question.cde.ids.filter(
-                                id => id.source === m.resourceSystem && id.id === m.resourceCode).length
+                                id => id.source === system && id.id === code).length
                             ) {
                                 count++;
                                 if (count >= instance)
@@ -430,13 +423,23 @@ export class NativeRenderStandaloneComponent {
                 return result;
             }
             function getSubByCode(form, instance = 0) {
-                // use m from closure
-                // return fe by subform by system/code then by system/code
-                // inject functions as methods getValueQuantity setValueQuantity
+                return getByCode(getByCode(form), 0, m.resourceComponentSystem, m.resourceComponentCode);
             }
-            if (m.resource === 'Observation' && m.inFn && resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode]) {
-                resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode].forEach(o => {
-                    /* tslint:disable */ let resFn = eval('(' + m.resourceObj + ')'); /* tslint:enable */
+            function getComponent(res) {
+                let system = NativeRenderStandaloneComponent.getCodeSystemOut(m.resourceComponentSystem);
+                let code = m.resourceComponentCode;
+                let components = res.component.filter(comp => comp.code.coding.some(
+                    c => c.system === system && c.code === code
+                ));
+                if (components.length)
+                    return components[0];
+                else
+                    return null;
+            }
+            let key = m.resourceSystem + ' ' + m.resourceCode;
+            if (m.resource === 'Observation' && m.inFn && resourceObservationMap[key]) {
+                resourceObservationMap[key].forEach(o => {
+                    /* tslint:disable */ let resFn = eval('(' + m.resourcePropertyObj + ')'); /* tslint:enable */
                     /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
                     if (inFn) {
                         if (resFn)
@@ -456,11 +459,13 @@ export class NativeRenderStandaloneComponent {
 
     loadForm(id) {
         this.http.get('/form/' + id).map(res => res.json()).subscribe(response => {
-            this.fetch(null, response, () => {
-                this.loadFhirData();
-            });
+            this.elt = response;
         }, () => {
             this.fetch(true);
+        }, () => {
+            this.fetch(null, () => {
+                this.loadFhirData();
+            });
         });
     }
 
@@ -544,18 +549,19 @@ export class NativeRenderStandaloneComponent {
         });
         let resourceObservationMap = {};
         map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode])) {
-                if (m.resourceSystem + ' ' + m.resourceCode === '*')
-                    resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = this.submitFhirObservations;
+            let key = m.resourceSystem + ' ' + m.resourceCode;
+            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[key])) {
+                if (m.resourceCode === '*')
+                    resourceObservationMap[key] = this.submitFhirObservations;
                 else {
-                    resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode] = this.submitFhirObservations.filter(
+                    resourceObservationMap[key] = this.submitFhirObservations.filter(
                         o => o.code.coding.filter(
                             c => c.system === m.resourceSystem && c.code === m.resourceCode
                         ).length > 0
                     );
-                    if (resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode].length === 0) {
+                    if (resourceObservationMap[key].length === 0) {
                         let observation = NativeRenderStandaloneComponent.newObjservationGet(this.selectedEncounter);
-                        resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode].push(observation);
+                        resourceObservationMap[key].push(observation);
                         this.submitFhirObservations.push(observation);
                         this.submitFhirPending.push({before: null, after: observation});
                     }
@@ -567,9 +573,10 @@ export class NativeRenderStandaloneComponent {
         let patient = this.patient;
         let encounter = this.selectedEncounter;
         map.mapping.forEach(m => {
-            if (m.resource === 'Observation' && m.outFn && resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode]) {
-                resourceObservationMap[m.resourceSystem + ' ' + m.resourceCode].forEach(o => {
-                    /* tslint:disable */ let resFn = eval('(' + m.resourceObj + ')'); /* tslint:enable */
+            let key = m.resourceSystem + ' ' + m.resourceCode;
+            if (m.resource === 'Observation' && m.outFn && resourceObservationMap[key]) {
+                resourceObservationMap[key].forEach(o => {
+                    /* tslint:disable */ let resFn = eval('(' + m.resourcePropertyObj + ')'); /* tslint:enable */
                     /* tslint:disable */ let outFn = eval('(' + m.outFn + ')'); /* tslint:enable */
                     resFn(o)[m.resourceProperty] = outFn(this.elt);
                 });
@@ -579,7 +586,8 @@ export class NativeRenderStandaloneComponent {
         // identify changed and submit to server
         for (let i = 0; i < this.submitFhirPending.length; i++) {
             let p = this.submitFhirPending[i];
-            if (p.before && this.getObservationValue(p.before) === this.getObservationValue(p.after)) {
+            if (p.before && NativeRenderStandaloneComponent.getObservationValue(p.before)
+                === NativeRenderStandaloneComponent.getObservationValue(p.after)) {
                 this.submitFhirPending.splice(i, 1);
                 i--;
             }

@@ -1,8 +1,8 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
-import { NativeRenderService } from "./nativeRender.service";
-import { DomSanitizer } from "@angular/platform-browser";
-import { SkipLogicService } from "../skipLogic.service";
-import { CdeForm, DisplayProfile } from "../form.model";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { CdeForm, DisplayProfile } from 'form/public/form.model';
+import { NativeRenderService } from 'form/public/nativeRender/nativeRender.service';
+import { SkipLogicService } from 'form/public/skipLogic.service';
 
 @Component({
     selector: "cde-native-render",
@@ -17,6 +17,7 @@ export class NativeRenderComponent implements OnChanges {
     endpointUrl: string;
     formUrl: string;
     mapping: any;
+    NativeRenderService = NativeRenderService;
 
     constructor(private sanitizer: DomSanitizer,
                 public skipLogicService: SkipLogicService,

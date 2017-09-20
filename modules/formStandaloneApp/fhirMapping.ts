@@ -45,9 +45,9 @@ export let blankObservation = {
     "issued": null
 };
 
-export let mappings = [
+export let mappings: any = [
     {
-        "form": "599f0e0998032c744f2f1ed9",
+        "form": "59a70c4998032c744f365267",
         "type": "external",
         "system": "http://hl7.org/fhir",
         "code": "multi",
@@ -57,7 +57,7 @@ export let mappings = [
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
                 "resourceCode": "*",
-                "resourceObj": "function (res) { return res.subject; }",
+                "resourcePropertyObj": "function (res) { return res.subject; }",
                 "resourceProperty": "reference",
                 "inFn": null,
                 "outFn": "function (form) { return 'Patient/' + patient.id; }"
@@ -66,7 +66,7 @@ export let mappings = [
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
                 "resourceCode": "*",
-                "resourceObj": "function (res) { return res.context; }",
+                "resourcePropertyObj": "function (res) { return res.context; }",
                 "resourceProperty": "reference",
                 "inFn": null,
                 "outFn": "function (form) { return 'Encounter/' + encounter.raw.id; }"
@@ -76,7 +76,7 @@ export let mappings = [
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
                 "resourceCode": "*",
-                "resourceObj": null,
+                "resourcePropertyObj": null,
                 "resourceProperty": "effectiveDateTime",
                 "inFn": "function (form, value) { var fe = getById(form, 'abmAnDXu5my'); fe.question.answer = value;"
                 + " parseDateTime(fe); fe.question.editable = false; }",
@@ -87,7 +87,7 @@ export let mappings = [
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
                 "resourceCode": "*",
-                "resourceObj": null,
+                "resourcePropertyObj": null,
                 "resourceProperty": "issued",
                 "inFn": null,
                 "outFn": "function (form) { return encounter.date; }"
@@ -96,7 +96,7 @@ export let mappings = [
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
                 "resourceCode": "8302-2",
-                "resourceObj": null,
+                "resourcePropertyObj": null,
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
@@ -105,7 +105,7 @@ export let mappings = [
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
                 "resourceCode": "29463-7",
-                "resourceObj": null,
+                "resourcePropertyObj": null,
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
@@ -114,7 +114,7 @@ export let mappings = [
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
                 "resourceCode": "39156-5",
-                "resourceObj": null,
+                "resourcePropertyObj": null,
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
@@ -125,7 +125,7 @@ export let mappings = [
                 "resourceCode": "55284-4",
                 "resourceComponentSystem": "LOINC",
                 "resourceComponentCode": "8480-6",
-                "resourceObj": "function (res) { return getComponent(res); }",
+                "resourcePropertyObj": "function (res) { return getComponent(res); }",
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getSubByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getSubByCode(form), 'UNITS'); }"
@@ -136,7 +136,7 @@ export let mappings = [
                 "resourceCode": "55284-4",
                 "resourceComponentSystem": "LOINC",
                 "resourceComponentCode": "8462-4",
-                "resourceObj": "function (res) { return getComponent(res); }",
+                "resourcePropertyObj": "function (res) { return getComponent(res); }",
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getSubByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getSubByCode(form), 'UNITS'); }"
