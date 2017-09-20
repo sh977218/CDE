@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject, ViewChild, Injectable } from "@angular/core";
-import { Http, Jsonp } from '@angular/http';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { Http } from '@angular/http';
 import { IActionMapping, TreeComponent } from 'angular-tree-component';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
@@ -11,6 +11,7 @@ import { AlertService } from 'system/public/components/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { Subject } from 'rxjs/Subject';
 import * as authShared from "system/shared/authorizationShared";
+import { UserService } from "../../../../../core/public/user.service";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -72,12 +73,12 @@ export class OrgClassificationManagementComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private alert: AlertService,
-                @Inject("userResource") private userService,
+                private userService: UserService,
                 private classificationSvc: ClassificationService) {
     }
 
     ngOnInit(): void {
-        this.userService.getPromise().then(() => {
+        this.userService.then(() => {
             if (this.userService.userOrgs.length > 0) {
                 this.orgToManage = this.userService.userOrgs[0];
                 this.onChangeOrg(this.orgToManage, () => {
@@ -142,7 +143,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             .result.then(result => {
             if (result === "confirm")
                 this.classificationSvc.renameOrgClassification(this.selectedOrg.name, classificationArray, this.newClassificationName, r => {
-                    r.subscribe(res => {
+                    r.subscribe(() => {
                         this.alert.addAlert("warning", "Renaming in progress.");
                         let indexFn = setInterval(() => {
                             this.http.get("/classification/rename").map(res => res.json()).subscribe(
