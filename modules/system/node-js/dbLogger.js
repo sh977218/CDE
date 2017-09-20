@@ -243,7 +243,7 @@ exports.usageByDay = function (callback) {
 };
 
 exports.saveFeedback = function (req, cb) {
-    var report = JSON.parse(req.body.feedback);
+    var report = req.body.feedback;
     var issue = new FeedbackModel({
         user: {username: req.user ? req.user.username : null}
         , rawHtml: report.html

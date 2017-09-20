@@ -235,8 +235,7 @@ export class BoardViewComponent implements OnInit {
     startReview () {
         this.http.post("/board/startReview", {boardId: this.board._id}).map(r => r.text()).subscribe(() => {
             this.reload();
-            },
-            response => {
+            }, response => {
                 this.alert.addAlert("danger", response);
                 this.reload();
             }
