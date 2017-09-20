@@ -18,7 +18,6 @@ import { ClassifyItemModalComponent } from "adminItem/public/components/classifi
 import * as ClassificationShared from "../../../system/shared/classificationShared.js";
 import * as _ from "lodash";
 import { AlertService } from "system/public/components/alert/alert.service";
-import { ElasticService } from 'core/public/elastic.service';
 
 @Component({
     selector: "cde-create-form",
@@ -29,7 +28,7 @@ export class CreateFormComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
-    @Output() cancel = new EventEmitter();
+    @Output() eltChange = new EventEmitter();
     modalRef: NgbModalRef;
 
     constructor(@Inject("userResource") public userService,
@@ -37,7 +36,6 @@ export class CreateFormComponent implements OnInit {
                 private localStorageService: LocalStorageService,
                 private http: Http,
                 private alert: AlertService,
-                private elasticService: ElasticService,
                 @Inject("SearchSettings") private searchSettings) {
     }
 
@@ -46,7 +44,8 @@ export class CreateFormComponent implements OnInit {
             elementType: "form",
             classification: [], stewardOrg: {}, naming: [{
                 designation: "", definition: "", tags: []
-            }]
+            }],
+            registrationState: {registrationStatus: "Incomplete"}
         };
     }
 
@@ -69,7 +68,6 @@ export class CreateFormComponent implements OnInit {
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
-        this.alert.addAlert("success", "Classification added.");
     }
 
     validationErrors(elt) {
@@ -130,7 +128,7 @@ export class CreateFormComponent implements OnInit {
     }
 
     cancelCreateForm() {
-        this.cancel.emit('cancel');
+        window.location.href = "/";
     }
 
 }

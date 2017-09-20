@@ -194,11 +194,6 @@ exports.initEs = function (cb) {
     async.forEach(esInit.indices, function (index, doneOneIndex) {
         createIndex(index, doneOneIndex);
     }, function doneAllIndices() {
-        let node_env = process.env.NODE_ENV;
-        if (node_env && node_env !== "prod") {
-            console.log("Starting sync meSH");
-            exports.syncWithMesh();
-        }
         if (cb) cb();
     });
 };
@@ -608,53 +603,57 @@ function doSyncWithMesh(allMappings) {
                     {origin: "system.elastic.syncWithMesh", stack: new Error().stack});
             } else {
                 let newScrollId = response._scroll_id;
-                exports.meshSyncStatus[s.type].total = response.hits.total;
-                if (response.hits.hits.length > 0) {
-                    let request = {body: []};
-                    response.hits.hits.forEach(hit => {
-                        let thisElt = hit._source;
-                        let trees = new Set();
-                        let simpleTrees = new Set();
-                        if (!thisElt.flatClassifications) thisElt.flatClassifications = [];
-                        thisElt.flatClassifications.forEach(function (fc) {
-                            if (classifToTrees[fc]) {
-                                classifToTrees[fc].forEach(function (node) {
-                                    trees.add(node);
-                                });
-                            }
-                            if (classifToSimpleTrees[fc]) {
-                                classifToSimpleTrees[fc].forEach(function (node) {
-                                    simpleTrees.add(node);
-                                });
-                            }
-                        });
-                        if (trees.size > 0) {
-                            request.body.push({
-                                update: {
-                                    _index: s.index,
-                                    _type: s.type,
-                                    _id: thisElt.tinyId
-                                }
-                            });
-                            request.body.push({
-                                doc: {
-                                    flatMeshTrees: Array.from(trees),
-                                    flatMeshSimpleTrees: Array.from(simpleTrees)
-                                }
-                            });
-                        }
-                        exports.meshSyncStatus[s.type].done++;
-                    });
-                    if (request.body.length > 0)
-                        esClient.bulk(request, err => {
-                            if (err) dbLogger.consoleLog("ERR: " + err, 'error');
-                            scrollThrough(newScrollId, s);
-                        });
-                    else scrollThrough(newScrollId, s);
-                } else dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
+                processScroll(newScrollId, s, response);
             }
         });
     };
+
+    function processScroll(newScrollId, s, response) {
+        exports.meshSyncStatus[s.type].total = response.hits.total;
+        if (response.hits.hits.length > 0) {
+            let request = {body: []};
+            response.hits.hits.forEach(hit => {
+                let thisElt = hit._source;
+                let trees = new Set();
+                let simpleTrees = new Set();
+                if (!thisElt.flatClassifications) thisElt.flatClassifications = [];
+                thisElt.flatClassifications.forEach(function (fc) {
+                    if (classifToTrees[fc]) {
+                        classifToTrees[fc].forEach(function (node) {
+                            trees.add(node);
+                        });
+                    }
+                    if (classifToSimpleTrees[fc]) {
+                        classifToSimpleTrees[fc].forEach(function (node) {
+                            simpleTrees.add(node);
+                        });
+                    }
+                });
+                if (trees.size > 0) {
+                    request.body.push({
+                        update: {
+                            _index: s.index,
+                            _type: s.type,
+                            _id: thisElt.tinyId
+                        }
+                    });
+                    request.body.push({
+                        doc: {
+                            flatMeshTrees: Array.from(trees),
+                            flatMeshSimpleTrees: Array.from(simpleTrees)
+                        }
+                    });
+                }
+                exports.meshSyncStatus[s.type].done++;
+            });
+            if (request.body.length > 0)
+                esClient.bulk(request, err => {
+                    if (err) dbLogger.consoleLog("ERR: " + err, 'error');
+                    scrollThrough(newScrollId, s);
+                });
+            else scrollThrough(newScrollId, s);
+        } else dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
+    }
 
     searches.forEach(search => {
         esClient.search(search, (err, response) => {
@@ -666,7 +665,7 @@ function doSyncWithMesh(allMappings) {
                         details: ""
                     });
             } else {
-                scrollThrough(response._scroll_id, search);
+                processScroll(response._scroll_id, search, response);
             }
         });
     });

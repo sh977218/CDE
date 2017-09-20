@@ -38,6 +38,7 @@ import { FormTermMappingComponent } from "./components/formTermMapping/formTermM
 import { FormViewComponent } from "./components/formView.component";
 import { DiscussModule } from "../../discuss/discuss.module";
 import { CreateFormComponent } from 'form/public/components/createForm.component';
+import { FormClassificationComponent } from "./components/formClassification/formClassification.component";
 
 @NgModule({
     imports: [
@@ -62,6 +63,7 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
         DisplayProfileComponent,
         FormViewComponent,
         FormAccordionListComponent,
+        FormClassificationComponent,
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,

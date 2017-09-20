@@ -470,9 +470,7 @@ new CronJob({
             if (err) throw "Cannot repair CDE references.";
             async.eachSeries(ids, function (id, cb) {
                 DataElement.findOne({tinyId: id, archived: false}).exec(function (err, de) {
-                    correctBoardPinsForCde(de, function () {
-                        cb();
-                    });
+                    if (!err) correctBoardPinsForCde(de, cb);
                 });
             }, function () {
                 dbLogger.consoleLog("Board <-> CDE reference repair done!");
@@ -485,9 +483,15 @@ new CronJob({
 
 exports.findModifiedElementsSince = function (date, cb) {
     DataElement.aggregate([
-        {$match: {updated: {$gte: date}}},
-        {$group: {"_id": "$tinyId"}},
-        {$limit: 2000}
+        {
+            $match: {
+                archived: false,
+                updated: {$gte: date}
+            }
+        },
+        {$limit: 2000},
+        {$sort: {updated: -1}},
+        {$group: {"_id": "$tinyId"}}
     ]).exec(cb);
 
 

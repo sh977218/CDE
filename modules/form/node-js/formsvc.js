@@ -53,7 +53,6 @@ function fetchWholeForm(form, callback) {
                             fe.question.cde.outdated = true;
                             formOutdated = true;
                         }
-                        fe.question.cde.derivationRules = systemDe.derivationRules;
                         doneOne();
                     }
                 });
@@ -82,18 +81,18 @@ exports.byId = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(400).send();
     mongo_form.byId(id, function (err, form) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - cannot get form by id");
         if (!form) return res.status(404).send();
         form = form.toObject();
         fetchWholeForm(form, function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - cannot fetch whole form");
             wipeRenderDisallowed(wholeForm, req, function (err) {
-                if (err) return res.status(500).send("ERROR");
+                if (err) return res.status(500).send("ERROR - cannot wipe form data");
                 if (req.query.type === 'xml') {
                     setResponseXmlHeader(res);
                     if (req.query.subtype === 'odm')
                         odm.getFormOdm(wholeForm, function (err, xmlForm) {
-                            if (err) return res.status(500).send("ERROR");
+                            if (err) return res.status(500).send("ERROR - canont get form as odm");
                             res.setHeader("Content-Type", "text/xml");
                             return res.send(xmlForm);
                         });
@@ -103,7 +102,7 @@ exports.byId = function (req, res) {
                             return res.send(sdcForm);
                         });
                     else nih.getFormNih(wholeForm, function (err, xmlForm) {
-                            if (err) return res.status(500).send("ERROR");
+                            if (err) return res.status(500).send("ERROR - cannot get json export");
                             return res.send(xmlForm);
                         });
                 } else if (req.query.type && req.query.type.toLowerCase() === 'redcap')
@@ -119,10 +118,10 @@ exports.priorForms = function (req, res) {
     let id = req.params.id;
     if (!id) return res.status(400).send();
     mongo_form.byId(id, function (err, form) {
-        if (err) res.status(500).send("ERROR");
+        if (err) res.status(500).send("ERROR - cannot get form by id for prior");
         if (!form) res.status(404).send();
         mongo_form.byIdList(form.history, function (err, priorForms) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - cannot get form prior id list");
             async.forEachSeries(priorForms, function (priorForm, doneOnePriorForm) {
                 priorForm = priorForm.toObject();
                 fetchWholeForm(priorForm, doneOnePriorForm);
@@ -137,18 +136,18 @@ exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     mongo_form.byTinyId(tinyId, function (err, form) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - get form by tinyid");
         if (!form) return res.status(404).send();
         form = form.toObject();
         fetchWholeForm(form, function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - form by tinyId whole form");
             wipeRenderDisallowed(wholeForm, req, function (err) {
-                if (err) return res.status(500).send("ERROR");
+                if (err) return res.status(500).send("ERROR - form by tinyId - wipe");
                 if (req.query.type === 'xml') {
                     setResponseXmlHeader(res);
                     if (req.query.subtype === 'odm')
                         odm.getFormOdm(wholeForm, function (err, xmlForm) {
-                            if (err) return res.status(500).send("ERROR");
+                            if (err) return res.status(500).send("ERROR - form by tinyId odm ");
                             res.setHeader("Content-Type", "text/xml");
                             return res.send(xmlForm);
                         });
@@ -158,7 +157,7 @@ exports.byTinyId = function (req, res) {
                             return res.send(sdcForm);
                         });
                     else nih.getFormNih(wholeForm, function (err, xmlForm) {
-                            if (err) return res.status(500).send("ERROR");
+                            if (err) return res.status(500).send("ERROR - form by tinyId json");
                             return res.send(xmlForm);
                         });
                 } else if (req.query.type && req.query.type.toLowerCase() === 'redcap')
@@ -179,9 +178,9 @@ exports.byTinyIdVersion = function (req, res) {
         if (!form) return res.status(404).send();
         form = form.toObject();
         fetchWholeForm(form, function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - form by id / version");
             wipeRenderDisallowed(wholeForm, req, function (err) {
-                if (err) return res.status(500).send("ERROR");
+                if (err) return res.status(500).send("ERROR - form by id version wipe");
                 res.send(wholeForm);
             });
         });
@@ -193,7 +192,7 @@ exports.byTinyIdList = function (req, res) {
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
     mongo_form.byTinyIdList(tinyIdList, function (err, forms) {
-        if (err) res.status(500).send("ERROR");
+        if (err) res.status(500).send("ERROR - form by idlist");
         res.send(forms.map(mongo_data_system.formatElt));
     });
 };
@@ -202,7 +201,7 @@ exports.latestVersionByTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     mongo_form.latestVersionByTinyId(tinyId, function (err, latestVersion) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - form by latest id");
         res.send(latestVersion);
     });
 };
@@ -214,7 +213,7 @@ exports.publishForm = function (req, res) {
     mongo_form.byId(id, function (err, form) {
         form = form.toObject();
         fetchWholeForm(form, function (err, wholeForm) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - fetch whole for publish");
             publishForm.getFormForPublishing(wholeForm, req, res);
         });
     });
@@ -227,9 +226,9 @@ exports.createForm = function (req, res) {
     let elt = req.body;
     let user = req.user;
     authorization.allowCreate(user, elt, function (err) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - cannot allow to create form ");
         mongo_form.create(elt, user, function (err, dataElement) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - cannot create form");
             res.send(dataElement);
         });
     });
@@ -244,14 +243,14 @@ exports.updateForm = function (req, res) {
         if (err) return res.status(400).send();
         if (!item) return res.status(404).send();
         authorization.allowUpdate(user, item, function (err) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - cannot allow to update form");
             mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
                     let elt = req.body;
                     mongo_form.trimWholeForm(elt);
                     mongo_form.update(elt, req.user, function (err, response) {
-                        if (err) return res.status(500).send("ERROR");
+                        if (err) return res.status(500).send("ERROR - cannot update form. ");
                         res.send(response);
                     });
                 }

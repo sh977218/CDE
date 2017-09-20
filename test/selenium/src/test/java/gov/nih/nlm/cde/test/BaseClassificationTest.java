@@ -17,6 +17,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
         } catch (Exception ignored) {
+            System.out.println("Ingnored exception: " + ignored);
         }
         textPresent(categories[1]);
         String classifyBtnId = "";

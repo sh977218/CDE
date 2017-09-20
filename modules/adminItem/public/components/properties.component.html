@@ -4,7 +4,7 @@
     <div *ngFor="let prop of elt.properties;let i = index">
         <div class="row">
             <div class="col-md-1 text-right">
-                <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
+                <div class="row" *ngIf="canEdit">
                     <span *ngIf="prop.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removePropertyByIndex(i)"
                               id="confirmRemoveProperty-{{i}}" title="OK" href=""></span>
@@ -24,17 +24,16 @@
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Value:</div>
                     <div class="col-xs-10 ng-binding" id="value_{{i}}">
-                        <cde-inline-area-edit [(model)]="prop.value" (save)="saveProperty()"
+                        <cde-inline-area-edit [(model)]="prop.value" (save)="onEltChange.emit()"
                                               [(defFormat)]="prop.valueFormat"
-                                              [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-area-edit>
+                                              [isAllowed]="canEdit"></cde-inline-area-edit>
                     </div>
                 </div>
             </div>
         </div>
         <hr>
     </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt) && this.onInitDone"
-            class="btn btn-small btn-default" id="openNewPropertyModalBtn"
+    <button *ngIf="canEdit && onInitDone" class="btn btn-small btn-default" id="openNewPropertyModalBtn"
             (click)="openNewPropertyModal();">
         <i class="fa fa-plus"></i> Add Property
     </button>
@@ -65,7 +64,8 @@
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"
-                    type="submit" (click)="addNewProperty();">Save
+                    (click)="addNewProperty();">
+                Save
             </button>
         </div>
     </form>

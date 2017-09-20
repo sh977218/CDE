@@ -1,4 +1,4 @@
-angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'formTemplates']).config(
+angular.module('formModule', ['ngRoute']).config(
     ["$routeProvider", function($routeProvider)
 {
     $routeProvider.
@@ -12,46 +12,43 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'ui.scrollpoint', 'for
         }).when('/form', {
             redirectTo: '/form/search'
         }).when('/createForm', {
-            controller: 'CreateFormCtrl',
-            templateUrl: '/form/public/html/createForm.html'
-        }).when('/formView', {controller:'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
-    }]);
-
-angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$parse", function ($compile, $timeout, $parse) {
-    return {
-        link: function ($scope, element, attrs) {
-            $timeout(function () {
-                $(function () {
-                    var handle = $(element).find(".ui-slider-handle");
-                    $(element).slider({
-                        value: $parse(attrs.jqSlider)($scope),
-                        min: $parse(attrs.jqSliderMin)($scope),
-                        max: $parse(attrs.jqSliderMax)($scope),
-                        step: $parse(attrs.jqSliderStep)($scope),
-                        create: function () {
-                            handle.text($(this).slider("value"));
-                        },
-                        slide: function (event, ui) { // jshint ignore:line
-                            handle.text(ui.value);
-                            $parse(attrs.jqSlider).assign($scope, ui.value);
-                            $scope.$apply($parse(attrs.jqSliderOnslide)($scope));
-                        }
-                    });
+            controller: ['$scope', function ($scope) {
+                $scope.$on('$locationChangeStart', function (event) {
+                    var txt = "You have unsaved changes, are you sure you want to leave this page? ";
+                    if (window.debugEnabled) {
+                        txt = txt + window.location.pathname;
+                    }
+                    var answer = confirm(txt);
+                    if (!answer) {
+                        event.preventDefault();
+                    }
                 });
-            }, 0, false);
-        }
-    };
-}]);
+            }],
+            template: '<cde-create-form></cde-create-form>'
+        }).when('/formView', {controller: ['$scope', '$routeParams',
+        function ($scope, $routeParams) {
+            $scope.cbLocChange = function (cb) {
+                $scope.cbMethod = cb;
+            };
+            $scope.routeParams  = $routeParams;
+            $scope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+                $scope.cbMethod.fn(event, newUrl, oldUrl, $scope.cbMethod.elt);
+            });
+
+        }], template: '<cde-form-view [route-params]="routeParams" (h)="cbLocChange($event)"></cde-form-view>'});
+    }]);
 
 import {downgradeComponent} from "@angular/upgrade/static";
 
 import {BoardFormSummaryListComponent} from "../components/listView/boardFormSummaryList.component";
 angular.module('formModule').directive('cdeBoardFormSummaryList',
-    downgradeComponent({component: BoardFormSummaryListComponent, inputs: ['board', 'forms', 'module', 'currentPage', 'totalItems'], outputs: ['reload']}));
+    downgradeComponent({component: BoardFormSummaryListComponent,
+        inputs: ['board', 'forms', 'module', 'currentPage', 'totalItems'],
+        outputs: ['reload']}));
 
 import {FormSearchComponent} from "../components/search/formSearch.component";
-angular.module('formModule').directive('cdeFormSearch', downgradeComponent({component: FormSearchComponent, inputs: ['reloads'], outputs: []}));
-
+angular.module('formModule').directive('cdeFormSearch', downgradeComponent({component: FormSearchComponent,
+    inputs: ['reloads'], outputs: []}));
 
 import {CreateFormComponent} from "../components/createForm.component";
 angular.module('formModule').directive('cdeCreateForm', downgradeComponent({
@@ -63,7 +60,7 @@ angular.module('formModule').directive('cdeCreateForm', downgradeComponent({
 import {FormViewComponent} from "../components/formView.component";
 angular.module('formModule').directive('cdeFormView', downgradeComponent({
     component: FormViewComponent,
-    inputs: ['elt'],
-    outputs: ['stageElt', 'reload']
+    inputs: ['routeParams'],
+    outputs: ['h']
 }));
 

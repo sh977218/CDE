@@ -1,12 +1,13 @@
 import { Component, Inject, Input, Output, OnInit, ViewChild, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
 import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
 import * as ClassificationShared from "../../../system/shared/classificationShared.js";
 import * as _ from "lodash";
 import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { ElasticService } from "../../../core/public/elastic.service";
 
 @Component({
     selector: "cde-create-data-element",
@@ -15,14 +16,15 @@ import { AlertService } from "../../../system/public/components/alert/alert.serv
 export class CreateDataElementComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @Input() elt;
+
     modalRef: NgbModalRef;
-    @Output() cancel = new EventEmitter();
-    @Output() modelChange = new EventEmitter();
     validationMessage;
+    suggestedCdes: any[] = [];
 
     constructor(@Inject("userResource") public userService,
                 @Inject("isAllowedModel") public isAllowedModel,
                 private localStorageService: LocalStorageService,
+                private elasticService: ElasticService,
                 private http: Http,
                 private alert: AlertService) {
     }
@@ -33,7 +35,8 @@ export class CreateDataElementComponent implements OnInit {
                 elementType: "cde",
                 classification: [], stewardOrg: {}, naming: [{
                     designation: "", definition: "", tags: []
-                }]
+                }],
+                registrationState: {registrationStatus: "Incomplete"}
             };
         this.validationErrors(this.elt);
     }
@@ -53,7 +56,6 @@ export class CreateDataElementComponent implements OnInit {
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
-        this.alert.addAlert("success", "Classification added.");
     }
 
     validationErrors(elt) {
@@ -105,7 +107,7 @@ export class CreateDataElementComponent implements OnInit {
 
     elementNameChanged() {
         if (!(this.elt.naming[0].designation) || this.elt.naming[0].designation.length < 3) return;
-        else this.modelChange.emit(this.elt.naming[0].designation);
+        else this.showSuggestions(this.elt.naming[0].designation);
     };
 
     updateClassificationLocalStorage(item) {
@@ -119,6 +121,33 @@ export class CreateDataElementComponent implements OnInit {
         this.localStorageService.set("classificationHistory", recentlyClassification);
     }
 
+    showSuggestions (event) {
+        if (event.length < 3) return;
+        let searchSettings = {
+            q: ""
+            , page: 1
+            , classification: []
+            , classificationAlt: []
+            , regStatuses: []
+            , resultPerPage: 20
+        };
+        searchSettings.q =  event.trim();
+        this.elasticService.generalSearchQuery(
+            this.elasticService.buildElasticQuerySettings(searchSettings), "cde", (err, result) => {
+            if (err) return;
+            this.suggestedCdes = result.cdes;
+            this.suggestedCdes.forEach(cde => {
+                cde.getEltUrl = function () {
+                    return "/deView?tinyId=" + this.tinyId;
+                };
+                cde.getLabel = function () {
+                    if (this.primaryNameCopy)
+                        return this.primaryNameCopy;
+                    else return this.naming[0].designation;
+                };
+            });
+        });
+    };
 
     createDataElement() {
         this.http.post("/de", this.elt).map(res => res.json())
@@ -127,6 +156,6 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     cancelCreateDataElement() {
-        this.cancel.emit("cancel");
+        window.location.href = "/";
     }
 }

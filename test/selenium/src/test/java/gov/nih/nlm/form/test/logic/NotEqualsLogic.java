@@ -44,7 +44,7 @@ public class NotEqualsLogic extends BaseFormTest {
 
         // value list
         textPresent("Quality of Life - Stigma illness recent assessment scale");
-        clickElement(By.xpath("//input[@name='q7' and @value='5']"));
+        clickElement(By.xpath("//div[contains(@id, 'Quality of Life - Write task list difficulty scale_')]//label[@title = 'None']"));
         textNotPresent("Quality of Life - Stigma illness recent assessment scale");
 
     }

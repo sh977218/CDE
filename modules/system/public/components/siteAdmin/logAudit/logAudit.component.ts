@@ -1,7 +1,6 @@
 import { Http } from "@angular/http";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import "rxjs/add/operator/map";
-import * as moment from "moment";
 import { AlertService } from "../../alert/alert.service";
 
 @Component({
@@ -98,8 +97,8 @@ export class LogAuditComponent {
             ipAddress: this.ipAddress,
             totalItems: this.totalItems,
             itemsPerPage: this.itemsPerPage,
-            fromDate: LogAuditComponent.parseDate(this.fromDate),
-            toDate: LogAuditComponent.parseDate(this.toDate),
+            fromDate: this.fromDate,
+            toDate: this.toDate,
             sort: this.getSortObj()
         };
         //noinspection TypeScriptValidateTypes
@@ -120,8 +119,4 @@ export class LogAuditComponent {
             });
     };
 
-    static parseDate(inDate) {
-        if (inDate) return moment(inDate + moment().format("Z")).toISOString();
-        else return;
-    }
 }

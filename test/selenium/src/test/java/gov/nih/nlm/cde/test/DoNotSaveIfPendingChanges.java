@@ -31,7 +31,7 @@ public class DoNotSaveIfPendingChanges extends NlmCdeBaseTest {
 
         clickElement(By.id("removeProperty-0"));
         clickElement(By.id("confirmRemoveProperty-0"));
-        textPresent("Property removed. Save to confirm.");
+        textPresent("Save to confirm.");
         closeAlert();
         clickElement(By.id("ids_tab"));
         clickElement(By.id("openNewIdentifierModalBtn"));
@@ -39,12 +39,12 @@ public class DoNotSaveIfPendingChanges extends NlmCdeBaseTest {
         findElement(By.name("id")).sendKeys("MyId1");
         findElement(By.name("version")).sendKeys("MyVersion1");
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier added. Save to confirm.");
         modalGone();
+        textPresent("Save to confirm.");
         closeAlert();
         clickElement(By.id("removeIdentifier-1"));
         clickElement(By.id("confirmRemoveIdentifier-1"));
-        textPresent("Identifier removed. Save to confirm.");
+        textPresent("Save to confirm.");
     }
 
 

@@ -4,9 +4,8 @@ angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'OrgFactories', 'classification', 'systemTemplates',
-    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'ui.sortable',
-    'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
-    'angular-send-feedback', 'ngAnimate', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
+    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'LocalStorageModule', 'ui.sortable',
+    'ui.select', 'angular-send-feedback', 'checklist-model'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -29,15 +28,13 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/siteAudit', {
             template: '<cde-site-audit></cde-site-audit>'
         }).when('/inbox', {
-            controller: 'InboxCtrl',
-            templateUrl: '/system/public/html/inbox.html'
+            template: '<cde-inbox></cde-inbox>'
         }).when('/orgComments', {
             template: '<cde-latest-comments [comments-url]="\'/orgComments/\'"></cde-latest-comments>'
         }).when('/siteaccountmanagement', {
             template: '<cde-site-management></cde-site-management>'
         }).when('/orgaccountmanagement', {
-            controller: 'AccountManagementCtrl',
-            templateUrl: '/system/public/html/orgAccountManagement.html'
+            template: '<cde-org-account-management></cde-org-account-management>'
         }).when('/classificationmanagement', {
             controller: 'ClassificationManagementCtrl',
             templateUrl: '/system/public/html/classificationManagement.html'
@@ -51,121 +48,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/searchPreferences', {
             template: '<cde-search-preferences></cde-search-preferences>'
         });
-    }])
-    .directive('inlineEdit', ["$timeout", function ($timeout) {
-        return {
-            restrict: 'AE',
-            scope: {
-                model: '=',
-                inputType: '=?',
-                isAllowed: '=',
-                onOk: '&',
-                typeaheadSource: '=',
-                linkSource: '@'
-            },
-            template: require('../html/systemTemplate/inlineEdit.html'),
-            controller: ["$scope", function ($scope) {
-                $scope.inputType = $scope.inputType || 'text';
-                $scope.value = $scope.model;
-                $scope.discard = function () {
-                    $scope.editMode = false;
-                };
-                $scope.save = function () {
-                    $scope.model = angular.copy(this.value);
-                    $scope.editMode = false;
-                    $timeout($scope.onOk, 0);
-                };
-                $scope.edit = function () {
-                    $scope.value = $scope.model;
-                    $scope.editMode = true;
-                };
-            }]
-        };
-    }])
-    .directive('inlineSelectEdit', ["$timeout", function ($timeout) {
-        return {
-            restrict: 'AE',
-            scope: {
-                model: '=',
-                isAllowed: '=',
-                onOk: '&',
-                allOptions: '='
-            },
-            template: require('../html/systemTemplate/inlineSelectEdit.html'),
-            controller: ["$scope", function ($scope) {
-                $scope.discard = function () {
-                    $scope.editMode = false;
-                };
-                $scope.save = function () {
-                    $scope.editMode = false;
-                    $timeout($scope.onOk, 0);
-                };
-                $scope.edit = function () {
-                    $scope.editMode = true;
-                };
-            }]
-        };
-    }])
-    .directive('inlineAreaEdit', ["$timeout", function ($timeout) {
-        return {
-            restrict: 'AE',
-            scope: {
-                model: '=',
-                isAllowed: '=',
-                onOk: '&',
-                onErr: '&',
-                defFormat: '=',
-            },
-            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html',
-            controller: ["$scope", "$element", function ($scope) {
-                $scope.setHtml = function (html) {
-                    $scope.defFormat = html ? 'html' : '';
-                };
-                $scope.clickEdit = function () {
-                    $scope.inScope = {
-                        value: $scope.model
-                    };
-                    $scope.editMode = true;
-                };
-                $scope.isInvalidHtml = function (html) {
-                    var srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
-                    if (srcs) {
-                        for (var i = 0; i < srcs.length; i++) {
-                            var src = srcs[i];
-                            var urls = src.match(/\s*["'](.+?)["']/ig);
-                            if (urls) {
-                                for (var j = 0; j < urls.length; j++) {
-                                    var url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
-                                    if (url.indexOf("/data/") !== 0 && url.indexOf(window.publicUrl + "/data/") !== 0) {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return false;
-                };
-                $scope.confirm = function () {
-                    if ($scope.isInvalidHtml($scope.inScope.value)) {
-                        alert('Error. Img src may only be a relative url starting with /data');
-                    } else {
-                        $scope.model = $scope.inScope.value;
-                        $scope.editMode = false;
-                        $timeout($scope.onOk, 0);
-                    }
-                };
-                $scope.cancel = function () {
-                    $scope.editMode = false;
-                };
-            }]
-        };
-    }])
-    .directive('cdeSelectBoard', [function () {
-        return {
-            restrict: 'AE',
-            controller: 'SelectBoardModalCtrl',
-            templateUrl: '/system/public/html/selectBoardModal.html',
-        };
     }])
     .directive('sortableArray', [function () {
         return {
@@ -196,85 +78,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             }]
         };
     }]);
-
-angular.module('systemModule').filter('placeHoldEmpty', [function () {
-    return function (input) {
-        if (!(input === undefined || input === null || input === "")) {
-            return input;
-        } else {
-            return "N/A";
-        }
-    };
-}]);
-
-angular.module('systemModule').filter('truncateTo', [function () {
-    return function (input, l) {
-        if (input && input.length > l) {
-            return input.substr(0, l) + '...';
-        } else return input;
-    };
-}]);
-
-angular.module('systemModule').filter('bytes', [function () {
-    return function (bytes, precision) {
-        if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
-        if (typeof precision === 'undefined') precision = 1;
-        var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
-            number = Math.floor(Math.log(bytes) / Math.log(1024));
-        return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
-    };
-}]);
-
-//ported
-angular.module('systemModule').filter('tagsToArray', [function () {
-    return function (input) {
-        return input.map(function (m) {
-            return m.tag;
-        }).join(', ');
-    };
-}]);
-
-angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'AlertService',
-    function (userResource, $modal, $http, Alert) {
-        return {
-            new: function (type) {
-                return {
-                    openPinModal: function (elt) {
-                        if (userResource.user.username) {
-                            $modal.open({
-                                animation: false,
-                                templateUrl: '/system/public/html/selectBoardModal.html',
-                                controller: 'SelectBoardModalCtrl',
-                                resolve: {
-                                    type: function () {
-                                        return type;
-                                    }
-                                }
-                            }).result.then(function (selectedBoard) {
-                                $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
-                                    if (response.status === 200) {
-                                        Alert.addAlert("success", response.data);
-                                    } else
-                                        Alert.addAlert("warning", response.data);
-                                }, function (response) {
-                                    Alert.addAlert("danger", response.data);
-                                });
-                            }, function () {
-                            });
-                        } else {
-                            $modal.open({
-                                animation: false,
-                                templateUrl: '/system/public/html/ifYouLogInModal.html'
-                            }).result.then(function () {
-                            }, function () {
-                            });
-                        }
-                    }
-                };
-            }
-        };
-    }]);
-
 
 angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
     var isAllowedModel = {};
@@ -428,7 +231,6 @@ import { ClassificationService } from "../../../core/public/classification.servi
 angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
 
 import { HomeComponent } from "../components/home/home.component";
-
 angular.module('systemModule').directive('cdeHome', downgradeComponent({
     component: HomeComponent,
     inputs: [],
@@ -436,47 +238,21 @@ angular.module('systemModule').directive('cdeHome', downgradeComponent({
 }));
 
 import { NavigationComponent } from "../components/navigation.component";
-
 angular.module('systemModule').directive('cdeNavigation', downgradeComponent({
     component: NavigationComponent,
     inputs: [], outputs: ['goToLogin', 'logout']
 }));
 
 import { ProfileComponent } from "../components/profile.component";
-
 angular.module('systemModule').directive('cdeProfile', downgradeComponent({
     component: ProfileComponent,
     inputs: ['commentsUrl'],
     outputs: []
 }));
 
-import { UserCommentsComponent } from "../components/userComments.component";
-
-angular.module('systemModule').directive('user-comments', downgradeComponent({
-    component: UserCommentsComponent,
-    inputs: ['user'],
-    outputs: []
-}));
-
-
 import { SiteAuditComponent } from "../components/siteAdmin/siteAudit/siteAudit.component";
 angular.module('systemModule').directive('cdeSiteAudit', downgradeComponent({
     component: SiteAuditComponent,
-    inputs: [],
-    outputs: []
-}));
-
-import { OrgAdminComponent } from "../components/siteAdmin/orgAdmin/orgAdmin.component";
-angular.module('systemModule').directive('cdeOrgAdmin', downgradeComponent({
-    component: OrgAdminComponent,
-    inputs: [],
-    outputs: []
-}));
-
-import { UsersMgtComponent } from "../components/siteAdmin/usersMgt/usersMgt.component";
-
-angular.module('systemModule').directive('cdeUsersMgt', downgradeComponent({
-    component: UsersMgtComponent,
     inputs: [],
     outputs: []
 }));
@@ -488,74 +264,8 @@ angular.module('systemModule').directive('cdeOrgAuthority', downgradeComponent({
     outputs: []
 }));
 
-import {EditSiteAdminsComponent} from "../components/siteAdmin/editSiteAdmins/editSiteAdmins.component"
-angular.module('systemModule').directive('cdeEditSiteAdmins', downgradeComponent({
-    component: EditSiteAdminsComponent,
-    inputs: [],
-    outputs: []
-}));
-
-import { IdentifiersComponent } from "../../../adminItem/public/components/identifiers.component";
-
-angular.module('systemModule').directive('cdeAdminItemIds', downgradeComponent({
-    component: IdentifiersComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
-import { AttachmentsComponent } from "../../../adminItem/public/components/attachments/attachments.component";
-
-angular.module('systemModule').directive('cdeAdminItemAttachments', downgradeComponent({
-    component: AttachmentsComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
-import { PropertiesComponent } from "../../../adminItem/public/components/properties.component";
-
-angular.module('systemModule').directive('cdeAdminItemProperties', downgradeComponent({
-    component: PropertiesComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
-import { HistoryComponent } from "../../../adminItem/public/components/history.component";
-angular.module('systemModule').directive('cdeAdminItemHistory', downgradeComponent({
-    component: HistoryComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
-import { NamingComponent } from "../../../adminItem/public/components/naming.component";
-angular.module('systemModule').directive('cdeAdminItemNaming', downgradeComponent({
-    component: NamingComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
-import { ReferenceDocumentComponent } from "../../../adminItem/public/components/referenceDocument.component";
-angular.module('systemModule').directive('cdeAdminItemReferenceDocument', downgradeComponent({
-    component: ReferenceDocumentComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
-import { RegistrationComponent } from "../../../adminItem/public/components/registration/registration.component";
-angular.module('systemModule').directive('cdeRegistration', downgradeComponent({
-    component: RegistrationComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
 import {RegistrationValidatorService} from "../components/registrationValidator.service";
 angular.module('systemModule').factory('RegStatusValidator', downgradeInjectable(RegistrationValidatorService));
-
-import { TableListComponent } from "../../../search/listView/tableList.component";
-angular.module('systemModule').directive('cdeTableList', downgradeComponent({
-    component: TableListComponent,
-    inputs: ['elts', 'module'],
-    outputs: []
-}));
 
 import { SwaggerComponent } from "../components/swagger.component";
 angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
@@ -564,17 +274,6 @@ angular.module('systemModule').directive('cdeSwagger', downgradeComponent({
     outputs: []
 }));
 
-import { ClassificationComponent } from "../../../adminItem/public/components/classification/classification.component";
-angular.module('systemModule').directive('cdeAdminItemClassification', downgradeComponent({
-    component: ClassificationComponent,
-    inputs: ['elt'],
-    outputs: []
-}));
-
-import { DiscussAreaComponent } from "../../../discuss/components/discussArea/discussArea.component";
-angular.module('systemModule').directive('cdeDiscussArea', downgradeComponent(
-    {component: DiscussAreaComponent, inputs: ['elt', 'selectedElt', 'eltId', 'eltName'], outputs: []}));
-
 import { AlertService } from "../components/alert/alert.service";
 angular.module('systemModule').factory('AlertService', downgradeInjectable(AlertService));
 
@@ -582,25 +281,33 @@ import { AlertComponent } from "../components/alert/alert.component";
 angular.module('systemModule').directive('cdeAlert', downgradeComponent(
     {component: AlertComponent, inputs: [], outputs: []}));
 
-import {ServerStatusComponent} from "../components/siteAdmin/serverStatus/serverStatus.component"
-angular.module('systemModule').directive('cdeServerStatus', downgradeComponent(
-    {component: ServerStatusComponent, inputs: [], outputs: []}));
-
 import {SiteManagementComponent} from "../components/siteAdmin/siteManagement/siteManagement.component"
 angular.module('systemModule').directive('cdeSiteManagement', downgradeComponent(
     {component: SiteManagementComponent, inputs: [], outputs: []}));
 
-import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component"
-angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
-    {component: LatestCommentsComponent, inputs: ['commentsUrl'], outputs: []}));
+import {InboxComponent} from "../components/inbox/inbox.component"
+angular.module('systemModule').directive('cdeInbox', downgradeComponent(
+    {component: InboxComponent, inputs: [], outputs: []}));
+
+import { MergeCdeService } from "../../../core/public/mergeCde.service";
+angular.module('systemModule').factory('MergeCdeService', downgradeInjectable(MergeCdeService));
 
 import {SearchPreferencesComponent} from "../components/searchPreferences/searchPreferences.component"
 angular.module('systemModule').directive('cdeSearchPreferences', downgradeComponent(
     {component: SearchPreferencesComponent, inputs: [], outputs: []}));
 
-import {EmbedComponent} from "../components/embed/embed.component"
-angular.module('systemModule').directive('cdeEmbed', downgradeComponent({component: EmbedComponent, inputs: [], outputs: []}));
+import {OrgAccountManagementComponent} from "../components/siteAdmin/orgAccountManagement/orgAccountManagement.component";
+angular.module('systemModule').directive('cdeOrgAccountManagement', downgradeComponent(
+    {component: OrgAccountManagementComponent, inputs: [], outputs: []}));
 
 import {LoginComponent} from "../components/login/login.component"
 angular.module('systemModule').directive('cdeLogin', downgradeComponent(
     {component: LoginComponent, inputs: [], outputs: []}));
+
+import {PublicBoardsComponent} from "../../../board/public/components/publicBoards/publicBoards.component";
+angular.module('systemModule').directive('cdePublicBoards', downgradeComponent(
+    {component: PublicBoardsComponent, inputs: [], outputs: []}));
+
+import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component";
+angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
+    {component: LatestCommentsComponent, inputs: [], outputs: []}));

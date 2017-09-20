@@ -7,7 +7,7 @@ import { Select2Module } from "ng2-select2";
 import { CKEditorModule } from 'ng2-ckeditor';
 import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
-import { RecaptchaModule } from 'ng2-recaptcha';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 import { SelectBoardDirective } from "./upgrade-components";
 import { ProfileComponent } from "./components/profile.component";
@@ -42,10 +42,12 @@ import { ServerStatusComponent } from "./components/siteAdmin/serverStatus/serve
 import { TimeAgoPipe } from "time-ago-pipe";
 import { SiteManagementComponent } from "./components/siteAdmin/siteManagement/siteManagement.component";
 import { DiscussModule } from "../../discuss/discuss.module";
+import { InboxComponent } from "./components/inbox/inbox.component";
 import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
 import { EmbedComponent } from "./components/embed/embed.component";
 import { LoginComponent } from "./components/login/login.component";
 import { LoginService } from "./components/login/login.service";
+import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccountManagement/orgAccountManagement.component";
 
 @NgModule({
     imports: [
@@ -73,10 +75,12 @@ import { LoginService } from "./components/login/login.service";
         EmbedComponent,
         FeedbackIssuesComponent,
         HomeComponent,
+        InboxComponent,
         ListManagementComponent,
         LogAuditComponent,
         LoginComponent,
         NavigationComponent,
+        OrgAccountManagementComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
         OrgsEditComponent,
@@ -96,11 +100,11 @@ import { LoginService } from "./components/login/login.service";
     ],
     entryComponents: [
         AlertComponent,
-        EmbedComponent,
         HomeComponent,
+        InboxComponent,
         LoginComponent,
         NavigationComponent,
-        OrgAdminComponent,
+        OrgAccountManagementComponent,
         OrgAuthorityComponent,
         ProfileComponent,
         ServerStatusComponent,

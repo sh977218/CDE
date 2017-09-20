@@ -104,7 +104,7 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
-            if (err) res.status(500).send("ERROR");
+            if (err) res.status(500).send("ERROR - cannot classify cdes in board");
             else res.send();
         });
     });
@@ -113,14 +113,14 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
-            if (err) res.status(500).send("ERROR");
+            if (err) res.status(500).send("ERROR - cannot classify forms in board");
             else res.send();
         });
     });
 
     app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
         elastic.boardSearch(req.body, function (err, result) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR in /boardSearch");
             return res.send(result);
         });
     });
@@ -170,27 +170,20 @@ exports.init = function (app, daoManager) {
                     return a.toObject();
                 });
                 delete board._doc.owner.userId;
-                /* @Todo
-                * filter(p => p) looks weired.
-                * */
-                var idList = board.pins.map(function (p) {
-                    return board.type === 'cde' ? p.deTinyId : p.formTinyId;
-                }).filter(p => p);
+                let idList = board.pins.map(p =>  board.type === 'cde' ? p.deTinyId : p.formTinyId);
                 daoManager.getDao(board.type).elastic.byTinyIdList(idList, function (err, elts) {
                     if (req.query.type === "xml") {
                         res.setHeader("Content-Type", "application/xml");
                         if (board.type === 'cde') {
                             elts = cdesvc.hideProprietaryCodes(elts, req.user);
                         }
-                        var exportBoard = {
+                        let exportBoard = {
                             board: exportShared.stripBsonIds(board.toObject()),
                             elts: elts,
                             totalItems: totalItems
                         };
                         exportBoard = exportShared.stripBsonIds(exportBoard);
-
                         res.send(js2xml("export", exportBoard));
-
                     }
                     else {
                         elts = cdesvc.hideProprietaryCodes(elts, req.user);
@@ -281,29 +274,21 @@ exports.init = function (app, daoManager) {
         if (req.isAuthenticated()) {
             var boardId = req.body.boardId;
             var users = req.body.users;
-            var user = req.body.user;
-            var owner = req.body.owner;
-            if (owner.username !== user.username) {
-                return res.send("You do not have permission.");
-            } else {
-                mongo_board.boardById(boardId, function (err, board) {
-                    if (err) return res.status(500).send();
+            mongo_board.boardById(boardId, function (err, board) {
+                if (err) return res.status(500).send();
+                if (board.owner.username !== req.user.username) return res.status(403).send();
+                board.users = users;
+                board.markModified("users");
+                board.save(err => {
+                    if (err) {
+                        return res.status(500).send();
+                    }
                     else {
-                        board.users = users;
-                        board.markModified("users");
-                        board.save(function (e) {
-                            if (e) {
-                                return res.send(500);
-                            }
-                            else {
-                                return res.send("done");
-                            }
-                        })
+                        return res.send("done");
                     }
                 })
-            }
-        }
-        else {
+            });
+        } else {
             res.send("You must be logged in to do this.");
         }
     });

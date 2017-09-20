@@ -1,32 +1,29 @@
-import { Component, Inject, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
-import { Http } from "@angular/http";
+import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { OrgHelperService } from "../../../core/public/orgHelper.service";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
-
 import "rxjs/add/operator/map";
 
+import { Property } from 'core/public/models.model';
+import { DataElement } from 'cde/public/dataElement.model';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { OrgHelperService } from 'core/public/orgHelper.service';
+
 @Component({
-    selector: "cde-admin-item-properties",
-    providers: [],
+    selector: "cde-properties",
     templateUrl: "./properties.component.html"
 })
 export class PropertiesComponent implements OnInit {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
-    @Input() public elt: any;
-    @Output() save = new EventEmitter();
-    @Output() remove = new EventEmitter();
+    @Input() public elt: DataElement;
+    @Input() public canEdit: boolean = false;
+    @Output() onEltChange = new EventEmitter();
     orgPropertyKeys: string[] = [];
-    public newProperty: any = {};
+    public newProperty: Property = new Property();
     public modalRef: NgbModalRef;
+    public onInitDone: boolean = false;
 
-    public onInitDone: boolean;
-
-    constructor(private alert: AlertService,
-                private http: Http,
-                @Inject("isAllowedModel") public isAllowedModel,
-                private orgHelperService: OrgHelperService,
-                public modalService: NgbModal) {
+    constructor(public modalService: NgbModal,
+                private alert: AlertService,
+                private orgHelperService: OrgHelperService) {
     }
 
     ngOnInit() {
@@ -41,84 +38,26 @@ export class PropertiesComponent implements OnInit {
             this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
         } else {
             this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-            this.modalRef.result.then(() => this.newProperty = {}, () => {
+            this.modalRef.result.then(() => {
+                this.newProperty = new Property();
+            }, () => {
             });
         }
     }
 
     addNewProperty() {
         this.elt.properties.push(this.newProperty);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Property added. Save to confirm.");
-            this.modalRef.close();
-        } else {
-            let url;
-            if (this.elt.elementType === "cde")
-                url = "/de/";
-            if (this.elt.elementType === "form")
-                url = "/form/";
-            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                if (res) {
-                    this.elt = res;
-                    this.alert.addAlert("success", "Property added");
-                    this.modalRef.close();
-                }
-            }, err => this.alert.addAlert("danger", err));
-        }
+        this.onEltChange.emit();
+        this.modalRef.close();
     }
 
     removePropertyByIndex(index) {
         this.elt.properties.splice(index, 1);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Property removed. Save to confirm.");
-        } else {
-            let url;
-            if (this.elt.elementType === "cde")
-                url = "/de/";
-            if (this.elt.elementType === "form")
-                url = "/form/";
-            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                if (res) {
-                    this.elt = res;
-                    this.alert.addAlert("success", "Property removed.");
-                    this.modalRef.close();
-                }
-            }, err => this.alert.addAlert("danger", err));
-        }
+        this.onEltChange.emit();
     }
 
-    saveProperty() {
-        let url;
-        if (this.elt.elementType === "cde")
-            url = "/de/";
-        if (this.elt.elementType === "form")
-            url = "/form/";
-        this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-            if (res) {
-                this.elt = res;
-                this.alert.addAlert("success", "Property saved.");
-                if (this.modalRef) this.modalRef.close();
-            }
-        }, err => this.alert.addAlert("danger", err));
-    };
-
     reorderProperty() {
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Property reordered. Save to confirm.");
-        } else {
-            let url;
-            if (this.elt.elementType === "cde")
-                url = "/de/";
-            if (this.elt.elementType === "form")
-                url = "/form/";
-            this.http.put(url + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(res => {
-                if (res) {
-                    this.elt = res;
-                    this.alert.addAlert("success", "Property reordered.");
-                    this.modalRef.close();
-                }
-            }, err => this.alert.addAlert("danger", err));
-        }
+        this.onEltChange.emit();
     }
 
 }

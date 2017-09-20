@@ -26,10 +26,9 @@ export class FormSearchComponent extends SearchBaseComponent {
                 protected http: Http,
                 protected modalService: NgbModal,
                 protected elasticService: ElasticService,
-                @Inject('ElasticBoard') protected elasticBoard,
                 protected orgHelperService: OrgHelperService,
                 @Inject('userResource') protected userService) {
-        super(_componentFactoryResolver, alert, elasticService, elasticBoard, exportService, http, modalService,
+        super(_componentFactoryResolver, alert, elasticService, exportService, http, modalService,
             orgHelperService, userService);
 
         this.exporters.odm = {id: "odmExport", display: "ODM Export"};

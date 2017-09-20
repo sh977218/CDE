@@ -31,6 +31,7 @@ public class EltIdMaps {
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
         eltMap.put("Investigator Identifier java.lang.Integer", "wT3DsGm-bea");
+        eltMap.put("Left Lymph Node Positive Total Count", "xNugcDxoqKW");
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");
         eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
         eltMap.put("Little interest or pleasure in doing things in last 2 weeks [Reported.PHQ]", "QkWPURx5Fz");
@@ -76,6 +77,7 @@ public class EltIdMaps {
 
         // Forms
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
+        eltMap.put("Copy Section Form Test", "Xy7W4MKNV");
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
@@ -114,6 +116,7 @@ public class EltIdMaps {
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("PROMIS SF v2.0 - Companionship 6a", "m1BxH3_tIe");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
+        eltMap.put("Section Test Form", "XJFylVmN_");
         eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");

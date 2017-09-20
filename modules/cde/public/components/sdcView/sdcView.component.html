@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="sdcCde">
 
     <h4>SDC Attributes</h4>
 
@@ -50,7 +50,7 @@
             <th>Data Element Concept
                 <i class="fa fa-question-circle-o" ngbTooltip="The source of this field can be found in the NLM JSON export under 'dataElementConcept.concept'"></i>
             </th>
-            <td id="dd_dec">{{sdcCde.dataElementConcept.concept}}</td>
+            <td id="dd_dec">{{sdcCde.dataElementConcept?.concept}}</td>
         </tr>
         <tr>
             <th>SDC Context
@@ -114,7 +114,8 @@
         </tr>
         <tr>
             <th>Value Domain
-                <i class="fa fa-question-circle-o" ngbTooltip="The source of this field can be found in the NLM JSON export under 'valueDomain.name'."></i>
+                <i class="fa fa-question-circle-o"
+                   ngbTooltip="The source of this field can be found in the NLM JSON export under 'valueDomain.name'."></i>
             </th>
             <td id="dd_vd">{{sdcCde.valueDomain.name}}</td>
         </tr>

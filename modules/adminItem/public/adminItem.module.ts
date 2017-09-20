@@ -12,15 +12,9 @@ import { WidgetModule } from 'widget/widget.module';
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
 import { HistoryComponent } from "./components/history.component";
-import { ClassificationComponent } from "./components/classification/classification.component";
-import { ClassifyCdesModalComponent } from "./components/classification/classifyCdesModal.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
-import {
-    InlineEditDirective,
-    InlineSelectEditDirective,
-    SortableArrayDirective
-} from "./upgrade-components";
+import { SortableArrayDirective } from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
@@ -30,6 +24,7 @@ import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 import { CreateFormComponent } from 'form/public/components/createForm.component';
+import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 
 @NgModule({
     imports: [
@@ -49,34 +44,28 @@ import { CreateFormComponent } from 'form/public/components/createForm.component
     ],
     declarations: [
         AttachmentsComponent,
-        ClassificationComponent,
         ClassificationViewComponent,
-        ClassifyCdesModalComponent,
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
         CreateFormComponent,
         IdentifiersComponent,
-        InlineEditDirective,
-        InlineSelectEditDirective,
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
+        SaveModalComponent,
         SortableArrayDirective,
         SourcesComponent,
     ],
     exports: [
         AttachmentsComponent,
-        ClassificationComponent,
         ClassificationViewComponent,
         ClassifyItemModalComponent,
         CdeUpdateElementComponent,
         CreateFormComponent,
         IdentifiersComponent,
-        InlineEditDirective,
-        InlineSelectEditDirective,
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,

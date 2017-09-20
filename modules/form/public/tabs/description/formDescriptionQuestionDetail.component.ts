@@ -1,23 +1,20 @@
-import {
-    Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef,
-    ViewChild
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 import { Observable } from "rxjs/Observable";
 
-import { SkipLogicService } from "../../skipLogic.service";
-import { CdeForm, FormElement, FormQuestion, SkipLogic } from "../../form.model";
 import { TreeNode } from "angular-tree-component";
-import { FormattedValue } from "../../../../core/public/models.model";
-
+import { SkipLogicService } from 'form/public/skipLogic.service';
+import { CdeForm, FormElement, FormQuestion, SkipLogic } from 'form/public/form.model';
+import { FormattedValue } from 'core/public/models.model';
 @Component({
     selector: "cde-form-description-question-detail",
     templateUrl: "formDescriptionQuestionDetail.component.html"
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() elt: CdeForm;
+    @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
@@ -56,8 +53,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     };
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                private http: Http,
+    constructor(private http: Http,
                 public modalService: NgbModal,
                 public skipLogicService: SkipLogicService) {
         this.nameSelectModal.checkAndUpdateLabel = (section, doUpdate = false, selectedNaming = false) => {
@@ -138,7 +134,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         );
 
     getTemplate() {
-        return (this.isAllowedModel.isAllowed(this.elt) && this.question.edit ? this.formDescriptionQuestionEditTmpl : this.formDescriptionQuestionTmpl);
+        return (this.canEdit && this.question.edit ? this.formDescriptionQuestionEditTmpl : this.formDescriptionQuestionTmpl);
     }
 
     getAnswersData() {

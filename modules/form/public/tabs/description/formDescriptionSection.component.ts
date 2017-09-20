@@ -1,14 +1,12 @@
-import {
-    Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef,
-    ViewChild
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
+import { LocalStorageService } from 'angular-2-local-storage';
 
-import { FormService } from "../../form.service";
 import { FormElement, SkipLogic } from "../../form.model";
-import { FormattedValue } from "../../../../core/public/models.model";
-import { SkipLogicService } from "../../skipLogic.service";
+import { SkipLogicService } from 'form/public/skipLogic.service';
+import { FormattedValue } from 'core/public/models.model';
+import { FormService } from 'form/public/form.service';
 
 @Component({
     selector: "cde-form-description-section",
@@ -16,6 +14,7 @@ import { SkipLogicService } from "../../skipLogic.service";
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
+    @Input() canEdit: boolean = false;
     @Input() inScoreCdes: any;
     @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -35,8 +34,9 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Over first question", value: "F"}
     ];
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                public skipLogicService: SkipLogicService) {}
+    constructor(private localStorageService: LocalStorageService,
+                public skipLogicService: SkipLogicService) {
+    }
 
     ngOnInit() {
         this.section = this.node.data;
@@ -57,8 +57,8 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
     }
 
-    canEdit() {
-        return this.section.edit && !this.isSubForm && this.isAllowedModel.isAllowed(this.elt);
+    canEditSection() {
+        return this.section.edit && !this.isSubForm && this.canEdit;
     }
 
     removeNode(node) {
@@ -108,7 +108,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     slOptionsRetrigger() {
         setTimeout(() => {
-           this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
+            this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
         }, 0);
     }
 
@@ -120,4 +120,14 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     static inputEvent = new Event('input');
+
+    copySection(section) {
+        this.localStorageService.set("sectionCopied", section);
+        section.isCopied = "copied";
+        this.elt.isCopied = "copied";
+        setTimeout(() => {
+            section.isCopied = "clear";
+            delete this.elt.isCopied;
+        }, 3000);
+    }
 }

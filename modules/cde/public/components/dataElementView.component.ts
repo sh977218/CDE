@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import { CdeForm } from 'form/public/form.model';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
@@ -15,35 +14,77 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
 export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @Input() elt: any;
-    @Output() public stageElt = new EventEmitter();
-    @Output() public reload = new EventEmitter();
+    @Input() routeParams: any;
+    @Output() public h = new EventEmitter();
 
+    elt: any;
     public eltCopy = {};
     public modalRef: NgbModalRef;
     displayStatusWarning;
     hasComments;
     commentMode;
-    eltLoaded: boolean = false;
     currentTab = "general_tab";
     highlightedTabs = [];
+    canEdit: boolean = false;
 
     constructor(private http: Http,
+                private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 @Inject("isAllowedModel") public isAllowedModel,
                 public quickBoardService: QuickBoardListService,
-                @Inject("PinModal") public PinModal,
                 private alert: AlertService,
                 @Inject("userResource") public userService) {
     }
 
     ngOnInit(): void {
-        this.http.get("/comments/eltId/" + this.elt.tinyId)
-            .map(res => res.json()).subscribe(
-            res => this.hasComments = res && (res.length > 0),
-            err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+        let cdeId = this.routeParams.cdeId;
+        let url = "/de/" + this.routeParams.tinyId;
+        if (cdeId) url = "/deById/" + cdeId;
+        this.http.get(url).map(r => r.json()).subscribe(response => {
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.http.get("/comments/eltId/" + this.elt.tinyId)
+                    .map(res => res.json()).subscribe(
+                    res => this.hasComments = res && (res.length > 0),
+                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+                );
+                this.isAllowedModel.setDisplayStatusWarning(this);
+                this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+        );
+    }
+
+    onLocationChange(event, oldUrl, elt) {
+        if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
+            let txt = "You have unsaved changes, are you sure you want to leave this page? ";
+            if ((window as any).debugEnabled) {
+                txt = txt + window.location.pathname;
+            }
+            let answer = confirm(txt);
+            if (!answer) {
+                event.preventDefault();
+            }
+        }
+    }
+
+    reloadDataElement() {
+        this.http.get("/de/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.alert.addAlert("success", "Changes discarded.");
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+        );
+    }
+
+    saveDataElement() {
+        this.http.put("/de/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
+                this.elt = response;
+                this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                this.alert.addAlert("success", "Data Element saved.");
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
         this.isAllowedModel.setDisplayStatusWarning(this);
+        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
     }
 
     openCopyElementModal() {
@@ -84,5 +125,60 @@ export class DataElementViewComponent implements OnInit {
         this.currentTab = event.nextId;
         if (this.commentMode)
             this.commentAreaComponent.setCurrentTab(this.currentTab);
+    }
+
+    doStageElt() {
+        if (this.elt.unsaved) {
+            this.alert.addAlert("info", "Save to confirm.");
+        } else {
+            this.saveDataElement();
+            this.modalRef.close();
+        }
+    }
+
+    removeAttachment(index) {
+        this.http.post("/attachments/cde/remove", {
+            index: index,
+            id: this.elt._id
+        }).map(r => r.json()).subscribe(res => {
+            this.elt = res;
+            this.alert.addAlert("success", "Attachment Removed.");
+            this.ref.detectChanges();
+        });
+    }
+
+    setDefault(index) {
+        this.http.post("/attachments/cde/setDefault",
+            {
+                index: index,
+                state: this.elt.attachments[index].isDefault,
+                id: this.elt._id
+            }).map(r => r.json()).subscribe(res => {
+            this.elt = res;
+            this.alert.addAlert("success", "Saved");
+            this.ref.detectChanges();
+        });
+    }
+
+
+    upload(event) {
+        if (event.srcElement.files) {
+            let files = event.srcElement.files;
+            let formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append("uploadedFiles", files[i]);
+            }
+            formData.append("id", this.elt._id);
+            this.http.post("/attachments/cde/add", formData).map(r => r.json()).subscribe(
+                r => {
+                    if (r.message) this.alert.addAlert("info", r.text());
+                    else {
+                        this.elt = r;
+                        this.alert.addAlert("success", "Attachment added.");
+                        this.ref.detectChanges();
+                    }
+                }
+            );
+        }
     }
 }

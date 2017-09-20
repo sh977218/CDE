@@ -20,9 +20,7 @@ export class EditSiteAdminsComponent implements OnInit {
     siteAdmins: any = [];
 
     constructor(private http: Http,
-                private Alert: AlertService,
-                @Inject("AccountManagement") private AccountManagement
-    ) {}
+                private Alert: AlertService) {}
 
     ngOnInit() {
         this.getSiteAdmins();
@@ -35,24 +33,20 @@ export class EditSiteAdminsComponent implements OnInit {
         );
 
     addSiteAdmin () {
-        this.AccountManagement.addSiteAdmin({username: this.newAdmin.username},
-            res => {
-                this.Alert.addAlert("success", res);
-                this.getSiteAdmins();
-            }, () => {
-                this.Alert.addAlert("danger", "There was an issue adding this administrator.");
-            }
+        this.http.post('/addSiteAdmin', {username: this.newAdmin.username}).subscribe(() => {
+            this.Alert.addAlert("success", "Saved");
+            this.getSiteAdmins();
+        }, () => this.Alert.addAlert("danger", "There was an issue adding this administrator.")
         );
         this.newAdmin.username = "";
     };
 
     removeSiteAdmin (byId) {
-        this.AccountManagement.removeSiteAdmin(
-            {id: byId}, res => {
-                this.Alert.addAlert("success", res);
+        this.http.post('/removeSiteAdmin', {id: byId}).subscribe(() => {
+                this.Alert.addAlert("success", "Removed");
                 this.getSiteAdmins();
             }, () => {
-                this.Alert.addAlert("danger", "There was an issue adding this administrator.");
+                this.Alert.addAlert("danger", "There was an issue removing this administrator.");
             }
         );
     };
