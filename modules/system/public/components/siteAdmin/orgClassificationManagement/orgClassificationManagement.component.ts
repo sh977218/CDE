@@ -289,7 +289,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
 
-    addMeshDescriptor = function () {
+    addMeshDescriptor() {
         this.mapping.meshDescriptors.push(this.descriptorID);
         this.descToName[this.descriptorID] = this.descriptorName;
         this.descriptorID = "";
@@ -301,7 +301,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             }, err => this.alert.addAlert("danger", "There was an issue saving this record."));
     };
 
-    removeDescriptor = function (i) {
+    removeDescriptor(i) {
         this.mapping.meshDescriptors.splice(i, 1);
         this.http.post("/meshClassification", this.mapping).map(res => res.json()).subscribe(
             res => {
