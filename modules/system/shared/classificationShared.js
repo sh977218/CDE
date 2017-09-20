@@ -12,6 +12,34 @@ exports.findSteward = function (de, orgName) {
         }
     }
 };
+exports.deleteCategory = function (tree, fields) {
+    var classification = this;
+    var lastLevel = classification.fetchLevel(tree, fields);
+    for (var i = 0; i < lastLevel.elements.length; i++) {
+        if (lastLevel.elements[i] === null) {
+            lastLevel.elements.splice(i, 1);
+            i = i - 1;
+        }
+        if (lastLevel.elements[i].name === fields[fields.length - 1]) {
+            lastLevel.elements.splice(i, 1);
+            break;
+        }
+    }
+};
+exports.renameCategory = function (tree, fields, newName) {
+    var classification = this;
+    var lastLevel = classification.fetchLevel(tree, fields);
+    for (var i = 0; i < lastLevel.elements.length; i++) {
+        if (lastLevel.elements[i] === null) {
+            lastLevel.elements.splice(i, 1);
+            i = i - 1;
+        }
+        if (lastLevel.elements[i].name === fields[fields.length - 1]) {
+            lastLevel.elements[i].name = newName;
+            break;
+        }
+    }
+};
 
 exports.modifyCategory = function (tree, fields, action, cb) {
     var classification = this;
@@ -22,10 +50,10 @@ exports.modifyCategory = function (tree, fields, action, cb) {
             i = i - 1;
         }
         if (lastLevel.elements[i].name === fields[fields.length - 1]) {
-            if (action.type === classification.actions.delete) {
+            if (action.type === classification.actions.delete)
                 lastLevel.elements.splice(i, 1);
-            }
-            if (action.type === classification.actions.rename) lastLevel.elements[i].name = action.newname;
+            if (action.type === classification.actions.rename)
+                lastLevel.elements[i].name = action.newname;
             break;
         }
     }
@@ -66,15 +94,12 @@ exports.classifyItem = function (item, orgName, classifPath) {
     }
 };
 
-exports.addCategory = function (tree, fields, cb) {
+exports.addCategory = function (tree, fields) {
     var classification = this;
     var lastLevel = classification.fetchLevel(tree, fields);
-    if (classification.isDuplicate(lastLevel.elements, fields[fields.length - 1])) {
-        if (cb) return cb("Classification Already Exists");
-    } else {
-        lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
-        if (cb) return cb();
-    }
+    if (classification.isDuplicate(lastLevel.elements, fields[fields.length - 1]))
+        return "Classification Already Exists";
+    else lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
 };
 
 exports.fetchLevel = function (tree, fields) {
@@ -148,17 +173,16 @@ exports.removeClassification = function (elt, orgName) {
 
 /**
  * Traverse array for duplicates.
- * @param {type} eles - Array of elements to traverse.
+ * @param {type} elements - Array of elements to traverse.
  * @param {type} name - Name of duplicate.
  * @returns {Boolean} - True if duplicate found, false otherwise.
  */
-exports.isDuplicate = function (eles, name) {
-    for (var i = 0; i < eles.length; i++) {
-        if (eles[i].name === name) {
+exports.isDuplicate = function (elements, name) {
+    for (var i = 0; i < elements.length; i++) {
+        if (elements[i].name === name) {
             return true;
         }
     }
-
     return false;
 };
 

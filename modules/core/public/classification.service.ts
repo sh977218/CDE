@@ -108,18 +108,14 @@ export class ClassificationService {
     }
 
     removeOrgClassification(orgName, categories, cb) {
-        let deleteBody = {
-            orgName: orgName,
-            categories: categories
-        };
-        let ro = new RequestOptions({body: deleteBody});
-        this.http.delete("/classification/org", ro)
-            .map(res => res.json()).subscribe(
+        let ro = new RequestOptions({body: categories});
+        this.http.delete("/classification/" + orgName, ro)
+            .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
     };
 
-    reclassifyOrgClassification(oldClassification, newClassification, cb) {
+    reclassifyOrgClassification(orgName, oldClassification, newClassification, cb) {
         let settings = {
             resultPerPage: 10000,
             searchTerm: "",
@@ -133,28 +129,29 @@ export class ClassificationService {
             newClassification: newClassification,
             types: ["cde", "form"]
         };
-        this.http.post("/classifyEntireSearch", postBody).map(res => res.json()).subscribe(
+        this.http.post("/reclassification" + orgName, postBody)
+            .map(res => res.json()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
     }
 
-    renameOrgClassification(orgName, categories, newClassificationName, cb) {
+    renameOrgClassification(orgName, categories, newName, cb) {
         let postBody = {
-            orgName: orgName,
             categories: categories,
-            newname: newClassificationName
+            newName: newName
         };
-        cb(this.http.post("/classification/rename", postBody));
+        this.http.post("/classification/" + orgName, postBody)
+            .map(res => res.text()).subscribe(
+            res => cb(res),
+            err => this.alert.addAlert("danger", err));
     };
 
     addChildClassification(orgName, categories, cb) {
-        let postBody = {
-            orgName: orgName,
-            categories: categories,
-        };
-        this.http.post("/classification/org", postBody)
-            .map(res => res.json()).subscribe(
-            res => cb(res), err => this.alert.addAlert("danger", err));
+        let putBody = {categories: categories,};
+        this.http.put("/classification/" + orgName, putBody)
+            .map(res => res.text()).subscribe(
+            res => cb(res),
+            err => this.alert.addAlert("danger", err));
     };
 
 }

@@ -1,10 +1,11 @@
 let passport = require('passport')
-    , mongo_data_system = require('./mongo-data')
+    , mongo_date = require('./mongo-data')
     , config = require('./parseConfig')
     , dbLogger = require('./dbLogger.js')
     , logging = require('./logging.js')
     , orgsvc = require('./orgsvc')
     , usersrvc = require('./usersrvc')
+    , classificationSvc = require('./classificationSvc')
     , express = require('express')
     , path = require('path')
     , classificationShared = require('../shared/classificationShared.js')
@@ -65,6 +66,77 @@ exports.init = function (app) {
         });
     });
 
+    // delete org classification
+    app.delete('/classification/:org', function (req, res) {
+        let orgName = req.params.org;
+        let categories = req.body;
+        if (!orgName || !categories) return res.status(400).send();
+        if (!usersrvc.isCuratorOf(req.user, orgName)) return res.status(403).end();
+        mongo_date.jobStatus("deleteClassification", (err, j) => {
+            if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
+            if (j) return res.status(401).send();
+            classificationSvc.deleteOrgClassification(orgName, categories, err => {
+                if (err) logging.log(err);
+            });
+            res.send("Deleting classification.");
+        });
+    });
+
+    // rename org classification
+    app.post('/classification/:org', function (req, res) {
+        let orgName = req.params.org;
+        let categories = req.body.categories;
+        let newName = req.body.newName;
+        if (!orgName || !categories || !newName) return res.status(400).send();
+        if (!usersrvc.isCuratorOf(req.user, orgName)) return res.status(403).end();
+        mongo_date.jobStatus("renameClassification", (err, j) => {
+            if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
+            if (j) return res.status(401).send();
+            classificationSvc.renameOrgClassification(orgName, categories, newName, err => {
+                if (err) logging.log(err);
+            });
+            res.send("Renaming classification.");
+        });
+    });
+
+    // add org classification
+    app.put('/classification/:org', function (req, res) {
+        let orgName = req.params.org;
+        let categories = req.body.categories;
+        if (!orgName || !categories) return res.status(400).send();
+        if (!usersrvc.isCuratorOf(req.user, orgName)) return res.status(403).end();
+        mongo_date.jobStatus("addClassification", (err, j) => {
+            if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
+            if (j) return res.status(401).send();
+            classificationSvc.addOrgClassification(orgName, categories, err => {
+                if (err) res.status(500).send(err);
+                else res.send("Classification added.");
+            });
+        });
+    });
+
+    // reclassify org classification
+    app.post('/reclassification/:org', function (req, res) {
+        let orgName = req.params.org;
+        let oldClassification = req.body.oldClassification;
+        let newClassification = req.body.newClassification;
+        if (!orgName || !oldClassification || !newClassification) return res.status(400).send();
+        if (!usersrvc.isCuratorOf(req.user, orgName)) return res.status(403).end();
+
+    })
+
+    app.get('/jobStatus/:type', function (req, res) {
+        let jobType = req.params.type;
+        if (!jobType) return res.status(400).end();
+        mongo_date.jobStatus(jobType, (err, j) => {
+            if (err) res.status(500).send("Error - job status " + jobType);
+            if (j) return res.send({done: false});
+            else res.send({done: true});
+        });
+    });
+
+    /* ---------- PUT NEW REST API above ---------- */
+
     app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             let index = esInit.indices[req.params.indexPosition];
@@ -92,7 +164,7 @@ exports.init = function (app) {
     app.get('/serverStatuses', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             app_status.getStatus(function () {
-                mongo_data_system.getClusterHostStatuses(function (err, statuses) {
+                mongo_date.getClusterHostStatuses(function (err, statuses) {
                     res.send({esIndices: esInit.indices, statuses: statuses});
                 });
             });
@@ -106,14 +178,14 @@ exports.init = function (app) {
     });
 
     app.get('/listOrgs', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data_system.listOrgs(function (err, orgs) {
+        mongo_date.listOrgs(function (err, orgs) {
             if (err) return res.status(500).send("ERROR - unable to list orgs");
             res.send(orgs);
         });
     });
 
     app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data_system.listOrgsDetailedInfo(function (err, orgs) {
+        mongo_date.listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
                 logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
                 res.status(403).send('Failed to get list of orgs detailed info.');
@@ -237,14 +309,14 @@ exports.init = function (app) {
 
 
     app.get('/org/:name', exportShared.nocacheMiddleware, function (req, res) {
-        return mongo_data_system.orgByName(req.params.name, function (err, result) {
+        return mongo_date.orgByName(req.params.name, function (err, result) {
             res.send(result);
         });
     });
 
     app.get('/usernamesByIp/:ip', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            return mongo_data_system.usernamesByIp(req.params.ip, function (result) {
+            return mongo_date.usernamesByIp(req.params.ip, function (result) {
                 res.send(result);
             });
         } else {
@@ -255,7 +327,7 @@ exports.init = function (app) {
 
     app.get('/siteadmins', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data_system.siteadmins(function (err, users) {
+            mongo_date.siteadmins(function (err, users) {
                 res.send(users);
             });
         } else {
@@ -277,7 +349,7 @@ exports.init = function (app) {
 
     app.post('/updateOrg', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            mongo_data_system.updateOrg(req.body, res);
+            mongo_date.updateOrg(req.body, res);
         } else {
             res.status(401).send();
         }
@@ -288,12 +360,12 @@ exports.init = function (app) {
         else if (!req.params.search) {
             return res.send("search is empty.");
         } else if (req.params.search === 'me') {
-            mongo_data_system.userById(req.user._id, function (err, user) {
+            mongo_date.userById(req.user._id, function (err, user) {
                 if (err) return res.status(500).send("ERROR retrieve user by id");
                 res.send(user);
             });
         } else {
-            mongo_data_system.usersByName(req.params.search, function (err, users) {
+            mongo_date.usersByName(req.params.search, function (err, users) {
                 if (err) return res.status(500).send("ERROR getting user by name");
                 res.send(users);
             });
@@ -304,7 +376,7 @@ exports.init = function (app) {
         if (!req.user) return res.status(401).send();
         if (req.user._id.toString() !== req.body._id)
             return res.status(401).send();
-        mongo_data_system.userById(req.user._id, function (err, user) {
+        mongo_date.userById(req.user._id, function (err, user) {
             user.email = req.body.email;
             user.publishedForms = req.body.publishedForms;
             user.save(function (err) {
@@ -317,7 +389,7 @@ exports.init = function (app) {
     app.put('/user', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
             return res.status(401).send("Not Authorized");
-        mongo_data_system.addUser({
+        mongo_date.addUser({
             username: req.body.username,
             password: "umls",
             quota: 1024 * 1024 * 1024
@@ -391,7 +463,7 @@ exports.init = function (app) {
     app.get('/searchUsers/:username?', function (req, res) {
         if (!authorization.isSiteOrgAdmin(req))
             return res.status(401).send("Not Authorized");
-        mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
+        mongo_date.usersByPartialName(req.params.username, function (err, users) {
             res.send({users: users});
         });
     });
@@ -406,7 +478,7 @@ exports.init = function (app) {
     });
 
     app.get('/user/avatar/:username', function (req, res) {
-        mongo_data_system.userByName(req.params.username, function (err, u) {
+        mongo_date.userByName(req.params.username, function (err, u) {
             res.send(u && u.avatarUrl ? u.avatarUrl : "");
         });
     });
@@ -423,7 +495,7 @@ exports.init = function (app) {
     app.post('/updateTesterStatus', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
             return res.status(401).send("Not Authorized");
-        mongo_data_system.User.findOne({_id: req.body._id}, function (err, u) {
+        mongo_date.User.findOne({_id: req.body._id}, function (err, u) {
             u.tester = req.body.tester;
             u.save(() => res.send());
         });
@@ -442,45 +514,14 @@ exports.init = function (app) {
     });
 
     app.get('/data/:imgtag', function (req, res) {
-        mongo_data_system.getFile(req.user, req.params.imgtag, res);
+        mongo_date.getFile(req.user, req.params.imgtag, res);
     });
 
     app.get('/data/status/:imgtag', function (req, res) {
-        mongo_data_system.getFileStatus(req.params.imgtag, function (err, status) {
+        mongo_date.getFileStatus(req.params.imgtag, function (err, status) {
             if (err) res.status(404).send();
             res.send(status);
         });
-    });
-
-    app.delete('/classification/org', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            return res.status(403).end();
-        } else {
-            classificationNode.modifyOrgClassification(req.body, classificationShared.actions.delete, function (err, org) {
-                res.send(org);
-            });
-        }
-    });
-
-    app.post('/classification/org', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.status(403).end();
-            return;
-        }
-        classificationNode.addOrgClassification(req.body, function (err, org) {
-            res.send(org);
-        });
-    });
-
-    app.post('/classification/rename', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName))
-            return res.status(401).send();
-        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename);
-        res.send();
-    });
-
-    app.get('/classification/rename', function (req, res) {
-        return res.send(classificationNode.renameClassification);
     });
 
     app.post('/classifyEntireSearch', function (req, res) {
@@ -510,7 +551,7 @@ exports.init = function (app) {
             res.send("Processing");
             adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
         }
-        mongo_data_system.addToClassifAudit({
+        mongo_date.addToClassifAudit({
             date: new Date(),
             user: {
                 username: req.user.username
@@ -587,7 +628,7 @@ exports.init = function (app) {
     });
 
     app.get('/triggerServerErrorMongoose', function (req, res) {
-        mongo_data_system.orgByName("none", function () {
+        mongo_date.orgByName("none", function () {
             res.send("received");
             trigger.error(); // jshint ignore:line
         });
@@ -600,7 +641,7 @@ exports.init = function (app) {
                 message.author.name = req.user.username;
             }
             message.date = new Date();
-            mongo_data_system.createMessage(message, function () {
+            mongo_date.createMessage(message, function () {
                 res.send();
             });
         } else {
@@ -610,7 +651,7 @@ exports.init = function (app) {
 
     app.post('/mail/messages/update', function (req, res) {
         if (req.isAuthenticated()) {
-            mongo_data_system.updateMessage(req.body, function (err) {
+            mongo_date.updateMessage(req.body, function (err) {
                 if (err) {
                     res.statusCode = 404;
                     res.send("Error while updating the message");
@@ -625,7 +666,7 @@ exports.init = function (app) {
 
     app.post('/mail/messages/:type', function (req, res) {
         if (req.isAuthenticated()) {
-            mongo_data_system.getMessages(req, function (err, messages) {
+            mongo_date.getMessages(req, function (err, messages) {
                 if (err) res.status(404).send(err);
                 else res.send(messages);
             });
@@ -636,7 +677,7 @@ exports.init = function (app) {
 
     app.post('/addUserRole', function (req, res) {
         if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
-            mongo_data_system.addUserRole(req.body, function (err) {
+            mongo_date.addUserRole(req.body, function (err) {
                 if (err) res.status(404).send(err);
                 else res.send("Role added.");
             });
@@ -645,7 +686,7 @@ exports.init = function (app) {
 
     app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.send({count: 0});
-        mongo_data_system.mailStatus(req.user, function (err, result) {
+        mongo_date.mailStatus(req.user, function (err, result) {
             res.send({count: result});
         });
     });
@@ -653,7 +694,7 @@ exports.init = function (app) {
     // @TODO this should be POST
     app.get('/attachment/approve/:id', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
-        mongo_data_system.alterAttachmentStatus(req.params.id, "approved", function (err) {
+        mongo_date.alterAttachmentStatus(req.params.id, "approved", function (err) {
             if (err) res.status(500).send("Unable to approve attachment");
             else res.send("Attachment approved.");
         });
@@ -665,13 +706,13 @@ exports.init = function (app) {
             if (dao.removeAttachmentLinks)
                 dao.removeAttachmentLinks(req.params.id);
         });
-        mongo_data_system.deleteFileById(req.params.id);
+        mongo_date.deleteFileById(req.params.id);
         res.send("Attachment declined");
     });
 
     app.post('/getClassificationAuditLog', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data_system.getClassificationAuditLog(req.body, function (err, result) {
+            mongo_date.getClassificationAuditLog(req.body, function (err, result) {
                 if (err) return res.status(500).send();
                 res.send(result);
             });
@@ -689,7 +730,7 @@ exports.init = function (app) {
 
     app.post('/embed/', function (req, res) {
         if (authorization.isOrgAdmin(req, req.body.org)) {
-            mongo_data_system.embeds.save(req.body, function (err, embed) {
+            mongo_date.embeds.save(req.body, function (err, embed) {
                 if (err) res.status(500).send("There was an error saving this embed.");
                 else res.send(embed);
             });
@@ -699,12 +740,12 @@ exports.init = function (app) {
     });
 
     app.delete('/embed/:id', function (req, res) {
-        mongo_data_system.embeds.find({_id: req.params.id}, function (err, embeds) {
+        mongo_date.embeds.find({_id: req.params.id}, function (err, embeds) {
             if (err) return res.status(500).send();
             if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
             let embed = embeds[0];
             if (authorization.isOrgAdmin(req, embed.org)) {
-                mongo_data_system.embeds.delete(req.params.id, function (err) {
+                mongo_date.embeds.delete(req.params.id, function (err) {
                     if (err) res.status(500).send("There was an error removing this embed.");
                     else res.send();
                 });
@@ -716,7 +757,7 @@ exports.init = function (app) {
 
 
     app.get('/embed/:id', function (req, res) {
-        mongo_data_system.embeds.find({_id: req.params.id}, function (err, embeds) {
+        mongo_date.embeds.find({_id: req.params.id}, function (err, embeds) {
             if (err) return res.status(500).send();
             if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
             else res.send(embeds[0]);
@@ -725,7 +766,7 @@ exports.init = function (app) {
     });
 
     app.get('/embeds/:org', function (req, res) {
-        mongo_data_system.embeds.find({org: req.params.org}, function (err, embeds) {
+        mongo_date.embeds.find({org: req.params.org}, function (err, embeds) {
             if (err) res.status(500).send();
             else res.send(embeds);
         });
@@ -797,7 +838,7 @@ exports.init = function (app) {
 
     app.post('/disableRule', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-        mongo_data_system.disableRule(req.body, function (err, org) {
+        mongo_date.disableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
             else res.send(org);
         });
@@ -805,7 +846,7 @@ exports.init = function (app) {
 
     app.post('/enableRule', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-        mongo_data_system.enableRule(req.body, function (err, org) {
+        mongo_date.enableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
             else res.send(org);
         });
@@ -813,7 +854,7 @@ exports.init = function (app) {
 
     app.get('/meshClassification', function (req, res) {
         if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        mongo_data_system.findMeshClassification({flatClassification: req.query.classification}, function (err, mm) {
+        mongo_date.findMeshClassification({flatClassification: req.query.classification}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm[0]);
         });
@@ -821,7 +862,7 @@ exports.init = function (app) {
 
     app.get('/meshByEltId/:id', function (req, res) {
         if (!req.params.id) return res.status(400).send("Missing Id parameter");
-        mongo_data_system.findMeshClassification({eltId: req.params.id}, function (err, mm) {
+        mongo_date.findMeshClassification({eltId: req.params.id}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm[0]);
         });
@@ -829,7 +870,7 @@ exports.init = function (app) {
 
 
     app.get('/meshClassifications', function (req, res) {
-        mongo_data_system.findMeshClassification({}, function (err, mm) {
+        mongo_date.findMeshClassification({}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm);
         });
@@ -885,7 +926,7 @@ exports.init = function (app) {
             delete req.body._id;
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
-                mongo_data_system.MeshClassification.findOne({_id: id}, function (err, elt) {
+                mongo_date.MeshClassification.findOne({_id: id}, function (err, elt) {
                     elt.meshDescriptors = req.body.meshDescriptors;
                     elt.flatTrees = req.body.flatTrees;
                     elt.save(function (err, o) {
@@ -896,7 +937,7 @@ exports.init = function (app) {
         } else {
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
-                new mongo_data_system.MeshClassification(req.body).save(function (err, obj) {
+                new mongo_date.MeshClassification(req.body).save(function (err, obj) {
                     if (err) res.status(500).send();
                     else {
                         res.send(obj);
@@ -928,7 +969,7 @@ exports.init = function (app) {
     }).start();
 
     app.get('/comments/eltId/:eltId', function (req, res) {
-        mongo_data_system.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
+        mongo_date.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
             let result = comments.filter(c => c.status !== 'deleted');
             result.forEach(function (c) {
                 c.replies = c.replies.filter(r => r.status !== 'deleted');
@@ -944,7 +985,7 @@ exports.init = function (app) {
     });
 
     app.get('/comment/:commentId', function (req, res) {
-        mongo_data_system.Comment.findOne({_id: req.params.commentId}).exec(function (err, comment) {
+        mongo_date.Comment.findOne({_id: req.params.commentId}).exec(function (err, comment) {
             if (err) res.send(500);
             else
                 res.send(comment);
