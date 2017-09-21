@@ -25,7 +25,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
             num = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
             driver.navigate().refresh();
         }
-        Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText()) >= 11);
+        Assert.assertTrue(num >= 11, "Not enough elements: " + num);
         findElement(By.id("classifications-text-NINDS"));
 
         findElement(By.id("ftsearch-input")).sendKeys("type");
