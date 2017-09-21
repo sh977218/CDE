@@ -1407,7 +1407,9 @@
       }
     },
     "classlist.js": {
-      "version": "github:eligrey/classList.js#e77e448bfca5babdc7212f96d0ab507b21000549",
+      "version": "1.1.20150312",
+      "resolved": "https://registry.npmjs.org/classlist.js/-/classlist.js-1.1.20150312.tgz",
+      "integrity": "sha1-HXCEL3Ai8I2awIbOaeWyUPLFd4k=",
       "dev": true
     },
     "clean-css": {
@@ -7016,7 +7018,7 @@
       "integrity": "sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk="
     },
     "ng-diff-match-patch": {
-      "version": "git+https://github.com/sh977218/ng-diff-match-patch.git#a360d4fb9ab0a77ba084bd5c543a1a088db0a0ed",
+      "version": "git+https://github.com/sh977218/ng-diff-match-patch.git#697a8a4fb9272be74dddee6aee6fee81751baee4",
       "dev": true
     },
     "ng-recaptcha": {
@@ -9815,7 +9817,7 @@
         "multer": "1.3.0",
         "parseurl": "1.3.1",
         "path-to-regexp": "1.7.0",
-        "qs": "6.5.0",
+        "qs": "6.5.1",
         "serve-static": "1.12.4",
         "spark-md5": "1.0.1",
         "string": "3.3.3",
@@ -9888,9 +9890,9 @@
           "integrity": "sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg="
         },
         "etag": {
-          "version": "1.8.0",
-          "resolved": "https://registry.npmjs.org/etag/-/etag-1.8.0.tgz",
-          "integrity": "sha1-b2Ma7zNtbEY2K1F2QETOIWvjwFE="
+          "version": "1.8.1",
+          "resolved": "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz",
+          "integrity": "sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc="
         },
         "fresh": {
           "version": "0.5.0",
@@ -9973,9 +9975,9 @@
           }
         },
         "qs": {
-          "version": "6.5.0",
-          "resolved": "https://registry.npmjs.org/qs/-/qs-6.5.0.tgz",
-          "integrity": "sha512-fjVFjW9yhqMhVGwRExCXLhJKrLlkYSaxNWdyc9rmHlrVZbk35YHH312dFd7191uQeXkI3mKLZTIbSvIeFwFemg=="
+          "version": "6.5.1",
+          "resolved": "https://registry.npmjs.org/qs/-/qs-6.5.1.tgz",
+          "integrity": "sha512-eRzhrN1WSINYCDCbrz796z37LOe3m5tmW7RQf6oBntukAG1nmovJvhnwHHRMAfeoItc1m2Hk02WER2aQ/iqs+A=="
         },
         "range-parser": {
           "version": "1.2.0",
@@ -10002,7 +10004,7 @@
             "destroy": "1.0.4",
             "encodeurl": "1.0.1",
             "escape-html": "1.0.3",
-            "etag": "1.8.0",
+            "etag": "1.8.1",
             "fresh": "0.5.0",
             "http-errors": "1.6.2",
             "mime": "1.3.4",
