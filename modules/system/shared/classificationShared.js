@@ -84,8 +84,8 @@ exports.classifyItem = function (item, orgName, classifPath) {
         item.classification.push({
             stewardOrg: {
                 name: orgName
-            }
-            , elements: []
+            },
+            elements: []
         });
         steward = exports.findSteward(item, orgName);
     }

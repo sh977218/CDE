@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject, ViewChild, Injectable } from "@angular/core";
-import { Http, Jsonp } from '@angular/http';
+import { Component, OnInit, Inject, ViewChild } from "@angular/core";
+import { Http } from '@angular/http';
 import { IActionMapping, TreeComponent } from 'angular-tree-component';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
@@ -23,12 +23,7 @@ const actionMapping: IActionMapping = {
 
 @Component({
     selector: "cde-org-classification-management",
-    templateUrl: "./orgClassificationManagement.component.html",
-    styles: [`
-        host > > > .tree {
-            cursor: default !important;
-        }
-    `]
+    templateUrl: "./orgClassificationManagement.component.html"
 })
 export class OrgClassificationManagementComponent implements OnInit {
     @ViewChild("renameClassificationContent") public renameClassificationContent: NgbModalModule;
@@ -142,7 +137,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             .result.then(result => {
             if (result === "confirm") {
                 this.classificationSvc.renameOrgClassification(this.selectedOrg.name, classificationArray, this.newClassificationName, message => this.alert.addAlert("info", message));
-                this.checkJob("renameClassification", () => this.alert.addAlert("success", "Classification Renamed"))
+                this.checkJob("renameClassification", () => this.alert.addAlert("success", "Classification Renamed"));
             }
         }, () => {
         });
@@ -167,7 +162,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.modalService.open(this.deleteClassificationContent).result.then(result => {
             if (result === "confirm") {
                 this.classificationSvc.removeOrgClassification(this.selectedOrg.name, classificationArray, message => this.alert.addAlert("info", message));
-                this.checkJob("deleteClassification", () => this.alert.addAlert("success", "Classification Deleted"))
+                this.checkJob("deleteClassification", () => this.alert.addAlert("success", "Classification Deleted"));
             }
         }, () => {
         });
@@ -202,7 +197,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             categories: event.classificationArray
         };
         this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, message => this.alert.addAlert("info", message));
-        this.checkJob("reclassifyClassification", () => this.alert.addAlert("success", "Classification Reclassified."))
+        this.checkJob("reclassifyClassification", () => this.alert.addAlert("success", "Classification Reclassified."));
     }
 
     openAddChildClassificationModal(node) {
@@ -315,7 +310,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                             this.tree.treeModel.update();
                             clearInterval(indexFn);
                             if (cb) cb();
-                        })
+                        });
                 });
         }, 5000);
     }

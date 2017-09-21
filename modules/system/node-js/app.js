@@ -128,7 +128,7 @@ exports.init = function (app) {
             classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, query, err => {
                 if (err) logging.log(err);
             });
-            res.send("Renaming classification.");
+            res.send("Reclassifying classification.");
         });
 
     });

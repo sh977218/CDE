@@ -145,7 +145,7 @@ export class ClassificationService {
     };
 
     addChildClassification(orgName, categories, cb) {
-        let putBody = {categories: categories,};
+        let putBody = {categories: categories};
         this.http.put("/classification/" + orgName, putBody)
             .map(res => res.text()).subscribe(
             res => cb(res),

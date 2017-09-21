@@ -31,9 +31,7 @@ exports.deleteOrgClassification = (orgName, categories, callback) => {
                     }).then(() => {
                         doneOneCollection();
                     });
-                }, () => {
-                    mongo_data.removeJobStatus("deleteClassification", callback);
-                });
+                }, () => mongo_data.removeJobStatus("deleteClassification", callback));
             });
         });
     });
@@ -66,9 +64,7 @@ exports.renameOrgClassification = (orgName, categories, newName, callback) => {
                     }).then(() => {
                         doneOneCollection();
                     });
-                }, () => {
-                    mongo_data.removeJobStatus("renameClassification", callback);
-                });
+                }, () => mongo_data.removeJobStatus("renameClassification", callback));
             });
         });
     });
@@ -91,15 +87,15 @@ exports.reclassifyOrgClassification = (oldClassification, newClassification, que
     if (!(newClassification.categories instanceof Array)) newClassification.categories = [newClassification.categories];
     mongo_data.updateJobStatus("reclassifyClassification", "Running", err => {
         if (err) return callback(err);
-        mongo_data.orgByName(orgName, (err, stewardOrg) => {
+        mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
             if (err) return callback(err, stewardOrg);
             let fakeTree = {elements: stewardOrg.classifications};
-            classificationShared.renameCategory(fakeTree, categories, newName);
+            classificationShared.addCategory(fakeTree, newClassification.categories);
             stewardOrg.markModified("classifications");
             stewardOrg.save(err => {
                 if (err) return callback(err, stewardOrg);
-                let query = {"classification.stewardOrg.name": orgName, archived: false};
-                categories.forEach((category, i) => {
+                let query = {"classification.stewardOrg.name": oldClassification.orgName, archived: false};
+                oldClassification.categories.forEach((category, i) => {
                     let key = "classification";
                     for (let j = 0; j <= i; j++)
                         key += ".elements";
@@ -108,15 +104,12 @@ exports.reclassifyOrgClassification = (oldClassification, newClassification, que
                 });
                 async.forEach([mongo_cde.DataElement, mongo_form.Form], (collection, doneOneCollection) => {
                     collection.find(query).cursor().eachAsync(elt => {
-                        let steward = classificationShared.findSteward(elt, orgName);
-                        classificationShared.renameCategory(steward.object, categories, newName);
+                        classificationShared.classifyItem(elt, newClassification.orgName, newClassification.categories);
                         return elt.save();
                     }).then(() => {
                         doneOneCollection();
                     });
-                }, () => {
-                    mongo_data.removeJobStatus("renameClassification", callback);
-                });
+                }, () => mongo_data.removeJobStatus("reclassifyClassification", callback));
             });
         });
     });
