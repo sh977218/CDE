@@ -115,22 +115,20 @@ export class ClassificationService {
             err => this.alert.addAlert("danger", err));
     };
 
-    reclassifyOrgClassification(orgName, oldClassification, newClassification, cb) {
+    reclassifyOrgClassification(oldClassification, newClassification, cb) {
         let settings = {
             resultPerPage: 10000,
             searchTerm: "",
-            selectedOrg: oldClassification.orgName,
-            selectedElements: oldClassification.classifications,
             page: 1,
             selectedStatuses: this.SearchSettings.getUserDefaultStatuses()
         };
         let postBody = {
             query: settings,
-            newClassification: newClassification,
-            types: ["cde", "form"]
+            oldClassification: oldClassification,
+            newClassification: newClassification
         };
-        this.http.post("/reclassification" + orgName, postBody)
-            .map(res => res.json()).subscribe(
+        this.http.post("/reclassification/", postBody)
+            .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
     }

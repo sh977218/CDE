@@ -116,14 +116,22 @@ exports.init = function (app) {
     });
 
     // reclassify org classification
-    app.post('/reclassification/:org', function (req, res) {
-        let orgName = req.params.org;
+    app.post('/reclassification', function (req, res) {
         let oldClassification = req.body.oldClassification;
         let newClassification = req.body.newClassification;
-        if (!orgName || !oldClassification || !newClassification) return res.status(400).send();
-        if (!usersrvc.isCuratorOf(req.user, orgName)) return res.status(403).end();
+        let query = req.body.query;
+        if (!oldClassification || !newClassification || !query) return res.status(400).send();
+        if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
+        mongo_date.jobStatus("reclassifyClassification", (err, j) => {
+            if (err) return res.status(500).send("Error - reclassify classification is in processing, try again later.");
+            if (j) return res.status(401).send();
+            classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, query, err => {
+                if (err) logging.log(err);
+            });
+            res.send("Renaming classification.");
+        });
 
-    })
+    });
 
     app.get('/jobStatus/:type', function (req, res) {
         let jobType = req.params.type;
@@ -521,15 +529,6 @@ exports.init = function (app) {
         mongo_date.getFileStatus(req.params.imgtag, function (err, status) {
             if (err) res.status(404).send();
             res.send(status);
-        });
-    });
-
-    app.post('/classifyEntireSearch', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName))
-            return res.status(401).send();
-        classificationNode.classifyEntireSearch(req, function (err) {
-            if (!err) res.end();
-            else res.status(202).send({error: {message: err}});
         });
     });
 

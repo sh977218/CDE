@@ -193,10 +193,16 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     reclassify(event) {
-        this.classificationSvc.reclassifyOrgClassification(event.selectedOrg, this.oldReclassificationArray, event.classificationArray, newOrg => {
-            this.selectedOrg = newOrg;
-            this.alert.addAlert("success", "Elements classified.");
-        });
+        let oldClassification = {
+            orgName: this.selectedOrg.name,
+            categories: this.oldReclassificationArray
+        };
+        let newClassification = {
+            orgName: event.selectedOrg,
+            categories: event.classificationArray
+        };
+        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, message => this.alert.addAlert("info", message));
+        this.checkJob("reclassifyClassification", () => this.alert.addAlert("success", "Classification Reclassified."))
     }
 
     openAddChildClassificationModal(node) {
