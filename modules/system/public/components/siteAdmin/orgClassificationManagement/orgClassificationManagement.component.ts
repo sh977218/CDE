@@ -136,7 +136,12 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.modalService.open(this.renameClassificationContent)
             .result.then(result => {
             if (result === "confirm") {
-                this.classificationSvc.renameOrgClassification(this.selectedOrg.name, classificationArray, this.newClassificationName, message => this.alert.addAlert("info", message));
+                let newClassification = {
+                    orgName: this.selectedOrg.name,
+                    categories: classificationArray,
+                    newName: this.newClassificationName
+                };
+                this.classificationSvc.renameOrgClassification(newClassification, message => this.alert.addAlert("info", message));
                 this.checkJob("renameClassification", () => this.alert.addAlert("success", "Classification Renamed"));
             }
         }, () => {
@@ -161,7 +166,11 @@ export class OrgClassificationManagementComponent implements OnInit {
         });
         this.modalService.open(this.deleteClassificationContent).result.then(result => {
             if (result === "confirm") {
-                this.classificationSvc.removeOrgClassification(this.selectedOrg.name, classificationArray, message => this.alert.addAlert("info", message));
+                let deleteClassification = {
+                    orgName: this.selectedOrg.name,
+                    categories: classificationArray
+                };
+                this.classificationSvc.removeOrgClassification(deleteClassification, message => this.alert.addAlert("info", message));
                 this.checkJob("deleteClassification", () => this.alert.addAlert("success", "Classification Deleted"));
             }
         }, () => {

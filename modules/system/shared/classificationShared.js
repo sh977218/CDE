@@ -1,8 +1,67 @@
+const _ = require('lodash');
+
 exports.actions = {
     create: "create"
     , delete: "delete"
     , rename: "rename"
 };
+
+
+exports.findLeaf = function (classification, categories) {
+    let notExist = false;
+    let leaf = classification;
+    let parent = classification;
+    let index = null;
+    categories.forEach((category, i) => {
+        index = i;
+        let found = _.find(leaf.elements, element => element.name === category);
+        if (i === categories.length - 2) parent = found;
+        if (!found) notExist = true;
+        leaf = found;
+    });
+    if (notExist) return null;
+    else return {
+        leaf: leaf,
+        parent: parent
+    };
+};
+
+
+exports.classifyElt = function (item, orgName, classifPath) {
+    var steward = exports.findSteward(item, orgName);
+    if (!steward) {
+        item.classification.push({
+            stewardOrg: {
+                name: orgName
+            },
+            elements: []
+        });
+        steward = exports.findSteward(item, orgName);
+    }
+    for (var i = 1; i <= classifPath.length; i++) {
+        exports.addCategory(steward.object, classifPath.slice(0, i));
+    }
+};
+
+exports.unclassifyElt = function (item, orgName, categories) {
+    let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
+    if (classification) {
+        let leaf = exports.findLeaf(classification, categories);
+        if (leaf) leaf.parent.elements.splice(leaf.index, 1);
+    }
+};
+
+
+exports.renameClassifyElt = function (item, orgName, categories, newName) {
+    let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
+    if (classification) {
+        let leaf = exports.findLeaf(classification, categories);
+        if (leaf) leaf.leaf.name = newName;
+    }
+};
+
+
+// PUT NEW API ABOVE
 
 exports.findSteward = function (de, orgName) {
     if (!de) return null;
@@ -93,7 +152,6 @@ exports.classifyItem = function (item, orgName, classifPath) {
         exports.addCategory(steward.object, classifPath.slice(0, i));
     }
 };
-
 exports.addCategory = function (tree, fields) {
     var classification = this;
     var lastLevel = classification.fetchLevel(tree, fields);

@@ -5,7 +5,7 @@ let passport = require('passport')
     , logging = require('./logging.js')
     , orgsvc = require('./orgsvc')
     , usersrvc = require('./usersrvc')
-    , classificationSvc = require('./classificationSvc')
+    , orgClassificationSvc = require('./orgClassificationSvc')
     , express = require('express')
     , path = require('path')
     , classificationShared = require('../shared/classificationShared.js')
@@ -67,15 +67,15 @@ exports.init = function (app) {
     });
 
     // delete org classification
-    app.delete('/classification/:org', function (req, res) {
-        let orgName = req.params.org;
-        let categories = req.body;
-        if (!orgName || !categories) return res.status(400).send();
-        if (!usersrvc.isCuratorOf(req.user, orgName)) return res.status(403).end();
+    app.delete('/orgClassification/', function (req, res) {
+        let deleteClassification = req.body.deleteClassification;
+        let settings = req.body.settings;
+        if (!deleteClassification || !settings) return res.status(400).send();
+        if (!usersrvc.isCuratorOf(req.user, deleteClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("deleteClassification", (err, j) => {
             if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
-            classificationSvc.deleteOrgClassification(orgName, categories, err => {
+            orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings, err => {
                 if (err) logging.log(err);
             });
             res.send("Deleting classification.");
@@ -83,16 +83,16 @@ exports.init = function (app) {
     });
 
     // rename org classification
-    app.post('/classification/:org', function (req, res) {
-        let orgName = req.params.org;
-        let categories = req.body.categories;
-        let newName = req.body.newName;
-        if (!orgName || !categories || !newName) return res.status(400).send();
-        if (!usersrvc.isCuratorOf(req.user, orgName)) return res.status(403).end();
+    app.post('/orgClassification/rename', function (req, res) {
+        let newClassification = req.body.newClassification;
+        let newName = req.body.newClassification.newName;
+        let settings = req.body.settings;
+        if (!newName || !newClassification || !settings) return res.status(400).send();
+        if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("renameClassification", (err, j) => {
             if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
-            classificationSvc.renameOrgClassification(orgName, categories, newName, err => {
+            orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings, err => {
                 if (err) logging.log(err);
             });
             res.send("Renaming classification.");
@@ -100,7 +100,7 @@ exports.init = function (app) {
     });
 
     // add org classification
-    app.put('/classification/:org', function (req, res) {
+    app.put('/orgClassification/:org', function (req, res) {
         let orgName = req.params.org;
         let categories = req.body.categories;
         if (!orgName || !categories) return res.status(400).send();
@@ -108,7 +108,7 @@ exports.init = function (app) {
         mongo_date.jobStatus("addClassification", (err, j) => {
             if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
-            classificationSvc.addOrgClassification(orgName, categories, err => {
+            orgClassificationSvc.addOrgClassification(orgName, categories, err => {
                 if (err) res.status(500).send(err);
                 else res.send("Classification added.");
             });
@@ -116,16 +116,16 @@ exports.init = function (app) {
     });
 
     // reclassify org classification
-    app.post('/reclassification', function (req, res) {
+    app.post('/orgReclassification', function (req, res) {
         let oldClassification = req.body.oldClassification;
         let newClassification = req.body.newClassification;
-        let query = req.body.query;
-        if (!oldClassification || !newClassification || !query) return res.status(400).send();
+        let settings = req.body.settings;
+        if (!oldClassification || !newClassification || !settings) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("reclassifyClassification", (err, j) => {
             if (err) return res.status(500).send("Error - reclassify classification is in processing, try again later.");
             if (j) return res.status(401).send();
-            classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, query, err => {
+            orgClassificationSvc.reclassifyOrgClassification(req.user, oldClassification, newClassification, settings, err => {
                 if (err) logging.log(err);
             });
             res.send("Reclassifying classification.");
