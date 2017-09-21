@@ -7017,10 +7017,6 @@
       "resolved": "https://registry.npmjs.org/negotiator/-/negotiator-0.6.1.tgz",
       "integrity": "sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk="
     },
-    "ng-diff-match-patch": {
-      "version": "git+https://github.com/sh977218/ng-diff-match-patch.git#697a8a4fb9272be74dddee6aee6fee81751baee4",
-      "dev": true
-    },
     "ng-recaptcha": {
       "version": "3.0.0",
       "resolved": "https://registry.npmjs.org/ng-recaptcha/-/ng-recaptcha-3.0.0.tgz",
