@@ -166,9 +166,9 @@ exports.init = function (app) {
                                        captchaDone();
                                //     }
                                // });
-                       } else {
-                           captchaDone("missing recaptcha");
-                       }
+                       // } else {
+                       //     captchaDone("missing recaptcha");
+                       // }
                     } else {
                        captchaDone();
                     }
