@@ -47,35 +47,7 @@ angular.module('systemModule', ['resourcesSystem',
             template: '<cde-search-preferences></cde-search-preferences>'
         });
     }])
-    .directive('sortableArray', [function () {
-        return {
-            restrict: 'AE',
-            scope: {
-                theArray: "=",
-                index: '=index',
-                cb: '&'
-            },
-            template: require('../html/systemTemplate/sortableArray.html'),
-            controller: ["$scope", function ($scope) {
-                $scope.moveUp = function () {
-                    $scope.theArray.splice($scope.index - 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveDown = function () {
-                    $scope.theArray.splice($scope.index + 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveTop = function () {
-                    $scope.theArray.splice(0, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveBottom = function () {
-                    $scope.theArray.push($scope.array.shift());
-                    $scope.cb();
-                };
-            }]
-        };
-    }]);
+;
 
 angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
     var isAllowedModel = {};

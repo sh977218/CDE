@@ -23,7 +23,7 @@
                                 <span id="remove{{config.type}}-{{$index}}" class="btn-default fa fa-trash-o"
                                       (click)="removeConcept(config.type, $index)" title="Remove" href></span>
                                 <sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
-                                                (cb)="elt.unsaved = true"></sortable-array>
+                                                (cb)="onEltChange.emit()"></sortable-array>
                             </td>
                         </tr>
                     </table>

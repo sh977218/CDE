@@ -66,7 +66,6 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        throw new Error('Im errorn');
         let prefix_url = URL_MAP[this.elt.elementType];
         delete this.elt.selected;
         if (this.elt.history && this.elt.history.length > 0) {
