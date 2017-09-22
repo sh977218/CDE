@@ -47,7 +47,10 @@ exports.unclassifyElt = function (item, orgName, categories) {
     let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
     if (classification) {
         let leaf = exports.findLeaf(classification, categories);
-        if (leaf) leaf.parent.elements.splice(leaf.index, 1);
+        if (leaf) {
+            if (item.markModified) item.markModified("classification");
+            leaf.parent.elements.splice(leaf.index, 1);
+        }
     }
 };
 
@@ -56,7 +59,10 @@ exports.renameClassifyElt = function (item, orgName, categories, newName) {
     let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
     if (classification) {
         let leaf = exports.findLeaf(classification, categories);
-        if (leaf) leaf.leaf.name = newName;
+        if (leaf) {
+            if (item.markModified) item.markModified("classification");
+            leaf.leaf.name = newName;
+        }
     }
 };
 

@@ -4,7 +4,7 @@ const mongo_form = require('../../form/node-js/mongo-form');
 const mongo_data = require('./mongo-data');
 const classificationShared = require('../shared/classificationShared');
 const elastic = require('./elastic');
-const logging = require('./logging.js');
+const logger = require('./logging.js').MongoLogger;
 
 exports.deleteOrgClassification = (user, deleteClassification, settings, callback) => {
     if (!(deleteClassification.categories instanceof Array))
@@ -23,15 +23,15 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
                     done => elastic.elasticsearch(query, "cde", function (err, result) {
-                        if (err) logging.log(err);
+                        if (err) logger.log(err);
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
                                 mongo_cde.byTinyId(tinyId, (err, de) => {
-                                    if (err) logging.log(err);
+                                    if (err) logger.log(err);
                                     classificationShared.unclassifyElt(de, deleteClassification.orgName, deleteClassification.categories);
                                     de.save(err => {
-                                        if (err) logging.log(err);
+                                        if (err) logger.log(err);
                                         doneOne();
                                     });
                                 });
@@ -39,15 +39,15 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                         } else done();
                     }),
                     done => elastic.elasticsearch(query, "form", function (err, result) {
-                        if (err) logging.log(err);
+                        if (err) logger.log(err);
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.forms.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
                                 mongo_form.byTinyId(tinyId, (err, form) => {
-                                    if (err) logging.log(err);
+                                    if (err) logger.log(err);
                                     classificationShared.unclassifyElt(form, deleteClassification.orgName, deleteClassification.categories);
                                     form.save(err => {
-                                        if (err) logging.log(err);
+                                        if (err) logger.log(err);
                                         doneOne();
                                     });
                                 });
@@ -55,7 +55,7 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                         } else done();
                     })
                 ], err => {
-                    if (err) logging.log(err);
+                    if (err) logger.log(err);
                     mongo_data.removeJobStatus("deleteClassification", callback);
                 });
             });
@@ -80,15 +80,15 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
                     done => elastic.elasticsearch(query, "cde", function (err, result) {
-                        if (err) logging.log(err);
+                        if (err) logger.log(err);
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
                                 mongo_cde.byTinyId(tinyId, (err, de) => {
-                                    if (err) logging.log(err);
+                                    if (err) logger.log(err);
                                     classificationShared.renameClassifyElt(de, newClassification.orgName, newClassification.categories, newClassification.newName);
                                     de.save(err => {
-                                        if (err) logging.log(err);
+                                        if (err) logger.log(err);
                                         doneOne();
                                     });
                                 });
@@ -96,15 +96,15 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                         } else done();
                     }),
                     done => elastic.elasticsearch(query, "form", function (err, result) {
-                        if (err) logging.log(err);
+                        if (err) logger.log(err);
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.forms.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
                                 mongo_form.byTinyId(tinyId, (err, form) => {
-                                    if (err) logging.log(err);
+                                    if (err) logger.log(err);
                                     classificationShared.renameClassifyElt(form, newClassification.orgName, newClassification.categories, newClassification.newName);
                                     form.save(err => {
-                                        if (err) logging.log(err);
+                                        if (err) logger.log(err);
                                         doneOne();
                                     });
                                 });
@@ -112,7 +112,7 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                         } else done();
                     })
                 ], err => {
-                    if (err) logging.log(err);
+                    if (err) logger.log(err);
                     mongo_data.removeJobStatus("renameClassification", callback);
                 });
             });
@@ -149,15 +149,15 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
                     done => elastic.elasticsearch(query, "cde", function (err, result) {
-                        if (err) logging.log(err);
+                        if (err) logger.log(err);
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
                                 mongo_cde.byTinyId(tinyId, (err, de) => {
-                                    if (err) logging.log(err);
-                                    classificationShared.classifyItem(de, newClassification.orgName, newClassification.categories);
+                                    if (err) logger.log(err);
+                                    classificationShared.classifyElt(de, newClassification.orgName, newClassification.categories);
                                     de.save(err => {
-                                        if (err) logging.log(err);
+                                        if (err) logger.log(err);
                                         doneOne();
                                     });
                                 });
@@ -165,15 +165,15 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                         } else done();
                     }),
                     done => elastic.elasticsearch(query, "form", function (err, result) {
-                        if (err) logging.log(err);
+                        if (err) logger.log(err);
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
                                 mongo_form.byTinyId(tinyId, (err, de) => {
-                                    if (err) logging.log(err);
-                                    classificationShared.classifyItem(de, newClassification.orgName, newClassification.categories);
+                                    if (err) logger.log(err);
+                                    classificationShared.classifyElt(de, newClassification.orgName, newClassification.categories);
                                     de.save(err => {
-                                        if (err) logging.log(err);
+                                        if (err) logger.log(err);
                                         doneOne();
                                     });
                                 });
@@ -181,7 +181,7 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                         } else done();
                     })
                 ], err => {
-                    if (err) logging.log(err);
+                    if (err) logger.log(err);
                     mongo_data.removeJobStatus("reclassifyClassification", callback);
                 });
             });
