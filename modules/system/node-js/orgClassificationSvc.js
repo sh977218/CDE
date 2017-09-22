@@ -35,7 +35,18 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                                         doneOne();
                                     });
                                 });
-                            }, () => done());
+                            }, () => {
+                                done();
+                                mongo_data.addToClassifAudit({
+                                    date: new Date(),
+                                    user: user,
+                                    elements: tinyIds.map(function (e) {
+                                        return {tinyId: e, eltType: "cde"};
+                                    }),
+                                    action: "delete",
+                                    path: [deleteClassification.orgName].concat(deleteClassification.categories)
+                                });
+                            });
                         } else done();
                     }),
                     done => elastic.elasticsearch(query, "form", function (err, result) {
@@ -51,7 +62,18 @@ exports.deleteOrgClassification = (user, deleteClassification, settings, callbac
                                         doneOne();
                                     });
                                 });
-                            }, () => done());
+                            }, () => {
+                                done();
+                                mongo_data.addToClassifAudit({
+                                    date: new Date(),
+                                    user: user,
+                                    elements: tinyIds.map(function (e) {
+                                        return {tinyId: e, eltType: "form"};
+                                    }),
+                                    action: "delete",
+                                    path: [deleteClassification.orgName].concat(deleteClassification.categories)
+                                });
+                            });
                         } else done();
                     })
                 ], err => {
@@ -92,7 +114,19 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                                         doneOne();
                                     });
                                 });
-                            }, () => done());
+                            }, () => {
+                                done();
+                                mongo_data.addToClassifAudit({
+                                    date: new Date(),
+                                    user: user,
+                                    elements: tinyIds.map(function (e) {
+                                        return {tinyId: e, eltType: "cde"};
+                                    }),
+                                    action: "rename",
+                                    path: [newClassification.orgName].concat(newClassification.categories),
+                                    newname: newClassification.newName
+                                });
+                            });
                         } else done();
                     }),
                     done => elastic.elasticsearch(query, "form", function (err, result) {
@@ -108,7 +142,19 @@ exports.renameOrgClassification = (user, newClassification, settings, callback) 
                                         doneOne();
                                     });
                                 });
-                            }, () => done());
+                            }, () => {
+                                done();
+                                mongo_data.addToClassifAudit({
+                                    date: new Date(),
+                                    user: user,
+                                    elements: tinyIds.map(function (e) {
+                                        return {tinyId: e, eltType: "form"};
+                                    }),
+                                    action: "rename",
+                                    path: [newClassification.orgName].concat(newClassification.categories),
+                                    newname: newClassification.newName
+                                });
+                            });
                         } else done();
                     })
                 ], err => {
@@ -161,7 +207,18 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                                         doneOne();
                                     });
                                 });
-                            }, () => done());
+                            }, () => {
+                                done();
+                                mongo_data.addToClassifAudit({
+                                    date: new Date(),
+                                    user: user,
+                                    elements: tinyIds.map(function (e) {
+                                        return {tinyId: e, eltType: "cde"};
+                                    }),
+                                    action: "reclassify",
+                                    path: [newClassification.orgName].concat(newClassification.categories)
+                                });
+                            });
                         } else done();
                     }),
                     done => elastic.elasticsearch(query, "form", function (err, result) {
@@ -177,7 +234,18 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
                                         doneOne();
                                     });
                                 });
-                            }, () => done());
+                            }, () => {
+                                done();
+                                mongo_data.addToClassifAudit({
+                                    date: new Date(),
+                                    user: user,
+                                    elements: tinyIds.map(function (e) {
+                                        return {tinyId: e, eltType: "form"};
+                                    }),
+                                    action: "reclassify",
+                                    path: [newClassification.orgName].concat(newClassification.categories)
+                                });
+                            });
                         } else done();
                     })
                 ], err => {
@@ -188,3 +256,4 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
         });
     });
 };
+

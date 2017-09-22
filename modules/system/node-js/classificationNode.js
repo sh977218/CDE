@@ -9,9 +9,6 @@ var mongo_board = require('../../board/node-js/mongo-board')
 ;
 
 var classification = this;
-exports.renameClassification = {
-    done: false
-};
 
 classification.saveCdeClassif = function (err, elt, cb) {
     if (err) {
@@ -49,7 +46,7 @@ exports.eltClassification = function (body, action, dao, cb) {
         if (!elt) return cb("can not elt");
         var steward = classificationShared.findSteward(elt, body.orgName);
         if (!steward) {
-            mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
+            mongo_data_system.orgByName(body.orgName, function (stewardOrg) {
                 var classifOrg = {
                     stewardOrg: {
                         name: body.orgName
@@ -72,6 +69,12 @@ exports.eltClassification = function (body, action, dao, cb) {
     if (body.tinyId && body.version && dao.byTinyIdAndVersion)
         dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
 };
+
+function classify(steward, categories, elt) {
+    classificationShared.addCategory(steward.object, body.categories, function (err) {
+        classification.saveCdeClassif(err, elt, cb);
+    });
+}
 
 exports.isInvalidatedClassificationRequest = function (req) {
     if (!req.body || !req.body.eltId || !req.body.categories || !(req.body.categories instanceof Array) || !req.body.orgName)
@@ -134,13 +137,10 @@ exports.removeClassification = function (body, dao, cb) {
 };
 
 exports.modifyOrgClassification = function (request, action, callback) {
-    exports.renameClassification = {
-        done: false
-    };
     if (!(request.categories instanceof Array)) {
         request.categories = [request.categories];
     }
-    mongo_data_system.orgByName(request.orgName, function (err, stewardOrg) {
+    mongo_data_system.orgByName(request.orgName, function (stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.modifyCategory(fakeTree, request.categories, {
             type: action,
@@ -167,16 +167,16 @@ exports.modifyOrgClassification = function (request, action, callback) {
                                         });
                                 }, function doneAll() {
                                     mongo_data_system.addToClassifAudit({
-                                        date: new Date(),
-                                        user: {
+                                        date: new Date()
+                                        , user: {
                                             username: "unknown"
-                                        },
-                                        elements: result.map(function (e) {
+                                        }
+                                        , elements: result.map(function (e) {
                                             return {tinyId: e.tinyId, eltType: dao.type};
-                                        }),
-                                        action: action,
-                                        path: [request.orgName].concat(request.categories),
-                                        newname: request.newname
+                                        })
+                                        , action: action
+                                        , path: [request.orgName].concat(request.categories)
+                                        , newname: request.newname
                                     });
                                     oneDaoDone();
                                 });
@@ -188,10 +188,6 @@ exports.modifyOrgClassification = function (request, action, callback) {
                         oneDaoDone();
                     }
                 }, function allDaosDone() {
-                    exports.renameClassification = {
-                        done: true,
-                        stewardOrg: stewardOrg
-                    };
                     if (callback) callback(err, stewardOrg);
                 });
             });
@@ -204,7 +200,7 @@ exports.addOrgClassification = function (body, cb) {
         body.categories = [body.categories];
     }
 
-    mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
+    mongo_data_system.orgByName(body.orgName, function (stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.addCategory(fakeTree, body.categories);
         stewardOrg.markModified("classifications");
@@ -255,7 +251,7 @@ exports.classifyEltsInBoard = function (req, dao, cb) {
 
 exports.classifyEntireSearch = function (req, cb) {
 
-    async.forEachSeries(daoManager.getDaoList(), function (dao, oneDaoDone) {
+    async.each(daoManager.getDaoList(), function (dao, oneDaoDone) {
         var query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
         elastic.elasticsearch(query, dao.type, function (err, result) {
             if (err) return;
