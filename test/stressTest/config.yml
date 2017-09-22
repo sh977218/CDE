@@ -1,0 +1,50 @@
+config:
+  target: "https://cde-qa.nlm.nih.gov"
+#  target: "http://localhost:3001"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+  payload:
+    path: "terms.csv"
+    fields:
+      - "term"
+scenarios:
+  - name: "Search and view"
+    flow:
+      - get:
+          url: "/"
+      - get:
+          url: "/system/public/assets/js/vendor-c7183e6f18.js"
+      - get:
+          url: "/system/public/assets/js/main-3b89696539.js"
+      - post:
+          url: "/elasticSearch/cde"
+          json:
+              'resultPerPage': 20
+              'selectedOrg': ''
+              'searchTerm': '{{ term }}'
+              'selectedElements':
+                - ''
+              'selectedElementsAlt':
+                - ''
+              'page': 1
+              'includeAggregations': true
+              'selectedStatuses':
+                - 'Preferred Standard'
+                - 'Standard'
+                - 'Qualified'
+              'selectedDatatypes':
+                - ''
+              'visibleStatuses':
+                - 'Preferred Standard'
+                - 'Standard'
+                - 'Qualified'
+              'searchToken': 'idecb7b901ab572'
+          capture:
+            json: "$.cdes[0].tinyId"
+            as: "cdeId"
+      - get:
+          url: "/deView?tinyId={{ cdeId }}"
+
+
+
