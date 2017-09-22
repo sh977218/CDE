@@ -2,8 +2,7 @@ import * as authShared from "../../../system/shared/authorizationShared";
 
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
-angular.module('systemModule', ['resourcesSystem',
-    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'LocalStorageModule',
+angular.module('systemModule', ['ngSanitize', 'ngRoute', 'LocalStorageModule',
     'ui.select', 'angular-send-feedback', 'checklist-model'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
