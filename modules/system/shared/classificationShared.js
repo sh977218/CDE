@@ -26,21 +26,29 @@ exports.findLeaf = function (classification, categories) {
     };
 };
 
+exports.arrangeClassification = function (item, orgName) {
+    let index = _.findIndex(item.classification, o => o.stewardOrg.name === orgName);
+    item.classification.splice(0, 0, item.classification.splice(index, 1)[0]);
+};
 
-exports.classifyElt = function (item, orgName, classifPath) {
-    var steward = exports.findSteward(item, orgName);
-    if (!steward) {
+exports.classifyElt = function (item, orgName, categories) {
+    let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
+    if (!classification) {
         item.classification.push({
-            stewardOrg: {
-                name: orgName
-            },
+            stewardOrg: {name: orgName},
             elements: []
         });
-        steward = exports.findSteward(item, orgName);
+        classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
     }
-    for (var i = 1; i <= classifPath.length; i++) {
-        exports.addCategory(steward.object, classifPath.slice(0, i));
-    }
+    let temp = classification;
+    categories.forEach(category => {
+        let found = _.find(temp.elements, element => element.name === category);
+        if (!found) temp.elements.push({name: category, elements: []});
+        temp = _.find(temp.elements, element => element.name === category);
+    });
+    exports.arrangeClassification(item, orgName);
+    item.updated = new Date();
+    if (item.markModified) item.markModified("classification");
 };
 
 exports.unclassifyElt = function (item, orgName, categories) {
@@ -48,22 +56,22 @@ exports.unclassifyElt = function (item, orgName, categories) {
     if (classification) {
         let leaf = exports.findLeaf(classification, categories);
         if (leaf) {
-            if (item.markModified) item.markModified("classification");
-            item.updated = new Date();
             leaf.parent.elements.splice(leaf.index, 1);
+            item.updated = new Date();
+            if (item.markModified) item.markModified("classification");
         }
     }
 };
-
 
 exports.renameClassifyElt = function (item, orgName, categories, newName) {
     let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
     if (classification) {
         let leaf = exports.findLeaf(classification, categories);
         if (leaf) {
-            if (item.markModified) item.markModified("classification");
-            item.updated = new Date();
             leaf.leaf.name = newName;
+            item.updated = new Date();
+            exports.arrangeClassification(item, orgName);
+            if (item.markModified) item.markModified("classification");
         }
     }
 };
