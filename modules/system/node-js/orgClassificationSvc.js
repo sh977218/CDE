@@ -171,9 +171,7 @@ exports.addOrgClassification = (newClassification, callback) => {
         newClassification.categories = [newClassification.categories];
     mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
         if (err) return callback(err, stewardOrg);
-        let fakeTree = {elements: stewardOrg.classifications};
-        let exist = classificationShared.addCategory(fakeTree, newClassification.categories);
-        if (exist) return callback(exist);
+        classificationShared.addCategoriesToTree(stewardOrg, newClassification.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(callback);
     });
@@ -186,8 +184,7 @@ exports.reclassifyOrgClassification = (user, oldClassification, newClassificatio
         if (err) return callback(err);
         mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
             if (err) return callback(err, stewardOrg);
-            let fakeTree = {elements: stewardOrg.classifications};
-            classificationShared.addCategory(fakeTree, newClassification.categories);
+            classificationShared.addCategoriesToTree(stewardOrg, newClassification.categories);
             stewardOrg.markModified("classifications");
             stewardOrg.save(err => {
                 if (err) return callback(err, stewardOrg);

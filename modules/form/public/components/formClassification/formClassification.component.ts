@@ -58,11 +58,8 @@ export class FormClassificationComponent {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
             "/addFormClassification/", (err) => {
                 this.classifyItemModalRef.close();
-                if (err) {
-                    this.alert.addAlert("danger", err._body);
-                } else {
-                    this.reloadElt(() => this.alert.addAlert("success", "Classification added."));
-                }
+                if (err) this.alert.addAlert("danger", err._body);
+                else this.reloadElt(() => this.alert.addAlert("success", "Classification added."));
             });
     }
 
