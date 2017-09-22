@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
+
 import { Http } from '@angular/http';
 import { IActionMapping, TreeComponent } from 'angular-tree-component';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -11,7 +12,7 @@ import { AlertService } from 'system/public/components/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { Subject } from 'rxjs/Subject';
 import * as authShared from "system/shared/authorizationShared";
-import { UserService } from "../../../../../core/public/user.service";
+import { UserService } from 'core/public/user.service';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -24,12 +25,7 @@ const actionMapping: IActionMapping = {
 
 @Component({
     selector: "cde-org-classification-management",
-    templateUrl: "./orgClassificationManagement.component.html",
-    styles: [`
-        host >>> .tree {
-            cursor: default !important;
-        }
-    `]
+    templateUrl: "./orgClassificationManagement.component.html"
 })
 export class OrgClassificationManagementComponent implements OnInit {
     @ViewChild("renameClassificationContent") public renameClassificationContent: NgbModalModule;
@@ -141,23 +137,15 @@ export class OrgClassificationManagementComponent implements OnInit {
         }
         this.modalService.open(this.renameClassificationContent)
             .result.then(result => {
-            if (result === "confirm")
-                this.classificationSvc.renameOrgClassification(this.selectedOrg.name, classificationArray, this.newClassificationName, r => {
-                    r.subscribe(() => {
-                        this.alert.addAlert("warning", "Renaming in progress.");
-                        let indexFn = setInterval(() => {
-                            this.http.get("/classification/rename").map(res => res.json()).subscribe(
-                                res => {
-                                    if (res.done === true) {
-                                        this.selectedOrg = res.stewardOrg;
-                                        this.tree.treeModel.update();
-                                        clearInterval(indexFn);
-                                        this.alert.addAlert("success", "Renaming complete.");
-                                    }
-                                });
-                        }, 5000);
-                    }, err => this.alert.addAlert("danger", err));
-                });
+            if (result === "confirm") {
+                let newClassification = {
+                    orgName: this.selectedOrg.name,
+                    categories: classificationArray,
+                    newName: this.newClassificationName
+                };
+                this.classificationSvc.renameOrgClassification(newClassification, message => this.alert.addAlert("info", message));
+                this.checkJob("renameClassification", () => this.alert.addAlert("success", "Classification Renamed"));
+            }
         }, () => {
         });
     }
@@ -178,13 +166,15 @@ export class OrgClassificationManagementComponent implements OnInit {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat("<span> " + c + " </span> ->");
             else this.selectedClassificationArray = this.selectedClassificationArray.concat(" <strong> " + c + " </strong>");
         });
-        this.modalService.open(this.deleteClassificationContent)
-            .result.then(result => {
-            if (result === "confirm")
-                this.classificationSvc.removeOrgClassification(this.selectedOrg.name, classificationArray, newOrg => {
-                    this.selectedOrg = newOrg;
-                    this.alert.addAlert("success", "Classification Deleted");
-                });
+        this.modalService.open(this.deleteClassificationContent).result.then(result => {
+            if (result === "confirm") {
+                let deleteClassification = {
+                    orgName: this.selectedOrg.name,
+                    categories: classificationArray
+                };
+                this.classificationSvc.removeOrgClassification(deleteClassification, message => this.alert.addAlert("info", message));
+                this.checkJob("deleteClassification", () => this.alert.addAlert("success", "Classification Deleted"));
+            }
         }, () => {
         });
     }
@@ -211,17 +201,14 @@ export class OrgClassificationManagementComponent implements OnInit {
     reclassify(event) {
         let oldClassification = {
             orgName: this.selectedOrg.name,
-            classifications: this.oldReclassificationArray
+            categories: this.oldReclassificationArray
         };
         let newClassification = {
-            categories: event.classificationArray,
-            cdeId: null,
-            orgName: event.selectedOrg
+            orgName: event.selectedOrg,
+            categories: event.classificationArray
         };
-        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, newOrg => {
-            this.selectedOrg = newOrg;
-            this.alert.addAlert("success", "Elements classified.");
-        });
+        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, message => this.alert.addAlert("info", message));
+        this.checkJob("reclassifyClassification", () => this.alert.addAlert("success", "Classification Reclassified."));
     }
 
     openAddChildClassificationModal(node) {
@@ -246,9 +233,8 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.modalService.open(this.addChildClassificationContent).result.then(result => {
             if (result === "confirm") {
                 classificationArray.push(this.newClassificationName);
-                this.classificationSvc.addChildClassification(this.selectedOrg.name, classificationArray, newOrg => {
-                    this.selectedOrg = newOrg;
-                    this.alert.addAlert("success", "Classification Added");
+                this.classificationSvc.addChildClassification(this.selectedOrg.name, classificationArray, message => {
+                    this.onChangeOrg(this.selectedOrg.name, () => this.alert.addAlert("success", message));
                 });
             }
         }, () => {
@@ -289,8 +275,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.searchTerms.next(this.meshSearchTerm);
     }
 
-
-    addMeshDescriptor = function () {
+    addMeshDescriptor() {
         this.mapping.meshDescriptors.push(this.descriptorID);
         this.descToName[this.descriptorID] = this.descriptorName;
         this.descriptorID = "";
@@ -302,7 +287,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             }, err => this.alert.addAlert("danger", "There was an issue saving this record."));
     };
 
-    removeDescriptor = function (i) {
+    removeDescriptor(i) {
         this.mapping.meshDescriptors.splice(i, 1);
         this.http.post("/meshClassification", this.mapping).map(res => res.json()).subscribe(
             res => {
@@ -326,5 +311,19 @@ export class OrgClassificationManagementComponent implements OnInit {
         return "/cde/search?selectedOrg=" + encodeURIComponent(orgName) +
             "&classification=" + encodeURIComponent(classificationArray.join(";"));
     };
+
+    checkJob(type, cb) {
+        let indexFn = setInterval(() => {
+            this.http.get("/jobStatus/" + type).map(res => res.json()).subscribe(
+                res => {
+                    if (res.done === true)
+                        this.onChangeOrg(this.selectedOrg.name, () => {
+                            this.tree.treeModel.update();
+                            clearInterval(indexFn);
+                            if (cb) cb();
+                        });
+                });
+        }, 5000);
+    }
 
 }

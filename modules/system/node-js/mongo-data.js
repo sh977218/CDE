@@ -20,6 +20,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     MeshClassification = conn.model('meshClassification', schemas.meshClassification),
     ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema),
     ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
+    JobQueue = conn.model('JobQueue', schemas.jobQueue),
     Embeds = conn.model('Embed', schemas.embedSchema),
     Comment = conn.model('Comment', schemas.commentSchema),
     gfs = Grid(conn.db, mongoose.mongo),
@@ -35,9 +36,20 @@ exports.Org = Org;
 exports.User = User;
 exports.MeshClassification = MeshClassification;
 exports.Comment = Comment;
+exports.JobQueue = JobQueue;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
+
+exports.jobStatus = function (type, cb) {
+    JobQueue.findOne({type: type}, cb);
+};
+exports.updateJobStatus = function (type, status, cb) {
+    JobQueue.update({type: type}, {status: status}, {upsert: true}, cb);
+};
+exports.removeJobStatus = function (type, cb) {
+    JobQueue.remove({type: type}, cb);
+};
 
 exports.getClusterHostStatus = function (server, callback) {
     ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function (err, result) {
@@ -46,9 +58,7 @@ exports.getClusterHostStatus = function (server, callback) {
 };
 
 exports.getClusterHostStatuses = function (callback) {
-    ClusterStatus.find().exec(function (err, statuses) {
-        callback(err, statuses);
-    });
+    ClusterStatus.find({}, callback);
 };
 
 exports.updateClusterHostStatus = function (status, callback) {

@@ -321,9 +321,7 @@ exports.getDistinct = function (what, callback) {
 };
 
 exports.query = function (query, callback) {
-    DataElement.find(query).exec(function (err, result) {
-        callback(err, result);
-    });
+    DataElement.find(query, callback);
 };
 
 exports.transferSteward = function (from, to, callback) {

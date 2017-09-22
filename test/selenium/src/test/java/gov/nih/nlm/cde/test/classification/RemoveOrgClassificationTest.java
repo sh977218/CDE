@@ -11,20 +11,20 @@ public class RemoveOrgClassificationTest extends NlmCdeBaseTest {
     public void removeOrgClassification() {
         mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
-        textPresent("NINDS (9");
+        textPresent("NINDS (102");
         searchNestedClassifiedForms();
-        Assert.assertTrue(getNumberOfResults() > 40);
+        textPresent("NINDS (34");
         gotoClassificationMgt();
-        deleteOrgClassification("NINDS", new String[]{"Disease", "Epilepsy"});
+        deleteOrgClassification("NINDS", new String[]{"Domain", "Participant/Subject Characteristics"});
         searchNestedClassifiedCdes();
         hangon(3);
-        textNotPresent("NINDS (9)");
+        textNotPresent("NINDS (102");
         searchNestedClassifiedForms();
         hangon(1);
-        textNotPresent("NINDS (44)");
-        openClassificationAudit("NINDS > Disease > Epilepsy");
+        textNotPresent("NINDS (34");
+        openClassificationAudit("NINDS > Domain > Participant/Subject Characteristics");
         String body = findElement(By.cssSelector("body")).getText();
         Assert.assertTrue(body.contains("10+ elements") || body.contains("942 elements"));
-        textPresent("delete NINDS > Disease > Epilepsy");
+        textPresent("delete NINDS > Domain > Participant/Subject Characteristics");
     }
 }

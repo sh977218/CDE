@@ -851,8 +851,9 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath(getOrgClassificationIconXpath("remove", categories)));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
         clickElement(By.id("confirmDeleteClassificationBtn"));
+        textPresent("Classification Deleted");
         closeAlert();
-        textNotPresent(classification);
+        Assert.assertEquals(0, driver.findElements(By.xpath("//*[@id='" + String.join(",", categories) + "']")).size());
     }
 
     protected void gotoInbox() {
@@ -1330,13 +1331,13 @@ public class NlmCdeBaseTest {
 
     protected void searchNestedClassifiedCdes() {
         goToCdeSearch();
-        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Participant/Subject Characteristics");
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:\"Participant/Subject Characteristics\"");
         findElement(By.id("search.submit")).click();
     }
 
     protected void searchNestedClassifiedForms() {
         goToFormSearch();
-        findElement(By.name("q")).sendKeys("classification.elements.elements.name:Participant/Subject Characteristics");
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:\"Participant/Subject Characteristics\"");
         findElement(By.id("search.submit")).click();
     }
 
