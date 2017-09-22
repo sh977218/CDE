@@ -49,6 +49,7 @@ exports.unclassifyElt = function (item, orgName, categories) {
         let leaf = exports.findLeaf(classification, categories);
         if (leaf) {
             if (item.markModified) item.markModified("classification");
+            item.updated = new Date();
             leaf.parent.elements.splice(leaf.index, 1);
         }
     }
@@ -61,6 +62,7 @@ exports.renameClassifyElt = function (item, orgName, categories, newName) {
         let leaf = exports.findLeaf(classification, categories);
         if (leaf) {
             if (item.markModified) item.markModified("classification");
+            item.updated = new Date();
             leaf.leaf.name = newName;
         }
     }
