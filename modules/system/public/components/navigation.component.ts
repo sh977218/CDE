@@ -3,7 +3,7 @@ import { SharedService } from "core/public/shared.service";
 import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 import { LoginService } from "./login/login.service";
-import { UserService } from "../../../core/public/user.service";
+import { UserService } from "core/public/user.service";
 
 @Component({
     selector: "cde-navigation",

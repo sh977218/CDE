@@ -19,14 +19,6 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
 
-export function getQuickBoardFactory(i: any) {
-    return i.get("QuickBoard");
-}
-
-export function getFormQuickBoardFactory(i: any) {
-    return i.get("FormQuickBoard");
-}
-
 @NgModule({
     imports: [
         Select2Module,
@@ -46,8 +38,6 @@ export function getFormQuickBoardFactory(i: any) {
         UserService,
         // upgraded
         UpgradeModule,
-        {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
-        {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
     ],
     exports: [
         Select2Module,

@@ -55,8 +55,8 @@
                     <a *ngIf="user._id && location=='board'" class="btn btn-small btn-default"
                        (click)="unpin(elt)" id="unpin_{{index}}">
                         <i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
-                    <a *ngIf="quickBoard.canAddElt(elt)" class="btn btn-small btn-default"
-                       (click)="quickBoard.add(elt)" id="compare_{{index}}">
+                    <a *ngIf="quickBoard.canAddElement(elt)" class="btn btn-small btn-default"
+                       (click)="quickBoard.addToQuickBoard(elt)" id="compare_{{index}}">
                         <i class="fa fa-plus-square-o"></i> Add to Quick Board</a>
                     <a class="pull-right" href="/sdcview/?tinyId={{elt.tinyId}}" target="_blank" aria-label="SDC View"
                        id="sdcView_{{index}}">

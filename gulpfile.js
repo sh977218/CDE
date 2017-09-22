@@ -154,7 +154,7 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
 });
 
 gulp.task('angularTemplates', function () {
-    ['system', 'embedded'].forEach(function (module) {
+    ['embedded'].forEach(function (module) {
         gulp
             .src("modules/" + module + "/public/js/angularTemplates.js")
             .pipe(gulp.dest("modules/" + module + "/public/js/bkup/"));
