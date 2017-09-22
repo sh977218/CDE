@@ -1,20 +1,22 @@
 const _ = require('lodash');
 
 exports.actions = {
-    create: "create"
-    , delete: "delete"
-    , rename: "rename"
+    create: "create",
+    delete: "delete",
+    rename: "rename"
 };
 
 
 exports.findLeaf = function (classification, categories) {
-    let notExist = false;
-    let leaf = classification;
-    let parent = classification;
-    let index = null;
-    categories.forEach((category, i) => {
+    var notExist = false;
+    var leaf = classification;
+    var parent = classification;
+    var index = null;
+    categories.forEach(function (category, i) {
         index = i;
-        let found = _.find(leaf.elements, element => element.name === category);
+        var found = _.find(leaf.elements, function (element) {
+            return element.name === category;
+        });
         if (i === categories.length - 2) parent = found;
         if (!found) notExist = true;
         leaf = found;
@@ -27,24 +29,34 @@ exports.findLeaf = function (classification, categories) {
 };
 
 exports.arrangeClassification = function (item, orgName) {
-    let index = _.findIndex(item.classification, o => o.stewardOrg.name === orgName);
+    var index = _.findIndex(item.classification, function (o) {
+        return o.stewardOrg.name === orgName;
+    });
     item.classification.splice(0, 0, item.classification.splice(index, 1)[0]);
 };
 
 exports.classifyElt = function (item, orgName, categories) {
-    let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
+    var classification = _.find(item.classification, function (o) {
+        return o.stewardOrg && o.stewardOrg.name === orgName;
+    });
     if (!classification) {
         item.classification.push({
             stewardOrg: {name: orgName},
             elements: []
         });
-        classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
+        classification = _.find(item.classification, function (o) {
+            return o.stewardOrg && o.stewardOrg.name === orgName;
+        });
     }
-    let temp = classification;
-    categories.forEach(category => {
-        let found = _.find(temp.elements, element => element.name === category);
+    var temp = classification;
+    categories.forEach(function (category) {
+        var found = _.find(temp.elements, function (element) {
+            return element.name === category;
+        });
         if (!found) temp.elements.push({name: category, elements: []});
-        temp = _.find(temp.elements, element => element.name === category);
+        temp = _.find(temp.elements, function (element) {
+            return element.name === category;
+        });
     });
     exports.arrangeClassification(item, orgName);
     item.updated = new Date();
@@ -52,9 +64,11 @@ exports.classifyElt = function (item, orgName, categories) {
 };
 
 exports.unclassifyElt = function (item, orgName, categories) {
-    let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
+    var classification = _.find(item.classification, function (o) {
+        return o.stewardOrg && o.stewardOrg.name === orgName;
+    });
     if (classification) {
-        let leaf = exports.findLeaf(classification, categories);
+        var leaf = exports.findLeaf(classification, categories);
         if (leaf) {
             leaf.parent.elements.splice(leaf.index, 1);
             item.updated = new Date();
@@ -64,9 +78,11 @@ exports.unclassifyElt = function (item, orgName, categories) {
 };
 
 exports.renameClassifyElt = function (item, orgName, categories, newName) {
-    let classification = _.find(item.classification, o => o.stewardOrg && o.stewardOrg.name === orgName);
+    var classification = _.find(item.classification, function (o) {
+        return o.stewardOrg && o.stewardOrg.name === orgName;
+    });
     if (classification) {
-        let leaf = exports.findLeaf(classification, categories);
+        var leaf = exports.findLeaf(classification, categories);
         if (leaf) {
             leaf.leaf.name = newName;
             item.updated = new Date();
