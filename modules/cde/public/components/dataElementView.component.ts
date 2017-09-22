@@ -3,10 +3,10 @@ import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
-import { UserService } from "../../../core/public/user.service";
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { UserService } from 'core/public/user.service';
 
 @Component({
     selector: "cde-data-element-view",
@@ -49,8 +49,10 @@ export class DataElementViewComponent implements OnInit {
                     res => this.hasComments = res && (res.length > 0),
                     err => this.alert.addAlert("danger", "Error on loading comments. " + err)
                 );
-                this.isAllowedModel.setDisplayStatusWarning(this);
-                this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                this.userService.then(() => {
+                    this.isAllowedModel.setDisplayStatusWarning(this);
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                });
             }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
     }
