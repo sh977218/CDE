@@ -14,13 +14,10 @@ import { MergeShareService } from "./mergeShare.service";
 import { CompareService } from "./compare.service";
 import { OrgHelperService } from "./orgHelper.service";
 import { UserService } from "./user.service";
+import { IsAllowedService } from 'core/public/isAllowed.service';
 
 export { CdeAmericanDateParserFormatter } from "./americanDateParserFormatter";
 export { ClassificationService } from "./classification.service";
-
-export function getIsAllowedModelFactory(i: any) {
-    return i.get("isAllowedModel");
-}
 
 export function getQuickBoardFactory(i: any) {
     return i.get("QuickBoard");
@@ -40,6 +37,7 @@ export function getFormQuickBoardFactory(i: any) {
         ClassificationService,
         ElasticService,
         ExportService,
+        IsAllowedService,
         MergeCdeService,
         MergeFormService,
         MergeShareService,
@@ -48,7 +46,6 @@ export function getFormQuickBoardFactory(i: any) {
         UserService,
         // upgraded
         UpgradeModule,
-        {provide: "isAllowedModel", useFactory: getIsAllowedModelFactory, deps: ["$injector"]},
         {provide: "QuickBoard", useFactory: getQuickBoardFactory, deps: ["$injector"]},
         {provide: "FormQuickBoard", useFactory: getFormQuickBoardFactory, deps: ["$injector"]},
     ],

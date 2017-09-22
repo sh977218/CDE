@@ -1,4 +1,4 @@
-import { Component, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
     selector: "sortable-array",
@@ -9,7 +9,7 @@ export class SortableArrayComponent {
 
     @Input() theArray = [];
     @Input() index;
-    @Output() cb;
+    @Output() cb = new EventEmitter();
 
     moveUp () {
         this.theArray.splice(this.index - 1, 0, this.theArray.splice(this.index, 1)[0]);

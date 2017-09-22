@@ -1,6 +1,5 @@
 import {
     Component,
-    Inject,
     Input,
     Output,
     OnInit,
@@ -18,7 +17,8 @@ import { ClassifyItemModalComponent } from "adminItem/public/components/classifi
 import * as ClassificationShared from "../../../system/shared/classificationShared.js";
 import * as _ from "lodash";
 import { AlertService } from "system/public/components/alert/alert.service";
-import { UserService } from "../../../core/public/user.service";
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { UserService } from 'core/public/user.service';
 
 @Component({
     selector: "cde-create-form",
@@ -33,7 +33,7 @@ export class CreateFormComponent implements OnInit {
     modalRef: NgbModalRef;
 
     constructor(public userService: UserService,
-                @Inject("isAllowedModel") public isAllowedModel,
+                public isAllowedModel: IsAllowedService,
                 private localStorageService: LocalStorageService,
                 private http: Http,
                 private alert: AlertService) {

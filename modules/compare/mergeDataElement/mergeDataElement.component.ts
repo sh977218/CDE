@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Inject, Input, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { MergeCdeService } from 'core/public/mergeCde.service';
+import { IsAllowedService } from 'core/public/isAllowed.service';
 
 @Component({
     selector: "cde-merge-data-element",
@@ -32,7 +33,7 @@ export class MergeDataElementComponent {
     constructor(public modalService: NgbModal,
                 private alert: AlertService,
                 public mergeCdeService: MergeCdeService,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                public isAllowedModel: IsAllowedService) {
     }
 
     checkAllMergerFields() {

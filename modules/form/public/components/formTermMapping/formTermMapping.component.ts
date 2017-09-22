@@ -1,11 +1,12 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { Subject } from "rxjs/Subject";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
-import { UserService } from "../../../../core/public/user.service";
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { UserService } from 'core/public/user.service';
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 @Component({
     selector: "cde-form-term-mapping",
@@ -14,7 +15,7 @@ import { UserService } from "../../../../core/public/user.service";
 
 export class FormTermMappingComponent implements OnInit {
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
+    constructor(public isAllowedModel: IsAllowedService,
                 public userService: UserService,
                 public modalService: NgbModal,
                 private http: Http,

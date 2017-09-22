@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Inject, Input, Output, ViewChild, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, OnInit } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import 'rxjs/add/operator/map';
 import { Http } from '@angular/http';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { SharedService } from 'core/public/shared.service';
-import { UserService } from "../../../../core/public/user.service";
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { UserService } from 'core/public/user.service';
 
 @Component({
     selector: 'cde-registration',
@@ -26,7 +27,7 @@ export class RegistrationComponent implements OnInit {
     constructor (private http: Http,
                  private parserFormatter: NgbDateParserFormatter,
                  private alert: AlertService,
-                 @Inject('isAllowedModel') public isAllowedModel,
+                 public isAllowedModel: IsAllowedService,
                  private userService: UserService,
                  public modalService: NgbModal
     ) {}

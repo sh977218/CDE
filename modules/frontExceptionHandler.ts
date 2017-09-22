@@ -7,6 +7,7 @@ export class FrontExceptionHandler implements ErrorHandler {
 
     handleError (error) {
         console.log("INJECTED  ERROR !");
+
         //
         // $provide.decorator("$exceptionHandler", ['$delegate', '$injector',
         //     function ($delegate, $injector) {

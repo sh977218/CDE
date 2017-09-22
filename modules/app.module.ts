@@ -6,11 +6,11 @@ import { BrowserModule } from "@angular/platform-browser";
 import { UpgradeModule } from "@angular/upgrade/static";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import { CdeAppComponent } from "./app.component";
-import { CdeModule } from "./cde/public/cde.module";
-import { CoreModule } from "./core/public/core.module";
-import { DiscussModule } from "./discuss/discuss.module";
-import { FormModule } from "./form/public/form.module";
+import { CdeAppComponent } from "app.component";
+import { CdeModule } from "cde/public/cde.module";
+import { CoreModule } from "core/public/core.module";
+import { DiscussModule } from "discuss/discuss.module";
+import { FormModule } from "form/public/form.module";
 import { QuickBoardModule } from 'quickBoard/public/quickBoard.module';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,7 +24,7 @@ import { SystemModule } from 'system/public/system.module';
     ],
     providers: [
         QuickBoardListService,
-        {provide: ErrorHandler, useClass: FrontExceptionHandler}
+        // {provide: ErrorHandler, useClass: FrontExceptionHandler}
     ],
     imports: [
         BrowserModule,

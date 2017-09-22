@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import { SharedService } from "./shared.service";
 import { UserService } from "./user.service";
@@ -9,8 +9,7 @@ export class OrgHelperService  {
     private promise: Promise<void>;
 
     constructor(private http: Http,
-                private userService: UserService,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                private userService: UserService) {
 
         this.reload();
     }

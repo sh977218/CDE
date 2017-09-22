@@ -1,14 +1,15 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
-import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
 import * as ClassificationShared from "../../../system/shared/classificationShared.js";
 import * as _ from "lodash";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
-import { ElasticService } from "../../../core/public/elastic.service";
-import { UserService } from "../../../core/public/user.service";
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { UserService } from 'core/public/user.service';
+import { ElasticService } from 'core/public/elastic.service';
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 @Component({
     selector: "cde-create-data-element",
@@ -23,7 +24,7 @@ export class CreateDataElementComponent implements OnInit {
     suggestedCdes: any[] = [];
 
     constructor(public userService: UserService,
-                @Inject("isAllowedModel") public isAllowedModel,
+                public isAllowedModel: IsAllowedService,
                 private localStorageService: LocalStorageService,
                 private elasticService: ElasticService,
                 private http: Http,

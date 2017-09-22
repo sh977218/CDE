@@ -1,17 +1,16 @@
-import { Component, ViewChild, Inject, Input, Output, EventEmitter } from "@angular/core";
+import { Component, ViewChild, Input, Output, EventEmitter } from "@angular/core";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
-import { OrgHelperService } from "../../../../core/public/orgHelper.service";
 
 import * as authShared from "system/shared/authorizationShared";
-import { UserService } from "../../../../core/public/user.service";
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { UserService } from 'core/public/user.service';
+import { OrgHelperService } from 'core/public/orgHelper.service';
 
 const actionMapping: IActionMapping = {
     mouse: {
-        click: () => {
-        },
-        expanderClick: () => {
-        }
+        click: () => {},
+        expanderClick: () => {}
     }
 };
 
@@ -37,7 +36,7 @@ export class ClassificationViewComponent {
     };
 
     constructor(public modalService: NgbModal,
-                @Inject("isAllowedModel") public isAllowedModel,
+                public isAllowedModel: IsAllowedService,
                 protected userService: UserService,
                 private orgHelper: OrgHelperService) {
     };

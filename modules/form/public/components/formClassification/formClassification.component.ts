@@ -1,10 +1,11 @@
-import { Component, Input, ViewChild, Inject } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
-import { ClassificationService } from "../../../../core/public/classification.service";
-import { ClassifyItemModalComponent } from "../../../../adminItem/public/components/classification/classifyItemModal.component";
-import { UserService } from "../../../../core/public/user.service";
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { ClassificationService } from 'core/public/classification.service';
+import { UserService } from 'core/public/user.service';
 
 @Component({
     selector: "cde-form-classification",
@@ -25,7 +26,7 @@ export class FormClassificationComponent {
                 private alert: AlertService,
                 private classificationSvc: ClassificationService,
                 public userService: UserService,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                public isAllowedModel: IsAllowedService) {
     }
 
 

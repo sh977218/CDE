@@ -1,5 +1,6 @@
-import { Component, Inject, Input, Output, ViewChild } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
+import { IsAllowedService } from 'core/public/isAllowed.service';
 
 @Component({
     selector: "cde-concepts",
@@ -12,7 +13,7 @@ export class ConceptsComponent {
     public modalRef: NgbModalRef;
     @Input() public elt: any;
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
+    constructor(public isAllowedModel: IsAllowedService,
                 public modalService: NgbModal) {
     }
 
@@ -48,6 +49,11 @@ export class ConceptsComponent {
         this.modalRef.close();
     }
 
+    openNewConceptModal() {
+        this.modalRef = this.modalService.open(this.newConceptContent, {size: "lg"});
+        this.newConcept = {origin: "LOINC", type: "dec"};
+    }
+
     dataElementConceptRemoveConcept(index) {
         this.elt.dataElementConcept.concepts.splice(index, 1);
         this.elt.unsaved = true;
@@ -56,11 +62,6 @@ export class ConceptsComponent {
     objectClassRemoveConcept(index) {
         this.elt.objectClass.concepts.splice(index, 1);
         this.elt.unsaved = true;
-    }
-
-    openNewConceptModal() {
-        this.modalRef = this.modalService.open(this.newConceptContent, {size: "lg"});
-        this.newConcept = {origin: "LOINC", type: "dec"};
     }
 
     propertyRemoveConcept(index) {
