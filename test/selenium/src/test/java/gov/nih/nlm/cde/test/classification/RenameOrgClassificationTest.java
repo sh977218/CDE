@@ -7,10 +7,10 @@ import org.openqa.selenium.WebDriverException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class RenameClassificationTest extends NlmCdeBaseTest {
+public class RenameOrgClassificationTest extends NlmCdeBaseTest {
 
     @Test
-    public void renameClassification() {
+    public void renameOrgClassification() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
         clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Domain", "Protocol Experience"})));
@@ -30,10 +30,10 @@ public class RenameClassificationTest extends NlmCdeBaseTest {
         textPresent("Renaming in progress.");
         closeAlert();
         try {
-            textPresent("Renaming complete.");
+            textPresent("Classification Renamed");
             closeAlert();
         } catch (WebDriverException e) {
-            textPresent("Renaming complete.");
+            textPresent("Classification Renamed");
             closeAlert();
         }
         findElement(By.xpath("//*[@id='Domain,Protocol Experiencies']"));
