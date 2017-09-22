@@ -35,7 +35,8 @@ module.exports = {
             new AotPlugin.AotPlugin({
                 tsConfigPath: './tsconfig.json',
                 entryModule: path.join(__dirname, 'modules', 'app.module') + '#CdeAppModule',
-                mainPath: 'modules/main-aot'
+                mainPath: 'modules/main-aot',
+                exclude: '/node-js/'
             }),
             new webpack.DefinePlugin({
                 PRODUCTION: JSON.stringify(true),

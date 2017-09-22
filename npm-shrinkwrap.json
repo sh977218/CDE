@@ -1407,7 +1407,9 @@
       }
     },
     "classlist.js": {
-      "version": "github:eligrey/classList.js#e77e448bfca5babdc7212f96d0ab507b21000549",
+      "version": "1.1.20150312",
+      "resolved": "https://registry.npmjs.org/classlist.js/-/classlist.js-1.1.20150312.tgz",
+      "integrity": "sha1-HXCEL3Ai8I2awIbOaeWyUPLFd4k=",
       "dev": true
     },
     "clean-css": {
@@ -7016,7 +7018,9 @@
       "integrity": "sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk="
     },
     "ng-diff-match-patch": {
-      "version": "git+https://github.com/sh977218/ng-diff-match-patch.git#a360d4fb9ab0a77ba084bd5c543a1a088db0a0ed",
+      "version": "2.0.6",
+      "resolved": "https://registry.npmjs.org/ng-diff-match-patch/-/ng-diff-match-patch-2.0.6.tgz",
+      "integrity": "sha512-MNhlAaHijv6xiPYJzTgzFys4JT+S1NQvSdkL62xdxjgEt1DEYG8E9RVny5BYUp23bQqvsXSvujVhEABI8DA2kg==",
       "dev": true
     },
     "ng-recaptcha": {
