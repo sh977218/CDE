@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.BaseClassificationTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
@@ -17,12 +16,14 @@ public class ClassifyCdesInFormTest extends NlmCdeBaseTest {
         _addClassificationByTree("CTEP", new String[]{"ABTC", "ABTC 0904"});
 
         // Verify
-        goToCdeByName("Data source");
+        String cdeName1 = "Data source";
+        goToCdeByName(cdeName1);
         clickElement(By.id("classification_tab"));
         textPresent("ABTC");
         textPresent("ABTC 0904");
 
-        goToCdeByName("History data reliability type");
+        String cdeName2 = "History data reliability type";
+        goToCdeByName(cdeName2);
         clickElement(By.id("classification_tab"));
         textPresent("ABTC");
         textPresent("ABTC 0904");

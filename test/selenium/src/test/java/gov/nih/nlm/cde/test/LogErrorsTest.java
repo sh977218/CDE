@@ -24,7 +24,6 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/triggerServerErrorExpress");
         textPresent("app.express.error");
-        textPresent("app.domain.error");
     }
 
     @Test
