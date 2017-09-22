@@ -2,7 +2,7 @@
   "name": "ludetc-cdes",
   "version": "0.0.1",
   "scripts": {
-    "build": "npm run buildApp & npm run buildEmbed & npm run buildNative & wait",
+    "build": "npm run buildEmbed & npm run buildNative & npm run buildApp",
     "buildApp": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
     "buildEmbed": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackEmbed.config.js",
     "buildNative": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackNative.config.js",
