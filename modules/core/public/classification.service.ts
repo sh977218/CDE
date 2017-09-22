@@ -55,7 +55,6 @@ export class ClassificationService {
         this.http.post(endPoint, deleteBody).map(res => res.json()).subscribe(res => cb(), (err) => cb(err));
     }
 
-
     sortClassification(elt) {
         elt.classification = elt.classification.sort(function (c1, c2) {
             return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
@@ -162,9 +161,11 @@ export class ClassificationService {
             err => this.alert.addAlert("danger", err));
     };
 
-    addChildClassification(orgName, categories, cb) {
-        let putBody = {categories: categories};
-        this.http.put("/orgClassification/" + orgName, putBody)
+    addChildClassification(newClassification, cb) {
+        let putBody = {
+            newClassification: newClassification
+        };
+        this.http.put("/orgClassification/", putBody)
             .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));

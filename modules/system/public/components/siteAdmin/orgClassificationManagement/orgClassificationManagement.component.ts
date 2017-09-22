@@ -233,7 +233,11 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.modalService.open(this.addChildClassificationContent).result.then(result => {
             if (result === "confirm") {
                 classificationArray.push(this.newClassificationName);
-                this.classificationSvc.addChildClassification(this.selectedOrg.name, classificationArray, message => {
+                let newClassification = {
+                    orgName: this.selectedOrg.name,
+                    categories: classificationArray
+                };
+                this.classificationSvc.addChildClassification(newClassification, message => {
                     this.onChangeOrg(this.selectedOrg.name, () => this.alert.addAlert("success", message));
                 });
             }
@@ -262,7 +266,11 @@ export class OrgClassificationManagementComponent implements OnInit {
             .result.then(result => {
             if (result === "confirm") {
                 classificationArray.push(this.newClassificationName);
-                this.classificationSvc.addChildClassification(this.selectedOrg.name, classificationArray, newOrg => {
+                let newClassification = {
+                    orgName: this.selectedOrg.name,
+                    categories: classificationArray
+                };
+                this.classificationSvc.addChildClassification(newClassification, newOrg => {
                     this.selectedOrg = newOrg;
                     this.alert.addAlert("success", "Classification Added");
                 });

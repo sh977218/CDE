@@ -76,7 +76,7 @@ exports.init = function (app) {
             orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings, err => {
                 if (err) logging.log(err);
             });
-            res.send("Deleting classification.");
+            res.send("Deleting in progress.");
         });
     });
 
@@ -88,25 +88,24 @@ exports.init = function (app) {
         if (!newName || !newClassification || !settings) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("renameClassification", (err, j) => {
-            if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
+            if (err) return res.status(500).send("Error - rename classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings, err => {
                 if (err) logging.log(err);
             });
-            res.send("Renaming classification.");
+            res.send("Renaming in progress.");
         });
     });
 
     // add org classification
-    app.put('/orgClassification/:org', function (req, res) {
-        let orgName = req.params.org;
-        let categories = req.body.categories;
-        if (!orgName || !categories) return res.status(400).send();
-        if (!usersrvc.isCuratorOf(req.user, orgName)) return res.status(403).end();
+    app.put('/orgClassification/', function (req, res) {
+        let newClassification = req.body.newClassification
+        if (!newClassification) return res.status(400).send();
+        if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("addClassification", (err, j) => {
             if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
-            orgClassificationSvc.addOrgClassification(orgName, categories, err => {
+            orgClassificationSvc.addOrgClassification(newClassification, err => {
                 if (err) res.status(500).send(err);
                 else res.send("Classification added.");
             });
@@ -126,7 +125,7 @@ exports.init = function (app) {
             orgClassificationSvc.reclassifyOrgClassification(req.user, oldClassification, newClassification, settings, err => {
                 if (err) logging.log(err);
             });
-            res.send("Reclassifying classification.");
+            res.send("Reclassifying in progress.");
         });
 
     });
@@ -227,26 +226,26 @@ exports.init = function (app) {
         async.series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
-                       // if (req.body.recaptcha) {
-                       //     request.post("https://www.google.com/recaptcha/api/siteverify",
-                       //         {
-                       //             form: {
-                       //                 secret: config.captchaCode,
-                       //                 response: req.body.recaptcha,
-                       //                 remoteip: getRealIp(req)
-                       //             },
-                       //             json: true
-                       //         }, function (err, resp, body) {
-                       //             if (err) captchaDone(err);
-                       //             else if (!body.success) {
-                       //                 captchaDone("incorrect recaptcha");
-                       //             } else {
-                                       captchaDone();
-                               //     }
-                               // });
-                       // } else {
-                       //     captchaDone("missing recaptcha");
-                       // }
+                        // if (req.body.recaptcha) {
+                        //     request.post("https://www.google.com/recaptcha/api/siteverify",
+                        //         {
+                        //             form: {
+                        //                 secret: config.captchaCode,
+                        //                 response: req.body.recaptcha,
+                        //                 remoteip: getRealIp(req)
+                        //             },
+                        //             json: true
+                        //         }, function (err, resp, body) {
+                        //             if (err) captchaDone(err);
+                        //             else if (!body.success) {
+                        //                 captchaDone("incorrect recaptcha");
+                        //             } else {
+                        captchaDone();
+                        //     }
+                        // });
+                        // } else {
+                        //     captchaDone("missing recaptcha");
+                        // }
                     } else {
                         captchaDone();
                     }

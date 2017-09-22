@@ -37,8 +37,6 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         findElement(By.linkText("Magnetic Resonance Imaging (MRI)"));
         findElement(By.linkText("Under Review"));
         findElement(By.linkText("6701"));
-        createOrgClassification(orgWG, new String[]{classification});
-        modalGone();
         createOrgClassification(orgWG, new String[]{classification, subClassification});
         modalGone();
 
