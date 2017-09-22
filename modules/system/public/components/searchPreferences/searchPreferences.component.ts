@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { AlertService } from "../alert/alert.service";
-import { ElasticService } from "../../../../core/public/elastic.service";
+import { ElasticService } from 'core/public/elastic.service';
 
 @Component({
     selector: "cde-search-preferences",

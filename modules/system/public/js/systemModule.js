@@ -136,9 +136,6 @@ angular.module('systemModule').controller('SearchCtrl', ['$scope', function ($sc
     });
 }]);
 
-angular.module('systemModule').config(['$compileProvider', function ($compileProvider) {
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
-}]);
 
 angular.module('systemModule').config(["$provide", function ($provide) {
     var previousException;
@@ -168,23 +165,6 @@ angular.module('systemModule').config(["$provide", function ($provide) {
                 }
             };
         }]);
-}]);
-
-angular.module('systemModule').config(["localStorageServiceProvider", function (localStorageServiceProvider) {
-    localStorageServiceProvider.setPrefix('nlmcde');
-}]);
-
-angular.module('systemModule').run(["$rootScope", "$location", function ($rootScope, $location) {
-    var dataLayer = window.dataLayer = window.dataLayer || [];
-
-    $rootScope.$on("$locationChangeSuccess", function () {
-        dataLayer.push({
-            event: 'ngRouteChange',
-            attributes: {
-                route: $location.path()
-            }
-        });
-    });
 }]);
 
 import { downgradeComponent, downgradeInjectable } from "@angular/upgrade/static";

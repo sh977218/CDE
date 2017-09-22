@@ -113,7 +113,7 @@ export class ClassificationService {
             resultPerPage: 10000,
             searchTerm: "",
             page: 1,
-            selectedStatuses: this.SearchSettings.getUserDefaultStatuses()
+            selectedStatuses: this.esService.getUserDefaultStatuses()
         };
         let ro = new RequestOptions({
             body: {
@@ -150,7 +150,7 @@ export class ClassificationService {
             resultPerPage: 10000,
             searchTerm: "",
             page: 1,
-            selectedStatuses: this.SearchSettings.getUserDefaultStatuses()
+            selectedStatuses: this.esService.getUserDefaultStatuses()
         };
         let postBody = {
             settings: settings,

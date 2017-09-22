@@ -155,7 +155,7 @@ export class ElasticService {
         this.searchSettings = JSON.parse(JSON.stringify(settings));
         delete settings.includeRetired;
         this.localStorageService.set("SearchSettings", settings);
-        this.http.post("/user/update/searchSettings", settings).subscribe();
+        if (this.userService.user.username) this.http.post("/user/update/searchSettings", settings).subscribe();
     }
 
     getDefault () {

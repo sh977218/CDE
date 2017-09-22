@@ -5,7 +5,7 @@ import { CdeForm } from 'form/public/form.model';
 import { DataElement } from 'cde/public/dataElement.model';
 import { User } from 'core/public/models.model';
 import * as _ from "lodash";
-import { UserService } from "../../../core/public/user.service";
+import { UserService } from 'core/public/user.service';
 
 @Component({
     selector: "cde-profile",
