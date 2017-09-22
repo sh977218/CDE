@@ -46,7 +46,7 @@ exports.eltClassification = function (body, action, dao, cb) {
         if (!elt) return cb("can not elt");
         var steward = classificationShared.findSteward(elt, body.orgName);
         if (!steward) {
-            mongo_data_system.orgByName(body.orgName, function (stewardOrg) {
+            mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
                 var classifOrg = {
                     stewardOrg: {
                         name: body.orgName
@@ -69,12 +69,6 @@ exports.eltClassification = function (body, action, dao, cb) {
     if (body.tinyId && body.version && dao.byTinyIdAndVersion)
         dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
 };
-
-function classify(steward, categories, elt) {
-    classificationShared.addCategory(steward.object, body.categories, function (err) {
-        classification.saveCdeClassif(err, elt, cb);
-    });
-}
 
 exports.isInvalidatedClassificationRequest = function (req) {
     if (!req.body || !req.body.eltId || !req.body.categories || !(req.body.categories instanceof Array) || !req.body.orgName)
@@ -140,7 +134,7 @@ exports.modifyOrgClassification = function (request, action, callback) {
     if (!(request.categories instanceof Array)) {
         request.categories = [request.categories];
     }
-    mongo_data_system.orgByName(request.orgName, function (stewardOrg) {
+    mongo_data_system.orgByName(request.orgName, function (err, stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.modifyCategory(fakeTree, request.categories, {
             type: action,
@@ -200,7 +194,7 @@ exports.addOrgClassification = function (body, cb) {
         body.categories = [body.categories];
     }
 
-    mongo_data_system.orgByName(body.orgName, function (stewardOrg) {
+    mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.addCategory(fakeTree, body.categories);
         stewardOrg.markModified("classifications");

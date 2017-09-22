@@ -556,7 +556,7 @@ public class NlmCdeBaseTest {
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
         wait.until(new ExpectedCondition<Boolean>() {
-            public Boolean apply (WebDriver driver) {
+            public Boolean apply(WebDriver driver) {
                 return driver.findElement(By.id("confirmSaveBtn")).isEnabled();
             }
         });
@@ -1207,9 +1207,33 @@ public class NlmCdeBaseTest {
     protected void addClassificationByTree(String org, String[] classificationArray) {
         addClassificationByTree(org, classificationArray, "Classification added.");
     }
+    protected void _addClassificationByTree(String org, String[] classificationArray) {
+        _addClassificationByTree(org, classificationArray, "All CDEs Classified");
+    }
 
     protected void addClassificationByTree(String org, String[] classificationArray, String alertText) {
         clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        textPresent(classificationArray[0]);
+        String expanderStr = "";
+        for (int i = 0; i < classificationArray.length - 1; i++) {
+            expanderStr = expanderStr + classificationArray[i];
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
+            expanderStr += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
+        if (alertText != null) {
+            textPresent(alertText);
+            closeAlert();
+        }
+        for (int i = 1; i < classificationArray.length; i++)
+            textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
+    }
+
+    protected void _addClassificationByTree(String org, String[] classificationArray, String alertText) {
+        clickElement(By.id("openClassifyCdesModalBtn"));
         textPresent("By recently added");
 
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);

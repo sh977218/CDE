@@ -28,6 +28,19 @@ exports.findLeaf = function (classification, categories) {
     };
 };
 
+exports.addCategoriesToTree = function (tree, categories) {
+    var temp = tree;
+    categories.forEach(function (category) {
+        var found = _.find(temp.elements, function (element) {
+            return element.name === category;
+        });
+        if (!found) temp.elements.push({name: category, elements: []});
+        temp = _.find(temp.elements, function (element) {
+            return element.name === category;
+        });
+    });
+};
+
 exports.arrangeClassification = function (item, orgName) {
     var index = _.findIndex(item.classification, function (o) {
         return o.stewardOrg.name === orgName;
@@ -48,16 +61,7 @@ exports.classifyElt = function (item, orgName, categories) {
             return o.stewardOrg && o.stewardOrg.name === orgName;
         });
     }
-    var temp = classification;
-    categories.forEach(function (category) {
-        var found = _.find(temp.elements, function (element) {
-            return element.name === category;
-        });
-        if (!found) temp.elements.push({name: category, elements: []});
-        temp = _.find(temp.elements, function (element) {
-            return element.name === category;
-        });
-    });
+    exports.addCategoriesToTree(classification, categories);
     exports.arrangeClassification(item, orgName);
     item.updated = new Date();
     if (item.markModified) item.markModified("classification");
@@ -91,7 +95,6 @@ exports.renameClassifyElt = function (item, orgName, categories, newName) {
         }
     }
 };
-
 
 // PUT NEW API ABOVE
 
@@ -184,12 +187,15 @@ exports.classifyItem = function (item, orgName, classifPath) {
         exports.addCategory(steward.object, classifPath.slice(0, i));
     }
 };
-exports.addCategory = function (tree, fields) {
+exports.addCategory = function (tree, fields, cb) {
     var classification = this;
     var lastLevel = classification.fetchLevel(tree, fields);
-    if (classification.isDuplicate(lastLevel.elements, fields[fields.length - 1]))
-        return "Classification Already Exists";
-    else lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
+    if (classification.isDuplicate(lastLevel.elements, fields[fields.length - 1])) {
+        if (cb) return cb("Classification Already Exists");
+    } else {
+        lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
+        if (cb) return cb();
+    }
 };
 
 exports.fetchLevel = function (tree, fields) {
