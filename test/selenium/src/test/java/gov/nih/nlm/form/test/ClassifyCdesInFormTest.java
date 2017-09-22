@@ -1,18 +1,20 @@
 package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class ClassifyFormCdes extends BaseClassificationTest {
+public class ClassifyCdesInFormTest extends NlmCdeBaseTest {
 
     @Test
-    public void classifyFormCdes() {
+    public void classifyCdesInForm() {
+        String formName = "History Data Source and Reliability";
         mustBeLoggedInAs("ctepOnlyCurator", password);
 
-        goToFormByName("History Data Source and Reliability");
+        goToFormByName(formName);
         clickElement(By.id("classification_tab"));
-        _classifyCdesMethod(new String[]{"CTEP", "ABTC", "ABTC 0904"});
+        _addClassificationByTree("CTEP", new String[]{"ABTC", "ABTC 0904"});
 
         // Verify
         goToCdeByName("Data source");

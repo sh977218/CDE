@@ -95,21 +95,6 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         addClassificationMethod(new String[]{org, classification, subClassification});
     }
 
-    public void _classifyCdesMethod(String[] categories) {
-        clickElement(By.id("openClassifyCdesModalBtn"));
-        textPresent("By recently added");
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        textPresent(categories[1]);
-        String expanderStr = "";
-        for (int i = 1; i < categories.length - 1; i++) {
-            expanderStr = expanderStr + categories[i];
-            clickElement(By.id(expanderStr + "-expander"));
-            expanderStr += ",";
-        }
-        clickElement(By.xpath("//*[@id='" + expanderStr + categories[categories.length - 1] + "-classifyBtn']"));
-        closeAlert();
-    }
-
     public void _addExistsClassificationMethod(String[] categories) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");

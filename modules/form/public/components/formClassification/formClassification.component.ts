@@ -104,7 +104,7 @@ export class FormClassificationComponent {
             .subscribe(res => {
                 if (res["_body"] === "Done") {
                     this.classifyCdesModalRef.close("success");
-                    this.alert.addAlert("success", "All CDEs Classified");
+                    this.alert.addAlert("success", "All CDEs Classified.");
                 }
                 else if (res["_body"] === "Processing") {
                     let fn = setInterval(() => {
