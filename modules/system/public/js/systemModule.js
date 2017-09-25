@@ -1,5 +1,3 @@
-import * as authShared from "../../../system/shared/authorizationShared";
-
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
 angular.module('systemModule', ['ngSanitize', 'ngRoute', 'LocalStorageModule',

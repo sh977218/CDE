@@ -7,7 +7,7 @@ import * as authShared from "system/shared/authorizationShared";
 export class IsAllowedService {
 
     constructor(private userService: UserService) {}
-    
+
     isAllowed (CuratedItem) {
         if (!CuratedItem) return false;
         if (CuratedItem.archived) {
@@ -30,10 +30,6 @@ export class IsAllowedService {
 
     isOrgCurator () {
         return authShared.isOrgCurator(this.userService.user);
-    }
-
-    isCuratorFor (orgName) {
-        return authShared.isCuratorOf(this.userService.user, orgName);
     }
 
     hasRole (role) {

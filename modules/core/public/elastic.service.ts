@@ -220,7 +220,7 @@ export class ElasticService {
                 }
                 resolve();
             });
-        })
+        });
     }
 
 
