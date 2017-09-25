@@ -148,11 +148,11 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             .subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
     };
 
-    replyTo(commentId, reply) {
+    replyTo(commentId) {
         this.http.post("/comments/reply", {
             commentId: commentId,
             eltName: this.eltName,
-            reply: reply
+            reply: this.tempReplies[commentId]
         }).subscribe(() => {
             this.tempReplies[commentId] = '';
             this.loadComments();
