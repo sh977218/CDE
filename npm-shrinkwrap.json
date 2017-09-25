@@ -1405,7 +1405,9 @@
       }
     },
     "classlist.js": {
-      "version": "github:eligrey/classList.js#e77e448bfca5babdc7212f96d0ab507b21000549",
+      "version": "1.1.20150312",
+      "resolved": "https://registry.npmjs.org/classlist.js/-/classlist.js-1.1.20150312.tgz",
+      "integrity": "sha1-HXCEL3Ai8I2awIbOaeWyUPLFd4k=",
       "dev": true
     },
     "clean-css": {
