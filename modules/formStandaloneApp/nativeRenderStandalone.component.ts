@@ -38,7 +38,8 @@ export class NativeRenderStandaloneComponent {
                 async.forEach(form.formElements, (fe, doneOne) => {
                     if (fe.elementType === 'form') {
                         if (depth < maxDepth) {
-                            this.http.get('/form/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
+                            this.http.get('/form/' + fe.inForm.form.tinyId
+                                + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
                                 .map(res => res.json())
                                 .subscribe((response) => {
                                     fe.formElements = response.formElements;
