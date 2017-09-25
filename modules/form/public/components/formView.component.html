@@ -10,7 +10,8 @@
             <button *ngIf="!elt.isDraft" (click)="loadDraft(null);">Load Draft</button>
         </ng-container>
         <ng-container *ngIf="elt.isDraft">
-            <button *ngIf="elt.unsaved && isFormValid" (click)="saveModalComponent.openSaveModal()"></button>
+            <button *ngIf="elt.unsaved && isFormValid" (click)="saveModalComponent.openSaveModal()">publish form
+            </button>
             <button (click)="loadForm();">Stop Edit</button>
             <button (click)="removeDraft();">Remove Draft</button>
         </ng-container>
@@ -79,7 +80,8 @@
                             <li>
                                 <a id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank"
                                    style="display: inline">XML File, CDISC / ODM</a>
-                                <a href="https://www.cdisc.org/standards/transport/odm" target="_blank" style="display: inline">
+                                <a href="https://www.cdisc.org/standards/transport/odm" target="_blank"
+                                   style="display: inline">
                                     <i class="fa fa-info-circle"></i></a>
                             </li>
                             <li>

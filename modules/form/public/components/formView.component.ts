@@ -18,7 +18,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
-    @ViewChild(SaveModalComponent) public saveModalComponent: SaveModalComponent;
+    @ViewChild("saveModal") public saveModalComponent: SaveModalComponent;
     @Input() routeParams: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -330,6 +330,7 @@ export class FormViewComponent implements OnInit {
             .subscribe(res => {
                 if (res) this.loadForm(() => {
                     this.alert.addAlert("success", "Draft removed. Form reloaded.");
+                    this.loadDraft(null);
                 });
             }, err => this.alert.addAlert("danger", err));
     }
