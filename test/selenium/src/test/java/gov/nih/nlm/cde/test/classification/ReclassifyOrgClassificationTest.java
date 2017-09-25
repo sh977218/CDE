@@ -9,24 +9,11 @@ import org.testng.annotations.Test;
 import static com.jayway.restassured.RestAssured.get;
 
 public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
-    String oldClassification = "OldClassification";
-    String newClassification = "NewClassification";
-
-    private void addOldClassificationTo(String cdeName) {
-        goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
-        textNotPresent(newClassification);
-        clickElement(By.id("openClassificationModalBtn"));
-        textPresent("By recently added");
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        textPresent(oldClassification);
-        textPresent(newClassification);
-        clickElement(By.id("OldClassification-classifyBtn"));
-        closeAlert();
-    }
 
     @Test
     public void reclassifyOrgClassification() {
+        String oldClassification = "OldClassification";
+        String newClassification = "NewClassification";
         String cdeName = "Gastrointestinal therapy water flush status";
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassificationMgt();
@@ -50,8 +37,8 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
 
     @Test(dependsOnMethods = {"reclassifyOrgClassification"})
     public void modifiedSinceAPI() {
-        String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
+        String response = get(baseUrl + "/api/cde/modifiedElements?from=2017-01-01").asString();
         Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
-        Assert.assertTrue(response.contains("Z2hYKE_bwar"), "Actual: " + response);
+        Assert.assertTrue(response.contains("HyQz9G0oYaE"), "Actual: " + response);
     }
 }
