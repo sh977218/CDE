@@ -5,10 +5,12 @@ export let blankEncounter = {
     "class": {"code": "outpatient"},
     "type": [{"coding": [{"system": "http://snomed.info/sct", "code": "185349003"}], "text": "Outpatient Encounter"}],
     "period": {"start": null, "end": null},
-    "subject": {
+    "serviceProvider": {
         "reference": null
     },
-    "serviceProvider": {"reference": "Organization/23d90c98-3185-44d4-a5c1-e6921cf05ec7"}
+    "subject": {
+        "reference": null
+    }
 };
 
 export let blankObservation = {
@@ -26,14 +28,8 @@ export let blankObservation = {
         }
     ],
     "code": {
-        "coding": [
-            {
-                "system": "http://loinc.org",
-                "code": "8302-2",
-                "display": "Body Height"
-            }
-        ],
-        "text": "Body Height"
+        "coding": [],
+        "text": ""
     },
     "subject": {
         "reference": null
@@ -52,6 +48,8 @@ export let mappings: any = [
         "system": "http://hl7.org/fhir",
         "code": "multi",
         "format": "json",
+        "encounterFn": "function (form, encounter) { var fe = getById(form, 'abmAnDXu5my');"
+        + " fe.question.answer = encounter.date; parseDateTime(fe); fe.question.editable = false; }",
         "mapping": [
             {
                 "resource": "Observation",
@@ -78,8 +76,7 @@ export let mappings: any = [
                 "resourceCode": "*",
                 "resourcePropertyObj": null,
                 "resourceProperty": "effectiveDateTime",
-                "inFn": "function (form, value) { var fe = getById(form, 'abmAnDXu5my'); fe.question.answer = value;"
-                + " parseDateTime(fe); fe.question.editable = false; }",
+                "inFn": null,
                 "outFn": "function (form) { return encounter.date; }"
             },
 

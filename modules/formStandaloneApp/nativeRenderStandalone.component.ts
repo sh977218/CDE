@@ -51,6 +51,8 @@ export class NativeRenderStandaloneComponent {
     ];
     patientEncounters = [];
     patientObservations = [];
+    patientOrganization: any;
+    saveMessage: string = null;
     selectedEncounter: any;
     selectedObservations = []; // display data only
     selectedProfile: string;
@@ -64,6 +66,22 @@ export class NativeRenderStandaloneComponent {
         {id: 'LOINC', uri: 'http://loinc.org'},
         {id: 'UNITS', uri: 'http://unitsofmeasure.org/'},
     ];
+    static externalCodesDetail = {
+        LOINC: {
+            '29463-7': 'Body Weight',
+            '39156-5': 'Body Mass Index',
+            '55284-4': 'Blood Pressure',
+            '8302-2': 'Body Height',
+            '8462-4': 'Diastolic Blood Pressure',
+            '8480-6': 'Systolic Blood Pressure'
+        }
+    };
+    static fhirObservations = {
+        'LOINC 29463-7': {categoryCode: 'vital-signs'},
+        'LOINC 39156-5': {categoryCode: 'vital-signs'},
+        'LOINC 55284-4': {categoryCode: 'vital-signs'},
+        'LOINC 8302-2': {categoryCode: 'vital-signs'}
+    };
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
     constructor(private http: Http) {
@@ -73,8 +91,7 @@ export class NativeRenderStandaloneComponent {
         this.panelType = args.panelType;
 
         if ((<any>window).formElt) {
-            this.elt = JSON.parse(JSON.stringify((<any>window).formElt));
-            this.fetch();
+            this.loadSubForms(null, JSON.parse(JSON.stringify((<any>window).formElt)));
         } else {
             let _id = args.tinyId ? args.tinyId : (args._id ? args._id + "" : undefined);
             if (_id)
@@ -109,55 +126,7 @@ export class NativeRenderStandaloneComponent {
         if (!this.selectedEncounter)
             return;
 
-        this.patientForms.forEach(f => {
-            let names = f.id ? NativeRenderStandaloneComponent.getFormObservations(f.id) : [];
-            if (names.length) {
-                f.observed = this.selectedEncounter.observations.filter(
-                    o => o.raw.code.coding.some(c => names.indexOf(c.system + ' ' + c.code) > -1)
-                ).length;
-                f.total = names.length;
-                f.percent = 100 * f.observed / f.total;
-            } else {
-                f.observed = 0;
-                f.total = 0;
-                f.percent = 0;
-            }
-        });
-    }
-
-    fetch(error = null, cb = _.noop) {
-        if (error) {
-            this.errorMessage = "Sorry, we are unable to retrieve this element.";
-            return;
-        }
-
-        this.fetchWholeForm(this.elt, cb);
-    }
-
-    fetchWholeForm(form, callback = _.noop) {
-        let self = this;
-        if (form.formElements)
-            form.formElements.forEach(fe => {
-                if (fe.elementType === 'form')
-                    this.http.get('/form/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
-                        .map(function (res) { return res.json(); })
-                        .subscribe(function (response: any) {
-                            fe.formElements = response.formElements;
-                            self.fetchWholeForm(fe);
-                        });
-                else if (fe.elementType === 'section')
-                    this.fetchWholeForm(fe);
-                else
-                    if (fe.question.cde.derivationRules)
-                        fe.question.cde.derivationRules.forEach(function (derRule) {
-                            delete fe.incompleteRule;
-                            if (derRule.ruleType === 'score') {
-                                fe.question.isScore = true;
-                                fe.question.scoreFormula = derRule.formula;
-                            }
-                        });
-            });
-        callback();
+        this.updateProgress();
     }
 
     filterObservations() {
@@ -169,6 +138,10 @@ export class NativeRenderStandaloneComponent {
         return coding.reduce(
             (a, v) => a += v.display + ' ' + this.getCodeSystem(v.system) + ':' + v.code + '\n', ''
         );
+    }
+
+    static getCodeDisplay(system, code) {
+        return this.externalCodesDetail[system][code];
     }
 
     static getCodeSystem(uri) {
@@ -216,16 +189,27 @@ export class NativeRenderStandaloneComponent {
     }
 
     static getObservationValue(observation) {
+        if (!observation)
+            return undefined;
         if (observation.valueCodeableConcept)
             return this.getCodings(observation.valueCodeableConcept.coding);
         else if (observation.valueQuantity) {
             let quantity = observation.valueQuantity;
+            if (quantity.value === undefined)
+                return undefined;
             return quantity.value + ' ' + quantity.code + '(' + this.getCodeSystem(quantity.system) + ')';
-        } else if (observation.component)
-            return observation.component.reduce(
-                (a, v) => a += this.getCodings(v.code.coding) + ' = ' + this.getObservationValue(v) + '\n', ''
-            );
-        else
+        } else if (observation.component) {
+            let value = observation.component.reduce((a, v) => {
+                let vs = this.getObservationValue(v);
+                if (vs === undefined)
+                    return a;
+                return a + this.getCodings(v.code.coding) + ' = ' + vs + '\n';
+            }, '');
+            if (value === '')
+                return undefined;
+            else
+                return value;
+        } else
             return JSON.stringify(observation);
     }
 
@@ -257,17 +241,17 @@ export class NativeRenderStandaloneComponent {
                 cb => {
                     this.smart.patient.api.fetchAll({type: "Observation"})
                         .then((results, refs) => {
-                            results.forEach(observation => {
-                                this.patientObservations.push({
-                                    code: observation.code
-                                        ? NativeRenderStandaloneComponent.getCodings(observation.code.coding)
-                                        : JSON.stringify(observation),
-                                    value: NativeRenderStandaloneComponent.getObservationValue(observation),
-                                    date: observation.issued,
-                                    encounter: observation.context.reference,
-                                    raw: observation
-                                });
-                            });
+                            results.forEach(observation =>
+                                this.patientObservations.push(NativeRenderStandaloneComponent.observationAdd(observation))
+                            );
+                            cb();
+                        });
+                },
+                cb => {
+                    this.smart.patient.api.search({type: "Organization"})
+                        .then((results, refs) => {
+                            if (results && results.data && results.data.entry && results.data.entry.length)
+                                this.patientOrganization = results.data.entry[0].resource;
                             cb();
                         });
                 }
@@ -301,6 +285,66 @@ export class NativeRenderStandaloneComponent {
     }
 
     loadFhirDataForm(form) {
+        this.mapIO(form, this.selectedEncounter.observations.map(o => o.raw), 'in');
+
+        form.formElements.forEach(fe => {
+            if (fe.elementType === 'form')
+                this.loadFhirDataForm(fe);
+        });
+    }
+
+    loadForm(id) {
+        this.http.get('/form/' + id).map(res => res.json()).subscribe(response => {
+            this.loadSubForms(null, response, () => {
+                this.loadFhirData();
+            });
+        }, () => {
+            this.loadSubForms(true);
+        });
+    }
+
+    loadSubForms(error = null, elt = null, cb = _.noop) {
+        if (error) {
+            this.errorMessage = "Sorry, we are unable to retrieve this element.";
+            return;
+        }
+
+        this.loadWholeForm(elt, () => {
+            this.elt = elt;
+            cb();
+        });
+    }
+
+    loadWholeForm(form, callback) {
+        let self = this;
+        if (form.formElements)
+            async.forEach(form.formElements, (fe, cb) => {
+                if (fe.elementType === 'form') {
+                    this.http.get('/form/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
+                        .map(function (res) {
+                            return res.json();
+                        })
+                        .subscribe(function (response: any) {
+                            fe.formElements = response.formElements;
+                            self.loadWholeForm(fe, cb);
+                        });
+                } else if (fe.elementType === 'section') {
+                    this.loadWholeForm(fe, cb);
+                } else {
+                    if (fe.question.cde.derivationRules)
+                        fe.question.cde.derivationRules.forEach(function (derRule) {
+                            delete fe.incompleteRule;
+                            if (derRule.ruleType === 'score') {
+                                fe.question.isScore = true;
+                                fe.question.scoreFormula = derRule.formula;
+                            }
+                        });
+                    cb();
+                }
+            }, callback);
+    }
+
+    mapIO(form, observations, mode, createCb = null) {
         let maps = mappings.filter(m => m.form === form._id
             && m.type === 'external'
             && m.system === 'http://hl7.org/fhir'
@@ -311,36 +355,56 @@ export class NativeRenderStandaloneComponent {
             return;
         let map = maps[0];
 
+        if (mode === 'in') {
+            /* tslint:disable */ let encounterFn = eval('(' + map.encounterFn + ')'); /* tslint:enable */
+            if (encounterFn)
+                encounterFn(form, this.selectedEncounter);
+        }
+
         let resourceObservationMap = {};
         map.mapping.forEach(m => {
             let key = m.resourceSystem + ' ' + m.resourceCode;
             if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[key])) {
                 if (m.resourceCode === '*')
-                    resourceObservationMap[key] = this.selectedEncounter.observations;
+                    resourceObservationMap[key] = observations;
                 else {
                     let system = NativeRenderStandaloneComponent.getCodeSystemOut(m.resourceSystem);
-                    resourceObservationMap[key] = this.selectedEncounter.observations.filter(
-                        o => o.raw.code.coding.some(
+                    resourceObservationMap[key] = observations.filter(
+                        o => o.code.coding.some(
                             c => c.system === system && c.code === m.resourceCode
                         )
                     );
+                    if (createCb && resourceObservationMap[key].length === 0) {
+                        let filtered = map.mapping
+                            .filter(mo => mo.resourceComponentSystem && mo.resourceComponentCode
+                                && mo.resourceSystem === m.resourceSystem && mo.resourceCode === m.resourceCode)
+                            .map(mo => [
+                                mo.resourceComponentSystem + ' ' + mo.resourceComponentCode,
+                                {system: mo.resourceComponentSystem, code: mo.resourceComponentCode}
+                            ]);
+                        let components = Array.from((new Map(filtered)).values());
+                        resourceObservationMap[key].push(
+                            createCb({system: m.resourceSystem, code: m.resourceCode}, components));
+                    }
                 }
             }
         });
 
+        // update observations
+        let patient = this.patient;
         let encounter = this.selectedEncounter;
-        let parseDateTime = function parseDateTime(fe) {
+        function parseDateTime(fe) {
             let m = moment(fe.question.answer);
             if (m.isValid()) {
                 fe.question.answerDate = {year: m.year(), month: m.month() + 1, day: m.date()};
                 fe.question.answerTime = {hour: m.hour(), minute: m.minute(), second: m.second()};
             }
-        };
+        }
         function getValueQuantity(fe, uomSystem, uomCode = null, feUom = null) {
             return {
                 value: fe.question.answer,
                 unit: fe.question.answerUom || feUom && feUom.question.answer || uomCode,
-                system: this.getCodeSystemOut(uomSystem),
+                system: NativeRenderStandaloneComponent.getCodeSystemOut(uomSystem),
                 code: fe.question.answerUom || feUom && feUom.question.answer || uomCode
             };
         }
@@ -396,7 +460,7 @@ export class NativeRenderStandaloneComponent {
                             getByCodeRecurse(f);
                         else if (f.elementType === 'form') {
                             if (f.inForm.form.ids.filter(
-                                    id => id.source === system && id.id === code).length
+                                id => id.source === system && id.id === code).length
                             ) {
                                 count++;
                                 if (count >= instance)
@@ -428,44 +492,40 @@ export class NativeRenderStandaloneComponent {
             function getComponent(res) {
                 let system = NativeRenderStandaloneComponent.getCodeSystemOut(m.resourceComponentSystem);
                 let code = m.resourceComponentCode;
-                let components = res.component.filter(comp => comp.code.coding.some(
-                    c => c.system === system && c.code === code
-                ));
-                if (components.length)
-                    return components[0];
-                else
-                    return null;
+                if (res.component) {
+                    let components = res.component.filter(comp => comp.code.coding.some(
+                        c => c.system === system && c.code === code
+                    ));
+                    if (components.length)
+                        return components[0];
+                    else
+                        return null;
+                } else {
+                    res.component = {};
+                    return res.component;
+                }
             }
             let key = m.resourceSystem + ' ' + m.resourceCode;
-            if (m.resource === 'Observation' && m.inFn && resourceObservationMap[key]) {
+            if (m.resource === 'Observation' && resourceObservationMap[key]
+                && (mode === 'in' && m.inFn || mode === 'out' && m.outFn)) {
                 resourceObservationMap[key].forEach(o => {
                     /* tslint:disable */ let resFn = eval('(' + m.resourcePropertyObj + ')'); /* tslint:enable */
-                    /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
-                    if (inFn) {
-                        if (resFn)
-                            inFn(form, resFn(o.raw)[m.resourceProperty]);
-                        else
-                            inFn(form, o.raw[m.resourceProperty]);
+                    if (!resFn)
+                        resFn = function (obj) {
+                            return obj;
+                        };
+
+                    if (mode === 'in') {
+                        /* tslint:disable */ let inFn = eval('(' + m.inFn + ')'); /* tslint:enable */
+                        if (inFn)
+                            inFn(form, resFn(o)[m.resourceProperty]);
+                    } else if (mode === 'out') {
+                        /* tslint:disable */ let outFn = eval('(' + m.outFn + ')'); /* tslint:enable */
+                        if (outFn)
+                            resFn(o)[m.resourceProperty] = outFn(form);
                     }
                 });
             }
-        });
-
-        form.formElements.forEach(fe => {
-            if (fe.elementType === 'form')
-                this.loadFhirDataForm(fe);
-        });
-    }
-
-    loadForm(id) {
-        this.http.get('/form/' + id).map(res => res.json()).subscribe(response => {
-            this.elt = response;
-        }, () => {
-            this.fetch(true);
-        }, () => {
-            this.fetch(null, () => {
-                this.loadFhirData();
-            });
         });
     }
 
@@ -485,6 +545,8 @@ export class NativeRenderStandaloneComponent {
         let encounter = JSON.parse(JSON.stringify(blankEncounter));
         encounter.period.start = encounter.period.end = this.newEncounterDate;
         encounter.subject.reference = 'Patient/' + this.patient.id;
+        if (this.patientOrganization)
+            encounter.serviceProvider.reference = 'Organization/' + this.patientOrganization.id;
         delete encounter.id;
         return encounter;
     }
@@ -515,6 +577,18 @@ export class NativeRenderStandaloneComponent {
         return JSON.parse(JSON.stringify(blankObservation));
     }
 
+    static observationAdd(observation) {
+        return {
+            code: observation.code
+                ? NativeRenderStandaloneComponent.getCodings(observation.code.coding)
+                : JSON.stringify(observation),
+            value: NativeRenderStandaloneComponent.getObservationValue(observation),
+            date: observation.issued,
+            encounter: observation.context.reference,
+            raw: observation
+        };
+    }
+
     static searchParamsGet(): string[] {
         let params: any = {};
         location.search && location.search.substr(1).split('&').forEach(e => {
@@ -529,17 +603,6 @@ export class NativeRenderStandaloneComponent {
 
     submitFhir() {
         this.submitFhirPending = [];
-
-        let maps = mappings.filter(m => m.form === this.elt._id
-            && m.type === 'external'
-            && m.system === 'http://hl7.org/fhir'
-            && m.code === 'multi'
-            && m.format === 'json'
-        );
-        if (!maps.length)
-            return;
-        let map = maps[0];
-
         this.submitFhirObservations = [];
         this.submitFhirPending = [];
         this.selectedEncounter.observations.forEach(o => {
@@ -547,66 +610,111 @@ export class NativeRenderStandaloneComponent {
             this.submitFhirObservations.push(copy);
             this.submitFhirPending.push({before: o.raw, after: copy});
         });
-        let resourceObservationMap = {};
-        map.mapping.forEach(m => {
-            let key = m.resourceSystem + ' ' + m.resourceCode;
-            if (m.resource === 'Observation' && !Array.isArray(resourceObservationMap[key])) {
-                if (m.resourceCode === '*')
-                    resourceObservationMap[key] = this.submitFhirObservations;
-                else {
-                    resourceObservationMap[key] = this.submitFhirObservations.filter(
-                        o => o.code.coding.filter(
-                            c => c.system === m.resourceSystem && c.code === m.resourceCode
-                        ).length > 0
-                    );
-                    if (resourceObservationMap[key].length === 0) {
-                        let observation = NativeRenderStandaloneComponent.newObjservationGet(this.selectedEncounter);
-                        resourceObservationMap[key].push(observation);
-                        this.submitFhirObservations.push(observation);
-                        this.submitFhirPending.push({before: null, after: observation});
-                    }
-                }
-            }
-        });
 
-        // update observations
-        let patient = this.patient;
-        let encounter = this.selectedEncounter;
-        map.mapping.forEach(m => {
-            let key = m.resourceSystem + ' ' + m.resourceCode;
-            if (m.resource === 'Observation' && m.outFn && resourceObservationMap[key]) {
-                resourceObservationMap[key].forEach(o => {
-                    /* tslint:disable */ let resFn = eval('(' + m.resourcePropertyObj + ')'); /* tslint:enable */
-                    /* tslint:disable */ let outFn = eval('(' + m.outFn + ')'); /* tslint:enable */
-                    resFn(o)[m.resourceProperty] = outFn(this.elt);
+        let createFn = (obsCode = null, compCodes = []) => {
+            let observation = NativeRenderStandaloneComponent.newObjservationGet(this.selectedEncounter);
+            if (obsCode) {
+                observation.code.coding.push({
+                    system: NativeRenderStandaloneComponent.getCodeSystemOut(obsCode.system),
+                    code: obsCode.code,
+                    display: NativeRenderStandaloneComponent.getCodeDisplay(obsCode.system, obsCode.code)
+                });
+                observation.code.text = NativeRenderStandaloneComponent.getCodeDisplay(obsCode.system, obsCode.code);
+            }
+            if (compCodes.length) {
+                observation.component = [];
+                compCodes.forEach(c => {
+                    observation.component.push({
+                        code: {
+                            coding: [{
+                                system: NativeRenderStandaloneComponent.getCodeSystemOut(c.system),
+                                code: c.code,
+                                display: NativeRenderStandaloneComponent.getCodeDisplay(c.system, c.code)
+                            }],
+                            text: NativeRenderStandaloneComponent.getCodeDisplay(c.system, c.code)
+                        }
+                    });
                 });
             }
-        });
+            this.submitFhirObservations.push(observation);
+            this.submitFhirPending.push({before: null, after: observation});
+            return observation;
+        };
+        this.mapIO(this.elt, this.submitFhirObservations, 'out', createFn);
 
         // identify changed and submit to server
         for (let i = 0; i < this.submitFhirPending.length; i++) {
             let p = this.submitFhirPending[i];
-            if (p.before && NativeRenderStandaloneComponent.getObservationValue(p.before)
+            if (NativeRenderStandaloneComponent.getObservationValue(p.before)
                 === NativeRenderStandaloneComponent.getObservationValue(p.after)) {
                 this.submitFhirPending.splice(i, 1);
                 i--;
             }
         }
-        // TODO: refresh before copy from server and compare again
-        this.submitFhirPending.forEach(p => {
+        // TODO: refresh before copy from server and compare again to prevent save with conflict
+        async.forEach(this.submitFhirPending, (p, done) => {
             if (p.before)
-                this.smart.api.update({type: p.after.resourceType, data: JSON.stringify(p.after), id: p.after.id})
-                    .then(response => {
-                        console.log(response);
-                    });
+                this.smart.api.update({
+                    data: JSON.stringify(p.after),
+                    id: p.after.id,
+                    type: p.after.resourceType
+                }).then(response => {
+                    // let match = this.patientObservations.filter(o => o.raw === p.before);
+                    // if (match.length) {
+                    //     let index = this.patientObservations.indexOf(match[0]);
+                    //     if (index > -1)
+                    //         this.patientObservations[i] = response.data;
+                    // }
+                    if (!response || !response.data)
+                        return done('Not saved ' + p.after.id);
+                    let obs = NativeRenderStandaloneComponent.observationAdd(response.data);
+                    let index = this.patientObservations.findIndex(o => o.raw === p.before);
+                    if (index > -1)
+                        this.patientObservations[index] = obs;
+                    index = this.selectedEncounter.observations.findIndex(o => o.raw === p.before);
+                    if (index > -1)
+                        this.selectedEncounter.observations[index] = obs;
+                    done();
+                });
             else
                 this.smart.patient.api.create({
                     baseUrl: 'https://sb-fhir-stu3.smarthealthit.org/smartstu3/data/',
-                    type: "Observation",
-                    data: JSON.stringify(p.after)
+                    data: JSON.stringify(p.after),
+                    type: "Observation"
                 }).then(response => {
-                    console.log(response);
+                    if (!response || !response.data)
+                        return done('Not saved ' + p.after.id);
+                    let obs = NativeRenderStandaloneComponent.observationAdd(response.data);
+                    this.patientObservations.push(obs);
+                    this.selectedEncounter.observations.push(obs);
+                    done();
                 });
+        }, (err) => {
+            if (err)
+                this.saveMessage = err;
+            else
+                this.saveMessage = 'Saved.';
+            setTimeout(() => this.saveMessage = null, 5000);
+
+            this.loadFhirData();
+            this.updateProgress();
+        });
+    }
+
+    updateProgress() {
+        this.patientForms.forEach(f => {
+            let names = f.id ? NativeRenderStandaloneComponent.getFormObservations(f.id) : [];
+            if (names.length) {
+                f.observed = this.selectedEncounter.observations.filter(
+                    o => o.raw.code.coding.some(c => names.indexOf(c.system + ' ' + c.code) > -1)
+                ).length;
+                f.total = names.length;
+                f.percent = 100 * f.observed / f.total;
+            } else {
+                f.observed = 0;
+                f.total = 0;
+                f.percent = 0;
+            }
         });
     }
 }
