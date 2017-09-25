@@ -27,58 +27,25 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
 
     @Test
     public void reclassifyOrgClassification() {
+        String cdeName = "Gastrointestinal therapy water flush status";
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassificationMgt();
-        textPresent("Clinical Trial Mgmt Systems");
         new Select(findElement(By.id("orgToManage"))).selectByVisibleText("org / or Org");
-        textPresent("org / or Org", By.id("classMgt"));
-        clickElement(By.id("addClassification"));
-        textPresent("Add Classification Under");
-        findElement(By.id("addNewCatName")).sendKeys(oldClassification);
-        clickElement(By.id("addNewCatButton"));
-        closeAlert();
-        textPresent(oldClassification);
-        clickElement(By.id("addClassification"));
-        textPresent("Add Classification Under");
-        findElement(By.id("addNewCatName")).sendKeys(newClassification);
-        clickElement(By.id("addNewCatButton"));
-        closeAlert();
-        textPresent(oldClassification);
-        textPresent(newClassification);
-
-        addOldClassificationTo("Gastrointestinal therapy water flush status");
-        addOldClassificationTo("Gastrointestinal therapy feed tube other text");
-
-        gotoClassificationMgt();
-        textPresent("COPPA");
-        new Select(findElement(By.id("orgToManage"))).selectByVisibleText("org / or Org");
-        textPresent(oldClassification);
-        textPresent(newClassification);
-        findElement(By.xpath("//*[@id='classification-OldClassification-div']/div/div/span/a[@title='Reclassify']")).click();
+        clickElement(By.xpath(getOrgClassificationIconXpath("reclassify", new String[]{"OldClassification"})));
         textPresent("Classify CDEs in Bulk");
-        clickElement(By.id("selectClassificationOrg"));
-        textPresent("NINDS");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        clickElement(By.xpath("//*[@id='addClassification-NewClassification']/button"));
-        clickElement(By.id("closeModal"));
+        clickElement(By.id("NewClassification-classifyBtn"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
 
-
-        goToCdeByName("Gastrointestinal therapy water flush status");
-        clickElement(By.id("classification_tab"));
-        textPresent(newClassification);
-        textPresent(oldClassification);
-
-        goToCdeByName("Gastrointestinal therapy feed tube other text");
+        goToCdeByName(cdeName);
         clickElement(By.id("classification_tab"));
         textPresent(newClassification);
         textPresent(oldClassification);
 
         clickElement(By.id("username_link"));
-        textPresent("Site Management");
         clickElement(By.linkText("Audit"));
-        textPresent("Remote Address");
         clickElement(By.linkText("Classification Audit Log"));
-        textPresent("2 elements org / or Org > NewClassification");
+        textPresent("Gastrointestinal therapy water flush status org / or Org > NewClassification");
     }
 
     @Test(dependsOnMethods = {"reclassifyOrgClassification"})
