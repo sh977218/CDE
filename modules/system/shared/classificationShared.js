@@ -31,14 +31,28 @@ exports.findLeaf = function (classification, categories) {
 exports.addCategoriesToTree = function (tree, categories) {
     var temp = tree;
     categories.forEach(function (category) {
+        if (!temp.elements) temp.elements = [];
         var found = _.find(temp.elements, function (element) {
             return element.name === category;
         });
-        if (!found) temp.elements.push({name: category, elements: []});
+        if (!found) {
+            temp.elements.push({name: category, elements: []});
+        }
         temp = _.find(temp.elements, function (element) {
             return element.name === category;
         });
     });
+};
+exports.addCategoriesToOrg = function (org, categories) {
+    if (!org.classifications) org.classifications = [];
+    var found = _.find(org.classifications, function (o) {
+        return o.name === categories[0];
+    });
+    if (!found) org.classifications.push({name: categories[0], elements: []})
+    found = _.find(org.classifications, function (o) {
+        return o.name === categories[0];
+    });
+    exports.addCategoriesToTree(found, _.slice(categories, 1));
 };
 
 exports.arrangeClassification = function (item, orgName) {

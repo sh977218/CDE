@@ -71,7 +71,7 @@ exports.init = function (app) {
         if (!deleteClassification || !settings) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, deleteClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("deleteClassification", (err, j) => {
-            if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
+            if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings, err => {
                 if (err) logging.log(err);
@@ -88,7 +88,7 @@ exports.init = function (app) {
         if (!newName || !newClassification || !settings) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("renameClassification", (err, j) => {
-            if (err) return res.status(500).send("Error - rename classification is in processing, try again later.");
+            if (err) return res.status(409).send("Error - rename classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings, err => {
                 if (err) logging.log(err);
@@ -103,7 +103,7 @@ exports.init = function (app) {
         if (!newClassification) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("addClassification", (err, j) => {
-            if (err) return res.status(500).send("Error - delete classification is in processing, try again later.");
+            if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.addOrgClassification(newClassification, err => {
                 if (err) res.status(500).send(err);
@@ -120,7 +120,7 @@ exports.init = function (app) {
         if (!oldClassification || !newClassification || !settings) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
         mongo_date.jobStatus("reclassifyClassification", (err, j) => {
-            if (err) return res.status(500).send("Error - reclassify classification is in processing, try again later.");
+            if (err) return res.status(409).send("Error - reclassify classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.reclassifyOrgClassification(req.user, oldClassification, newClassification, settings, err => {
                 if (err) logging.log(err);
@@ -134,7 +134,7 @@ exports.init = function (app) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
         mongo_date.jobStatus(jobType, (err, j) => {
-            if (err) res.status(500).send("Error - job status " + jobType);
+            if (err) res.status(409).send("Error - job status " + jobType);
             if (j) return res.send({done: false});
             else res.send({done: true});
         });

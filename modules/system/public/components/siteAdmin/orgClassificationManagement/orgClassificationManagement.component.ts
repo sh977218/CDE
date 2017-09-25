@@ -144,7 +144,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                     newName: this.newClassificationName
                 };
                 this.classificationSvc.renameOrgClassification(newClassification, message => this.alert.addAlert("info", message));
-                this.checkJob("renameClassification", () => this.alert.addAlert("success", "Classification Renamed"));
+                this.checkJob("renameClassification", () => this.alert.addAlert("success", "Classification Renamed."));
             }
         }, () => {
         });

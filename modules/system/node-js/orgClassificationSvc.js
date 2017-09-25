@@ -171,7 +171,7 @@ exports.addOrgClassification = (newClassification, callback) => {
         newClassification.categories = [newClassification.categories];
     mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
         if (err) return callback(err, stewardOrg);
-        classificationShared.addCategoriesToTree(stewardOrg, newClassification.categories);
+        classificationShared.addCategoriesToOrg(stewardOrg, newClassification.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(callback);
     });

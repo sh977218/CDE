@@ -1087,7 +1087,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
         clickElement(By.linkText("Classification Audit Log"));
-        clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
+        clickElement(By.xpath("(//span[text()='" + name + "' and contains(@class,'text-info')])[1]"));
     }
 
     protected void goToBoard(String boardName) {
@@ -1207,8 +1207,10 @@ public class NlmCdeBaseTest {
     protected void addClassificationByTree(String org, String[] classificationArray) {
         addClassificationByTree(org, classificationArray, "Classification added.");
     }
+
     protected void _addClassificationByTree(String org, String[] classificationArray) {
-        _addClassificationByTree(org, classificationArray, "All CDEs Classified");
+        _addClassificationByTree(org, classificationArray, "All CDEs Classified.");
+
     }
 
     protected void addClassificationByTree(String org, String[] classificationArray, String alertText) {
@@ -1249,8 +1251,6 @@ public class NlmCdeBaseTest {
             textPresent(alertText);
             closeAlert();
         }
-        for (int i = 1; i < classificationArray.length; i++)
-            textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
     }
 
     protected void addClassificationByRecentlyAdd(String org, String[] classificationArray) {
@@ -1376,13 +1376,11 @@ public class NlmCdeBaseTest {
             clickElement(By.id("confirmAddChildClassificationBtn"));
 
         }
-
         for (int i = 1; i < categories.length; i++) {
             String[] nextCategories = Arrays.copyOfRange(categories, 0, i + 1);
             String xpath = "//*[@id='" + String.join(",", nextCategories) + "']";
             List<WebElement> nextCategoryList = driver.findElements(By.xpath(xpath));
             if (nextCategoryList.size() == 0) {
-                System.out.println(Arrays.toString(nextCategories) + " does not exist.");
                 String[] currentCategories = Arrays.copyOfRange(categories, 0, i);
                 clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", currentCategories)));
                 findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
