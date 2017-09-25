@@ -49,7 +49,9 @@ export class DataElementViewComponent implements OnInit {
                     err => this.alert.addAlert("danger", "Error on loading comments. " + err)
                 );
                 this.isAllowedModel.setDisplayStatusWarning(this);
-                this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                this.userService.getPromise().then(() => {
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                });
             }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
     }
