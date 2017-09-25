@@ -95,7 +95,8 @@ exports.init = function (app, daoManager) {
                     res.type('application/json');
                     res.write("[");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send("ERROR"); else if (elt) {
+                        if (err) return res.status(500).send("ERROR - cannot search export");
+                        else if (elt) {
                             if (!firstElt) res.write(',');
                             elt = exportShared.stripBsonIds(elt);
                             elt = elastic_system.removeElasticFields(elt);
@@ -141,7 +142,7 @@ exports.init = function (app, daoManager) {
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
         classificationNode_system.addClassification(req.body, mongo_form, function (err, result) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - cannot add form classif");
             if (result === "Classification Already Exists") return res.status(409).send(result); else res.send(result);
             mongo_data_system.addToClassifAudit({
                 date: new Date(), user: {

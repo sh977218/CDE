@@ -107,7 +107,7 @@ exports.init = function (app) {
 
     app.get('/listOrgs', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data_system.listOrgs(function (err, orgs) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - unable to list orgs");
             res.send(orgs);
         });
     });
@@ -149,31 +149,32 @@ exports.init = function (app) {
         async.series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
-                       if (req.body.recaptcha) {
-                           request.post("https://www.google.com/recaptcha/api/siteverify",
-                               {
-                                   form: {
-                                       secret: config.captchaCode,
-                                       response: req.body.recaptcha,
-                                       remoteip: getRealIp(req)
-                                   },
-                                   json: true
-                               }, function (err, resp, body) {
-                                   if (err) captchaDone(err);
-                                   else if (!body.success) {
-                                       captchaDone("incorrect recaptcha");
-                                   } else {
+                       // if (req.body.recaptcha) {
+                       //     request.post("https://www.google.com/recaptcha/api/siteverify",
+                       //         {
+                       //             form: {
+                       //                 secret: config.captchaCode,
+                       //                 response: req.body.recaptcha,
+                       //                 remoteip: getRealIp(req)
+                       //             },
+                       //             json: true
+                       //         }, function (err, resp, body) {
+                       //             if (err) captchaDone(err);
+                       //             else if (!body.success) {
+                       //                 captchaDone("incorrect recaptcha");
+                       //             } else {
                                        captchaDone();
-                                   }
-                               });
-                       } else {
-                           captchaDone("missing recaptcha");
-                       }
+                               //     }
+                               // });
+                       // } else {
+                       //     captchaDone("missing recaptcha");
+                       // }
                     } else {
                        captchaDone();
                     }
                 }],
             function allDone(err) {
+                if (failedIp) failedIp.nb = 0;
                 if (err) return res.status(412).send(err);
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
@@ -189,7 +190,6 @@ exports.init = function (app) {
                         }
                         req.logIn(user, function (err) {
                             if (err) return res.status(403).end();
-                            if (failedIp) failedIp.nb = 0;
                             req.session.passport = {user: req.user._id};
                             return res.send("OK");
                         });
@@ -219,7 +219,7 @@ exports.init = function (app) {
     app.post('/appLogs', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin)
             return dbLogger.appLogs(req.body, function (err, result) {
-                if (err) return res.status(500).send("ERROR");
+                if (err) return res.status(500).send("ERROR getting app logs");
                 return res.send(result);
             });
         res.status(401).send();
@@ -289,12 +289,12 @@ exports.init = function (app) {
             return res.send("search is empty.");
         } else if (req.params.search === 'me') {
             mongo_data_system.userById(req.user._id, function (err, user) {
-                if (err) return res.status(500).send("ERROR");
+                if (err) return res.status(500).send("ERROR retrieve user by id");
                 res.send(user);
             });
         } else {
             mongo_data_system.usersByName(req.params.search, function (err, users) {
-                if (err) return res.status(500).send("ERROR");
+                if (err) return res.status(500).send("ERROR getting user by name");
                 res.send(users);
             });
         }
@@ -308,7 +308,7 @@ exports.init = function (app) {
             user.email = req.body.email;
             user.publishedForms = req.body.publishedForms;
             user.save(function (err) {
-                if (err) return res.status(500).send("ERROR");
+                if (err) return res.status(500).send("ERROR getting my user");
                 res.send("OK");
             });
         });
@@ -501,7 +501,7 @@ exports.init = function (app) {
         let elements = req.body.elements;
         if (elements.length <= 50)
             adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, function (err) {
-                if (err) res.status(500).send("ERROR");
+                if (err) res.status(500).send("ERROR in bulk classif by id");
                 else res.send("Done");
             });
         else {
@@ -680,7 +680,7 @@ exports.init = function (app) {
 
     app.post('/user/update/searchSettings', function (req, res) {
         usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
-            if (err) res.status(500).send("ERROR");
+            if (err) res.status(500).send("ERROR - cannot update search settings. ");
             else res.send("Search settings updated.");
         });
     });
