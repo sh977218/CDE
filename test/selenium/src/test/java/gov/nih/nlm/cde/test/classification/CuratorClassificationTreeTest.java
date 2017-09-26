@@ -12,7 +12,7 @@ public class CuratorClassificationTreeTest extends NlmCdeBaseTest {
     public void curatorCantEditClassificationTree() {
         mustBeLoggedInAs("ctepOnlyCurator", password);
         gotoClassificationMgt();
-        new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText("CTEP");
+        new Select(findElement(By.id("orgToManage"))).selectByVisibleText("CTEP");
 
         textPresent("CRF_TTU");
 

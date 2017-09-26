@@ -320,7 +320,8 @@ export class NativeRenderStandaloneComponent {
         if (form.formElements)
             async.forEach(form.formElements, (fe, cb) => {
                 if (fe.elementType === 'form') {
-                    this.http.get('/form/' + fe.inForm.form.tinyId + '/version/' + fe.inForm.form.version)
+                    this.http.get('/form/' + fe.inForm.form.tinyId
+                                + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
                         .map(function (res) {
                             return res.json();
                         })

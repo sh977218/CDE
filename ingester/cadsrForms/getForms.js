@@ -421,7 +421,7 @@ var getForms = function(page, cb){
 };
 
 setTimeout(function(){
-    mongo_data_system.orgByName("NCI", function(stewardOrg) {
+    mongo_data_system.orgByName("NCI", function (err, stewardOrg) {
         nciOrg = stewardOrg;
         fakeTree = {elements: stewardOrg.classifications};
     });
@@ -439,7 +439,7 @@ var callNextBulk = function (page){
         if (page <= endPage) {
             nciOrg.save(function () {
                 console.log("Ingestion done ...");
-                mongo_data_system.orgByName("NCI", function (stewardOrg) {
+                mongo_data_system.orgByName("NCI", function (err, stewardOrg) {
                     nciOrg = stewardOrg;
                     fakeTree = {elements: stewardOrg.classifications};
                     callNextBulk(page);
