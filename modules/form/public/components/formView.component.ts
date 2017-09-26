@@ -18,7 +18,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
-    @ViewChild("saveModal") public saveModalComponent: SaveModalComponent;
+    @ViewChild("saveModal") public saveModal: SaveModalComponent;
     @Input() routeParams: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -35,6 +35,7 @@ export class FormViewComponent implements OnInit {
     isFormValid = true;
     formInput;
     drafts = [];
+    formId;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -58,12 +59,14 @@ export class FormViewComponent implements OnInit {
         });
     }
 
-    loadForm(cb) {
+    loadForm(cb = (r = null) => {
+    }) {
         let formId = this.routeParams.formId;
         let url = "/form/" + this.routeParams.tinyId;
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
+                this.formId = this.elt._id;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
                 this.userService.getPromise().then(() => {
@@ -292,10 +295,7 @@ export class FormViewComponent implements OnInit {
         this.areDerivationRulesSatisfied();
         this.validateForm();
         this.saveDraft(res => {
-            if (res) {
-                this.alert.addAlert("success", "draft saved. publish it");
-                this.loadDraft(null);
-            }
+            if (res) this.loadDraft(null);
         });
     }
 
@@ -311,6 +311,7 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft(cb) {
+        this.elt._id = this.formId;
         this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
             if (cb) cb(res);
@@ -320,19 +321,17 @@ export class FormViewComponent implements OnInit {
     stageForm() {
         this.http.put("/form/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
-            if (res) this.loadDraft(() => {
-                this.alert.addAlert("success", "Form saved.");
-            });
+            if (res) {
+                this.loadForm(() => this.alert.addAlert("success", "Form saved."));
+                this.loadDraft(null);
+            }
         }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form."));
     }
 
     removeDraft() {
         this.http.delete("/draftForm/" + this.elt.tinyId)
             .subscribe(res => {
-                if (res) this.loadForm(() => {
-                    this.alert.addAlert("success", "Draft removed. Form reloaded.");
-                    this.loadDraft(null);
-                });
+                if (res) this.loadForm(() => this.loadDraft(null));
             }, err => this.alert.addAlert("danger", err));
     }
 

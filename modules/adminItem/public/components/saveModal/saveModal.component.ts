@@ -53,6 +53,7 @@ export class SaveModalComponent implements OnInit {
 
     openSaveModal() {
         this.newVersionVersionUnicity();
+        this.elt.changeNote = "";
         this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
     }
 

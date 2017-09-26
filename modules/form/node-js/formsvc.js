@@ -272,14 +272,17 @@ exports.updateForm = function (req, res) {
         if (!item) return res.status(404).send();
         authorization.allowUpdate(user, item, function (err) {
             if (err) return res.status(500).send("ERROR - cannot allow to update form");
-            mongo_data_system.orgByName(item.stewardOrg.name, function (err,org) {
+            mongo_data_system.orgByName(item.stewardOrg.name, function (err, org) {
                 let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) return res.status(403).send("Not authorized"); else {
                     let elt = req.body;
                     mongo_form.trimWholeForm(elt);
                     mongo_form.update(elt, req.user, function (err, response) {
                         if (err) return res.status(500).send("ERROR - cannot update form. ");
-                        res.send(response);
+                        mongo_form.deleteDraftForm(elt.tinyId, err => {
+                            if (err) return res.status(500).send("ERROR - cannot delete draft. ");
+                            res.send(response);
+                        });
                     });
                 }
             });

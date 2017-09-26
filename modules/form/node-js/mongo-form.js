@@ -83,9 +83,8 @@ exports.draftForms = function (tinyId, cb) {
 };
 
 exports.saveDraftForm = function (elt, cb) {
-    delete elt._id;
     delete elt.__v;
-    Draft.findOneAndUpdate({tinyId: elt.tinyId}, elt, {upsert: true, new: true}, cb);
+    Draft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
 };
 
 exports.deleteDraftForm = function (tinyId, cb) {
