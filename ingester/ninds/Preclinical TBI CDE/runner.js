@@ -16,9 +16,12 @@ const EXCLUDE_FILE = [
     '03_Quick_Start_Guide_PreclinicalTBI.pdf',
     '05_Public_Review_Comments_Form_PreclinicalTBI.xlsx',
 ];
+const EXCLUDE_REF_DOC = [
+    'No references available',
+    'Please fill out'
+];
 
 function rowToDataElement(file, row) {
-    let de = {};
     let ids = [{
         source: 'NINDS',
         id: row['Variable Name']
@@ -41,10 +44,12 @@ function rowToDataElement(file, row) {
             definition: description
         });
     }
-    naming.push({
-        designation: row['Preferred Question Text'],
-        tags: ['Preferred Question Text']
-    });
+    if (row['Preferred Question Text']) {
+        naming.push({
+            designation: row['Preferred Question Text'],
+            tags: ['Preferred Question Text']
+        });
+    }
 
     let valueDomain = {};
     if (row['Unit of Measure'])
@@ -91,8 +96,8 @@ function rowToDataElement(file, row) {
     }
 
     let referenceDocs = [];
-    if (row['References'] && row['References'] !== 'No references available') {
-        let pms = row['References'].find(/ PMID [\s*]{6}./);
+    if (row['References'] && _.indexOf(EXCLUDE_REF_DOC, row['References']) === -1) {
+        let pms = row['References'].split(/\s*PMID:*\s*\d+[\.|;]/g);
         console.log('a');
     }
 }
