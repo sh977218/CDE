@@ -348,6 +348,11 @@ schemas.clusterStatus = mongoose.Schema({
         }]
     }
 });
+schemas.jobQueue = mongoose.Schema({
+    type: String,
+    status: {type: String, enum: ["Running"]},
+    error: String
+});
 
 schemas.fs_files = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,

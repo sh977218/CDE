@@ -116,7 +116,7 @@ exports.updateDataElement = function (req, res) {
         if (!item) return res.status(404).send();
         authorization.allowUpdate(req.user, item, function (err) {
             if (err) return res.status(500).send("ERROR - update - cannot allow");
-            mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
+            mongo_data_system.orgByName(item.stewardOrg.name, function (err,org) {
                 let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 &&
                     allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)

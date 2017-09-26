@@ -321,7 +321,7 @@ fs.readdir(promisDir + "/forms"+date, function(err, files) {
         process.exit(1);
     }
 
-    mongo_data_system.orgByName(orgName, function(stewardOrg) {
+    mongo_data_system.orgByName(orgName, function (err, stewardOrg) {
         fakeTree = {elements: stewardOrg.classifications};
         var count = 1;
         async.eachSeries(files, function (file, cb) {

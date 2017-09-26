@@ -1,6 +1,8 @@
 <ng-template #classifyItemContent id="newClassifyItemModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="newClassifyItemModalHeader">
-        <h4 class="modal-title">{{modalTitle}}</h4>
+        <h4 class="modal-title">
+            <p [innerHtml]="modalTitle"></p>
+        </h4>
     </div>
     <div class="modal-body" id="newClassifyItemModalBody">
         <ngb-tabset (tabChange)="onChangeClassifyView($event)">

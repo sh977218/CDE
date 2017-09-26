@@ -14,7 +14,7 @@ exports.managedOrgs = function(req, res) {
 exports.addOrg = function(req, res) {
     var newOrg = req.body;
     if (newOrg.workingGroupOf) {
-        mongo_data.orgByName(newOrg.workingGroupOf, function(parentOrg) {
+        mongo_data.orgByName(newOrg.workingGroupOf, function (err, parentOrg) {
             newOrg.classifications = parentOrg.classifications;
             mongo_data.addOrg(newOrg, res);
         });
