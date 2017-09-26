@@ -149,14 +149,16 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     };
 
     replyTo(commentId) {
-        this.http.post("/comments/reply", {
-            commentId: commentId,
-            eltName: this.eltName,
-            reply: this.tempReplies[commentId]
-        }).subscribe(() => {
-            this.tempReplies[commentId] = '';
-            this.loadComments();
-        });
+        setTimeout(() => {
+            this.http.post("/comments/reply", {
+                commentId: commentId,
+                eltName: this.eltName,
+                reply: this.tempReplies[commentId]
+            }).subscribe(() => {
+                this.tempReplies[commentId] = '';
+                this.loadComments();
+            });
+        }, 0);
     };
 
     cancelReply = (comment) => this.tempReplies[comment._id] = '';
