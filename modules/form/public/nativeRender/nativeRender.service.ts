@@ -32,11 +32,17 @@ export class NativeRenderService {
 
         function clearTransform(fe) {
             fe.formElements.forEach(f => {
-                if (f.elementType === 'question')
-                    f.question.answers = Array.isArray(f.question.cde.permissibleValues)
-                        ? JSON.parse(JSON.stringify(f.question.cde.permissibleValues)) : undefined;
-                else
+                if (f.elementType === 'question') {
+                    for (let i = 0; i < f.question.answers.length; i++) {
+                        let answer = f.question.answers[i];
+                        if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
+                            f.question.answers.splice(i--, 1);
+                        else if (answer.subQuestions)
+                            delete answer.subQuestions;
+                    }
+                } else {
                     clearTransform(f);
+                }
             });
         }
         clearTransform(this.elt);

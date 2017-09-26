@@ -78,11 +78,19 @@ export class NativeQuestionComponent implements OnInit {
     updateDateTime() {
         let d = this.formElement.question.answerDate;
         let t = this.formElement.question.answerTime;
-        if (!d || !t)
-            return;
+        if (!d)
+            return this.formElement.question.answer = '';
+        if (!t)
+            t = {hour: 0, minute: 0, second: 0};
 
         let m = moment([d.year, d.month - 1, d.day, t.hour, t.minute,  t.second]);
-        if (m.isValid())
-            this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
+        if (m.isValid()) {
+            if (this.formElement.question.datatypeDate && this.formElement.question.datatypeDate.format)
+                this.formElement.question.answer = m.format(this.formElement.question.datatypeDate.format);
+            else
+                this.formElement.question.answer = m.format('YYYY-MM-DDTHH:mm:ssZ');
+        } else {
+            this.formElement.question.answer = '';
+        }
     }
 }

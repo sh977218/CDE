@@ -42,9 +42,11 @@ export class SkipLogicService {
         }
         else if (realAnswer || realAnswer === "") {
             if (realAnswerObj.question.datatype === "Date") {
-                // format American DD/MM/YYYY to HTML5 standard YYYY-MM-DD
-                if (realAnswer)
-                    realAnswer = realAnswer.month + "/" + realAnswer.day + "/" + realAnswer.year;
+                // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY
+                if (realAnswer) {
+                    let match = /(\d{4})-(\d{2})-(\d{2})/.exec(realAnswer);
+                    realAnswer = match[2] + "/" + match[3] + "/" + match[1];
+                }
                 if (operator === "=") return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
                 if (operator === "!=") return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();
                 if (operator === "<") return new Date(realAnswer) < new Date(expectedAnswer);
