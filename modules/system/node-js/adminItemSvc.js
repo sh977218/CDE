@@ -62,7 +62,7 @@ exports.save = function (req, res, dao, cb) {
                         ) {
                             res.status(403).send("Not authorized");
                         } else {
-                            mongo_data_system.orgByName(item.stewardOrg.name, function (org) {
+                            mongo_data_system.orgByName(item.stewardOrg.name, function (err, org) {
                                 var allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
                                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
                                     res.status(403).send("Not authorized");
