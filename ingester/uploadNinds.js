@@ -12,7 +12,7 @@ var fs = require('fs'),
 var nindsOrg = null;
 
 setTimeout(function () {
-    mongo_data_system.orgByName("NINDS", function (stewardOrg) {
+    mongo_data_system.orgByName("NINDS", function (err, stewardOrg) {
         nindsOrg = stewardOrg;
     });
 }, 1000);

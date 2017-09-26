@@ -37,9 +37,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         findElement(By.linkText("Magnetic Resonance Imaging (MRI)"));
         findElement(By.linkText("Under Review"));
         findElement(By.linkText("6701"));
-        createClassificationName(orgWG, new String[]{classification});
-        modalGone();
-        createClassificationName(orgWG, new String[]{classification, subClassification});
+        createOrgClassification(orgWG, new String[]{classification, subClassification});
         modalGone();
 
         // Create CDE owned by newly created working group

@@ -129,7 +129,6 @@
                                                     <div>
                                                         {{reply.created | date: 'MM/dd/yyyy @ h:mma'}}
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </td>
@@ -217,10 +216,10 @@
             </div>
             <span class="replying padding10" *ngIf="comment.currentlyReplying">Someone is typing</span>
             <div data-type="reply" class="replyInputDiv" *ngIf="userService.user?._id">
-            <textarea class="replyInputTextarea" id="replyTextarea_{{commentIndex}}" name="replyTextArea"
-                      rows="1" [(ngModel)]="tempReplies[comment._id]"
-                      placeholder="Reply to this comment" (ngModelChange)="changeOnReply(comment)">
-            </textarea>
+                <textarea class="replyInputTextarea" id="replyTextarea_{{commentIndex}}" name="replyTextArea"
+                          rows="1" [(ngModel)]="tempReplies[comment._id]"
+                          placeholder="Reply to this comment" (ngModelChange)="changeOnReply(comment)">
+                </textarea>
                 <div class="replyInputBtn" *ngIf="tempReplies[comment._id]?.length > 0" style="margin-top: 10px">
                     <button (click)="replyTo(comment._id, tempReplies[comment._id])" style="margin-left: 0"
                             class="btn btn-primary" id="replyBtn_{{commentIndex}}">Reply
