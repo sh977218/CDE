@@ -16,6 +16,12 @@ const exportShared = require('../../system/shared/exportShared');
 const boardsvc = require('../../board/node-js/boardsvc');
 const usersrvc = require('../../system/node-js/usersrvc');
 
+function allowXOrigin (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+}
+
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
@@ -23,8 +29,8 @@ exports.init = function (app, daoManager) {
     app.get("/formById/:id", exportShared.nocacheMiddleware, formSvc.byId);
     app.get("/formById/:id/priorForms/", exportShared.nocacheMiddleware, formSvc.priorForms);
 
-    app.get("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.byTinyId);
-    app.get("/form/:tinyId/version/:version?", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
+    app.get("/form/:tinyId", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyId);
+    app.get("/form/:tinyId/version/:version?", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdVersion);
     app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
 
     app.get("/draftForm/:tinyId",formSvc.draftForms);
