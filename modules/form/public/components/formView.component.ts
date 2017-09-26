@@ -306,7 +306,6 @@ export class FormViewComponent implements OnInit {
                 this.drafts = res;
                 this.elt = res[0];
             } else this.drafts = [];
-            this.alert.addAlert("success", "Draft loaded.");
             if (cb) cb();
         }, err => this.alert.addAlert("danger", err));
     }
