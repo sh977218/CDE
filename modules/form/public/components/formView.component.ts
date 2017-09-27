@@ -56,8 +56,10 @@ export class FormViewComponent implements OnInit {
             this.loadComments(form, null);
             this.http.get("/draftForm/" + form.tinyId)
                 .map(res => res.json()).subscribe(res => {
-                if (res && res.length > 0) this.drafts = res;
-                else this.drafts = [];
+                if (res && res.length === 1) {
+                    this.drafts = res;
+                    this.elt = this.drafts[0];
+                } else this.drafts = [];
                 this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft;
             }, err => this.alert.addAlert("danger", err));
 
@@ -296,14 +298,6 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    doStageElt() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        this.saveDraft(res => {
-            if (res) this.loadDraft(null);
-        });
-    }
-
     loadDraft(cb) {
         this.http.get("/draftForm/" + this.elt.tinyId)
             .map(res => res.json()).subscribe(res => {
@@ -316,10 +310,14 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft(cb) {
+        this.areDerivationRulesSatisfied();
+        this.validateForm();
         this.elt._id = this.formId;
         this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
-            if (cb) cb(res);
+            this.loadDraft(() => {
+                if (cb) cb(res);
+            });
         }, err => this.alert.addAlert("danger", err));
     }
 

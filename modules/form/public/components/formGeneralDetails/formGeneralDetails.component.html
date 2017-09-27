@@ -1,90 +1,69 @@
 <div class="row">
-    <div class="col-lg-5">
-        <h4>General Details</h4>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel">Name:</div>
-            <div class="col-sm-7" id="dd_general_name" itemprop="name">{{elt.naming[0].designation}}</div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel">Description:</div>
-            <div class="col-sm-7" id="dd_def" itemprop="description">
-                <span *ngIf="elt.naming[0].definitionFormat !== 'html'">{{elt.naming[0].definition}}</span>
-                <span *ngIf="elt.naming[0].definitionFormat === 'html'"
-                      [innerHtml]="elt.naming[0].definition"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel">Copyrighted:</div>
-            <div class="col-sm-7">
-                <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
-                       id="isCopyrighted" title="copyrighted" (change)="save.emit();"/>
-
-                <div *ngIf="elt.isCopyrighted">
-                    Statement:
-                    <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
-                                     [isAllowed]="canEdit" (modelChange)="save.emit();"></cde-inline-edit>
-                    Authority:
-                    <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
-                                     [isAllowed]="canEdit" (modelChange)="save.emit();"></cde-inline-edit>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel">Disallow Rendering:</div>
-            <div class="col-sm-7">
-                <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
-                       id="disallowRendering" title="disallow rendering" (change)="save.emit();"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel">Version:</div>
-            <div class="col-sm-7">{{elt.version}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel">Steward:</div>
-            <div class="col-sm-7">{{elt.stewardOrg.name}}
-            </div>
-        </div>
-
-        <div class="row" *ngIf="elt.imported">
-            <div class="col-sm-5 questionSectionLabel">Last import:</div>
-            <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}
-            </div>
-        </div>
-        <div class="row" *ngIf="elt.created">
-            <div class="col-sm-5 questionSectionLabel">Created:</div>
-            <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
-            </div>
-        </div>
-        <div class="row" *ngIf="elt.updated">
-            <div class="col-sm-5 questionSectionLabel">Updated:</div>
-            <div class="col-sm-7" id="dt_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
-            </div>
-        </div>
-        <div class="row" *ngIf="elt.createdBy">
-            <div class="col-sm-5 questionSectionLabel">Created By:</div>
-            <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}
-            </div>
-        </div>
-
-        <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-        <cde-registration [elt]="elt" (save)="save.emit();"></cde-registration>
-
-        <cde-linked-boards [elt]="elt"></cde-linked-boards>
-        <cde-linked-forms [elt]="elt"></cde-linked-forms>
-        <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
-
+    <h4>General Details</h4>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel">Name:</div>
+        <div class="col-sm-7" id="dd_general_name" itemprop="name">{{elt.naming[0].designation}}</div>
     </div>
-    <div class="col-lg-7">
-        <div *ngIf="elt.noRenderAllowed"
-             class="text-center mt20">Rendering has been disabled for this form.
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel">Description:</div>
+        <div class="col-sm-7" id="dd_def" itemprop="description">
+            <span *ngIf="elt.naming[0].definitionFormat !== 'html'">{{elt.naming[0].definition}}</span>
+            <span *ngIf="elt.naming[0].definitionFormat === 'html'"
+                  [innerHtml]="elt.naming[0].definition"></span>
         </div>
-        <div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
-             class="text-center mt20">This form has no content. There is nothing to preview.
+    </div>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel">Copyrighted:</div>
+        <div class="col-sm-7">
+            <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
+                   id="isCopyrighted" title="copyrighted" (change)="save.emit();"/>
+
+            <div *ngIf="elt.isCopyrighted">
+                Statement:
+                <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
+                                 [isAllowed]="canEdit" (modelChange)="save.emit();"></cde-inline-edit>
+                Authority:
+                <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
+                                 [isAllowed]="canEdit" (modelChange)="save.emit();"></cde-inline-edit>
+            </div>
         </div>
-        <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0">
-            <cde-native-render-full [elt]="elt"></cde-native-render-full>
+    </div>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel">Disallow Rendering:</div>
+        <div class="col-sm-7">
+            <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
+                   id="disallowRendering" title="disallow rendering" (change)="save.emit();"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel">Version:</div>
+        <div class="col-sm-7">{{elt.version}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel">Steward:</div>
+        <div class="col-sm-7">{{elt.stewardOrg.name}}
+        </div>
+    </div>
+
+    <div class="row" *ngIf="elt.imported">
+        <div class="col-sm-5 questionSectionLabel">Last import:</div>
+        <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.created">
+        <div class="col-sm-5 questionSectionLabel">Created:</div>
+        <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.updated">
+        <div class="col-sm-5 questionSectionLabel">Updated:</div>
+        <div class="col-sm-7" id="dt_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.createdBy">
+        <div class="col-sm-5 questionSectionLabel">Created By:</div>
+        <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}
         </div>
     </div>
 </div>

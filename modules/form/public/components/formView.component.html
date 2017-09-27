@@ -156,8 +156,29 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="doStageElt()">
-                        </cde-form-general-details>
+                        <div class="col-lg-5">
+                            <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="saveDraft()">
+                            </cde-form-general-details>
+                            <div class="row">
+                                <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
+                                <cde-registration [elt]="elt" (save)="saveForm();"></cde-registration>
+                                <cde-linked-boards [elt]="elt"></cde-linked-boards>
+                                <cde-linked-forms [elt]="elt"></cde-linked-forms>
+                                <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div *ngIf="elt.noRenderAllowed"
+                                 class="text-center mt20">Rendering has been disabled for this form.
+                            </div>
+                            <div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
+                                 class="text-center mt20">This form has no content. There is nothing to preview.
+                            </div>
+                            <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0">
+                                <cde-native-render-full [elt]="elt"></cde-native-render-full>
+                            </div>
+                        </div>
+
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="description_tab">
@@ -170,7 +191,7 @@
                         <cde-form-description [cache]="cache" [elt]="elt" [canEdit]="canEdit"
                                               [inScoreCdes]="inScoreCdes"
                                               (isFormValid)="setIsValid($event)"
-                                              (onEltChange)="doStageElt()"></cde-form-description>
+                                              (onEltChange)="saveDraft()"></cde-form-description>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="naming_tab">
@@ -183,7 +204,7 @@
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-naming>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="classification_tab">
@@ -203,7 +224,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();">
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-reference-document>
                     </ng-template>
                 </ngb-tab>
@@ -214,7 +235,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();">
+                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-display-profile>
                     </ng-template>
                 </ngb-tab>
@@ -226,7 +247,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();">
+                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-properties>
                     </ng-template>
                 </ngb-tab>
@@ -237,7 +258,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt();">
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-identifiers>
                     </ng-template>
                 </ngb-tab>
