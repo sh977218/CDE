@@ -187,22 +187,24 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(function (item) {
-        promiseArray.push(gulp.src(item.folder + item.filename)
-            .pipe(usemin({
-                jsAttributes: {
-                    defer: true
-                },
-                assetsDir: "./modules/",
-                css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
-                js: [uglify({mangle: false}), 'concat', rev()],
-                webp: ['concat', rev()]
-            }))
-            .pipe(gulp.dest(config.node.buildDir + '/modules/'))
-            .on('end', function () {
-                gulp.src(config.node.buildDir + '/modules/' + item.filename)
-                    .pipe(gulp.dest(config.node.buildDir + "/" + item.folder));
-            })
-        );
+        promiseArray.push(new Promise(resolve => {
+            gulp.src(item.folder + item.filename)
+                .pipe(usemin({
+                    jsAttributes: {
+                        defer: true
+                    },
+                    assetsDir: "./modules/",
+                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                    js: [uglify({mangle: false}), 'concat', rev()],
+                    webp: ['concat', rev()]
+                }))
+                .pipe(gulp.dest(config.node.buildDir + '/modules/'))
+                .on('end', function () {
+                    gulp.src(config.node.buildDir + '/modules/' + item.filename)
+                        .pipe(gulp.dest(config.node.buildDir + "/" + item.folder))
+                        .on('end', resolve);
+                });
+        }));
     });
     console.log("promiseArray length: " + promiseArray.length);
     return Promise.all(promiseArray);
