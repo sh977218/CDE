@@ -152,10 +152,17 @@ exports.formJson = {
 };
 
 exports.formSchema = new Schema(exports.formJson);
-
-let draftJson = _.cloneDeep(exports.formJson);
-draftJson.isDraft = {type: Boolean, default: true};
-exports.draftSchema = new Schema(draftJson);
+exports.draftSchema = new Schema(exports.formJson, {
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
+    }
+});
+exports.draftSchema.virtual('isDraft').get(function () {
+    return true;
+});
 exports.formSchema.set('collection', 'forms');
 exports.draftSchema.set('collection', 'drafts');
 

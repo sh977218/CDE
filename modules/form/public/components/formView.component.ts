@@ -11,7 +11,12 @@ import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveMo
 
 @Component({
     selector: "cde-form-view",
-    templateUrl: "formView.component.html"
+    templateUrl: "formView.component.html",
+    styles: [`
+        .marginTopBottom5 {
+            margin: 5px 0px
+        }
+    `]
 })
 export class FormViewComponent implements OnInit {
     @ViewChild("copyFormContent") public copyFormContent: NgbModalModule;
@@ -82,7 +87,7 @@ export class FormViewComponent implements OnInit {
             .map(res => res.json()).subscribe(res => {
             this.hasComments = res && (res.length > 0);
             if (cb) cb();
-        }, err => this.alert.addAlert("danger", "Error on loading comments. " + err));
+        }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
     }
 
     onLocationChange(event, newUrl, oldUrl, elt) {
@@ -318,7 +323,7 @@ export class FormViewComponent implements OnInit {
         }, err => this.alert.addAlert("danger", err));
     }
 
-    stageForm() {
+    saveForm() {
         this.http.put("/form/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
             if (res) {

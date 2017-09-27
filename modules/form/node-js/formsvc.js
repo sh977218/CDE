@@ -191,7 +191,7 @@ exports.draftForms = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     mongo_form.draftForms(tinyId, function (err, forms) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - get draft form. " + tinyId);
         if (!forms) return res.status(404).send();
         res.send(forms);
     });
@@ -202,7 +202,7 @@ exports.saveDraftForm = function (req, res) {
     let elt = req.body;
     if (elt.tinyId !== tinyId) return res.status(500);
     mongo_form.saveDraftForm(elt, function (err, form) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - save draft form. " + tinyId);
         res.send(form);
     });
 };
@@ -210,7 +210,7 @@ exports.deleteDraftForm = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     mongo_form.deleteDraftForm(tinyId, function (err) {
-        if (err) return res.status(500).send("ERROR");
+        if (err) return res.status(500).send("ERROR - delete draft form. " + tinyId);
         res.send();
     });
 };
@@ -220,7 +220,7 @@ exports.byTinyIdList = function (req, res) {
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
     mongo_form.byTinyIdList(tinyIdList, function (err, forms) {
-        if (err) res.status(500).send("ERROR - form by idlist");
+        if (err) res.status(500).send("ERROR - form by idList");
         res.send(forms.map(mongo_data_system.formatElt));
     });
 };
