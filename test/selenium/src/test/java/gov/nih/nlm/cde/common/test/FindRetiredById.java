@@ -23,7 +23,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         editRegistrationStatus("Retired", null, null, null, null);
-        textPresent("DRAFT");
+        textPresent("Form saved.");
         closeAlert();
         textPresent("Warning: this form is retired.");
     }

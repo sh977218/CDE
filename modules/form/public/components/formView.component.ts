@@ -60,7 +60,7 @@ export class FormViewComponent implements OnInit {
                     this.drafts = res;
                     this.elt = this.drafts[0];
                 } else this.drafts = [];
-                this.userService.getPromise().then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft)
+                this.userService.getPromise().then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft);
             }, err => this.alert.addAlert("danger", err));
 
         });
