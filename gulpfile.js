@@ -209,10 +209,9 @@ gulp.task('webpack', ['thirdParty'], function () {
 });
 
 gulp.task('emptyTemplates', ['usemin'], function () {
-    ['cde', 'form', 'system', 'embedded'].forEach(function (module) {
-        return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
+    let module = 'embedded';
+    return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
             .pipe(gulp.dest("modules/" + module + "/public/js/"));
-    });
 });
 
 gulp.task('es', function () {
