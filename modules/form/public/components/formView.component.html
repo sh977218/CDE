@@ -188,7 +188,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-description [cache]="cache" [elt]="elt" [canEdit]="canEdit"
+                        <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit"
                                               [inScoreCdes]="inScoreCdes"
                                               (isFormValid)="setIsValid($event)"
                                               (onEltChange)="saveDraft()"></cde-form-description>

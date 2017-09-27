@@ -8,7 +8,8 @@ import {
     OnInit,
     Output,
     TemplateRef,
-    ViewChild
+    ViewChild,
+    OnChanges, SimpleChanges
 } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
@@ -100,7 +101,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
         }
     `]
 })
-export class FormDescriptionComponent implements OnInit {
+export class FormDescriptionComponent implements OnInit, OnChanges {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() inScoreCdes: any;
@@ -140,6 +141,7 @@ export class FormDescriptionComponent implements OnInit {
                 drop: (tree, node, $event, {from, to}) => {
                     if (from.insert) {
                         this.addIndex(to.parent.data.formElements, this.getNewSection(), to.index);
+                        this.addIds(this.elt.formElements, "");
                         tree.update();
                     } else if (from.ref) {
                         this.toolDropTo = to;
@@ -154,7 +156,6 @@ export class FormDescriptionComponent implements OnInit {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
 
                     tree.expandAll();
-                    this.addIds(this.elt.formElements, "");
                     this.onEltChange.emit();
                 }
             }
@@ -172,6 +173,10 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.addIds(this.elt.formElements, "");
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
         this.addIds(this.elt.formElements, "");
     }
 
