@@ -214,10 +214,6 @@ gulp.task('emptyTemplates', ['usemin'], function () {
             .pipe(gulp.dest("modules/" + module + "/public/js/"));
 });
 
-gulp.task('done', () => {
-    setTimeout(() => process.exit(0), 3000);
-});
-
 gulp.task('es', function () {
     const elasticsearch = require('elasticsearch');
 
@@ -234,6 +230,6 @@ gulp.task('es', function () {
 });
 
 gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion',
-    'usemin', 'emptyTemplates', "done"]);
+    'usemin', 'emptyTemplates']);
 
 
