@@ -27,7 +27,7 @@ gulp.task('npm', function () {
 });
 
 gulp.task('copyNpmDeps', ['npm'], function () {
-    gulp.src(['./package.json'])
+    return gulp.src(['./package.json'])
         .pipe(gulp.dest(config.node.buildDir))
         .pipe(install({production: true}));
 });
@@ -180,12 +180,14 @@ gulp.task('prepareVersion', ['copyCode'], function () {
 });
 
 gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
+    let promiseArray = [];
+
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(function (item) {
-        return gulp.src(item.folder + item.filename)
+        promiseArray.push(gulp.src(item.folder + item.filename)
             .pipe(usemin({
                 jsAttributes: {
                     defer: true
@@ -199,8 +201,10 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
             .on('end', function () {
                 gulp.src(config.node.buildDir + '/modules/' + item.filename)
                     .pipe(gulp.dest(config.node.buildDir + "/" + item.folder));
-            });
+            })
+        );
     });
+    return Promise.all(promiseArray);
 });
 
 gulp.task('webpack', ['thirdParty'], function () {
