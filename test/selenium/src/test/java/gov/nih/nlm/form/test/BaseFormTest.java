@@ -62,15 +62,22 @@ public class BaseFormTest extends FormCommentTest {
                 }
             }
         }
+        if (title != null) {
+            editSectionTitle(sectionId, title);
+        }
+        if (repeat != null) {
+            hangon(1); // allow time for id to be processed
+            setRepeat(sectionId, repeat);
+        }
+    }
 
-        hangon(1); // allow time for id to be processed
+    void editSectionTitle(String sectionId, String title) {
         startEditQuestionSectionById(sectionId);
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
         String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input";
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
-        setRepeat(sectionId, repeat);
     }
 
     public void dragAndDrop(WebElement source, WebElement target) {
@@ -112,6 +119,7 @@ public class BaseFormTest extends FormCommentTest {
     }
 
     public void setRepeat(String sectionId, String repeat) {
+        startEditQuestionSectionById(sectionId);
         if (repeat != null) {
             if (repeat.charAt(0) == 'F')
                 new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
@@ -121,7 +129,6 @@ public class BaseFormTest extends FormCommentTest {
             }
         }
     }
-
 
 
     public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {

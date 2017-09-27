@@ -90,12 +90,15 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     setRepeat(section) {
-        if (section.repeatOption === "F")
+        if (section.repeatOption === "F") {
             section.repeat = "First Question";
-        else if (section.repeatOption === "N")
+            this.stageElt.emit();
+        } else if (section.repeatOption === "N") {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
-        else
-            section.repeat = undefined;
+            if (section.repeat > 0)
+                this.stageElt.emit();
+        }
+        else section.repeat = undefined;
     }
 
     getRepeatLabel(section) {

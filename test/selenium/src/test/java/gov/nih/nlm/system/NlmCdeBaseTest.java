@@ -533,8 +533,6 @@ public class NlmCdeBaseTest {
 
     protected void newFormVersion(String changeNote) {
         newVersion(changeNote);
-        textPresent("DRAFT");
-        closeAlert();
         modalGone();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
     }
