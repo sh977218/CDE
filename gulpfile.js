@@ -204,6 +204,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
             })
         );
     });
+    console.log("promiseArray length: " + promiseArray.length);
     return Promise.all(promiseArray);
 });
 
