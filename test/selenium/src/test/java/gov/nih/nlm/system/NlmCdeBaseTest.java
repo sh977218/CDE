@@ -525,8 +525,6 @@ public class NlmCdeBaseTest {
         newVersion(changeNote);
         textPresent("Data Element saved.");
         closeAlert();
-//        modalGone();
-//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
     }
 
     protected void newCdeVersion() {
@@ -535,7 +533,7 @@ public class NlmCdeBaseTest {
 
     protected void newFormVersion(String changeNote) {
         newVersion(changeNote);
-        textPresent("Form saved.");
+        textPresent("DRAFT");
         closeAlert();
         modalGone();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
@@ -560,9 +558,6 @@ public class NlmCdeBaseTest {
                 return driver.findElement(By.id("confirmSaveBtn")).isEnabled();
             }
         });
-//                (ExpectedConditions.not(ExpectedConditions.
-//                presenceOfElementLocated(
-//                By.cssSelector("//*[@id='confirmSaveBtn'[disabled]"))));
         clickElement(By.id("confirmSaveBtn"));
     }
 

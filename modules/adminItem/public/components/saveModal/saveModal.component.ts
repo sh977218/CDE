@@ -25,7 +25,7 @@ export class SaveModalComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.elt.changeNote = "";
+        if (this.elt) this.elt.changeNote = "";
     }
 
     confirmSave() {
@@ -53,7 +53,7 @@ export class SaveModalComponent implements OnInit {
 
     openSaveModal() {
         this.newVersionVersionUnicity();
-        this.elt.changeNote = "";
+        if (this.elt) this.elt.changeNote = "";
         this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
     }
 
