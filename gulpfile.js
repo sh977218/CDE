@@ -154,19 +154,18 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
 });
 
 gulp.task('angularTemplates', function () {
-    ['system', 'embedded'].forEach(function (module) {
-        gulp
-            .src("modules/" + module + "/public/js/angularTemplates.js")
-            .pipe(gulp.dest("modules/" + module + "/public/js/bkup/"));
-        return gulp.src("modules/" + module + "/public/html/**/*.html")
-            .pipe(templateCache({
-                root: "/" + module + "/public/html",
-                filename: "angularTemplates.js",
-                module: module + "Templates",
-                standalone: true
-            }))
-            .pipe(gulp.dest("modules/" + module + "/public/js/"));
-    });
+    let module = 'embedded';
+    gulp
+        .src("modules/" + module + "/public/js/angularTemplates.js")
+        .pipe(gulp.dest("modules/" + module + "/public/js/bkup/"));
+    return gulp.src("modules/" + module + "/public/html/**/*.html")
+        .pipe(templateCache({
+            root: "/" + module + "/public/html",
+            filename: "angularTemplates.js",
+            module: module + "Templates",
+            standalone: true
+        }))
+        .pipe(gulp.dest("modules/" + module + "/public/js/"));
 });
 
 gulp.task('prepareVersion', ['copyCode'], function () {
