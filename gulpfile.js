@@ -214,6 +214,10 @@ gulp.task('emptyTemplates', ['usemin'], function () {
             .pipe(gulp.dest("modules/" + module + "/public/js/"));
 });
 
+gulp.task('done', () => {
+    setTimeout(() => process.exit(0), 3000);
+});
+
 gulp.task('es', function () {
     const elasticsearch = require('elasticsearch');
 
@@ -226,11 +230,10 @@ gulp.task('es', function () {
         });
     });
     /* don't know why but gulp wont exit this. Kill it.*/
-    setTimeout(function () {
-        process.exit(0);
-    }, 3000);
+    setTimeout(() => process.exit(0), 3000);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin', 'emptyTemplates']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion',
+    'usemin', 'emptyTemplates', "done"]);
 
 
