@@ -221,7 +221,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
                 });
         }));
     });
-    return steam(streamArray);
+    return merge(streamArray);
 });
 
 gulp.task('webpack', ['thirdParty'], () => {
