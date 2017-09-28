@@ -227,7 +227,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
 gulp.task('webpack', ['thirdParty'], () => {
     return run('npm run build').exec(undefined,
         () => gulp.src('./modules/static/*.js')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/static/")).on('end'));
+            .pipe(gulp.dest(config.node.buildDir + "/modules/static/")));
 });
 
 gulp.task('emptyTemplates', ['usemin'], () => {

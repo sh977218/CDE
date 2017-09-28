@@ -6577,6 +6577,15 @@
       "resolved": "https://registry.npmjs.org/merge-descriptors/-/merge-descriptors-0.0.2.tgz",
       "integrity": "sha1-w2pSp4FDdRPFcnXzndnTF1FKyMc="
     },
+    "merge-stream": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/merge-stream/-/merge-stream-1.0.1.tgz",
+      "integrity": "sha1-QEEgLVCKNCugAXQAjfDCUbjBNeE=",
+      "dev": true,
+      "requires": {
+        "readable-stream": "2.3.3"
+      }
+    },
     "method-override": {
       "version": "2.3.1",
       "resolved": "https://registry.npmjs.org/method-override/-/method-override-2.3.1.tgz",
