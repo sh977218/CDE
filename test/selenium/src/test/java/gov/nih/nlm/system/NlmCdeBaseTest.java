@@ -1046,8 +1046,7 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("saved.");
-        closeAlert();
+        textPresent("DRAFT");
     }
 
     protected void changeDatatype(String newDatatype) {
