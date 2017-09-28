@@ -238,10 +238,6 @@ export class FormDescriptionComponent implements OnInit, OnChanges {
         });
     }
 
-    stageParent() {
-        this.onEltChange.emit();
-    }
-
     hasCopiedSection() {
         let copiedSection = this.localStorageService.get("sectionCopied");
         return !_.isEmpty(copiedSection);
