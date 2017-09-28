@@ -1,9 +1,10 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class TwoLabelsNoVersion extends BaseFormTest {
+public class TwoLabelsNoVersionTest extends NlmCdeBaseTest {
 
     @Test
     public void twoLabelsNoVersion() {
@@ -17,7 +18,6 @@ public class TwoLabelsNoVersion extends BaseFormTest {
         clickElement(By.cssSelector("#q_select_name_1 button"));
         modalGone();
         textPresent("Second name for label", By.xpath("//*[@id='question_0_0']//div[contains(@class,'questionLabel')]"));
-        clickElement(By.id("discardChanges"));
     }
 
 }

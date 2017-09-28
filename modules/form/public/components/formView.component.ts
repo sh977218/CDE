@@ -67,7 +67,7 @@ export class FormViewComponent implements OnInit {
                 this.formId = this.elt._id;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
-                this.userService.getPromise().then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                this.userService.getPromise().then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft);
                 if (cb) cb(res);
             }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
