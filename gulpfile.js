@@ -38,20 +38,25 @@ gulp.task('bower', function () {
 });
 
 gulp.task('thirdParty', ['npm', 'bower'], function () {
-    gulp.src('./node_modules/core-js/client/shim.min.js')
-        .pipe(gulp.dest('./modules/static/'));
-    gulp.src('./node_modules/classlist.js/classList.min.js')
-        .pipe(gulp.dest('./modules/static/'));
-    gulp.src('./node_modules/html5-formdata/formdata.js')
-        .pipe(gulp.dest('./modules/static/'));
-    gulp.src('./node_modules/js-polyfills/typedarray.js')
-        .pipe(gulp.dest('./modules/static/'));
-    gulp.src('./node_modules/Blob.js/Blob.js')
-        .pipe(gulp.dest('./modules/static/'));
-    gulp.src('./node_modules/intl/locale-data/jsonp/en.js')
-        .pipe(gulp.dest('./modules/static/'));
-    return gulp.src('./node_modules/intl/dist/Intl.min.js')
-        .pipe(gulp.dest('./modules/static/'));
+    let promiseArray = [];
+
+    promiseArray.push(gulp.src('./node_modules/core-js/client/shim.min.js')
+        .pipe(gulp.dest('./modules/static/')));
+    promiseArray.push(gulp.src('./node_modules/classlist.js/classList.min.js')
+        .pipe(gulp.dest('./modules/static/')));
+    promiseArray.push(gulp.src('./node_modules/html5-formdata/formdata.js')
+        .pipe(gulp.dest('./modules/static/')));
+    promiseArray.push(gulp.src('./node_modules/js-polyfills/typedarray.js')
+        .pipe(gulp.dest('./modules/static/')));
+    promiseArray.push(gulp.src('./node_modules/Blob.js/Blob.js')
+        .pipe(gulp.dest('./modules/static/')));
+    promiseArray.push(gulp.src('./node_modules/intl/locale-data/jsonp/en.js')
+        .pipe(gulp.dest('./modules/static/')));
+    promiseArray.push(gulp.src('./node_modules/intl/dist/Intl.min.js')
+        .pipe(gulp.dest('./modules/static/')));
+
+    return Promise.all(promiseArray);
+
 });
 
 gulp.task('lhc-wiredep', ['bower'], function () {
@@ -90,66 +95,72 @@ gulp.task('wiredep', ['bower'], function () {
 });
 
 gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], function () {
+
+    let promiseArray = [];
+
     ['cde', 'form', 'processManager', 'system', 'embedded', 'board'].forEach(function (module) {
-        gulp.src('./modules/' + module + '/node-js/**/*')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
-        gulp.src('./modules/' + module + '/shared/**/*')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/'));
-        gulp.src('./modules/' + module + '/**/*.png')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
-        gulp.src('./modules/' + module + '/**/*.ico')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
-        gulp.src('./modules/' + module + '/**/*.gif')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
-        gulp.src('./modules/' + module + '/views/**/*.html')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/'));
+        promiseArray.push(gulp.src('./modules/' + module + '/node-js/**/*')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/')));
+        promiseArray.push(gulp.src('./modules/' + module + '/shared/**/*')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/')));
+        promiseArray.push(gulp.src('./modules/' + module + '/**/*.png')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
+        promiseArray.push(gulp.src('./modules/' + module + '/**/*.ico')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
+        promiseArray.push(gulp.src('./modules/' + module + '/**/*.gif')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
+        promiseArray.push(gulp.src('./modules/' + module + '/views/**/*.html')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/')));
     });
 
     ['supportedBrowsers.ejs', 'loginText.ejs'].forEach(function (file) {
-        gulp.src('./modules/system/views/' + file)
-            .pipe(gulp.dest(config.node.buildDir + "/modules/system/views/"));
+        promiseArray.push(gulp.src('./modules/system/views/' + file)
+            .pipe(gulp.dest(config.node.buildDir + "/modules/system/views/")));
     });
 
-    gulp.src('./modules/components/**/*')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/components/"));
+    promiseArray.push(gulp.src('./modules/components/**/*')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/components/")));
 
-    gulp.src('./modules/processManager/pmApp.js')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/processManager/"));
+    promiseArray.push(gulp.src('./modules/processManager/pmApp.js')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/processManager/")));
 
-    gulp.src('./modules/swagger/index.js')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/"));
-    gulp.src('./modules/swagger/api/swagger.yaml')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/api/"));
-    gulp.src('./modules/swagger/public/swagger.css')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/public"));
+    promiseArray.push(gulp.src('./modules/swagger/index.js')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/")));
+    promiseArray.push(gulp.src('./modules/swagger/api/swagger.yaml')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/api/")));
+    promiseArray.push(gulp.src('./modules/swagger/public/swagger.css')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/public")));
 
-    gulp.src('./modules/system/public/robots.txt')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/"));
+    promiseArray.push(gulp.src('./modules/system/public/robots.txt')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/")));
 
 
-    gulp.src('./config/*.json')
-        .pipe(gulp.dest(config.node.buildDir + "/config/"));
+    promiseArray.push(gulp.src('./config/*.json')
+        .pipe(gulp.dest(config.node.buildDir + "/config/")));
 
-    gulp.src('./app.js')
-        .pipe(gulp.dest(config.node.buildDir + "/"));
-    gulp.src('./package.json')
-        .pipe(gulp.dest(config.node.buildDir + "/"));
+    promiseArray.push(gulp.src('./app.js')
+        .pipe(gulp.dest(config.node.buildDir + "/")));
+    promiseArray.push(gulp.src('./package.json')
+        .pipe(gulp.dest(config.node.buildDir + "/")));
 
-    gulp.src('./deploy/*')
-        .pipe(gulp.dest(config.node.buildDir + "/deploy/"));
+    promiseArray.push(gulp.src('./deploy/*')
+        .pipe(gulp.dest(config.node.buildDir + "/deploy/")));
 
-    gulp.src('./ingester/**')
-        .pipe(gulp.dest(config.node.buildDir + "/ingester/"));
+    promiseArray.push(gulp.src('./ingester/**')
+        .pipe(gulp.dest(config.node.buildDir + "/ingester/")));
 
-    gulp.src(
+    promiseArray.push(gulp.src(
         [
             './modules/form/public/html/lformsRender.html',
             './modules/form/public/html/nativeRenderStandalone.html'
         ])
-        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/"));
+        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/")));
 
-    gulp.src('./modules/form/public/assets/sdc/*')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc"));
+    promiseArray.push(gulp.src('./modules/form/public/assets/sdc/*')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc")));
+
+    return Promise.all(promiseArray);
+
 
 });
 
@@ -169,14 +180,16 @@ gulp.task('angularTemplates', function () {
 });
 
 gulp.task('prepareVersion', ['copyCode'], function () {
-    setTimeout(function () {
+    return new Promise(resolve => {
         git.revParse({args: '--short HEAD'}, function (err, hash) {
-            fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';", function (err) {
+            fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';",
+                function (err) {
                 if (err)  console.log("ERROR generating version.html: " + err);
                 else console.log("generated " + config.node.buildDir + "/modules/system/node-js/version.js");
+                resolve();
             });
         });
-    }, 15000);
+    });
 });
 
 gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
@@ -206,7 +219,6 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
                 });
         }));
     });
-    console.log("promiseArray length: " + promiseArray.length);
     return Promise.all(promiseArray);
 });
 

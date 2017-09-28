@@ -1,7 +1,6 @@
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
-angular.module('systemModule', ['ngSanitize', 'ngRoute', 'LocalStorageModule',
-    'ui.select', 'angular-send-feedback', 'checklist-model'])
+angular.module('systemModule', ['ngSanitize', 'ngRoute', 'LocalStorageModule', 'angular-send-feedback'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
