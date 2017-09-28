@@ -202,7 +202,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(function (item) {
-        streamArray.push(new Promise(resolve => {
+        streamArray.push(
             gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     jsAttributes: {
@@ -218,8 +218,8 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
                     gulp.src(config.node.buildDir + '/modules/' + item.filename)
                         .pipe(gulp.dest(config.node.buildDir + "/" + item.folder))
                         .on('end', resolve);
-                });
-        }));
+                })
+        );
     });
     return merge(streamArray);
 });
