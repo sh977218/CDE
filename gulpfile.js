@@ -249,6 +249,6 @@ gulp.task('es', function () {
 });
 
 gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion',
-    'usemin', 'emptyTemplates']);
+    'usemin', 'emptyTemplates'], () => setTimeout(() => {}, 15000));
 
 
