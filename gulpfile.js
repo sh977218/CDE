@@ -183,8 +183,7 @@ gulp.task('angularTemplates', function () {
     return Promise.all(promiseArray);
 });
 
-gulp.task('prepareVersion', ['copyCode'], (cb) {
-
+gulp.task('prepareVersion', ['copyCode'], (cb) => {
     git.revParse({args: '--short HEAD'}, function (err, hash) {
         fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';",
             function (err) {
