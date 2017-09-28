@@ -183,20 +183,19 @@ gulp.task('angularTemplates', function () {
     return Promise.all(promiseArray);
 });
 
-gulp.task('prepareVersion', ['copyCode'], function () {
-    return new Promise(resolve => {
-        git.revParse({args: '--short HEAD'}, function (err, hash) {
-            fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';",
-                function (err) {
-                if (err)  console.log("ERROR generating version.html: " + err);
-                else console.log("generated " + config.node.buildDir + "/modules/system/node-js/version.js");
-                resolve();
-            });
+gulp.task('prepareVersion', ['copyCode'], (cb) {
+
+    git.revParse({args: '--short HEAD'}, function (err, hash) {
+        fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';",
+            function (err) {
+            if (err)  console.log("ERROR generating version.html: " + err);
+            else console.log("generated " + config.node.buildDir + "/modules/system/node-js/version.js");
+            cb();
         });
     });
 });
 
-gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
+gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], (cb) => {
     let promiseArray = [];
 
     [
@@ -223,21 +222,19 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
                 });
         }));
     });
-    return Promise.all(promiseArray);
+    Promise.all(promiseArray).then(cb);
 });
 
-gulp.task('webpack', ['thirdParty'], function () {
-    return new Promise(resolve => {
-        run('npm run build').exec(undefined,
-            () => gulp.src('./modules/static/*.js')
-                .pipe(gulp.dest(config.node.buildDir + "/modules/static/")).on('end', resolve));
-    });
+gulp.task('webpack', ['thirdParty'], (cb) => {
+    run('npm run build').exec(undefined,
+        () => gulp.src('./modules/static/*.js')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/static/")).on('end', cb));
 });
 
-gulp.task('emptyTemplates', ['usemin'], function () {
+gulp.task('emptyTemplates', ['usemin'], (cb) => {
     let module = 'embedded';
-    return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
-            .pipe(gulp.dest("modules/" + module + "/public/js/"));
+    gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
+            .pipe(gulp.dest("modules/" + module + "/public/js/")).on('end', cb);
 });
 
 gulp.task('es', function () {
@@ -251,7 +248,6 @@ gulp.task('es', function () {
         esClient.indices.delete({index: index.indexName, timeout: "2s"}, function () {
         });
     });
-    /* don't know why but gulp wont exit this. Kill it.*/
     setTimeout(() => process.exit(0), 3000);
 });
 
