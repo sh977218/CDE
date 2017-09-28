@@ -2,7 +2,7 @@ package gov.nih.nlm.cde.test.comments;
 
 import org.testng.annotations.Test;
 
-public class CdeComments extends CdeCommentTest {
+public class CdeCommentsTest extends CdeCommentTest {
 
     @Test
     public void cdeComments() {

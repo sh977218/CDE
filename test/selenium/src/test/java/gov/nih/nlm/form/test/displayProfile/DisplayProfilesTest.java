@@ -41,7 +41,6 @@ public class DisplayProfilesTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
         clickElement(By.xpath("//div[@id='question_0_3']//i[contains(@class,'fa-pencil')]"));
         clickElement(By.xpath("//div[@id='question_0_3']//div[text()='Invisible:']/following-sibling::div/input"));
-        clickElement(By.xpath("//div[@id='question_0_3']//i[contains(@class,'fa-check')]"));
 
         clickElement(By.id("displayProfiles_tab"));
         createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1, false);

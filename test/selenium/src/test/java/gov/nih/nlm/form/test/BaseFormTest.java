@@ -126,6 +126,7 @@ public class BaseFormTest extends FormCommentTest {
             else {
                 new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
                 findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
+                saveEditQuestionSectionById(sectionId);
             }
         }
     }
