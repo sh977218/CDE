@@ -1,4 +1,5 @@
 const fs = require('fs');
+const util = require('util');
 const _ = require('lodash');
 const XLSX = require('xlsx');
 
@@ -20,6 +21,15 @@ const EXCLUDE_REF_DOC = [
     'No references available',
     'Please fill out'
 ];
+
+
+let log_file = fs.createWriteStream(__dirname + '/debug.log', {flags: 'w'});
+let log_stdout = process.stdout;
+
+console.log = function (d) {
+    log_file.write(util.format(d) + '\n');
+    log_stdout.write(util.format(d) + '\n');
+};
 
 function rowToDataElement(file, row) {
     let ids = [{
@@ -73,7 +83,12 @@ function rowToDataElement(file, row) {
         } else {
             valueDomain.datatype = 'Text';
             valueDomain.datatypeText = {};
-//            throw file + " Unknown datatype: " + datatype;
+            console.log("---------------------------------");
+            console.log("| file: " + file);
+            console.log("| row: " + row);
+            console.log("| Unknown datatype: " + datatype);
+            console.log("---------------------------------");
+            console.log("\n\n\n");
         }
     } else {
         valueDomain.datatype = 'Value List';
@@ -91,7 +106,14 @@ function rowToDataElement(file, row) {
                     };
                     valueDomain.permissibleValues.push(pv);
                 }
-            } else throw file + " PV Length mismatch. pv:" + pvs.length + " pvDescs:" + pvDescs.length + " pvCodes:" + pvCodes.length;
+            } else {
+                console.log("---------------------------------");
+                console.log("| file: " + file);
+                console.log("| row: " + row);
+                console.log("| PV Length mismatch. pv:" + pvs.length + " pvDescs:" + pvDescs.length + " pvCodes:" + pvCodes.length);
+                console.log("---------------------------------");
+                console.log("\n\n\n");
+            }
         }
     }
 
@@ -101,6 +123,34 @@ function rowToDataElement(file, row) {
         let pms = row['References'].split(/\s*PMID:*\s*\d+[\.|;]/g);
         console.log('a');
     }
+
+    let properties = [];
+    if (row['keywords']) properties.push({key: "keywords", value: row['keywords']});
+    if (row['guidelines/instructions']) properties.push({
+        key: "guidelines/instructions",
+        value: row['guidelines/instructions']
+    });
+    if (row['notes']) properties.push({key: "notes", value: row['notes']});
+    if (row['keywords']) properties.push({key: "KeyWord", value: row['keywords']});
+
+    let classification = [];
+    classification.push({});
+    return {
+        stewardOrg: {
+            name: 'NINDS'
+        },
+        createdBy: {
+            username: 'batchloader'
+        },
+        registrationState: {
+            registrationStatus: 'Qualified'
+        },
+        classification: classification,
+        naming: naming,
+        valueDomain: valueDomain,
+        referenceDocuments: referenceDocs,
+        properties: properties
+    };
 }
 
 function run() {
