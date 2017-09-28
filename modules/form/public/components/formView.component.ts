@@ -54,20 +54,11 @@ export class FormViewComponent implements OnInit {
     ngOnInit(): void {
         this.loadForm(form => {
             this.loadComments(form, null);
-            this.http.get("/draftForm/" + form.tinyId)
-                .map(res => res.json()).subscribe(res => {
-                if (res && res.length === 1) {
-                    this.drafts = res;
-                    this.elt = this.drafts[0];
-                } else this.drafts = [];
-                this.userService.getPromise().then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft);
-            }, err => this.alert.addAlert("danger", err));
-
+            this.loadDraft(() => this.userService.getPromise().then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt) && this.drafts.length > 0 || !this.elt.isDraft));
         });
     }
 
-    loadForm(cb = (r = null) => {
-    }) {
+    loadForm(cb) {
         let formId = this.routeParams.formId;
         let url = "/form/" + this.routeParams.tinyId;
         if (formId) url = "/formById/" + formId;
@@ -97,22 +88,9 @@ export class FormViewComponent implements OnInit {
                 txt = txt + window.location.pathname;
             }
             let answer = confirm(txt);
-            if (!answer) {
-                event.preventDefault();
-            }
+            if (!answer) event.preventDefault();
         }
     }
-
-    reloadForm() {
-        this.http.put("/form/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.areDerivationRulesSatisfied();
-                this.validateForm();
-                this.alert.addAlert("success", "Form saved.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
-        );
-    };
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
@@ -274,7 +252,6 @@ export class FormViewComponent implements OnInit {
         });
     }
 
-
     upload(event) {
         if (event.srcElement.files) {
             let files = event.srcElement.files;
@@ -308,14 +285,12 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft(cb) {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
         this.elt._id = this.formId;
         this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
-            this.loadDraft(() => {
-                if (cb) cb(res);
-            });
+            this.areDerivationRulesSatisfied();
+            this.validateForm();
+            if (cb) cb(res);
         }, err => this.alert.addAlert("danger", err));
     }
 
@@ -332,7 +307,7 @@ export class FormViewComponent implements OnInit {
     removeDraft() {
         this.http.delete("/draftForm/" + this.elt.tinyId)
             .subscribe(res => {
-                if (res) this.loadForm(() => this.loadDraft(null));
+                if (res) this.loadForm(() => this.drafts = []);
             }, err => this.alert.addAlert("danger", err));
     }
 
