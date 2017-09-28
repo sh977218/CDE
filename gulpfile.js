@@ -97,7 +97,7 @@ gulp.task('wiredep', ['bower'], function () {
 
 gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], function () {
 
-    let streamArr = [];
+    let streamArray = [];
 
     ['cde', 'form', 'processManager', 'system', 'embedded', 'board'].forEach(function (module) {
         streamArray.push(gulp.src('./modules/' + module + '/node-js/**/*')
