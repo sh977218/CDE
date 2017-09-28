@@ -288,6 +288,7 @@ export class FormViewComponent implements OnInit {
         this.elt._id = this.formId;
         this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
+            this.elt.isDraft = true;
             this.areDerivationRulesSatisfied();
             this.validateForm();
             if (cb) cb(res);
