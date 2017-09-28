@@ -26,7 +26,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         Assert.assertEquals(lis.get(1).getText(), "×Male Gender");
         Assert.assertEquals(lis.get(2).getText(), "×Unknown");
 
-        clickElement(By.xpath("//li[@class='select2-selection__choice' and contains(., \"Female Gender\")]/span[contains(@class, 'select2-selection__choice__remove')]"));
+        clickElement(By.xpath("//li[@class='select2-selection__choice' and contains(., 'Female Gender')]/span[contains(@class, 'select2-selection__choice__remove')]"));
         textNotPresent("×Female Gender");
         lis = driver.findElements(By.cssSelector("#question_0_0 .select2-selection__choice"));
         Assert.assertEquals(lis.size(), 2);

@@ -80,7 +80,7 @@
             <cde-inline-area-edit
                  [(model)]="question.instructions.value"
                  [(defFormat)]="question.instructions.valueFormat"
-                 [isAllowed]="true" (modelChange)="elt.unsaved = true">
+                 [isAllowed]="true" (modelChange)="stageElt.emit()">
             </cde-inline-area-edit>
         </div>
     </div>
