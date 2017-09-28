@@ -195,7 +195,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     validateSkipLogic(skipLogic, previousQuestions, item) {
         let validateSkipLogicResult = this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item);
-        if (validateSkipLogicResult && skipLogic.trim().length > 0)
+        if (validateSkipLogicResult && skipLogic && skipLogic.condition && skipLogic.condition.trim().length > 0)
             this.stageElt.emit();
         else
             this.isFormValid.emit(false);
