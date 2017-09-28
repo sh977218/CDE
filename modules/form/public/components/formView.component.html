@@ -47,7 +47,7 @@
             <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
         </h1>
 
-        <div class="overflowHidden">
+        <div class="col-xs-12">
             <div class="pull-left marginTopBottom5">
                 <button *ngIf="quickBoardService.canAddElement(elt)"
                         id="addToQuickBoard" class="btn btn-small btn-default"
