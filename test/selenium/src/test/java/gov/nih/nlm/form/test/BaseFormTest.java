@@ -62,6 +62,7 @@ public class BaseFormTest extends FormCommentTest {
                 }
             }
         }
+        startEditQuestionSectionById(sectionId);
         if (title != null) {
             editSectionTitle(sectionId, title);
         }
@@ -69,15 +70,26 @@ public class BaseFormTest extends FormCommentTest {
             hangon(1); // allow time for id to be processed
             setRepeat(sectionId, repeat);
         }
+        saveEditQuestionSectionById(sectionId);
     }
 
-    void editSectionTitle(String sectionId, String title) {
-        startEditQuestionSectionById(sectionId);
+    public void editSectionTitle(String sectionId, String title) {
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
         String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input";
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+    }
+
+    public void setRepeat(String sectionId, String repeat) {
+        if (repeat != null) {
+            if (repeat.charAt(0) == 'F')
+                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
+            else {
+                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
+                findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
+            }
+        }
     }
 
     public void dragAndDrop(WebElement source, WebElement target) {
@@ -117,20 +129,6 @@ public class BaseFormTest extends FormCommentTest {
         }
         return builder.toString();
     }
-
-    public void setRepeat(String sectionId, String repeat) {
-        startEditQuestionSectionById(sectionId);
-        if (repeat != null) {
-            if (repeat.charAt(0) == 'F')
-                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
-            else {
-                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
-                findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
-                saveEditQuestionSectionById(sectionId);
-            }
-        }
-    }
-
 
     public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
         return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//input";
