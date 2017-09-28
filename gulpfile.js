@@ -166,17 +166,21 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
 
 gulp.task('angularTemplates', function () {
     let module = 'embedded';
-    gulp
+    let promiseArray = [];
+    promiseArray.push(gulp
         .src("modules/" + module + "/public/js/angularTemplates.js")
-        .pipe(gulp.dest("modules/" + module + "/public/js/bkup/"));
-    return gulp.src("modules/" + module + "/public/html/**/*.html")
+        .pipe(gulp.dest("modules/" + module + "/public/js/bkup/")));
+    promiseArray.push(gulp
+        .src("modules/" + module + "/public/html/**/*.html")
         .pipe(templateCache({
             root: "/" + module + "/public/html",
             filename: "angularTemplates.js",
             module: module + "Templates",
             standalone: true
         }))
-        .pipe(gulp.dest("modules/" + module + "/public/js/"));
+        .pipe(gulp.dest("modules/" + module + "/public/js/")));
+
+    return Promise.all(promiseArray);
 });
 
 gulp.task('prepareVersion', ['copyCode'], function () {
@@ -223,8 +227,11 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
 });
 
 gulp.task('webpack', ['thirdParty'], function () {
-    return run('npm run build').exec(undefined,
-        () => gulp.src('./modules/static/*.js').pipe(gulp.dest(config.node.buildDir + "/modules/static/")));
+    return new Promise(resolve => {
+        run('npm run build').exec(undefined,
+            () => gulp.src('./modules/static/*.js')
+                .pipe(gulp.dest(config.node.buildDir + "/modules/static/")).on('end', resolve));
+    });
 });
 
 gulp.task('emptyTemplates', ['usemin'], function () {
@@ -249,6 +256,6 @@ gulp.task('es', function () {
 });
 
 gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion',
-    'usemin', 'emptyTemplates'], () => setTimeout(() => {}, 15000));
+    'usemin', 'emptyTemplates']);
 
 
