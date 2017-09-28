@@ -1,4 +1,4 @@
-var gulp = require('gulp'),
+const gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     config = require('./modules/system/node-js/parseConfig'),
@@ -16,8 +16,9 @@ var gulp = require('gulp'),
     esInit = require('./modules/system/node-js/elasticSearchInit'),
     git = require('gulp-git'),
     templateCache = require('gulp-angular-templatecache'),
-    run = require('gulp-run')
-    ;
+    run = require('gulp-run'),
+    merge = require('merge-stream')
+;
 
 require('es6-promise').polyfill();
 
@@ -38,24 +39,24 @@ gulp.task('bower', function () {
 });
 
 gulp.task('thirdParty', ['npm', 'bower'], function () {
-    let promiseArray = [];
+    let streamArr = [];
 
-    promiseArray.push(gulp.src('./node_modules/core-js/client/shim.min.js')
+    streamArr.push(gulp.src('./node_modules/core-js/client/shim.min.js')
         .pipe(gulp.dest('./modules/static/')));
-    promiseArray.push(gulp.src('./node_modules/classlist.js/classList.min.js')
+    streamArr.push(gulp.src('./node_modules/classlist.js/classList.min.js')
         .pipe(gulp.dest('./modules/static/')));
-    promiseArray.push(gulp.src('./node_modules/html5-formdata/formdata.js')
+    streamArr.push(gulp.src('./node_modules/html5-formdata/formdata.js')
         .pipe(gulp.dest('./modules/static/')));
-    promiseArray.push(gulp.src('./node_modules/js-polyfills/typedarray.js')
+    streamArr.push(gulp.src('./node_modules/js-polyfills/typedarray.js')
         .pipe(gulp.dest('./modules/static/')));
-    promiseArray.push(gulp.src('./node_modules/Blob.js/Blob.js')
+    streamArr.push(gulp.src('./node_modules/Blob.js/Blob.js')
         .pipe(gulp.dest('./modules/static/')));
-    promiseArray.push(gulp.src('./node_modules/intl/locale-data/jsonp/en.js')
+    streamArr.push(gulp.src('./node_modules/intl/locale-data/jsonp/en.js')
         .pipe(gulp.dest('./modules/static/')));
-    promiseArray.push(gulp.src('./node_modules/intl/dist/Intl.min.js')
+    streamArr.push(gulp.src('./node_modules/intl/dist/Intl.min.js')
         .pipe(gulp.dest('./modules/static/')));
 
-    return Promise.all(promiseArray);
+    return merge(streamArr);
 
 });
 
@@ -96,81 +97,81 @@ gulp.task('wiredep', ['bower'], function () {
 
 gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], function () {
 
-    let promiseArray = [];
+    let streamArr = [];
 
     ['cde', 'form', 'processManager', 'system', 'embedded', 'board'].forEach(function (module) {
-        promiseArray.push(gulp.src('./modules/' + module + '/node-js/**/*')
+        streamArray.push(gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/')));
-        promiseArray.push(gulp.src('./modules/' + module + '/shared/**/*')
+        streamArray.push(gulp.src('./modules/' + module + '/shared/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/')));
-        promiseArray.push(gulp.src('./modules/' + module + '/**/*.png')
+        streamArray.push(gulp.src('./modules/' + module + '/**/*.png')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
-        promiseArray.push(gulp.src('./modules/' + module + '/**/*.ico')
+        streamArray.push(gulp.src('./modules/' + module + '/**/*.ico')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
-        promiseArray.push(gulp.src('./modules/' + module + '/**/*.gif')
+        streamArray.push(gulp.src('./modules/' + module + '/**/*.gif')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
-        promiseArray.push(gulp.src('./modules/' + module + '/views/**/*.html')
+        streamArray.push(gulp.src('./modules/' + module + '/views/**/*.html')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/')));
     });
 
     ['supportedBrowsers.ejs', 'loginText.ejs'].forEach(function (file) {
-        promiseArray.push(gulp.src('./modules/system/views/' + file)
+        streamArray.push(gulp.src('./modules/system/views/' + file)
             .pipe(gulp.dest(config.node.buildDir + "/modules/system/views/")));
     });
 
-    promiseArray.push(gulp.src('./modules/components/**/*')
+    streamArray.push(gulp.src('./modules/components/**/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/components/")));
 
-    promiseArray.push(gulp.src('./modules/processManager/pmApp.js')
+    streamArray.push(gulp.src('./modules/processManager/pmApp.js')
         .pipe(gulp.dest(config.node.buildDir + "/modules/processManager/")));
 
-    promiseArray.push(gulp.src('./modules/swagger/index.js')
+    streamArray.push(gulp.src('./modules/swagger/index.js')
         .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/")));
-    promiseArray.push(gulp.src('./modules/swagger/api/swagger.yaml')
+    streamArray.push(gulp.src('./modules/swagger/api/swagger.yaml')
         .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/api/")));
-    promiseArray.push(gulp.src('./modules/swagger/public/swagger.css')
+    streamArray.push(gulp.src('./modules/swagger/public/swagger.css')
         .pipe(gulp.dest(config.node.buildDir + "/modules/swagger/public")));
 
-    promiseArray.push(gulp.src('./modules/system/public/robots.txt')
+    streamArray.push(gulp.src('./modules/system/public/robots.txt')
         .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/")));
 
 
-    promiseArray.push(gulp.src('./config/*.json')
+    streamArray.push(gulp.src('./config/*.json')
         .pipe(gulp.dest(config.node.buildDir + "/config/")));
 
-    promiseArray.push(gulp.src('./app.js')
+    streamArray.push(gulp.src('./app.js')
         .pipe(gulp.dest(config.node.buildDir + "/")));
-    promiseArray.push(gulp.src('./package.json')
+    streamArray.push(gulp.src('./package.json')
         .pipe(gulp.dest(config.node.buildDir + "/")));
 
-    promiseArray.push(gulp.src('./deploy/*')
+    streamArray.push(gulp.src('./deploy/*')
         .pipe(gulp.dest(config.node.buildDir + "/deploy/")));
 
-    promiseArray.push(gulp.src('./ingester/**')
+    streamArray.push(gulp.src('./ingester/**')
         .pipe(gulp.dest(config.node.buildDir + "/ingester/")));
 
-    promiseArray.push(gulp.src(
+    streamArray.push(gulp.src(
         [
             './modules/form/public/html/lformsRender.html',
             './modules/form/public/html/nativeRenderStandalone.html'
         ])
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/")));
 
-    promiseArray.push(gulp.src('./modules/form/public/assets/sdc/*')
+    streamArray.push(gulp.src('./modules/form/public/assets/sdc/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc")));
 
-    return Promise.all(promiseArray);
+    return merge(streamArray);
 
 
 });
 
 gulp.task('angularTemplates', function () {
     let module = 'embedded';
-    let promiseArray = [];
-    promiseArray.push(gulp
+    let streamArray = [];
+    streamArray.push(gulp
         .src("modules/" + module + "/public/js/angularTemplates.js")
         .pipe(gulp.dest("modules/" + module + "/public/js/bkup/")));
-    promiseArray.push(gulp
+    streamArray.push(gulp
         .src("modules/" + module + "/public/html/**/*.html")
         .pipe(templateCache({
             root: "/" + module + "/public/html",
@@ -180,29 +181,28 @@ gulp.task('angularTemplates', function () {
         }))
         .pipe(gulp.dest("modules/" + module + "/public/js/")));
 
-    return Promise.all(promiseArray);
+    return merge(streamArray);
 });
 
-gulp.task('prepareVersion', ['copyCode'], (cb) => {
+gulp.task('prepareVersion', ['copyCode'], function () {
     git.revParse({args: '--short HEAD'}, function (err, hash) {
         fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';",
             function (err) {
             if (err)  console.log("ERROR generating version.html: " + err);
             else console.log("generated " + config.node.buildDir + "/modules/system/node-js/version.js");
-            cb();
         });
     });
 });
 
-gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], (cb) => {
-    let promiseArray = [];
+gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
+    let streamArray = [];
 
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(function (item) {
-        promiseArray.push(new Promise(resolve => {
+        streamArray.push(new Promise(resolve => {
             gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     jsAttributes: {
@@ -221,19 +221,19 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], (cb) => {
                 });
         }));
     });
-    Promise.all(promiseArray).then(cb);
+    return steam(streamArray);
 });
 
-gulp.task('webpack', ['thirdParty'], (cb) => {
-    run('npm run build').exec(undefined,
+gulp.task('webpack', ['thirdParty'], () => {
+    return run('npm run build').exec(undefined,
         () => gulp.src('./modules/static/*.js')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/static/")).on('end', cb));
+            .pipe(gulp.dest(config.node.buildDir + "/modules/static/")).on('end', ));
 });
 
-gulp.task('emptyTemplates', ['usemin'], (cb) => {
+gulp.task('emptyTemplates', ['usemin'], () => {
     let module = 'embedded';
-    gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
-            .pipe(gulp.dest("modules/" + module + "/public/js/")).on('end', cb);
+    return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
+            .pipe(gulp.dest("modules/" + module + "/public/js/"));
 });
 
 gulp.task('es', function () {
