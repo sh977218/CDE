@@ -121,7 +121,6 @@ function rowToDataElement(file, row) {
     if (row['References'] && _.indexOf(EXCLUDE_REF_DOC, row['References']) === -1) {
         RegExp(/PUBMED:\s*(\d+[,|]*\s*)+/g);
         let pms = row['References'].split(/\s*PMID:*\s*\d+[\.|;]/g);
-        console.log('a');
     }
 
     let properties = [];
