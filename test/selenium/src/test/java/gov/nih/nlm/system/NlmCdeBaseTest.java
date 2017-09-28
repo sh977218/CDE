@@ -986,7 +986,6 @@ public class NlmCdeBaseTest {
             }
         }
         clickElement(By.id("createNewNamingBtn"));
-//        modalGone();
     }
 
     protected void addNewProperty(String key, String value) {
