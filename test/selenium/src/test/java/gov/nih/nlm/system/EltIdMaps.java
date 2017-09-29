@@ -78,11 +78,13 @@ public class EltIdMaps {
         // Forms
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
         eltMap.put("Copy Section Form Test", "Xy7W4MKNV");
+        eltMap.put("Draft Form Test", "QyT6ElYKLl");
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("Functional Imaging", "my7XySBtg");
         eltMap.put("Form Cde Update Test", "X1ghWjntf");
+        eltMap.put("Form Delete Test", "QyT6ElOKLl");
         eltMap.put("Form History Test", "QkGEqKVNZ");
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("Form Table Test", "713d9u1vX");
