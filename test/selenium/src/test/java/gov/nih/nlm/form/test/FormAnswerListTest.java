@@ -32,6 +32,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         Assert.assertEquals(lis.size(), 2);
         Assert.assertEquals(lis.get(0).getText(), "×Male Gender");
         Assert.assertEquals(lis.get(1).getText(), "×Unknown");
+        saveEditQuestionSectionById("question_0_0");
         newFormVersion();
 
         goToFormByName(formName);
@@ -40,6 +41,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         startEditQuestionSectionById("question_0_0");
         clickElement(By.cssSelector(".formDescriptionAnswerList .select2-search__field"));
         clickElement(By.xpath("//li[contains(@class,'select2-results__option') and contains(text(), 'Female Gender')]"));
+        saveEditQuestionSectionById("question_0_0");
         newFormVersion();
 
         goToFormByName(formName);
