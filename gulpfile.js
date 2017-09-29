@@ -194,31 +194,29 @@ gulp.task('prepareVersion', ['copyCode'], function () {
     });
 });
 
-gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
-    setTimeout(() => {
-        let streamArray = [];
+gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function () {
+    let streamArray = [];
 
-        [
-            {folder: "./modules/system/views/", filename: "index.ejs"},
-            {folder: "./modules/embedded/public/html/", filename: "index.html"},
-            {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
-        ].forEach(function (item) {
-            streamArray.push(
-                gulp.src(item.folder + item.filename)
-                    .pipe(usemin({
-                        jsAttributes: {
-                            defer: true
-                        },
-                        assetsDir: "./modules/",
-                        css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
-                        js: [uglify({mangle: false}), 'concat', rev()],
-                        webp: ['concat', rev()]
-                    }))
-                    .pipe(gulp.dest(config.node.buildDir + '/modules/'))
-            );
-        });
-        return merge(streamArray);
-    }, 5000);
+    [
+        {folder: "./modules/system/views/", filename: "index.ejs"},
+        {folder: "./modules/embedded/public/html/", filename: "index.html"},
+        {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
+    ].forEach(item => {
+        streamArray.push(
+            gulp.src(item.folder + item.filename)
+                .pipe(usemin({
+                    jsAttributes: {
+                        defer: true
+                    },
+                    assetsDir: "./modules/",
+                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                    js: [uglify({mangle: false}), 'concat', rev()],
+                    webp: ['concat', rev()]
+                }))
+                .pipe(gulp.dest(config.node.buildDir + '/modules/'))
+        );
+    });
+    return merge(streamArray);
 });
 
 gulp.task('copyUsemin', ['usemin'], function () {
@@ -237,10 +235,14 @@ gulp.task('copyUsemin', ['usemin'], function () {
 
 });
 
+gulp.task('copyWebpack', ['webpack'], () => {
+    return gulp.src('./modules/static/*.js')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
+});
+
+
 gulp.task('webpack', ['thirdParty'], () => {
-    return run('npm run build').exec(undefined,
-        () => gulp.src('./modules/static/*.js')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/static/")));
+    return run('npm run build').exec();
 });
 
 gulp.task('emptyTemplates', ['usemin'], () => {
