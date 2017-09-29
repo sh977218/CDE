@@ -57,8 +57,8 @@ export class FormViewComponent implements OnInit {
             this.userService.getPromise().then(user => {
                 if (user && user.username)
                     this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                else this.canEdit = this.isAllowedModel.isAllowed(this.elt)
-            })
+                else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+            });
         });
     }
 

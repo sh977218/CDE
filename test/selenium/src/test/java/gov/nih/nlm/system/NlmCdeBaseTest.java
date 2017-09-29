@@ -551,11 +551,6 @@ public class NlmCdeBaseTest {
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
-        wait.until(new ExpectedCondition<Boolean>() {
-            public Boolean apply(WebDriver driver) {
-                return driver.findElement(By.id("confirmSaveBtn")).isEnabled();
-            }
-        });
         clickElement(By.id("confirmSaveBtn"));
     }
 
