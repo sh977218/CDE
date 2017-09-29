@@ -4,17 +4,9 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class DraftFormTest extends NlmCdeBaseTest {
+public class LoginCannotEditSomeTabsTest extends NlmCdeBaseTest {
     @Test
-    public void draftFormLogout() {
-        String formName = "Draft Form Test";
-        mustBeLoggedOut();
-        goToFormByName(formName);
-        textNotPresent("Draft");
-    }
-
-    @Test
-    public void draftFormLogin() {
+    public void loginCannotEditSomeTabs() {
         String formName = "Draft Form Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);

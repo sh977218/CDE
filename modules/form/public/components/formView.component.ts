@@ -54,7 +54,11 @@ export class FormViewComponent implements OnInit {
     ngOnInit(): void {
         this.loadForm(form => {
             this.loadComments(form, null);
-            this.loadDraft(() => this.userService.getPromise().then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt)));
+            this.userService.getPromise().then(user => {
+                if (user && user.username)
+                    this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                else this.canEdit = this.isAllowedModel.isAllowed(this.elt)
+            })
         });
     }
 
