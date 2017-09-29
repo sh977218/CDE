@@ -213,7 +213,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
                     js: [uglify({mangle: false}), 'concat', rev()],
                     webp: ['concat', rev()]
                 }))
-                .pipe(gulp.dest(config.node.buildDir + '/modules/'));
+                .pipe(gulp.dest(config.node.buildDir + '/modules/'))
         )
     });
     return merge(streamArray);
