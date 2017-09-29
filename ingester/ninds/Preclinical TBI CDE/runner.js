@@ -1,7 +1,12 @@
 const fs = require('fs');
 const util = require('util');
+const async = require('async');
 const _ = require('lodash');
 const XLSX = require('xlsx');
+
+const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
+const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
+const classificationShared = require('../../../modules/system/shared/classificationShared');
 
 const DATA_TYPE_MAP = {
     'Alphanumeric': 'Text',
@@ -9,6 +14,40 @@ const DATA_TYPE_MAP = {
     'Numeric Values': 'Number',
     'Numeric': 'Number'
 };
+const ALL_POSSIBLE_CLASSIFICATIONS = [
+    "population.all",
+    "domain.general (for all diseases)",
+    "domain.traumatic brain injury",
+    "domain.Parkinson's disease",
+    "domain.Friedreich's ataxia",
+    "domain.stroke",
+    "domain.amyotrophic lateral sclerosis",
+    "domain.Huntington's disease",
+    "domain.multiple sclerosis",
+    "domain.neuromuscular diseases",
+    "domain.myasthenia gravis",
+    "domain.spinal muscular atrophy",
+    "domain.Duchenne muscular dystrophy/Becker muscular dystrophy", "domain.congenital muscular dystrophy",
+    "domain.spinal cord injury",
+    "domain.headache",
+    "domain.epilepsy",
+    "classification.general (for all diseases)",
+    "classification.acute hospitalized",
+    "classification.concussion/mild TBI",
+    "classification.epidemiology",
+    "classification.moderate/severe TBI: rehabilitation", "classification.Parkinson's disease",
+    "classification.Friedreich's ataxia",
+    "classification.stroke",
+    "classification.amyotrophic lateral sclerosis",
+    "classification.Huntington's disease",
+    "classification.multiple sclerosis",
+    "classification.neuromuscular diseases",
+    "classification.myasthenia gravis",
+    "classification.spinal muscular atrophy",
+    "classification.Duchenne muscular dystrophy/Becker muscular dystrophy",
+    "classification.congenital muscular dystrophy", "classification.spinal cord injury",
+    "classification.headache	classification.epilepsy",
+];
 
 const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
 const EXCLUDE_FILE = [
@@ -31,11 +70,70 @@ console.log = function (d) {
     log_stdout.write(util.format(d) + '\n');
 };
 
+function deToQuestion(row, cde) {
+    let question = {
+        elementType: 'question',
+        label: '',
+        instructions: {
+            value: ''
+        },
+        question: {
+            cde: {
+                tinyId: cde.tinyId,
+                name: cde.naming[0].designation,
+                version: cde.version,
+                permissibleValues: cde.valueDomain.permissibleValue,
+                ids: cde.ids,
+                derivationRules: cde.derivationRules
+            },
+            datatype: cde.valueDomain.datatype,
+            datatypeNumber: cde.valueDomain.datatypeNumber,
+            datatypeText: cde.valueDomain.datatypeText,
+            datatypeDate: cde.valueDomain.datatypeDate,
+            uoms: cde.valueDomain.uom,
+            answers: []
+        },
+        formElements: []
+    };
+    if (row['Preferred Question Text'])
+        question.label = row['Preferred Question Text'];
+    else question.label = cde.naming[0].designation;
+
+    if (row['guidelines/instructions'])
+        question.instructions.value = row['guidelines/instructions'];
+
+    let pvs = row['Permissible Values'].split(';');
+    let pvDescs = row['Permissible Value Descriptions'].split(';');
+    let pvCodes = row['Permissible Value Output Codes'].split(';');
+    for (let i = 0; i < pvs.length; i++) {
+        let pv = {
+            permissibleValue: pvs[i],
+            valueMeaningDefinition: pvDescs[i],
+            valueMeaningCode: pvCodes[i]
+        };
+        question.answers.push(pv);
+    }
+    return question;
+}
+
 function rowToDataElement(file, row) {
+    let de = {
+        stewardOrg: {
+            name: 'NINDS'
+        },
+        createdBy: {
+            username: 'batchloader'
+        },
+        registrationState: {
+            registrationStatus: 'Qualified'
+        },
+        classification: []
+    };
     let ids = [{
         source: 'NINDS',
         id: row['Variable Name']
     }];
+    de.ids = ids;
     let shortDescription = row['Short Description'];
     let description = row['Definition'];
     let naming = [];
@@ -60,6 +158,7 @@ function rowToDataElement(file, row) {
             tags: ['Preferred Question Text']
         });
     }
+    de.naming = naming;
 
     let valueDomain = {};
     if (row['Unit of Measure'])
@@ -116,12 +215,14 @@ function rowToDataElement(file, row) {
             }
         }
     }
+    de.valueDomain = valueDomain;
 
-    let referenceDocs = [];
+    let referenceDocuments = [];
     if (row['References'] && _.indexOf(EXCLUDE_REF_DOC, row['References']) === -1) {
         RegExp(/PUBMED:\s*(\d+[,|]*\s*)+/g);
         let pms = row['References'].split(/\s*PMID:*\s*\d+[\.|;]/g);
     }
+    de.referenceDocuments = referenceDocuments;
 
     let properties = [];
     if (row['keywords']) properties.push({key: "keywords", value: row['keywords']});
@@ -131,25 +232,15 @@ function rowToDataElement(file, row) {
     });
     if (row['notes']) properties.push({key: "notes", value: row['notes']});
     if (row['keywords']) properties.push({key: "KeyWord", value: row['keywords']});
+    de.properties = properties;
 
-    let classification = [];
-    classification.push({});
-    return {
-        stewardOrg: {
-            name: 'NINDS'
-        },
-        createdBy: {
-            username: 'batchloader'
-        },
-        registrationState: {
-            registrationStatus: 'Qualified'
-        },
-        classification: classification,
-        naming: naming,
-        valueDomain: valueDomain,
-        referenceDocuments: referenceDocs,
-        properties: properties
-    };
+    ALL_POSSIBLE_CLASSIFICATIONS.forEach(possibleClassification => {
+        if (row[possibleClassification]) {
+            let categories = possibleClassification.split(".").reverse().concat(row[possibleClassification]);
+            classificationShared.classifyElt(de, 'NINDS', categories);
+        }
+    });
+    return de;
 }
 
 function run() {
@@ -160,10 +251,23 @@ function run() {
             let workbook = XLSX.readFile(FILE_PATH + file);
             let sheetName = workbook.SheetNames[0];
             let rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
-            let form = {};
-            rows.forEach(row => {
+            let form = {
+                naming: [
+                    {designation: _.words('sheetName').join(" ")}
+                ],
+                formElements: []
+            };
+            async.forEach(rows, (row, doneOneRow) => {
                 let de = rowToDataElement(file, row);
-            });
+                new DataElementModel(de).save((err, newCde) => {
+                    if (err) throw err;
+                    let question = deToQuestion(row, newCde);
+                    form.formElements.push(question);
+                    doneOneRow();
+                });
+            }, () => new FormModel(form).save(err => {
+                if (err) throw err;
+            }));
         }
     });
 }
