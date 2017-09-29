@@ -195,28 +195,30 @@ gulp.task('prepareVersion', ['copyCode'], function () {
 });
 
 gulp.task('usemin', ['copyCode', 'angularTemplates', 'webpack'], function () {
-    let streamArray = [];
+    setTimeout(() => {
+        let streamArray = [];
 
-    [
-        {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/embedded/public/html/", filename: "index.html"},
-        {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
-    ].forEach(function (item) {
-        streamArray.push(
-            gulp.src(item.folder + item.filename)
-                .pipe(usemin({
-                    jsAttributes: {
-                        defer: true
-                    },
-                    assetsDir: "./modules/",
-                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
-                    js: [uglify({mangle: false}), 'concat', rev()],
-                    webp: ['concat', rev()]
-                }))
-                .pipe(gulp.dest(config.node.buildDir + '/modules/'))
-        )
-    });
-    return merge(streamArray);
+        [
+            {folder: "./modules/system/views/", filename: "index.ejs"},
+            {folder: "./modules/embedded/public/html/", filename: "index.html"},
+            {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
+        ].forEach(function (item) {
+            streamArray.push(
+                gulp.src(item.folder + item.filename)
+                    .pipe(usemin({
+                        jsAttributes: {
+                            defer: true
+                        },
+                        assetsDir: "./modules/",
+                        css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                        js: [uglify({mangle: false}), 'concat', rev()],
+                        webp: ['concat', rev()]
+                    }))
+                    .pipe(gulp.dest(config.node.buildDir + '/modules/'))
+            );
+        });
+        return merge(streamArray);
+    }, 5000);
 });
 
 gulp.task('copyUsemin', ['usemin'], function () {
@@ -261,7 +263,6 @@ gulp.task('es', function () {
     setTimeout(() => process.exit(0), 3000);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion',
-    'copyUsemin', 'emptyTemplates']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'prepareVersion', 'copyUsemin', 'emptyTemplates']);
 
 
