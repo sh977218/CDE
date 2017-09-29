@@ -11,9 +11,10 @@ public class DeleteDraftTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         clickElement(By.id("naming_tab"));
-        addNewName("test", "test", new String[]{"test"});
+        addNewName("draft designation", "draft definition", new String[]{"draft"});
         textPresent("Draft");
         clickElement(By.id("deleteDraftBtn"));
         textNotPresent("Draft");
+        textNotPresent("draft definition");
     }
 }
