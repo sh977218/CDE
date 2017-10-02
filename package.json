@@ -156,6 +156,7 @@
     "webpack": "2.6.1",
     "webpack-bundle-analyzer": "2.9.0",
     "zone.js": "0.8.12",
-    "xlsx": "^0.11.4"
+    "xlsx": "^0.11.4",
+    "linkifyjs": "^2.1.5"
   }
 }

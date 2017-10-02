@@ -3,6 +3,7 @@ const util = require('util');
 const async = require('async');
 const _ = require('lodash');
 const XLSX = require('xlsx');
+const linkifyjs = require('linkifyjs');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
@@ -102,16 +103,18 @@ function deToQuestion(row, cde) {
     if (row['guidelines/instructions'])
         question.instructions.value = row['guidelines/instructions'];
 
-    let pvs = row['Permissible Values'].split(';');
-    let pvDescs = row['Permissible Value Descriptions'].split(';');
-    let pvCodes = row['Permissible Value Output Codes'].split(';');
-    for (let i = 0; i < pvs.length; i++) {
-        let pv = {
-            permissibleValue: pvs[i],
-            valueMeaningDefinition: pvDescs[i],
-            valueMeaningCode: pvCodes[i]
-        };
-        question.answers.push(pv);
+    if (row['Permissible Values'] && row['Permissible Value Descriptions'] && row['Permissible Value Output Codes']) {
+        let pvs = row['Permissible Values'].split(';');
+        let pvDescs = row['Permissible Value Descriptions'].split(';');
+        let pvCodes = row['Permissible Value Output Codes'].split(';');
+        for (let i = 0; i < pvs.length; i++) {
+            let pv = {
+                permissibleValue: pvs[i],
+                valueMeaningDefinition: pvDescs[i],
+                valueMeaningCode: pvCodes[i]
+            };
+            question.question.answers.push(pv);
+        }
     }
     return question;
 }
@@ -218,9 +221,41 @@ function rowToDataElement(file, row) {
     de.valueDomain = valueDomain;
 
     let referenceDocuments = [];
-    if (row['References'] && _.indexOf(EXCLUDE_REF_DOC, row['References']) === -1) {
-        RegExp(/PUBMED:\s*(\d+[,|]*\s*)+/g);
-        let pms = row['References'].split(/\s*PMID:*\s*\d+[\.|;]/g);
+    if (row['References'] && _.findIndex(EXCLUDE_REF_DOC, o => row['References'].indexOf(o) !== -1) === -1) {
+        let refDocString = row['References'];
+
+        let sections = refDocString.split("-----");
+        if (sections.length > 1) {
+            referenceDocuments = sections.map(s => {
+                return {
+                    document: s
+                };
+            });
+        } else {
+            let regs = [
+                RegExp(/\s*PMID:\s*(\d*[,|\s]*)*/g),
+                RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*/g),
+                RegExp(/\s*PMID:*\s*(\d*[,|\s|;]*)*/g),
+
+            ];
+            let pmIds = [];
+            regs.forEach(reg => {
+                let foundRefDoc = refDocString.match(reg);
+                if (foundRefDoc && foundRefDoc.length > 0) {
+                    pmIds = pmIds.concat(foundRefDoc);
+                    refDocString = refDocString.replace(reg, "");
+                }
+            });
+            if (refDocString.length > 0) {
+                pmIds.forEach(pmId => {
+                    referenceDocuments.push({
+                        referenceDocumentId: pmId.replace(/;/g, "").trim(),
+                        document: refDocString
+                    });
+                });
+                console.log("reminding ref doc string: " + refDocString);
+            }
+        }
     }
     de.referenceDocuments = referenceDocuments;
 
@@ -236,40 +271,41 @@ function rowToDataElement(file, row) {
 
     ALL_POSSIBLE_CLASSIFICATIONS.forEach(possibleClassification => {
         if (row[possibleClassification]) {
-            let categories = possibleClassification.split(".").reverse().concat(row[possibleClassification]);
-            classificationShared.classifyElt(de, 'NINDS', categories);
+            let categories = possibleClassification.split(".").concat(row[possibleClassification]);
+            classificationShared.classifyElt(de, 'NINDS', ['Preclinical TBI CDE'].concat(categories));
         }
     });
     return de;
 }
 
 function run() {
-    let files = fs.readdirSync(FILE_PATH);
-    files.forEach(file => {
-        let index = _.indexOf(EXCLUDE_FILE, file);
-        if (index === -1) {
-            let workbook = XLSX.readFile(FILE_PATH + file);
-            let sheetName = workbook.SheetNames[0];
-            let rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
-            let form = {
-                naming: [
-                    {designation: _.words('sheetName').join(" ")}
-                ],
-                formElements: []
-            };
-            async.forEach(rows, (row, doneOneRow) => {
-                let de = rowToDataElement(file, row);
-                new DataElementModel(de).save((err, newCde) => {
-                    if (err) throw err;
-                    let question = deToQuestion(row, newCde);
-                    form.formElements.push(question);
-                    doneOneRow();
-                });
-            }, () => new FormModel(form).save(err => {
-                if (err) throw err;
-            }));
-        }
-    });
+    let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
+    async.forEachSeries(files, (file, doneOneFile) => {
+        let workbook = XLSX.readFile(FILE_PATH + file);
+        let sheetName = workbook.SheetNames[0];
+        let rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
+        let form = {
+            naming: [
+                {designation: _.words('sheetName').join(" ")}
+            ],
+            formElements: []
+        };
+        async.forEachSeries(rows, (row, doneOneRow) => {
+            let de = rowToDataElement(file, row);
+            let deObj = new DataElementModel(de);
+            deObj.save((err, newCde) => {
+                if (err) {
+                    throw err;
+                }
+                let question = deToQuestion(row, newCde);
+                form.formElements.push(question);
+                doneOneRow();
+            });
+        }, () => new FormModel(form).save(err => {
+            if (err) throw err;
+            doneOneFile();
+        }));
+    }, () => process.exit(1));
 }
 
 
