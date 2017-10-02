@@ -33,6 +33,12 @@ import { DataElementViewComponent } from "./components/dataElementView.component
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { CdeStatusReportComponent } from "./components/statusReport/cdeStatusReport.component";
 import { CdeClassificationComponent } from "./components/cdeClassification/cdeClassification.component";
+import { RouterModule, Routes } from '@angular/router';
+
+const appRoutes: Routes = [
+    {path: 'cde/search', component: CdeSearchComponent},
+
+];
 
 @NgModule({
     imports: [
@@ -47,6 +53,9 @@ import { CdeClassificationComponent } from "./components/cdeClassification/cdeCl
         DiscussModule,
         SearchModule,
         WidgetModule,
+        RouterModule.forChild(
+            appRoutes
+        )
     ],
     declarations: [
         BoardCdeSummaryListComponent,
