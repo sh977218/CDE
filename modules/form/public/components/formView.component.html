@@ -47,7 +47,7 @@
             <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
         </h1>
 
-        <div class="col-xs-12">
+        <div class="col-md-12">
             <div class="pull-left marginTopBottom5">
                 <button *ngIf="quickBoardService.canAddElement(elt)"
                         id="addToQuickBoard" class="btn btn-small btn-default"
@@ -118,174 +118,169 @@
                         title="Copy CDE" type="button" (click)="openCopyElementModal()">
                     <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
                 </button>
-
                 <button id="discussBtn" class="btn btn-small btn-default"
                         title="Discuss CDE" (click)="commentMode = !commentMode;">
                     <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
                     <span class="hidden-xs-down"> Discuss</span>
                 </button>
             </div>
-            <div>
-                <div class="pull-right marginTopBottom5">
-                    <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
-                            class="btn btn-info" (click)="loadDraft(null);">
-                        <i class="fa fa-eye fa-lg"></i> View Draft
+            <div class="pull-right marginTopBottom5">
+                <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
+                        class="btn btn-info" (click)="loadDraft(null);">
+                    <i class="fa fa-eye fa-lg"></i> View Draft
+                </button>
+                <ng-container *ngIf="elt.isDraft">
+                    <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
+                        <i class="fa fa-globe fa-lg"></i> Publish
                     </button>
-                    <ng-container *ngIf="elt.isDraft">
-                        <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
-                            <i class="fa fa-globe fa-lg"></i> Publish
-                        </button>
-                        <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
-                            <i class="fa fa-trash fa-lg"></i> Delete Draft
-                        </button>
-                        <button class="btn btn-info" (click)="loadForm(null);">
-                            <i class="fa fa-eye fa-lg"></i> View Published
-                        </button>
-                    </ng-container>
-                </div>
+                    <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+                        <i class="fa fa-trash fa-lg"></i> Delete Draft
+                    </button>
+                    <button class="btn btn-info" (click)="loadForm(null);">
+                        <i class="fa fa-eye fa-lg"></i> View Published
+                    </button>
+                </ng-container>
             </div>
         </div>
         <div class="col-md-12">
-            <div [style.background-color]="elt.isDraft ? 'white' : 'transparent'" style="margin-bottom: 10px">
-                <ngb-tabset (tabChange)="beforeChange($event)">
-                    <ngb-tab id="general_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('general') !== -1}">
-                                General Details
+            <ngb-tabset (tabChange)="beforeChange($event)">
+                <ngb-tab id="general_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('general') !== -1}">
+                            General Details
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <div class="col-lg-5">
+                            <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="saveDraft()">
+                            </cde-form-general-details>
+                            <div class="row">
+                                <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
+                                <cde-registration [elt]="elt" (save)="saveForm();"></cde-registration>
+                                <cde-linked-boards [elt]="elt"></cde-linked-boards>
+                                <cde-linked-forms [elt]="elt"></cde-linked-forms>
+                                <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
                             </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <div class="col-lg-5">
-                                <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="saveDraft()">
-                                </cde-form-general-details>
-                                <div class="row">
-                                    <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                                    <cde-registration [elt]="elt" (save)="saveForm();"></cde-registration>
-                                    <cde-linked-boards [elt]="elt"></cde-linked-boards>
-                                    <cde-linked-forms [elt]="elt"></cde-linked-forms>
-                                    <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
-                                </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div *ngIf="elt.noRenderAllowed"
+                                 class="text-center mt20">Rendering has been disabled for this form.
                             </div>
-                            <div class="col-lg-7">
-                                <div *ngIf="elt.noRenderAllowed"
-                                     class="text-center mt20">Rendering has been disabled for this form.
-                                </div>
-                                <div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
-                                     class="text-center mt20">This form has no content. There is nothing to preview.
-                                </div>
-                                <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0">
-                                    <cde-native-render-full [elt]="elt"></cde-native-render-full>
-                                </div>
+                            <div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
+                                 class="text-center mt20">This form has no content. There is nothing to preview.
                             </div>
+                            <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0">
+                                <cde-native-render-full [elt]="elt"></cde-native-render-full>
+                            </div>
+                        </div>
 
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="description_tab">
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="description_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('description') !== -1}">
+                            Form Description
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit"
+                                              [inScoreCdes]="inScoreCdes"
+                                              (isFormValid)="setIsValid($event)"
+                                              (onEltChange)="saveDraft()"></cde-form-description>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="naming_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}">
+                            Naming
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
                         <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('description') !== -1}">
-                                Form Description
-                            </div>
+                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit"
-                                                  [inScoreCdes]="inScoreCdes"
-                                                  (isFormValid)="setIsValid($event)"
-                                                  (onEltChange)="saveDraft()"></cde-form-description>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="naming_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}">
-                                Naming
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <ng-template ngbTabTitle>
-                                <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
-                            </ng-template>
-                            <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-naming>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="classification_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('classification') !== -1}">
-                                Classification
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-form-classification [elt]="elt"></cde-form-classification>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="referenceDocuments_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('referenceDocuments') !== -1}">
-                                Reference Documents
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                            </cde-reference-document>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="displayProfiles_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('displayProfiles') !== -1}">
-                                Display Profiles
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                            </cde-display-profile>
-                        </ng-template>
-                    </ngb-tab>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-naming>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="classification_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('classification') !== -1}">
+                            Classification
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-form-classification [elt]="elt"></cde-form-classification>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="referenceDocuments_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('referenceDocuments') !== -1}">
+                            Reference Documents
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        </cde-reference-document>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="displayProfiles_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('displayProfiles') !== -1}">
+                            Display Profiles
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        </cde-display-profile>
+                    </ng-template>
+                </ngb-tab>
 
-                    <ngb-tab id="properties_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('properties') !== -1}">
-                                Properties
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                            </cde-properties>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="ids_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('ids') !== -1}">
-                                Identifiers
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                            </cde-identifiers>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="attachments_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('attachments') !== -1}">
-                                Attachments
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-attachments [elt]="elt" [canEdit]="canEdit"
-                                             (removeAttachment)="removeAttachment($event);"
-                                             (setDefault)="setDefault($event);"
-                                             (upload)="upload($event);"></cde-attachments>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="history_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('history') !== -1}">
-                                History
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
-                        </ng-template>
-                    </ngb-tab>
-                </ngb-tabset>
-            </div>
+                <ngb-tab id="properties_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('properties') !== -1}">
+                            Properties
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        </cde-properties>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="ids_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('ids') !== -1}">
+                            Identifiers
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        </cde-identifiers>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="attachments_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('attachments') !== -1}">
+                            Attachments
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-attachments [elt]="elt" [canEdit]="canEdit"
+                                         (removeAttachment)="removeAttachment($event);"
+                                         (setDefault)="setDefault($event);"
+                                         (upload)="upload($event);"></cde-attachments>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab id="history_tab">
+                    <ng-template ngbTabTitle>
+                        <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('history') !== -1}">
+                            History
+                        </div>
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
         </div>
     </div>
     <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
