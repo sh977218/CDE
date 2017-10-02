@@ -4,9 +4,8 @@ import {
     EventEmitter,
     HostListener,
     Inject,
-    Input,
-    OnInit,
-    Output,
+    Input, OnChanges,
+    Output, SimpleChanges,
     TemplateRef,
     ViewChild
 } from "@angular/core";
@@ -100,7 +99,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
         }
     `]
 })
-export class FormDescriptionComponent implements OnInit {
+export class FormDescriptionComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() inScoreCdes: any;
@@ -162,8 +161,15 @@ export class FormDescriptionComponent implements OnInit {
         childrenField: "formElements",
         displayField: "label",
         dropSlotHeight: 3,
-        isExpandedField: "id"
+        isExpandedField: "expanded"
     };
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.elt) {
+            this.addExpanded(this.elt);
+            this.addIds(this.elt.formElements, "");
+        }
+    }
 
     constructor(private localStorageService: LocalStorageService,
                 public modalService: NgbModal,
@@ -171,13 +177,10 @@ export class FormDescriptionComponent implements OnInit {
         this.toolSection = {insert: "section", data: this.getNewSection()};
     }
 
-    ngOnInit() {
-        this.addIds(this.elt.formElements, "");
-    }
-
     addQuestionFromSearch(cde) {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
+            question.expanced = true;
             this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();
@@ -196,13 +199,9 @@ export class FormDescriptionComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    pasteSection() {
-        let fe = this.localStorageService.get("sectionCopied");
-        this.addIndex(this.toolDropTo.parent.data.formElements, fe, this.toolDropTo.index++);
-        this.tree.treeModel.update();
-        this.tree.treeModel.expandAll();
-        this.addIds(this.elt.formElements, "");
-        this.onEltChange.emit();
+    addExpanded(fe) {
+        fe.expanded = true;
+        FormService.iterateFeSync(fe, _.noop, fe => fe.expanded = true, fe => fe.expanded = true);
     }
 
     addIds(fes, preId) {
@@ -221,6 +220,11 @@ export class FormDescriptionComponent implements OnInit {
         return new FormSection;
     }
 
+    hasCopiedSection() {
+        let copiedSection = this.localStorageService.get("sectionCopied");
+        return !_.isEmpty(copiedSection);
+    }
+
     openFormSearch() {
         this.modalService.open(this.formSearchTmpl, {size: "lg"}).result.then(() => {
         }, () => {
@@ -233,12 +237,17 @@ export class FormDescriptionComponent implements OnInit {
         });
     }
 
-    stageParent() {
+
+    pasteSection() {
+        let fe = this.localStorageService.get("sectionCopied");
+        this.addIndex(this.toolDropTo.parent.data.formElements, fe, this.toolDropTo.index++);
+        this.tree.treeModel.update();
+        this.tree.treeModel.expandAll();
+        this.addIds(this.elt.formElements, "");
         this.onEltChange.emit();
     }
 
-    hasCopiedSection() {
-        let copiedSection = this.localStorageService.get("sectionCopied");
-        return !_.isEmpty(copiedSection);
+    stageParent() {
+        this.onEltChange.emit();
     }
 }
