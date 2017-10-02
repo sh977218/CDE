@@ -31,7 +31,7 @@
                 <div class="list-group mt-3">
                     <div class="info-heading">Panels:</div>
                     <button type="button" class="list-group-item" *ngFor="let f of patientForms"
-                            (click)="summary = false; loadForm(f.tinyId)">
+                            (click)="summary = false; getForm(f.tinyId, methodLoadForm);">
                         {{f.name}}
                         <span style="float: right">
                             <span *ngIf="f.total" style="display: table-cell; width: 60px;">

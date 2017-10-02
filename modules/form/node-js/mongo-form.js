@@ -69,7 +69,30 @@ exports.byTinyId = function (tinyId, cb) {
 };
 
 exports.byTinyIdVersion = function (tinyId, version, cb) {
-    Form.findOne({'tinyId': tinyId, version: version}, cb);
+    this.byTinyIdAndVersion(tinyId, version, cb);
+};
+
+exports.byTinyIdAndVersion = function (tinyId, version, callback) {
+    var query = {'tinyId': tinyId};
+    if (version) {
+        query.version = version;
+        Form.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+            if (err)
+                callback(err);
+            else if (elts.length)
+                callback("", elts[0]);
+            else
+                callback("", null);
+        });
+    } else {
+        query.archived = false;
+        Form.findOne(query).exec(function (err, elt) {
+            if (err)
+                callback(err);
+            else
+                callback("", elt);
+        });
+    }
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
@@ -194,19 +217,6 @@ exports.query = function (query, callback) {
 exports.transferSteward = function (from, to, callback) {
     Form.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
         callback(err, result.nModified);
-    });
-};
-
-exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    var query = {'tinyId': tinyId};
-    if (version) {
-        query.version = version;
-    } else {
-        query.archived = false;
-    }
-    Form.findOne(query).exec(function (err, elt) {
-        if (err) callback(err);
-        else callback("", elt);
     });
 };
 

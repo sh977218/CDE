@@ -45,7 +45,8 @@ export class SkipLogicService {
                 // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY
                 if (realAnswer) {
                     let match = /(\d{4})-(\d{2})-(\d{2})/.exec(realAnswer);
-                    realAnswer = match[2] + "/" + match[3] + "/" + match[1];
+                    if (match.length === 4)
+                        realAnswer = match[2] + "/" + match[3] + "/" + match[1];
                 }
                 if (operator === "=") return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
                 if (operator === "!=") return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();

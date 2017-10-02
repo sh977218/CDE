@@ -1,75 +1,11 @@
-export let blankEncounter = {
-    "resourceType": "Encounter",
-    "id": null,
-    "status": "finished",
-    "class": {"code": "outpatient"},
-    "type": [{"coding": [{"system": "http://snomed.info/sct", "code": "185349003"}], "text": "Outpatient Encounter"}],
-    "period": {"start": null, "end": null},
-    "serviceProvider": {
-        "reference": null
-    },
-    "subject": {
-        "reference": null
-    }
-};
-
-export let blankObservation = {
-    "resourceType": "Observation",
-    "id": null,
-    "status": "final",
-    "category": [
-        {
-            "coding": [
-                {
-                    "system": "http://hl7.org/fhir/observation-category",
-                    "code": "vital-signs"
-                }
-            ]
-        }
-    ],
-    "code": {
-        "coding": [],
-        "text": ""
-    },
-    "subject": {
-        "reference": null
-    },
-    "context": {
-        "reference": null
-    },
-    "effectiveDateTime": null,
-    "issued": null
-};
-
 export let mappings: any = [
     {
-        "form": "59a70c4998032c744f365267",
+        "form": "myIn0ClU4",
         "type": "external",
         "system": "http://hl7.org/fhir",
-        "code": "multi",
+        "code": "*",
         "format": "json",
-        "encounterFn": "function (form, encounter) { var fe = getById(form, 'abmAnDXu5my');"
-        + " fe.question.answer = encounter.date; parseDateTime(fe); fe.question.editable = false; }",
         "mapping": [
-            {
-                "resource": "Observation",
-                "resourceSystem": "LOINC",
-                "resourceCode": "*",
-                "resourcePropertyObj": "function (res) { return res.subject; }",
-                "resourceProperty": "reference",
-                "inFn": null,
-                "outFn": "function (form) { return 'Patient/' + patient.id; }"
-            },
-            {
-                "resource": "Observation",
-                "resourceSystem": "LOINC",
-                "resourceCode": "*",
-                "resourcePropertyObj": "function (res) { return res.context; }",
-                "resourceProperty": "reference",
-                "inFn": null,
-                "outFn": "function (form) { return 'Encounter/' + encounter.raw.id; }"
-            },
-
             {
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
@@ -79,42 +15,123 @@ export let mappings: any = [
                 "inFn": null,
                 "outFn": "function (form) { return encounter.date; }"
             },
-
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "18262-6",
+                "resourcePropertyObj": null,
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
+            }
+        ]
+    },
+    {
+        "form": "XkYu_yWI4",
+        "type": "external",
+        "system": "http://hl7.org/fhir",
+        "code": "*",
+        "format": "json",
+        "mapping": [
             {
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
                 "resourceCode": "*",
                 "resourcePropertyObj": null,
-                "resourceProperty": "issued",
+                "resourceProperty": "effectiveDateTime",
                 "inFn": null,
                 "outFn": "function (form) { return encounter.date; }"
             },
             {
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
-                "resourceCode": "8302-2",
+                "resourceCode": "2085-9",
                 "resourcePropertyObj": null,
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
+            }
+        ]
+    },
+    {
+        "form": "7kMIzyWU4",
+        "type": "external",
+        "system": "http://hl7.org/fhir",
+        "code": "*",
+        "format": "json",
+        "mapping": [
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
+                "resourcePropertyObj": null,
+                "resourceProperty": "effectiveDateTime",
+                "inFn": null,
+                "outFn": "function (form) { return encounter.date; }"
             },
             {
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
-                "resourceCode": "29463-7",
+                "resourceCode": "2093-3",
                 "resourcePropertyObj": null,
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
+            }
+        ]
+    },
+    {
+        "form": "XkNeXJWI4",
+        "type": "external",
+        "system": "http://hl7.org/fhir",
+        "code": "*",
+        "format": "json",
+        "mapping": [
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
+                "resourcePropertyObj": null,
+                "resourceProperty": "effectiveDateTime",
+                "inFn": null,
+                "outFn": "function (form) { return encounter.date; }"
             },
             {
                 "resource": "Observation",
                 "resourceSystem": "LOINC",
-                "resourceCode": "39156-5",
+                "resourceCode": "2571-8",
                 "resourcePropertyObj": null,
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
+            }
+        ]
+    },
+    {
+        "form": "QJsozRgLN",
+        "type": "external",
+        "system": "http://hl7.org/fhir",
+        "code": "*",
+        "format": "json",
+        "encounterFn": "function (form, encounter) { var fe = getById(form, 'mJ2HQCxI4');"
+        + " fe.question.answer = encounter.date; parseDateTime(fe); fe.question.editable = false; }",
+        "mapping": []
+    },
+    {
+        "form": "7k_orCeLV",
+        "type": "external",
+        "system": "http://hl7.org/fhir",
+        "code": "*",
+        "format": "json",
+        "mapping": [
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
+                "resourcePropertyObj": null,
+                "resourceProperty": "effectiveDateTime",
+                "inFn": null,
+                "outFn": "function (form) { return encounter.date; }"
             },
             {
                 "resource": "Observation",
@@ -137,6 +154,87 @@ export let mappings: any = [
                 "resourceProperty": "valueQuantity",
                 "inFn": "function (form, value) { setValueQuantity(getSubByCode(form), value); }",
                 "outFn": "function (form) { return getValueQuantity(getSubByCode(form), 'UNITS'); }"
+            }
+        ]
+    },
+    {
+        "form": "XJNUPRg8N",
+        "type": "external",
+        "system": "http://hl7.org/fhir",
+        "code": "*",
+        "format": "json",
+        "mapping": [
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
+                "resourcePropertyObj": null,
+                "resourceProperty": "effectiveDateTime",
+                "inFn": null,
+                "outFn": "function (form) { return encounter.date; }"
+            },
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "29463-7",
+                "resourcePropertyObj": null,
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
+            }
+        ]
+    },
+    {
+        "form": "XJ_UuReU4",
+        "type": "external",
+        "system": "http://hl7.org/fhir",
+        "code": "*",
+        "format": "json",
+        "mapping": [
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
+                "resourcePropertyObj": null,
+                "resourceProperty": "effectiveDateTime",
+                "inFn": null,
+                "outFn": "function (form) { return encounter.date; }"
+            },
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "8302-2",
+                "resourcePropertyObj": null,
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
+            }
+        ]
+    },
+    {
+        "form": "7JqAORlIN",
+        "type": "external",
+        "system": "http://hl7.org/fhir",
+        "code": "*",
+        "format": "json",
+        "mapping": [
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "*",
+                "resourcePropertyObj": null,
+                "resourceProperty": "effectiveDateTime",
+                "inFn": null,
+                "outFn": "function (form) { return encounter.date; }"
+            },
+            {
+                "resource": "Observation",
+                "resourceSystem": "LOINC",
+                "resourceCode": "39156-5",
+                "resourcePropertyObj": null,
+                "resourceProperty": "valueQuantity",
+                "inFn": "function (form, value) { setValueQuantity(getByCode(form), value); }",
+                "outFn": "function (form) { return getValueQuantity(getByCode(form), 'UNITS'); }"
             }
         ]
     }
