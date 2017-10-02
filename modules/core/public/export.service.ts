@@ -40,7 +40,8 @@ export class ExportService {
 
                 let exporters = {
                     'csv': (result) => {
-                        this.elasticService.then(settings => {
+                        this.elasticService.then(() => {
+                            let settings = this.elasticService.searchSettings;
                             let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
                             result.forEach(function (ele) {
                                 csv += SharedService.exportShared.convertToCsv(
@@ -117,7 +118,8 @@ export class ExportService {
     }
 
     quickBoardExport(elts) {
-        this.elasticService.then(settings => {
+        this.elasticService.then(() => {
+            let settings = this.elasticService.searchSettings;
             let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
             elts.forEach(function (ele) {
                 result += SharedService.exportShared.convertToCsv(
