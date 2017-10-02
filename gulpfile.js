@@ -194,9 +194,25 @@ gulp.task('prepareVersion', ['copyCode'], function () {
     });
 });
 
+gulp.task('webpack-app', ['thirdParty'], () => {
+    return run('npm run buildApp').exec();
+});
+
+gulp.task('webpack-native', ['thirdParty'], () => {
+    return run('npm run buildNative').exec();
+});
+
+gulp.task('webpack-embed', ['thirdParty'], () => {
+    return run('npm run buildEmbed').exec();
+});
+
+gulp.task('copyWebpack', ['webpack-app', 'webpack-native', 'webpack-embed'], () => {
+    return gulp.src('./modules/static/*.js')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
+});
+
 gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function () {
     let streamArray = [];
-
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
@@ -221,7 +237,6 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function ()
 
 gulp.task('copyUsemin', ['usemin'], function () {
     let streamArray = [];
-
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
@@ -230,19 +245,7 @@ gulp.task('copyUsemin', ['usemin'], function () {
         streamArray.push(gulp.src(config.node.buildDir + '/modules/' + item.filename)
             .pipe(gulp.dest(config.node.buildDir + "/" + item.folder)));
     });
-
     return merge(streamArray);
-
-});
-
-gulp.task('copyWebpack', ['webpack'], () => {
-    return gulp.src('./modules/static/*.js')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
-});
-
-
-gulp.task('webpack', ['thirdParty'], () => {
-    return run('npm run build').exec();
 });
 
 gulp.task('emptyTemplates', ['usemin'], () => {
