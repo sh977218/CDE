@@ -44,6 +44,7 @@
                     <dd>
                         <input type="checkbox" [disabled]="!canEdit"
                                id="displayType_{{index}}"
+                               [checked]="profile.displayType === 'Follow-up'"
                                (change)="setDisplayType(profile, $event)">
                     </dd>
                     <br/>
@@ -70,7 +71,7 @@
             </div>
             <div class="col-md-7 col-xs-12">
                 <div style="border: dashed 1px; zoom:60%; padding: 0 15px;">
-                    <cde-native-render [elt]="sampleElt" [profile]="profile"></cde-native-render>
+                    <cde-native-render [elt]="samples[index]" [profile]="profile"></cde-native-render>
                 </div>
             </div>
         </div>
