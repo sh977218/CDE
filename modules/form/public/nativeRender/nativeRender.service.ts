@@ -3,8 +3,8 @@ import { CdeForm, DisplayProfile } from "../form.model";
 
 @Injectable()
 export class NativeRenderService {
-    readonly SHOW_IF: string = "Dynamic";
-    readonly FOLLOW_UP: string = "Follow-up";
+    static readonly SHOW_IF: string = "Dynamic";
+    static readonly FOLLOW_UP: string = "Follow-up";
     private errors: Array<string> = [];
     private overrideNativeRenderType: string = null;
     private currentNativeRenderType: string;
@@ -24,18 +24,32 @@ export class NativeRenderService {
     setNativeRenderType(userType) {
         if (userType === this.profile.displayType)
             this.overrideNativeRenderType = null;
-        else if (userType === this.SHOW_IF || userType === this.FOLLOW_UP)
+        else if (userType === NativeRenderService.SHOW_IF || userType === NativeRenderService.FOLLOW_UP)
             this.overrideNativeRenderType = userType;
         else
             return;
         this.currentNativeRenderType = userType;
 
-        if (this.getNativeRenderType() === this.FOLLOW_UP) {
-            if (!this.followForm || this.elt.unsaved) {
-                this.followForm = JSON.parse(JSON.stringify(this.elt));
-                NativeRenderService.transformFormToInline(this.followForm);
-                NativeRenderService.preprocessValueLists(this.followForm.formElements);
-            }
+        function clearTransform(fe) {
+            fe.formElements.forEach(f => {
+                if (f.elementType === 'question') {
+                    for (let i = 0; i < f.question.answers.length; i++) {
+                        let answer = f.question.answers[i];
+                        if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
+                            f.question.answers.splice(i--, 1);
+                        else if (answer.subQuestions)
+                            delete answer.subQuestions;
+                    }
+                } else {
+                    clearTransform(f);
+                }
+            });
+        }
+        clearTransform(this.elt);
+        if (this.getNativeRenderType() === NativeRenderService.FOLLOW_UP) {
+            this.followForm = NativeRenderService.cloneForm(this.elt);
+            NativeRenderService.transformFormToInline(this.followForm);
+            NativeRenderService.preprocessValueLists(this.followForm.formElements);
         }
     }
     setSelectedProfile(profile = null) {
@@ -54,7 +68,7 @@ export class NativeRenderService {
                 displayNumbering: true,
                 sectionsAsMatrix: true,
                 displayValues: false,
-                displayType: this.FOLLOW_UP,
+                displayType: NativeRenderService.FOLLOW_UP,
                 numberOfColumns: 4,
                 displayInvisible: false,
                 repeatFormat: "#."
@@ -63,10 +77,16 @@ export class NativeRenderService {
     }
     getElt() {
         switch (this.getNativeRenderType()) {
-            case this.SHOW_IF:
+            case NativeRenderService.SHOW_IF:
                 return this.elt;
-            case this.FOLLOW_UP:
+            case NativeRenderService.FOLLOW_UP:
                 return this.followForm;
+        }
+    }
+    setElt(elt) {
+        if (elt !== this.elt) {
+            this.elt = elt;
+            this.followForm = null;
         }
     }
 
@@ -103,6 +123,21 @@ export class NativeRenderService {
         if (!Array.isArray(model.answer))
             model.answer = [];
         return model;
+    }
+
+    static cloneForm(form: CdeForm) {
+        let clone = JSON.parse(JSON.stringify(form));
+        NativeRenderService.cloneFes(clone.formElements, form.formElements);
+        return clone;
+    }
+
+    static cloneFes(newFes, oldFes) {
+        for (let i = 0, size = newFes.length; i < size; i++) {
+            if (newFes[i].elementType === 'question')
+                newFes[i].question = oldFes[i].question;
+            else
+                NativeRenderService.cloneFes(newFes[i].formElements, oldFes[i].formElements);
+        }
     }
 
     static transformFormToInline(form) {

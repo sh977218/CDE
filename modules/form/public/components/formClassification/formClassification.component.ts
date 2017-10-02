@@ -1,17 +1,11 @@
-import { Component, Input, ViewChild, Inject } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
-import { ClassificationService } from "../../../../core/public/classification.service";
-import { ClassifyItemModalComponent } from "../../../../adminItem/public/components/classification/classifyItemModal.component";
-
-const urlMap = {
-    "form": {
-        delete: "/removeFormClassification/",
-        add: "/addFormClassification/",
-        get: "form/"
-    }
-};
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { ClassificationService } from 'core/public/classification.service';
+import { UserService } from 'core/public/user.service';
 
 @Component({
     selector: "cde-form-classification",
@@ -31,8 +25,8 @@ export class FormClassificationComponent {
     constructor(public http: Http,
                 private alert: AlertService,
                 private classificationSvc: ClassificationService,
-                @Inject("userResource") public userService,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                public userService: UserService,
+                public isAllowedModel: IsAllowedService) {
     }
 
 
@@ -58,11 +52,8 @@ export class FormClassificationComponent {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
             "/addFormClassification/", (err) => {
                 this.classifyItemModalRef.close();
-                if (err) {
-                    this.alert.addAlert("danger", err._body);
-                } else {
-                    this.reloadElt(() => this.alert.addAlert("success", "Classification added."));
-                }
+                if (err) this.alert.addAlert("danger", err._body);
+                else this.reloadElt(() => this.alert.addAlert("success", "Classification added."));
             });
     }
 
@@ -107,7 +98,7 @@ export class FormClassificationComponent {
             .subscribe(res => {
                 if (res["_body"] === "Done") {
                     this.classifyCdesModalRef.close("success");
-                    this.alert.addAlert("success", "All CDEs Classified");
+                    this.alert.addAlert("success", "All CDEs Classified.");
                 }
                 else if (res["_body"] === "Processing") {
                     let fn = setInterval(() => {

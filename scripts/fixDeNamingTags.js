@@ -23,6 +23,7 @@ cursor.on('close', function () {
     console.log("Finished all. count: " + count);
     process.exit(1);
 });
+
 cursor.on('error', function (err) {
     console.log("error: " + err);
     process.exit(1);

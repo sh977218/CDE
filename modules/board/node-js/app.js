@@ -104,7 +104,7 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
-            if (err) res.status(500).send("ERROR");
+            if (err) res.status(500).send("ERROR - cannot classify cdes in board");
             else res.send();
         });
     });
@@ -113,14 +113,14 @@ exports.init = function (app, daoManager) {
             return res.status(401).send();
         }
         classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
-            if (err) res.status(500).send("ERROR");
+            if (err) res.status(500).send("ERROR - cannot classify forms in board");
             else res.send();
         });
     });
 
     app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
         elastic.boardSearch(req.body, function (err, result) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR in /boardSearch");
             return res.send(result);
         });
     });
@@ -137,7 +137,7 @@ exports.init = function (app, daoManager) {
         mongo_board.boardById(req.params.boardId, function (err, board) {
             if (board) {
                 if (board.shareStatus !== "Public") {
-                    if (!req.user || !req.user.username) return res.status(500).send();
+                    if (!req.user || !req.user.username) return res.status(401).send("Not Authorized");
                     var updateLastView = false;
                     var viewers = board.users.filter(function (u) {
                         if (u.username.toLowerCase() === req.user.username.toLowerCase()) {

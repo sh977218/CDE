@@ -321,9 +321,7 @@ exports.getDistinct = function (what, callback) {
 };
 
 exports.query = function (query, callback) {
-    DataElement.find(query).exec(function (err, result) {
-        callback(err, result);
-    });
+    DataElement.find(query, callback);
 };
 
 exports.transferSteward = function (from, to, callback) {
@@ -447,11 +445,12 @@ exports.derivationOutputs = function (inputTinyId, cb) {
     DataElement.find({archived: false, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
-var correctBoardPinsForCde = function (doc, cb) {
-    mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
-        if (err) throw err;
-        if (cb) cb();
-    });
+let correctBoardPinsForCde = function (doc, cb) {
+    if (doc)
+        mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
+            if (err) throw err;
+            if (cb) cb();
+        });
 };
 
 schemas.dataElementSchema.post('save', function (doc) {

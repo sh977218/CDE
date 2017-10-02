@@ -1,15 +1,15 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { NativeRenderService } from "./nativeRender.service";
-import { DomSanitizer } from "@angular/platform-browser";
-import { SkipLogicService } from "../skipLogic.service";
-import { CdeForm, DisplayProfile } from "../form.model";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { CdeForm, DisplayProfile } from 'form/public/form.model';
+import { NativeRenderService } from 'form/public/nativeRender/nativeRender.service';
+import { SkipLogicService } from 'form/public/skipLogic.service';
 
 @Component({
     selector: "cde-native-render",
     templateUrl: "./nativeRender.component.html",
     providers: [NativeRenderService]
 })
-export class NativeRenderComponent implements OnInit {
+export class NativeRenderComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() profile: DisplayProfile;
     @Input() submitForm: boolean;
@@ -17,6 +17,7 @@ export class NativeRenderComponent implements OnInit {
     endpointUrl: string;
     formUrl: string;
     mapping: any;
+    NativeRenderService = NativeRenderService;
 
     constructor(private sanitizer: DomSanitizer,
                 public skipLogicService: SkipLogicService,
@@ -25,12 +26,13 @@ export class NativeRenderComponent implements OnInit {
         this.endpointUrl = (<any>window).endpointUrl;
     }
 
-    ngOnInit() {
-        this.load();
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.elt)
+            this.load();
     }
 
     private load() {
-        this.nativeRenderService.elt = this.elt;
+        this.nativeRenderService.setElt(this.elt);
         this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         this.nativeRenderService.setSelectedProfile(this.profile);
 

@@ -1,7 +1,7 @@
 <a routerLink="{{redirectRoute}}" style="display: none" id="goPrevious"></a>
 
 <div class="container">
-    <form class="form-signin" #loginForm="ngForm">
+    <form class="form-signin" #loginForm="ngForm" autocomplete="off">
         <h2 class="form-signin-heading">Please Log In</h2>
         <p>Note: Log in with your UMLS account. Don't have a UMLS account? <a
                 href="https://uts.nlm.nih.gov//license.html" target="_blank">
@@ -11,7 +11,7 @@
                autofocus="" required name="username">
         <label id="l2" class="sr-only" for="passwd">Password</label>
         <input id="passwd" type="password" name="password" class="form-control" title="password" placeholder="Password"
-               [(ngModel)]="password" autocomplete="off" required/>
+               [(ngModel)]="password" required/>
         <input type="hidden" name="_csrf" [(ngModel)]="csrf">
 
         <button [disabled]="!loginForm.valid || !csrf" class="btn btn-lg btn-primary btn-block" (click)="login()"

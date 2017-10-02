@@ -8,6 +8,7 @@
         <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
     </div>
 </div>
-<cde-classify-item-modal #classifyItemComponent [elt]="elt" [modalTitle]="'Classify this CDE'"
-                         (onEltSelected)="classifyItem($event)"></cde-classify-item-modal>
+<cde-classify-item-modal #classifyItemComponent [modalTitle]="'Classify this CDE'"
+                         (onEltSelected)="classifyItem($event)">
+</cde-classify-item-modal>
 

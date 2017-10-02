@@ -16,6 +16,12 @@ const exportShared = require('../../system/shared/exportShared');
 const boardsvc = require('../../board/node-js/boardsvc');
 const usersrvc = require('../../system/node-js/usersrvc');
 
+function allowXOrigin (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+}
+
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
@@ -23,8 +29,8 @@ exports.init = function (app, daoManager) {
     app.get("/formById/:id", exportShared.nocacheMiddleware, formSvc.byId);
     app.get("/formById/:id/priorForms/", exportShared.nocacheMiddleware, formSvc.priorForms);
 
-    app.get("/form/:tinyId", exportShared.nocacheMiddleware, formSvc.byTinyId);
-    app.get("/form/:tinyId/version/:version?", exportShared.nocacheMiddleware, formSvc.byTinyIdVersion);
+    app.get("/form/:tinyId", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyId);
+    app.get("/form/:tinyId/version/:version?", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdVersion);
     app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
 
     app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
@@ -91,7 +97,8 @@ exports.init = function (app, daoManager) {
                     res.type('application/json');
                     res.write("[");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send("ERROR"); else if (elt) {
+                        if (err) return res.status(500).send("ERROR - cannot search export");
+                        else if (elt) {
                             if (!firstElt) res.write(',');
                             elt = exportShared.stripBsonIds(elt);
                             elt = elastic_system.removeElasticFields(elt);
@@ -137,7 +144,7 @@ exports.init = function (app, daoManager) {
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
         classificationNode_system.addClassification(req.body, mongo_form, function (err, result) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR - cannot add form classif");
             if (result === "Classification Already Exists") return res.status(409).send(result); else res.send(result);
             mongo_data_system.addToClassifAudit({
                 date: new Date(), user: {

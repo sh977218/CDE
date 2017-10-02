@@ -1,15 +1,16 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Http, RequestOptions } from "@angular/http";
 import { LocalStorageService } from "angular-2-local-storage";
 import * as _ from 'lodash';
 import { AlertService } from 'system/public/components/alert/alert.service';
+import { ElasticService } from "./elastic.service";
 
 @Injectable()
 export class ClassificationService {
 
     constructor(public http: Http,
                 private localStorageService: LocalStorageService,
-                @Inject('SearchSettings') public SearchSettings,
+                public esService: ElasticService,
                 private alert: AlertService) {
     }
 
@@ -53,7 +54,6 @@ export class ClassificationService {
         };
         this.http.post(endPoint, deleteBody).map(res => res.json()).subscribe(res => cb(), (err) => cb(err));
     }
-
 
     sortClassification(elt) {
         elt.classification = elt.classification.sort(function (c1, c2) {
@@ -107,14 +107,21 @@ export class ClassificationService {
         return result;
     }
 
-    removeOrgClassification(orgName, categories, cb) {
-        let deleteBody = {
-            orgName: orgName,
-            categories: categories
+    removeOrgClassification(deleteClassification, cb) {
+        let settings = {
+            resultPerPage: 10000,
+            searchTerm: "",
+            page: 1,
+            selectedStatuses: this.esService.getUserDefaultStatuses()
         };
-        let ro = new RequestOptions({body: deleteBody});
-        this.http.delete("/classification/org", ro)
-            .map(res => res.json()).subscribe(
+        let ro = new RequestOptions({
+            body: {
+                deleteClassification: deleteClassification,
+                settings: settings,
+            }
+        });
+        this.http.delete("/orgClassification/", ro)
+            .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
     };
@@ -123,40 +130,43 @@ export class ClassificationService {
         let settings = {
             resultPerPage: 10000,
             searchTerm: "",
-            selectedOrg: oldClassification.orgName,
-            selectedElements: oldClassification.classifications,
             page: 1,
-            selectedStatuses: this.SearchSettings.getUserDefaultStatuses()
+            selectedStatuses: this.esService.getUserDefaultStatuses()
         };
         let postBody = {
-            query: settings,
-            newClassification: newClassification,
-            types: ["cde", "form"]
+            settings: settings,
+            oldClassification: oldClassification,
+            newClassification: newClassification
         };
-        this.http.post("/classifyEntireSearch", postBody).map(res => res.json()).subscribe(
+        this.http.post("/orgReclassification/", postBody)
+            .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
     }
 
-    renameOrgClassification(orgName, categories, newClassificationName, cb) {
-        let postBody = {
-            orgName: orgName,
-            categories: categories,
-            newname: newClassificationName
+    renameOrgClassification(newClassification, cb) {
+        let settings = {
+            resultPerPage: 10000,
+            searchTerm: "",
+            page: 1,
+            selectedStatuses: this.esService.getUserDefaultStatuses()
         };
-        this.http.post("/classification/rename", postBody)
-            .map(res => res.json()).subscribe(
+        let postBody = {
+            settings: settings,
+            newClassification: newClassification
+        };
+        this.http.post("/OrgClassification/rename", postBody)
+            .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
     };
 
-    addChildClassification(orgName, categories, cb) {
-        let postBody = {
-            orgName: orgName,
-            categories: categories,
+    addChildClassification(newClassification, cb) {
+        let putBody = {
+            newClassification: newClassification
         };
-        this.http.post("/classification/org", postBody)
-            .map(res => res.json()).subscribe(
+        this.http.put("/orgClassification/", putBody)
+            .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
     };

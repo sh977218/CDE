@@ -1,11 +1,14 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { UserService } from 'core/public/user.service';
+import * as authShared from "system/shared/authorizationShared";
+import { IsAllowedService } from 'core/public/isAllowed.service';
 
 @Component({
     selector: "cde-data-element-view",
@@ -30,10 +33,10 @@ export class DataElementViewComponent implements OnInit {
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
-                @Inject("isAllowedModel") public isAllowedModel,
+                public isAllowedModel: IsAllowedService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                @Inject("userResource") public userService) {
+                public userService: UserService) {
     }
 
     ngOnInit(): void {
@@ -48,8 +51,10 @@ export class DataElementViewComponent implements OnInit {
                     res => this.hasComments = res && (res.length > 0),
                     err => this.alert.addAlert("danger", "Error on loading comments. " + err)
                 );
-                this.isAllowedModel.setDisplayStatusWarning(this);
-                this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                this.userService.then(() => {
+                    this.setDisplayStatusWarning();
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                });
             }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
     }
@@ -76,6 +81,26 @@ export class DataElementViewComponent implements OnInit {
         );
     }
 
+    setDisplayStatusWarning () {
+        let assignValue  = () => {
+            if (!this.elt) return false;
+            if (this.elt.archived || this.userService.user.siteAdmin) {
+                return false;
+            } else {
+                if (this.userService.userOrgs) {
+                    return authShared.isCuratorOf(this.userService.user, this.elt.stewardOrg.name) &&
+                        (this.elt.registrationState.registrationStatus === "Standard" ||
+                            this.elt.registrationState.registrationStatus === "Preferred Standard");
+                } else {
+                    return false;
+                }
+            }
+        };
+        this.userService.then(() => {
+            this.displayStatusWarning = assignValue();
+        });
+    };
+
     saveDataElement() {
         this.http.put("/de/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
                 this.elt = response;
@@ -83,7 +108,7 @@ export class DataElementViewComponent implements OnInit {
                 this.alert.addAlert("success", "Data Element saved.");
             }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
-        this.isAllowedModel.setDisplayStatusWarning(this);
+        this.setDisplayStatusWarning();
         this.canEdit = this.isAllowedModel.isAllowed(this.elt);
     }
 

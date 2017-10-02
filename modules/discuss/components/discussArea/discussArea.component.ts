@@ -1,11 +1,15 @@
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { Http } from "@angular/http";
 import { Comment } from "../../discuss.model";
 
 import "rxjs/add/operator/map";
 import * as io from "socket.io-client";
 import { TimerObservable } from "rxjs/observable/TimerObservable";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { Subject } from "rxjs/Subject";
+import { Observable } from "rxjs/Observable";
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { UserService } from 'core/public/user.service';
 
 const tabMap = {
     "general_tab": "general",
@@ -31,8 +35,8 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     constructor(private http: Http,
                 private alert: AlertService,
-                @Inject("isAllowedModel") private isAllowedModel,
-                @Inject("userResource") public userService) {
+                public isAllowedModel: IsAllowedService,
+                public userService: UserService) {
     };
 
     newComment: Comment = new Comment();
@@ -45,6 +49,8 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     tempReplies: any = {};
     avatarUrls: any = {};
     showAllReplies: any = {};
+
+    private emitCurrentReplying = new Subject<{_id: string, comment: string}>();
 
     @Input() public elt: any;
     @Input() public eltId: string;
@@ -68,6 +74,12 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 }
             });
         });
+
+        this.emitCurrentReplying.debounceTime(300).distinctUntilChanged().map(obj => {
+            this.socket.emit('currentReplying', this.eltId, obj._id);
+            return Observable.of<string[]>([]);
+        }).subscribe(() => {});
+
     };
 
     ngOnDestroy() {
@@ -138,27 +150,27 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             .subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
     };
 
-    replyTo(commentId, reply) {
-        this.http.post("/comments/reply", {
-            commentId: commentId,
-            eltName: this.eltName,
-            reply: reply
-        }).subscribe(() => {
-            this.tempReplies[commentId] = '';
-            this.loadComments();
-        });
+    replyTo(commentId) {
+        setTimeout(() => {
+            this.http.post("/comments/reply", {
+                commentId: commentId,
+                eltName: this.eltName,
+                reply: this.tempReplies[commentId]
+            }).subscribe(() => {
+                this.tempReplies[commentId] = '';
+                this.loadComments();
+            });
+        }, 0);
     };
 
     cancelReply = (comment) => this.tempReplies[comment._id] = '';
 
-    changeOnReply = (comment) => this.socket.emit('currentReplying', this.eltId, comment._id);
+    changeOnReply (comment) {
+        this.emitCurrentReplying.next({_id: comment._id, comment: this.tempReplies[comment._id]});
+    }
 
-    setCurrentTab($event) {
+    setCurrentTab ($event) {
         if (this.eltComments)
-            this.eltComments.forEach(c => {
-                if (c.linkedTab && c.linkedTab === tabMap[$event])
-                    c.currentComment = true;
-                else c.currentComment = false;
-            });
+            this.eltComments.forEach(c => c.currentComment = !!(c.linkedTab && c.linkedTab === tabMap[$event]));
     }
 }
