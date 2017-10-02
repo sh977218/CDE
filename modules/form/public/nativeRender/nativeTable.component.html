@@ -1,4 +1,4 @@
-<table *ngIf="tableForm && (nativeRenderService.getNativeRenderType() === nativeRenderService.FOLLOW_UP || nativeRenderService.getNativeRenderType() === nativeRenderService.SHOW_IF)" class="table">
+<table *ngIf="tableForm && (nativeRenderService.getNativeRenderType() === NativeRenderService.FOLLOW_UP || nativeRenderService.getNativeRenderType() === NativeRenderService.SHOW_IF)" class="table">
     <thead>
         <tr *ngFor="let s of tableForm.s; let i = index">
             <th *ngFor="let q of s.q"

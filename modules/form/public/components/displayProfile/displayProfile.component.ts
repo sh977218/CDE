@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import "nouislider/distribute/nouislider.min.css";
 import "rxjs/add/operator/map";
 
@@ -6,11 +6,19 @@ import "rxjs/add/operator/map";
     selector: "cde-display-profile",
     templateUrl: "./displayProfile.component.html"
 })
-export class DisplayProfileComponent {
+export class DisplayProfileComponent implements OnInit {
+
+    ngOnInit() {
+        this.elt.displayProfiles.forEach(() => this.samples.push(JSON.parse(JSON.stringify(this.sampleElt))));
+    }
+
+    constructor() {}
+
     @Input() elt: any;
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
 
+    samples = [];
     showDelete: boolean;
 
     addProfile() {
@@ -25,13 +33,17 @@ export class DisplayProfileComponent {
             displayInvisible: false,
             repeatFormat: "#."
         };
-        if (!this.elt.displayProfiles) this.elt.displayProfiles = [newProfile];
-        else this.elt.displayProfiles.push(newProfile);
+        if (!this.elt.displayProfiles)
+            this.elt.displayProfiles = [newProfile];
+        else
+            this.elt.displayProfiles.push(newProfile);
+        this.samples.push(JSON.parse(JSON.stringify(this.sampleElt)));
         this.onEltChange.emit();
     };
 
     removeDisplayProfile(index) {
         this.elt.displayProfiles.splice(index, 1);
+        this.samples.splice(index, 1);
         this.onEltChange.emit();
     };
 
@@ -91,7 +103,29 @@ export class DisplayProfileComponent {
                                     "required": false,
                                     "uoms": [],
                                     "cde": {
-                                        "ids": []
+                                        "ids": [],
+                                        "permissibleValues": [
+                                            {
+                                                "permissibleValue": "5",
+                                                "valueMeaningName": "Always"
+                                            },
+                                            {
+                                                "permissibleValue": "4",
+                                                "valueMeaningName": "Often"
+                                            },
+                                            {
+                                                "permissibleValue": "3",
+                                                "valueMeaningName": "Sometimes"
+                                            },
+                                            {
+                                                "permissibleValue": "2",
+                                                "valueMeaningName": "Rarely"
+                                            },
+                                            {
+                                                "permissibleValue": "1",
+                                                "valueMeaningName": "Never"
+                                            }
+                                        ],
                                     }
                                 },
                                 "cardinality": {
@@ -136,7 +170,29 @@ export class DisplayProfileComponent {
                                     "required": false,
                                     "uoms": [],
                                     "cde": {
-                                        "ids": []
+                                        "ids": [],
+                                        "permissibleValues": [
+                                            {
+                                                "permissibleValue": "5",
+                                                "valueMeaningName": "Always"
+                                            },
+                                            {
+                                                "permissibleValue": "4",
+                                                "valueMeaningName": "Often"
+                                            },
+                                            {
+                                                "permissibleValue": "3",
+                                                "valueMeaningName": "Sometimes"
+                                            },
+                                            {
+                                                "permissibleValue": "2",
+                                                "valueMeaningName": "Rarely"
+                                            },
+                                            {
+                                                "permissibleValue": "1",
+                                                "valueMeaningName": "Never"
+                                            }
+                                        ]
                                     }
                                 },
                                 "cardinality": {
@@ -223,7 +279,57 @@ export class DisplayProfileComponent {
                             "required": false,
                             "uoms": [],
                             "cde": {
-                                "ids": []
+                                "ids": [],
+                                "permissibleValues" : [
+                                    {
+                                        "permissibleValue" : "Never attended/Kindergarten only",
+                                        "valueMeaningName" : "Never attended/Kindergarten only"
+                                    },
+                                    {
+                                        "permissibleValue" : "1st Grade",
+                                        "valueMeaningName" : "1st Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "2nd Grade",
+                                        "valueMeaningName" : "2nd Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "3rd Grade",
+                                        "valueMeaningName" : "3rd Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "4th Grade",
+                                        "valueMeaningName" : "4th Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "5th Grade",
+                                        "valueMeaningName" : "5th Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "6th Grade",
+                                        "valueMeaningName" : "6th Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "7th Grade",
+                                        "valueMeaningName" : "7th Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "8th Grade",
+                                        "valueMeaningName" : "8th Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "9th Grade",
+                                        "valueMeaningName" : "9th Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "10th Grade",
+                                        "valueMeaningName" : "10th Grade"
+                                    },
+                                    {
+                                        "permissibleValue" : "11th Grade",
+                                        "valueMeaningName" : "11th Grade"
+                                    }
+                                ]
                             }
                         },
                         "cardinality": {
