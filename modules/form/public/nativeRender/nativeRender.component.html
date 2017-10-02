@@ -1,7 +1,7 @@
 <h1 [textContent]="elt?.naming && elt.naming[0]?.designation"></h1>
 
 <form *ngIf="!endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal">
-    <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
+    <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== NativeRenderService.SHOW_IF
                                   || skipLogicService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition,
                                   null, nativeRenderService.getElt(), nativeRenderService.getElt(), nativeRenderService.getErrors())"
                         [formElement]="nativeRenderService.getElt()"></cde-native-section>
@@ -9,7 +9,7 @@
 <form ngNoForm #formData *ngIf="endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal"
       [action]="getEndpointUrl()" method="post">
 
-    <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
+    <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== NativeRenderService.SHOW_IF
                                   || skipLogicService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition,
                                   null, nativeRenderService.getElt(), nativeRenderService.getElt(), nativeRenderService.getErrors())"
                         [formElement]="nativeRenderService.getElt()"></cde-native-section>
