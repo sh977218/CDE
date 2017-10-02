@@ -1,4 +1,4 @@
-<div class="container-fluid" *ngIf="user">
+\<div class="container-fluid" *ngIf="user">
     <h1 class="page-header">
         <label>User Profile</label>
     </h1>
@@ -49,7 +49,7 @@
             <tr *ngFor="let pf of user.publishedForms">
                 <td>
                     <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>
-                    <i class="fa fa-trash" alt="Remove" (click)="removePublishedForm(pf)"></i>
+                    <i class="fa fa-trash" title="Remove" (click)="removePublishedForm(pf)"></i>
                 </td>
             </tr>
         </table>

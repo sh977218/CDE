@@ -169,6 +169,7 @@ export class FormViewComponent implements OnInit {
             endpointUrl: this.formInput.endpointUrl
         }).subscribe(
             () => {
+                this.userService.reload();
                 this.alert.addAlert("info", "Done. Go to your profile to see all your published forms");
                 this.modalRef.close();
             }, err => {

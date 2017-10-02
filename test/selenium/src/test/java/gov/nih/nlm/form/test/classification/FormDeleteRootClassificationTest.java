@@ -15,6 +15,7 @@ public class FormDeleteRootClassificationTest extends NlmCdeBaseTest {
         textPresent("PROMIS / Neuro-QOL");
         clickElement(By.xpath("//*[@id='PROMIS Instruments-unclassifyBtn']"));
         clickElement(By.id("confirmDeleteClassificationBtn"));
+        closeAlert();
         textNotPresent("PROMIS / Neuro-QOL");
     }
 }
