@@ -37,7 +37,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 const appRoutes: Routes = [
     {path: 'cde/search', component: CdeSearchComponent},
-
+    {path: 'cde', component: CdeSearchComponent},
 ];
 
 @NgModule({

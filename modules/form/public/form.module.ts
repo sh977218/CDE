@@ -36,9 +36,15 @@ import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/for
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
 import { FormViewComponent } from "./components/formView.component";
-import { DiscussModule } from "../../discuss/discuss.module";
+import { DiscussModule } from "discuss/discuss.module";
 import { CreateFormComponent } from 'form/public/components/createForm.component';
 import { FormClassificationComponent } from "./components/formClassification/formClassification.component";
+import { RouterModule, Routes } from '@angular/router';
+
+const appRoutes: Routes = [
+    {path: 'form/search', component: FormSearchComponent},
+];
+
 
 @NgModule({
     imports: [
@@ -54,7 +60,10 @@ import { FormClassificationComponent } from "./components/formClassification/for
         CdeModule,
         SearchModule,
         WidgetModule,
-        DiscussModule
+        DiscussModule,
+        RouterModule.forChild(
+            appRoutes
+        )
     ],
     declarations: [
         ArrayListPipe,

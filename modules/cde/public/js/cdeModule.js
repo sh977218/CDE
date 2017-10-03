@@ -2,17 +2,14 @@ angular.module('cdeModule', ['ngRoute']).config(
     ["$routeProvider", function($routeProvider)
 {
     $routeProvider.
-        when('/cde/search', {
-            controller: 'SearchCtrl',
-            reloadOnSearch: false,
-            template: '<cde-cde-search [reloads]="searchReloadCount"></cde-cde-search>',
-            title: "Find Common Data Elements",
-            keywords: 'cde, common data element, promis, neuro-qol, phenx, ahrq, ninds, repository',
-            description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
-        }).
-        when('/cde', {
-            redirectTo: '/cde/search'
-        }).
+        // when('/cde/search', {
+        //     controller: 'SearchCtrl',
+        //     reloadOnSearch: false,
+        //     template: '<cde-cde-search [reloads]="searchReloadCount"></cde-cde-search>',
+        //     title: "Find Common Data Elements",
+        //     keywords: 'cde, common data element, promis, neuro-qol, phenx, ahrq, ninds, repository',
+        //     description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
+        // }).
         when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
             $scope.cdeId = $routeParams.cdeId;
         }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
