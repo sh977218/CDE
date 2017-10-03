@@ -196,10 +196,6 @@ ngb-accordion .card-header a:hover {
     color: darkgray;
 }
 
-.btn {
-    margin-left: 10px;
-}
-
 .fake-link {
     text-decoration: none;
     cursor: pointer;

@@ -22,7 +22,9 @@ schemas.formSchema.pre('save', function (next) {
 });
 
 var Form = conn.model('Form', schemas.formSchema);
+var Draft = conn.model('Draft', schemas.draftSchema);
 exports.Form = Form;
+exports.Draft = Draft;
 
 exports.elastic = elastic;
 
@@ -95,6 +97,23 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     }
 };
 
+exports.draftForms = function (tinyId, cb) {
+    let cond = {
+        tinyId: tinyId,
+        archived: false
+    };
+    Draft.find(cond, cb);
+};
+
+exports.saveDraftForm = function (elt, cb) {
+    delete elt.__v;
+    Draft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+};
+
+exports.deleteDraftForm = function (tinyId, cb) {
+    Draft.remove({tinyId: tinyId}, cb);
+};
+
 exports.latestVersionByTinyId = function (tinyId, cb) {
     Form.findOne({tinyId: tinyId, archived: false}, function (err, form) {
         cb(err, form.version);
@@ -132,8 +151,7 @@ exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findOne({_id: elt._id}).exec(function (err, form) {
         delete elt._id;
-        if (!elt.history)
-            elt.history = [];
+        if (!elt.history) elt.history = [];
         elt.history.push(form._id);
         elt.updated = new Date().toJSON();
         elt.updatedBy = {
@@ -155,7 +173,7 @@ exports.update = function (elt, user, callback, special) {
             callback("Cannot save form without names");
         }
 
-        newForm.save(function (err) {
+        newForm.save(function (err, savedForm) {
             if (err) {
                 logging.errorLogger.error("Error: Cannot save form", {
                     origin: "cde.mongo-form.update.2",
@@ -163,19 +181,14 @@ exports.update = function (elt, user, callback, special) {
                     details: "err " + err
                 });
                 callback(err);
-            } else {
-                form.save(function (err) {
-                    if (err) {
-                        logging.errorLogger.error("Error: Cannot save form", {
-                            origin: "cde.mongo-form.update.3",
-                            stack: new Error().stack,
-                            details: "err " + err
-                        });
-                    }
-                    callback(err, newForm);
-                    //mongo_cde.saveModification(form, newForm, user);
+            } else form.save(function (err) {
+                if (err) logging.errorLogger.error("Error: Cannot save form", {
+                    origin: "cde.mongo-form.update.3",
+                    stack: new Error().stack,
+                    details: "err " + err
                 });
-            }
+                callback(err, savedForm);
+            });
         });
     });
 };

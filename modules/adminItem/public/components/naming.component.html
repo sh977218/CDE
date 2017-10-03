@@ -15,14 +15,14 @@
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Name:</div>
                     <div class="col-xs-10" id="designation_{{i}}">
-                        <cde-inline-edit id="nameEdit" [(model)]="name.designation" (modelChange)="elt.unsaved = true;"
+                        <cde-inline-edit id="nameEdit" [(model)]="name.designation" (modelChange)="onEltChange.emit();"
                                          [isAllowed]="canEdit"></cde-inline-edit>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-2 text-right text_label">Definition:</div>
                     <div class="col-xs-10" id="definition_{{i}}">
-                        <cde-inline-area-edit [(model)]="name.definition" (modelChange)="elt.unsaved = true;"
+                        <cde-inline-area-edit [(model)]="name.definition" (modelChange)="onEltChange.emit();"
                                               [(defFormat)]="name.definitionFormat"
                                               [isAllowed]="canEdit"></cde-inline-area-edit>
                     </div>
