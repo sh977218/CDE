@@ -41,22 +41,28 @@
         You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
         <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
     </div>
-    <div class="row">
-        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-            <h1 class="page-header">{{elt.naming[0].designation}}
-                <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                        class="btn btn-small btn-default"
-                        title="Add to Compare List" type="button" (click)="quickBoardService.addToQuickBoard(elt)">
-                    <i class="fa fa-plus"></i> Add to Quick Board
+    <div style="padding:10px 0px"></div>
+    <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+        <h1>
+            <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
+        </h1>
+
+        <div class="col-md-12">
+            <div class="pull-left marginTopBottom5">
+                <button *ngIf="quickBoardService.canAddElement(elt)"
+                        id="addToQuickBoard" class="btn btn-small btn-default"
+                        title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
+                    <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
                 </button>
                 <button id="addToBoard" class="btn btn-small btn-default" title="Add to Board"
-                        type="button" (click)="mltPinModal.open([elt], 'cde')">
-                    <i class="fa fa-thumb-tack"></i> Add to Board
+                        (click)="mltPinModal.open([elt], 'cde')">
+                    <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
                 </button>
                 <div class="btn-group" role="group">
                     <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-download"></i> Export <span class="caret"></span>
+                        <i class="fa fa-download"></i>
+                        <span class="hidden-xs-down"> Export<i class="caret"></i></span>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="export">
                         <ng-container *ngIf="isAllowedModel.loggedIn()">
@@ -69,7 +75,8 @@
                             <li>
                                 <a id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank"
                                    style="display: inline">XML File, CDISC / ODM</a>
-                                <a href="https://www.cdisc.org/standards/transport/odm" target="_blank" style="display: inline">
+                                <a href="https://www.cdisc.org/standards/transport/odm" target="_blank"
+                                   style="display: inline">
                                     <i class="fa fa-info-circle"></i></a>
                             </li>
                             <li>
@@ -101,20 +108,41 @@
                             Please login to export forms.</a>
                     </div>
                 </div>
-                <button *ngIf="isAllowedModel.loggedIn()" id="pinAllCdes" class="btn btn-small btn-default"
-                        target="_blank" title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
-                    <i class="fa fa-cogs"></i> Pin CDEs
+                <button *ngIf="isAllowedModel.loggedIn()"
+                        id="pinAllCdes" class="btn btn-small btn-default"
+                        title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
+                    <i class="fa fa-cogs"></i><span class="hidden-xs-down"> Pin CDEs</span>
                 </button>
-                <button *ngIf="isAllowedModel.loggedIn()" id="copyFormBtn" class="btn btn-small btn-default"
-                        (click)="openCopyElementModal()" title="Copy CDE" type="button">
-                    <i class="fa fa-clone"></i> Copy
+                <button *ngIf="isAllowedModel.loggedIn()"
+                        id="copyFormBtn" class="btn btn-small btn-default"
+                        title="Copy CDE" type="button" (click)="openCopyElementModal()">
+                    <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
                 </button>
-
-                <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
-                        type="button" (click)="commentMode = !commentMode;">
-                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
+                <button id="discussBtn" class="btn btn-small btn-default"
+                        title="Discuss CDE" (click)="commentMode = !commentMode;">
+                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
+                    <span class="hidden-xs-down"> Discuss</span>
                 </button>
-            </h1>
+            </div>
+            <div class="pull-right marginTopBottom5">
+                <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
+                        class="btn btn-info" (click)="loadDraft(null);">
+                    <i class="fa fa-eye fa-lg"></i> View Draft
+                </button>
+                <ng-container *ngIf="elt.isDraft">
+                    <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
+                        <i class="fa fa-globe fa-lg"></i> Publish
+                    </button>
+                    <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+                        <i class="fa fa-trash fa-lg"></i> Delete Draft
+                    </button>
+                    <button class="btn btn-info" (click)="loadForm(null);">
+                        <i class="fa fa-eye fa-lg"></i> View Published
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-md-12">
             <ngb-tabset (tabChange)="beforeChange($event)">
                 <ngb-tab id="general_tab">
                     <ng-template ngbTabTitle>
@@ -123,8 +151,29 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="stageElt()">
-                        </cde-form-general-details>
+                        <div class="col-lg-5">
+                            <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="saveDraft()">
+                            </cde-form-general-details>
+                            <div class="row">
+                                <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
+                                <cde-registration [elt]="elt" (save)="saveForm();"></cde-registration>
+                                <cde-linked-boards [elt]="elt"></cde-linked-boards>
+                                <cde-linked-forms [elt]="elt"></cde-linked-forms>
+                                <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div *ngIf="elt.noRenderAllowed"
+                                 class="text-center mt20">Rendering has been disabled for this form.
+                            </div>
+                            <div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
+                                 class="text-center mt20">This form has no content. There is nothing to preview.
+                            </div>
+                            <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0">
+                                <cde-native-render-full [elt]="elt"></cde-native-render-full>
+                            </div>
+                        </div>
+
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="description_tab">
@@ -134,10 +183,10 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-form-description [cache]="cache" [elt]="elt" [canEdit]="canEdit"
+                        <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit"
                                               [inScoreCdes]="inScoreCdes"
                                               (isFormValid)="setIsValid($event)"
-                                              (onEltChange)="stageForm()"></cde-form-description>
+                                              (onEltChange)="saveDraft()"></cde-form-description>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="naming_tab">
@@ -150,7 +199,7 @@
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}"></div>
                         </ng-template>
-                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="stageForm();"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-naming>
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="classification_tab">
@@ -170,7 +219,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-reference-document>
                     </ng-template>
                 </ngb-tab>
@@ -181,7 +230,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="stageForm();">
+                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-display-profile>
                     </ng-template>
                 </ngb-tab>
@@ -193,7 +242,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-properties>
                     </ng-template>
                 </ngb-tab>
@@ -204,7 +253,7 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-identifiers>
                     </ng-template>
                 </ngb-tab>
@@ -215,7 +264,8 @@
                         </div>
                     </ng-template>
                     <ng-template ngbTabContent>
-                        <cde-attachments [elt]="elt" [canEdit]="canEdit" (removeAttachment)="removeAttachment($event);"
+                        <cde-attachments [elt]="elt" [canEdit]="canEdit"
+                                         (removeAttachment)="removeAttachment($event);"
                                          (setDefault)="setDefault($event);"
                                          (upload)="upload($event);"></cde-attachments>
                     </ng-template>
@@ -232,17 +282,14 @@
                 </ngb-tab>
             </ngb-tabset>
         </div>
-        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
-             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-            <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
-                              (highlightedTabsChange)="loadHighlightedTabs($event)"
-                              [eltName]="elt.naming[0].designation"></cde-discuss-area>
-        </div>
     </div>
-    <div class="row" *ngIf="elt.unsaved && isFormValid">
-        <cde-update-element [elt]="elt" (discard)="reloadForm();"
-                            (save)="stageElt();"></cde-update-element>
+    <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+         style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+        <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                          (highlightedTabsChange)="loadHighlightedTabs($event)"
+                          [eltName]="elt.naming[0].designation"></cde-discuss-area>
     </div>
+    <cde-save-modal #saveModal [elt]="elt" (save)="saveForm()"></cde-save-modal>
 </div>
 
 <ng-template #copyFormContent id="copyFormModal" let-c="close" let-d="dismiss">

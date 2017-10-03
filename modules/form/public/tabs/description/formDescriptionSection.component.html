@@ -71,7 +71,7 @@
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
                     <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                            (change)="setRepeat(section);stageElt.emit()">
+                            (change)="setRepeat(section);">
                         <option *ngFor="let item of repeatOptions" [value]="item.value"
                                 [textContent]="item.label"></option>
                     </select>
@@ -80,7 +80,7 @@
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
                     <input type="number" title="Repeat Maximum Times" class="form-control"
                            [(ngModel)]="section.repeatNumber"
-                           (change)="setRepeat(section);stageElt.emit()"/>
+                           (change)="setRepeat(section);"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
                     <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">

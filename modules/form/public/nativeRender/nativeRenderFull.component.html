@@ -1,10 +1,11 @@
-<div style="margin: 8px 0 20px;">
+<div>
     <span class="form-inline">
         <span class="form-group">
             <label for="select_display_profile">Display Profile: </label>
             <select [(ngModel)]="profileIndex" (change)="selectProfile(render)"
                     id="select_display_profile" class="form-control mb3">
-                <option *ngFor="let p of elt.displayProfiles; let i = index" [value]="i" [textContent]="p.name"></option>
+                <option *ngFor="let p of elt.displayProfiles; let i = index" [value]="i"
+                        [textContent]="p.name"></option>
             </select>
         </span>
         <span>
@@ -16,7 +17,7 @@
     </span>
 
     <span class="pull-right">
-        <span style="margin-right: -10px">New Tab: </span>
+        <span>New Tab: </span>
         <button class="btn btn-default" id="button_print_follow"
                 attr.data-url="/form/public/html/nativeRenderStandalone.html?tinyId={{elt.tinyId}}"
                 onclick="window.open(this.getAttribute('data-url'),'_blank')">Printable</button>
@@ -28,11 +29,9 @@
                 onclick="window.open(this.getAttribute('data-url'),'_blank')">SDC</button>
     </span>
     <div class="clearfix"></div>
-    <div>
-        <div class="pull-right">(Provided by
-            <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
-            <a href="https://www.healthit.gov/techlab/" target="_blank">ONC</a>)
-        </div>
+    <div class="pull-right">(Provided by
+        <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
+        <a href="https://www.healthit.gov/techlab/" target="_blank">ONC</a>)
     </div>
 </div>
 
