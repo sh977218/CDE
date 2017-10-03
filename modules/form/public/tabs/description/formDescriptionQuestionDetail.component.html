@@ -80,20 +80,20 @@
             <cde-inline-area-edit
                  [(model)]="question.instructions.value"
                  [(defFormat)]="question.instructions.valueFormat"
-                 [isAllowed]="true" (modelChange)="elt.unsaved = true">
+                 [isAllowed]="true" (modelChange)="stageElt.emit()">
             </cde-inline-area-edit>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Required:</div>
         <div class="col-xs-1">
-            <input type="checkbox" title="Required" [(ngModel)]="question.question.required" (click)="stageElt.emit()"/>
+            <input type="checkbox" title="Required" [(ngModel)]="question.question.required" (change)="stageElt.emit()"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Invisible:</div>
         <div class="col-xs-1">
-            <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible" (click)="stageElt.emit()">
+            <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible" (change)="stageElt.emit()">
         </div>
     </div>
     <div class="row" *ngIf="parent">
@@ -102,7 +102,7 @@
             <input #slInput type="text" title="Show if"
                    (focus)="slOptionsRetrigger()"
                    [ngModel]="question.skipLogic.condition"
-                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event); stageElt.emit()"
+                   (ngModelChange)="validateSkipLogic(question.skipLogic, parent.formElements, $event);"
                    class="form-control skipLogicCondition"
                    placeholder="Start typing a question name to find options"
                    [ngbTypeahead]="getSkipLogicOptions"
@@ -182,7 +182,7 @@
     <div *ngIf="question.question.defaultAnswer" class="row">
         <div class="col-sm-2 col-xs-12 questionSectionLabel text-md-right text-left" style="min-width: 0">Editable:</div>
         <div class="col-xs-1">
-            <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable" (click)="stageElt.emit()"/>
+            <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable" (change)="stageElt.emit()"/>
         </div>
     </div>
 </ng-template>

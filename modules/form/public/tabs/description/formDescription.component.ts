@@ -236,18 +236,13 @@ export class FormDescriptionComponent implements OnChanges {
         }, () => {
         });
     }
-
-
+    
     pasteSection() {
         let fe = this.localStorageService.get("sectionCopied");
         this.addIndex(this.toolDropTo.parent.data.formElements, fe, this.toolDropTo.index++);
         this.tree.treeModel.update();
         this.tree.treeModel.expandAll();
         this.addIds(this.elt.formElements, "");
-        this.onEltChange.emit();
-    }
-
-    stageParent() {
         this.onEltChange.emit();
     }
 }

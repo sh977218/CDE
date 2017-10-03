@@ -525,8 +525,6 @@ public class NlmCdeBaseTest {
         newVersion(changeNote);
         textPresent("Data Element saved.");
         closeAlert();
-//        modalGone();
-//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
     }
 
     protected void newCdeVersion() {
@@ -535,8 +533,6 @@ public class NlmCdeBaseTest {
 
     protected void newFormVersion(String changeNote) {
         newVersion(changeNote);
-        textPresent("Form saved.");
-        closeAlert();
         modalGone();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
     }
@@ -555,14 +551,6 @@ public class NlmCdeBaseTest {
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
-        wait.until(new ExpectedCondition<Boolean>() {
-            public Boolean apply(WebDriver driver) {
-                return driver.findElement(By.id("confirmSaveBtn")).isEnabled();
-            }
-        });
-//                (ExpectedConditions.not(ExpectedConditions.
-//                presenceOfElementLocated(
-//                By.cssSelector("//*[@id='confirmSaveBtn'[disabled]"))));
         clickElement(By.id("confirmSaveBtn"));
     }
 
@@ -993,7 +981,6 @@ public class NlmCdeBaseTest {
             }
         }
         clickElement(By.id("createNewNamingBtn"));
-//        modalGone();
     }
 
     protected void addNewProperty(String key, String value) {
@@ -1004,8 +991,6 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
-        textPresent("saved.");
-        closeAlert();
     }
 
     /**
@@ -1016,8 +1001,6 @@ public class NlmCdeBaseTest {
     protected void removeProperty(int index) {
         clickElement(By.id("removeProperty-" + index));
         clickElement(By.id("confirmRemoveProperty-" + index));
-        textPresent("saved.");
-        closeAlert();
     }
 
     protected void addNewReferenceDocument(String id, String title, String uri, String providerOrg, String languageCode, String document) {
@@ -1031,8 +1014,6 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewReferenceDocumentBtn"));
         modalGone();
-        textPresent("saved.");
-        closeAlert();
     }
 
     protected void addNewConcept(String cName, String cId, String cSystem, String cType) {
@@ -1053,8 +1034,6 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("saved.");
-        closeAlert();
     }
 
     protected void changeDatatype(String newDatatype) {
@@ -1122,8 +1101,6 @@ public class NlmCdeBaseTest {
         clickElement(By.id("ids_tab"));
         clickElement(By.id("removeIdentifier-" + index));
         clickElement(By.id("confirmRemoveIdentifier-" + index));
-        textPresent("saved.");
-        closeAlert();
     }
 
     /**

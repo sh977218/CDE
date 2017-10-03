@@ -79,7 +79,7 @@
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
                                                                       [elt]="elt" [node]="node" [canEdit]="canEdit"
                                                                       (isFormValid)="isFormValid.emit($event)"
-                                                                      (stageElt)="stageParent()"></cde-form-description-question-detail>
+                                                                      (stageElt)="onEltChange.emit();"></cde-form-description-question-detail>
                             </div>
                         </div>
                         <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>

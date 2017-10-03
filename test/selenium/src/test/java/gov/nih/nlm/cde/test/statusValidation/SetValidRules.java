@@ -7,27 +7,27 @@ import org.testng.annotations.Test;
 
 public class SetValidRules extends BaseClassificationTest {
     @Test
-    public void setValidRules(){
+    public void setValidRules() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        findElement(By.id("username_link")).click();
-        findElement(By.id("user_org_authority")).click();
-        findElement(By.linkText("Status Validation Rules")).click();
-        findElement(By.id("addRule")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.id("user_org_authority"));
+        clickElement(By.linkText("Status Validation Rules"));
+        clickElement(By.id("addRule"));
         new Select(findElement(By.id("org"))).selectByVisibleText("TEST");
         findElement(By.id("ruleName")).sendKeys("Test Rule #1");
         new Select(findElement(By.id("field"))).selectByVisibleText("properties.key");
         new Select(findElement(By.id("targetStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("regex")).sendKeys("non-existent");
         new Select(driver.findElement(By.id("occurence"))).selectByVisibleText("All Elements");
-        findElement(By.id("saveRule")).click();
+        clickElement(By.id("saveRule"));
         goToCdeSearch();
-        findElement(By.id("browseOrg-TEST")).click();
+        clickElement(By.id("browseOrg-TEST"));
         findElement(By.id("pinAll"));
-        findElement(By.id("export")).click();
-        findElement(By.id("exportValidRule")).click();
-        findElement(By.id("selectStatus")).click();
-        findElement(By.id("recorded")).click();
-        findElement(By.id("exportVR")).click();
+        clickElement(By.id("export"));
+        clickElement(By.id("exportValidRule"));
+        clickElement(By.id("selectStatus"));
+        clickElement(By.id("recorded"));
+        clickElement(By.id("exportVR"));
         textPresent("Test Rule #1");
     }
 }

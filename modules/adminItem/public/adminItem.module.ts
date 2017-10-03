@@ -72,6 +72,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
+        SaveModalComponent,
         SortableArrayDirective,
         SourcesComponent,
     ],
