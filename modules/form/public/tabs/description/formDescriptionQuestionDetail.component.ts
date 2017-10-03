@@ -8,6 +8,7 @@ import { TreeNode } from "angular-tree-component";
 import { SkipLogicService } from 'form/public/skipLogic.service';
 import { CdeForm, FormElement, FormQuestion, SkipLogic } from 'form/public/form.model';
 import { FormattedValue } from 'core/public/models.model';
+
 @Component({
     selector: "cde-form-description-question-detail",
     templateUrl: "formDescriptionQuestionDetail.component.html"
@@ -193,10 +194,14 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     validateSkipLogic(skipLogic, previousQuestions, item) {
-        if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
-            this.stageElt.emit();
-        else
-            this.isFormValid.emit(false);
+        let oldSkipLogic = skipLogic;
+        if (oldSkipLogic && oldSkipLogic.condition !== item) {
+            let validateSkipLogicResult = this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item);
+            if (validateSkipLogicResult)
+                this.stageElt.emit();
+            else
+                this.isFormValid.emit(false);
+        }
     }
 
     static inputEvent = new Event('input');

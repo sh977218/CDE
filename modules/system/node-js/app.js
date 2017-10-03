@@ -718,7 +718,7 @@ exports.init = function (app) {
     });
 
     app.post('/user/update/searchSettings', function (req, res) {
-        if (!res.user) return;
+        if (!req.user) return;
         usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
             if (err) res.status(500).send("ERROR - cannot update search settings. ");
             else res.send("Search settings updated.");

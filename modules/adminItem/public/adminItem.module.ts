@@ -70,6 +70,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
+        SaveModalComponent,
         SourcesComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

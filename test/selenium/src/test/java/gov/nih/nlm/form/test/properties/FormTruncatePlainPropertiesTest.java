@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class FormTruncatePlainPropertiesTest extends NlmCdeBaseTest {
 
     @Test
-    public void formTruncatePlainPropertiesTest() {
+    public void formTruncatePlainProperties() {
         String formName = "Family History - Affected Relatives and Pedigree";
         String newValue = "TBI:\n" +
                 "Duhaime AC, Gean AD, Haacke EM, Hicks R, Wintermark M, Mukherjee P, Brody D, Latour L, " +
