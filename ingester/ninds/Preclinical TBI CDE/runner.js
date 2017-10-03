@@ -3,11 +3,11 @@ const util = require('util');
 const async = require('async');
 const _ = require('lodash');
 const XLSX = require('xlsx');
-const linkifyjs = require('linkifyjs');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
 const classificationShared = require('../../../modules/system/shared/classificationShared');
+const mongo_data = require('../../../modules/system/node-js/mongo-data');
 
 const DATA_TYPE_MAP = {
     'Alphanumeric': 'Text',
@@ -28,7 +28,8 @@ const ALL_POSSIBLE_CLASSIFICATIONS = [
     "domain.neuromuscular diseases",
     "domain.myasthenia gravis",
     "domain.spinal muscular atrophy",
-    "domain.Duchenne muscular dystrophy/Becker muscular dystrophy", "domain.congenital muscular dystrophy",
+    "domain.Duchenne muscular dystrophy/Becker muscular dystrophy",
+    "domain.congenital muscular dystrophy",
     "domain.spinal cord injury",
     "domain.headache",
     "domain.epilepsy",
@@ -36,7 +37,8 @@ const ALL_POSSIBLE_CLASSIFICATIONS = [
     "classification.acute hospitalized",
     "classification.concussion/mild TBI",
     "classification.epidemiology",
-    "classification.moderate/severe TBI: rehabilitation", "classification.Parkinson's disease",
+    "classification.moderate/severe TBI: rehabilitation",
+    "classification.Parkinson's disease",
     "classification.Friedreich's ataxia",
     "classification.stroke",
     "classification.amyotrophic lateral sclerosis",
@@ -46,8 +48,10 @@ const ALL_POSSIBLE_CLASSIFICATIONS = [
     "classification.myasthenia gravis",
     "classification.spinal muscular atrophy",
     "classification.Duchenne muscular dystrophy/Becker muscular dystrophy",
-    "classification.congenital muscular dystrophy", "classification.spinal cord injury",
-    "classification.headache	classification.epilepsy",
+    "classification.congenital muscular dystrophy",
+    "classification.spinal cord injury",
+    "classification.headache",
+    "classification.epilepsy",
 ];
 
 const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
@@ -70,6 +74,15 @@ console.log = function (d) {
     log_file.write(util.format(d) + '\n');
     log_stdout.write(util.format(d) + '\n');
 };
+
+function getCell(row, header) {
+    if (row[header]) return row[header];
+    else {
+        let headerLower = _.toLower(header);
+        if (row[headerLower]) return row[headerLower];
+        else console.log("No " + header + " found");
+    }
+}
 
 function deToQuestion(row, cde) {
     let question = {
@@ -119,8 +132,9 @@ function deToQuestion(row, cde) {
     return question;
 }
 
-function rowToDataElement(file, row) {
+function rowToDataElement(file, row, rowIndex) {
     let de = {
+        tinyId: mongo_data.generateTinyId(),
         stewardOrg: {
             name: 'NINDS'
         },
@@ -130,75 +144,84 @@ function rowToDataElement(file, row) {
         registrationState: {
             registrationStatus: 'Qualified'
         },
+        referenceDocuments: [],
+        properties: [],
+        valueDomain: {},
         classification: []
     };
-    let ids = [{
-        source: 'NINDS',
-        id: row['Variable Name']
-    }];
-    de.ids = ids;
-    let shortDescription = row['Short Description'];
-    let description = row['Definition'];
-    let naming = [];
+    let variableName = getCell(row, 'Variable Name');
+    if (variableName) {
+        de.ids = [{
+            source: 'NINDS',
+            id: row['Variable Name']
+        }];
+    }
+
+    let shortDescription = getCell(row, 'Short Description');
+    let description = getCell(row, 'Definition');
+    let title = getCell(row, 'Title');
     if (shortDescription === description) {
-        naming.push({
-            designation: row['Title'],
+        de.naming = [{
+            designation: title,
             definition: description
-        });
+        }];
     } else {
-        naming.push({
-            designation: row['Title'],
+        de.naming = [{
+            designation: title,
             definition: shortDescription
-        });
-        naming.push({
+        }, {
             designation: '',
             definition: description
-        });
+        }];
     }
-    if (row['Preferred Question Text']) {
-        naming.push({
-            designation: row['Preferred Question Text'],
+    let preferredQuestionText = getCell(row, 'Preferred Question Text');
+    if (preferredQuestionText) {
+        de.naming.push({
+            designation: preferredQuestionText,
+            definition: '',
             tags: ['Preferred Question Text']
         });
     }
-    de.naming = naming;
 
-    let valueDomain = {};
-    if (row['Unit of Measure'])
-        valueDomain.uom = row['Unit of Measure'];
-    if (row['Input Restriction'] === 'Free-Form Entry') {
+    let unitOfMeasure = getCell(row, 'Unit of Measure');
+    if (unitOfMeasure) de.valueDomain.uom = unitOfMeasure;
+    let inputRestriction = getCell(row, 'Input Restriction');
+    if (inputRestriction === 'Free-Form Entry') {
         let datatype = DATA_TYPE_MAP[row['Datatype']];
         if (datatype === 'Text') {
-            valueDomain.datatype = 'Text';
-            valueDomain.datatypeText = {};
-            if (row['Maximum Character Quantity'])
-                valueDomain.datatypeText.maxLength = row['Maximum Character Quantity'];
+            de.valueDomain.datatype = 'Text';
+            de.valueDomain.datatypeText = {};
+            let maximumCharacterQuantity = getCell(row, 'Maximum Character Quantity');
+            if (maximumCharacterQuantity) de.valueDomain.datatypeText.maxLength = maximumCharacterQuantity;
         } else if (datatype === 'Number') {
-            valueDomain.datatype = 'Number';
-            valueDomain.datatypeNumber = {};
-            if (row['Minimum Value'])
-                valueDomain.datatypeNumber.minValue = Number.parseInt(row['Minimum Value']);
-            if (row['Maximum Value'])
-                valueDomain.datatypeNumber.maxValue = Number.parseInt(row['Maximum Value']);
+            de.valueDomain.datatype = 'Number';
+            de.valueDomain.datatypeNumber = {};
+            let minimumValue = getCell(row, 'Minimum Value');
+            if (minimumValue) de.valueDomain.datatypeNumber.minValue = Number.parseInt(minimumValue);
+            let maximumValue = getCell(row, 'Maximum Value');
+            if (maximumValue) de.valueDomain.datatypeNumber.maxValue = Number.parseInt(maximumValue);
         } else if (datatype === 'Date') {
-            valueDomain.datatypeDate = {};
+            de.valueDomain.datatypeDate = {};
         } else {
-            valueDomain.datatype = 'Text';
-            valueDomain.datatypeText = {};
+            de.valueDomain.datatype = 'Text';
+            de.valueDomain.datatypeText = {};
             console.log("---------------------------------");
             console.log("| file: " + file);
-            console.log("| row: " + row);
+            console.log("| rowIndex: " + rowIndex);
             console.log("| Unknown datatype: " + datatype);
             console.log("---------------------------------");
-            console.log("\n\n\n");
+            console.log("\n");
         }
     } else {
-        valueDomain.datatype = 'Value List';
-        valueDomain.permissibleValues = [];
-        if (row['Permissible Values'] && row['Permissible Value Descriptions'] && row['Permissible Value Output Codes']) {
-            let pvs = row['Permissible Values'].split(';');
-            let pvDescs = row['Permissible Value Descriptions'].split(';');
-            let pvCodes = row['Permissible Value Output Codes'].split(';');
+        de.valueDomain.datatype = 'Value List';
+        de.valueDomain.permissibleValues = [];
+        let permissibleValues = getCell(row, 'Permissible Values');
+        let permissibleValueDescriptions = getCell(row, 'Permissible Value Descriptions');
+        let permissibleValueOutputCodes = getCell(row, 'Permissible Value Output Codes');
+        if (permissibleValues && permissibleValueDescriptions && permissibleValueOutputCodes) {
+            let pvs = permissibleValues.split(';');
+            let pvDescs = permissibleValueDescriptions.split(';');
+            let pvCodes = permissibleValueOutputCodes.split(';');
             if (pvs.length === pvDescs.length && pvDescs.length === pvCodes.length && pvs.length === pvCodes.length) {
                 for (let i = 0; i < pvs.length; i++) {
                     let pv = {
@@ -206,36 +229,32 @@ function rowToDataElement(file, row) {
                         valueMeaningDefinition: pvDescs[i],
                         valueMeaningCode: pvCodes[i]
                     };
-                    valueDomain.permissibleValues.push(pv);
+                    de.valueDomain.permissibleValues.push(pv);
                 }
             } else {
                 console.log("---------------------------------");
                 console.log("| file: " + file);
-                console.log("| row: " + row);
+                console.log("| rowIndex: " + rowIndex);
                 console.log("| PV Length mismatch. pv:" + pvs.length + " pvDescs:" + pvDescs.length + " pvCodes:" + pvCodes.length);
                 console.log("---------------------------------");
-                console.log("\n\n\n");
+                console.log("\n");
             }
         }
     }
-    de.valueDomain = valueDomain;
 
-    let referenceDocuments = [];
-    if (row['References'] && _.findIndex(EXCLUDE_REF_DOC, o => row['References'].indexOf(o) !== -1) === -1) {
-        let refDocString = row['References'];
-
+    let references = getCell(row, 'References');
+    if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
+        let refDocString = references;
         let sections = refDocString.split("-----");
         if (sections.length > 1) {
-            referenceDocuments = sections.map(s => {
-                return {
-                    document: s
-                };
+            de.referenceDocuments = sections.map(s => {
+                return {document: s};
             });
         } else {
             let regs = [
-                RegExp(/\s*PMID:\s*(\d*[,|\s]*)*/g),
-                RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*/g),
-                RegExp(/\s*PMID:*\s*(\d*[,|\s|;]*)*/g),
+                new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*/g),
+                new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*/g),
+                new RegExp(/\s*PMID:*\s*(\d*[,|;]*)*/g),
 
             ];
             let pmIds = [];
@@ -248,7 +267,7 @@ function rowToDataElement(file, row) {
             });
             if (refDocString.length > 0) {
                 pmIds.forEach(pmId => {
-                    referenceDocuments.push({
+                    de.referenceDocuments.push({
                         referenceDocumentId: pmId.replace(/;/g, "").trim(),
                         document: refDocString
                     });
@@ -257,17 +276,13 @@ function rowToDataElement(file, row) {
             }
         }
     }
-    de.referenceDocuments = referenceDocuments;
 
-    let properties = [];
-    if (row['keywords']) properties.push({key: "keywords", value: row['keywords']});
-    if (row['guidelines/instructions']) properties.push({
-        key: "guidelines/instructions",
-        value: row['guidelines/instructions']
-    });
-    if (row['notes']) properties.push({key: "notes", value: row['notes']});
-    if (row['keywords']) properties.push({key: "KeyWord", value: row['keywords']});
-    de.properties = properties;
+    let keywords = getCell(row, 'keywords');
+    if (keywords) de.properties.push({key: "keywords", value: keywords});
+    let guidelinesInstructions = getCell(row, 'guidelines/instructions');
+    if (guidelinesInstructions) de.properties.push({key: "guidelines/instructions", value: guidelinesInstructions});
+    let notes = getCell(row, 'notes');
+    if (notes) de.properties.push({key: "notes", value: notes});
 
     ALL_POSSIBLE_CLASSIFICATIONS.forEach(possibleClassification => {
         if (row[possibleClassification]) {
@@ -275,6 +290,16 @@ function rowToDataElement(file, row) {
             classificationShared.classifyElt(de, 'NINDS', ['Preclinical TBI CDE'].concat(categories));
         }
     });
+    if (de.classification.length === 0) {
+        de.classification = [{
+            stewardOrg: {name: 'NINDS'},
+            elements: [{
+                name: 'test',
+                elements: []
+            }]
+        }];
+    }
+
     return de;
 }
 
@@ -285,20 +310,21 @@ function run() {
         let sheetName = workbook.SheetNames[0];
         let rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
         let form = {
+            tinyId: mongo_data.generateTinyId(),
             naming: [
                 {designation: _.words('sheetName').join(" ")}
             ],
             formElements: []
         };
+        let rowIndex = 0;
         async.forEachSeries(rows, (row, doneOneRow) => {
-            let de = rowToDataElement(file, row);
+            let de = rowToDataElement(file, row, rowIndex);
             let deObj = new DataElementModel(de);
             deObj.save((err, newCde) => {
-                if (err) {
-                    throw err;
-                }
+                if (err) throw err;
                 let question = deToQuestion(row, newCde);
                 form.formElements.push(question);
+                rowIndex++;
                 doneOneRow();
             });
         }, () => new FormModel(form).save(err => {
