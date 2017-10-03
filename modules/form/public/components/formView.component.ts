@@ -3,26 +3,30 @@ import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from "quickBoard/public/quickBoardList.service";
+import { AlertService } from 'system/public/components/alert/alert.service';
+import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
 @Component({
     selector: "cde-form-view",
-    templateUrl: "formView.component.html"
+    templateUrl: "formView.component.html",
+    styles: [`
+        .marginTopBottom5 {
+            margin: 5px 0px
+        }
+    `]
 })
 export class FormViewComponent implements OnInit {
     @ViewChild("copyFormContent") public copyFormContent: NgbModalModule;
     @ViewChild("publishFormContent") public publishFormContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
-
+    @ViewChild("saveModal") public saveModal: SaveModalComponent;
     @Input() routeParams: any;
-
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
-
     @Output() public h = new EventEmitter();
 
     public elt: any;
@@ -35,6 +39,8 @@ export class FormViewComponent implements OnInit {
     canEdit: boolean = false;
     isFormValid = true;
     formInput;
+    drafts = [];
+    formId;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -46,24 +52,37 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loadForm(form => {
+            this.loadComments(form, null);
+            this.userService.getPromise().then(user => {
+                if (user && user.username)
+                    this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+            });
+        });
+    }
+
+    loadForm(cb) {
         let formId = this.routeParams.formId;
         let url = "/form/" + this.routeParams.tinyId;
         if (formId) url = "/formById/" + formId;
-        this.http.get(url).map(r => r.json()).subscribe(response => {
-                this.elt = response;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+                this.elt = res;
+                this.formId = this.elt._id;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
-                this.http.get("/comments/eltId/" + this.elt.tinyId)
-                    .map(res => res.json()).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
-                );
-                this.userService.getPromise().then(() => {
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                });
-            },
-            () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
+                this.userService.getPromise().then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                if (cb) cb(res);
+            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
         );
+    }
+
+    loadComments(form, cb) {
+        this.http.get("/comments/eltId/" + form.tinyId)
+            .map(res => res.json()).subscribe(res => {
+            this.hasComments = res && (res.length > 0);
+            if (cb) cb();
+        }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
     }
 
     onLocationChange(event, newUrl, oldUrl, elt) {
@@ -73,49 +92,8 @@ export class FormViewComponent implements OnInit {
                 txt = txt + window.location.pathname;
             }
             let answer = confirm(txt);
-            if (!answer) {
-                event.preventDefault();
-            }
+            if (!answer) event.preventDefault();
         }
-    }
-
-    reloadForm() {
-        this.http.get("/form/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.areDerivationRulesSatisfied();
-                this.validateForm();
-                this.alert.addAlert("success", "Changes discarded.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
-        );
-    };
-
-
-    stageElt() {
-        this.http.put("/form/" + this.elt.tinyId, this.elt)
-            .map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.alert.addAlert("success", "Form saved.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
-        );
-    };
-
-    doStageElt() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Save to confirm.");
-        } else {
-            this.stageElt();
-            this.modalRef.close();
-        }
-    }
-
-    stageForm() {
-        this.areDerivationRulesSatisfied();
-        this.validateForm();
-        this.elt.unsaved = true;
     }
 
     openCopyElementModal() {
@@ -278,7 +256,6 @@ export class FormViewComponent implements OnInit {
         });
     }
 
-
     upload(event) {
         if (event.srcElement.files) {
             let files = event.srcElement.files;
@@ -298,6 +275,45 @@ export class FormViewComponent implements OnInit {
                 }
             );
         }
+    }
+
+    loadDraft(cb) {
+        this.http.get("/draftForm/" + this.elt.tinyId)
+            .map(res => res.json()).subscribe(res => {
+            if (res && res.length > 0) {
+                this.drafts = res;
+                this.elt = res[0];
+            } else this.drafts = [];
+            if (cb) cb();
+        }, err => this.alert.addAlert("danger", err));
+    }
+
+    saveDraft(cb) {
+        this.elt._id = this.formId;
+        this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
+            .map(res => res.json()).subscribe(res => {
+            this.elt.isDraft = true;
+            this.areDerivationRulesSatisfied();
+            this.validateForm();
+            if (cb) cb(res);
+        }, err => this.alert.addAlert("danger", err));
+    }
+
+    saveForm() {
+        this.http.put("/form/" + this.elt.tinyId, this.elt)
+            .map(res => res.json()).subscribe(res => {
+            if (res) {
+                this.loadForm(() => this.alert.addAlert("success", "Form saved."));
+                this.loadDraft(null);
+            }
+        }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form."));
+    }
+
+    removeDraft() {
+        this.http.delete("/draftForm/" + this.elt.tinyId)
+            .subscribe(res => {
+                if (res) this.loadForm(() => this.drafts = []);
+            }, err => this.alert.addAlert("danger", err));
     }
 
 }

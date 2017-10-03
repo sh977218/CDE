@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class RemoveExistingSkipLogicTest extends BaseFormTest {
 
     @Test
-    public void removeExistingSkipLogicTest() {
+    public void removeExistingSkipLogic() {
         String formName = "Remove SkipLogic Form";
         String skipLogic = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
         mustBeLoggedInAs(testAdmin_username, password);

@@ -8,7 +8,7 @@ import { AlertService } from "../../../../system/public/components/alert/alert.s
     selector: "cde-save-modal",
     templateUrl: "./saveModal.component.html"
 })
-export class SaveModalComponent implements OnInit {
+export class SaveModalComponent {
 
     @ViewChild("updateElementContent") public updateElementContent: NgbModalModule;
 
@@ -22,10 +22,6 @@ export class SaveModalComponent implements OnInit {
     constructor(public modalService: NgbModal,
                 public http: Http,
                 private alert: AlertService) {
-    }
-
-    ngOnInit(): void {
-        this.elt.changeNote = "";
     }
 
     confirmSave() {
@@ -53,6 +49,7 @@ export class SaveModalComponent implements OnInit {
 
     openSaveModal() {
         this.newVersionVersionUnicity();
+        if (this.elt) this.elt.changeNote = "";
         this.modalRef = this.modalService.open(this.updateElementContent, {container: "body", size: "lg"});
     }
 

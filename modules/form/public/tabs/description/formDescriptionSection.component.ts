@@ -90,12 +90,15 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     setRepeat(section) {
-        if (section.repeatOption === "F")
+        if (section.repeatOption === "F") {
             section.repeat = "First Question";
-        else if (section.repeatOption === "N")
+            this.stageElt.emit();
+        } else if (section.repeatOption === "N") {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
-        else
-            section.repeat = undefined;
+            if (section.repeat > 0)
+                this.stageElt.emit();
+        }
+        else section.repeat = undefined;
     }
 
     getRepeatLabel(section) {
@@ -113,10 +116,14 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     validateSkipLogic(skipLogic, previousQuestions, item) {
-        if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
-            this.stageElt.emit();
-        else
-            this.isFormValid.emit(false);
+        let oldSkipLogic = skipLogic;
+        if (oldSkipLogic && oldSkipLogic.condition !== item) {
+            let validateSkipLogicResult = this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item);
+            if (validateSkipLogicResult && skipLogic && skipLogic.condition && skipLogic.condition.trim().length > 0)
+                this.stageElt.emit();
+            else
+                this.isFormValid.emit(false);
+        }
     }
 
     static inputEvent = new Event('input');

@@ -22,7 +22,6 @@ public class FormScoreTest extends QuestionTest {
         textPresent("id: h7pThcFJv2r");
         textPresent("(Incomplete Rule)", By.id("question_0_0"));
 
-
         addQuestionToSection("ALS Severity Score (ALSSS) - upper extremity dress hygiene score", 0);
         textNotPresent("id: cu-0EyndDn2");
         textPresent("id: 5h29ApPjjzE");
