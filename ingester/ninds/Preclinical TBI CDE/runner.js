@@ -244,18 +244,12 @@ function rowToDataElement(file, row, rowIndex) {
 
     let references = getCell(row, 'References');
     if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
-        let refDocString = references;
-        let sections = refDocString.split("-----");
-        if (sections.length > 1) {
-            de.referenceDocuments = sections.map(s => {
-                return {document: s};
-            });
-        } else {
+        let refDocStrings = references;
+        refDocStrings.split("-----").forEach(refDocString => {
             let regs = [
                 new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*/g),
                 new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*/g),
                 new RegExp(/\s*PMID:*\s*(\d*[,|;]*)*/g),
-
             ];
             let pmIds = [];
             regs.forEach(reg => {
@@ -274,7 +268,7 @@ function rowToDataElement(file, row, rowIndex) {
                 });
                 console.log("reminding ref doc string: " + refDocString);
             }
-        }
+        });
     }
 
     let keywords = getCell(row, 'keywords');
@@ -319,6 +313,9 @@ function run() {
         let rowIndex = 0;
         async.forEachSeries(rows, (row, doneOneRow) => {
             let de = rowToDataElement(file, row, rowIndex);
+            if (!de.naming || !de.naming[0].designation) {
+                console.log("a");
+            }
             let deObj = new DataElementModel(de);
             deObj.save((err, newCde) => {
                 if (err) throw err;
