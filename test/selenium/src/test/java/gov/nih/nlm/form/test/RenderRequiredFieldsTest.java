@@ -18,19 +18,19 @@ public class RenderRequiredFieldsTest extends NlmCdeBaseTest {
         goToFormByName("Required Field Form");
 
         Assert.assertFalse(isRequired(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[1]"))));
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input[not(@hidden)])[1]"))));
         Assert.assertTrue(isRequired(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[2]"))));
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input[not(@hidden)])[2]"))));
 
         Assert.assertFalse(isRequired(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[3]"))));
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input[not(@hidden)])[3]"))));
         Assert.assertTrue(isRequired(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[4]"))));
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input[not(@hidden)])[4]"))));
 
         Assert.assertFalse(isRequired(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[5]"))));
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input[not(@hidden)])[5]"))));
         Assert.assertTrue(isRequired(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[6]"))));
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input[not(@hidden)])[6]"))));
 
     }
 

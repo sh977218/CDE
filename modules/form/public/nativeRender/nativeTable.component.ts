@@ -17,6 +17,7 @@ export class NativeTableComponent implements OnInit {
     };
     entry: any;
     rowNameCounter: number = 0;
+    NativeRenderService = NativeRenderService;
 
     constructor(public nativeRenderService: NativeRenderService) {
     }

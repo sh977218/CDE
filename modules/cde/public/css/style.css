@@ -41,6 +41,10 @@ select.form-control:not([size]):not([multiple]) {
     max-width: none;
 }
 
+label.input-group-addon:last-child {
+    border-left: 1px solid #ccc;
+}
+
 /*fixes an issue in bootstrap #1078 */
 .hand-cursor {
     cursor: pointer;
