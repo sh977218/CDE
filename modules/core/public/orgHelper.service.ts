@@ -10,7 +10,6 @@ export class OrgHelperService  {
 
     constructor(private http: Http,
                 private userService: UserService) {
-
         this.reload();
     }
 
@@ -71,6 +70,7 @@ export class OrgHelperService  {
 
     showWorkingGroup(orgToHide) {
         if (!this.userService.user) return false;
+        if (!this.orgsDetailedInfo) return false;
         let parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
         let isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
         let userIsWorkingGroupCurator = SharedService.auth.isCuratorOf(this.userService.user, orgToHide);
