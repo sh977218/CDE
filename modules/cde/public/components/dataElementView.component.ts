@@ -12,7 +12,12 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 
 @Component({
     selector: "cde-data-element-view",
-    templateUrl: "dataElementView.component.html"
+    templateUrl: "dataElementView.component.html",
+    styles: [`
+        .marginTopBottom5 {
+            margin: 5px 0
+        }
+    `]
 })
 export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
@@ -29,6 +34,8 @@ export class DataElementViewComponent implements OnInit {
     currentTab = "general_tab";
     highlightedTabs = [];
     canEdit: boolean = false;
+    drafts = [];
+    deId;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -72,12 +79,23 @@ export class DataElementViewComponent implements OnInit {
         }
     }
 
-    reloadDataElement() {
-        this.http.get("/de/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
-                this.elt = response;
+    loadDataElement(cb) {
+        let formId = this.routeParams.formId;
+        let url = "/de/" + this.routeParams.tinyId;
+        if (formId) url = "/deById/" + formId;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+                this.elt = res;
+                this.deId = this.elt._id;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.alert.addAlert("success", "Changes discarded.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+                this.http.get("/comments/eltId/" + this.elt.tinyId)
+                    .map(res => res.json()).subscribe(
+                    res => this.hasComments = res && (res.length > 0),
+                    err => this.alert.addAlert("danger", "Error loading comments. " + err)
+                );
+                this.userService.then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                cb(this.elt);
+            },
+            () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
     }
 
@@ -100,17 +118,6 @@ export class DataElementViewComponent implements OnInit {
             this.displayStatusWarning = assignValue();
         });
     };
-
-    saveDataElement() {
-        this.http.put("/de/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.alert.addAlert("success", "Data Element saved.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
-        );
-        this.setDisplayStatusWarning();
-        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-    }
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
@@ -185,7 +192,6 @@ export class DataElementViewComponent implements OnInit {
         });
     }
 
-
     upload(event) {
         if (event.srcElement.files) {
             let files = event.srcElement.files;
@@ -206,4 +212,43 @@ export class DataElementViewComponent implements OnInit {
             );
         }
     }
+
+    loadDraft(cb) {
+        this.http.get("/draftDataElement/" + this.elt.tinyId)
+            .map(res => res.json()).subscribe(res => {
+            if (res && res.length > 0) {
+                this.drafts = res;
+                this.elt = res[0];
+            } else this.drafts = [];
+            if (cb) cb();
+        }, err => this.alert.addAlert("danger", err));
+    }
+
+    saveDraft(cb) {
+        this.elt._id = this.deId;
+        this.http.post("/draftDataElement/" + this.elt.tinyId, this.elt)
+            .map(res => res.json()).subscribe(res => {
+            this.elt.isDraft = true;
+            if (cb) cb(res);
+        }, err => this.alert.addAlert("danger", err));
+    }
+
+    saveDataElement() {
+        this.http.put("/de/" + this.elt.tinyId, this.elt)
+            .map(res => res.json()).subscribe(res => {
+            if (res) {
+                this.loadDataElement(() => this.alert.addAlert("success", "Data Element saved."));
+                this.loadDraft(null);
+            }
+        }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element."));
+    }
+
+    removeDraft() {
+        this.http.delete("/draftDataElement/" + this.elt.tinyId)
+            .subscribe(res => {
+                if (res) this.loadDataElement(() => this.drafts = []);
+            }, err => this.alert.addAlert("danger", err));
+    }
+
+
 }

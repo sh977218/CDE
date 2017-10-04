@@ -1,114 +1,91 @@
-<div class="row" *ngIf="elt" id="generalDiv">
-    <div class="col-md-6">
-        <h4>General Details</h4>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel text-right">Name:</div>
-            <div class="col-sm-7" id="dd_general_name" itemprop="name">{{elt.naming[0].designation}}</div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
-            <div class="col-sm-7" id="dd_general_steward">
-                <span *ngIf="editDtMode">
-                    <select class="form-control" id="elt.stewardOrg.name" [(ngModel)]="elt.stewardOrg.name"
-                            (change)="elt.unsaved = true">
-                        <option *ngFor="let myOrg of userService.userOrgs">{{myOrg}}</option>
-                    </select>
-                    <i id="elt.stewardOrg.name.ok" class="fa fa-check"
-                       (click)="editDtMode = false; elt.staged = true"></i>&nbsp;&nbsp;
-                    <i id="elt.stewardOrg.name.cancel" class="fa fa-times"
-                       (click)="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
-                </span>
-                <span *ngIf="!editDtMode">
-                    <i title="Edit Steward" role="link" *ngIf="isAllowedModel.isAllowed(elt)"
-                       class="fa fa-edit"
-                       (click)="oldStewardName = elt.stewardOrg.name; editDtMode = true"
-                       id="dd_edit_steward"></i>
-                    <ng-template #stewardTooltip>
-                        <span *ngIf="orgHelperService.orgsDetailedInfo"
-                              [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"></span>
-                    </ng-template>
-                    <a [ngbTooltip]="stewardTooltip" placement="right"
-                       id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>
-                </span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel text-right">Definition:</div>
-            <div class="col-sm-7" id="dd_def" itemprop="description">
-                <span *ngIf="elt.naming[0].definitionFormat !== 'html'">{{elt.naming[0].definition}}</span>
-                <span *ngIf="elt.naming[0].definitionFormat === 'html'" [innerHtml]="elt.naming[0].definition"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel text-right">Used By:</div>
-            <div class="col-sm-7" id="dd_usedBy">
-                <div *ngIf="elt.classification?.length > 0">
-                    <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
-                </div>
-                <div *ngIf="!(elt.classification.length > 0)">
-                    <span>None</span>
-                </div>
-            </div>
-        </div>
-        <div class="row" *ngIf="elt.origin">
-            <div class="col-sm-5 questionSectionLabel text-right">Origin:</div>
-            <div class="col-sm-7">
-                <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="isAllowedModel.isAllowed(elt)"
-                             (modelChange)="elt.unsaved = true"></cde-inline-edit>
-            </div>
-        </div>
-        <div class="row" *ngIf="elt.views">
-            <div class="col-sm-5 questionSectionLabel text-right">Views:</div>
-            <div class="col-sm-7" id="dd_views">{{elt.views}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5 questionSectionLabel text-right">SDC View:</div>
-            <div class="col-sm-7">
-                <a href="/sdcview/?cdeId={{elt._id}}" aria-label="SDC View" target="_blank">
-                    <i class="fa fa-share-square-o"></i> SDC View</a>
-            </div>
-        </div>
-
-        <div class="row" *ngIf="elt.imported">
-            <div class="col-sm-5 questionSectionLabel text-right">Last import:</div>
-            <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}
-            </div>
-        </div>
-        <div class="row" *ngIf="elt.created">
-            <div class="col-sm-5 questionSectionLabel text-right">Created:</div>
-            <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
-            </div>
-        </div>
-        <div class="row" *ngIf="elt.updated">
-            <div class="col-sm-5 questionSectionLabel text-right">Updated:</div>
-            <div class="col-sm-7" id="dd_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
-            </div>
-        </div>
-        <div class="row" *ngIf="elt.createdBy">
-            <div class="col-sm-5 questionSectionLabel text-right">Created By:</div>
-            <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}
-            </div>
-        </div>
-
-        <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-        <cde-registration [elt]="elt" (save)="saveDataElement();"></cde-registration>
-        <div role="group" aria-label="More Info">
-            <cde-linked-forms [elt]="elt"></cde-linked-forms>
-            <cde-mlt [elt]="elt"></cde-mlt>
-            <cde-linked-boards [elt]="elt"></cde-linked-boards>
-            <cde-datasets [elt]="elt"></cde-datasets>
+<div class="row">
+    <h4>General Details</h4>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel text-right">Name:</div>
+        <div class="col-sm-7" id="dd_general_name" itemprop="name">{{elt.naming[0].designation}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
+        <div class="col-sm-7" id="dd_general_steward">
+            <span *ngIf="editDtMode">
+                <select class="form-control" id="elt.stewardOrg.name" [(ngModel)]="elt.stewardOrg.name"
+                        (change)="elt.unsaved = true">
+                    <option *ngFor="let myOrg of userService.userOrgs">{{myOrg}}</option>
+                </select>
+                <i id="elt.stewardOrg.name.ok" class="fa fa-check"
+                   (click)="editDtMode = false; elt.staged = true"></i>&nbsp;&nbsp;
+                <i id="elt.stewardOrg.name.cancel" class="fa fa-times"
+                   (click)="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
+            </span>
+            <span *ngIf="!editDtMode">
+                <i title="Edit Steward" role="link" *ngIf="isAllowedModel.isAllowed(elt)"
+                   class="fa fa-edit"
+                   (click)="oldStewardName = elt.stewardOrg.name; editDtMode = true"
+                   id="dd_edit_steward"></i>
+                <ng-template #stewardTooltip>
+                    <span *ngIf="orgHelperService.orgsDetailedInfo"
+                          [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"></span>
+                </ng-template>
+                <a [ngbTooltip]="stewardTooltip" placement="right"
+                   id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>
+            </span>
         </div>
     </div>
-
-    <div class="col-md-6">
-        <h4>Topics</h4>
-        <span>Topics are <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> terms and appear here if classifications are
-            mapped
-            to <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> trees.
-        </span>
-        <ul>
-            <li *ngFor="let t of elt.flatMeshSimpleTrees">{{t}} <br></li>
-        </ul>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel text-right">Definition:</div>
+        <div class="col-sm-7" id="dd_def" itemprop="description">
+            <span *ngIf="elt.naming[0].definitionFormat !== 'html'">{{elt.naming[0].definition}}</span>
+            <span *ngIf="elt.naming[0].definitionFormat === 'html'" [innerHtml]="elt.naming[0].definition"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel text-right">Used By:</div>
+        <div class="col-sm-7" id="dd_usedBy">
+            <div *ngIf="elt.classification?.length > 0">
+                <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
+            </div>
+            <div *ngIf="!(elt.classification.length > 0)">
+                <span>None</span>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.origin">
+        <div class="col-sm-5 questionSectionLabel text-right">Origin:</div>
+        <div class="col-sm-7">
+            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="isAllowedModel.isAllowed(elt)"
+                             (modelChange)="save.emit();"></cde-inline-edit>
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.views">
+        <div class="col-sm-5 questionSectionLabel text-right">Views:</div>
+        <div class="col-sm-7" id="dd_views">{{elt.views}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5 questionSectionLabel text-right">SDC View:</div>
+        <div class="col-sm-7">
+            <a href="/sdcview/?cdeId={{elt._id}}" aria-label="SDC View" target="_blank">
+                <i class="fa fa-share-square-o"></i> SDC View</a>
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.imported">
+        <div class="col-sm-5 questionSectionLabel text-right">Last import:</div>
+        <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.created">
+        <div class="col-sm-5 questionSectionLabel text-right">Created:</div>
+        <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.updated">
+        <div class="col-sm-5 questionSectionLabel text-right">Updated:</div>
+        <div class="col-sm-7" id="dd_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+        </div>
+    </div>
+    <div class="row" *ngIf="elt.createdBy">
+        <div class="col-sm-5 questionSectionLabel text-right">Created By:</div>
+        <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}
+        </div>
     </div>
 </div>

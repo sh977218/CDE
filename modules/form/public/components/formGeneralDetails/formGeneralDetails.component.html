@@ -17,7 +17,6 @@
         <div class="col-sm-7">
             <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
                    id="isCopyrighted" title="copyrighted" (change)="save.emit();"/>
-
             <div *ngIf="elt.isCopyrighted">
                 Statement:
                 <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
@@ -42,10 +41,8 @@
     </div>
     <div class="row">
         <div class="col-sm-5 questionSectionLabel">Steward:</div>
-        <div class="col-sm-7">{{elt.stewardOrg.name}}
-        </div>
+        <div class="col-sm-7">{{elt.stewardOrg.name}}</div>
     </div>
-
     <div class="row" *ngIf="elt.imported">
         <div class="col-sm-5 questionSectionLabel">Last import:</div>
         <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}

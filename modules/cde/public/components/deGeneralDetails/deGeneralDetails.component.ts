@@ -9,7 +9,6 @@ import { OrgHelperService } from 'core/public/orgHelper.service';
     templateUrl: "./deGeneralDetails.component.html"
 })
 export class DeGeneralDetailsComponent {
-
     constructor(public isAllowedModel: IsAllowedService,
                 public userService: UserService,
                 public orgHelperService: OrgHelperService) {
@@ -17,10 +16,6 @@ export class DeGeneralDetailsComponent {
 
     @Input() elt: any;
     @Output() save = new EventEmitter();
-
     editDtMode: boolean;
 
-    saveDataElement() {
-        this.save.emit();
-    }
 }

@@ -16,11 +16,18 @@
         <a *ngIf="elt.registrationState.replacedBy"
            href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a>
     </div>
-    <div class="alert alert-info mt20" role="alert" *ngIf="elt.outdated">
+    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
+         role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this form is about to be retired.
+        <a *ngIf="elt.registrationState.replacedBy"
+           href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
+    </div>
+    <div *ngIf="elt.outdated" class="alert alert-info mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Note: </strong>Some CDEs in this form have newer version.
     </div>
-    <div class="alert alert-warning mt20" role="alert" *ngIf="missingCdes.length > 0">
+    <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         The following CDEs are part of a score but are missing from this form:
         <ul class="list-inline">
@@ -29,24 +36,11 @@
                 <span *ngIf="i < missingCdes.length">,</span></li>
         </ul>
     </div>
-    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
-         role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Warning:</strong> this form is about to be retired.
-        <a *ngIf="elt.registrationState.replacedBy"
-           href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
-    </div>
-    <div *ngIf="elt.forkOf" class="alert alert-info mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
-        <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
-    </div>
     <div style="padding:10px 0px"></div>
     <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
         <h1>
             <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
         </h1>
-
         <div class="col-md-12">
             <div class="pull-left marginTopBottom5">
                 <button *ngIf="quickBoardService.canAddElement(elt)"
@@ -173,7 +167,6 @@
                                 <cde-native-render-full [elt]="elt"></cde-native-render-full>
                             </div>
                         </div>
-
                     </ng-template>
                 </ngb-tab>
                 <ngb-tab id="description_tab">

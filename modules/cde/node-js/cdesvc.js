@@ -74,6 +74,36 @@ exports.byTinyIdVersion = function (req, res) {
     });
 };
 
+exports.draftDataElements = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    mongo_cde.draftDataElements(tinyId, function (err, dataElements) {
+        if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
+        if (!dataElements) return res.status(404).send();
+        res.send(dataElements);
+    });
+};
+
+exports.saveDraftDataElement = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    let elt = req.body;
+    if (elt.tinyId !== tinyId) return res.status(500);
+    mongo_cde.saveDraftDataElement(elt, function (err, dataElement) {
+        if (err) return res.status(500).send("ERROR - save draft data element. " + tinyId);
+        res.send(dataElement);
+    });
+};
+
+exports.deleteDraftDataElement = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    mongo_cde.deleteDraftDataElement(tinyId, function (err) {
+        if (err) return res.status(500).send("ERROR - delete draft data element. " + tinyId);
+        res.send();
+    });
+};
+
 exports.byTinyIdList = function (req, res) {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
