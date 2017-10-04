@@ -116,7 +116,7 @@ exports.updateDataElement = function (req, res) {
         if (!item) return res.status(404).send();
         authorization.allowUpdate(req.user, item, function (err) {
             if (err) return res.status(500).send("ERROR - update - cannot allow");
-            mongo_data_system.orgByName(item.stewardOrg.name, function (err,org) {
+            mongo_data_system.orgByName(item.stewardOrg.name, function (err, org) {
                 let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 &&
                     allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)
@@ -162,7 +162,7 @@ exports.viewHistory = function (req, res) {
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 exports.show = function (req, res, cb) {
-    var cdeId = req.params.id;
+    let cdeId = req.params.id;
     if (!cdeId) return res.send("No Data Element Id");
     mongo_data.byId(cdeId, function (err, cde) {
         cb(cde);
@@ -183,7 +183,7 @@ exports.save = function (req, res) {
 };
 
 var hideProprietaryCodes = function (cdes, user) {
-    var hiddenFieldMessage = 'Login to see the value.';
+    let hiddenFieldMessage = 'Login to see the value.';
     this.systemWhitelist = ["RXNORM", "HSLOC", "CDCREC", "SOP", "AHRQ", "HL7", "CDC Race and Ethnicity", "NCI", "UMLS"];
     this.censorPv = function (pvSet) {
         var toBeCensored = true;

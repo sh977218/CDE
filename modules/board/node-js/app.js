@@ -137,7 +137,7 @@ exports.init = function (app, daoManager) {
         mongo_board.boardById(req.params.boardId, function (err, board) {
             if (board) {
                 if (board.shareStatus !== "Public") {
-                    if (!req.user || !req.user.username) return res.status(500).send();
+                    if (!req.user || !req.user.username) return res.status(401).send("Not Authorized");
                     var updateLastView = false;
                     var viewers = board.users.filter(function (u) {
                         if (u.username.toLowerCase() === req.user.username.toLowerCase()) {

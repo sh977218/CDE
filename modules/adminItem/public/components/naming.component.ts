@@ -14,6 +14,7 @@ export class NamingComponent implements OnInit {
     @Input() public elt: any;
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
+
     public newNaming: any = {};
     public modalRef: NgbModalRef;
     public orgNamingTags: { id: string; text: string }[] = [];

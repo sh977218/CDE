@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild, Output, EventEmitter } from "@angular/core";
+import { Component, Input, ViewChild, Output, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -7,6 +7,7 @@ import { IActionMapping } from "angular-tree-component/dist/models/tree-options.
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
 import { AlertService } from "../../../../system/public/components/alert/alert.service";
 import { ClassificationService } from "../../../../core/public/classification.service";
+import { UserService } from "../../../../core/public/user.service";
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -42,7 +43,7 @@ export class ClassifyItemModalComponent {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private localStorageService: LocalStorageService,
-                @Inject("userResource") public userService,
+                public userService: UserService,
                 private classificationSvc: ClassificationService) {
     }
 
@@ -51,7 +52,7 @@ export class ClassifyItemModalComponent {
         this.orgClassificationsRecentlyAddView = null;
         if (this.selectedOrg) {
             this.onChangeOrg(this.selectedOrg);
-        } else this.userService.getPromise().then(() => {
+        } else this.userService.then(() => {
             if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
         });
         return this.modalService.open(this.classifyItemContent);

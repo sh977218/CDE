@@ -1,8 +1,9 @@
-import { Injectable, Inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeShareService } from "./mergeShare.service";
 import * as async from "async";
+import { IsAllowedService } from 'core/public/isAllowed.service';
 
 @Injectable()
 export class MergeFormService {
@@ -16,7 +17,7 @@ export class MergeFormService {
     constructor(private http: Http,
                 private mergeCdeService: MergeCdeService,
                 private mergeShareService: MergeShareService,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                public isAllowedModel: IsAllowedService) {
     }
 
     public saveForm(form, cb) {

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import * as JSZip from "jszip";
 import * as JXON from "jxon";
 import { saveAs } from "file-saver";
@@ -6,14 +6,14 @@ import { AlertService } from "system/public/components/alert/alert.service";
 import { ElasticService } from 'core/public/elastic.service';
 import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
 import { SharedService } from "./shared.service";
+import { UserService } from "./user.service";
 
 @Injectable()
 export class ExportService {
     constructor(private alertService: AlertService,
                 private registrationValidatorService: RegistrationValidatorService,
                 private elasticService: ElasticService,
-                @Inject("SearchSettings") private searchSettings,
-                @Inject('userResource') protected userService) {
+                protected userService: UserService) {
     }
 
     exportSearchResults(type, module, exportSettings) {
@@ -40,7 +40,8 @@ export class ExportService {
 
                 let exporters = {
                     'csv': (result) => {
-                        this.searchSettings.getPromise().then(function (settings) {
+                        this.elasticService.then(() => {
+                            let settings = this.elasticService.searchSettings;
                             let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
                             result.forEach(function (ele) {
                                 csv += SharedService.exportShared.convertToCsv(
@@ -117,7 +118,8 @@ export class ExportService {
     }
 
     quickBoardExport(elts) {
-        this.searchSettings.getPromise().then((settings) => {
+        this.elasticService.then(() => {
+            let settings = this.elasticService.searchSettings;
             let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
             elts.forEach(function (ele) {
                 result += SharedService.exportShared.convertToCsv(

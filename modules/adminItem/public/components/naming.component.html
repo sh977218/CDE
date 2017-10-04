@@ -8,7 +8,7 @@
                 <div class="row" *ngIf="canEdit">
                     <span (click)="removeNamingByIndex(i)" class="btn-default fa fa-trash-o"
                           id="removeNaming-{{i}}" title="Remove" href=""></span>
-                    <sortable-array [theArray]="elt.naming" [index]="i" (cb)="elt.unsaved = true"></sortable-array>
+                    <sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></sortable-array>
                 </div>
             </div>
             <div class="col-md-11">

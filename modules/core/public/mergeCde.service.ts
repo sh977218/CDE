@@ -1,9 +1,8 @@
-import { Injectable, Inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/observable/forkJoin";
 import { MergeShareService } from "./mergeShare.service";
-import * as ClassificationShared from "../../system/shared/classificationShared.js";
 import { ElasticService } from 'core/public/elastic.service';
 import { AlertService } from 'system/public/components/alert/alert.service';
 
@@ -12,8 +11,8 @@ export class MergeCdeService {
     constructor(private http: Http,
                 private elasticService: ElasticService,
                 private alert: AlertService,
-                private mergeShareService: MergeShareService,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                private mergeShareService: MergeShareService
+                ) {
     }
 
     public getCdeByTinyId(tinyId) {
@@ -85,33 +84,6 @@ export class MergeCdeService {
             destination[type].push(obj);
         });
     };
-
-    public approveMerge (source, destination, fields, callback) {
-        this.http.get('/de/' + source.tinyId).map(r => r.json()).subscribe(result => {
-            source = result;
-            this.http.get('/de/' + destination.tinyId).map(r => r.json()).subscribe(result => {
-                destination = result;
-                Object.keys(fields).forEach(field => {
-                    if (fields[field]) {
-                        this.transferFields(source, destination, field);
-                    }
-                });
-
-                if (fields.ids || fields.properties || fields.naming) {
-                    ClassificationShared.transferClassifications(source, destination);
-                    this.http.put("/de/" + result.tinyId, result).subscribe(() => {
-                        this.retireSource(source, destination, response => {
-                            if (callback) callback(response);
-                        });
-                    });
-                } else {
-                    this.classifyByTinyIds(source.tinyId, destination.tinyId, callback);
-                }
-            });
-
-        });
-    };
-
 
     private classifyByTinyIds (tinyIdSource, tinyIdTarget, cb) {
         this.http.post('/classification/cde/moveclassif', {

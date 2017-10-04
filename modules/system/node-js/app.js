@@ -361,9 +361,9 @@ exports.init = function (app) {
     });
 
     app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.send("Not logged in.");
+        if (!req.user) return res.send({});
         else if (!req.params.search) {
-            return res.send("search is empty.");
+            return res.send({});
         } else if (req.params.search === 'me') {
             mongo_date.userById(req.user._id, function (err, user) {
                 if (err) return res.status(500).send("ERROR retrieve user by id");
@@ -399,7 +399,7 @@ exports.init = function (app) {
             password: "umls",
             quota: 1024 * 1024 * 1024
         }, function (err, newUser) {
-            if (err) return res.status(500).end("ERROR");
+            if (err) return res.status(500).end("ERROR adding user");
             res.send(newUser.username + " added.");
         });
     });
@@ -718,6 +718,7 @@ exports.init = function (app) {
     });
 
     app.post('/user/update/searchSettings', function (req, res) {
+        if (!req.user) return;
         usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
             if (err) res.status(500).send("ERROR - cannot update search settings. ");
             else res.send("Search settings updated.");

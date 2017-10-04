@@ -1,18 +1,15 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import { SharedService } from "./shared.service";
+import { UserService } from "./user.service";
 
 @Injectable()
 export class OrgHelperService  {
     orgsDetailedInfo: any;
-    orgIsWorkingGroupOf = orgName => this.orgsDetailedInfo[orgName].workingGroupOf
-        && this.orgsDetailedInfo[orgName].workingGroupOf.trim() !== '';
     private promise: Promise<void>;
 
     constructor(private http: Http,
-                @Inject("userResource") private userService,
-                @Inject("isAllowedModel") private isAllowedModel) {
-
+                private userService: UserService) {
         this.reload();
     }
 
@@ -73,6 +70,7 @@ export class OrgHelperService  {
 
     showWorkingGroup(orgToHide) {
         if (!this.userService.user) return false;
+        if (!this.orgsDetailedInfo) return false;
         let parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
         let isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
         let userIsWorkingGroupCurator = SharedService.auth.isCuratorOf(this.userService.user, orgToHide);

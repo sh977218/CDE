@@ -1,11 +1,6 @@
-import * as authShared from "../../../system/shared/authorizationShared";
-
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
-angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
-    'OrgFactories', 'systemTemplates',
-    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'LocalStorageModule', 'ui.sortable',
-    'ui.select', 'angular-send-feedback', 'checklist-model'])
+angular.module('systemModule', ['ngSanitize', 'ngRoute', 'LocalStorageModule', 'angular-send-feedback'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -48,122 +43,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
             template: '<cde-search-preferences></cde-search-preferences>'
         });
     }])
-    .directive('sortableArray', [function () {
-        return {
-            restrict: 'AE',
-            scope: {
-                theArray: "=",
-                index: '=index',
-                cb: '&'
-            },
-            template: require('../html/systemTemplate/sortableArray.html'),
-            controller: ["$scope", function ($scope) {
-                $scope.moveUp = function () {
-                    $scope.theArray.splice($scope.index - 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveDown = function () {
-                    $scope.theArray.splice($scope.index + 1, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveTop = function () {
-                    $scope.theArray.splice(0, 0, $scope.theArray.splice($scope.index, 1)[0]);
-                    $scope.cb();
-                };
-                $scope.moveBottom = function () {
-                    $scope.theArray.push($scope.array.shift());
-                    $scope.cb();
-                };
-            }]
-        };
-    }]);
-
-angular.module('systemModule').factory('isAllowedModel', ["userResource", "OrgHelpers", function (userResource, orgHelpers) {
-    var isAllowedModel = {};
-
-    isAllowedModel.isAllowed = function (CuratedItem) {
-        if (!CuratedItem) return false;
-        if (CuratedItem.archived) {
-            return false;
-        }
-        if (userResource.user && userResource.user.siteAdmin) {
-            return true;
-        } else {
-            if (CuratedItem.registrationState.registrationStatus === "Standard" ||
-                CuratedItem.registrationState.registrationStatus === "Preferred Standard") {
-                return false;
-            }
-            if (userResource.userOrgs) {
-                return authShared.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name);
-            } else {
-                return false;
-            }
-        }
-    };
-
-    isAllowedModel.setCanCurate = function ($scope) {
-        isAllowedModel.runWhenInitialized($scope, function () {
-            $scope.canCurate = isAllowedModel.isAllowed($scope.elt);
-        });
-    };
-
-    isAllowedModel.runWhenInitialized = function ($scope, toRun) {
-        userResource.getPromise().then(toRun);
-    };
-
-    isAllowedModel.setDisplayStatusWarning = function ($scope) {
-        isAllowedModel.runWhenInitialized($scope, function () {
-            $scope.displayStatusWarning = isAllowedModel.displayStatusWarning($scope, $scope.elt);
-        });
-    };
-
-    isAllowedModel.displayStatusWarning = function ($scope, CuratedItem) {
-        if (!CuratedItem) return false;
-        if (CuratedItem.archived || userResource.user.siteAdmin) {
-            return false;
-        } else {
-            if (userResource.userOrgs) {
-                return authShared.isCuratorOf(userResource.user, CuratedItem.stewardOrg.name) && (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "fPreferred Standard");
-            } else {
-                return false;
-            }
-        }
-    };
-
-    isAllowedModel.isOrgCurator = function () {
-        return authShared.isOrgCurator(userResource.user);
-    };
-
-    isAllowedModel.isCuratorFor = function (orgName) {
-        return authShared.isCuratorOf(userResource.user, orgName);
-    };
-
-    isAllowedModel.hasRole = function (role) {
-        return authShared.hasRole(userResource.user, role);
-    };
-
-    isAllowedModel.isSiteAdmin = function () {
-        return authShared.isSiteAdmin(userResource.user);
-    };
-
-    isAllowedModel.showWorkingGroups = function (stewardClassifications) {
-        return orgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) || authShared.isSiteAdmin(userResource.user);
-    };
-
-    isAllowedModel.doesUserOwnElt = function (elt) {
-        if (elt.elementType === 'board') {
-            return userResource.user.siteAdmin || (userResource.user.username === elt.owner.username);
-        } else
-            return userResource.user &&
-                (userResource.user.siteAdmin || (userResource.user._id && (userResource.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)));
-    };
-
-    isAllowedModel.loggedIn = function () {
-        return (userResource.user && userResource.user._id) ? true : false;
-    };
-
-    return isAllowedModel;
-}]);
+;
 
 angular.module('systemModule').controller('SearchCtrl', ['$scope', function ($scope) {
     $scope.searchReloadCount = 0;
@@ -172,9 +52,6 @@ angular.module('systemModule').controller('SearchCtrl', ['$scope', function ($sc
     });
 }]);
 
-angular.module('systemModule').config(['$compileProvider', function ($compileProvider) {
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
-}]);
 
 angular.module('systemModule').config(["$provide", function ($provide) {
     var previousException;
@@ -206,28 +83,11 @@ angular.module('systemModule').config(["$provide", function ($provide) {
         }]);
 }]);
 
-angular.module('systemModule').config(["localStorageServiceProvider", function (localStorageServiceProvider) {
-    localStorageServiceProvider.setPrefix('nlmcde');
-}]);
-
-angular.module('systemModule').run(["$rootScope", "$location", function ($rootScope, $location) {
-    var dataLayer = window.dataLayer = window.dataLayer || [];
-
-    $rootScope.$on("$locationChangeSuccess", function () {
-        dataLayer.push({
-            event: 'ngRouteChange',
-            attributes: {
-                route: $location.path()
-            }
-        });
-    });
-}]);
-
 import { downgradeComponent, downgradeInjectable } from "@angular/upgrade/static";
+import { OrgHelperService } from "../../../core/public/orgHelper.service";
 
-import { ClassificationService } from "../../../core/public/classification.service";
-
-angular.module('systemModule').factory('ClassificationUtil', downgradeInjectable(ClassificationService));
+angular.module('systemModule').factory('OrgHelpers', downgradeInjectable(OrgHelperService));
+angular.module('systemModule').factory('userResource', downgradeInjectable(UserService));
 
 import { HomeComponent } from "../components/home/home.component";
 angular.module('systemModule').directive('cdeHome', downgradeComponent({
@@ -312,5 +172,6 @@ angular.module('systemModule').directive('cdePublicBoards', downgradeComponent(
     {component: PublicBoardsComponent, inputs: [], outputs: []}));
 
 import {LatestCommentsComponent} from "../../../discuss/components/latestComments/latestComments.component";
+import { UserService } from "../../../core/public/user.service";
 angular.module('systemModule').directive('cdeLatestComments', downgradeComponent(
     {component: LatestCommentsComponent, inputs: [], outputs: []}));
