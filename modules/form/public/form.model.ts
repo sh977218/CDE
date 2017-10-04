@@ -86,6 +86,7 @@ export class FormSection implements FormElement {
     _id: ObjectId;
     edit: boolean = false;
     elementType = 'section';
+    expanded = true; // Calculated, used for View TreeComponent
     instructions: Instruction;
     formElements = [];
     label = "";
