@@ -1,6 +1,7 @@
 import { Component, Inject, Input, OnInit } from "@angular/core";
 import { ExportService } from "../../../../core/public/export.service";
 import { OrgHelperService } from "../../../../core/public/orgHelper.service";
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: "cde-cde-status-report",
@@ -12,7 +13,7 @@ export class CdeStatusReportComponent implements OnInit {
 
     constructor(private exportSvc: ExportService,
                 private orgSvc: OrgHelperService,
-                @Inject("userResource") private userSvc) {}
+                private userSvc: UserService) {}
 
 
     gridOptionsReport = {
@@ -45,7 +46,7 @@ export class CdeStatusReportComponent implements OnInit {
         };
 
         this.orgSvc.then(() => {
-            this.userSvc.getPromise().then(() => {
+            this.userSvc.then(() => {
                 this.exportSvc.exportSearchResults('validationRules', 'cde', obj);
             });
         });

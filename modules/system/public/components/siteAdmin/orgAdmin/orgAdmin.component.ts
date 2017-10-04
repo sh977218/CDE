@@ -1,10 +1,11 @@
 import { Http } from "@angular/http";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
 
 import { Observable } from "rxjs/Rx";
-import { AlertService } from "../../alert/alert.service";
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 @Component({
     selector: "cde-org-admin",
@@ -19,8 +20,7 @@ export class OrgAdminComponent implements OnInit {
     constructor(
         private http: Http,
         private alert: AlertService,
-        @Inject("isAllowedModel") public isAllowedModel
-    ) {}
+        public isAllowedModel: IsAllowedService) {}
 
     ngOnInit() {
         this.getAdmins();
@@ -34,7 +34,7 @@ export class OrgAdminComponent implements OnInit {
         );
     formatter = (result: any) => result.username;
 
-    setOrgs (r)  {
+    setOrgs (r) {
         this.orgAdmins = r.orgs;
         if (this.orgAdmins && this.orgAdmins.length === 1) this.newAdmin.orgName = this.orgAdmins[0].name;
     }
@@ -66,6 +66,6 @@ export class OrgAdminComponent implements OnInit {
             this.getAdmins();
         }, () => this.alert.addAlert("danger", "There was an issue adding this administrator."));
         this.newAdmin.username = "";
-    };
+    }
 
 }

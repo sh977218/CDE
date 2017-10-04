@@ -1,6 +1,9 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { ElasticQueryResponse } from 'core/public/models.model';
+import { UserService } from "./user.service";
+import { LocalStorageService } from "angular-2-local-storage";
+import * as regStatusShared from "system/shared/regStatusShared";
 
 @Injectable()
 export class ElasticService {
@@ -14,15 +17,22 @@ export class ElasticService {
     };
     searchToken = "id" + Math.random().toString(16).slice(2);
 
+    searchSettings: any;
+    private promise: Promise<void>;
+
     constructor(public http: Http,
-                @Inject('SearchSettings') protected searchSettingsService) {}
+                private userService: UserService,
+                private localStorageService: LocalStorageService) {
+
+        this.loadSearchSettings();
+    }
 
     buildElasticQuerySettings(queryParams) {
         let regStatuses = queryParams.regStatuses;
         if (!regStatuses) regStatuses = [];
 
         if (regStatuses.length === 0) {
-            regStatuses = this.searchSettingsService.getUserDefaultStatuses();
+            regStatuses = this.getUserDefaultStatuses();
         }
 
         return {
@@ -37,7 +47,7 @@ export class ElasticService {
             , meshTree: queryParams.meshTree
             , selectedStatuses: regStatuses || []
             , selectedDatatypes: queryParams.datatypes || []
-            , visibleStatuses: this.searchSettingsService.getUserDefaultStatuses()
+            , visibleStatuses: this.getUserDefaultStatuses()
             , searchToken: this.searchToken
         };
     }
@@ -140,4 +150,78 @@ export class ElasticService {
             }
         );
     }
+
+    saveConfiguration (settings) {
+        this.searchSettings = JSON.parse(JSON.stringify(settings));
+        delete settings.includeRetired;
+        this.localStorageService.set("SearchSettings", settings);
+        if (this.userService.user.username) this.http.post("/user/update/searchSettings", settings).subscribe();
+    }
+
+    getDefault () {
+        return {
+            "version": 20160329
+            , "defaultSearchView": "summary"
+            , "lowestRegistrationStatus": "Qualified"
+            , "tableViewFields": {
+                "name": true,
+                "naming": false,
+                "questionTexts": true,
+                "permissibleValues": true,
+                "nbOfPVs": true,
+                "uom": false,
+                "stewardOrg": true,
+                "usedBy": true,
+                "registrationStatus": true,
+                "administrativeStatus": false,
+                "ids": true,
+                "source": false,
+                "updated": false,
+                "numQuestions": true,
+                "tinyId": false
+            }
+        };
+    };
+
+    getDefaultSearchView () {
+        return this.searchSettings.defaultSearchView;
+    };
+
+    then (cb) {
+        return this.promise.then(cb);
+    };
+
+    getUserDefaultStatuses () {
+        let overThreshold = false;
+        let result = regStatusShared.orderedList.filter(status => {
+            if (overThreshold) return false;
+            overThreshold = this.searchSettings.lowestRegistrationStatus === status;
+            return true;
+        });
+        if (this.searchSettings.includeRetired) result.push("Retired");
+        return result;
+    };
+
+    loadSearchSettings () {
+        this.promise = new Promise<void>(resolve => {
+            this.searchSettings = this.localStorageService.get("SearchSettings");
+            if (!this.searchSettings) this.searchSettings = this.getDefault();
+
+            this.userService.then(() => {
+                let user = this.userService.user;
+                if (user.username) {
+                    if (!user.searchSettings) {
+                        user.searchSettings = this.getDefault();
+                    }
+                    this.searchSettings = user.searchSettings;
+                }
+                if (this.searchSettings.version !== this.getDefault().version) {
+                    this.searchSettings = this.getDefault();
+                }
+                resolve();
+            });
+        });
+    }
+
+
 }

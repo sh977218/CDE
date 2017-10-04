@@ -1,7 +1,8 @@
 import { Http } from "@angular/http";
-import { Component, DoCheck, Inject, Input, ViewChild, OnChanges, } from "@angular/core";
+import { Component, DoCheck, Input, ViewChild, OnChanges, } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { IsAllowedService } from 'core/public/isAllowed.service';
 
 @Component({
     selector: "cde-derivation-rules",
@@ -25,7 +26,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 public quickBoardService: QuickBoardListService,
-                @Inject("isAllowedModel") private isAllowedModel) {
+                public isAllowedModel: IsAllowedService) {
     }
 
     ngOnChanges(changes) {
@@ -83,15 +84,14 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             inputs: []
         };
         this.modalRef = this.modalService.open(this.newScoreContent, {size: "lg"});
-        this.modalRef.result.then(result => {
+        this.modalRef.result.then(() => {
             this.newDerivationRule = {
                 name: "",
                 ruleType: "score",
                 formula: "sumAll",
                 inputs: []
             };
-        }, () => {
-        });
+        }, () => {});
     };
 
     addNewScore() {

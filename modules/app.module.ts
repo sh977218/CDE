@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
+import { ErrorHandler, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
@@ -21,7 +21,10 @@ import { SystemModule } from 'system/public/system.module';
     declarations: [
         CdeAppComponent
     ],
-    providers: [QuickBoardListService],
+    providers: [
+        QuickBoardListService,
+        // {provide: ErrorHandler, useClass: FrontExceptionHandler}
+    ],
     imports: [
         BrowserModule,
         CommonModule,

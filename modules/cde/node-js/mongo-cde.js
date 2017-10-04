@@ -445,11 +445,12 @@ exports.derivationOutputs = function (inputTinyId, cb) {
     DataElement.find({archived: false, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
-var correctBoardPinsForCde = function (doc, cb) {
-    mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
-        if (err) throw err;
-        if (cb) cb();
-    });
+let correctBoardPinsForCde = function (doc, cb) {
+    if (doc)
+        mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
+            if (err) throw err;
+            if (cb) cb();
+        });
 };
 
 schemas.dataElementSchema.post('save', function (doc) {

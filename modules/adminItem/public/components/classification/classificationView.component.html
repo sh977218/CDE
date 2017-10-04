@@ -1,5 +1,5 @@
 <div *ngFor="let classification of elt.classification;let i = index">
-    <div *ngIf="isAllowedModel.showWorkingGroups(classification)" class="floatLeft boxed-div"
+    <div *ngIf="showWorkingGroups(classification)" class="floatLeft boxed-div"
          id="classificationOrg-{{classification.stewardOrg.name}}">
         <h4>{{classification.stewardOrg.name}}</h4>
         <hr/>

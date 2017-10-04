@@ -1,9 +1,8 @@
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
 import * as _ from "lodash";
 import * as deValidator from "../../shared/deValidator.js";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
 
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
@@ -14,6 +13,8 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import { IsAllowedService } from 'core/public/isAllowed.service';
+import { AlertService } from 'system/public/components/alert/alert.service';
 
 
 @Component({
@@ -84,7 +85,7 @@ export class PermissibleValueComponent {
 
     constructor(public modalService: NgbModal,
                 public http: Http,
-                @Inject("isAllowedModel") public isAllowedModel,
+                public isAllowedModel: IsAllowedService,
                 private alert: AlertService) {
     }
 

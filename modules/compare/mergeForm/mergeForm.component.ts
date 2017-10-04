@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Inject, Input, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { MergeFormService } from 'core/public/mergeForm.service';
+import { IsAllowedService } from 'core/public/isAllowed.service';
 
 @Component({
     selector: "cde-merge-form",
@@ -42,7 +43,7 @@ export class MergeFormComponent {
 
     constructor(private alert: AlertService,
                 public mergeFormService: MergeFormService,
-                @Inject("isAllowedModel") private isAllowedModel,
+                public isAllowedModel: IsAllowedService,
                 public modalService: NgbModal) {
     }
 

@@ -1,7 +1,8 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { AlertService } from "../alert/alert.service";
 import { Http } from "@angular/http";
 import { DomSanitizer } from "@angular/platform-browser";
+import { UserService } from "../../../../core/public/user.service";
 
 @Component({
     selector: "cde-embed",
@@ -10,7 +11,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 
 export class EmbedComponent implements OnInit {
 
-    constructor(@Inject('userResource') protected userService,
+    constructor(protected userService: UserService,
                 private http: Http,
                 private alert: AlertService,
                 private sanitizer: DomSanitizer ) {}
@@ -20,7 +21,6 @@ export class EmbedComponent implements OnInit {
     selectedOrg: any;
     showDelete: boolean;
     previewOn: boolean;
-    createMode: boolean;
     defaultCommon: any = {
         lowestRegistrationStatus: 'Qualified',
         linkedForms: {},
@@ -36,7 +36,7 @@ export class EmbedComponent implements OnInit {
     }
 
     reloadEmbeds ()  {
-        this.userService.getPromise().then(() => {
+        this.userService.then(() => {
             this.userService.userOrgs.forEach(o => {
                 this.http.get('/embeds/' + encodeURIComponent(o)).map(r => r.json()).subscribe(response => this.embeds[o] = response);
             });
@@ -98,10 +98,6 @@ export class EmbedComponent implements OnInit {
         if (!this.selection.cde.otherNames) this.selection.cde.otherNames = [];
         this.selection.cde.otherNames.push({contextName: "", label: ""});
     }
-    addCdeProperty () {
-        if (!this.selection.cde.properties) this.selection.cde.properties = [];
-        this.selection.cde.properties.push({key: "", label: "", limit: 50});
-    }
     addCdeClassification () {
         if (!this.selection.cde.classifications) this.selection.cde.classifications = [];
         this.selection.cde.classifications.push({under: ""});
@@ -121,18 +117,6 @@ export class EmbedComponent implements OnInit {
         } else {
             this.selection.cde = null;
         }
-    }
-
-    enableForm (b) {
-        if (b) {
-            this.selection.form = {lowestRegistrationStatus: 'Qualified'};
-        } else {
-            this.selection.form = null;
-        }
-    }
-
-    cancelEmbed () {
-        this.createMode = false;
     }
 
 }
