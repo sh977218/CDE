@@ -20,7 +20,7 @@ function loopFormElements(f, cb) {
                 else {
                     let systemForm = form.toObject();
                     fe.inForm.form.ids = systemForm.ids;
-                    doneOne();
+                    loopFormElements(fe, doneOne);
                 }
             });
         } else {
