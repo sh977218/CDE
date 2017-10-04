@@ -4,7 +4,7 @@ const mongo_form = require('../modules/form/node-js/mongo-form');
 const FormModal = mongo_form.Form;
 
 let count = 0;
-let cursor = FormModal.find({}).cursor();
+let cursor = FormModal.find({archived: false}).cursor();
 
 function loopFormElements(f, cb) {
     if (!f) return cb();
@@ -52,15 +52,7 @@ cursor.eachAsync(function (form) {
             });
         });
     });
-}).then(() => Promise.resolve());
-
-cursor.on('close', function () {
+}).then(err => {
+    if (err) throw err;
     console.log("Finished all. count: " + count);
-    process.exit(1);
 });
-cursor.on('error', function (err) {
-    console.log("error: " + err);
-    process.exit(1);
-});
-
-
