@@ -52,7 +52,7 @@ cursor.eachAsync(function (form) {
             });
         });
     });
-});
+}).then(() => Promise.resolve());
 
 cursor.on('close', function () {
     console.log("Finished all. count: " + count);
