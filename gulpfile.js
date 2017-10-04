@@ -55,14 +55,6 @@ gulp.task('thirdParty', ['npm', 'bower'], function () {
         .pipe(gulp.dest('./modules/static/')));
     streamArr.push(gulp.src('./node_modules/intl/dist/Intl.min.js')
         .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/feedback/stable/2.0/html2canvas.min.js')
-        .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/feedback/stable/2.0/feedback.min.js')
-        .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/feedback/stable/2.0/feedback.min.css')
-        .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/feedback/stable/2.0/icons.png')
-        .pipe(gulp.dest('./modules/static/')));
 
     return merge(streamArr);
 });
