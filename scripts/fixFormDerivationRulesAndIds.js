@@ -4,7 +4,7 @@ const mongo_form = require('../modules/form/node-js/mongo-form');
 const FormModal = mongo_form.Form;
 
 let count = 0;
-let cursor = FormModal.find({archived: false}).cursor();
+let cursor = FormModal.find({}).cursor();
 
 function loopFormElements(f, cb) {
     if (!f) return cb();
@@ -48,11 +48,13 @@ cursor.eachAsync(function (form) {
                 if (err) throw err;
                 count++;
                 console.log("count: " + count);
-                resolve();
+                if (count % 1000 === 0) setTimeout(resolve, 5000);
+                else resolve();
             });
         });
     });
 }).then(err => {
     if (err) throw err;
     console.log("Finished all. count: " + count);
+    process.exit(1);
 });
