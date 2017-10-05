@@ -155,7 +155,10 @@ exports.updateDataElement = function (req, res) {
                 deValidator.wipeDatatype(elt);
                 mongo_cde.update(elt, req.user, function (err, response) {
                     if (err) return res.status(500).send("ERROR - cannot update de");
-                    res.send(response);
+                    mongo_cde.deleteDraftDataElement(elt.tinyId, err => {
+                        if (err) return res.status(500).send("ERROR - cannot delete draft. ");
+                        res.send(response);
+                    });
                 });
             });
         });

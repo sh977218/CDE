@@ -12,7 +12,7 @@ const async = require('async');
 const CronJob = require('cron').CronJob;
 const elastic = require('./elastic');
 const deValidator = require('../shared/deValidator');
-const draftSchema = require('../../form/node-js/schemas').draftSchema;
+const draftSchema = require('../../cde/node-js/schemas').draftSchema;
 
 exports.type = "cde";
 exports.name = "CDEs";
@@ -21,11 +21,11 @@ var conn = connHelper.establishConnection(config.database.appData);
 
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-var Draft = conn.model('Draft', draftSchema);
+var DataElementDraft = conn.model('DataElementDraft', draftSchema);
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 exports.DataElement = DataElement;
 exports.User = User;
-exports.Draft = Draft;
+exports.DataElementDraft = DataElementDraft;
 exports.elastic = elastic;
 
 var mongo_data = this;
@@ -91,18 +91,17 @@ exports.byTinyIdList = function (tinyIdList, callback) {
 exports.draftDataElements = function (tinyId, cb) {
     let cond = {
         tinyId: tinyId,
-        archived: false,
-        elementType: 'cde'
+        archived: false
     };
-    Draft.find(cond, cb);
+    DataElementDraft.find(cond, cb);
 };
 exports.saveDraftDataElement = function (elt, cb) {
     delete elt.__v;
-    Draft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+    DataElementDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
 };
 
 exports.deleteDraftDataElement = function (tinyId, cb) {
-    Draft.remove({tinyId: tinyId}, cb);
+    DataElementDraft.remove({tinyId: tinyId}, cb);
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */

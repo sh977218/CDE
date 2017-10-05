@@ -4,6 +4,7 @@ db.dataelements.remove({});
 db.orgs.remove({});
 db.forms.remove({});
 db.drafts.remove({});
+db.dataelementdrafts.remove({});
 db.pinningBoards.remove({});
 db.messages.remove({});
 db.sessions.remove({});

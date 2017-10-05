@@ -22,7 +22,7 @@ schemas.formSchema.pre('save', function (next) {
 });
 
 var Form = conn.model('Form', schemas.formSchema);
-var Draft = conn.model('Draft', schemas.draftSchema);
+var Draft = conn.model('FormDraft', schemas.draftSchema);
 exports.Form = Form;
 exports.Draft = Draft;
 
