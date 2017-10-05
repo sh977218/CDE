@@ -164,5 +164,5 @@ exports.draftSchema.virtual('isDraft').get(function () {
     return true;
 });
 exports.formSchema.set('collection', 'forms');
-exports.draftSchema.set('collection', 'drafts');
+exports.draftSchema.set('collection', 'formdrafts');
 
