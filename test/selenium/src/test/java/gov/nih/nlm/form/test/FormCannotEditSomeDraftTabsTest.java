@@ -4,9 +4,9 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class LoginCannotEditSomeTabsTest extends NlmCdeBaseTest {
+public class FormCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
     @Test
-    public void loginCannotEditSomeTabs() {
+    public void formCannotEditSomeDraftTabs() {
         String formName = "Draft Form Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
