@@ -16,8 +16,6 @@
     "selectize": "~0.8.5",
     "bootstrap": "3.3.6",
     "bootstrap-css-only": "3.3.6",
-    "angular-send-feedback": "1.2.1",
-    "html2canvas": "*",
     "jszip": "2.5.0",
     "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5",
     "async": "2.0.0-rc.5",
