@@ -236,7 +236,7 @@ export class FormDescriptionComponent implements OnChanges {
         }, () => {
         });
     }
-    
+
     pasteSection() {
         let fe = this.localStorageService.get("sectionCopied");
         this.addIndex(this.toolDropTo.parent.data.formElements, fe, this.toolDropTo.index++);

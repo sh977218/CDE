@@ -7,4 +7,3 @@ import "./system/shared/classificationShared";
 import "./system/shared/regStatusShared";
 import "./system/shared/authorizationShared";
 import "./cde/public/assets/js/diff_match_patch";
-import "./system/public/js/controllers/FeedbackBtnCtrl";
