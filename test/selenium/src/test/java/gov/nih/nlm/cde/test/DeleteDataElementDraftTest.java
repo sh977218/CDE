@@ -9,7 +9,7 @@ public class DeleteDataElementDraftTest extends NlmCdeBaseTest {
     public void deleteDataElementDraft() {
         String cdeName = "Cde Delete Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToFormByName(cdeName);
+        goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
         addNewName("draft designation", "draft definition", new String[]{"Health"});
         textPresent("Draft");
