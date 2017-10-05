@@ -7,28 +7,8 @@
     <div class="row">
         <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
         <div class="col-sm-7" id="dd_general_steward">
-            <span *ngIf="editDtMode">
-                <select class="form-control" id="elt.stewardOrg.name" [(ngModel)]="elt.stewardOrg.name"
-                        (change)="elt.unsaved = true">
-                    <option *ngFor="let myOrg of userService.userOrgs">{{myOrg}}</option>
-                </select>
-                <i id="elt.stewardOrg.name.ok" class="fa fa-check"
-                   (click)="editDtMode = false; elt.staged = true"></i>&nbsp;&nbsp;
-                <i id="elt.stewardOrg.name.cancel" class="fa fa-times"
-                   (click)="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
-            </span>
-            <span *ngIf="!editDtMode">
-                <i title="Edit Steward" role="link" *ngIf="isAllowedModel.isAllowed(elt)"
-                   class="fa fa-edit"
-                   (click)="oldStewardName = elt.stewardOrg.name; editDtMode = true"
-                   id="dd_edit_steward"></i>
-                <ng-template #stewardTooltip>
-                    <span *ngIf="orgHelperService.orgsDetailedInfo"
-                          [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"></span>
-                </ng-template>
-                <a [ngbTooltip]="stewardTooltip" placement="right"
-                   id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>
-            </span>
+            <cde-inline-edit [(model)]="elt.stewardOrg.name" [inputType]="'select'" [(selectOptions)]="userOrgs"
+                             (modelChange)="save.emit();" [isAllowed]="canEdit"></cde-inline-edit>
         </div>
     </div>
     <div class="row">

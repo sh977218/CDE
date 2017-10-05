@@ -93,7 +93,7 @@
                         </ng-template>
                         <ng-template ngbTabContent>
                             <div class="col-md-6">
-                                <cde-de-general-details [elt]="elt" (save)="saveDataElement()">
+                                <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit" (save)="saveDraft();">
                                 </cde-de-general-details>
                                 <div class="row">
                                     <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
@@ -124,7 +124,8 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-permissible-value [elt]="elt"></cde-permissible-value>
+                            <cde-permissible-value [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                            </cde-permissible-value>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="naming_tab">
@@ -154,7 +155,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-concepts [elt]="elt"></cde-concepts>
+                            <cde-concepts [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-concepts>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="referenceDocuments_tab">
@@ -164,7 +165,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                            <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                             </cde-reference-document>
                         </ng-template>
                     </ngb-tab>
@@ -175,7 +176,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                            <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
 
                             </cde-properties>
                         </ng-template>
@@ -187,7 +188,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();;">
 
                             </cde-identifiers>
                         </ng-template>

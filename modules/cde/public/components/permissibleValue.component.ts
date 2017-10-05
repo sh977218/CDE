@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
 import * as _ from "lodash";
@@ -24,6 +24,8 @@ import { AlertService } from 'system/public/components/alert/alert.service';
 })
 export class PermissibleValueComponent {
     @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
+    @Input() canEdit;
+    @Output() onEltChange = new EventEmitter();
 
     _elt: any;
 
@@ -84,8 +86,8 @@ export class PermissibleValueComponent {
 
 
     constructor(public modalService: NgbModal,
-                public http: Http,
                 public isAllowedModel: IsAllowedService,
+                public http: Http,
                 private alert: AlertService) {
     }
 
@@ -108,7 +110,7 @@ export class PermissibleValueComponent {
         this.elt.valueDomain.permissibleValues.splice(index, 1);
         this.runManualValidation();
         this.initSrcOptions();
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     addNewPermissibleValue() {
@@ -125,7 +127,7 @@ export class PermissibleValueComponent {
     }
 
     sortPermissibleValue() {
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     };
 
     dupCodesForSameSrc(src) {
@@ -271,7 +273,7 @@ export class PermissibleValueComponent {
 
     canLinkPvFunc() {
         let dec = this.elt.dataElementConcept;
-        this.canLinkPv = (this.isAllowedModel.isAllowed(this.elt) && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
+        this.canLinkPv = (this.canEdit && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
     }
 
     loadValueSet() {
@@ -300,7 +302,7 @@ export class PermissibleValueComponent {
 
     checkVsacId() {
         this.loadValueSet();
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
         this.editMode = false;
     };
 
@@ -314,7 +316,7 @@ export class PermissibleValueComponent {
     };
 
     stageElt() {
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     addAllVsac() {
@@ -330,7 +332,7 @@ export class PermissibleValueComponent {
     changedDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatype = data.value;
         deValidator.fixDatatype(this.elt);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
 }

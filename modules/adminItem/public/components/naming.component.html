@@ -31,7 +31,7 @@
                     <div class="col-xs-2 text-right text_label">Tags:</div>
                     <div class="col-xs-10" id="tags_{{i}}">
                         <span *ngIf="loaded">
-                            <select2 [data]="orgNamingTags" [value]="name.tags" [options]="options"
+                            <select2 [data]="orgNamingTags" [(value)]="name.tags" [options]="options"
                                      [disabled]="!canEdit" width="100%"
                                      (valueChanged)="changedTags(name,$event)">
                             </select2>

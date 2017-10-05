@@ -42,12 +42,8 @@ export class InlineEditComponent implements OnInit {
         this.value = _.cloneDeep(this.model);
     }
 
-    edit() {
-        this.editMode = true;
-    }
-
     discard() {
-        this.value = _.cloneDeep(this.model);
+        this.model = this.value;
         this.editMode = false;
     }
 

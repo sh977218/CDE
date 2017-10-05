@@ -47,23 +47,15 @@ export class DataElementViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let cdeId = this.routeParams.cdeId;
-        let url = "/de/" + this.routeParams.tinyId;
-        if (cdeId) url = "/deById/" + cdeId;
-        this.http.get(url).map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.http.get("/comments/eltId/" + this.elt.tinyId)
-                    .map(res => res.json()).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
-                );
-                this.userService.then(() => {
-                    this.setDisplayStatusWarning();
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                });
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
-        );
+        this.loadDataElement(dataElement => {
+            this.loadComments(dataElement, null);
+            this.userService.then(() => {
+                let user = this.userService.user;
+                if (user && user.username)
+                    this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+            });
+        });
     }
 
     onLocationChange(event, oldUrl, elt) {
@@ -99,8 +91,16 @@ export class DataElementViewComponent implements OnInit {
         );
     }
 
-    setDisplayStatusWarning () {
-        let assignValue  = () => {
+    loadComments(form, cb) {
+        this.http.get("/comments/eltId/" + form.tinyId)
+            .map(res => res.json()).subscribe(res => {
+            this.hasComments = res && (res.length > 0);
+            if (cb) cb();
+        }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
+    }
+
+    setDisplayStatusWarning() {
+        let assignValue = () => {
             if (!this.elt) return false;
             if (this.elt.archived || this.userService.user.siteAdmin) {
                 return false;

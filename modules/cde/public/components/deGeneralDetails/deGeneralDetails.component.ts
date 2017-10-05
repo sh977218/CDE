@@ -9,13 +9,14 @@ import { OrgHelperService } from 'core/public/orgHelper.service';
     templateUrl: "./deGeneralDetails.component.html"
 })
 export class DeGeneralDetailsComponent {
-    constructor(public isAllowedModel: IsAllowedService,
-                public userService: UserService,
-                public orgHelperService: OrgHelperService) {
-    }
-
     @Input() elt: any;
+    @Input() canEdit;
     @Output() save = new EventEmitter();
-    editDtMode: boolean;
+    userOrgs = [];
 
+
+    constructor(public userService: UserService,
+                public orgHelperService: OrgHelperService) {
+        this.userService.then(() => this.userOrgs = this.userService.userOrgs);
+    }
 }

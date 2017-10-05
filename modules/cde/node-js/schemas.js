@@ -134,3 +134,7 @@ schemas.cdeAuditSchema = new mongoose.Schema({
 
 schemas.cdeAuditSchema.set('collection', 'cdeAudit');
 module.exports = schemas;
+exports.draftSchema.virtual('isDraft').get(function () {
+    return true;
+});
+exports.draftSchema.set('collection', 'dedrafts');

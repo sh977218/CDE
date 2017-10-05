@@ -10,7 +10,7 @@
                             <th>Code Name</th>
                             <th>Code System</th>
                             <th>Code ID</th>
-                            <th id="conceptActions" *ngIf="isAllowedModel.isAllowed(elt)"></th>
+                            <th id="conceptActions" *ngIf="canEdit"></th>
                         </tr>
                         <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                             itemtype="http://schema.org/MedicalCode">
@@ -19,7 +19,7 @@
                             </td>
                             <td itemprop="codeSystem">{{concept.origin}}</td>
                             <td itemprop="codeValue">{{concept.originId}}</td>
-                            <td headers="actions" *ngIf="isAllowedModel.isAllowed(elt)">
+                            <td headers="actions" *ngIf="canEdit">
                                 <span id="remove{{config.type}}-{{$index}}" class="btn-default fa fa-trash-o"
                                       (click)="removeConcept(config.type, $index)" title="Remove" href></span>
                                 <sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <hr/>
-            <button class="btn btn-small btn-default" *ngIf="isAllowedModel.isAllowed(elt)" id="openNewConceptModalBtn"
+            <button class="btn btn-small btn-default" *ngIf="canEdit" id="openNewConceptModalBtn"
                     value="add" (click)="openNewConceptModal()">
                 <i class="fa fa-plus"> </i> Add Concept
             </button>
