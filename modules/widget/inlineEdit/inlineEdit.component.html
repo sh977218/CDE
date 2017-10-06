@@ -1,9 +1,9 @@
 <span>
     <span *ngIf="!editMode">
-        <i *ngIf="isAllowed" title="Edit" role="link" class="fa fa-edit" (click)="editMode = true;"></i>
+        <i *ngIf="isAllowed" title="Edit" role="link" class="fa fa-edit" (click)="edit()"></i>
         <span *ngIf="!linkSource">
-            <span *ngIf="model">{{model}}</span>
-            <span *ngIf="!model">N/A</span>
+            <span *ngIf="value">{{value}}</span>
+            <span *ngIf="!value">N/A</span>
         </span>
         <a *ngIf="linkSource" href="{{linkSource}}" target="_blank">{{value}}</a>
     </span>
