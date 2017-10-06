@@ -18,7 +18,7 @@
                     <dt>Input CDEs:</dt>
                     <dd id="dd_derRule_input_{{i}}">
                         <a *ngFor="let input of getViewCdes(derRule)"
-                           routerLink="/deView" queryParams="{tinyId: input.tinyId}">
+                           routerLink="/deView" [queryParams]="{tinyId: input.tinyId}">
                             {{input.naming[0].designation}} {{i === elt.derivationRules.length -1?'':'- '}}
                         </a>
                         <span *ngIf="derRule.fullCdes && derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
@@ -43,7 +43,7 @@
             <tr *ngFor="let derOut of elt.derivationOutputs">
                 <td class="col-xs-3">{{derOut.ruleName}}</td>
                 <td class="col-xs-9">
-                    <a routerLink="/deView" queryParams="{tinyId: derOut.cde.tinyId}">{{derOut.cde.naming[0].designation}}</a>
+                    <a routerLink="/deView" [queryParams]="{tinyId: derOut.cde.tinyId}">{{derOut.cde.naming[0].designation}}</a>
                 </td>
             </tr>
         </table>

@@ -12,7 +12,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'cde-form-search',
-    templateUrl: '../../../../search/searchBase.component.html'
+    templateUrl: '../../../../search/searchBase.component.html',
+    styles: [`            
+        .browseLink {
+            color: #337ab7;
+        }
+        
+        .browseLink:hover {
+            color: #23527c;
+            text-decoration: underline;
+        }
+    `]
 })
 export class FormSearchComponent extends SearchBaseComponent {
     @Input() addMode: string = undefined;

@@ -8,7 +8,7 @@
             </thead>
             <tr *ngFor="let cde of cdes">
                 <td>
-                    <a routerLink="/deView" queryParams="{tinyId: cde.tinyId}" target="_blank">{{cde.cdeName}}</a>
+                    <a href="/deView?tinyId{{cde.tinyId}}" target="_blank">{{cde.cdeName}}</a>
                 </td>
                 <td>{{cde.tinyId}}</td>
                 <td *ngFor="let key of cde.keys">{{cde[key]}}</td>
