@@ -57,7 +57,6 @@ gulp.task('thirdParty', ['npm', 'bower'], function () {
         .pipe(gulp.dest('./modules/static/')));
 
     return merge(streamArr);
-
 });
 
 gulp.task('lhc-wiredep', ['bower'], function () {

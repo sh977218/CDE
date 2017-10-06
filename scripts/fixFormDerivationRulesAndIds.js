@@ -20,7 +20,7 @@ function loopFormElements(f, cb) {
                 else {
                     let systemForm = form.toObject();
                     fe.inForm.form.ids = systemForm.ids;
-                    doneOne();
+                    loopFormElements(fe, doneOne);
                 }
             });
         } else {
@@ -48,19 +48,13 @@ cursor.eachAsync(function (form) {
                 if (err) throw err;
                 count++;
                 console.log("count: " + count);
-                resolve();
+                if (count % 1000 === 0) setTimeout(resolve, 5000);
+                else resolve();
             });
         });
     });
-});
-
-cursor.on('close', function () {
+}).then(err => {
+    if (err) throw err;
     console.log("Finished all. count: " + count);
     process.exit(1);
 });
-cursor.on('error', function (err) {
-    console.log("error: " + err);
-    process.exit(1);
-});
-
-
