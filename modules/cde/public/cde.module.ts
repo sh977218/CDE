@@ -37,7 +37,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 const appRoutes: Routes = [
     {path: 'cde/search', component: CdeSearchComponent},
-    {path: 'cde', component: CdeSearchComponent},
+    // {path: 'cde', component: CdeSearchComponent},
+    {path: 'createCde', component: CreateDataElementComponent},
+    {path: 'deView', component: DataElementViewComponent},
 ];
 
 @NgModule({
@@ -53,9 +55,7 @@ const appRoutes: Routes = [
         DiscussModule,
         SearchModule,
         WidgetModule,
-        RouterModule.forChild(
-            appRoutes
-        )
+        RouterModule.forChild(appRoutes)
     ],
     declarations: [
         BoardCdeSummaryListComponent,

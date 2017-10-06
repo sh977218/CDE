@@ -20,12 +20,12 @@
                 <div class="row" *ngIf="canEdit">
                     <span *ngIf="id.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removeIdentifierByIndex(i)"
-                              id="confirmRemoveIdentifier-{{i}}" title="OK" href=""></span>
+                              id="confirmRemoveIdentifier-{{i}}" title="OK"></span>
                         <span class="btn-default fa fa-times" (click)="id.edit = false"
-                              id="cancelRemoveIdentifier-{{i}}" title="Cancel" href=""></span>
+                              id="cancelRemoveIdentifier-{{i}}" title="Cancel"></span>
                     </span>
                     <span *ngIf="!id.edit" class="btn-default fa fa-trash-o" id="removeIdentifier-{{i}}"
-                          (click)="id.edit = true" title="Remove" href=""></span>
+                          (click)="id.edit = true" title="Remove"></span>
                 </div>
             </div>
             <div class="col-md-11">

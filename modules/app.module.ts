@@ -46,10 +46,7 @@ const appRoutes: Routes = [
         FormModule,
         SystemModule,
         QuickBoardModule,
-        RouterModule.forRoot(
-            appRoutes,
-            { enableTracing: true } // <-- debugging purposes only
-        )
+        RouterModule.forRoot(appRoutes)
     ],
     exports: [RouterModule],
     bootstrap: [CdeAppComponent]

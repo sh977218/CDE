@@ -52,9 +52,10 @@ import { OrgClassificationManagementComponent } from 'system/public/components/s
 import { TreeModule } from 'angular-tree-component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { RouterModule, Routes } from "@angular/router";
-import { LatestCommentsComponent } from "../../discuss/components/latestComments/latestComments.component";
+import { LatestCommentsComponent } from "discuss/components/latestComments/latestComments.component";
 
 const appRoutes: Routes = [
+    {path: '', redirectTo: "/home", pathMatch: 'full'},
     {path: 'home', component: HomeComponent},
     {path: 'api', component: SwaggerComponent},
     {path: 'login', component: LoginComponent},
@@ -85,9 +86,7 @@ const appRoutes: Routes = [
         SearchModule,
         WidgetModule,
         DiscussModule,
-        RouterModule.forChild(
-            appRoutes
-        )
+        RouterModule.forChild(appRoutes)
     ],
     declarations: [
         AlertComponent,

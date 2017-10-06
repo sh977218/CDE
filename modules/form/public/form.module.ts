@@ -43,6 +43,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 const appRoutes: Routes = [
     {path: 'form/search', component: FormSearchComponent},
+    {path: 'form', component: FormSearchComponent},
 ];
 
 
@@ -61,9 +62,7 @@ const appRoutes: Routes = [
         SearchModule,
         WidgetModule,
         DiscussModule,
-        RouterModule.forChild(
-            appRoutes
-        )
+        RouterModule.forChild(appRoutes)
     ],
     declarations: [
         ArrayListPipe,

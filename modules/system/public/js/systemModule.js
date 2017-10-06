@@ -1,31 +1,31 @@
 angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
 
-angular.module('systemModule', ['ngSanitize', 'ngRoute', 'LocalStorageModule', 'angular-send-feedback'])
+angular.module('systemModule', ['ngSanitize', 'LocalStorageModule', 'angular-send-feedback'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
     .config(['$rootScopeProvider', function ($rootScopeProvider) {
         $rootScopeProvider.digestTtl(50);
     }])
-    .config(["$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
-        $locationProvider.html5Mode({enabled: true, requireBase: false});
-        $routeProvider.when('/', {
-            redirectTo: function () {
-                if (!window.loggedIn) return "/home";
-                return "/cde/search";
-            }
-        }).when('/triggerClientException', {
-            controller:  ['$scope', function() {trigger.error();}],
-            template: 'An exception in your browser has been triggered.'
-        });
-    }])
+    // .config(["$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
+    //     $locationProvider.html5Mode({enabled: true, requireBase: false});
+    //     $routeProvider.when('/', {
+    //         redirectTo: function () {
+    //             if (!window.loggedIn) return "/home";
+    //             return "/cde/search";
+    //         }
+    //     }).when('/triggerClientException', {
+    //         controller:  ['$scope', function() {trigger.error();}],
+    //         template: 'An exception in your browser has been triggered.'
+    //     });
+    // }])
 ;
 
 angular.module('systemModule').controller('SearchCtrl', ['$scope', function ($scope) {
-    $scope.searchReloadCount = 0;
-    $scope.$on('$routeUpdate',function() {
-        $scope.searchReloadCount++;
-    });
+    // $scope.searchReloadCount = 0;
+    // $scope.$on('$routeUpdate',function() {
+    //     $scope.searchReloadCount++;
+    // });
 }]);
 
 

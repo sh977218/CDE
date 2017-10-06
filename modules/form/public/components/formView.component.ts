@@ -10,6 +10,7 @@ import { UserService } from 'core/public/user.service';
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: "cde-form-view",
@@ -50,7 +51,8 @@ export class FormViewComponent implements OnInit {
                 public isAllowedModel: IsAllowedService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                public userService: UserService) {
+                public userService: UserService,
+                private route: ActivatedRoute) {
     }
 
     ngOnInit(): void {
@@ -66,8 +68,8 @@ export class FormViewComponent implements OnInit {
     }
 
     loadForm(cb) {
-        let formId = this.routeParams.formId;
-        let url = "/form/" + this.routeParams.tinyId;
+        let formId = this.route.snapshot.queryParams['formId'];
+        let url = "/form/" + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;

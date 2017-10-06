@@ -9,6 +9,7 @@ import { AlertService } from 'system/public/components/alert/alert.service';
 import { UserService } from 'core/public/user.service';
 import * as authShared from "system/shared/authorizationShared";
 import { IsAllowedService } from 'core/public/isAllowed.service';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
     selector: "cde-data-element-view",
@@ -17,7 +18,7 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @Input() routeParams: any;
+    // @Input() routeParams: any;
     @Output() public h = new EventEmitter();
 
     elt: any;
@@ -31,6 +32,7 @@ export class DataElementViewComponent implements OnInit {
     canEdit: boolean = false;
 
     constructor(private http: Http,
+                private route: ActivatedRoute,
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
@@ -40,8 +42,8 @@ export class DataElementViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let cdeId = this.routeParams.cdeId;
-        let url = "/de/" + this.routeParams.tinyId;
+        let cdeId = this.route.snapshot.queryParams['cdeId'];
+        let url = "/de/" + this.route.snapshot.queryParams['tinyId'];
         if (cdeId) url = "/deById/" + cdeId;
         this.http.get(url).map(r => r.json()).subscribe(response => {
                 this.elt = response;
@@ -157,7 +159,6 @@ export class DataElementViewComponent implements OnInit {
             this.alert.addAlert("info", "Save to confirm.");
         } else {
             this.saveDataElement();
-            this.modalRef.close();
         }
     }
 

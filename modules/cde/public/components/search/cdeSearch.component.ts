@@ -7,7 +7,8 @@ import { ExportService } from 'core/public/export.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { SearchBaseComponent } from 'search/searchBase.component';
 import { OrgHelperService } from 'core/public/orgHelper.service';
-import { UserService } from "../../../../core/public/user.service";
+import { UserService } from "core/public/user.service";
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'cde-cde-search',
@@ -28,9 +29,11 @@ export class CdeSearchComponent extends SearchBaseComponent {
                 protected modalService: NgbModal,
                 protected elasticService: ElasticService,
                 protected orgHelperService: OrgHelperService,
-                protected userService: UserService) {
+                protected userService: UserService,
+                protected router: Router,
+                protected route: ActivatedRoute) {
         super(_componentFactoryResolver, alert, elasticService, exportService, http, modalService,
-            orgHelperService, userService);
+            orgHelperService, userService, router, route);
 
         this.exporters.csv = {id: 'csvExport', display: 'CSV Export'};
     }

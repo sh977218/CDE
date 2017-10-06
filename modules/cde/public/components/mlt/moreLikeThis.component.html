@@ -30,13 +30,6 @@
                                    (click)="$event.stopPropagation(); mltPinModal.pinOne(cde, mltPinModal.open())"></i>
                             </a>
                             <cde-pin-quickboard [elt]="cde" [eltIndex]="i"></cde-pin-quickboard>
-<!--
-
-                            <a href="#" class="nonLinkAnchor" *ngIf="quickBoardService.canAddElement(cde)"
-                               (click)="BrowserService.interruptEvent($event); quickBoardService.addToQuickBoard(cde)">
-                                <i class="fa fa-plus-square-o  hand-cursor" title="Add to Quick Board"
-                                   id="addToCompare_{{i}}" role="link"></i></a>
--->
                         </ng-template>
                         <ng-template ngbPanelContent>
                             <div class="col-md-4 col-sm-12 col-xs-12">
