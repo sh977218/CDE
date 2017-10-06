@@ -22,9 +22,9 @@ schemas.formSchema.pre('save', function (next) {
 });
 
 var Form = conn.model('Form', schemas.formSchema);
-var Draft = conn.model('FormDraft', schemas.draftSchema);
+var FormDraft = conn.model('Draft', schemas.draftSchema);
 exports.Form = Form;
-exports.Draft = Draft;
+exports.FormDraft = FormDraft;
 
 exports.elastic = elastic;
 
@@ -103,16 +103,16 @@ exports.draftForms = function (tinyId, cb) {
         archived: false,
         elementType: 'form'
     };
-    Draft.find(cond, cb);
+    FormDraft.find(cond, cb);
 };
 
 exports.saveDraftForm = function (elt, cb) {
     delete elt.__v;
-    Draft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+    FormDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
 };
 
 exports.deleteDraftForm = function (tinyId, cb) {
-    Draft.remove({tinyId: tinyId}, cb);
+    FormDraft.remove({tinyId: tinyId}, cb);
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
