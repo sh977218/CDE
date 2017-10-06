@@ -180,7 +180,7 @@ export class FormDescriptionComponent implements OnChanges {
     addQuestionFromSearch(cde) {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
-            question.expanced = true;
+            question.expanded = true;
             this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();

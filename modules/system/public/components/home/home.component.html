@@ -1,44 +1,122 @@
-<div class="jumbotron">
+<div class="jumbotron" style="padding: 2rem 1rem; margin-bottom: 0;">
     <div class="container">
-        <h1>
-            <img id="homeNihCdeLogo" class="img-center-responsive" alt="NIH Common Data Elements (CDE) logo"
-                 src="/cde/public/assets/img/NIH-CDE.png"/>
-        </h1>
-
-        <div class="pt20 text-center" id='searchDiv'>
-            <a routerLink="/cde/search" id="browseCdes" class="btn btn-lg btn-default mr-sm-5 mb-1"><i
-                    class="fa fa-search"></i> Browse CDEs</a>
-            <a routerLink="/form/search" id="browseForms" class="btn btn-lg btn-default ml-sm-5 mb-1"><i
-                    class="fa fa-search"></i> Browse Forms</a>
+        <div class="row">
+            <div class="col-md-4 col-xs-12">
+                <img id="homeNihCdeLogo" class="img-center-responsive" alt="NIH Common Data Elements (CDE) logo"
+                     src="/cde/public/assets/img/NIH-CDE.png"/>
+            </div>
+            <div class="col-md-8 col-xs-12">
+                <div class="text-center mt-3 mt-lg-0" id='searchDiv'>
+                    <a routerLink="/cde/search" id="browseCdes" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-search"></i> Browse CDEs</a>
+                    <a routerLink="/form/search" id="browseForms" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-search"></i> Browse Forms</a>
+                    <a (click)="takeATour();" id="takeATourBtn" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-flag discussWrench"></i> Interactive Tour</a>
+                </div>
+                <div class="mt-3">
+                    The NIH Common Data Elements (CDE) Repository has been designed to provide access to structured
+                    human and machine-readable definitions of data elements that have been recommended or required by
+                    NIH Institutes and Centers and other organizations for use in research and for other purposes.
+                    Visit the <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE Resource
+                    Portal</a> for contextual information about the repository.
+                    The Repository is a platform for identifying related data elements in use across diverse areas,
+                    for harmonizing data elements,and for linking CDEs to other existing standards and terminologies,
+                    including the value sets in the
+                    <a id="vsacLink" class="homeDescriptionLink" href="http://vsac.nlm.nih.gov" target="_blank">Value Set
+                        Authority Center (VSAC).</a>
+                </div>
+            </div>
         </div>
-
-        <div class="pt40">
-            The NIH Common Data Elements (CDE) Repository has been designed to provide access to structured human and
-            machine-readable
-            definitions of data elements that have been recommended or required by NIH Institutes and Centers and other
-            organizations
-            for use in research and for other purposes.
-            Visit the <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE Resource
-            Portal</a>
-            for contextual information about the repository.
-            <br/><br/>
-            The Repository is a platform for identifying related data elements in use across
-            diverse areas, for harmonizing data elements,
-            and for linking CDEs to other existing standards and terminologies, including the value sets in the
-            <a id="vsacLink" class="homeDescriptionLink" href="http://vsac.nlm.nih.gov" target="_blank">Value Set
-                Authority Center (VSAC).</a>
-        </div>
-
-
-        <div class="pt20 text-center">
-            <a class="btn btn-lg btn-default ml-sm-5 mb-1" id="takeATourBtn" (click)="takeATour();">
-                <i class="fa fa-flag discussWrench"></i> Interactive Tour</a>
-        </div>
-
     </div>
 </div>
 
 <div class="container">
+    <div class="row">
+        <div class="col-md-8 col-xs-12 mt-3"
+             style="padding: 10px; background-color: #eee; overflow: hidden; display: flex; height: 84%; max-height: 500px">
+            <div class="carousel-container carousel arrows" data-autoplay data-transition="slide">
+                <div class="carousel-item" style="background-color: #0000ff">
+                    <img src="drafting.png">
+                    <div class="carousel-item-note">
+                        Drafting Allows Autosave and Collaboration Prior to Publishing
+                    </div>
+                </div>
+                <div class="carousel-item" style="background-color: #00ff00">
+                    <div><img src="smart.png"></div>
+                    <div class="carousel-item-note">
+                        EHR integration using the SMART-ON-FHIR platform
+                    </div>
+                </div>
+                <div class="carousel-item" style="background-color: #ff0000">
+                    <img src="google-spreadsheets.png">
+                    <div class="carousel-item-note">
+                        Google Spreadsheet Form submission natively using your google account
+                    </div>
+                </div>
+                <div class="carousel-item" style="background-color: #00ffff; height: 500px">
+                    Form Features
+                    <ul>
+                        <li>Dynamic Logic</li>
+                        <li>Follow-up Logic</li>
+                        <li>Matrix</li>
+                        <li>Table</li>
+                        <li>Calculated Fields</li>
+                    </ul>
+                    <div class="carousel-item-note">
+                        Fully featured Form rendering natively
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-12 mt-3">
+            <div>
+                <div class="btn-group" ngbRadioGroup [(ngModel)]="statsType" style="float: right; margin-top: 3px">
+                    <label ngbButtonLabel class="btn-primary">
+                        <input ngbButton type="radio" value="Forms">Forms
+                    </label>
+                    <label ngbButtonLabel class="btn-primary">
+                        <input ngbButton type="radio" value="CDEs">CDEs
+                    </label>
+                </div>
+                <ngb-tabset #tbset="ngbTabset" (tabChange)="$event">
+                    <ngb-tab id="tabFeatured">
+                        <ng-template ngbTabTitle><i class="fa fa-star" aria-hidden="true"></i></ng-template>
+                        <ng-template ngbTabContent>
+                            <div class="bordered-tab">
+                                Featured {{statsType}}
+                                <ul>
+                                    <li><a href="/formView?tinyId=mJsGoMU1m">PHQ-9 Depression Assesment</a></li>
+                                    <li><a href="/formView?tinyId=mJP_B1HrFg">Patient Health Questionnaire - 9 (PHQ-9) Depression Scale</a></li>
+                                    <li><a href="/formView?tinyId=mJP_B1HrFg">Patient Health Questionnaire - 9 (PHQ-9) Depression Scale</a></li>
+                                    <li><a href="/formView?tinyId=mJP_B1HrFg">Patient Health Questionnaire - 9 (PHQ-9) Depression Scale</a></li>
+                                    <li><a href="/formView?tinyId=mJP_B1HrFg">Patient Health Questionnaire - 9 (PHQ-9) Depression Scale</a></li>
+                                    <li><a href="/formView?tinyId=mJP_B1HrFg">Patient Health Questionnaire - 9 (PHQ-9) Depression Scale</a></li>
+                                    <li><a href="/formView?tinyId=mJP_B1HrFg">Patient Health Questionnaire - 9 (PHQ-9) Depression Scale</a></li>
+                                </ul>
+                            </div>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab id="tabTop">
+                        <ng-template ngbTabTitle><i class="fa fa-arrow-up" aria-hidden="true"></i></ng-template>
+                        <ng-template ngbTabContent>
+                            <div class="bordered-tab">
+                                Most Viewed {{statsType}}
+                            </div>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab id="tabNew">
+                        <ng-template ngbTabTitle><i class="fa fa-plus-square" aria-hidden="true"></i></ng-template>
+                        <ng-template ngbTabContent>
+                            <div class="bordered-tab">
+                                Newest {{statsType}}
+                            </div>
+                        </ng-template>
+                    </ngb-tab>
+                </ngb-tabset>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-4">
             <h3>Search</h3>
@@ -57,5 +135,4 @@
             <p>Draw upon the experience of colleagues and others to design unique data elements and measures.</p>
         </div>
     </div>
-    <br/>
 </div>

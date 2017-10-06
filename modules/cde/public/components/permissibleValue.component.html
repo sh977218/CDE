@@ -176,8 +176,8 @@
                         <ng-container *ngIf="canEdit">
                             <span id="pvRemove_{{i}}" class="btn-default fa fa-trash-o" (click)="removePv(i)"
                                   title="Remove"></span>
-                            <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
-                                            (cb)="sortPermissibleValue();"></sortable-array>
+                            <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
+                                            (cb)="sortPermissibleValue();"></cde-sortable-array>
                         </ng-container>
                     </td>
                 </tr>

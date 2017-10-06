@@ -168,8 +168,9 @@
                                 <li *ngIf="userService?.user && displayValidation()">
                                     <a id="exportValidRule" (click)="openValidRulesModal()">Validation Rules</a>
                                 </li>
-                                <li *ngIf="!userService?.user?._id && module !== 'cde'"><a routerLink="/login">Please
-                                    login to export forms.</a></li>
+                                <li *ngIf="!userService?.user?._id && module !== 'cde'">
+                                    <a routerLink="/login">Please login to export forms.</a>
+                                </li>
                             </ul>
                         </li>
                     </ul>
