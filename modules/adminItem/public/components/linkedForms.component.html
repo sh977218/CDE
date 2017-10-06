@@ -10,7 +10,7 @@
         <div class="modal-body" id="linkedFormsModalBody">
             <p>{{getFormText()}}</p>
             <a *ngIf="forms && forms.length > 0" class="btn btn-default" id="seeAllLinkedFormsButton"
-               href="/form/search?q={{elt.tinyId}}" target="_blank">
+               routerLink="/form/search" queryParams="{q: elt.tinyId}" target="_blank">
                 <i class="fa fa-file-text-o"></i> See all linked forms</a>
             <hr/>
             <div *ngIf="forms && forms.length > 0">

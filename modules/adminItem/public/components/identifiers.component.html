@@ -64,7 +64,7 @@
     <div class="modal-header" id="newIdentifierModalHeader">
         <h4 class="modal-title">Add Identifier</h4>
     </div>
-    <form role="form" #newIdentifierForm="ngForm">
+    <form role="form" #newIdentifierForm="ngForm" (ngSubmit)="addNewIdentifier()">
         <div class="modal-body" id="newIdentifierModalBody">
             <div class="form-group">
                 <label for="newSource">Source</label>
@@ -86,7 +86,7 @@
             <button class="btn cancel" (click)="c('Close click')" id="cancelNewIdentifierBtn" type="button">
                 Cancel
             </button>
-            <button class="btn btn-warning" (click)="addNewIdentifier()" [disabled]="!newIdentifierForm.form.valid"
+            <button class="btn btn-warning" [disabled]="!newIdentifierForm.form.valid"
                     id="createNewIdentifierBtn" type="submit">Save
             </button>
         </div>

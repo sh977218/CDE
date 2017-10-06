@@ -10,6 +10,7 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { UserService } from 'core/public/user.service';
 import { ElasticService } from 'core/public/elastic.service';
 import { AlertService } from 'system/public/components/alert/alert.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: "cde-create-data-element",
@@ -28,7 +29,8 @@ export class CreateDataElementComponent implements OnInit {
                 private localStorageService: LocalStorageService,
                 private elasticService: ElasticService,
                 private http: Http,
-                private alert: AlertService) {
+                private alert: AlertService,
+                private router: Router) {
     }
 
     ngOnInit(): void {
@@ -153,11 +155,11 @@ export class CreateDataElementComponent implements OnInit {
 
     createDataElement() {
         this.http.post("/de", this.elt).map(res => res.json())
-            .subscribe(res => window.location.href = "/deView?tinyId=" + res.tinyId,
+            .subscribe(res => this.router.navigate(["/deView"], {queryParams: {tinyId: res.tinyId}}),
                 err => this.alert.addAlert("danger", err));
     }
 
     cancelCreateDataElement() {
-        window.location.href = "/";
+        this.router.navigate(["/"]);
     }
 }

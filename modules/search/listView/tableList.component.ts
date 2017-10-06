@@ -86,7 +86,7 @@ export class TableListComponent implements DoCheck, OnChanges {
             if (this.tableSetup.name)
                 row.push({
                     css: 'name',
-                    html: `<a href="/deView?tinyId=${e.tinyId}">${e.naming[0].designation}</a>`
+                    html: `<a routerLink="/deView" queryParams="{tinyId: ${e.tinyId}}">${e.naming[0].designation}</a>`
                 });
             if (this.tableSetup.questionTexts)
                 row.push({
@@ -191,7 +191,7 @@ export class TableListComponent implements DoCheck, OnChanges {
             if (this.tableSetup.name)
                 row.push({
                     css: 'name',
-                    html: `<a href="/formView?tinyId=${e.tinyId}">${e.naming[0].designation}</a>`
+                    html: `<a routerLink="/formView" queryParams="{tinyId: ${e.tinyId}}">${e.naming[0].designation}</a>`
                 });
             if (this.tableSetup.naming)
                 row.push({

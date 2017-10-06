@@ -9,8 +9,6 @@ angular.module('formModule', []).config(
 //             title: "Find protocol forms",
 //             keywords: 'form, protocol, protocol form, crf, case report form, repository',
 //             description: 'Repository of Protocol Forms and Common Data Elements. Search Forms and CDEs.'
-//         }).when('/form', {
-//             redirectTo: '/form/search'
 //         }).when('/createForm', {
 //             controller: ['$scope', function ($scope) {
 //                 $scope.$on('$locationChangeStart', function (event) {

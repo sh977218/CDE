@@ -64,9 +64,6 @@ export class DataElementViewComponent implements OnInit {
     onLocationChange(event, oldUrl, elt) {
         if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
             let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            if ((window as any).debugEnabled) {
-                txt = txt + window.location.pathname;
-            }
             let answer = confirm(txt);
             if (!answer) {
                 event.preventDefault();

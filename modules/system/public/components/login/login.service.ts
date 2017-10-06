@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
 import { Router } from "@angular/router";
+import { UserService } from 'core/public/user.service';
 
 @Injectable()
 export class LoginService {
@@ -9,7 +10,8 @@ export class LoginService {
     lastRoute: string;
 
     constructor(private http: Http,
-                private router: Router) {}
+                private router: Router,
+                private userService: UserService) {}
 
     public getPreviousRoute () {
         return this.lastRoute;
@@ -17,12 +19,13 @@ export class LoginService {
 
     public logout() {
         this.http.post("/logout", {}).subscribe(() => {
-            window.location.href = "/login";
+            this.userService.reload();
+            this.router.navigate(["/login"]);
        });
     }
 
     goToLogin () {
-        if (window.location.href.indexOf('login') === -1) this.lastRoute = window.location.href;
+        if (window.location.href.indexOf('login') === -1) this.lastRoute = this.router.url;
     };
 
 }

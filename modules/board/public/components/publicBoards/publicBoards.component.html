@@ -30,7 +30,7 @@
         <div class="col-md-10">
             <div *ngFor="let board of boards; let $index = index" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <div class="my-board-card" data-id="boardDiv_{{board.name}}">
-                    <h4><a href="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank">{{board.name}}</a></h4>
+                    <h4><a routerLink="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank">{{board.name}}</a></h4>
                     <cde-board-view-template [board]="board" [canEditBoard]="false" [index]="$index"></cde-board-view-template>
                 </div>
             </div>

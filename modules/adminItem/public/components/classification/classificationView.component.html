@@ -5,7 +5,8 @@
         <hr/>
         <tree-root #treeRoot [nodes]="classification.elements" [options]="options">
             <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                <a href="{{searchByClassification(node,classification.stewardOrg.name)}}" [id]="node.path">
+                <a [routerLink]="[classifLink]"
+                   [queryParams]="searchByClassificationParams(node,classification.stewardOrg.name)" [id]="node.path">
                     {{ node.data.name }}</a>
                 <i *ngIf="isAllowedModel.isAllowed(elt)"
                    class="fa fa-trash-o hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"

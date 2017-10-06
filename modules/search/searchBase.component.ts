@@ -423,9 +423,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
             params.set('searchSettings', JSON.stringify(report.searchSettings));
             params.set('status', report.status);
             let uri = params.toString();
-            window.location.href = '/cdeStatusReport?' + uri;
-        }, function () {
-        });
+            this.router.navigate(['/cdeStatusReport'], {queryParams:  {searchSettings: JSON.stringify(report.searchSettings), status: report.status}});
+        }, ()  => {});
     }
 
     pageChange() {

@@ -19,6 +19,7 @@ import * as _ from "lodash";
 import { AlertService } from "system/public/components/alert/alert.service";
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { UserService } from 'core/public/user.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: "cde-create-form",
@@ -36,7 +37,8 @@ export class CreateFormComponent implements OnInit {
                 public isAllowedModel: IsAllowedService,
                 private localStorageService: LocalStorageService,
                 private http: Http,
-                private alert: AlertService) {
+                private alert: AlertService,
+                private router: Router) {
     }
 
     ngOnInit(): void {
@@ -116,7 +118,7 @@ export class CreateFormComponent implements OnInit {
     createForm() {
         this.http.post("/form", this.elt).map(res => res.json())
             .subscribe(res => {
-                    window.location.href = "/formView?tinyId=" + res.tinyId;
+                    this.router.navigate(["/formView"], {queryParams: {tinyId: res.tinyId}});
                 },
                 err => {
                     this.alert.addAlert("danger", err);
@@ -124,7 +126,7 @@ export class CreateFormComponent implements OnInit {
     }
 
     cancelCreateForm() {
-        window.location.href = "/";
+        this.router.navigate(["/"]);
     }
 
 }

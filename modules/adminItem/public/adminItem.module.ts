@@ -24,6 +24,7 @@ import { ClassificationViewComponent } from "./components/classification/classif
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 import { CreateFormComponent } from 'form/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
@@ -40,6 +41,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         CompareModule,
         SearchModule,
         WidgetModule,
+        RouterModule.forChild([])
     ],
     declarations: [
         AttachmentsComponent,

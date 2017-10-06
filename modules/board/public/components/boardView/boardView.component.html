@@ -64,12 +64,10 @@
                         <ul class="dropdown-menu">
                             <li><a id="csvExport" (click)="exportBoard()" onmouseover="" class="hand-cursor"> CSV
                                 File, NIH/CDE</a></li>
-                            <li><a id='jsonExport' href="/board/{{board._id}}/0/500/?type=json" target="_blank">JSON
-                                File, NIH/CDE
-                                Schema</a></li>
-                            <li><a id='xmlExport' href="/board/{{board._id}}/0/500/?type=xml" target="_blank">XML
-                                File, NIH/CDE
-                                Schema</a></li>
+                            <li><a id='jsonExport' routerLink="/board/{{board._id}}/0/500/" queryParams="{type: 'json'}"
+                                   target="_blank">JSON File, NIH/CDE Schema</a></li>
+                            <li><a id='xmlExport' routerLink="/board/{{board._id}}/0/500/" queryParams="{type: 'xml'}"
+                                   target="_blank">XML File, NIH/CDE Schema</a></li>
                         </ul>
                     </span>
 

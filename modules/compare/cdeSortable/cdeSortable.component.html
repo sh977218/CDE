@@ -18,7 +18,7 @@
             <div *ngIf="item.value.info && item.value.info.error">{{item.value.info.error}}</div>
         </div>
         <div class="col-xs-8 noLeftRightPadding mergeCdeName">
-            <a target="_blank" href="deView?tinyId={{item.value.question.cde.tinyId}}">
+            <a target="_blank" routerLink="/deView" queryParams="{tinyId: item.value.question.cde.tinyId}">
                 {{item.value.question.cde.name}}
             </a>
         </div>

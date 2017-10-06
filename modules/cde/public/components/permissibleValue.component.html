@@ -175,7 +175,7 @@
                         </ng-container>
                         <ng-container *ngIf="isAllowedModel.isAllowed(elt)">
                             <span id="pvRemove_{{i}}" class="btn-default fa fa-trash-o" (click)="removePv(i)"
-                                  title="Remove" href=""></span>
+                                  title="Remove"></span>
                             <sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                             (cb)="sortPermissibleValue();"></sortable-array>
                         </ng-container>
@@ -267,7 +267,7 @@
     <div class="modal-header" id="newPermissibleValueModalHeader">
         <h4 class="modal-title">Add Naming</h4>
     </div>
-    <form #newPermissibleValueForm="ngForm">
+    <form #newPermissibleValueForm="ngForm" (ngSubmit)="addNewPermissibleValue()">
         <div class="modal-body" id="newPermissibleValueModalBody">
             <div class="form-group">
                 <label for="permissibleValueInput">Value</label>
@@ -300,7 +300,7 @@
             <div *ngIf="umlsTerms.length > 0">
                 <h4>Choices from UMLS: </h4>
                 <div *ngFor="let term of umlsTerms; let i = index;">
-                    <a *ngIf="i<10" (click)="selectFromUmls(term)" href="#">{{term.ui}} : {{term.name}}</a>
+                    <a *ngIf="i<10" (click)="selectFromUmls(term)">{{term.ui}} : {{term.name}}</a>
                 </div>
             </div>
         </div>
@@ -311,7 +311,7 @@
             </button>
             <button class="btn btn-warning" [disabled]="!newPermissibleValueForm.form.valid"
                     id="createNewPermissibleValueBtn" name="createNewPermissibleValueBtn" type="submit"
-                    (click)="addNewPermissibleValue();">Save
+                    >Save
             </button>
         </div>
     </form>

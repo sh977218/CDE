@@ -44,6 +44,7 @@ import { RouterModule, Routes } from '@angular/router';
 const appRoutes: Routes = [
     {path: 'form/search', component: FormSearchComponent},
     {path: 'form', component: FormSearchComponent},
+    {path: 'formView', component: FormViewComponent},
 ];
 
 

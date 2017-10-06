@@ -7,7 +7,7 @@
             <div class="col-md-1 text-right">
                 <div class="row" *ngIf="canEdit">
                     <span (click)="removeNamingByIndex(i)" class="btn-default fa fa-trash-o"
-                          id="removeNaming-{{i}}" title="Remove" href=""></span>
+                          id="removeNaming-{{i}}" title="Remove"></span>
                     <sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></sortable-array>
                 </div>
             </div>
@@ -51,7 +51,7 @@
     <div class="modal-header" id="newNamingModalHeader">
         <h4 class="modal-title">Add Naming</h4>
     </div>
-    <form role="form" #newNamingForm="ngForm">
+    <form role="form" #newNamingForm="ngForm" (ngSubmit)="addNewNaming()">
         <div class="modal-body" id="newNamingModalBody">
             <div class="form-group">
                 <label for="newDesignation">Name</label>
@@ -80,7 +80,7 @@
                     type="button">Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newNamingForm.form.valid" id="createNewNamingBtn"
-                    name="createNewNamingBtn" type="submit" (click)="addNewNaming();">Save
+                    name="createNewNamingBtn" type="submit">Save
             </button>
         </div>
     </form>

@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { IsAllowedService } from 'core/public/isAllowed.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: "cde-concepts",
@@ -14,7 +15,8 @@ export class ConceptsComponent {
     @Input() public elt: any;
 
     constructor(public isAllowedModel: IsAllowedService,
-                public modalService: NgbModal) {
+                public modalService: NgbModal,
+                private router: Router) {
     }
 
     newConcept: { name?: string, originId?: string, origin: string, type: string } = {origin: "LOINC", type: "dec"};
@@ -70,7 +72,7 @@ export class ConceptsComponent {
     }
 
     relatedCdes(concept, config) {
-        window.location.href = "/cde/search?q=" + config.details.path + `:"` + concept + `"`;
+        this.router.navigate(["/cde/search"], {queryParams: {q: config.details.path + ':"' + concept + '"'}});
     }
 
     removeConcept(type, i) {

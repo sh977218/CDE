@@ -8,13 +8,13 @@
     <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this form is archived. You can
-        <a id="viewCurrentEltLink" href="/formView?tinyId={{elt.tinyId}}">view the current version here</a>.
+        <a id="viewCurrentEltLink" routerLink="/formView" queryParams="{tinyId: elt.tinyId}">view the current version here</a>.
     </div>
     <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this form is retired.
         <a *ngIf="elt.registrationState.replacedBy"
-           href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a>
+           routerLink="/deView" queryParams="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
     </div>
     <div class="alert alert-info mt20" role="alert" *ngIf="elt.outdated">
         <i class="fa fa-exclamation-triangle"></i>
@@ -25,7 +25,7 @@
         The following CDEs are part of a score but are missing from this form:
         <ul class="list-inline">
             <li *ngFor="let missCde of missingCdes;let i = index;">
-                <a href="/deView?tinyId={{missCde.tinyId}}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
+                <a routerLink="/deView" queryParams="{tinyId: missCde.tinyId}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
                 <span *ngIf="i < missingCdes.length">,</span></li>
         </ul>
     </div>
@@ -34,12 +34,7 @@
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this form is about to be retired.
         <a *ngIf="elt.registrationState.replacedBy"
-           href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
-    </div>
-    <div *ngIf="elt.forkOf" class="alert alert-info mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
-        <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
+           routerLink="/deView" queryParams="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
     </div>
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">

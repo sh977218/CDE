@@ -11,7 +11,7 @@
             <ng-container *ngIf="boards?.length > 0">
                 <div *ngFor="let board of boards; let i = index">
                     <div class="my-board-card" attr.data-id="boardDiv_{{board.name}}">
-                        <h4><a href="/board/{{board._id}}" id="viewBoard_{{board.name}}"
+                        <h4><a routerLink="/board/{{board._id}}" id="viewBoard_{{board.name}}"
                                target="_blank">{{board.name}}</a></h4>
 
                         <div><span id="board_num_cdes_{{i}}">{{board.pins.length}}</span>

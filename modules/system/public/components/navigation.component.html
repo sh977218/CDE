@@ -128,7 +128,7 @@
                    [hidden]="!userService.user?._id || !userService.user?.siteAdmin"
                    [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Audit</a>
-                <a href="#" (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item"
+                <a (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item"
                    [hidden]="!userService.user?._id"
                    [attr.data-toggle]="toggleaction"
                    attr.aria-controls="main-navigation" attr.aria-expanded="false">Log Out</a>

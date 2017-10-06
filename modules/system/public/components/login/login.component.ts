@@ -3,7 +3,7 @@ import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { AlertService } from "../alert/alert.service";
 import { LoginService } from "./login.service";
-import { UserService } from "../../../../core/public/user.service";
+import { UserService } from "core/public/user.service";
 
 @Component({
     selector: "cde-login",

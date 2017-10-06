@@ -3,7 +3,7 @@
     <div *ngIf="quickBoardService.number_forms === 0">
         <h3>The quick board is empty.</h3>
         <p>Note: Click on <i class="fa fa-plus"></i> to add an element to the quick board.
-            <a href="/form/search">Go to the search page and get started.</a></p>
+            <a routerLink="/form/search">Go to the search page and get started.</a></p>
     </div>
     <div *ngIf="quickBoardService.number_forms > 0">
         <cde-compare-side-by-side [(elements)]="quickBoardService.forms"></cde-compare-side-by-side>
