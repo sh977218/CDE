@@ -4,9 +4,9 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class DeleteDraftTest extends NlmCdeBaseTest {
+public class DeleteFormDraftTest extends NlmCdeBaseTest {
     @Test
-    public void deleteDraft() {
+    public void deleteFormDraft() {
         String formName = "Form Delete Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);

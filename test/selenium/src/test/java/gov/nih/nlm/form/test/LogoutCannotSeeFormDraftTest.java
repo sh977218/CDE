@@ -3,9 +3,9 @@ package gov.nih.nlm.form.test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.testng.annotations.Test;
 
-public class LogoutCannotSeeDraftTest extends NlmCdeBaseTest {
+public class LogoutCannotSeeFormDraftTest extends NlmCdeBaseTest {
     @Test
-    public void logoutCannotSeeDraft() {
+    public void logoutCannotSeeFormDraft() {
         String formName = "Draft Form Test";
         mustBeLoggedOut();
         goToFormByName(formName);
