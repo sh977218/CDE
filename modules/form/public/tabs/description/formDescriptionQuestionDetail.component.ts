@@ -28,6 +28,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     answersOptions: any = {
         allowClear: true,
         multiple: true,
+        closeOnSelect: true,
         placeholder: {
             id: "",
             placeholder: "Leave blank to ..."

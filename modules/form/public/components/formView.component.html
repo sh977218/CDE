@@ -148,7 +148,7 @@
                         <ng-template ngbTabContent>
                             <div class="row">
                                 <div class="col-lg-5">
-                                    <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="saveDraft()">
+                                    <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft()">
                                     </cde-form-general-details>
                                     <div>
                                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>

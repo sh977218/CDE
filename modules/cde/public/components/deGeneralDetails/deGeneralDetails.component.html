@@ -7,8 +7,8 @@
     <div class="row">
         <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
         <div class="col-sm-7" id="dd_general_steward">
-            <cde-inline-edit [(model)]="elt.stewardOrg.name" [inputType]="'select'" [(selectOptions)]="userOrgs"
-                             (modelChange)="save.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+            <cde-inline-edit [(model)]="elt.stewardOrg.name" [inputType]="'select'" [selectOptions]="userOrgs"
+                             (modelChange)="onEltChange.emit();" [isAllowed]="canEdit && !elt.isDraft"></cde-inline-edit>
         </div>
     </div>
     <div class="row">
@@ -32,7 +32,7 @@
     <div class="row" *ngIf="elt.origin">
         <div class="col-sm-5 questionSectionLabel text-right">Origin:</div>
         <div class="col-sm-7">
-            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit" (modelChange)="save.emit();">
+            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit" (modelChange)="onEltChange.emit();">
             </cde-inline-edit>
         </div>
     </div>

@@ -79,7 +79,6 @@ exports.draftDataElements = function (req, res) {
     if (!tinyId) return res.status(400).send();
     mongo_cde.draftDataElements(tinyId, function (err, dataElements) {
         if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
-        if (!dataElements) return res.status(404).send();
         res.send(dataElements);
     });
 };

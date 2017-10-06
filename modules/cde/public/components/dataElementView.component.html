@@ -93,7 +93,7 @@
                         </ng-template>
                         <ng-template ngbTabContent>
                             <div class="col-md-6">
-                                <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit" (save)="saveDraft();">
+                                <cde-de-general-details [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                                 </cde-de-general-details>
                                 <div class="row">
                                     <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
@@ -177,7 +177,6 @@
                         </ng-template>
                         <ng-template ngbTabContent>
                             <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-
                             </cde-properties>
                         </ng-template>
                     </ngb-tab>
@@ -189,7 +188,6 @@
                         </ng-template>
                         <ng-template ngbTabContent>
                             <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();;">
-
                             </cde-identifiers>
                         </ng-template>
                     </ngb-tab>

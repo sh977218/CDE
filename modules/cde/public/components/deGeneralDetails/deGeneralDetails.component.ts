@@ -11,9 +11,12 @@ import { OrgHelperService } from 'core/public/orgHelper.service';
 export class DeGeneralDetailsComponent {
     @Input() elt: any;
     @Input() canEdit;
-    @Output() save = new EventEmitter();
+    @Output() onEltChange = new EventEmitter();
     userOrgs = [];
-
+    options = {
+        multiple: false,
+        tags: true
+    };
 
     constructor(public userService: UserService,
                 public orgHelperService: OrgHelperService) {

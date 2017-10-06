@@ -36,6 +36,8 @@ export class DataElementViewComponent implements OnInit {
     canEdit: boolean = false;
     drafts = [];
     deId;
+    tinyId;
+    url;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -47,14 +49,20 @@ export class DataElementViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.loadDataElement(dataElement => {
-            this.loadComments(dataElement, null);
-            this.userService.then(() => {
-                let user = this.userService.user;
-                if (user && user.username)
-                    this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-            });
+        this.deId = this.routeParams.cdeId;
+        this.tinyId = this.routeParams.tinyId;
+        this.url = "/de/" + this.tinyId;
+        if (this.deId) this.url = "/deById/" + this.deId;
+        this.userService.then(() => {
+            let user = this.userService.user;
+            if (user && user.username) {
+                this.loadDraft(draft => {
+                    if (draft) {
+                        this.elt = draft;
+                        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    } else this.loadDataElement(null);
+                });
+            } else this.loadDataElement(null);
         });
     }
 
@@ -72,20 +80,14 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDataElement(cb) {
-        let formId = this.routeParams.formId;
-        let url = "/de/" + this.routeParams.tinyId;
-        if (formId) url = "/deById/" + formId;
-        this.http.get(url).map(res => res.json()).subscribe(res => {
+        this.http.get(this.url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
                 this.deId = this.elt._id;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.http.get("/comments/eltId/" + this.elt.tinyId)
-                    .map(res => res.json()).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error loading comments. " + err)
-                );
-                this.userService.then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                cb(this.elt);
+                this.loadComments(this.elt, null);
+                this.userService.then(() => {
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt)
+                });
             },
             () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
         );
@@ -214,14 +216,12 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDraft(cb) {
-        this.http.get("/draftDataElement/" + this.elt.tinyId)
-            .map(res => res.json()).subscribe(res => {
-            if (res && res.length > 0) {
-                this.drafts = res;
-                this.elt = res[0];
-            } else this.drafts = [];
-            if (cb) cb();
-        }, err => this.alert.addAlert("danger", err));
+        this.http.get("/draftDataElement/" + this.tinyId)
+            .map(res => res.json()).subscribe(
+            res => {
+                if (cb) cb(res[0])
+            },
+            err => this.alert.addAlert("danger", err));
     }
 
     saveDraft(cb) {
@@ -246,7 +246,8 @@ export class DataElementViewComponent implements OnInit {
     removeDraft() {
         this.http.delete("/draftDataElement/" + this.elt.tinyId)
             .subscribe(res => {
-                if (res) this.loadDataElement(() => this.drafts = []);
+                this.drafts = [];
+                if (res) this.loadDataElement(null);
             }, err => this.alert.addAlert("danger", err));
     }
 
