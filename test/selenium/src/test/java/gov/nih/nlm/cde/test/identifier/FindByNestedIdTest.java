@@ -14,6 +14,7 @@ public class FindByNestedIdTest extends NlmCdeBaseTest {
         // same ID as "more injuries loss of consciousness number"
         clickElement(By.id("ids_tab"));
         addNewIdentifier("FAKE", "C18059", "3");
+        newCdeVersion();
 
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("ids.id:C18059");

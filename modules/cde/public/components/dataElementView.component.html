@@ -187,7 +187,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();;">
+                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                             </cde-identifiers>
                         </ng-template>
                     </ngb-tab>
@@ -221,7 +221,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-derivation-rules [elt]="elt"></cde-derivation-rules>
+                            <cde-derivation-rules [elt]="elt" (onEltChange)="saveDraft();"></cde-derivation-rules>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="validRules_tab">

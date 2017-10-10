@@ -8,7 +8,7 @@
         <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
         <div class="col-sm-7" id="dd_general_steward">
             <ng-template #stewardTooltip>
-                <span *ngIf="orgHelperService.orgsDetailedInfo && orgHelperService.orgsDetailedInfo.length > 0"
+                <span *ngIf="orgHelperService.orgsDetailedInfo"
                       [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
                 </span>
             </ng-template>
