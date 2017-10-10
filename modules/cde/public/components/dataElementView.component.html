@@ -3,47 +3,51 @@
         <i class="fa fa-spinner fa-pulse"></i>Loading...
     </h1>
 </div>
-<div *ngIf="elt">
-    <div class="container-fluid" itemscope="http://schema.org/MedicalCode">
-        <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this data element is archived. You can
-            <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
-        </div>
-        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this data element is retired.
-            <span *ngIf="elt.registrationState.replacedBy">
-                        <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a></span>
-        </div>
-        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
-             role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Warning:</strong> this data element is about to be retired.
-            <span *ngIf="elt.registrationState.replacedBy">
-                        <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
-                </span>
-        </div>
-        <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>Note:</strong> You may not edit this CDE because it is standard.
-        </div>
-        <div class="row">
-            <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-                <h1 class="page-header">{{elt.naming[0].designation}}
+<div *ngIf="elt" class="container-fluid" itemscope="http://schema.org/MedicalCode">
+    <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this data element is archived. You can
+        <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
+    </div>
+    <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this data element is retired.
+        <span *ngIf="elt.registrationState.replacedBy">
+            <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
+        </span>
+    </div>
+    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
+         role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this data element is about to be retired.
+        <span *ngIf="elt.registrationState.replacedBy">
+            <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
+        </span>
+    </div>
+    <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Note:</strong> You may not edit this CDE because it is standard.
+    </div>
+    <div class="row">
+        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+            <h1>
+                <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
+            </h1>
+            <div class="col-md-12">
+                <div class="pull-left marginTopBottom5">
                     <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
                             class="btn btn-small btn-default" title="Add to Compare List" type="button"
                             (click)="quickBoardService.addToQuickBoard(elt)">
-                        <i class="fa fa-plus"></i> Add to Quick Board
+                        <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
                     </button>
                     <button id="addToBoard" class="btn btn-small btn-default" role="button" title="Add to Board"
                             type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
-                        <i class="fa fa-thumb-tack"></i> Add to Board
+                        <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
                     </button>
                     <div class="btn-group" role="group">
                         <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-download"></i> Export
+                            <i class="fa fa-download"></i><span class="hidden-xs-down"> Export</span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="export">
                             <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
@@ -52,16 +56,35 @@
                                target="_blank">XML File, NIH/CDE Schema</a>
                         </div>
                     </div>
-
                     <button id="copyCdeBtn" class="btn btn-small btn-default" (click)="openCopyElementModal()"
                             title="Copy CDE" type="button">
-                        <i class="fa fa-clone"></i> Copy
+                        <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
                     </button>
                     <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
                             type="button" (click)="commentMode = !commentMode;">
-                        <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
+                        <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
+                        <span class="hidden-xs-down"> Discuss</span>
                     </button>
-                </h1>
+                </div>
+                <div class="pull-right marginTopBottom5">
+                    <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
+                            class="btn btn-info" (click)="loadDraft(null);">
+                        <i class="fa fa-eye fa-lg"></i> View Draft
+                    </button>
+                    <ng-container *ngIf="elt.isDraft">
+                        <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
+                            <i class="fa fa-globe fa-lg"></i> Publish
+                        </button>
+                        <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+                            <i class="fa fa-trash fa-lg"></i> Delete Draft
+                        </button>
+                        <button class="btn btn-info" (click)="saveDataElement(null);">
+                            <i class="fa fa-eye fa-lg"></i> View Published
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="col-md-12">
                 <ngb-tabset (tabChange)="beforeChange($event)">
                     <ngb-tab id="general_tab">
                         <ng-template ngbTabTitle>
@@ -70,8 +93,29 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-de-general-details [elt]="elt" (save)="saveDataElement()">
-                            </cde-de-general-details>
+                            <div class="col-md-6">
+                                <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                                </cde-de-general-details>
+                                <div class="row">
+                                    <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
+                                    <cde-registration [elt]="elt" (save)="saveDataElement();"></cde-registration>
+                                    <div role="group" aria-label="More Info">
+                                        <cde-linked-forms [elt]="elt"></cde-linked-forms>
+                                        <cde-mlt [elt]="elt"></cde-mlt>
+                                        <cde-linked-boards [elt]="elt"></cde-linked-boards>
+                                        <cde-datasets [elt]="elt"></cde-datasets>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4>Topics</h4>
+                                <span>Topics are
+                                <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> terms and appear here if classifications are mapped to
+                                <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> trees.</span>
+                                <ul>
+                                    <li *ngFor="let t of elt.flatMeshSimpleTrees">{{t}} <br></li>
+                                </ul>
+                            </div>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="pvs_tab">
@@ -81,7 +125,8 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-permissible-value [elt]="elt"></cde-permissible-value>
+                            <cde-permissible-value [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                            </cde-permissible-value>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="naming_tab">
@@ -91,7 +136,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="elt.unsaved = true"></cde-naming>
+                            <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-naming>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="classification_tab">
@@ -111,7 +156,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-concepts [elt]="elt"></cde-concepts>
+                            <cde-concepts [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-concepts>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="referenceDocuments_tab">
@@ -121,7 +166,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
+                            <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                             </cde-reference-document>
                         </ng-template>
                     </ngb-tab>
@@ -132,8 +177,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
-
+                            <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                             </cde-properties>
                         </ng-template>
                     </ngb-tab>
@@ -144,8 +188,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbTabContent>
-                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="doStageElt($event);">
-
+                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();;">
                             </cde-identifiers>
                         </ng-template>
                     </ngb-tab>
@@ -194,20 +237,16 @@
                     </ngb-tab>
                 </ngb-tabset>
             </div>
-            <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
-                 style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-                <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
-                                  (highlightedTabsChange)="loadHighlightedTabs($event)"
-                                  [eltName]="elt.naming[0].designation"></cde-discuss-area>
-            </div>
         </div>
-        <div class="row" *ngIf="elt.unsaved && !elt.pvNotValidMsg">
-            <cde-update-element [elt]="elt" (discard)="reloadDataElement()"
-                                (save)="saveDataElement()"></cde-update-element>
+        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+            <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                              (highlightedTabsChange)="loadHighlightedTabs($event)"
+                              [eltName]="elt.naming[0].designation"></cde-discuss-area>
         </div>
     </div>
+    <cde-save-modal #saveModal [elt]="elt" (save)="saveDataElement()"></cde-save-modal>
 </div>
-
 
 <ng-template #copyDataElementContent id="copyDataElementModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="copyDataElementModalHeader">

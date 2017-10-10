@@ -78,11 +78,7 @@ export class FormViewComponent implements OnInit {
                 this.formId = this.elt._id;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
-                this.http.get("/comments/eltId/" + this.elt.tinyId)
-                    .map(res => res.json()).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error loading comments. " + err)
-                );
+                this.loadComments(this.elt, null);
                 this.userService.then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
                 cb(this.elt);
             },

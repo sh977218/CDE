@@ -16,15 +16,14 @@
         <div class="col-sm-5 questionSectionLabel">Copyrighted:</div>
         <div class="col-sm-7">
             <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
-                   id="isCopyrighted" title="copyrighted" (change)="save.emit();"/>
-
+                   id="isCopyrighted" title="copyrighted" (change)="onEltChange.emit();"/>
             <div *ngIf="elt.isCopyrighted">
                 Statement:
                 <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
-                                 [isAllowed]="canEdit" (modelChange)="save.emit();"></cde-inline-edit>
+                                 [isAllowed]="canEdit" (modelChange)="onEltChange.emit();"></cde-inline-edit>
                 Authority:
                 <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
-                                 [isAllowed]="canEdit" (modelChange)="save.emit();"></cde-inline-edit>
+                                 [isAllowed]="canEdit" (modelChange)="onEltChange.emit();"></cde-inline-edit>
             </div>
         </div>
     </div>
@@ -32,7 +31,7 @@
         <div class="col-sm-5 questionSectionLabel">Disallow Rendering:</div>
         <div class="col-sm-7">
             <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
-                   id="disallowRendering" title="disallow rendering" (change)="save.emit();"/>
+                   id="disallowRendering" title="disallow rendering" (change)="onEltChange.emit();"/>
         </div>
     </div>
     <div class="row">
@@ -42,10 +41,18 @@
     </div>
     <div class="row">
         <div class="col-sm-5 questionSectionLabel">Steward:</div>
-        <div class="col-sm-7">{{elt.stewardOrg.name}}
+        <div class="col-sm-7">
+            <ng-template #stewardTooltip>
+                <span *ngIf="orgHelperService.orgsDetailedInfo"
+                      [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
+                </span>
+            </ng-template>
+            <cde-inline-select-edit [ngbTooltip]="stewardTooltip" [(value)]="elt.stewardOrg.name"
+                                    [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
+                                    [isAllowed]="canEdit && !elt.isDraft">
+            </cde-inline-select-edit>
         </div>
     </div>
-
     <div class="row" *ngIf="elt.imported">
         <div class="col-sm-5 questionSectionLabel">Last import:</div>
         <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}

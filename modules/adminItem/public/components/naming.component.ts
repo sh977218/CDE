@@ -31,6 +31,7 @@ export class NamingComponent implements OnInit {
             }
         }
     };
+
     constructor(private orgHelperService: OrgHelperService,
                 public modalService: NgbModal) {
     }
@@ -70,9 +71,9 @@ export class NamingComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    changedTags(name, data: { value: string[] }, needToSave = true) {
+    changedTags(name, data: { value: string[] }) {
         name.tags = data.value;
-        if (needToSave) this.onEltChange.emit();
+        this.onEltChange.emit();
     }
 
 }

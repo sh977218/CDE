@@ -57,8 +57,6 @@ public class RemoveConcepts extends NlmCdeBaseTest {
         textNotPresent("Prop_ID_2");
         textPresent("Prop3");
         textPresent("Prop_ID_3");
-
-        clickElement(By.id("discardChanges"));
     }
 
 }

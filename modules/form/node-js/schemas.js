@@ -1,6 +1,5 @@
 var mongoose = require('mongoose')
     , Schema = mongoose.Schema
-    , _ = require('lodash')
     , sharedSchemas = require('../../system/node-js/schemas.js')
     , config = require("config")
 ;

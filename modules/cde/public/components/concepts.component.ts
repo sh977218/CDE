@@ -1,6 +1,5 @@
-import { Component, Input, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { IsAllowedService } from 'core/public/isAllowed.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,9 +12,10 @@ export class ConceptsComponent {
     @ViewChild("newConceptContent") public newConceptContent: NgbModalModule;
     public modalRef: NgbModalRef;
     @Input() public elt: any;
+    @Input() public canEdit: boolean = false;
+    @Output() onEltChange = new EventEmitter();
 
-    constructor(public isAllowedModel: IsAllowedService,
-                public modalService: NgbModal,
+    constructor(public modalService: NgbModal,
                 private router: Router) {
     }
 
@@ -47,7 +47,7 @@ export class ConceptsComponent {
             if (!this.elt.objectClass.concepts) this.elt.objectClass.concepts = [];
             this.elt.objectClass.concepts.push(this.newConcept);
         }
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
         this.modalRef.close();
     }
 
@@ -58,17 +58,17 @@ export class ConceptsComponent {
 
     dataElementConceptRemoveConcept(index) {
         this.elt.dataElementConcept.concepts.splice(index, 1);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     objectClassRemoveConcept(index) {
         this.elt.objectClass.concepts.splice(index, 1);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     propertyRemoveConcept(index) {
         this.elt.property.concepts.splice(index, 1);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     relatedCdes(concept, config) {

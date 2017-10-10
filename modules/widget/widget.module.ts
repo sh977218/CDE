@@ -9,6 +9,7 @@ import { InlineAreaEditComponent } from "./inlineEdit/inlineAreaEdit.component";
 import { PlaceHoldEmptyPipe } from "./pipes/placeHoldEmpty.pipe";
 import { TextTruncateComponent } from "./text/textTruncate.component";
 import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
+import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.component';
 
 @NgModule({
     imports: [
@@ -19,6 +20,7 @@ import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.compo
     ],
     declarations: [
         InlineAreaEditComponent,
+        InlineSelectEditComponent,
         InlineEditComponent,
         PlaceHoldEmptyPipe,
         TextTruncateComponent,
@@ -26,6 +28,7 @@ import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.compo
     ],
     exports: [
         InlineEditComponent,
+        InlineSelectEditComponent,
         InlineAreaEditComponent,
         PlaceHoldEmptyPipe,
         SortableArrayComponent,

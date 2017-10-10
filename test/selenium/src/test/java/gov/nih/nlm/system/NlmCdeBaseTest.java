@@ -1367,4 +1367,26 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void editStewardOrgAndCancel(String newStewardOrg) {
+        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Discard')]"));
+        textNotPresent(newStewardOrg);
+    }
+
+    protected void editStewardOrgAndSave(String newStewardOrg) {
+        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Confirm')]"));
+        textPresent(newStewardOrg);
+    }
+
+    protected void editUninOfMeasurement(String newUom) {
+        clickElement(By.xpath("//*[@id = 'uom']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys(newUom);
+        clickElement(By.xpath("//*[@id = 'uom']//button[contains(@class,'fa fa-check')]"));
+        textPresent(newUom, By.id("uom"));
+    }
+
+
 }
