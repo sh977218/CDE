@@ -42,23 +42,25 @@ export class DataElementViewComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let cdeId = this.route.snapshot.queryParams['cdeId'];
-        let url = "/de/" + this.route.snapshot.queryParams['tinyId'];
-        if (cdeId) url = "/deById/" + cdeId;
-        this.http.get(url).map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.http.get("/comments/eltId/" + this.elt.tinyId)
-                    .map(res => res.json()).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
-                );
-                this.userService.then(() => {
-                    this.setDisplayStatusWarning();
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                });
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
-        );
+        this.route.queryParams.subscribe(() => {
+            let cdeId = this.route.snapshot.queryParams['cdeId'];
+            let url = "/de/" + this.route.snapshot.queryParams['tinyId'];
+            if (cdeId) url = "/deById/" + cdeId;
+            this.http.get(url).map(r => r.json()).subscribe(response => {
+                    this.elt = response;
+                    this.h.emit({elt: this.elt, fn: this.onLocationChange});
+                    this.http.get("/comments/eltId/" + this.elt.tinyId)
+                        .map(res => res.json()).subscribe(
+                        res => this.hasComments = res && (res.length > 0),
+                        err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+                    );
+                    this.userService.then(() => {
+                        this.setDisplayStatusWarning();
+                        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    });
+                }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+            );
+        });
     }
 
     onLocationChange(event, oldUrl, elt) {

@@ -55,14 +55,16 @@ export class FormViewComponent implements OnInit {
                 private route: ActivatedRoute) {
     }
 
-    ngOnInit(): void {
-        this.loadForm(form => {
-            this.loadComments(form, null);
-            this.userService.then(() => {
-                let user = this.userService.user;
-                if (user && user.username)
-                    this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+    ngOnInit() {
+        this.route.queryParams.subscribe(() => {
+            this.loadForm(form => {
+                this.loadComments(form, null);
+                this.userService.then(() => {
+                    let user = this.userService.user;
+                    if (user && user.username)
+                        this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                    else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                });
             });
         });
     }
