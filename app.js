@@ -142,11 +142,6 @@ app.use (function (req, res, next) {
     }
 });
 
-
-// this hack for angular-send-feedback
-app.get("/icons.png", function (req, res) {
-    res.sendFile(path.join(__dirname, '/modules/components/angular-send-feedback/dist/icons.png'));
-});
 app.use("/components", express.static(path.join(__dirname, '/modules/components')));
 app.use("/modules/components", express.static(path.join(__dirname, '/modules/components')));
 app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));

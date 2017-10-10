@@ -126,10 +126,8 @@ const appRoutes: Routes = [
     ],
     entryComponents: [
         AlertComponent,
-        HomeComponent,
         InboxComponent,
         LoginComponent,
-        NavigationComponent,
         OrgAccountManagementComponent,
         OrgAuthorityComponent,
         OrgClassificationManagementComponent,
@@ -143,7 +141,8 @@ const appRoutes: Routes = [
         UsersMgtComponent,
     ],
     exports: [
-        RouterModule
+        RouterModule,
+        NavigationComponent
     ],
     providers: [
         AlertService,

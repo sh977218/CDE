@@ -2,17 +2,6 @@ angular.module('cdeModule', []).config(
     [function()
 {
 //     $routeProvider.
-//         when('/cde/search', {
-//             controller: 'SearchCtrl',
-//             reloadOnSearch: false,
-//             template: '<cde-cde-search [reloads]="searchReloadCount"></cde-cde-search>',
-//             title: "Find Common Data Elements",
-//             keywords: 'cde, common data element, promis, neuro-qol, phenx, ahrq, ninds, repository',
-//             description: 'Repository of Common Data Elements (CDE). Search CDEs recommended by NIH. See their use in Protocol Forms.'
-//         }).
-//         when('/sdcview', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
-//             $scope.cdeId = $routeParams.cdeId;
-//         }], template: '<cde-sdc-view [cde-id]="cdeId"></cde-sdc-view>'}).
 //         when('/board/:boardId', {controller: ['$scope', '$routeParams', function($scope, $routeParams) {
 //             $scope.boardId = $routeParams.boardId;
 //         }], template: '<cde-board-view [board-id]="boardId"></cde-board-view>'}).
