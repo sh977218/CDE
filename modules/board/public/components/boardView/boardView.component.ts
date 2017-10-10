@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { AlertService } from "system/public/components/alert/alert.service";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -6,8 +6,9 @@ import { SharedService } from "core/public/shared.service";
 import { saveAs } from "file-saver";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
 import { OrgHelperService } from "core/public/orgHelper.service";
-import { UserService } from "../../../../core/public/user.service";
-import { ElasticService } from "../../../../core/public/elastic.service";
+import { UserService } from "core/public/user.service";
+import { ElasticService } from "core/public/elastic.service";
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
     selector: 'cde-board-view',
@@ -15,7 +16,6 @@ import { ElasticService } from "../../../../core/public/elastic.service";
 })
 export class BoardViewComponent implements OnInit {
 
-    @Input() boardId: string;
     @ViewChild("shareBoardModal") public shareBoardModal: NgbModalModule;
     @ViewChild("classifyCdesModal") public classifyCdesModal: ClassifyItemModalComponent;
 
@@ -45,6 +45,7 @@ export class BoardViewComponent implements OnInit {
         icon: 'fa-eye'
     }];
     url: string;
+    boardId: string;
 
     shareModalRef: NgbModalRef;
     classifyCdesRefModal: NgbModalRef;
@@ -54,9 +55,11 @@ export class BoardViewComponent implements OnInit {
                 protected userService: UserService,
                 private modalService: NgbModal,
                 public esService: ElasticService,
-                private orgHelper: OrgHelperService) {}
+                private orgHelper: OrgHelperService,
+                private route: ActivatedRoute) {}
 
     ngOnInit () {
+        this.boardId = this.route.snapshot.params['boardId'];
         this.reload();
         this.url = location.href;
     }

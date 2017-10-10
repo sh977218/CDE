@@ -26,6 +26,7 @@ import { RouterModule, Routes } from "@angular/router";
 const boardRoutes: Routes = [
     {path: 'boardList', component: PublicBoardsComponent},
     {path: 'myboards', component: MyBoardsComponent},
+    {path: 'board/:boardId', component: BoardViewComponent},
 ];
 
 @NgModule({

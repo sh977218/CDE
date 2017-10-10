@@ -62,6 +62,7 @@ export class DataElementViewComponent implements OnInit {
                     this.loadDraft(draft => {
                         if (draft) {
                             this.elt = draft;
+                            this.setDisplayStatusWarning();
                             this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                         } else this.loadDataElement(null);
                     });
@@ -87,6 +88,7 @@ export class DataElementViewComponent implements OnInit {
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.loadComments(this.elt, null);
                 this.userService.then(() => {
+                    this.setDisplayStatusWarning();
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                     if (cb) cb();
                 });
