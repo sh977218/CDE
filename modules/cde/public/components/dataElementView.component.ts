@@ -9,6 +9,7 @@ import { AlertService } from 'system/public/components/alert/alert.service';
 import { UserService } from 'core/public/user.service';
 import * as authShared from "system/shared/authorizationShared";
 import { IsAllowedService } from 'core/public/isAllowed.service';
+import * as deValidator from "../../shared/deValidator.js";
 
 @Component({
     selector: "cde-data-element-view",
@@ -60,6 +61,7 @@ export class DataElementViewComponent implements OnInit {
                     if (draft) {
                         this.elt = draft;
                         this.setDisplayStatusWarning();
+                        deValidator.checkPvUnicity(this.elt.valueDomain);
                         this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                     } else this.loadDataElement(null);
                 });
@@ -88,6 +90,7 @@ export class DataElementViewComponent implements OnInit {
                 this.loadComments(this.elt, null);
                 this.userService.then(() => {
                     this.setDisplayStatusWarning();
+                    deValidator.checkPvUnicity(this.elt.valueDomain);
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                     if (cb) cb();
                 });

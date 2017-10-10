@@ -11,6 +11,7 @@ public class SwaggerTest extends NlmCdeBaseTest {
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
         clickElement(By.partialLinkText("Form"));
+        hangon(5);
         clickElement(By.partialLinkText("/form/{tinyId}"));
         findElement(By.xpath("//*[@id='Form_get_form_tinyId_content']//td[label[text()='tinyId']]/following-sibling::td/input"))
                 .sendKeys("Xy1kuxJqm");

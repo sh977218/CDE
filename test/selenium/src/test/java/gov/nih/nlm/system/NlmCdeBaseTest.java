@@ -427,6 +427,7 @@ public class NlmCdeBaseTest {
 
     protected void checkTooltipText(By by, String text) {
         try {
+            hoverOverElement(findElement(by));
             textPresent(text);
         } catch (TimeoutException e) {
             hoverOverElement(findElement(By.id("searchSettings")));

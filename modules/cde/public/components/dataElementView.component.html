@@ -70,7 +70,7 @@
                             class="btn btn-info" (click)="loadDraft(null);">
                         <i class="fa fa-eye fa-lg"></i> View Draft
                     </button>
-                    <ng-container *ngIf="elt.isDraft">
+                    <ng-container *ngIf="elt.isDraft && elt.valueDomain.allValid">
                         <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
                             <i class="fa fa-globe fa-lg"></i> Publish
                         </button>
