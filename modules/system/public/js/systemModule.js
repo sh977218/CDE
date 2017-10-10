@@ -1,4 +1,4 @@
-angular.module("cdeAppModule", ['systemModule', 'cdeModule', 'formModule']);
+angular.module("cdeAppModule", ['systemModule']);
 
 angular.module('systemModule', ['ngSanitize', 'LocalStorageModule'])
     .config(['$logProvider', function ($logProvider) {
