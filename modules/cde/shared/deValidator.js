@@ -49,6 +49,8 @@ exports.checkPvUnicity = function (valueDomain) {
         if (pv.valueMeaningCode && pv.valueMeaningCode.length > 0)
             allCodes[pv.valueMeaningCode] = 1;
         delete pv.notValid;
+        delete valueDomain.pvNotValidMsg;
+        valueDomain.allValid = true;
     });
     return result;
 };
