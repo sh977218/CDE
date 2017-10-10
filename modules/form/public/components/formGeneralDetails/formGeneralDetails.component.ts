@@ -22,4 +22,9 @@ export class FormGeneralDetailsComponent {
         this.userService.then(() => this.userOrgs = this.userService.userOrgs);
     }
 
+    changeStewardOrg(event) {
+        this.elt.stewardOrg.name = event;
+        this.onEltChange.emit();
+    }
+
 }

@@ -13,13 +13,14 @@ export class DeGeneralDetailsComponent {
     @Input() canEdit;
     @Output() onEltChange = new EventEmitter();
     userOrgs = [];
-    options = {
-        multiple: false,
-        tags: true
-    };
 
     constructor(public userService: UserService,
                 public orgHelperService: OrgHelperService) {
         this.userService.then(() => this.userOrgs = this.userService.userOrgs);
+    }
+
+    changeStewardOrg(event) {
+        this.elt.stewardOrg.name = event;
+        this.onEltChange.emit();
     }
 }
