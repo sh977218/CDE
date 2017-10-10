@@ -29,7 +29,8 @@ export class PermissibleValueComponent {
 
     _elt: any;
 
-    @Input() set elt(v: any) {
+    @Input()
+    set elt(v: any) {
         this._elt = v;
         let isDatatypeDefined = _.indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
         if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
@@ -51,6 +52,7 @@ export class PermissibleValueComponent {
             else this.umlsTerms = [];
         });
     }
+
     get elt(): any {
         return this._elt;
     };
@@ -184,7 +186,10 @@ export class PermissibleValueComponent {
                             res => {
                                 let l = res.result.filter(r => r.termType === __this.SOURCES[src].termType);
                                 if (l[0]) {
-                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: l[0].ui, meaning: l[0].name};
+                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                                        code: l[0].ui,
+                                        meaning: l[0].name
+                                    };
                                 } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
                             }, err => this.alert.addAlert("danger", err));
                 } else {
@@ -331,6 +336,12 @@ export class PermissibleValueComponent {
 
     changedDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatype = data.value;
+        deValidator.fixDatatype(this.elt);
+        this.onEltChange.emit();
+    }
+
+    changedPvDatatype(data: { value: string[] }) {
+        this.elt.valueDomain.datatypeValueList.datatype = event;
         deValidator.fixDatatype(this.elt);
         this.onEltChange.emit();
     }

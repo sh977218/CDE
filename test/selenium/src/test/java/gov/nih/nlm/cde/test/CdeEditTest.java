@@ -21,10 +21,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
         clickElement(By.id("pvs_tab"));
-        clickElement(By.xpath("//*[@id = 'uom']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys("myUom");
-        clickElement(By.xpath("//*[@id = 'uom']//button[contains(@class,'fa fa-check')]"));
-        textPresent("myUom");
+        editUninOfMeasurement("myUom");
+
         newCdeVersion("Change note for change number 1");
 
         goToCdeByName(cdeName);

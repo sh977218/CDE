@@ -86,7 +86,8 @@ export class DataElementViewComponent implements OnInit {
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.loadComments(this.elt, null);
                 this.userService.then(() => {
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt)
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    if (cb) cb();
                 });
             },
             () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
@@ -219,7 +220,7 @@ export class DataElementViewComponent implements OnInit {
         this.http.get("/draftDataElement/" + this.tinyId)
             .map(res => res.json()).subscribe(
             res => {
-                if (cb) cb(res[0])
+                if (cb) cb(res[0]);
             },
             err => this.alert.addAlert("danger", err));
     }

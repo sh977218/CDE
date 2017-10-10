@@ -102,9 +102,9 @@
         <h4>Permissible Value</h4>
         <div class="col-xs-2 text-right text_label">Datatype:</div>
         <div class="col-xs-10">
-            <cde-inline-edit [(model)]="elt.valueDomain.datatypeValueList.datatype" (modelChange)="onEltChange.emit();"
-                             [isAllowed]="canEdit" [inputType]="'select'" [selectOptions]="dataTypeValueListOptions">
-            </cde-inline-edit>
+            <cde-inline-select-edit [(value)]="elt.valueDomain.datatypeValueList.datatype" [selectOptions]="dataTypeValueListOptions"
+                                    (save)="changedPvDatatype($event);" [isAllowed]="canEdit">
+            </cde-inline-select-edit>
         </div>
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
             <span *ngFor="let source of keys(SOURCES)" style="margin-left: 50px">

@@ -1381,4 +1381,12 @@ public class NlmCdeBaseTest {
         textPresent(newStewardOrg);
     }
 
+    protected void editUninOfMeasurement(String newUom) {
+        clickElement(By.xpath("//*[@id = 'uom']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys(newUom);
+        clickElement(By.xpath("//*[@id = 'uom']//button[contains(@class,'fa fa-check')]"));
+        textPresent(newUom, By.id("uom"));
+    }
+
+
 }
