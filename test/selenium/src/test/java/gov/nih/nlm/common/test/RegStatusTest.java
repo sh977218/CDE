@@ -22,19 +22,6 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified", By.id("registrationStatus"));
     }
 
-    public void cantEditStatusIfPendingChanges(String eltName, String user) {
-        mustBeLoggedInAs(user, password);
-        goToEltByName(eltName);
-        textPresent("Qualified");
-        clickElement(By.id("naming_tab"));
-        clickElement(By.cssSelector("#designation_0 i.fa-edit"));
-        findElement(By.cssSelector("#designation_0 input")).sendKeys("[name change number 1]");
-        clickElement(By.cssSelector("#designation_0 .fa-check"));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
-        clickElement(By.id("discardChanges"));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("discardChanges")));
-    }
-
     public void changeRegistrationStatus(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
@@ -68,7 +55,6 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-
 
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Retired");

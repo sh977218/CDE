@@ -31,10 +31,6 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
         textPresent(validationError);
         clickElement(By.id("cancelSaveBtn"));
         modalGone();
-        clickElement(By.id("discardChanges"));
-        textPresent("Changes discarded.");
-        closeAlert();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("discardChanges")));
     }
 
 

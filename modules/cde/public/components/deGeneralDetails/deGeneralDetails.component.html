@@ -7,8 +7,14 @@
     <div class="row">
         <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
         <div class="col-sm-7" id="dd_general_steward">
-            <cde-inline-select-edit [(value)]="elt.stewardOrg.name" [selectOptions]="userOrgs"
-                                    (save)="changeStewardOrg($event);" [isAllowed]="canEdit && !elt.isDraft">
+            <ng-template #stewardTooltip>
+                <span *ngIf="orgHelperService.orgsDetailedInfo && orgHelperService.orgsDetailedInfo.length > 0"
+                      [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
+                </span>
+            </ng-template>
+            <cde-inline-select-edit [ngbTooltip]="stewardTooltip" [(value)]="elt.stewardOrg.name"
+                                    [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
+                                    [isAllowed]="canEdit && !elt.isDraft">
             </cde-inline-select-edit>
         </div>
     </div>

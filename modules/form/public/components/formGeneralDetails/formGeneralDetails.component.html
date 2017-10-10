@@ -42,8 +42,13 @@
     <div class="row">
         <div class="col-sm-5 questionSectionLabel">Steward:</div>
         <div class="col-sm-7">
-            <cde-inline-select-edit [(value)]="elt.stewardOrg.name" [selectOptions]="userOrgs"
-                                    (save)="changeStewardOrg($event);"
+            <ng-template #stewardTooltip>
+                <span *ngIf="orgHelperService.orgsDetailedInfo"
+                      [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
+                </span>
+            </ng-template>
+            <cde-inline-select-edit [ngbTooltip]="stewardTooltip" [(value)]="elt.stewardOrg.name"
+                                    [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
                                     [isAllowed]="canEdit && !elt.isDraft">
             </cde-inline-select-edit>
         </div>

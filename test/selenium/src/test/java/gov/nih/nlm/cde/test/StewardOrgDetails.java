@@ -8,7 +8,8 @@ public class StewardOrgDetails extends NlmCdeBaseTest {
 
     @Test
     public void checkStewardOrgDetails() {
-        goToCdeByName("Feature Modified By java.lang.String");
+        String cdeName1 = "Feature Modified By java.lang.String";
+        goToCdeByName(cdeName1);
         By by = By.id("dd_general_steward_name");
         checkTooltipText(by, "Organization Details");
         checkTooltipText(by, "Cancer Biomedical Informatics Grid");
@@ -17,7 +18,8 @@ public class StewardOrgDetails extends NlmCdeBaseTest {
         checkTooltipText(by, "111-222-3333");
         checkTooltipText(by, "https://cabig.nci.nih.gov/");
 
-        goToCdeByName("Lesion Nontarget Location Type");
+        String cdeName2 = "Lesion Nontarget Location Type";
+        goToCdeByName(cdeName2);
         by = By.linkText("CTEP");
         hoverOverElement(findElement(By.linkText("CTEP")));
         checkTooltipText(by, "Organization Details");
