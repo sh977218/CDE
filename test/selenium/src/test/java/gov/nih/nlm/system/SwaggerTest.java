@@ -13,6 +13,7 @@ public class SwaggerTest extends NlmCdeBaseTest {
         clickElement(By.partialLinkText("Form"));
         hangon(5);
         clickElement(By.partialLinkText("/form/{tinyId}"));
+        clickElement(By.xpath("//*[@id='Form_get_form_tinyId']/div[contains(@class,'heading')]"));
         findElement(By.xpath("//*[@id='Form_get_form_tinyId_content']//td[label[text()='tinyId']]/following-sibling::td/input"))
                 .sendKeys("Xy1kuxJqm");
         clickElement(By.cssSelector("#Form_get_form_tinyId_content input[type=submit]"));
