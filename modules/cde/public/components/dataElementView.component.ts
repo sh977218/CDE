@@ -49,13 +49,13 @@ export class DataElementViewComponent implements OnInit {
                 this.http.get("/comments/eltId/" + this.elt.tinyId)
                     .map(res => res.json()).subscribe(
                     res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
+                    err => this.alert.addAlert("danger", "Error loading comments. " + err)
                 );
                 this.userService.then(() => {
                     this.setDisplayStatusWarning();
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                 });
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+            }, () => this.elt = {}
         );
     }
 
@@ -77,7 +77,7 @@ export class DataElementViewComponent implements OnInit {
                 this.elt = response;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.alert.addAlert("success", "Changes discarded.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+            }, () => this.elt = {}
         );
     }
 
@@ -106,7 +106,7 @@ export class DataElementViewComponent implements OnInit {
                 this.elt = response;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.alert.addAlert("success", "Data Element saved.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+            }, () => this.elt = {}
         );
         this.setDisplayStatusWarning();
         this.canEdit = this.isAllowedModel.isAllowed(this.elt);

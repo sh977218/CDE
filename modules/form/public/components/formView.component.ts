@@ -82,7 +82,7 @@ export class FormViewComponent implements OnInit {
                 this.userService.then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
                 cb(this.elt);
             },
-            () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form.")
+            () => this.elt = {}
         );
     }
 
@@ -316,7 +316,7 @@ export class FormViewComponent implements OnInit {
                 this.loadForm(() => this.alert.addAlert("success", "Form saved."));
                 this.loadDraft(null);
             }
-        }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this form."));
+        }, err => this.elt = {});
     }
 
     removeDraft() {
