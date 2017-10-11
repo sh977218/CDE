@@ -7,7 +7,6 @@ import { ActivatedRoute } from '@angular/router';
     templateUrl: "./sdcView.component.html"
 })
 
-
 export class SdcViewComponent implements OnInit {
 
     constructor(private http: Http,
@@ -16,8 +15,13 @@ export class SdcViewComponent implements OnInit {
     sdcCde: any;
 
     ngOnInit () {
+        if (this.route.snapshot.queryParams['triggerClientError']) {
+            throw new Error("An exception has been thown");
+        }
+
         let cdeId = this.route.snapshot.queryParams['cdeId'];
         this.http.get("/sdc/" + cdeId).map(r => r.json()).subscribe(result => this.sdcCde = result);
+
     }
 
 }

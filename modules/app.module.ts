@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
+import { ErrorHandler, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
@@ -18,6 +18,7 @@ import { CoreModule } from 'core/public/core.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormModule } from 'form/public/form.module';
 import { SystemModule } from 'system/public/system.module';
+import { FrontExceptionHandler } from 'frontExceptionHandler';
 
 const appRoutes: Routes = [
 ];
@@ -28,7 +29,7 @@ const appRoutes: Routes = [
     ],
     providers: [
         QuickBoardListService,
-        // {provide: ErrorHandler, useClass: FrontExceptionHandler}
+        {provide: ErrorHandler, useClass: FrontExceptionHandler}
     ],
     imports: [
         BrowserModule,

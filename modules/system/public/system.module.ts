@@ -68,7 +68,6 @@ const appRoutes: Routes = [
     {path: 'profile', component: ProfileComponent},
     {path: 'searchPreferences', component: SearchPreferencesComponent},
     {path: 'orgComments', component: LatestCommentsComponent, data: {commentsUrl: "orgComments"}},
-
 ];
 
 @NgModule({

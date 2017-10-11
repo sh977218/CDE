@@ -7,8 +7,6 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import { UpgradeModule } from '@angular/upgrade/static';
 import { CdeAppModule } from 'app.module';
 
-import "./upgrade-imports";
-
 // required for ng2-select2
 require('expose-loader?select2!select2');
 
