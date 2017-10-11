@@ -26,6 +26,7 @@ module.exports = {
         ]
     },
     plugins: prod ?
+    plugins: prod ?
         [
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
                 /angular(\\|\/)core(\\|\/)@angular/,

@@ -197,11 +197,13 @@ ngb-accordion .card-header a:hover {
 }
 
 .fake-link {
+    color: #337ab7;
     text-decoration: none;
     cursor: pointer;
 }
 
 .fake-link:hover {
+    color: #23527c;
     text-decoration: underline;
 }
 
