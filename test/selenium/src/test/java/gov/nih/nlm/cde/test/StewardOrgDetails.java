@@ -20,8 +20,6 @@ public class StewardOrgDetails extends NlmCdeBaseTest {
 
         String cdeName2 = "Lesion Nontarget Location Type";
         goToCdeByName(cdeName2);
-        by = By.linkText("CTEP");
-        hoverOverElement(findElement(By.linkText("CTEP")));
         checkTooltipText(by, "Organization Details");
         checkTooltipText(by, "Cancer Therapy Evaluation Program");
         checkTooltipText(by, "75 Sunshine Street, Blah, Doh 12345");

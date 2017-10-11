@@ -45,16 +45,16 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         changeField(0, "pv2");
         textPresent("There are validation errors. Duplicate Permissible Value");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-notValid")));
-        Assert.assertEquals(0, findElements(By.id("openSave")).size());
+        Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
 
         changeField(1, "pv1");
         textNotPresent("There are validation errors");
-        Assert.assertEquals(0, findElements(By.id("openSave")).size());
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
         addPv("pv5", "name1", "code5", "LOINC");
         textPresent("There are validation errors. Duplicate Code Name");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
-        Assert.assertEquals(0, findElements(By.id("openSave")).size());
+        Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
         clickElement(By.id("pvRemove_4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
@@ -62,7 +62,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         addPv("pv5", "name5", "code2", "NCI");
         textPresent("There are validation errors. Duplicate Code");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
-        Assert.assertEquals(0, findElements(By.id("openSave")).size());
+        Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
         clickElement(By.id("pvRemove_4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
