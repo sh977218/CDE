@@ -7,7 +7,7 @@ public class CdeSwaggerTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeTinyIdSwaggerApi() {
-        swaggerApi("cdeTinyId", "PHQ9IntrstPleasrActScore", "QkWPURx5Fz", null);
+        swaggerApi("cdeTinyId", "PDQUALIFNghtWakeBRScale", "W7ZuXqrUdq7", null);
     }
 
     @Test

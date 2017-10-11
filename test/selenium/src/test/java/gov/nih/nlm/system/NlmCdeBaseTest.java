@@ -568,10 +568,6 @@ public class NlmCdeBaseTest {
         }
     }
 
-    private boolean classPresent(String text, By by) {
-        return findElement(by).getAttribute("class").contains(text);
-    }
-
     public boolean textPresent(String text, By by) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
         return true;
@@ -1435,6 +1431,7 @@ public class NlmCdeBaseTest {
         }
         hangon(2);
         driver.findElement(by).sendKeys(key);
+        hangon(5);
     }
 
 
@@ -1446,11 +1443,12 @@ public class NlmCdeBaseTest {
         findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
         clickIFrameElement(By.xpath("//button[. = 'Try it out ']"));
         sendKeyIFrameElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input"), tinyId);
-        if (version != null) {
+        if (version != null)
             sendKeyIFrameElement(By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input)[2]"), version);
-        }
         clickIFrameElement(By.xpath("//button[. = 'Execute']"));
-        clickIFrameElement(By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+//        hangon(3000);
         textPresent(text, By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
     }
 
