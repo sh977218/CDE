@@ -49,7 +49,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         switchTab(1);
         textPresent("Warning: this data element is archived.");
         clickElement(By.linkText("view the current version here"));
-        textPresent(cdeNameChange);.
+        textPresent(cdeNameChange);
         textPresent(cdeDefinitionChange);
 
         clickElement(By.id("pvs_tab"));
