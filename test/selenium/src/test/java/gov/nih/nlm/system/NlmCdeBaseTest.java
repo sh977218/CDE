@@ -461,18 +461,38 @@ public class NlmCdeBaseTest {
     }
 
     protected void clickElement(By by) {
+        // Wait for angular digest cycle.
+        try {
+            String script = "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);";
+            ((JavascriptExecutor) driver).executeAsyncScript(script, "");
+        } catch (Exception e) {
+        }
         try {
             wait.until(ExpectedConditions.presenceOfElementLocated(by));
+            scrollToView(by);
             wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
             closeAlert();
             findElement(by).click();
         } catch (WebDriverException e) {
+            System.out.println("Exception 1: " + e);
+            JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+            // IE does not support scrollY
+            Object yCoordinate = javascriptExecutor.executeScript("return typeof window.scrollY === 'undefined' ? window.pageYOffset : window.scrollY;");
+            Integer value;
+            if (yCoordinate instanceof Double) {
+                value = ((Double) yCoordinate).intValue();
+            } else {
+                Long yCoordinateLong = (Long) yCoordinate;
+                value = yCoordinateLong.intValue();
+            }
+            scrollTo(value + 100);
             try {
                 findElement(by).click();
             } catch (WebDriverException e2) {
                 System.out.println("Exception 2: " + e2);
+                scrollToTop();
                 findElement(by).click();
             }
         }
