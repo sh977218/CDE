@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "../node_modules/feedback/stable/2.0/html2canvas";
-import "../node_modules/feedback/stable/2.0/feedback";
+import "../node_modules/feedback/stable/2.0/html2canvas.js";
+import "../node_modules/feedback/stable/2.0/feedback.js";
 import "../node_modules/feedback/stable/2.0/feedback.min.css";
 
 @Component({

@@ -10,14 +10,11 @@ public class SwaggerTest extends NlmCdeBaseTest {
         clickElement(By.id("apiDocumentationLink"));
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
-        clickElement(By.partialLinkText("Form"));
-        hangon(5);
-        clickElement(By.partialLinkText("/form/{tinyId}"));
-        clickElement(By.xpath("//*[@id='Form_get_form_tinyId']/div[contains(@class,'heading')]"));
-        findElement(By.xpath("//*[@id='Form_get_form_tinyId_content']//td[label[text()='tinyId']]/following-sibling::td/input"))
+        clickElement(By.xpath("//*[@id='operations-Form-get_form__tinyId_']/div/span[2]/a"));
+        clickElement(By.xpath("//*[@id='operations-Form-get_form__tinyId_']/div[2]/div/div[2]/div[1]/div[2]/button"));
+        findElement(By.xpath("//*[@id='operations-Form-get_form__tinyId_']/div[2]/div/div[2]/div[2]/table/tbody/tr/td[2]/input"))
                 .sendKeys("Xy1kuxJqm");
-        clickElement(By.cssSelector("#Form_get_form_tinyId_content input[type=submit]"));
-        scrollToViewByXpath("//*[@id='Form_get_form_tinyId_content']//*[contains(@class,'response_body')]");
-        textPresent("Xy1kuxJqm", By.xpath("//*[@id='Form_get_form_tinyId_content']//*[contains(@class,'response_body')]"));
+        clickElement(By.xpath("//*[@id='operations-Form-get_form__tinyId_']/div[2]/div/div[3]/button"));
+        textPresent("Xy1kuxJqm", By.xpath("//*[@id='operations-Form-get_form__tinyId_']/div[2]/div/div[4]/div[2]/div/div/table/tbody/tr/td[2]/div[1]/pre"));
     }
 }

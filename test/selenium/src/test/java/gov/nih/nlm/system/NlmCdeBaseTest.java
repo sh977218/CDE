@@ -472,7 +472,6 @@ public class NlmCdeBaseTest {
         }
         try {
             wait.until(ExpectedConditions.presenceOfElementLocated(by));
-            scrollToView(by);
             wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
@@ -488,14 +487,11 @@ public class NlmCdeBaseTest {
                 value = ((Double) yCoordinate).intValue();
             } else {
                 Long yCoordinateLong = (Long) yCoordinate;
-                value = yCoordinateLong.intValue();
             }
-            scrollTo(value + 100);
             try {
                 findElement(by).click();
             } catch (WebDriverException e2) {
                 System.out.println("Exception 2: " + e2);
-                scrollToTop();
                 findElement(by).click();
             }
         }

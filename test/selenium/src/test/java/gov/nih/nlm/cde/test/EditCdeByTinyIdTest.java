@@ -8,16 +8,16 @@ public class EditCdeByTinyIdTest extends NlmCdeBaseTest {
 
     @Test
     public void editCdeByTinyId() {
+        String cdeName = "Left Lymph Node Positive Total Count";
         String nameChange = "[name change number 1]";
         mustBeLoggedInAs(ctepCurator_username, password);
 
-        goToCdeByName("Left Lymph Node Positive Total Count");
+        goToCdeByName(cdeName);
         clickElement(By.id("naming_tab"));
-
         editDesignationByIndex(0, nameChange);
         newCdeVersion();
 
-        goToCdeByName("Left Lymph Node Positive Total Count");
+        goToCdeByName(cdeName);
         textPresent("General Details");
         textPresent(nameChange);
     }
