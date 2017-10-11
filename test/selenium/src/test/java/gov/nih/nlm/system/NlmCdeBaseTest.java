@@ -461,15 +461,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void clickElement(By by) {
-        // Wait for angular digest cycle.
-
-        try {
-            ((JavascriptExecutor) driver).executeAsyncScript(
-                    "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
-                    , ""
-            );
-        } catch (Exception e) {
-        }
         try {
             wait.until(ExpectedConditions.presenceOfElementLocated(by));
             wait.until(ExpectedConditions.elementToBeClickable(by));
@@ -478,16 +469,6 @@ public class NlmCdeBaseTest {
             closeAlert();
             findElement(by).click();
         } catch (WebDriverException e) {
-            System.out.println("Exception 1: " + e);
-            JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
-            // IE does not support scrollY
-            Object yCoordinate = javascriptExecutor.executeScript("return typeof window.scrollY === 'undefined' ? window.pageYOffset : window.scrollY;");
-            Integer value;
-            if (yCoordinate instanceof Double) {
-                value = ((Double) yCoordinate).intValue();
-            } else {
-                Long yCoordinateLong = (Long) yCoordinate;
-            }
             try {
                 findElement(by).click();
             } catch (WebDriverException e2) {
