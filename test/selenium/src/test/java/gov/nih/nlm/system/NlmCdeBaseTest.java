@@ -109,6 +109,14 @@ public class NlmCdeBaseTest {
             put("meshmapping", "fa-link");
         }
     };
+    Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {
+        {
+            put("cdeTinyId", "operations-CDE-get_de__tinyId_");
+            put("cdeTinyIdVersion", "operations-CDE-get_de__tinyId__version__version_");
+            put("formTinyId", "operations-Form-get_form__tinyId_");
+            put("formTinyIdVersion", "operations-Form-get_form__tinyId__version__version_");
+        }
+    };
 
     private void setDriver(String b) {
         if (b == null) b = browser;
@@ -718,6 +726,7 @@ public class NlmCdeBaseTest {
     protected void scrollDownBy(Integer y) {
         String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+        hangon(5);
     }
 
     protected void scrollContainerDownBy(WebElement c, Integer y) {
@@ -1386,5 +1395,32 @@ public class NlmCdeBaseTest {
         textPresent(newUom, By.id("uom"));
     }
 
+
+    protected void swaggerApi(String api, String tinyId, String text) {
+        clickElement(By.id("dropdownMenu_help"));
+        clickElement(By.id("apiDocumentationLink"));
+        driver.switchTo().frame(findElement(By.cssSelector("iframe")));
+        textPresent("CDE API");
+        findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
+        for (int i = 0; i < 5; i++) {
+            findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[. = 'Try it out ']")));
+            hangon(1);
+        }
+        findElement(By.xpath("//button[. = 'Try it out ']")).click();
+        for (int i = 0; i < 3; i++) {
+            findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='operations-Form-get_form__tinyId_']//input")));
+            hangon(1);
+        }
+        findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input")).sendKeys(tinyId);
+        for (int i = 0; i < 5; i++) {
+            findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[. = 'Execute']")));
+            hangon(1);
+        }
+        findElement(By.xpath("//button[. = 'Execute']")).click();
+        textPresent(text);
+    }
 
 }
