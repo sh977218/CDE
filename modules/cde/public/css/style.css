@@ -1709,3 +1709,11 @@ del {
 .modal {
     overflow-y: scroll !important;
 }
+
+.loading {
+    display: none;
+}
+
+nih-cde:empty + .loading {
+    display: block;
+}
