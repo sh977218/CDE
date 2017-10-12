@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
@@ -24,6 +24,7 @@ import * as deValidator from "../../shared/deValidator.js";
 export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
+    @ViewChild("tabSet") public tabSet: NgbTabset;
     @Output() public h = new EventEmitter();
 
     elt: any;
@@ -56,6 +57,7 @@ export class DataElementViewComponent implements OnInit {
             this.tinyId = this.route.snapshot.queryParams['tinyId'];
             this.url = "/de/" + this.tinyId;
             if (this.deId) this.url = "/deById/" + this.deId;
+            if (this.tabSet) this.tabSet.select("general_tab");
             this.userService.then(() => {
                 let user = this.userService.user;
                 if (user && user.username) {

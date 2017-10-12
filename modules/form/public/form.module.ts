@@ -45,6 +45,7 @@ const appRoutes: Routes = [
     {path: 'form/search', component: FormSearchComponent},
     {path: 'form', component: FormSearchComponent},
     {path: 'formView', component: FormViewComponent},
+    {path: 'createForm', component: CreateFormComponent},
 ];
 
 

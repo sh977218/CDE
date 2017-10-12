@@ -1358,7 +1358,8 @@ public class NlmCdeBaseTest {
             findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
             hangon(2);
             clickElement(By.id("confirmAddChildClassificationBtn"));
-
+            textPresent("Classification added");
+            closeAlert();
         }
         for (int i = 1; i < categories.length; i++) {
             String[] nextCategories = Arrays.copyOfRange(categories, 0, i + 1);
@@ -1370,6 +1371,8 @@ public class NlmCdeBaseTest {
                 findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
                 hangon(2);
                 clickElement(By.id("confirmAddChildClassificationBtn"));
+                textPresent("Classification added");
+                closeAlert();
             }
         }
     }

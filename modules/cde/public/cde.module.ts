@@ -40,6 +40,7 @@ const appRoutes: Routes = [
     {path: 'createCde', component: CreateDataElementComponent},
     {path: 'deView', component: DataElementViewComponent},
     {path: 'sdcview', component: SdcViewComponent},
+    {path: 'cdeStatusReport', component: CdeStatusReportComponent},
 ];
 
 @NgModule({
