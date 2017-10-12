@@ -89,8 +89,11 @@ export class DataElementViewComponent implements OnInit {
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.loadComments(this.elt, null);
                 this.userService.then(() => {
+                    let user = this.userService.user;
+                    if (user && user.username) {
+                        deValidator.checkPvUnicity(this.elt.valueDomain);
+                    }
                     this.setDisplayStatusWarning();
-                    deValidator.checkPvUnicity(this.elt.valueDomain);
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                     if (cb) cb();
                 });
