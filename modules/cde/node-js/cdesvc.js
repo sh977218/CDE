@@ -74,6 +74,35 @@ exports.byTinyIdVersion = function (req, res) {
     });
 };
 
+exports.draftDataElements = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    mongo_cde.draftDataElements(tinyId, function (err, dataElements) {
+        if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
+        res.send(dataElements);
+    });
+};
+
+exports.saveDraftDataElement = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    let elt = req.body;
+    if (elt.tinyId !== tinyId) return res.status(500);
+    mongo_cde.saveDraftDataElement(elt, function (err, dataElement) {
+        if (err) return res.status(500).send("ERROR - save draft data element. " + tinyId);
+        res.send(dataElement);
+    });
+};
+
+exports.deleteDraftDataElement = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    mongo_cde.deleteDraftDataElement(tinyId, function (err) {
+        if (err) return res.status(500).send("ERROR - delete draft data element. " + tinyId);
+        res.send();
+    });
+};
+
 exports.byTinyIdList = function (req, res) {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
@@ -125,7 +154,10 @@ exports.updateDataElement = function (req, res) {
                 deValidator.wipeDatatype(elt);
                 mongo_cde.update(elt, req.user, function (err, response) {
                     if (err) return res.status(500).send("ERROR - cannot update de");
-                    res.send(response);
+                    mongo_cde.deleteDraftDataElement(elt.tinyId, err => {
+                        if (err) return res.status(500).send("ERROR - cannot delete draft. ");
+                        res.send(response);
+                    });
                 });
             });
         });

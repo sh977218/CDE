@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { TourService } from "../../../../core/public/tour.service";
+import { TourService } from "core/public/tour.service";
 
 @Component({
     selector: "cde-home",

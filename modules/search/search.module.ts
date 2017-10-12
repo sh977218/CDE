@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import {  } from "./upgrade-components";
 import { AccordionListHeadingComponent } from "./listView/accordionListHeading.component";
 import { ListViewControlsComponent } from "./listView/listViewControls.component";
 import { SearchExportButtonComponent } from "./searchExportButton.component";
@@ -12,12 +11,14 @@ import { SummaryListComponent } from "./listView/summaryList.component";
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from "./listView/summaryListItem.component";
 import { TableListComponent } from "./listView/tableList.component";
 import { ListViewComponent } from 'search/listView/listView.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
+        RouterModule.forChild([])
     ],
     declarations: [
         AccordionListHeadingComponent,

@@ -10,6 +10,7 @@ import { UserService } from 'core/public/user.service';
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: "cde-form-view",
@@ -50,35 +51,34 @@ export class FormViewComponent implements OnInit {
                 public isAllowedModel: IsAllowedService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                public userService: UserService) {
+                public userService: UserService,
+                private route: ActivatedRoute) {
     }
 
-    ngOnInit(): void {
-        this.loadForm(form => {
-            this.loadComments(form, null);
-            this.userService.then(() => {
-                let user = this.userService.user;
-                if (user && user.username)
-                    this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+    ngOnInit() {
+        this.route.queryParams.subscribe(() => {
+            this.loadForm(form => {
+                this.loadComments(form, null);
+                this.userService.then(() => {
+                    let user = this.userService.user;
+                    if (user && user.username)
+                        this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                    else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                });
             });
         });
     }
 
     loadForm(cb) {
-        let formId = this.routeParams.formId;
-        let url = "/form/" + this.routeParams.tinyId;
+        let formId = this.route.snapshot.queryParams['formId'];
+        let url = "/form/" + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
                 this.formId = this.elt._id;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
                 this.areDerivationRulesSatisfied();
-                this.http.get("/comments/eltId/" + this.elt.tinyId)
-                    .map(res => res.json()).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error loading comments. " + err)
-                );
+                this.loadComments(this.elt, null);
                 this.userService.then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
                 cb(this.elt);
             },
@@ -97,9 +97,6 @@ export class FormViewComponent implements OnInit {
     onLocationChange(event, newUrl, oldUrl, elt) {
         if (elt && elt.unsaved && oldUrl.indexOf("formView") > -1) {
             let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            if ((window as any).debugEnabled) {
-                txt = txt + window.location.pathname;
-            }
             let answer = confirm(txt);
             if (!answer) event.preventDefault();
         }

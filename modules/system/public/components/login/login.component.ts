@@ -1,9 +1,9 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
-import "rxjs/add/operator/map";
 import { AlertService } from "../alert/alert.service";
 import { LoginService } from "./login.service";
-import { UserService } from "../../../../core/public/user.service";
+import { UserService } from "core/public/user.service";
+import { Router } from '@angular/router';
 
 @Component({
     selector: "cde-login",
@@ -17,16 +17,15 @@ export class LoginComponent implements OnInit {
     password: string;
     siteKey: string = (window as any).siteKey;
     recaptcha: string;
-    redirectRoute: string;
 
     constructor(private http: Http,
                 private alert: AlertService,
                 private loginSvc: LoginService,
-                private userService: UserService) {}
+                private userService: UserService,
+                private router: Router) {}
 
     ngOnInit() {
         this.getCsrf();
-        this.redirectRoute = this.loginSvc.getPreviousRoute() ? this.loginSvc.getPreviousRoute() : "/home";
     }
 
     resolved (e) {
@@ -50,6 +49,7 @@ export class LoginComponent implements OnInit {
         }).map(r => r.text()).subscribe(res => {
             this.userService.reload();
             if (res === "OK") {
+                this.router.navigate([this.loginSvc.getPreviousRoute().url], {queryParams: this.loginSvc.getPreviousRoute().queryParams});
                 (document.querySelector('#goPrevious')as any).click();
             } else {
                 this.alert.addAlert("danger", res);

@@ -1,12 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "../node_modules/feedback/stable/2.0/html2canvas";
-import "../node_modules/feedback/stable/2.0/feedback";
+import "../node_modules/feedback/stable/2.0/html2canvas.js";
+import "../node_modules/feedback/stable/2.0/feedback.js";
 import "../node_modules/feedback/stable/2.0/feedback.min.css";
 
 @Component({
     selector: "nih-cde",
-    template: ``
+    template: `
+        <cde-navigation></cde-navigation>
+        <router-outlet></router-outlet>
+        <cde-alert></cde-alert>
+    `
 })
 export class CdeAppComponent implements OnInit {
     name = "Angular 2";

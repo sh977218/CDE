@@ -1,5 +1,5 @@
 <ng-container *ngIf="view === 'welcome'; then welcomeSearch else searchResults" ></ng-container>
-<a [href]="redirectPath" style="display: none" id="redirectMe"></a>
+<!--<a [href]="redirectPath" style="display: none" id="redirectMe"></a>-->
 
 <ng-template #welcomeSearch>
     <div class="container">
@@ -53,7 +53,7 @@
                                 <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
                                           (click)="browseOrg(org.name)">
                                     <legend>
-                                        <a href="#" id="browseOrg-{{org.name}}">{{org.name}}</a>
+                                        <span id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</span>
                                     </legend>
                                     <div *ngIf="org.longName">{{org.longName}}</div>
                                     <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
@@ -76,7 +76,7 @@
                                     <h4 style="margin-bottom:2px;">{{key}}</h4>
                                     <ul style="list-style-type: none">
                                         <li *ngFor="let t of topics[key]">
-                                            <a href="#" (click)="browseTopic(key + ';' + t.name)">{{t.name}}
+                                            <a (click)="browseTopic(key + ';' + t.name)">{{t.name}}
                                                 ({{t.count}})</a>
                                         </li>
                                     </ul>
@@ -169,7 +169,7 @@
                                 <li *ngIf="userService?.user && displayValidation()">
                                     <a id="exportValidRule" (click)="openValidRulesModal()">Validation Rules</a>
                                 </li>
-                                <li *ngIf="!userService?.user?._id && module !== 'cde'"><a href="/login">Please login to export forms.</a></li>
+                                <li *ngIf="!userService?.user?._id && module !== 'cde'"><a routerLink="/login">Please login to export forms.</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -266,7 +266,7 @@
                                 <ng-template #else01>
                                     <i class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>
                                 </ng-template>
-                                <a href="#" class="nonLinkAnchor" id="classifications-text-{{t.key}}"> {{t.key}}
+                                <a class="nonLinkAnchor" id="classifications-text-{{t.key}}"> {{t.key}}
                                     (<span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)
                                 </a>
                             </span>
@@ -280,7 +280,7 @@
                                     <ng-template #else02>
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
-                                    <a href="#" class="nonLinkAnchor">
+                                    <a class="nonLinkAnchor">
                                         <small>{{e}}</small>
                                     </a>
                                 </span>
@@ -293,7 +293,7 @@
                                     <ng-template #else03>
                                         <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
                                     </ng-template>
-                                    <a href="#" class="nonLinkAnchor">
+                                    <a class="nonLinkAnchor">
                                         <small style="word-break: break-all">{{b.name}}
                                             (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
                                         </small>
@@ -317,7 +317,7 @@
                                     <ng-template #else04>
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
-                                    <a href="#" class="nonLinkAnchor">
+                                    <a class="nonLinkAnchor">
                                         <small>{{e}}</small>
                                     </a>
                                 </span>
@@ -330,7 +330,7 @@
                                     <ng-template #else05>
                                         <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
                                     </ng-template>
-                                    <a href="#" class="nonLinkAnchor">
+                                    <a class="nonLinkAnchor">
                                         <small style="word-break: break-all">{{b.name}}
                                             (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
                                         </small>
@@ -354,7 +354,7 @@
                             <ng-template #else06>
                                 <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                             </ng-template>
-                            <a href="#" class="nonLinkAnchor">
+                            <a class="nonLinkAnchor">
                                 <small id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
                             </a>
                         </span>
@@ -375,7 +375,7 @@
                                 <ng-template #else07>
                                     <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                                 </ng-template>
-                                <a href="#" class="nonLinkAnchor">
+                                <a class="nonLinkAnchor">
                                     <small id="datatype-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
                                 </a>
                             </span>

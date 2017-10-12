@@ -8,6 +8,11 @@ import { QuickBoardComponent } from 'quickBoard/public/quickBoard.component';
 import { DataElementQuickBoardComponent } from 'quickBoard/public/dataElementQuickBoard/dataElementQuickBoardComponent';
 import { FormQuickBoardComponent } from 'quickBoard/public/formQuickBoard/formQuickBoardComponent';
 import { CompareModule } from 'compare/compare.module';
+import { RouterModule, Routes } from "@angular/router";
+
+const qbRoutes: Routes = [
+    {path: 'quickBoard', component: QuickBoardComponent},
+];
 
 @NgModule({
     imports: [
@@ -15,7 +20,8 @@ import { CompareModule } from 'compare/compare.module';
         FormsModule,
         NgbModule,
         SearchModule,
-        CompareModule
+        CompareModule,
+        RouterModule.forChild(qbRoutes)
     ],
     declarations: [
         DataElementQuickBoardComponent,
@@ -23,7 +29,7 @@ import { CompareModule } from 'compare/compare.module';
         QuickBoardComponent,
     ],
     entryComponents: [QuickBoardComponent],
-    exports: [],
+    exports: [RouterModule],
     providers: [],
 })
 export class QuickBoardModule {

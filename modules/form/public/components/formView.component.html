@@ -11,19 +11,26 @@
     <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this form is archived. You can
-        <a id="viewCurrentEltLink" href="/formView?tinyId={{elt.tinyId}}">view the current version here</a>.
+        <a id="viewCurrentEltLink" routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
     </div>
     <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this form is retired.
         <a *ngIf="elt.registrationState.replacedBy"
-           href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a>
+           routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
     </div>
-    <div class="alert alert-info mt20" role="alert" *ngIf="elt.outdated">
+    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
+         role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Warning:</strong> this form is about to be retired.
+        <a *ngIf="elt.registrationState.replacedBy"
+           routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
+    </div>
+    <div *ngIf="elt.outdated" class="alert alert-info mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Note: </strong>Some CDEs in this form have newer version.
     </div>
-    <div class="alert alert-warning mt20" role="alert" *ngIf="missingCdes.length > 0">
+    <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         The following CDEs are part of a score but are missing from this form:
         <ul class="list-inline">
@@ -31,18 +38,6 @@
                 <a href="/deView?tinyId={{missCde.tinyId}}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
                 <span *ngIf="i < missingCdes.length">,</span></li>
         </ul>
-    </div>
-    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
-         role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Warning:</strong> this form is about to be retired.
-        <a *ngIf="elt.registrationState.replacedBy"
-           href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
-    </div>
-    <div *ngIf="elt.forkOf" class="alert alert-info mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        You are editing a fork. <a href="/deView?cdeId={{rootFork._id}}">
-        <i class="fa fa-eye"></i> View Original</a>. To remove a fork, Retire it.
     </div>
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
@@ -156,7 +151,7 @@
                         <ng-template ngbTabContent>
                             <div class="row">
                                 <div class="col-lg-5">
-                                    <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (save)="saveDraft()">
+                                    <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft()">
                                     </cde-form-general-details>
                                     <div>
                                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
@@ -170,7 +165,8 @@
                                     <div *ngIf="elt.noRenderAllowed"
                                          class="text-center mt20">Rendering has been disabled for this form.
                                     </div>
-                                    <div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
+                                    <div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)"
+                                         id="warningNoCde"
                                          class="text-center mt20">This form has no content. There is nothing to preview.
                                     </div>
                                     <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0">
@@ -188,9 +184,9 @@
                         </ng-template>
                         <ng-template ngbTabContent>
                             <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit"
-                                                  [inScoreCdes]="inScoreCdes"
-                                                  (isFormValid)="setIsValid($event)"
-                                                  (onEltChange)="saveDraft()"></cde-form-description>
+                                  [inScoreCdes]="inScoreCdes"
+                                  (isFormValid)="setIsValid($event)"
+                                  (onEltChange)="saveDraft()"></cde-form-description>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="naming_tab">
@@ -304,7 +300,7 @@
     <div class="modal-body" id="copyFormModalBody">
         <p class="text-info">You are about to create a new CDE/Form by duplicating this one. Please specify a new name
             and a classification of the CDE/Form.</p>
-        <cde-create-form [elt]="eltCopy" (cancel)="closeCopyFormModal()"></cde-create-form>
+        <cde-create-form [elt]="eltCopy" [extModalRef]="modalRef"></cde-create-form>
     </div>
 </ng-template>
 

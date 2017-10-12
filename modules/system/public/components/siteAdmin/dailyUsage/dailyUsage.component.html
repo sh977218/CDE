@@ -31,7 +31,7 @@
             <span *ngIf="entry.usernames && entry.usernames.length > 0">
                 <span *ngFor="let u of entry.usernames">{{u.username}} </span>
             </span>
-            <span *ngIf="!entry.usernames"><a class="btn btn-mini" (click)="lookupUsername(entry._id.ip)" href="#">Reveal</a></span>
+            <span *ngIf="!entry.usernames"><a class="btn btn-mini" (click)="lookupUsername(entry._id.ip)">Reveal</a></span>
         </div>
     </div>
     <button class="btn btn-default" *ngIf="dailyUsage && dailyUsage.length > entryLimit" (click)="seeMore()">More</button>

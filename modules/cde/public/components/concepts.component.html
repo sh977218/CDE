@@ -10,16 +10,16 @@
                             <th>Code Name</th>
                             <th>Code System</th>
                             <th>Code ID</th>
-                            <th id="conceptActions" *ngIf="isAllowedModel.isAllowed(elt)"></th>
+                            <th id="conceptActions" *ngIf="canEdit"></th>
                         </tr>
                         <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                             itemtype="http://schema.org/MedicalCode">
-                            <td><a href (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
-                                   itemprop="name">{{concept.name}}</a>
+                            <td><span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
+                                   itemprop="name" class="fake-link">{{concept.name}}</span>
                             </td>
                             <td itemprop="codeSystem">{{concept.origin}}</td>
                             <td itemprop="codeValue">{{concept.originId}}</td>
-                            <td headers="actions" *ngIf="isAllowedModel.isAllowed(elt)">
+                            <td headers="actions" *ngIf="canEdit">
                                 <span id="remove{{config.type}}-{{$index}}" class="btn-default fa fa-trash-o"
                                       (click)="removeConcept(config.type, $index)" title="Remove" href></span>
                                 <sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <hr/>
-            <button class="btn btn-small btn-default" *ngIf="isAllowedModel.isAllowed(elt)" id="openNewConceptModalBtn"
+            <button class="btn btn-small btn-default" *ngIf="canEdit" id="openNewConceptModalBtn"
                     value="add" (click)="openNewConceptModal()">
                 <i class="fa fa-plus"> </i> Add Concept
             </button>
@@ -42,7 +42,7 @@
     <div class="modal-header" id="newConceptModalHeader">
         <h4 class="modal-title">Add Concept</h4>
     </div>
-    <form role="form" #newConceptForm="ngForm">
+    <form role="form" #newConceptForm="ngForm" (ngSubmit)="addNewConcept()">
         <div class="modal-body" id="newConceptModalBody">
             <div class="form-group">
                 <label for="name">Code Name</label>
@@ -74,7 +74,7 @@
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"
-                    type="submit" (click)="addNewConcept();">Save
+                    type="submit">Save
             </button>
         </div>
     </form>

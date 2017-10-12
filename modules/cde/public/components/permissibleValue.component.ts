@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
 import * as _ from "lodash";
@@ -24,10 +24,13 @@ import { AlertService } from 'system/public/components/alert/alert.service';
 })
 export class PermissibleValueComponent {
     @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
+    @Input() canEdit;
+    @Output() onEltChange = new EventEmitter();
 
     _elt: any;
 
-    @Input() set elt(v: any) {
+    @Input()
+    set elt(v: any) {
         this._elt = v;
         let isDatatypeDefined = _.indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
         if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
@@ -49,6 +52,7 @@ export class PermissibleValueComponent {
             else this.umlsTerms = [];
         });
     }
+
     get elt(): any {
         return this._elt;
     };
@@ -84,8 +88,8 @@ export class PermissibleValueComponent {
 
 
     constructor(public modalService: NgbModal,
-                public http: Http,
                 public isAllowedModel: IsAllowedService,
+                public http: Http,
                 private alert: AlertService) {
     }
 
@@ -108,7 +112,7 @@ export class PermissibleValueComponent {
         this.elt.valueDomain.permissibleValues.splice(index, 1);
         this.runManualValidation();
         this.initSrcOptions();
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     addNewPermissibleValue() {
@@ -125,7 +129,7 @@ export class PermissibleValueComponent {
     }
 
     sortPermissibleValue() {
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     };
 
     dupCodesForSameSrc(src) {
@@ -182,7 +186,10 @@ export class PermissibleValueComponent {
                             res => {
                                 let l = res.result.filter(r => r.termType === __this.SOURCES[src].termType);
                                 if (l[0]) {
-                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: l[0].ui, meaning: l[0].name};
+                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                                        code: l[0].ui,
+                                        meaning: l[0].name
+                                    };
                                 } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
                             }, err => this.alert.addAlert("danger", err));
                 } else {
@@ -271,7 +278,7 @@ export class PermissibleValueComponent {
 
     canLinkPvFunc() {
         let dec = this.elt.dataElementConcept;
-        this.canLinkPv = (this.isAllowedModel.isAllowed(this.elt) && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
+        this.canLinkPv = (this.canEdit && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
     }
 
     loadValueSet() {
@@ -300,7 +307,7 @@ export class PermissibleValueComponent {
 
     checkVsacId() {
         this.loadValueSet();
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
         this.editMode = false;
     };
 
@@ -314,7 +321,7 @@ export class PermissibleValueComponent {
     };
 
     stageElt() {
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     addAllVsac() {
@@ -330,7 +337,13 @@ export class PermissibleValueComponent {
     changedDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatype = data.value;
         deValidator.fixDatatype(this.elt);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
+    }
+
+    changedPvDatatype(data: { value: string[] }) {
+        this.elt.valueDomain.datatypeValueList.datatype = event;
+        deValidator.fixDatatype(this.elt);
+        this.onEltChange.emit();
     }
 
 }

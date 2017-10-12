@@ -7,12 +7,12 @@
                 <div class="row" *ngIf="canEdit">
                     <span *ngIf="rd.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
-                              id="confirmRemoveReferenceDocument-{{i}}" title="OK" href=""></span>
+                              id="confirmRemoveReferenceDocument-{{i}}" title="OK"></span>
                         <span class="btn-default fa fa-times" (click)="rd.edit = false"
-                              id="cancelRemoveReferenceDocument-{{i}}" title="Cancel" href=""></span>
+                              id="cancelRemoveReferenceDocument-{{i}}" title="Cancel"></span>
                     </span>
                     <span (click)="rd.edit = true" *ngIf="!rd.edit" class="btn-default fa fa-trash-o"
-                          id="removeReferenceDocument-{{i}}" title="Remove" href=""></span>
+                          id="removeReferenceDocument-{{i}}" title="Remove"></span>
                     <sortable-array [theArray]="elt.referenceDocuments" [index]="i"
                                     (cb)="onEltChange.emit()"></sortable-array>
                 </div>
@@ -59,7 +59,7 @@
     <div class="modal-header" id="newReferenceDocumentModalHeader">
         <h4 class="modal-title">Add ReferenceDocument</h4>
     </div>
-    <form #newReferenceDocumentForm="ngForm">
+    <form #newReferenceDocumentForm="ngForm" (ngSubmit)="addNewReferenceDocument()">
         <div class="modal-body" id="newReferenceDocumentModalBody">
             <div class="form-group">
                 <label for="newId">ID:</label>
@@ -101,7 +101,7 @@
             <button class="btn cancel" id="cancelNewReferenceDocumentBtn" type="button" (click)="c('Close click')">
                 Cancel
             </button>
-            <button class="btn btn-warning" id="createNewReferenceDocumentBtn" (click)="addNewReferenceDocument();">
+            <button class="btn btn-warning" id="createNewReferenceDocumentBtn">
                 Save
             </button>
         </div>

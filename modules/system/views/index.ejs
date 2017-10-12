@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:ng="http://angularjs.org" id="ng-app" lang="en">
+<html xmlns:ng="http://angularjs.org" lang="en">
 <head>
+	<base href="/">
 	<title>NIH Common Data Elements (CDE) Repository</title>
 	<meta name="site-version" content="<%= version %>">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -64,22 +65,14 @@
 
 	<%- include googleAnalytics.html %>
 
-	<div>
-		<cde-navigation [quick-board-count]="quickBoard.elts.length + formQuickBoard.elts.length"></cde-navigation>
-	</div>
+	<nih-cde></nih-cde>
 
-	<!-- Main content area -->
-	<div ng-view>
+	<div class="loading">
 		<br><br><br><br><br><br>
 		<h2 class="text-center">Loading...</h2>
 		<br><br><br><br><br><br>
 	</div>
-	<nih-cde></nih-cde>
 
-	<!-- Alerts area -->
-	<cde-alert></cde-alert>
-
-	<!-- Footer area -->
 	<%- include footer.html %>
 
 </div>
