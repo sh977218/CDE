@@ -568,10 +568,6 @@ public class NlmCdeBaseTest {
         }
     }
 
-    private boolean classPresent(String text, By by) {
-        return findElement(by).getAttribute("class").contains(text);
-    }
-
     public boolean textPresent(String text, By by) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
         return true;
@@ -1398,6 +1394,49 @@ public class NlmCdeBaseTest {
         textPresent(newUom, By.id("uom"));
     }
 
+    private void clickIFrameElement(By by) {
+        int num_try = 0;
+        boolean clickable = false;
+        while (!clickable) {
+            try {
+                num_try++;
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                wait.until(ExpectedConditions.presenceOfElementLocated(by));
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                clickable = true;
+            } catch (Exception e) {
+                System.out.println("   exception: " + e);
+                clickable = false;
+                if (num_try == 10) clickable = true;
+            }
+        }
+        hangon(2);
+        driver.findElement(by).click();
+    }
+
+    private void sendKeyIFrameElement(By by, String key) {
+        int num_try = 0;
+        boolean clickable = false;
+        while (!clickable) {
+            try {
+                num_try++;
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                clickable = true;
+            } catch (Exception e) {
+                System.out.println("   exception: " + e);
+                clickable = false;
+                if (num_try == 10) clickable = true;
+            }
+        }
+        hangon(2);
+        driver.findElement(by).sendKeys(key);
+        hangon(5);
+    }
+
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
         clickElement(By.id("dropdownMenu_help"));
@@ -1405,53 +1444,15 @@ public class NlmCdeBaseTest {
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
         findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
-        boolean clickable = false;
-        while (!clickable) {
-            try {
-                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-                wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[. = 'Try it out ']")));
-                clickable = true;
-            } catch (Exception e) {
-                clickable = false;
-            }
-        }
-        findElement(By.xpath("//button[. = 'Try it out ']")).click();
-        clickable = false;
-        while (!clickable) {
-            try {
-                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-                wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input[1]")));
-                clickable = true;
-            } catch (Exception e) {
-                clickable = false;
-            }
-        }
-        findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input[1]")).sendKeys(tinyId);
-        if (version != null) {
-            clickable = false;
-            while (!clickable) {
-                try {
-                    findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-                    wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input[2]")));
-                    clickable = true;
-                } catch (Exception e) {
-                    clickable = false;
-                }
-            }
-            findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input[2]")).sendKeys(version);
-        }
-        clickable = false;
-        while (!clickable) {
-            try {
-                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-                wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[. = 'Execute']")));
-                clickable = true;
-            } catch (Exception e) {
-                clickable = false;
-            }
-        }
-        findElement(By.xpath("//button[. = 'Execute']")).click();
-        textPresent(text);
+        clickIFrameElement(By.xpath("//button[. = 'Try it out ']"));
+        sendKeyIFrameElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input"), tinyId);
+        if (version != null)
+            sendKeyIFrameElement(By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input)[2]"), version);
+        clickIFrameElement(By.xpath("//button[. = 'Execute']"));
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+//        hangon(3000);
+        textPresent(text, By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
     }
 
 }
