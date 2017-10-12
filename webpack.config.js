@@ -23,7 +23,7 @@ module.exports = {
                 use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
             },
             {test: /\.css$/, use: ['style-loader?insertAt=top', 'css-loader']},
-            {test: /\.html$/, use: ['html-loader']},
+            {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false} }]},
             {test: /\.png$/, use: ['url-loader']}
         ]
     },

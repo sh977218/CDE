@@ -788,3 +788,21 @@ exports.elasticSearchExport = function (dataCb, query, type) {
         }
     });
 };
+
+exports.queryMostViewed = {
+    size: 10,
+    sort: {
+        views: "desc"
+    }
+};
+
+exports.queryNewest = {
+    size: 10,
+    sort: {
+        _script : {
+            type : 'number',
+            script : "doc['updated'].value > 0 ? doc['updated'].value : (doc['created'].value > 0 ? doc['created'].value : doc['imported'].value)",
+            order : 'desc'
+        }
+    }
+};
