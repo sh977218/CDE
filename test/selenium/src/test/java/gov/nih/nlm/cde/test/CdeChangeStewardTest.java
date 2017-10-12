@@ -18,16 +18,9 @@ public class CdeChangeStewardTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
 
         // Changes Steward and cancels
-        clickElement(By.id("dd_edit_steward"));
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(newStewardOrgName);
-        clickElement(By.id("elt.stewardOrg.name.cancel"));
-        textPresent(oldStewardOrgName);
+        editStewardOrgAndCancel(newStewardOrgName);
 
-        // Changes Steward and save
-        clickElement(By.id("dd_edit_steward"));
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(newStewardOrgName);
-        clickElement(By.id("elt.stewardOrg.name.ok"));
-        textPresent(newStewardOrgName);
+        editStewardOrgAndSave(newStewardOrgName);
         newCdeVersion();
         Assert.assertEquals(newStewardOrgName, findElement(By.id("dd_general_steward")).getText());
 

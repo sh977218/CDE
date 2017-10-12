@@ -109,6 +109,14 @@ public class NlmCdeBaseTest {
             put("meshmapping", "fa-link");
         }
     };
+    Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {
+        {
+            put("cdeTinyId", "operations-CDE-get_de__tinyId_");
+            put("cdeTinyIdVersion", "operations-CDE-get_de__tinyId__version__version_");
+            put("formTinyId", "operations-Form-get_form__tinyId_");
+            put("formTinyIdVersion", "operations-Form-get_form__tinyId__version__version_");
+        }
+    };
 
     private void setDriver(String b) {
         if (b == null) b = browser;
@@ -427,6 +435,7 @@ public class NlmCdeBaseTest {
 
     protected void checkTooltipText(By by, String text) {
         try {
+            hoverOverElement(findElement(by));
             textPresent(text);
         } catch (TimeoutException e) {
             hoverOverElement(findElement(By.id("searchSettings")));
@@ -461,12 +470,9 @@ public class NlmCdeBaseTest {
 
     protected void clickElement(By by) {
         // Wait for angular digest cycle.
-
         try {
-            ((JavascriptExecutor) driver).executeAsyncScript(
-                    "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
-                    , ""
-            );
+            String script = "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);";
+            ((JavascriptExecutor) driver).executeAsyncScript(script, "");
         } catch (Exception e) {
         }
         try {
@@ -560,10 +566,6 @@ public class NlmCdeBaseTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    private boolean classPresent(String text, By by) {
-        return findElement(by).getAttribute("class").contains(text);
     }
 
     public boolean textPresent(String text, By by) {
@@ -720,6 +722,7 @@ public class NlmCdeBaseTest {
     protected void scrollDownBy(Integer y) {
         String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+        hangon(5);
     }
 
     protected void scrollContainerDownBy(WebElement c, Integer y) {
@@ -1365,6 +1368,88 @@ public class NlmCdeBaseTest {
                 clickElement(By.id("confirmAddChildClassificationBtn"));
             }
         }
+    }
+
+    protected void editStewardOrgAndCancel(String newStewardOrg) {
+        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Discard')]"));
+        textNotPresent(newStewardOrg);
+    }
+
+    protected void editStewardOrgAndSave(String newStewardOrg) {
+        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Confirm')]"));
+        textPresent(newStewardOrg);
+    }
+
+    protected void editUninOfMeasurement(String newUom) {
+        clickElement(By.xpath("//*[@id = 'uom']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys(newUom);
+        clickElement(By.xpath("//*[@id = 'uom']//button[contains(@class,'fa fa-check')]"));
+        textPresent(newUom, By.id("uom"));
+    }
+
+    private void clickIFrameElement(By by) {
+        int num_try = 0;
+        boolean clickable = false;
+        while (!clickable) {
+            try {
+                num_try++;
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                wait.until(ExpectedConditions.presenceOfElementLocated(by));
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                clickable = true;
+            } catch (Exception e) {
+                System.out.println("   exception: " + e);
+                clickable = false;
+                if (num_try == 10) clickable = true;
+            }
+        }
+        hangon(2);
+        driver.findElement(by).click();
+    }
+
+    private void sendKeyIFrameElement(By by, String key) {
+        int num_try = 0;
+        boolean clickable = false;
+        while (!clickable) {
+            try {
+                num_try++;
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                clickable = true;
+            } catch (Exception e) {
+                System.out.println("   exception: " + e);
+                clickable = false;
+                if (num_try == 10) clickable = true;
+            }
+        }
+        hangon(2);
+        driver.findElement(by).sendKeys(key);
+        hangon(5);
+    }
+
+
+    protected void swaggerApi(String api, String text, String tinyId, String version) {
+        clickElement(By.id("dropdownMenu_help"));
+        clickElement(By.id("apiDocumentationLink"));
+        driver.switchTo().frame(findElement(By.cssSelector("iframe")));
+        textPresent("CDE API");
+        findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
+        clickIFrameElement(By.xpath("//button[. = 'Try it out ']"));
+        sendKeyIFrameElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input"), tinyId);
+        if (version != null)
+            sendKeyIFrameElement(By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input)[2]"), version);
+        clickIFrameElement(By.xpath("//button[. = 'Execute']"));
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+//        hangon(3000);
+        textPresent(text, By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
     }
 
 }

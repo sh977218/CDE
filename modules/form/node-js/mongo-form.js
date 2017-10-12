@@ -100,7 +100,8 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
 exports.draftForms = function (tinyId, cb) {
     let cond = {
         tinyId: tinyId,
-        archived: false
+        archived: false,
+        elementType: 'form'
     };
     FormDraft.find(cond, cb);
 };

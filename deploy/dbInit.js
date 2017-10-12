@@ -1,6 +1,6 @@
 db.users.remove({});
-db.users.remove({});
 db.dataelements.remove({});
+db.dataelementdrafts.remove({});
 db.orgs.remove({});
 db.forms.remove({});
 db.formdrafts.remove({});

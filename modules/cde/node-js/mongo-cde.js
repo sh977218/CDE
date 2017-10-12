@@ -12,25 +12,16 @@ const async = require('async');
 const CronJob = require('cron').CronJob;
 const elastic = require('./elastic');
 const deValidator = require('../shared/deValidator');
+const draftSchema = require('../../cde/node-js/schemas').draftSchema;
 
 exports.type = "cde";
 exports.name = "CDEs";
-
-var conn = connHelper.establishConnection(config.database.appData);
-
-var User = conn.model('User', schemas_system.userSchema);
-var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-exports.DataElement = DataElement;
-exports.User = User;
-
-var mongo_data = this;
 
 schemas.dataElementSchema.post('remove', function (doc, next) {
     elastic.dataElementDelete(doc, function (err) {
         next(err);
     });
 });
-
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     var cdeError = deValidator.checkPvUnicity(self.valueDomain);
@@ -47,9 +38,20 @@ schemas.dataElementSchema.pre('save', function (next) {
     }
 });
 
+
+var conn = connHelper.establishConnection(config.database.appData);
+
+var User = conn.model('User', schemas_system.userSchema);
+var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
+var DataElementDraft = conn.model('DataElementDraft', draftSchema);
+exports.User = User;
+exports.DataElementDraft = DataElementDraft;
+exports.elastic = elastic;
+
+var mongo_data = this;
+
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 exports.DataElement = DataElement;
-exports.elastic = elastic;
 
 exports.byId = function (id, cb) {
     DataElement.findOne({'_id': id}, cb);
@@ -86,6 +88,22 @@ exports.byTinyIdList = function (tinyIdList, callback) {
             });
             callback(err, result);
         });
+};
+
+exports.draftDataElements = function (tinyId, cb) {
+    let cond = {
+        tinyId: tinyId,
+        archived: false
+    };
+    DataElementDraft.find(cond, cb);
+};
+exports.saveDraftDataElement = function (elt, cb) {
+    delete elt.__v;
+    DataElementDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+};
+
+exports.deleteDraftDataElement = function (tinyId, cb) {
+    DataElementDraft.remove({tinyId: tinyId}, cb);
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
@@ -232,9 +250,7 @@ exports.create = function (cde, user, callback) {
     newDe.createdBy.userId = user._id;
     newDe.createdBy.username = user.username;
     newDe.tinyId = mongo_data_system.generateTinyId();
-    newDe.save(function (err) {
-        callback(err, newDe);
-    });
+    newDe.save(callback);
 };
 
 exports.fork = function (elt, user, callback) {
