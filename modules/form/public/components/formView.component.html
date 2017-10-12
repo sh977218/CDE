@@ -138,7 +138,7 @@
                 </div>
             </div>
             <div>
-                <ngb-tabset (tabChange)="beforeChange($event)">
+                <ngb-tabset (tabChange)="beforeChange($event)" #tabSet="ngbTabset">
                     <ngb-tab id="general_tab">
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('general') !== -1}">

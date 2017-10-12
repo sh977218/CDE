@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
@@ -27,6 +27,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
     @ViewChild("saveModal") public saveModal: SaveModalComponent;
+    @ViewChild("tabSet") public tabSet: NgbTabset;
     @Input() routeParams: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -59,6 +60,7 @@ export class FormViewComponent implements OnInit {
         this.route.queryParams.subscribe(() => {
             this.loadForm(form => {
                 this.loadComments(form, null);
+                if (this.tabSet) this.tabSet.select("general_tab");
                 this.userService.then(() => {
                     let user = this.userService.user;
                     if (user && user.username)

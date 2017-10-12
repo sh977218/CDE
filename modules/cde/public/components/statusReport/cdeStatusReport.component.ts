@@ -22,7 +22,7 @@ export class CdeStatusReportComponent implements OnInit {
     cdes: any[];
 
     ngOnInit () {
-        let searchSettings = this.route.snapshot.queryParams['searchSettings'];
+        let searchSettings = JSON.parse(this.route.snapshot.queryParams['searchSettings']);
 
         let obj = {searchSettings: searchSettings,
             cb: cdes => {
