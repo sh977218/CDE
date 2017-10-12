@@ -49,8 +49,11 @@ export class LoginComponent implements OnInit {
         }).map(r => r.text()).subscribe(res => {
             this.userService.reload();
             if (res === "OK") {
-                this.router.navigate([this.loginSvc.getPreviousRoute().url], {queryParams: this.loginSvc.getPreviousRoute().queryParams});
-                (document.querySelector('#goPrevious')as any).click();
+                if (this.loginSvc.getPreviousRoute()) {
+                    this.router.navigate([this.loginSvc.getPreviousRoute().url], {queryParams: this.loginSvc.getPreviousRoute().queryParams});
+                } else {
+                    this.router.navigate(['/home']);
+                }
             } else {
                 this.alert.addAlert("danger", res);
                 this.getCsrf();
