@@ -53,6 +53,7 @@ import { TreeModule } from 'angular-tree-component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { RouterModule, Routes } from "@angular/router";
 import { LatestCommentsComponent } from "discuss/components/latestComments/latestComments.component";
+import { PageNotFoundComponent } from 'widget/pageNotFound/pageNotFoundComponent';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: "/home", pathMatch: 'full'},
@@ -68,6 +69,7 @@ const appRoutes: Routes = [
     {path: 'profile', component: ProfileComponent},
     {path: 'searchPreferences', component: SearchPreferencesComponent},
     {path: 'orgComments', component: LatestCommentsComponent, data: {commentsUrl: "orgComments"}},
+    { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
@@ -129,7 +131,6 @@ const appRoutes: Routes = [
         OrgAccountManagementComponent,
         OrgAuthorityComponent,
         OrgClassificationManagementComponent,
-        ProfileComponent,
         ServerStatusComponent,
         SearchPreferencesComponent,
         SiteAuditComponent,

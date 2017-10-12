@@ -3,10 +3,7 @@
         <i class="fa fa-spinner fa-pulse"></i>Loading...
     </h1>
 </div>
-<div *ngIf="elt && !elt.tinyId" style="text-align: center">
-    <img src="/system/public/img/doctor-404.png" title="404 - We could not find the element you are looking for"
-         style="margin-top: 20px">
-</div>
+<cde-page-not-found *ngIf="elt && !elt.tinyId"></cde-page-not-found>
 <div *ngIf="elt?.tinyId" class="container-fluid" itemscope="http://schema.org/MedicalCode">
     <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>

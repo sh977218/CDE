@@ -32,7 +32,7 @@ export class LoginService {
                 queryParams: this.route.snapshot.queryParams
             };
             if (this.lastRoute.url.indexOf('?') > 0) {
-                this.lastRoute.url = this.lastRoute.url.substr(0,this.lastRoute.url.indexOf('?'));
+                this.lastRoute.url = this.lastRoute.url.substr(0, this.lastRoute.url.indexOf('?'));
             }
         }
     }

@@ -20,8 +20,7 @@ import { FormModule } from 'form/public/form.module';
 import { SystemModule } from 'system/public/system.module';
 import { FrontExceptionHandler } from 'frontExceptionHandler';
 
-const appRoutes: Routes = [
-];
+const appRoutes: Routes = [];
 
 @NgModule({
     declarations: [

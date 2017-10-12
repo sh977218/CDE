@@ -99,8 +99,7 @@ export class DataElementViewComponent implements OnInit {
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                     if (cb) cb();
                 });
-            },
-            () => () => this.elt = {}
+            }, () => this.elt = {}
         );
     }
 

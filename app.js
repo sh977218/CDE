@@ -216,6 +216,12 @@ try {
 
 app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/public/robots.txt')));
 
+// final route -> 404
+app.get('*', (req, res) => {
+    res.render('index', 'system', {config: config, loggedIn: !!req.user, version: 'version'});
+});
+
+
 app.use(function (err, req, res, next) {
     console.log("ERROR3: " + err);
     console.log(err.stack);
