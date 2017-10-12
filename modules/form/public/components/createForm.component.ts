@@ -30,6 +30,7 @@ export class CreateFormComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
+    @Input() extModalRef: NgbModalRef;
     @Output() eltChange = new EventEmitter();
     modalRef: NgbModalRef;
 
@@ -119,6 +120,7 @@ export class CreateFormComponent implements OnInit {
         this.http.post("/form", this.elt).map(res => res.json())
             .subscribe(res => {
                     this.router.navigate(["/formView"], {queryParams: {tinyId: res.tinyId}});
+                    if (this.extModalRef) this.extModalRef.close();
                 },
                 err => {
                     this.alert.addAlert("danger", err);
@@ -126,7 +128,11 @@ export class CreateFormComponent implements OnInit {
     }
 
     cancelCreateForm() {
-        this.router.navigate(["/"]);
+        if (this.extModalRef) {
+            this.extModalRef.close();
+        } else {
+            this.router.navigate(["/"]);
+        }
     }
 
 }

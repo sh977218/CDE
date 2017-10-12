@@ -29,7 +29,7 @@ public class LogErrorsTest extends NlmCdeBaseTest {
     @Test
     public void logClientErrors() {
         mustBeLoggedInAs(test_username, password);
-        driver.get(baseUrl + "/sdcview?triggerClientError?fullPath=true");
+        driver.get(baseUrl + "/sdcview?triggerClientError=1&fullPath=true");
         textPresent("SDC Attributes");
 
         mustBeLoggedInAs(nlm_username, nlm_password);
