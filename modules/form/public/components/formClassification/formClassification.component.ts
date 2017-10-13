@@ -3,9 +3,9 @@ import { Http } from "@angular/http";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { ClassificationService } from 'core/public/classification.service';
 import { UserService } from 'core/public/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-form-classification",

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { MergeCdeService } from 'core/public/mergeCde.service';
 import { IsAllowedService } from 'core/public/isAllowed.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-merge-data-element",

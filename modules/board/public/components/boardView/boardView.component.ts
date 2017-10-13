@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { AlertService } from "system/public/components/alert/alert.service";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SharedService } from "core/public/shared.service";
 import { saveAs } from "file-saver";
@@ -8,7 +7,8 @@ import { ClassifyItemModalComponent } from "adminItem/public/components/classifi
 import { OrgHelperService } from "core/public/orgHelper.service";
 import { UserService } from "core/public/user.service";
 import { ElasticService } from "core/public/elastic.service";
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-board-view',

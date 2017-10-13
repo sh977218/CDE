@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
-import { AlertService } from "../alert/alert.service";
 import { LoginService } from "./login.service";
 import { UserService } from "core/public/user.service";
 import { Router } from '@angular/router';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-login",

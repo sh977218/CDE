@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { SharedService } from "core/public/shared.service";
-import "../../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
+import "../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
-import { LoginService } from "./login/login.service";
 import { UserService } from "core/public/user.service";
+import { LoginService } from 'system/public/components/login/login.service';
 
 @Component({
     selector: "cde-navigation",

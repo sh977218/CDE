@@ -7,10 +7,10 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from "quickBoard/public/quickBoardList.service";
 import { UserService } from 'core/public/user.service';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-form-view",
@@ -53,7 +53,8 @@ export class FormViewComponent implements OnInit {
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private router: Router) {
     }
 
     ngOnInit() {
@@ -84,7 +85,7 @@ export class FormViewComponent implements OnInit {
                 this.userService.then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
                 cb(this.elt);
             },
-            () => this.elt = {}
+            () => this.router.navigate(['/pageNotFound'])
         );
     }
 
@@ -315,7 +316,7 @@ export class FormViewComponent implements OnInit {
                 this.loadForm(() => this.alert.addAlert("success", "Form saved."));
                 this.loadDraft(null);
             }
-        }, err => this.elt = {});
+        }, err => this.router.navigate(['/pageNotFound']));
     }
 
     removeDraft() {

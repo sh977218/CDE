@@ -10,7 +10,6 @@ import { PlaceHoldEmptyPipe } from "./pipes/placeHoldEmpty.pipe";
 import { TextTruncateComponent } from "./text/textTruncate.component";
 import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
 import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.component';
-import { PageNotFoundComponent } from 'widget/pageNotFound/pageNotFoundComponent';
 
 @NgModule({
     imports: [
@@ -23,7 +22,6 @@ import { PageNotFoundComponent } from 'widget/pageNotFound/pageNotFoundComponent
         InlineAreaEditComponent,
         InlineSelectEditComponent,
         InlineEditComponent,
-        PageNotFoundComponent,
         PlaceHoldEmptyPipe,
         TextTruncateComponent,
         SortableArrayComponent,
@@ -32,7 +30,6 @@ import { PageNotFoundComponent } from 'widget/pageNotFound/pageNotFoundComponent
         InlineEditComponent,
         InlineSelectEditComponent,
         InlineAreaEditComponent,
-        PageNotFoundComponent,
         PlaceHoldEmptyPipe,
         SortableArrayComponent,
     ],

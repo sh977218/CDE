@@ -6,7 +6,7 @@ import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { UserService } from 'core/public/user.service';
-import { AlertService } from 'system/public/components/alert/alert.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-form-term-mapping",

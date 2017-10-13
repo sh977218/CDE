@@ -18,11 +18,7 @@ import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.comp
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
-import { NavigationComponent } from "./components/navigation.component";
 import { SwaggerComponent } from "./components/swagger.component";
-import { TruncateLongNamePipe } from "./truncateLongName.pipe";
-import { AlertComponent } from "./components/alert/alert.component";
-import { AlertService } from "./components/alert/alert.service";
 import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component";
 import { AuditLogComponent } from "./components/siteAdmin/auditLog/auditLog.component";
 import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffPopulate.service";
@@ -53,7 +49,6 @@ import { TreeModule } from 'angular-tree-component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { RouterModule, Routes } from "@angular/router";
 import { LatestCommentsComponent } from "discuss/components/latestComments/latestComments.component";
-import { PageNotFoundComponent } from 'widget/pageNotFound/pageNotFoundComponent';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: "/home", pathMatch: 'full'},
@@ -69,7 +64,6 @@ const appRoutes: Routes = [
     {path: 'profile', component: ProfileComponent},
     {path: 'searchPreferences', component: SearchPreferencesComponent},
     {path: 'orgComments', component: LatestCommentsComponent, data: {commentsUrl: "orgComments"}},
-    { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
@@ -90,7 +84,6 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes)
     ],
     declarations: [
-        AlertComponent,
         AppLogComponent,
         AuditLogComponent,
         CamelCaseToHumanPipe,
@@ -105,7 +98,6 @@ const appRoutes: Routes = [
         ListManagementComponent,
         LogAuditComponent,
         LoginComponent,
-        NavigationComponent,
         OrgAccountManagementComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
@@ -121,7 +113,6 @@ const appRoutes: Routes = [
         SwaggerComponent,
         SelectBoardDirective,
         TimeAgoPipe,
-        TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
     ],
@@ -141,11 +132,8 @@ const appRoutes: Routes = [
     ],
     exports: [
         RouterModule,
-        NavigationComponent,
-        AlertComponent,
     ],
     providers: [
-        AlertService,
         CdeDiffPopulateService,
         LoginService,
         RegistrationValidatorService,

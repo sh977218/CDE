@@ -1,10 +1,10 @@
 import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-mlt",

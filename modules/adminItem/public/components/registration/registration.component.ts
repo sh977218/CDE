@@ -3,10 +3,10 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-boots
 import 'rxjs/add/operator/map';
 import { Http } from '@angular/http';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { SharedService } from 'core/public/shared.service';
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { UserService } from 'core/public/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-registration',
