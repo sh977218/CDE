@@ -146,7 +146,7 @@
         </div>
     </div>
     <div [ngClass]="{'eltCommentView':commentMode,'':!commentMode}">
-        <div id="leftNav" class="col">
+        <div id="leftNav" class="col-xs-2">
             <ul class="list-group">
                 <li class="list-group-item" (click)="currentView ='nativeRender'">Preview</li>
                 <li class="list-group-item" (click)="currentView ='detail'">General Detail</li>
@@ -162,7 +162,7 @@
                 </li>
             </ul>
         </div>
-        <div id="middleView" class="col">
+        <div id="middleView" class="col-xs-9">
             <ng-container *ngIf="currentView === 'nativeRender'">
                 <cde-native-render [elt]="elt" [showTitle]="false"></cde-native-render>
             </ng-container>
