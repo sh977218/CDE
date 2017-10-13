@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { Component, ViewChild, Input, Output, EventEmitter } from "@angular/core";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
@@ -19,13 +19,12 @@ const actionMapping: IActionMapping = {
     providers: [NgbActiveModal],
     templateUrl: "./classificationView.component.html"
 })
-export class ClassificationViewComponent implements OnInit {
+export class ClassificationViewComponent {
     @ViewChild("deleteClassificationContent") public deleteClassificationContent: NgbModalModule;
     @Input() elt;
     @Output() confirmDelete = new EventEmitter();
     public modalRef: NgbModalRef;
     deleteClassificationString;
-    classifLink = "";
 
     public options = {
         idField: "name",
@@ -42,8 +41,8 @@ export class ClassificationViewComponent implements OnInit {
                 private orgHelper: OrgHelperService) {
     }
 
-    ngOnInit() {
-        this.classifLink = '/' + this.elt.elementType + '/search';
+    getClassifLink () {
+        return '/' + this.elt.elementType + '/search';
     }
 
     showWorkingGroups = function (stewardClassifications) {

@@ -1,7 +1,7 @@
-import { Component, Inject, Input, OnInit } from "@angular/core";
-import { ExportService } from "../../../../core/public/export.service";
-import { OrgHelperService } from "../../../../core/public/orgHelper.service";
-import { UserService } from "../../../../core/public/user.service";
+import { Component, OnInit } from "@angular/core";
+import { ExportService } from "core/public/export.service";
+import { OrgHelperService } from "core/public/orgHelper.service";
+import { UserService } from "core/public/user.service";
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -22,7 +22,7 @@ export class CdeStatusReportComponent implements OnInit {
     cdes: any[];
 
     ngOnInit () {
-        let searchSettings = this.route.snapshot.queryParams['searchSettings'];
+        let searchSettings = JSON.parse(this.route.snapshot.queryParams['searchSettings']);
 
         let obj = {searchSettings: searchSettings,
             cb: cdes => {

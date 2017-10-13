@@ -461,10 +461,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
 
     redirect(params: string[]) {
         this.router.navigate(['/' + this.module + '/search'], {queryParams: params});
-        // this.redirectPath = url;
-        // setTimeout(function () {
-        //     (document.querySelector('#redirectMe')as any).click();
-        // }, 0);
     }
 
     reload() {

@@ -5,7 +5,7 @@
         <hr/>
         <tree-root #treeRoot [nodes]="classification.elements" [options]="options">
             <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                <a [routerLink]="[classifLink]"
+                <a [routerLink]="[getClassifLink()]"
                    [queryParams]="searchByClassificationParams(node,classification.stewardOrg.name)" [id]="node.path">
                     {{ node.data.name }}</a>
                 <i *ngIf="isAllowedModel.isAllowed(elt)"
