@@ -124,7 +124,7 @@ export class ClassificationService {
             .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
-    };
+    }
 
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
         let settings = {
@@ -159,7 +159,7 @@ export class ClassificationService {
             .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
-    };
+    }
 
     addChildClassification(newClassification, cb) {
         let putBody = {
@@ -169,6 +169,6 @@ export class ClassificationService {
             .map(res => res.text()).subscribe(
             res => cb(res),
             err => this.alert.addAlert("danger", err));
-    };
+    }
 
 }

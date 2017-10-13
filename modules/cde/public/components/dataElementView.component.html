@@ -7,21 +7,22 @@
     <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this data element is archived. You can
-        <a href="/deView?tinyId={{elt.tinyId}}">view the current version here</a>.
+        <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
     </div>
     <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this data element is retired.
         <span *ngIf="elt.registrationState.replacedBy">
-                        <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span>
+            <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
+        </span>
     </div>
     <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
          role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this data element is about to be retired.
         <span *ngIf="elt.registrationState.replacedBy">
-                        <a href="/deView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a>
-                </span>
+            <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
+        </span>
     </div>
     <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
@@ -85,7 +86,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                <ngb-tabset (tabChange)="beforeChange($event)">
+                <ngb-tabset (tabChange)="beforeChange($event)" #tabSet="ngbTabset">
                     <ngb-tab id="general_tab">
                         <ng-template ngbTabTitle>
                             <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('general') !== -1}">

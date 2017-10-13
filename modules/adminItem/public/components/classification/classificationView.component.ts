@@ -39,7 +39,11 @@ export class ClassificationViewComponent {
                 public isAllowedModel: IsAllowedService,
                 protected userService: UserService,
                 private orgHelper: OrgHelperService) {
-    };
+    }
+
+    getClassifLink () {
+        return '/' + this.elt.elementType + '/search';
+    }
 
     showWorkingGroups = function (stewardClassifications) {
         return this.orgHelper.showWorkingGroup(stewardClassifications.stewardOrg.name, this.userService.user) ||
@@ -47,7 +51,7 @@ export class ClassificationViewComponent {
     };
 
 
-    searchByClassification(node, orgName) {
+    searchByClassificationParams(node, orgName) {
         let classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
@@ -55,9 +59,11 @@ export class ClassificationViewComponent {
             if (!_treeNode.data.virtual)
                 classificationArray.unshift(_treeNode.data.name);
         }
-        return "/" + this.elt.elementType + "/search?selectedOrg=" + encodeURIComponent(orgName) +
-            "&classification=" + encodeURIComponent(classificationArray.join(";"));
-    };
+        return {
+            selectedOrg: orgName,
+            classification: classificationArray.join(";")
+        };
+    }
 
     openDeleteClassificationModal(node, deleteOrgName) {
         this.deleteClassificationString = node.data.name;
@@ -77,4 +83,5 @@ export class ClassificationViewComponent {
         }, () => {
         });
     }
+
 }

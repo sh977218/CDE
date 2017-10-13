@@ -14,8 +14,8 @@
                         </tr>
                         <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                             itemtype="http://schema.org/MedicalCode">
-                            <td><a href (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
-                                   itemprop="name">{{concept.name}}</a>
+                            <td><span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
+                                   itemprop="name" class="fake-link">{{concept.name}}</span>
                             </td>
                             <td itemprop="codeSystem">{{concept.origin}}</td>
                             <td itemprop="codeValue">{{concept.originId}}</td>
@@ -42,7 +42,7 @@
     <div class="modal-header" id="newConceptModalHeader">
         <h4 class="modal-title">Add Concept</h4>
     </div>
-    <form role="form" #newConceptForm="ngForm">
+    <form role="form" #newConceptForm="ngForm" (ngSubmit)="addNewConcept()">
         <div class="modal-body" id="newConceptModalBody">
             <div class="form-group">
                 <label for="name">Code Name</label>
@@ -74,7 +74,7 @@
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"
-                    type="submit" (click)="addNewConcept();">Save
+                    type="submit">Save
             </button>
         </div>
     </form>

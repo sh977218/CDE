@@ -6,7 +6,11 @@ import "../node_modules/feedback/stable/2.0/feedback.min.css";
 
 @Component({
     selector: "nih-cde",
-    template: ``
+    template: `
+        <cde-navigation></cde-navigation>
+        <router-outlet></router-outlet>
+        <cde-alert></cde-alert>
+    `
 })
 export class CdeAppComponent implements OnInit {
     name = "Angular 2";

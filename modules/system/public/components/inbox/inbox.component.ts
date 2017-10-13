@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { AlertService } from "../alert/alert.service";
-import { SaveModalComponent } from "../../../../adminItem/public/components/saveModal/saveModal.component";
-import { MergeCdeService } from "../../../../core/public/mergeCde.service";
+import { SaveModalComponent } from "adminItem/public/components/saveModal/saveModal.component";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -16,7 +15,6 @@ export class InboxComponent implements OnInit {
 
     constructor(private http: Http,
                 private alert: AlertService,
-                private mergeSvc: MergeCdeService,
                 public modalService: NgbModal) {}
 
     mail: any = {received: [], sent: [], archived: []};

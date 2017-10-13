@@ -4,11 +4,11 @@
         <div class="text-right" *ngIf="canEdit">
             <span *ngIf="showDelete">Confirm Delete
                 <a class="fa fa-check" (click)="showDelete = false; removeDisplayProfile(index)"
-                   id="confirmRemoveDisplayProfile-{{index}}" title="OK" href=""></a>
-                <a class="fa fa-times" (click)="showDelete = false" title="Cancel" href=""></a>
+                   id="confirmRemoveDisplayProfile-{{index}}" title="OK"></a>
+                <a class="fa fa-times" (click)="showDelete = false" title="Cancel"></a>
             </span>
             <a (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
-               id="removeDisplayProfile-{{index}}" title="Remove" href=""></a>
+               id="removeDisplayProfile-{{index}}" title="Remove"></a>
         </div>
         <div class="row">
             <div class="col-md-5 col-xs-12">

@@ -99,8 +99,8 @@ public class NlmCdeBaseTest {
     private int videoRate = 300;
 
 
-    ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
-    Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
+    private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
+    private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
         {
             put("rename", "fa-pencil");
             put("remove", "fa-trash-o");
@@ -109,7 +109,7 @@ public class NlmCdeBaseTest {
             put("meshmapping", "fa-link");
         }
     };
-    Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {
+    private Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {
         {
             put("cdeTinyId", "operations-CDE-get_de__tinyId_");
             put("cdeTinyIdVersion", "operations-CDE-get_de__tinyId__version__version_");
@@ -215,8 +215,9 @@ public class NlmCdeBaseTest {
 
     @AfterMethod
     public void generateGif(Method m) {
+        String methodName = m.getName();
+        System.out.println("TEST Complete: " +  className + "." + methodName);
         if (m.getAnnotation(RecordVideo.class) != null) {
-            String methodName = m.getName();
             try {
                 File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
                 File[] inputScreenshotsArray = inputScreenshots.listFiles();
@@ -240,6 +241,7 @@ public class NlmCdeBaseTest {
                 System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
             driver.quit();
         } catch (Exception e) {
+            System.out.println(e);
         }
 
     }
@@ -1354,7 +1356,8 @@ public class NlmCdeBaseTest {
             findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
             hangon(2);
             clickElement(By.id("confirmAddChildClassificationBtn"));
-
+            textPresent("Classification added");
+            closeAlert();
         }
         for (int i = 1; i < categories.length; i++) {
             String[] nextCategories = Arrays.copyOfRange(categories, 0, i + 1);
@@ -1366,6 +1369,8 @@ public class NlmCdeBaseTest {
                 findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
                 hangon(2);
                 clickElement(By.id("confirmAddChildClassificationBtn"));
+                textPresent("Classification added");
+                closeAlert();
             }
         }
     }

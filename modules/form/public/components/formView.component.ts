@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
@@ -10,6 +10,7 @@ import { UserService } from 'core/public/user.service';
 import { AlertService } from 'system/public/components/alert/alert.service';
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: "cde-form-view",
@@ -26,6 +27,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
     @ViewChild("saveModal") public saveModal: SaveModalComponent;
+    @ViewChild("tabSet") public tabSet: NgbTabset;
     @Input() routeParams: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -50,24 +52,28 @@ export class FormViewComponent implements OnInit {
                 public isAllowedModel: IsAllowedService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                public userService: UserService) {
+                public userService: UserService,
+                private route: ActivatedRoute) {
     }
 
-    ngOnInit(): void {
-        this.loadForm(form => {
-            this.loadComments(form, null);
-            this.userService.then(() => {
-                let user = this.userService.user;
-                if (user && user.username)
-                    this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+    ngOnInit() {
+        this.route.queryParams.subscribe(() => {
+            this.loadForm(form => {
+                this.loadComments(form, null);
+                if (this.tabSet) this.tabSet.select("general_tab");
+                this.userService.then(() => {
+                    let user = this.userService.user;
+                    if (user && user.username)
+                        this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                    else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                });
             });
         });
     }
 
     loadForm(cb) {
-        let formId = this.routeParams.formId;
-        let url = "/form/" + this.routeParams.tinyId;
+        let formId = this.route.snapshot.queryParams['formId'];
+        let url = "/form/" + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
@@ -93,9 +99,6 @@ export class FormViewComponent implements OnInit {
     onLocationChange(event, newUrl, oldUrl, elt) {
         if (elt && elt.unsaved && oldUrl.indexOf("formView") > -1) {
             let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            if ((window as any).debugEnabled) {
-                txt = txt + window.location.pathname;
-            }
             let answer = confirm(txt);
             if (!answer) event.preventDefault();
         }

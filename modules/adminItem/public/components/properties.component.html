@@ -7,12 +7,12 @@
                 <div class="row" *ngIf="canEdit">
                     <span *ngIf="prop.edit">Confirm Delete
                         <span class="btn-default fa fa-check" (click)="removePropertyByIndex(i)"
-                              id="confirmRemoveProperty-{{i}}" title="OK" href=""></span>
+                              id="confirmRemoveProperty-{{i}}" title="OK"></span>
                         <span class="btn-default fa fa-times" (click)="prop.edit = false"
-                              id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
+                              id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
                     </span>
                     <span (click)="prop.edit = true" *ngIf="!prop.edit" class="btn-default fa fa-trash-o"
-                          id="removeProperty-{{i}}" title="Remove" href=""></span>
+                          id="removeProperty-{{i}}" title="Remove"></span>
                     <sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></sortable-array>
                 </div>
             </div>
@@ -42,7 +42,7 @@
     <div class="modal-header" id="newPropertyModalHeader">
         <h4 class="modal-title">Add Property</h4>
     </div>
-    <form role="form" #newPropertyForm="ngForm">
+    <form role="form" #newPropertyForm="ngForm" (ngSubmit)="addNewProperty()">
         <div class="modal-body" id="newPropertyModalBody">
             <div class="form-group">
                 <label for="newKey">Key</label>
@@ -64,7 +64,7 @@
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"
-                    (click)="addNewProperty();">
+                    type="submit">
                 Save
             </button>
         </div>

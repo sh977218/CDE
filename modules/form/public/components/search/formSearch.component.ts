@@ -7,11 +7,22 @@ import { ExportService } from 'core/public/export.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { SearchBaseComponent } from 'search/searchBase.component';
 import { OrgHelperService } from 'core/public/orgHelper.service';
-import { UserService } from "../../../../core/public/user.service";
+import { UserService } from "core/public/user.service";
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'cde-form-search',
-    templateUrl: '../../../../search/searchBase.component.html'
+    templateUrl: '../../../../search/searchBase.component.html',
+    styles: [`            
+        .browseLink {
+            color: #337ab7;
+        }
+        
+        .browseLink:hover {
+            color: #23527c;
+            text-decoration: underline;
+        }
+    `]
 })
 export class FormSearchComponent extends SearchBaseComponent {
     @Input() addMode: string = undefined;
@@ -28,9 +39,11 @@ export class FormSearchComponent extends SearchBaseComponent {
                 protected modalService: NgbModal,
                 protected elasticService: ElasticService,
                 protected orgHelperService: OrgHelperService,
-                protected userService: UserService) {
+                protected userService: UserService,
+                protected router: Router,
+                protected route: ActivatedRoute) {
         super(_componentFactoryResolver, alert, elasticService, exportService, http, modalService,
-            orgHelperService, userService);
+            orgHelperService, userService, router, route);
 
         this.exporters.odm = {id: "odmExport", display: "ODM Export"};
     }

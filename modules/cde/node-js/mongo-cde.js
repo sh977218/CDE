@@ -485,7 +485,7 @@ new CronJob({
             if (err) throw "Cannot repair CDE references.";
             async.eachSeries(ids, function (id, cb) {
                 DataElement.findOne({tinyId: id, archived: false}).exec(function (err, de) {
-                    if (!err) correctBoardPinsForCde(de, cb);
+                    if (!err && de) correctBoardPinsForCde(de, cb);
                 });
             }, function () {
                 dbLogger.consoleLog("Board <-> CDE reference repair done!");

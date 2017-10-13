@@ -1,7 +1,8 @@
-import { Component, Inject, Input, OnInit } from "@angular/core";
-import { ExportService } from "../../../../core/public/export.service";
-import { OrgHelperService } from "../../../../core/public/orgHelper.service";
-import { UserService } from "../../../../core/public/user.service";
+import { Component, OnInit } from "@angular/core";
+import { ExportService } from "core/public/export.service";
+import { OrgHelperService } from "core/public/orgHelper.service";
+import { UserService } from "core/public/user.service";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: "cde-cde-status-report",
@@ -9,11 +10,10 @@ import { UserService } from "../../../../core/public/user.service";
 })
 export class CdeStatusReportComponent implements OnInit {
 
-    @Input() searchSettings: any = {};
-
     constructor(private exportSvc: ExportService,
                 private orgSvc: OrgHelperService,
-                private userSvc: UserService) {}
+                private userSvc: UserService,
+                private route: ActivatedRoute) {}
 
 
     gridOptionsReport = {
@@ -22,7 +22,9 @@ export class CdeStatusReportComponent implements OnInit {
     cdes: any[];
 
     ngOnInit () {
-        let obj = {searchSettings: this.searchSettings,
+        let searchSettings = JSON.parse(this.route.snapshot.queryParams['searchSettings']);
+
+        let obj = {searchSettings: searchSettings,
             cb: cdes => {
                 if (cdes.length === 0) {
                     this.cdes = [];

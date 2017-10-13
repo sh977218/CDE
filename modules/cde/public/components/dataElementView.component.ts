@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
@@ -9,6 +9,7 @@ import { AlertService } from 'system/public/components/alert/alert.service';
 import { UserService } from 'core/public/user.service';
 import * as authShared from "system/shared/authorizationShared";
 import { IsAllowedService } from 'core/public/isAllowed.service';
+import { ActivatedRoute } from '@angular/router';
 import * as deValidator from "../../shared/deValidator.js";
 
 @Component({
@@ -23,7 +24,7 @@ import * as deValidator from "../../shared/deValidator.js";
 export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @Input() routeParams: any;
+    @ViewChild("tabSet") public tabSet: NgbTabset;
     @Output() public h = new EventEmitter();
 
     elt: any;
@@ -41,6 +42,7 @@ export class DataElementViewComponent implements OnInit {
     url;
 
     constructor(private http: Http,
+                private route: ActivatedRoute,
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
@@ -49,32 +51,32 @@ export class DataElementViewComponent implements OnInit {
                 public userService: UserService) {
     }
 
-    ngOnInit(): void {
-        this.deId = this.routeParams.cdeId;
-        this.tinyId = this.routeParams.tinyId;
-        this.url = "/de/" + this.tinyId;
-        if (this.deId) this.url = "/deById/" + this.deId;
-        this.userService.then(() => {
-            let user = this.userService.user;
-            if (user && user.username) {
-                this.loadDraft(draft => {
-                    if (draft) {
-                        this.elt = draft;
-                        this.setDisplayStatusWarning();
-                        deValidator.checkPvUnicity(this.elt.valueDomain);
-                        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                    } else this.loadDataElement(null);
-                });
-            } else this.loadDataElement(null);
+    ngOnInit() {
+        this.route.queryParams.subscribe(() => {
+            this.deId = this.route.snapshot.queryParams['cdeId'];
+            this.tinyId = this.route.snapshot.queryParams['tinyId'];
+            this.url = "/de/" + this.tinyId;
+            if (this.deId) this.url = "/deById/" + this.deId;
+            if (this.tabSet) this.tabSet.select("general_tab");
+            this.userService.then(() => {
+                let user = this.userService.user;
+                if (user && user.username) {
+                    this.loadDraft(draft => {
+                        if (draft) {
+                            this.elt = draft;
+                            this.setDisplayStatusWarning();
+                            deValidator.checkPvUnicity(this.elt.valueDomain);
+                            this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                        } else this.loadDataElement(null);
+                    });
+                } else this.loadDataElement(null);
+            });
         });
     }
 
     onLocationChange(event, oldUrl, elt) {
         if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
             let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            if ((window as any).debugEnabled) {
-                txt = txt + window.location.pathname;
-            }
             let answer = confirm(txt);
             if (!answer) {
                 event.preventDefault();
@@ -175,7 +177,6 @@ export class DataElementViewComponent implements OnInit {
             this.alert.addAlert("info", "Save to confirm.");
         } else {
             this.saveDataElement();
-            this.modalRef.close();
         }
     }
 

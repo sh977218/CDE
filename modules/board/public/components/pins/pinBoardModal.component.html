@@ -37,7 +37,7 @@
                                 <i class="fa"
                                    [ngClass]="board.shareStatus === 'Public' ? 'fa-globe' : 'fa-lock'"></i>
                             </span>
-                            <a href="" id="viewBoard_{{board.name}}" (click)="selectBoard(board);c()">{{board.name}}</a>
+                            <a id="viewBoard_{{board.name}}" (click)="selectBoard(board);c()">{{board.name}}</a>
                         </h5>
                         <div>
                             <span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span>
@@ -74,7 +74,7 @@
         </ul>
         <br>
         <div style="text-align: center">
-            <a id="signUpLink" href="/login" class="btn btn-lg btn-info" (click)="c()">Sign up or Log In</a></div>
+            <a id="signUpLink" routerLink="/login" class="btn btn-lg btn-info" (click)="c()">Sign up or Log In</a></div>
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="c()" id="cancelSelect">Cancel</button>

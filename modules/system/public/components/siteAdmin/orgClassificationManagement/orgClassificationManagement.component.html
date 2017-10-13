@@ -146,7 +146,7 @@
             </div>
 
             <div *ngFor="let desc of mapping.meshDescriptors;let i=index;">
-                <a href="" (click)="removeDescriptor(i)" class="fa fa-trash" title="remove"></a>
+                <a (click)="removeDescriptor(i)" class="fa fa-trash" title="remove"></a>
                 {{desc}} -{{descToName[desc]}}
             </div>
 
