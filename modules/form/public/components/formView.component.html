@@ -5,138 +5,160 @@
 </div>
 
 <div *ngIf="elt" class="container-fluid" itemscope="http://schema.org/MedicalCode">
-    <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Warning:</strong> this form is archived. You can
-        <a id="viewCurrentEltLink" routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
+    <div id="warning">
+        <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Warning:</strong> this form is archived. You can
+            <a id="viewCurrentEltLink" routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current
+                version here</a>.
+        </div>
+        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Warning:</strong> this form is retired.
+            <a *ngIf="elt.registrationState.replacedBy"
+               routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
+        </div>
+        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
+             role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Warning:</strong> this form is about to be retired.
+            <a *ngIf="elt.registrationState.replacedBy"
+               routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible
+                Replacement</a>
+        </div>
+        <div *ngIf="elt.outdated" class="alert alert-info mt20" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Note: </strong>Some CDEs in this form have newer version.
+        </div>
+        <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            The following CDEs are part of a score but are missing from this form:
+            <ul class="list-inline">
+                <li *ngFor="let missCde of missingCdes;let i = index;">
+                    <a href="/deView?tinyId={{missCde.tinyId}}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
+                    <span *ngIf="i < missingCdes.length">,</span></li>
+            </ul>
+        </div>
     </div>
-    <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Warning:</strong> this form is retired.
-        <a *ngIf="elt.registrationState.replacedBy"
-           routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
+    <div id="">
+        <h1>
+            <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
+        </h1>
+        <div class="clearfix">
+            <div class="pull-left marginTopBottom5">
+                <button *ngIf="quickBoardService.canAddElement(elt)"
+                        id="addToQuickBoard" class="btn btn-small btn-default"
+                        title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
+                    <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
+                </button>
+                <button id="addToBoard" class="btn btn-small btn-default" title="Add to Board"
+                        (click)="mltPinModal.open([elt], 'cde')">
+                    <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
+                </button>
+                <div class="btn-group" role="group">
+                    <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-download"></i>
+                        <span class="hidden-xs-down"> Export<i class="caret"></i></span>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="export">
+                        <ng-container *ngIf="isAllowedModel.loggedIn()">
+                            <li>
+                                <a id='nihJson' href="formById/{{elt._id}}" target="_blank" style="display: inline">JSON
+                                    File, NIH/CDE Schema</a>
+                                <a href="/schema/form" target="_blank" style="display: inline">
+                                    <i class="fa fa-info-circle"></i></a>
+                            </li>
+                            <li>
+                                <a id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank"
+                                   style="display: inline">XML File, CDISC / ODM</a>
+                                <a href="https://www.cdisc.org/standards/transport/odm" target="_blank"
+                                   style="display: inline">
+                                    <i class="fa fa-info-circle"></i></a>
+                            </li>
+                            <li>
+                                <a id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
+                                   style="display: inline">XML File, SDC Schema</a>
+                                <a href="https://github.com/esacinc/sdc-schema-package" target="_blank"
+                                   style="display: inline"><i class="fa fa-info-circle"></i></a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
+                                   href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                                   target="_blank">XML File, SDC Schema with XSL Transform</a>
+                            </li>
+                            <li><a class="dropdown-item" id='nihXml' href="formById/{{elt._id}}?type=xml"
+                                   target="_blank">XML File, NIH/CDE Schema</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" id='formPublishExport' (click)="openPreparePublishModal()"
+                                   target="_blank">Published Form</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" id='nihRedCap' href="formById/{{elt._id}}?type=REDCap"
+                                   target="_blank" style="display: inline">REDCap</a>
+                                <a href="https://projectredcap.org/" target="_blank" style="display: inline">
+                                    <i class="fa fa-info-circle"></i></a>
+                            </li>
+                        </ng-container>
+                        <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
+                            Please login to export forms.</a>
+                    </div>
+                </div>
+                <button *ngIf="isAllowedModel.loggedIn()"
+                        id="pinAllCdes" class="btn btn-small btn-default"
+                        title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
+                    <i class="fa fa-cogs"></i><span class="hidden-xs-down"> Pin CDEs</span>
+                </button>
+                <button *ngIf="isAllowedModel.loggedIn()"
+                        id="copyFormBtn" class="btn btn-small btn-default"
+                        title="Copy CDE" type="button" (click)="openCopyElementModal()">
+                    <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
+                </button>
+                <button id="discussBtn" class="btn btn-small btn-default"
+                        title="Discuss CDE" (click)="commentMode = !commentMode;">
+                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
+                    <span class="hidden-xs-down"> Discuss</span>
+                </button>
+            </div>
+            <div class="pull-right marginTopBottom5">
+                <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
+                        class="btn btn-info" (click)="loadDraft(null);">
+                    <i class="fa fa-eye fa-lg"></i> View Draft
+                </button>
+                <ng-container *ngIf="elt.isDraft">
+                    <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
+                        <i class="fa fa-globe fa-lg"></i> Publish
+                    </button>
+                    <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+                        <i class="fa fa-trash fa-lg"></i> Delete Draft
+                    </button>
+                    <button class="btn btn-info" (click)="loadForm(null);">
+                        <i class="fa fa-eye fa-lg"></i> View Published
+                    </button>
+                </ng-container>
+            </div>
+        </div>
     </div>
-    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
-         role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Warning:</strong> this form is about to be retired.
-        <a *ngIf="elt.registrationState.replacedBy"
-           routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
+    <div id="leftNav" class="float-left">
+        <div id="leftNavContainer">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a routerLink="preview">Preview</a></li>
+                <li class="list-group-item">General Detail</li>
+                <li class="list-group-item">
+                    <a routerLink="formDescription">Form Description</a>
+                </li>
+                <li class="list-group-item">Naming</li>
+                <li class="list-group-item">Classification</li>
+            </ul>
+        </div>
     </div>
-    <div *ngIf="elt.outdated" class="alert alert-info mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Note: </strong>Some CDEs in this form have newer version.
-    </div>
-    <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        The following CDEs are part of a score but are missing from this form:
-        <ul class="list-inline">
-            <li *ngFor="let missCde of missingCdes;let i = index;">
-                <a href="/deView?tinyId={{missCde.tinyId}}" target="_blank">CDE {{i+1}},id: {{missCde.tinyId}}</a>
-                <span *ngIf="i < missingCdes.length">,</span></li>
-        </ul>
+    <div id="rightContainer" class="float-right">
+        <router-outlet></router-outlet>
     </div>
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-            <h1>
-                <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
-            </h1>
-
-            <div class="clearfix">
-                <div class="pull-left marginTopBottom5">
-                    <button *ngIf="quickBoardService.canAddElement(elt)"
-                            id="addToQuickBoard" class="btn btn-small btn-default"
-                            title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
-                        <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
-                    </button>
-                    <button id="addToBoard" class="btn btn-small btn-default" title="Add to Board"
-                            (click)="mltPinModal.open([elt], 'cde')">
-                        <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
-                    </button>
-                    <div class="btn-group" role="group">
-                        <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-download"></i>
-                            <span class="hidden-xs-down"> Export<i class="caret"></i></span>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="export">
-                            <ng-container *ngIf="isAllowedModel.loggedIn()">
-                                <li>
-                                    <a id='nihJson' href="formById/{{elt._id}}" target="_blank" style="display: inline">JSON
-                                        File, NIH/CDE Schema</a>
-                                    <a href="/schema/form" target="_blank" style="display: inline">
-                                        <i class="fa fa-info-circle"></i></a>
-                                </li>
-                                <li>
-                                    <a id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank"
-                                       style="display: inline">XML File, CDISC / ODM</a>
-                                    <a href="https://www.cdisc.org/standards/transport/odm" target="_blank"
-                                       style="display: inline">
-                                        <i class="fa fa-info-circle"></i></a>
-                                </li>
-                                <li>
-                                    <a id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
-                                       style="display: inline">XML File, SDC Schema</a>
-                                    <a href="https://github.com/esacinc/sdc-schema-package" target="_blank"
-                                       style="display: inline"><i class="fa fa-info-circle"></i></a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
-                                       href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                                       target="_blank">XML File, SDC Schema with XSL Transform</a>
-                                </li>
-                                <li><a class="dropdown-item" id='nihXml' href="formById/{{elt._id}}?type=xml"
-                                       target="_blank">XML File, NIH/CDE Schema</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" id='formPublishExport' (click)="openPreparePublishModal()"
-                                       target="_blank">Published Form</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" id='nihRedCap' href="formById/{{elt._id}}?type=REDCap"
-                                       target="_blank" style="display: inline">REDCap</a>
-                                    <a href="https://projectredcap.org/" target="_blank" style="display: inline">
-                                        <i class="fa fa-info-circle"></i></a>
-                                </li>
-                            </ng-container>
-                            <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
-                                Please login to export forms.</a>
-                        </div>
-                    </div>
-                    <button *ngIf="isAllowedModel.loggedIn()"
-                            id="pinAllCdes" class="btn btn-small btn-default"
-                            title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
-                        <i class="fa fa-cogs"></i><span class="hidden-xs-down"> Pin CDEs</span>
-                    </button>
-                    <button *ngIf="isAllowedModel.loggedIn()"
-                            id="copyFormBtn" class="btn btn-small btn-default"
-                            title="Copy CDE" type="button" (click)="openCopyElementModal()">
-                        <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
-                    </button>
-                    <button id="discussBtn" class="btn btn-small btn-default"
-                            title="Discuss CDE" (click)="commentMode = !commentMode;">
-                        <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
-                        <span class="hidden-xs-down"> Discuss</span>
-                    </button>
-                </div>
-                <div class="pull-right marginTopBottom5">
-                    <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
-                            class="btn btn-info" (click)="loadDraft(null);">
-                        <i class="fa fa-eye fa-lg"></i> View Draft
-                    </button>
-                    <ng-container *ngIf="elt.isDraft">
-                        <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
-                            <i class="fa fa-globe fa-lg"></i> Publish
-                        </button>
-                        <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
-                            <i class="fa fa-trash fa-lg"></i> Delete Draft
-                        </button>
-                        <button class="btn btn-info" (click)="loadForm(null);">
-                            <i class="fa fa-eye fa-lg"></i> View Published
-                        </button>
-                    </ng-container>
-                </div>
-            </div>
             <div>
                 <ngb-tabset (tabChange)="beforeChange($event)" #tabSet="ngbTabset">
                     <ngb-tab id="general_tab">
@@ -148,7 +170,8 @@
                         <ng-template ngbTabContent>
                             <div class="row">
                                 <div class="col-lg-5">
-                                    <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft()">
+                                    <cde-form-general-details [elt]="elt" [canEdit]="canEdit"
+                                                              (onEltChange)="saveDraft()">
                                     </cde-form-general-details>
                                     <div>
                                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
@@ -181,9 +204,9 @@
                         </ng-template>
                         <ng-template ngbTabContent>
                             <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit"
-                                  [inScoreCdes]="inScoreCdes"
-                                  (isFormValid)="setIsValid($event)"
-                                  (onEltChange)="saveDraft()"></cde-form-description>
+                                                  [inScoreCdes]="inScoreCdes"
+                                                  (isFormValid)="setIsValid($event)"
+                                                  (onEltChange)="saveDraft()"></cde-form-description>
                         </ng-template>
                     </ngb-tab>
                     <ngb-tab id="naming_tab">
