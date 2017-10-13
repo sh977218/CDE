@@ -13,6 +13,7 @@ export class NativeRenderComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() profile: DisplayProfile;
     @Input() submitForm: boolean;
+    @Input() showTitle: boolean = true;
 
     endpointUrl: string;
     formUrl: string;

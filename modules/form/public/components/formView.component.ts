@@ -45,6 +45,7 @@ export class FormViewComponent implements OnInit {
     formInput;
     drafts = [];
     formId;
+    currentView = "nativeRender";
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
