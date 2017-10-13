@@ -8,7 +8,11 @@ import { ReferenceDocument } from 'core/public/models.model';
 @Component({
     selector: "cde-reference-document",
     providers: [NgbActiveModal],
-    templateUrl: "./referenceDocument.component.html"
+    templateUrl: "./referenceDocument.component.html",
+    styles: [`
+        dd {
+            min-height: 20px;
+        }`]
 })
 export class ReferenceDocumentComponent {
     @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: NgbModalModule;
