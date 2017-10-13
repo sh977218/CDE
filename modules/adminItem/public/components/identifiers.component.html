@@ -1,6 +1,5 @@
 <div id="identifiersDiv" class="col-12">
     <h4>Identifiers</h4>
-
     <dl class="row">
         <dt class="col-sm-3 text-right">Source:</dt>
         <dd id="dd_origin_nlm" class="col-sm-9">NLM</dd>
@@ -11,7 +10,6 @@
         <dd id="dd_version_nlm" class="col-sm-9">{{elt.version}}</dd>
     </dl>
     <hr>
-
     <ng-container *ngFor="let id of elt.ids; let i = index">
         <dl class="row">
             <dt class="col-sm-3 text-right">
@@ -27,7 +25,7 @@
             </dt>
             <dd id="source_{{i}}" class="col-sm-9">{{id.source}}</dd>
             <dt class="col-sm-3 text-right">Id:</dt>
-            <dd id="value_{{i}}" class="col-sm-9">
+            <dd id="id_{{i}}" class="col-sm-9">
                 <ng-container [ngSwitch]="id.source">
                     <a *ngSwitchCase="'LOINC'"
                        href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
@@ -43,7 +41,6 @@
         </dl>
         <hr>
     </ng-container>
-
     <button *ngIf="canEdit" class="btn btn-small btn-default" id="openNewIdentifierModalBtn"
             (click)="openNewIdentifierModal();">
         <i class="fa fa-plus"></i> Add Identifier
