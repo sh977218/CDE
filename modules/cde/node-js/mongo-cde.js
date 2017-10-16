@@ -65,10 +65,6 @@ exports.byTinyId = function (tinyId, cb) {
     DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
 };
 
-exports.byTinyIdVersion = function (tinyId, version, cb) {
-    DataElement.findOne({tinyId: tinyId, version: version}, cb);
-};
-
 exports.latestVersionByTinyId = function (tinyId, cb) {
     DataElement.findOne({tinyId: tinyId, archived: false}, function (err, dataElement) {
         cb(err, dataElement.version);
@@ -144,8 +140,7 @@ exports.desByConcept = function (concept, callback) {
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     let cond = {
         'tinyId': tinyId,
-        "version": version,
-        "registrationState.registrationStatus": {$ne: "Retired"}
+        "version": version
     };
     DataElement.find(cond).sort({"updated": -1}).limit(1).exec(function (err, des) {
         callback(err, des[0]);
