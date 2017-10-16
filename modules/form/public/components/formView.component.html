@@ -143,35 +143,33 @@
     </div>
     <div class="clearfix"></div>
     <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-        <div>
-            <div id="leftNav" class="col-lg-2" [ngClass]="{'positionAbsolute':mobileView}">
-                <ul class="list-group">
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='nativeRender'}"
-                       (click)="currentView ='nativeRender'">Preview</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='detail'}"
-                       (click)="currentView ='detail'">General Detail</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='description'}"
-                       (click)="currentView ='description'">Form Description</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='naming'}"
-                       (click)="currentView ='naming'">Naming</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='classification'}"
-                       (click)="currentView = 'classification'">Classification</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='referenceDocuments'}"
-                       (click)="currentView = 'referenceDocuments'">Reference Documents</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='displayProfiles'}"
-                       (click)="currentView = 'displayProfiles'">Display Profiles</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='properties'}"
-                       (click)="currentView = 'properties'">Properties</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='identifiers'}"
-                       (click)="currentView = 'identifiers'">Identifiers</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='attachments'}"
-                       (click)="currentView = 'attachments'">Attachments</a>
-                    <a class="list-group-item" [ngClass]="{'active':currentView ==='history'}"
-                       (click)="currentView = 'history'">History</a>
-                </ul>
-            </div>
+        <div id="leftNav" class="col-lg-2" [ngClass]="{'positionAbsolute':mobileView}">
+            <ul class="list-group">
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='nativeRender'}"
+                   (click)="currentView ='nativeRender'">Preview</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='detail'}"
+                   (click)="currentView ='detail'">General Detail</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='description'}"
+                   (click)="currentView ='description'">Form Description</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='naming'}"
+                   (click)="currentView ='naming'">Naming</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='classification'}"
+                   (click)="currentView = 'classification'">Classification</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='referenceDocuments'}"
+                   (click)="currentView = 'referenceDocuments'">Reference Documents</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='displayProfiles'}"
+                   (click)="currentView = 'displayProfiles'">Display Profiles</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='properties'}"
+                   (click)="currentView = 'properties'">Properties</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='identifiers'}"
+                   (click)="currentView = 'identifiers'">Identifiers</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='attachments'}"
+                   (click)="currentView = 'attachments'">Attachments</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='history'}"
+                   (click)="currentView = 'history'">History</a>
+            </ul>
         </div>
-        <div id="middleView" class="col-10 col-sm-12">
+        <div id="middleView" class="col-lg-10 col-sm-12">
             <ng-container *ngIf="currentView === 'nativeRender'">
                 <cde-native-render [elt]="elt" [showTitle]="false"></cde-native-render>
             </ng-container>
