@@ -33,7 +33,7 @@ module.exports = {
             ),
             new AotPlugin.AotPlugin({
                 tsConfigPath: './tsconfig.json',
-                entryModule: path.join(__dirname, 'modules', 'app.module') + '#CdeAppModule',
+                entryModule: path.join(__dirname, 'modules', '_app/app.module') + '#CdeAppModule',
                 mainPath: 'modules/main-aot'
             }),
             new webpack.DefinePlugin({
