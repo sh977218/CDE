@@ -19,6 +19,10 @@ import { ActivatedRoute } from '@angular/router';
         .marginTopBottom5 {
             margin: 5px 0
         }
+
+        .leftNav {
+            z-index: 1;
+        }
     `]
 })
 export class FormViewComponent implements OnInit {
@@ -59,7 +63,7 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (window.innerWidth <= 800 && window.innerHeight <= 600)
+        if (window.innerWidth <= 800)
             this.mobileView = true;
         this.route.queryParams.subscribe(() => {
             this.loadForm(form => {

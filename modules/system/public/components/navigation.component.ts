@@ -21,11 +21,15 @@ import { UserService } from "core/public/user.service";
             display: block;
         }
 
-        .navbar-collapse.collapse.in,
-        .navbar-collapse.collapsing {
+        .navbar-collapse.collapse.in, .navbar-collapse.collapsing {
             display: block !important;
             width: auto;
         }
+
+        .navbar {
+            padding: 0;
+        }
+
     `]
 })
 export class NavigationComponent {

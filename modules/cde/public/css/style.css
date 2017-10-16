@@ -4,10 +4,6 @@
     display: inline-block;
 }
 
-.navbar {
-    padding: 0;
-}
-
 .dropdown-toggle::after {
     content: "";
     display: block;
@@ -247,10 +243,6 @@ ngb-accordion .card-header a:hover {
 .matched-by {
     float: right;
     color: #4c4c4c;
-}
-
-a {
-    color: #207b9e;
 }
 
 .btn-primary {
