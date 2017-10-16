@@ -3,8 +3,8 @@ import { Component, ViewChild } from "@angular/core";
 import { Select2OptionData } from "ng2-select2";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Observable } from "rxjs/Rx";
-import { AlertService } from "../../alert/alert.service";
 import { SharedService } from "core/public/shared.service";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-users-mgt",

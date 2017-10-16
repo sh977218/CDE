@@ -14,7 +14,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { IsAllowedService } from 'core/public/isAllowed.service';
-import { AlertService } from 'system/public/components/alert/alert.service';
+import { AlertService } from '_app/alert/alert.service';
 
 
 @Component({

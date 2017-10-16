@@ -4,8 +4,8 @@ import "rxjs/add/operator/map";
 
 import { Property } from 'core/public/models.model';
 import { DataElement } from 'cde/public/dataElement.model';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { OrgHelperService } from 'core/public/orgHelper.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-properties",

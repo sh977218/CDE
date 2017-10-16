@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { CdeForm } from 'form/public/form.model';
 import { DataElement } from 'cde/public/dataElement.model';
 import { User } from 'core/public/models.model';
 import * as _ from "lodash";
 import { UserService } from 'core/public/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-profile",

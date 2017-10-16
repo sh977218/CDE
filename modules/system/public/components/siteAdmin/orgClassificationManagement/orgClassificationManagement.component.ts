@@ -8,11 +8,11 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
 
 import { ClassificationService } from "core/public/core.module";
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { Subject } from 'rxjs/Subject';
 import * as authShared from "system/shared/authorizationShared";
 import { UserService } from 'core/public/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 const actionMapping: IActionMapping = {
     mouse: {

@@ -4,14 +4,14 @@ import "../node_modules/zone.js/dist/long-stack-trace-zone.js";
 import "reflect-metadata";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
-import { CdeAppModule } from 'app.module';
-
 // required for ng2-select2
 require('expose-loader?select2!select2');
 
 import { enableProdMode } from "@angular/core";
+import { CdeAppModule } from '_app/app.module';
+
 if (PRODUCTION)
     enableProdMode();
 
-platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/).then(platformRef => {
+platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/).then(() => {
 });

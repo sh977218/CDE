@@ -18,11 +18,7 @@ import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.comp
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
-import { NavigationComponent } from "./components/navigation.component";
 import { SwaggerComponent } from "./components/swagger.component";
-import { TruncateLongNamePipe } from "./truncateLongName.pipe";
-import { AlertComponent } from "./components/alert/alert.component";
-import { AlertService } from "./components/alert/alert.service";
 import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component";
 import { AuditLogComponent } from "./components/siteAdmin/auditLog/auditLog.component";
 import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffPopulate.service";
@@ -88,7 +84,6 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes)
     ],
     declarations: [
-        AlertComponent,
         AppLogComponent,
         AuditLogComponent,
         CamelCaseToHumanPipe,
@@ -103,7 +98,6 @@ const appRoutes: Routes = [
         ListManagementComponent,
         LogAuditComponent,
         LoginComponent,
-        NavigationComponent,
         OrgAccountManagementComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
@@ -119,7 +113,6 @@ const appRoutes: Routes = [
         SwaggerComponent,
         SelectBoardDirective,
         TimeAgoPipe,
-        TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
     ],
@@ -129,7 +122,6 @@ const appRoutes: Routes = [
         OrgAccountManagementComponent,
         OrgAuthorityComponent,
         OrgClassificationManagementComponent,
-        ProfileComponent,
         ServerStatusComponent,
         SearchPreferencesComponent,
         SiteAuditComponent,
@@ -140,11 +132,8 @@ const appRoutes: Routes = [
     ],
     exports: [
         RouterModule,
-        NavigationComponent,
-        AlertComponent,
     ],
     providers: [
-        AlertService,
         CdeDiffPopulateService,
         LoginService,
         RegistrationValidatorService,

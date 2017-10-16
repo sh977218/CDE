@@ -1,11 +1,7 @@
 import { Component, Input, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { AlertService } from 'system/public/components/alert/alert.service';
-
-import * as ClassificationShared from "../../../system/shared/classificationShared.js";
-
-import * as _ from "lodash";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-create-form-from-board",

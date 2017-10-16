@@ -5,7 +5,7 @@ import "rxjs/add/operator/debounceTime";
 
 import { Observable } from "rxjs/Rx";
 import { IsAllowedService } from 'core/public/isAllowed.service';
-import { AlertService } from 'system/public/components/alert/alert.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-org-admin",

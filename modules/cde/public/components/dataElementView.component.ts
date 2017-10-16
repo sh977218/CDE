@@ -5,12 +5,12 @@ import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { UserService } from 'core/public/user.service';
 import * as authShared from "system/shared/authorizationShared";
 import { IsAllowedService } from 'core/public/isAllowed.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as deValidator from "../../shared/deValidator.js";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-data-element-view",
@@ -43,6 +43,7 @@ export class DataElementViewComponent implements OnInit {
 
     constructor(private http: Http,
                 private route: ActivatedRoute,
+                private router: Router,
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
@@ -99,8 +100,7 @@ export class DataElementViewComponent implements OnInit {
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                     if (cb) cb();
                 });
-            },
-            () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+            }, () => this.router.navigate(['/pageNotFound'])
         );
     }
 

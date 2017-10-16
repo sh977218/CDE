@@ -11,23 +11,34 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from "@angular/router";
 
-import { CdeAppComponent } from 'app.component';
 import { CdeModule } from 'cde/public/cde.module';
 import { BoardModule } from 'board/public/board.module';
 import { CoreModule } from 'core/public/core.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormModule } from 'form/public/form.module';
 import { SystemModule } from 'system/public/system.module';
-import { FrontExceptionHandler } from 'frontExceptionHandler';
+import { CdeAppComponent } from '_app/app.component';
+import { FrontExceptionHandler } from '_app/frontExceptionHandler';
+import { NavigationComponent } from '_app/navigation/navigation.component';
+import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
+import { AlertService } from '_app/alert/alert.service';
+import { AlertComponent } from '_app/alert/alert.component';
+import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 
 const appRoutes: Routes = [
+    { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
     declarations: [
-        CdeAppComponent
+        AlertComponent,
+        CdeAppComponent,
+        NavigationComponent,
+        PageNotFoundComponent,
+        TruncateLongNamePipe,
     ],
     providers: [
+        AlertService,
         QuickBoardListService,
         {provide: ErrorHandler, useClass: FrontExceptionHandler}
     ],
@@ -49,7 +60,10 @@ const appRoutes: Routes = [
         QuickBoardModule,
         RouterModule.forRoot(appRoutes)
     ],
-    exports: [RouterModule],
+    exports: [
+        PageNotFoundComponent,
+        RouterModule,
+    ],
     bootstrap: [CdeAppComponent]
 })
 export class CdeAppModule {
