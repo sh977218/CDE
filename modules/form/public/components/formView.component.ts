@@ -46,6 +46,7 @@ export class FormViewComponent implements OnInit {
     drafts = [];
     formId;
     currentView = "nativeRender";
+    mobileView: boolean = false;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -58,6 +59,8 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit() {
+        if (window.innerWidth <= 800 && window.innerHeight <= 600)
+            this.mobileView = true;
         this.route.queryParams.subscribe(() => {
             this.loadForm(form => {
                 this.loadComments(form, null);

@@ -1,17 +1,4 @@
 /* Bootstrap 4 overrides for Bootstrap 3 */
-.row {
-    display: block;
-}
-
-.nav, .navbar, .navbar-nav {
-    display: block;
-}
-
-.navbar-collapse.collapse.in,
-.navbar-collapse.collapsing {
-    display: block !important;
-    width: auto;
-}
 
 .form-inline, .form-inline label {
     display: inline-block;

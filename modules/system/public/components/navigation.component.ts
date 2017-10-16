@@ -12,6 +12,20 @@ import { UserService } from "core/public/user.service";
         .navbar-fixed-top .navbar-collapse {
             max-height: none;
         }
+
+        .row {
+            display: block;
+        }
+
+        .nav, .navbar, .navbar-nav {
+            display: block;
+        }
+
+        .navbar-collapse.collapse.in,
+        .navbar-collapse.collapsing {
+            display: block !important;
+            width: auto;
+        }
     `]
 })
 export class NavigationComponent {
@@ -23,8 +37,8 @@ export class NavigationComponent {
     largeContext = {$implicit: ""};
 
     constructor(public userService: UserService,
-            public quickBoardService: QuickBoardListService,
-            public loginSvc: LoginService) {
+                public quickBoardService: QuickBoardListService,
+                public loginSvc: LoginService) {
     }
 
     isPageActive(viewLocation) {
