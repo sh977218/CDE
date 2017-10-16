@@ -26,7 +26,7 @@ function loopFormElements(f, cb) {
         } else {
             let tinyId = fe.question.cde.tinyId;
             let version = fe.question.cde.version ? fe.question.cde.version : null;
-            mongo_cde.byTinyIdVersion(tinyId, version, function (err, dataElement) {
+            mongo_cde.byTinyIdAndVersion(tinyId, version, function (err, dataElement) {
                 if (err || !dataElement) cb(err);
                 else {
                     let systemDe = dataElement.toObject();
