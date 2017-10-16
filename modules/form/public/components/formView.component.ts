@@ -20,7 +20,7 @@ import { ActivatedRoute } from '@angular/router';
             margin: 5px 0
         }
 
-        .leftNav {
+        #leftNav {
             z-index: 1;
         }
     `]

@@ -43,134 +43,135 @@
     <h1>
         <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
-    <div>
-        <div class="pull-left marginTopBottom5">
-            <button *ngIf="quickBoardService.canAddElement(elt)"
-                    id="addToQuickBoard" class="btn btn-small btn-default"
-                    title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
-                <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
+    <div class="pull-left marginTopBottom5">
+        <button *ngIf="quickBoardService.canAddElement(elt)"
+                id="addToQuickBoard" class="btn btn-small btn-default"
+                title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
+            <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
+        </button>
+        <button id="addToBoard" class="btn btn-small btn-default" title="Add to Board"
+                (click)="mltPinModal.open([elt], 'cde')">
+            <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
+        </button>
+        <div class="btn-group" role="group">
+            <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-download"></i>
+                <span class="hidden-xs-down"> Export<i class="caret"></i></span>
             </button>
-            <button id="addToBoard" class="btn btn-small btn-default" title="Add to Board"
-                    (click)="mltPinModal.open([elt], 'cde')">
-                <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
-            </button>
-            <div class="btn-group" role="group">
-                <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-download"></i>
-                    <span class="hidden-xs-down"> Export<i class="caret"></i></span>
-                </button>
-                <div class="dropdown-menu" aria-labelledby="export">
-                    <ng-container *ngIf="isAllowedModel.loggedIn()">
-                        <li>
-                            <a id='nihJson' href="formById/{{elt._id}}" target="_blank" style="display: inline">JSON
-                                File, NIH/CDE Schema</a>
-                            <a href="/schema/form" target="_blank" style="display: inline">
-                                <i class="fa fa-info-circle"></i></a>
-                        </li>
-                        <li>
-                            <a id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank"
-                               style="display: inline">XML File, CDISC / ODM</a>
-                            <a href="https://www.cdisc.org/standards/transport/odm" target="_blank"
-                               style="display: inline">
-                                <i class="fa fa-info-circle"></i></a>
-                        </li>
-                        <li>
-                            <a id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
-                               style="display: inline">XML File, SDC Schema</a>
-                            <a href="https://github.com/esacinc/sdc-schema-package" target="_blank"
-                               style="display: inline"><i class="fa fa-info-circle"></i></a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
-                               href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                               target="_blank">XML File, SDC Schema with XSL Transform</a>
-                        </li>
-                        <li><a class="dropdown-item" id='nihXml' href="formById/{{elt._id}}?type=xml"
-                               target="_blank">XML File, NIH/CDE Schema</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" id='formPublishExport' (click)="openPreparePublishModal()"
-                               target="_blank">Published Form</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" id='nihRedCap' href="formById/{{elt._id}}?type=REDCap"
-                               target="_blank" style="display: inline">REDCap</a>
-                            <a href="https://projectredcap.org/" target="_blank" style="display: inline">
-                                <i class="fa fa-info-circle"></i></a>
-                        </li>
-                    </ng-container>
-                    <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
-                        Please login to export forms.</a>
-                </div>
+            <div class="dropdown-menu" aria-labelledby="export">
+                <ng-container *ngIf="isAllowedModel.loggedIn()">
+                    <li>
+                        <a id='nihJson' href="formById/{{elt._id}}" target="_blank" style="display: inline">JSON
+                            File, NIH/CDE Schema</a>
+                        <a href="/schema/form" target="_blank" style="display: inline">
+                            <i class="fa fa-info-circle"></i></a>
+                    </li>
+                    <li>
+                        <a id='odmExport' href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank"
+                           style="display: inline">XML File, CDISC / ODM</a>
+                        <a href="https://www.cdisc.org/standards/transport/odm" target="_blank"
+                           style="display: inline">
+                            <i class="fa fa-info-circle"></i></a>
+                    </li>
+                    <li>
+                        <a id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
+                           style="display: inline">XML File, SDC Schema</a>
+                        <a href="https://github.com/esacinc/sdc-schema-package" target="_blank"
+                           style="display: inline"><i class="fa fa-info-circle"></i></a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
+                           href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                           target="_blank">XML File, SDC Schema with XSL Transform</a>
+                    </li>
+                    <li><a class="dropdown-item" id='nihXml' href="formById/{{elt._id}}?type=xml"
+                           target="_blank">XML File, NIH/CDE Schema</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" id='formPublishExport' (click)="openPreparePublishModal()"
+                           target="_blank">Published Form</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" id='nihRedCap' href="formById/{{elt._id}}?type=REDCap"
+                           target="_blank" style="display: inline">REDCap</a>
+                        <a href="https://projectredcap.org/" target="_blank" style="display: inline">
+                            <i class="fa fa-info-circle"></i></a>
+                    </li>
+                </ng-container>
+                <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
+                    Please login to export forms.</a>
             </div>
-            <button *ngIf="isAllowedModel.loggedIn()"
-                    id="pinAllCdes" class="btn btn-small btn-default"
-                    title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
-                <i class="fa fa-cogs"></i><span class="hidden-xs-down"> Pin CDEs</span>
-            </button>
-            <button *ngIf="isAllowedModel.loggedIn()"
-                    id="copyFormBtn" class="btn btn-small btn-default"
-                    title="Copy CDE" type="button" (click)="openCopyElementModal()">
-                <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
-            </button>
-            <button id="discussBtn" class="btn btn-small btn-default"
-                    title="Discuss CDE" (click)="commentMode = !commentMode;">
-                <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
-                <span class="hidden-xs-down"> Discuss</span>
-            </button>
-            <button *ngIf="mobileView" class="btn btn-default navbar-expand-lg navbar-light navbar-toggler"
-                    data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
         </div>
-        <div class="pull-right marginTopBottom5">
-            <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
-                    class="btn btn-info" (click)="loadDraft(null);">
-                <i class="fa fa-eye fa-lg"></i> View Draft
-            </button>
-            <ng-container *ngIf="elt.isDraft">
-                <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
-                    <i class="fa fa-globe fa-lg"></i> Publish
-                </button>
-                <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
-                    <i class="fa fa-trash fa-lg"></i> Delete Draft
-                </button>
-                <button class="btn btn-info" (click)="loadForm(null);">
-                    <i class="fa fa-eye fa-lg"></i> View Published
-                </button>
-            </ng-container>
-        </div>
+        <button *ngIf="isAllowedModel.loggedIn()"
+                id="pinAllCdes" class="btn btn-small btn-default"
+                title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
+            <i class="fa fa-cogs"></i><span class="hidden-xs-down"> Pin CDEs</span>
+        </button>
+        <button *ngIf="isAllowedModel.loggedIn()"
+                id="copyFormBtn" class="btn btn-small btn-default"
+                title="Copy CDE" type="button" (click)="openCopyElementModal()">
+            <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
+        </button>
+        <button id="discussBtn" class="btn btn-small btn-default"
+                title="Discuss CDE" (click)="commentMode = !commentMode;">
+            <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
+            <span class="hidden-xs-down"> Discuss</span>
+        </button>
+        <button *ngIf="mobileView" class="btn btn-default navbar-expand-lg navbar-light navbar-toggler"
+                data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
     </div>
+    <div class="pull-right marginTopBottom5">
+        <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
+                class="btn btn-info" (click)="loadDraft(null);">
+            <i class="fa fa-eye fa-lg"></i> View Draft
+        </button>
+        <ng-container *ngIf="elt.isDraft">
+            <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
+                <i class="fa fa-globe fa-lg"></i> Publish
+            </button>
+            <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+                <i class="fa fa-trash fa-lg"></i> Delete Draft
+            </button>
+            <button class="btn btn-info" (click)="loadForm(null);">
+                <i class="fa fa-eye fa-lg"></i> View Published
+            </button>
+        </ng-container>
+    </div>
+    <div class="clearfix"></div>
     <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-        <div id="leftNav" class="col-lg-2" [ngClass]="{'positionAbsolute':mobileView}">
-            <ul class="list-group">
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='nativeRender'}"
-                   (click)="currentView ='nativeRender'">Preview</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='detail'}"
-                   (click)="currentView ='detail'">General Detail</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='description'}"
-                   (click)="currentView ='description'">Form Description</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='naming'}"
-                   (click)="currentView ='naming'">Naming</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='classification'}"
-                   (click)="currentView = 'classification'">Classification</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='referenceDocuments'}"
-                   (click)="currentView = 'referenceDocuments'">Reference Documents</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='displayProfiles'}"
-                   (click)="currentView = 'displayProfiles'">Display Profiles</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='properties'}"
-                   (click)="currentView = 'properties'">Properties</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='identifiers'}"
-                   (click)="currentView = 'identifiers'">Identifiers</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='attachments'}"
-                   (click)="currentView = 'attachments'">Attachments</a>
-                <a class="list-group-item" [ngClass]="{'active':currentView ==='history'}"
-                   (click)="currentView = 'history'">History</a>
-            </ul>
+        <div>
+            <div id="leftNav" class="col-lg-2" [ngClass]="{'positionAbsolute':mobileView}">
+                <ul class="list-group">
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='nativeRender'}"
+                       (click)="currentView ='nativeRender'">Preview</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='detail'}"
+                       (click)="currentView ='detail'">General Detail</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='description'}"
+                       (click)="currentView ='description'">Form Description</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='naming'}"
+                       (click)="currentView ='naming'">Naming</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='classification'}"
+                       (click)="currentView = 'classification'">Classification</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='referenceDocuments'}"
+                       (click)="currentView = 'referenceDocuments'">Reference Documents</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='displayProfiles'}"
+                       (click)="currentView = 'displayProfiles'">Display Profiles</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='properties'}"
+                       (click)="currentView = 'properties'">Properties</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='identifiers'}"
+                       (click)="currentView = 'identifiers'">Identifiers</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='attachments'}"
+                       (click)="currentView = 'attachments'">Attachments</a>
+                    <a class="list-group-item" [ngClass]="{'active':currentView ==='history'}"
+                       (click)="currentView = 'history'">History</a>
+                </ul>
+            </div>
         </div>
-        <div id="middleView" class="col-10 col-xs-12">
+        <div id="middleView" class="col-10 col-sm-12">
             <ng-container *ngIf="currentView === 'nativeRender'">
                 <cde-native-render [elt]="elt" [showTitle]="false"></cde-native-render>
             </ng-container>
