@@ -54,7 +54,6 @@ export class FormViewComponent implements OnInit {
     drafts = [];
     orgNamingTags = [];
     formId;
-    currentView = "nativeRender";
     mobileView: boolean = false;
 
     constructor(private http: Http,

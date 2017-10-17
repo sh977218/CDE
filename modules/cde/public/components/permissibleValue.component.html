@@ -103,7 +103,7 @@
         <div class="col-xs-2 text-right text_label">Datatype:</div>
         <div class="col-xs-10">
             <cde-inline-select-edit [(value)]="elt.valueDomain.datatypeValueList.datatype" [selectOptions]="dataTypeValueListOptions"
-                                    (save)="changedPvDatatype($event);" [isAllowed]="canEdit">
+                                    (save)="savePvDatatype($event);" [isAllowed]="canEdit">
             </cde-inline-select-edit>
         </div>
         <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>

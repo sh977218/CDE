@@ -49,6 +49,7 @@ export class DataElementViewComponent implements OnInit {
     deId;
     mobileView: boolean = false;
     orgNamingTags = [];
+    tabsCommented = [];
 
     constructor(private http: Http,
                 private route: ActivatedRoute,
@@ -113,6 +114,7 @@ export class DataElementViewComponent implements OnInit {
         this.http.get("/comments/eltId/" + de.tinyId)
             .map(res => res.json()).subscribe(res => {
             this.hasComments = res && (res.length > 0);
+            this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             if (cb) cb();
         }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
     }
@@ -171,10 +173,9 @@ export class DataElementViewComponent implements OnInit {
         this.highlightedTabs = $event;
     }
 
-    beforeChange(event) {
-        this.currentTab = event.nextId;
-        if (this.commentMode)
-            this.commentAreaComponent.setCurrentTab(this.currentTab);
+    setCurrentTab(currentTab) {
+        this.currentTab = currentTab;
+        if (this.commentMode) this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
     doStageElt() {
