@@ -29,6 +29,7 @@ public class MeanValue extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToFormByName(formName);
+        clickElement(By.id("preview_tab"));
         findElement(By.name("q1")).sendKeys("8");
         findElement(By.name("q2")).sendKeys("11");
         textPresent("9.5");

@@ -9,18 +9,6 @@ import { LoginService } from 'system/public/components/login/login.service';
     selector: "cde-navigation",
     templateUrl: "./navigation.component.html",
     styles: [`
-        .navbar-fixed-top .navbar-collapse {
-            max-height: none;
-        }
-
-        .row {
-            display: block;
-        }
-
-        .nav, .navbar, .navbar-nav {
-            display: block;
-        }
-
         .navbar-collapse.collapse.in, .navbar-collapse.collapsing {
             display: block !important;
             width: auto;
