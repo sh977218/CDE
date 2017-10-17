@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { MyBoardsService } from "../../myBoards.service";
 import { Http } from "@angular/http";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
-import { UserService } from "../../../../core/public/user.service";
+import { UserService } from 'core/public/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-my-boards',

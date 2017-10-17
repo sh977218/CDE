@@ -8,8 +8,8 @@ import { TimerObservable } from "rxjs/observable/TimerObservable";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
 import { IsAllowedService } from 'core/public/isAllowed.service';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { UserService } from 'core/public/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 const tabMap = {
     "general_tab": "general",

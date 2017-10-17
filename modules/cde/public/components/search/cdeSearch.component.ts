@@ -1,7 +1,6 @@
 import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
 import { Http } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { ElasticService } from 'core/public/elastic.service';
 import { ExportService } from 'core/public/export.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
@@ -9,6 +8,7 @@ import { SearchBaseComponent } from 'search/searchBase.component';
 import { OrgHelperService } from 'core/public/orgHelper.service';
 import { UserService } from "core/public/user.service";
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-cde-search',

@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { Http } from '@angular/http';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { BoardListService } from 'board/public/components/listView/boardList.service';
-import { UserService } from "../../../../core/public/user.service";
+import { UserService } from 'core/public/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-unpin-board',

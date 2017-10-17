@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit } from "@angular/core";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { Component, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-my-boards',

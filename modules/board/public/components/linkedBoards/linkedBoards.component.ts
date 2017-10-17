@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-linked-boards",
