@@ -216,7 +216,7 @@ public class NlmCdeBaseTest {
     @AfterMethod
     public void generateGif(Method m) {
         String methodName = m.getName();
-        System.out.println("TEST Complete: " +  className + "." + methodName);
+        System.out.println("TEST Complete: " + className + "." + methodName);
         if (m.getAnnotation(RecordVideo.class) != null) {
             try {
                 File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
@@ -334,6 +334,7 @@ public class NlmCdeBaseTest {
 
     protected void goToFormByName(String name) {
         goToElementByName(name, "form");
+        clickElement(By.id("general_tab"));
     }
 
     private void goToElementByName(String name, String type) {

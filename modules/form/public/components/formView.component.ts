@@ -46,13 +46,14 @@ export class FormViewComponent implements OnInit {
     public modalRef: NgbModalRef;
     hasComments;
     commentMode;
-    currentTab = "general_tab";
+    currentTab = "preview_tab";
     highlightedTabs = [];
     canEdit: boolean = false;
     isFormValid = true;
     formInput;
     drafts = [];
     orgNamingTags = [];
+    tabsCommented = [];
     formId;
     mobileView: boolean = false;
 
@@ -117,6 +118,7 @@ export class FormViewComponent implements OnInit {
         this.http.get("/comments/eltId/" + form.tinyId)
             .map(res => res.json()).subscribe(res => {
             this.hasComments = res && (res.length > 0);
+            this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             if (cb) cb();
         }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
     }

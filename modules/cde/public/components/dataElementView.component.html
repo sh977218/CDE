@@ -89,13 +89,10 @@
         </ng-container>
     </div>
     <div class="clearfix"></div>
+    <hr>
     <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
         <div id="leftNav" class="col-lg-2" [ngClass]="{'positionAbsolute':mobileView}">
             <ul class="list-group">
-                <a id="meshTopic_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
-                   (click)="setCurrentTab('meshTopic_tab');">Mesh Topic
-                    <i *ngIf="tabsCommented.indexOf('meshTopic_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
                 <a id="general_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='general_tab'}"
                    (click)="setCurrentTab('general_tab');">General Detail
                     <i *ngIf="tabsCommented.indexOf('general_tab') > -1" class="fa fa-comments"
@@ -112,6 +109,10 @@
                    [ngClass]="{'active':currentTab ==='classification_tab'}"
                    (click)="setCurrentTab('classification_tab');">Classification
                     <i *ngIf="tabsCommented.indexOf('classification_tab') > -1" class="fa fa-comments"
+                       aria-hidden="true"></i></a>
+                <a id="meshTopic_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
+                   (click)="setCurrentTab('meshTopic_tab');">Mesh Topic
+                    <i *ngIf="tabsCommented.indexOf('meshTopic_tab') > -1" class="fa fa-comments"
                        aria-hidden="true"></i></a>
                 <a id="concepts_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='concepts_tab'}"
                    (click)="setCurrentTab('concepts_tab');">Concepts
