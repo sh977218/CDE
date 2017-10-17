@@ -27,7 +27,7 @@
             </dd>
             <dt class="col-sm-3 text-right">Tags:</dt>
             <dd id="tags_{{i}}" class="col-sm-9">
-                <select2 [data]="orgNamingTags" [(value)]="name.tags" [options]="options"
+                <select2 [data]="orgNamingTags" [value]="name.tags" [options]="options"
                          [disabled]="!canEdit" width="100%"
                          (valueChanged)="changedTags(name,$event)">
                 </select2>
@@ -35,7 +35,7 @@
         </div>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit && onInitDone" id="openNewNamingModalBtn"
+    <button *ngIf="canEdit" id="openNewNamingModalBtn"
             class="btn btn-small btn-default" (click)="openNewNamingModal();">
         <i class="fa fa-plus"></i> Add Naming
     </button>

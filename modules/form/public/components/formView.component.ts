@@ -11,6 +11,7 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
+import { OrgHelperService } from 'core/public/orgHelper.service';
 
 @Component({
     selector: "cde-form-view",
@@ -51,6 +52,7 @@ export class FormViewComponent implements OnInit {
     isFormValid = true;
     formInput;
     drafts = [];
+    orgNamingTags = [];
     formId;
     currentView = "nativeRender";
     mobileView: boolean = false;
@@ -59,6 +61,7 @@ export class FormViewComponent implements OnInit {
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
+                private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService,
@@ -69,12 +72,24 @@ export class FormViewComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.loadForm(form => {
-                this.loadComments(form, null);
                 this.userService.then(() => {
-                    let user = this.userService.user;
-                    if (user && user.username)
-                        this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                    else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    this.orgHelperService.then(() => {
+                        let user = this.userService.user;
+                        if (user && user.username) {
+                            this.loadComments(form, null);
+                            this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                        }
+                        else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                        this.elt.naming.forEach(n => {
+                            n.tags.forEach(t => {
+                                allNamingTags.push(t);
+                            });
+                        });
+                        this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
+                            return {id: t, text: t};
+                        });
+                    });
                     if (window.innerWidth <= 800)
                         this.mobileView = true;
                 });
@@ -89,10 +104,10 @@ export class FormViewComponent implements OnInit {
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
                 this.formId = this.elt._id;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.areDerivationRulesSatisfied();
-                this.loadComments(this.elt, null);
-                this.userService.then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                this.userService.then(() => {
+                    this.areDerivationRulesSatisfied();
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt)
+                });
                 cb(this.elt);
             },
             () => this.router.navigate(['/pageNotFound'])
@@ -105,14 +120,6 @@ export class FormViewComponent implements OnInit {
             this.hasComments = res && (res.length > 0);
             if (cb) cb();
         }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
-    }
-
-    onLocationChange(event, newUrl, oldUrl, elt) {
-        if (elt && elt.unsaved && oldUrl.indexOf("formView") > -1) {
-            let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            let answer = confirm(txt);
-            if (!answer) event.preventDefault();
-        }
     }
 
     openCopyElementModal() {

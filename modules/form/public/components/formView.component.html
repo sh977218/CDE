@@ -187,7 +187,8 @@
                                       (onEltChange)="saveDraft()"></cde-form-description>
             </ng-container>
             <ng-container *ngIf="currentView === 'naming'">
-                <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-naming>
+                <cde-naming [elt]="elt" [orgNamingTags]="orgNamingTags" [canEdit]="canEdit"
+                            (onEltChange)="saveDraft();"></cde-naming>
             </ng-container>
             <ng-container *ngIf="currentView === 'classification'">
                 <cde-form-classification [elt]="elt"></cde-form-classification>

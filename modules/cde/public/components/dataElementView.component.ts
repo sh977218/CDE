@@ -11,6 +11,7 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as deValidator from "../../shared/deValidator.js";
 import { AlertService } from '_app/alert/alert.service';
+import { OrgHelperService } from 'core/public/orgHelper.service';
 
 @Component({
     selector: "cde-data-element-view",
@@ -47,6 +48,7 @@ export class DataElementViewComponent implements OnInit {
     drafts = [];
     deId;
     mobileView: boolean = false;
+    orgNamingTags = [];
 
     constructor(private http: Http,
                 private route: ActivatedRoute,
@@ -54,6 +56,7 @@ export class DataElementViewComponent implements OnInit {
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
+                private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService) {
@@ -62,28 +65,29 @@ export class DataElementViewComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.loadDataElement(de => {
-                this.loadComments(de, null);
-                if (this.tabSet) this.tabSet.select("general_tab");
                 this.userService.then(() => {
-                    let user = this.userService.user;
-                    if (user && user.username)
-                        this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                    else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    this.orgHelperService.then(() => {
+                        let user = this.userService.user;
+                        if (user && user.username) {
+                            this.loadComments(de, null);
+                            this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                        }
+                        else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                        this.elt.naming.forEach(n => {
+                            n.tags.forEach(t => {
+                                allNamingTags.push(t);
+                            });
+                        });
+                        this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
+                            return {id: t, text: t};
+                        });
+                    });
                     if (window.innerWidth <= 800)
                         this.mobileView = true;
                 });
             });
         });
-    }
-
-    onLocationChange(event, oldUrl, elt) {
-        if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
-            let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            let answer = confirm(txt);
-            if (!answer) {
-                event.preventDefault();
-            }
-        }
     }
 
     loadDataElement(cb) {
@@ -93,16 +97,13 @@ export class DataElementViewComponent implements OnInit {
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
                 this.deId = this.elt._id;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.loadComments(this.elt, null);
                 this.userService.then(() => {
                     let user = this.userService.user;
-                    if (user && user.username) {
+                    if (user && user.username)
                         deValidator.checkPvUnicity(this.elt.valueDomain);
-                    }
                     this.setDisplayStatusWarning();
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                    if (cb) cb();
+                    if (cb) cb(this.elt);
                 });
             }, () => this.router.navigate(['/pageNotFound'])
         );
