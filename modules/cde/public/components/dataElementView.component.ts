@@ -19,6 +19,14 @@ import { AlertService } from '_app/alert/alert.service';
         .marginTopBottom5 {
             margin: 5px 0
         }
+
+        #leftNav {
+            z-index: 1;
+        }
+
+        .mobileViewH1 {
+            font-size: 20px;
+        }
     `]
 })
 export class DataElementViewComponent implements OnInit {
@@ -38,8 +46,7 @@ export class DataElementViewComponent implements OnInit {
     canEdit: boolean = false;
     drafts = [];
     deId;
-    tinyId;
-    url;
+    mobileView: boolean = false;
 
     constructor(private http: Http,
                 private route: ActivatedRoute,
@@ -54,23 +61,17 @@ export class DataElementViewComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.deId = this.route.snapshot.queryParams['cdeId'];
-            this.tinyId = this.route.snapshot.queryParams['tinyId'];
-            this.url = "/de/" + this.tinyId;
-            if (this.deId) this.url = "/deById/" + this.deId;
-            if (this.tabSet) this.tabSet.select("general_tab");
-            this.userService.then(() => {
-                let user = this.userService.user;
-                if (user && user.username) {
-                    this.loadDraft(draft => {
-                        if (draft) {
-                            this.elt = draft;
-                            this.setDisplayStatusWarning();
-                            deValidator.checkPvUnicity(this.elt.valueDomain);
-                            this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                        } else this.loadDataElement(null);
-                    });
-                } else this.loadDataElement(null);
+            this.loadDataElement(de => {
+                this.loadComments(de, null);
+                if (this.tabSet) this.tabSet.select("general_tab");
+                this.userService.then(() => {
+                    let user = this.userService.user;
+                    if (user && user.username)
+                        this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                    else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    if (window.innerWidth <= 800)
+                        this.mobileView = true;
+                });
             });
         });
     }
@@ -86,7 +87,10 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDataElement(cb) {
-        this.http.get(this.url).map(res => res.json()).subscribe(res => {
+        let cdeId = this.route.snapshot.queryParams['cdeId'];
+        let url = "/de/" + this.route.snapshot.queryParams['tinyId'];
+        if (cdeId) url = "/deById/" + cdeId;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
                 this.deId = this.elt._id;
                 this.h.emit({elt: this.elt, fn: this.onLocationChange});
@@ -104,8 +108,8 @@ export class DataElementViewComponent implements OnInit {
         );
     }
 
-    loadComments(form, cb) {
-        this.http.get("/comments/eltId/" + form.tinyId)
+    loadComments(de, cb) {
+        this.http.get("/comments/eltId/" + de.tinyId)
             .map(res => res.json()).subscribe(res => {
             this.hasComments = res && (res.length > 0);
             if (cb) cb();
@@ -226,7 +230,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDraft(cb) {
-        this.http.get("/draftDataElement/" + this.tinyId)
+        this.http.get("/draftDataElement/" + this.elt.tinyId)
             .map(res => res.json()).subscribe(
             res => {
                 if (cb) cb(res[0]);

@@ -23,6 +23,10 @@ import { AlertService } from '_app/alert/alert.service';
         #leftNav {
             z-index: 1;
         }
+
+        .mobileViewH1 {
+            font-size: 20px;
+        }
     `]
 })
 export class FormViewComponent implements OnInit {
@@ -31,7 +35,6 @@ export class FormViewComponent implements OnInit {
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
     @ViewChild("saveModal") public saveModal: SaveModalComponent;
-    @ViewChild("tabSet") public tabSet: NgbTabset;
     @Input() routeParams: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -64,17 +67,16 @@ export class FormViewComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (window.innerWidth <= 800)
-            this.mobileView = true;
         this.route.queryParams.subscribe(() => {
             this.loadForm(form => {
                 this.loadComments(form, null);
-                if (this.tabSet) this.tabSet.select("general_tab");
                 this.userService.then(() => {
                     let user = this.userService.user;
                     if (user && user.username)
                         this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
                     else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    if (window.innerWidth <= 800)
+                        this.mobileView = true;
                 });
             });
         });

@@ -4,247 +4,191 @@
     </h1>
 </div>
 <div *ngIf="elt?.tinyId" class="container-fluid" itemscope="http://schema.org/MedicalCode">
-    <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Warning:</strong> this data element is archived. You can
-        <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
-    </div>
-    <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Warning:</strong> this data element is retired.
-        <span *ngIf="elt.registrationState.replacedBy">
+    <div id="warning">
+        <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Warning:</strong> this data element is archived. You can
+            <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
+        </div>
+        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Warning:</strong> this data element is retired.
+            <span *ngIf="elt.registrationState.replacedBy">
             <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
         </span>
-    </div>
-    <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
-         role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Warning:</strong> this data element is about to be retired.
-        <span *ngIf="elt.registrationState.replacedBy">
+        </div>
+        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
+             role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Warning:</strong> this data element is about to be retired.
+            <span *ngIf="elt.registrationState.replacedBy">
             <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
         </span>
+        </div>
+        <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>Note:</strong> You may not edit this CDE because it is standard.
+        </div>
     </div>
-    <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        <strong>Note:</strong> You may not edit this CDE because it is standard.
-    </div>
-    <div class="row">
-        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-            <h1>
-                <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
-            </h1>
-            <div class="col-md-12">
-                <div class="pull-left marginTopBottom5">
-                    <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                            class="btn btn-small btn-default" title="Add to Compare List" type="button"
-                            (click)="quickBoardService.addToQuickBoard(elt)">
-                        <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
-                    </button>
-                    <button id="addToBoard" class="btn btn-small btn-default" role="button" title="Add to Board"
-                            type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
-                        <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
-                    </button>
-                    <div class="btn-group" role="group">
-                        <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-download"></i><span class="hidden-xs-down"> Export</span>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="export">
-                            <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
-                                JSON File, NIH/CDE Schema</a>
-                            <a id="xmlExport" class="dropdown-item" href="deById/{{elt._id}}?type=xml"
-                               target="_blank">XML File, NIH/CDE Schema</a>
-                        </div>
-                    </div>
-                    <button id="copyCdeBtn" class="btn btn-small btn-default" (click)="openCopyElementModal()"
-                            title="Copy CDE" type="button">
-                        <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
-                    </button>
-                    <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
-                            type="button" (click)="commentMode = !commentMode;">
-                        <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
-                        <span class="hidden-xs-down"> Discuss</span>
-                    </button>
-                </div>
-                <div class="pull-right marginTopBottom5">
-                    <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
-                            class="btn btn-info" (click)="loadDraft(null);">
-                        <i class="fa fa-eye fa-lg"></i> View Draft
-                    </button>
-                    <ng-container *ngIf="elt.isDraft">
-                        <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
-                                (click)="saveModal.openSaveModal();">
-                            <i class="fa fa-globe fa-lg"></i> Publish
-                        </button>
-                        <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
-                            <i class="fa fa-trash fa-lg"></i> Delete Draft
-                        </button>
-                        <button class="btn btn-info" (click)="saveDataElement(null);">
-                            <i class="fa fa-eye fa-lg"></i> View Published
-                        </button>
-                    </ng-container>
-                </div>
+    <h1 [ngClass]="{'mobileViewH1':mobileView}">
+        <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
+    </h1>
+    <div class="pull-left marginTopBottom5">
+        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
+                class="btn btn-small btn-default" title="Add to Compare List" type="button"
+                (click)="quickBoardService.addToQuickBoard(elt)">
+            <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
+        </button>
+        <button id="addToBoard" class="btn btn-small btn-default" role="button" title="Add to Board"
+                type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
+            <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
+        </button>
+        <div class="btn-group" role="group">
+            <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-download"></i><span class="hidden-xs-down"> Export</span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="export">
+                <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
+                    JSON File, NIH/CDE Schema</a>
+                <a id="xmlExport" class="dropdown-item" href="deById/{{elt._id}}?type=xml"
+                   target="_blank">XML File, NIH/CDE Schema</a>
             </div>
-            <div class="col-md-12">
-                <ngb-tabset (tabChange)="beforeChange($event)" #tabSet="ngbTabset">
-                    <ngb-tab id="general_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('general') !== -1}">
-                                General Details
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <div class="col-md-6">
-                                <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                                </cde-de-general-details>
-                                <div class="row">
-                                    <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                                    <cde-registration [elt]="elt" (save)="saveDataElement();"></cde-registration>
-                                    <div role="group" aria-label="More Info">
-                                        <cde-linked-forms [elt]="elt"></cde-linked-forms>
-                                        <cde-mlt [elt]="elt"></cde-mlt>
-                                        <cde-linked-boards [elt]="elt"></cde-linked-boards>
-                                        <cde-datasets [elt]="elt"></cde-datasets>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h4>Topics</h4>
-                                <span>Topics are
+        </div>
+        <button id="copyCdeBtn" class="btn btn-small btn-default" (click)="openCopyElementModal()"
+                title="Copy CDE" type="button">
+            <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
+        </button>
+        <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
+                type="button" (click)="commentMode = !commentMode;">
+            <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
+            <span class="hidden-xs-down"> Discuss</span>
+        </button>
+        <button *ngIf="mobileView" class="btn btn-default navbar-expand-lg navbar-light navbar-toggler"
+                data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+    <div class="pull-right marginTopBottom5">
+        <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
+                class="btn btn-info" (click)="loadDraft(null);">
+            <i class="fa fa-eye fa-lg"></i> View Draft
+        </button>
+        <ng-container *ngIf="elt.isDraft">
+            <button *ngIf="elt.valueDomain.allValid" class="btn btn-success" id="openSave"
+                    (click)="saveModal.openSaveModal();">
+                <i class="fa fa-globe fa-lg"></i> Publish
+            </button>
+            <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
+                <i class="fa fa-trash fa-lg"></i> Delete Draft
+            </button>
+            <button class="btn btn-info" (click)="saveDataElement(null);">
+                <i class="fa fa-eye fa-lg"></i> View Published
+            </button>
+        </ng-container>
+    </div>
+    <div class="clearfix"></div>
+    <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+        <div id="leftNav" class="col-lg-2" [ngClass]="{'positionAbsolute':mobileView}">
+            <ul class="list-group">
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='meshTopic'}"
+                   (click)="currentView ='meshTopic'">Mesh Topic</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='detail'}"
+                   (click)="currentView ='detail'">General Detail</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='permissibleValues'}"
+                   (click)="currentView ='permissibleValues'">Permissible Values</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='naming'}"
+                   (click)="currentView ='naming'">Naming</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='classification'}"
+                   (click)="currentView = 'classification'">Classification</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='concepts'}"
+                   (click)="currentView = 'concepts'">Concepts</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='referenceDocuments'}"
+                   (click)="currentView = 'referenceDocuments'">Reference Documents</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='properties'}"
+                   (click)="currentView = 'properties'">Properties</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='identifiers'}"
+                   (click)="currentView = 'identifiers'">Identifiers</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='attachments'}"
+                   (click)="currentView = 'attachments'">Attachments</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='history'}"
+                   (click)="currentView = 'history'">History</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='scoreDerivations'}"
+                   (click)="currentView = 'scoreDerivations'">Score Derivations</a>
+                <a class="list-group-item" [ngClass]="{'active':currentView ==='validationRules'}"
+                   (click)="currentView = 'validationRules'">Validation Rules</a>
+            </ul>
+        </div>
+        <div id="middleView" class="col-lg-10 col-sm-12">
+            <ng-container *ngIf="currentView === 'meshTopic'">
+                <h4>Topics</h4>
+                <span>Topics are
                                 <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> terms and appear here if classifications are mapped to
                                 <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> trees.</span>
-                                <ul>
-                                    <li *ngFor="let t of elt.flatMeshSimpleTrees">{{t}} <br></li>
-                                </ul>
-                            </div>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="pvs_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('pvs') !== -1}">
-                                Permissible Values
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-permissible-value [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                            </cde-permissible-value>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="naming_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('naming') !== -1}">
-                                Naming
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-naming>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="classification_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('classification') !== -1}">
-                                Classification
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-cde-classification [elt]="elt"></cde-cde-classification>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="concepts_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('concepts') !== -1}">
-                                Concepts
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-concepts [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-concepts>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="referenceDocuments_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('referenceDocuments') !== -1}">
-                                Reference Documents
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                            </cde-reference-document>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="properties_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('properties') !== -1}">
-                                Properties
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                            </cde-properties>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="ids_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('ids') !== -1}">
-                                Identifiers
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                            </cde-identifiers>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="attachments_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('attachments') !== -1}">
-                                Attachments
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-attachments [elt]="elt" [canEdit]="canEdit"
-                                             (removeAttachment)="removeAttachment($event);"
-                                             (setDefault)="setDefault($event)"
-                                             (upload)="upload($event);"></cde-attachments>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="history_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('history') !== -1}">
-                                History
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="derivationRules_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('scoreDerivations') !== -1}">
-                                Score Derivations
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-derivation-rules [elt]="elt" (onEltChange)="saveDraft();"></cde-derivation-rules>
-                        </ng-template>
-                    </ngb-tab>
-                    <ngb-tab id="validRules_tab">
-                        <ng-template ngbTabTitle>
-                            <div [ngClass]="{'highlightedTab':commentMode && highlightedTabs.indexOf('validationRules') !== -1}">
-                                Validation Rules
-                            </div>
-                        </ng-template>
-                        <ng-template ngbTabContent>
-                            <cde-valid-rules [elt]="elt"></cde-valid-rules>
-                        </ng-template>
-                    </ngb-tab>
-                </ngb-tabset>
-            </div>
+                <ul>
+                    <li *ngFor="let t of elt.flatMeshSimpleTrees">{{t}} <br></li>
+                </ul>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'detail'">
+                <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit"
+                                        (onEltChange)="saveDraft();"></cde-de-general-details>
+                <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
+                <cde-registration [elt]="elt" (save)="saveDataElement();"></cde-registration>
+                <div role="group" aria-label="More Info">
+                    <cde-linked-forms [elt]="elt"></cde-linked-forms>
+                    <cde-mlt [elt]="elt"></cde-mlt>
+                    <cde-linked-boards [elt]="elt"></cde-linked-boards>
+                    <cde-datasets [elt]="elt"></cde-datasets>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'permissibleValues'">
+                <cde-permissible-value [elt]="elt" [canEdit]="canEdit"
+                                       (onEltChange)="saveDraft();"></cde-permissible-value>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'naming'">
+                <cde-naming [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-naming>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'classification'">
+                <cde-cde-classification [elt]="elt"></cde-cde-classification>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'concepts'">
+                <cde-concepts [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-concepts>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'referenceDocuments'">
+                <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                </cde-reference-document>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'properties'">
+                <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                </cde-properties>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'identifiers'">
+                <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                </cde-identifiers>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'attachments'">
+                <cde-attachments [elt]="elt" [canEdit]="canEdit"
+                                 (removeAttachment)="removeAttachment($event);"
+                                 (setDefault)="setDefault($event)"
+                                 (upload)="upload($event);"></cde-attachments>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'history'">
+                <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'scoreDerivations'">
+                <cde-derivation-rules [elt]="elt" (onEltChange)="saveDraft();"></cde-derivation-rules>
+            </ng-container>
+            <ng-container *ngIf="currentView === 'validationRules'">
+                <cde-valid-rules [elt]="elt"></cde-valid-rules>
+            </ng-container>
         </div>
-        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
-             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-            <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
-                              (highlightedTabsChange)="loadHighlightedTabs($event)"
-                              [eltName]="elt.naming[0].designation"></cde-discuss-area>
-        </div>
+    </div>
+    <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+         style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+        <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                          (highlightedTabsChange)="loadHighlightedTabs($event)"
+                          [eltName]="elt.naming[0].designation"></cde-discuss-area>
     </div>
     <div *ngIf="elt.valueDomain.allValid === false" class="alert alert-danger mt20"
          role="alert">There are validation errors. {{elt.valueDomain.pvNotValidMsg}}

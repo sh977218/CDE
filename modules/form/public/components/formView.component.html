@@ -39,7 +39,7 @@
             </ul>
         </div>
     </div>
-    <h1>
+    <h1 [ngClass]="{'mobileViewH1':mobileView}">
         <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
     <div class="pull-left marginTopBottom5">
