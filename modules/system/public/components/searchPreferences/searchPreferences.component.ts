@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { AlertService } from "../alert/alert.service";
 import { ElasticService } from 'core/public/elastic.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-search-preferences",

@@ -216,6 +216,16 @@ try {
 
 app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/public/robots.txt')));
 
+// final route -> 404
+app.use((req, res, next) => {
+    // swagger does something i dont get. This will let swagger work
+    if (req.originalUrl === "/docs" || req.originalUrl === "/api-docs" || req.originalUrl.indexOf("/docs/") === 0) {
+        return next();
+    }
+    res.render('index', 'system', {config: config, loggedIn: !!req.user, version: 'version'});
+});
+
+
 app.use(function (err, req, res, next) {
     console.log("ERROR3: " + err);
     console.log(err.stack);

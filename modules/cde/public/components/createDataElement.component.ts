@@ -3,14 +3,14 @@ import { Http } from "@angular/http";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
-import * as ClassificationShared from "../../../system/shared/classificationShared.js";
+import * as ClassificationShared from "system/shared/classificationShared.js";
 import * as _ from "lodash";
 import { IsAllowedService } from 'core/public/isAllowed.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { UserService } from 'core/public/user.service';
 import { ElasticService } from 'core/public/elastic.service';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import { Router } from '@angular/router';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-create-data-element",

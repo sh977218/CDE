@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { AlertService } from "../alert/alert.service";
 import { SaveModalComponent } from "adminItem/public/components/saveModal/saveModal.component";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-inbox",

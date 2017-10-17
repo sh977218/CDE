@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core";
 import * as JSZip from "jszip";
 import * as JXON from "jxon";
 import { saveAs } from "file-saver";
-import { AlertService } from "system/public/components/alert/alert.service";
 import { ElasticService } from 'core/public/elastic.service';
 import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
 import { SharedService } from "./shared.service";
 import { UserService } from "./user.service";
+import { AlertService } from '_app/alert/alert.service';
 
 @Injectable()
 export class ExportService {
