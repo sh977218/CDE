@@ -10,7 +10,7 @@
                     <span class="btn-default fa fa-times" (click)="rd.edit = false"
                           id="cancelRemoveReferenceDocument-{{i}}" title="Cancel"></span>
                 </ng-container>
-                <span (click)="rd.edit = true" *ngIf="!rd.edit" class="btn-default fa fa-trash-o"
+                <span (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" class="btn-default fa fa-trash-o"
                       id="removeReferenceDocument-{{i}}" title="Remove"></span>
                 <sortable-array [theArray]="elt.referenceDocuments" [index]="i"
                                 (cb)="onEltChange.emit()"></sortable-array>

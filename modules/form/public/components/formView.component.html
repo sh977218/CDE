@@ -195,7 +195,7 @@
         </div>
         <div id="middleView" class="col-lg-10 col-sm-12">
             <ng-container *ngIf="currentTab === 'preview_tab'">
-                <cde-native-render [elt]="elt" [showTitle]="false"></cde-native-render>
+                <cde-native-render-full [elt]="elt"></cde-native-render-full>
             </ng-container>
             <ng-container *ngIf="currentTab === 'general_tab'">
                 <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft()">

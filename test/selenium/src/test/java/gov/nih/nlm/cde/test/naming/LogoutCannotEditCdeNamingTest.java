@@ -11,7 +11,6 @@ public class LogoutCannotEditCdeNamingTest extends NlmCdeBaseTest {
     @Test
     public void logoutCannotEditCdeNaming() {
         String cdeName = "cde for test cde reorder detail tabs";
-
         mustBeLoggedOut();
         goToCdeByName(cdeName);
         goToNaming();

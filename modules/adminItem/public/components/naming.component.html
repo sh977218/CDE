@@ -10,7 +10,7 @@
                     <span class="btn-default fa fa-times" (click)="name.edit = false"
                           id="cancelRemoveNaming-{{i}}" title="Cancel"></span>
                 </ng-container>
-                <span (click)="name.edit = true" *ngIf="!name.edit" class="btn-default fa fa-trash-o"
+                <span (click)="name.edit = true" *ngIf="canEdit && !name.edit" class="btn-default fa fa-trash-o"
                       id="removeNaming-{{i}}" title="Remove"></span>
                 <sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></sortable-array>
                 Name:

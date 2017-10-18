@@ -6,28 +6,16 @@ import { CdeForm } from 'form/public/form.model';
     selector: "cde-native-render-full",
     templateUrl: "./nativeRenderFull.component.html"
 })
-export class NativeRenderFullComponent implements OnInit {
+export class NativeRenderFullComponent {
     @Input() elt: CdeForm;
 
-    profileIndex: any;
+    selectedProfileName;
     overridePrintable: boolean = true;
     NativeRenderService = NativeRenderService;
 
-    constructor() {}
-
-    ngOnInit() {
-        if (this.profileIndex == null && this.elt.displayProfiles.length) {
-            this.profileIndex = 0;
-            this.setOverride();
-        }
-    }
-
-    selectProfile(render) {
-        render.setProfile(this.elt.displayProfiles[this.profileIndex]);
-        this.setOverride();
-    }
-
-    setOverride() {
-        this.overridePrintable = this.elt.displayProfiles[this.profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;
+    selectProfile(render, profileIndex) {
+        this.selectedProfileName = this.elt.displayProfiles[profileIndex].name;
+        render.setProfile(this.elt.displayProfiles[profileIndex]);
+        this.overridePrintable = this.elt.displayProfiles[profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;
     }
 }

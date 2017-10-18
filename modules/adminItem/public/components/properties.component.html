@@ -10,7 +10,7 @@
                     <span class="btn-default fa fa-times" (click)="prop.edit = false"
                           id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
                 </ng-container>
-                <span (click)="prop.edit = true" *ngIf="!prop.edit" class="btn-default fa fa-trash-o"
+                <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-default fa fa-trash-o"
                       id="removeProperty-{{i}}" title="Remove"></span>
                 <sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></sortable-array>
                 Key:
