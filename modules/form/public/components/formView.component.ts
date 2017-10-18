@@ -108,7 +108,7 @@ export class FormViewComponent implements OnInit {
                     this.areDerivationRulesSatisfied();
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                 });
-                cb(this.elt);
+                if (cb) cb(this.elt);
             },
             () => this.router.navigate(['/pageNotFound'])
         );

@@ -9,6 +9,7 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
 // required for ng2-select2
 require('expose-loader?select2!select2');
+
 require('expose-loader?bootstrap!bootstrap');
 
 import { enableProdMode } from "@angular/core";

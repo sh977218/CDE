@@ -233,9 +233,12 @@ export class DataElementViewComponent implements OnInit {
 
     loadDraft(cb) {
         this.http.get("/draftDataElement/" + this.elt.tinyId)
-            .map(res => res.json()).subscribe(
-            res => {
-                if (cb) cb(res[0]);
+            .map(res => res.json()).subscribe(res => {
+                if (res && res.length > 0) {
+                    this.drafts = res;
+                    this.elt = res[0];
+                } else this.drafts = [];
+                if (cb) cb();
             },
             err => this.alert.addAlert("danger", err));
     }
