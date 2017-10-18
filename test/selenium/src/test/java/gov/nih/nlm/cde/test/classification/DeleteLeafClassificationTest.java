@@ -11,7 +11,7 @@ public class DeleteLeafClassificationTest extends NlmCdeBaseTest {
         String cdeName = "Spectroscopy geometry location not applicable indicator";
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         findElement(By.xpath("//*[@id='Domain,Assessments and Examinations,Imaging Diagnostics']"));
         removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});
 

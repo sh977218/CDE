@@ -13,7 +13,7 @@ public class EditSkipLogic extends BaseFormTest {
         mustBeLoggedOut();
         String formName = "PROMIS SF v1.0-Fatigue 8a";
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         scrollToInfiniteById("question_3_2");
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
         textPresent("Never", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
@@ -24,7 +24,7 @@ public class EditSkipLogic extends BaseFormTest {
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         scrollToInfiniteById("question_3_2");
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
         textPresent("Never", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));

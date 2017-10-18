@@ -20,7 +20,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         // Can't edit Value Type or add / remove pv
         String prefix = "//*[@id='permissibleValueDiv']//*[@id='";
         String postfix = "']";
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         Assert.assertEquals(driver.findElements(By.xpath("//*[@id='datatypeSelect']//i")).size(), 0);
 
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 0);
@@ -32,22 +32,22 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         Assert.assertEquals(driver.findElements(By.id("updateOIDBtn")).size(), 0);
 
         // Can't edit naming
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         Assert.assertEquals(driver.findElements(By.xpath("//*[@id='designation_0']//i[contains(@class, 'fa-edit')]")).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath("//*[@id='definition_0']//i[contains(@class, 'fa-edit')]")).size(), 0);
         Assert.assertFalse(driver.findElements(By.xpath("//*[@id='tags_0']//input")).get(0).isEnabled());
 
         // Can edit classifications
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("openClassificationModalBtn")));
 
         // Can't edit Concepts
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         assertNoElt(By.id("removeobjectClass-0"));
         assertNoElt(By.id("removeproperty-0"));
 
         // Can't add Attachments
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         assertNoElt(By.cssSelector("i.fa-upload"));
     }
 

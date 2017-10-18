@@ -12,7 +12,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         String formName = "Imaging OCT Analysis - Spectralis Report Analysis";
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("Macula volume (OD)");
 
         startEditQuestionSectionById("question_0_2");

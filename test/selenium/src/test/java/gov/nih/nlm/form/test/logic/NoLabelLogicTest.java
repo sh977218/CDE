@@ -14,13 +14,13 @@ public class NoLabelLogicTest extends BaseFormTest {
         goToFormByName(formName);
         textPresent("Undifferentiated/Indeterminant/Intersex");
         textPresent("Walking speed value");
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         startEditQuestionSectionById("question_0_1");
         findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_1"))).sendKeys("\"Gender type\" = \"Unknown\"");
         saveEditQuestionSectionById("question_0_1");
         newFormVersion();
         textPresent("Show if: \"Gender type\" = \"Unknown\"");
-        clickElement(By.id("general_tab"));
+        goToGeneralDetail();
         textPresent("Walking speed value");
         clickElement(By.xpath("//label[contains(., 'Printable Logic')]"));
         textNotPresent("Walking speed value");

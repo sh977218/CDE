@@ -10,7 +10,7 @@ public class FormNamingReorder extends NlmCdeBaseTest {
     public void formReorderNamingTest() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("form for test cde reorder detail tabs");
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         textPresent("Definition:");
         clickElement(By.id("moveDown-0"));
         textPresent("form for test cde reorder detail tabs", By.id("designation_1"));

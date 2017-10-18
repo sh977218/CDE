@@ -13,7 +13,7 @@ public class CdeScoreValidationErrorTest extends BaseFormTest {
         emptyQuickBoardByModule("cde");
         goToCdeByName("DRS Total Score");
 
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         clickElement(By.id("addNewScore"));
         textPresent("There are no CDEs in your Quick Board. Add some before you can create a rule.");
         Assert.assertFalse(findElement(By.id("createDerivationRule")).isEnabled());

@@ -198,7 +198,8 @@
                 <cde-native-render [elt]="elt" [showTitle]="false"></cde-native-render>
             </ng-container>
             <ng-container *ngIf="currentTab === 'general_tab'">
-                <cde-form-general-details [elt]="elt"></cde-form-general-details>
+                <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft()">
+                </cde-form-general-details>
                 <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
                 <cde-registration [elt]="elt" (save)="saveForm();"></cde-registration>
                 <cde-linked-boards [elt]="elt"></cde-linked-boards>

@@ -12,7 +12,7 @@ public class DeclineCdeAttachment extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
 
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Alcohol use frequency");
@@ -24,7 +24,7 @@ public class DeclineCdeAttachment extends BaseAttachmentTest {
 
         goToCdeByName(cdeName);
 
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         textNotPresent("glass.jpg");
     }
 

@@ -14,7 +14,7 @@ public class LogoutCannotEditCdeNamingTest extends NlmCdeBaseTest {
 
         mustBeLoggedOut();
         goToCdeByName(cdeName);
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
             Assert.assertFalse(elt.isDisplayed());
         }

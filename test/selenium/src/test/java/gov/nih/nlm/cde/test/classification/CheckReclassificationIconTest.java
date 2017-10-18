@@ -26,7 +26,7 @@ public class CheckReclassificationIconTest extends NlmCdeBaseTest {
         // Check icons don't appear on CDE detail page
         String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
         goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         icons = driver.findElements(By.xpath("//i[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.isEmpty());
     }

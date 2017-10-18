@@ -11,7 +11,7 @@ public class CdeCheckDuplicatedClassificationTest extends NlmCdeBaseTest {
         String cdeName = "Product Problem Discover Performed Observation Outcome Identifier ISO21090.II.v1.0";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textNotPresent("Disease");
         addClassificationByTree("NINDS", new String[]{"Disease"});
         addExistingClassification("NINDS", new String[]{"Disease"});

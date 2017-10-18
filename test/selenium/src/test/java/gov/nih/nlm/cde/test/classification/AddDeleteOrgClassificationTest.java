@@ -20,7 +20,7 @@ public class AddDeleteOrgClassificationTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs("classMgtUser", "pass");
         goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         addClassificationByTree("NINDS", classificationArray1);
         checkRecentlyUsedClassifications("NINDS", classificationArray1);
 

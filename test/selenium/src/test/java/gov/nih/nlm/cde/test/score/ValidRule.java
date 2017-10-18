@@ -15,7 +15,7 @@ public class ValidRule extends NlmCdeBaseTest {
         hangon(1);
         goToCdeByName("DRS Total Score");
 
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         clickElement(By.id("addNewScore"));
         textPresent("All 2 CDEs in your quickboard.");
         findElement(By.id("newDerivationRule.name")).sendKeys("DRS Score");
@@ -26,11 +26,11 @@ public class ValidRule extends NlmCdeBaseTest {
         clickElement(By.partialLinkText("Disability Rating Scale (DRS) - Function level scale"));
         textPresent("Level of functioning (Physical, mental, emotional,");
 
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         textPresent("This Data Element is used to derive to the following Data Elements:");
         clickElement(By.linkText("DRS Total Score"));
 
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         textPresent("Disability Rating Scale (DRS) - Grooming disability scale");
         textPresent("Disability Rating Scale (DRS) - Function level scale");
         textNotPresent("Add Score");

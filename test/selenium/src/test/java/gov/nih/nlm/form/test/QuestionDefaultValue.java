@@ -12,7 +12,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         String formName = "History Data Source and Reliability";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         startEditQuestionSectionById("question_0_0");
         new Select(driver.findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"))).selectByVisibleText("Brother");
         saveEditQuestionSectionById("question_0_0");
@@ -28,7 +28,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         // this find ensures option Brother is selected.
         findElement(By.xpath("//*[*[text()='From whom/ what were the medical history data obtained']]//*[contains(.,'Brother')]"))
                 .findElement(By.cssSelector("input:checked"));
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("Brother", By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"));
         textPresent("A default answer!", By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]"));
 

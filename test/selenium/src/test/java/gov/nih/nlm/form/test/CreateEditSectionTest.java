@@ -12,7 +12,7 @@ public class CreateEditSectionTest extends BaseFormTest {
         String formName = "Section Test Form";
 
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
 
         addSectionTop("Section 1", null);
         addSectionBottom("Section 2", "2");
@@ -21,7 +21,7 @@ public class CreateEditSectionTest extends BaseFormTest {
         newFormVersion();
 
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         scrollToInfiniteById("section_2");
         Assert.assertEquals("Section 1", findElement(By.xpath("//*[@id='section_0']/div/div[1]/div[1]//*[contains(@class,'section_title')]")).getText());
         Assert.assertEquals("Section 2", findElement(By.xpath("//*[@id='section_1']/div/div[1]/div[1]//*[contains(@class,'section_title')]")).getText());

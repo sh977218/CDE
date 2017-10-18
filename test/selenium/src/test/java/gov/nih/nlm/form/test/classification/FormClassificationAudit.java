@@ -11,7 +11,7 @@ public class FormClassificationAudit extends NlmCdeBaseTest {
         String formName = "Functional Imaging";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         addClassificationByTree("TEST", new String[]{"Eligibility Criteria"});
         openClassificationAudit("TEST > Eligibility Criteria");
         clickElement(By.linkText("Functional Imaging"));

@@ -9,7 +9,7 @@ public abstract class ConceptTest extends NlmCdeBaseTest {
     public void reorderConceptTest(String eltName) {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(eltName);
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
 
         clickElement(By.id("moveDown-0"));
         Assert.assertTrue(findElement(By.id("concept_cde_name_1")).getText().contains("cb1"));

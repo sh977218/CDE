@@ -25,7 +25,7 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
         clickElement(By.id("cancelNewClassifyItemBtn"));
 
         goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent(newClassification);
         textPresent(oldClassification);
 

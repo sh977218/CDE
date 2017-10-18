@@ -11,7 +11,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
         String formName = "JFK Coma Recovery Scale- Revised";
         goToFormByName(formName);
         textPresent("The CRS-R consists of twenty-three items comprising six hierarchically-arranged subscales addressing auditory, visual, motor, oromotor/verbal, communication and arousal functions. The lowest item on each subscale represents reflexive activity while the highest items represent cognitively-mediated behaviors.");
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         addSectionTop("Third Section Name", null);
         addSectionTop("Second Section Name", null);
         addSectionTop("First Section Name", null);
@@ -25,7 +25,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
         newFormVersion();
 
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("At least: 25", By.xpath("//*[@id='question_0_0']"));
         textPresent("At most: 239", By.xpath("//*[@id='question_0_0']"));
     }
