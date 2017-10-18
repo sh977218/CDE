@@ -106,7 +106,7 @@ export class FormViewComponent implements OnInit {
                 this.formId = this.elt._id;
                 this.userService.then(() => {
                     this.areDerivationRulesSatisfied();
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt)
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                 });
                 cb(this.elt);
             },

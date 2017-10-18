@@ -1,7 +1,7 @@
 import "zone.js";
 import "../node_modules/zone.js/dist/long-stack-trace-zone.js";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-//import "../node_modules/bootstrap/dist/js/bootstrap.min.js";
+import "../node_modules/bootstrap/dist/js/bootstrap.min.js";
 
 // reflect-metadata needed before enableProdMode for IE
 import "reflect-metadata";
