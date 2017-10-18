@@ -14,7 +14,6 @@ public class SkipLogicDateTest extends BaseFormTest {
         goToFormByName(formName);
         goToFormDescription();
         textPresent("Macula volume (OD)");
-
         startEditQuestionSectionById("question_0_2");
         String inputXpath1 = locateSkipLogicEditTextareaXpathByQuestionId("question_0_2");
 

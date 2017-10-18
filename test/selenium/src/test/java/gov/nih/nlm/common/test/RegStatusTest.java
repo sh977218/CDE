@@ -11,9 +11,8 @@ public abstract class RegStatusTest extends CommonTest {
     public void cancelRegStatus(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
+        goToGeneralDetail();
         textPresent("Qualified");
-
-
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Recorded");
         clickElement(By.id("cancelRegStatus"));
@@ -25,8 +24,8 @@ public abstract class RegStatusTest extends CommonTest {
     public void changeRegistrationStatus(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
+        goToGeneralDetail();
         textPresent("Qualified");
-
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Recorded");
         textPresent("Recorded elements are not visible by default");
@@ -54,8 +53,8 @@ public abstract class RegStatusTest extends CommonTest {
     public void retire(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
+        goToGeneralDetail();
         textPresent("Qualified");
-
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");
@@ -72,15 +71,15 @@ public abstract class RegStatusTest extends CommonTest {
     public void nlmPromotesToStandard(String eltName) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToEltByName(eltName);
+        goToGeneralDetail();
         textPresent("Qualified");
-
-
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Standard");
         textPresent("Standard elements cannot be edited by their stewards");
         clickElement(By.id("saveRegStatus"));
         closeAlert();
         goToEltByName(eltName);
+        goToGeneralDetail();
         textPresent("Standard");
     }
 

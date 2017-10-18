@@ -12,6 +12,7 @@ public class CopyrightTest extends BaseFormTest {
         String authority = "Patent for truth";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
+        goToGeneralDetail();
         textNotPresent("Statement");
         textNotPresent("Authority");
         clickElement(By.id("isCopyrighted"));
@@ -26,6 +27,7 @@ public class CopyrightTest extends BaseFormTest {
         newFormVersion();
         mustBeLoggedOut();
         goToFormByName(formName);
+        goToGeneralDetail();
         textPresent("Statement");
         textPresent("Authority");
         textPresent(statement);

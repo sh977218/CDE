@@ -20,12 +20,12 @@ public class FormRegStatusTest extends RegStatusTest {
         cancelRegStatus("AED Resistance Log", ninds_username);
     }   
         
-    @Test(priority = 2)
+    @Test
     public void retire() {
         retire("Form Retire Test", ctepCurator_username);
     }
 
-    @Test(priority = 3)
+    @Test
     public void nlmPromotesToStandard() {
         nlmPromotesToStandard("Form Standard Test");
     }

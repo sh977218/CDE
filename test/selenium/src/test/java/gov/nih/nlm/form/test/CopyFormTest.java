@@ -11,9 +11,10 @@ public class CopyFormTest extends BaseClassificationTest {
         String formName = "Type, Place, Cause and Mechanism of Injury";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
+        goToGeneralDetail();
         textPresent("LOINC");
         textPresent("CHAR");
-         goToIdentifiers();
+        goToIdentifiers();
         textPresent("1234567");
         clickElement(By.id("copyFormBtn"));
         textPresent("Create a copy");
@@ -26,7 +27,7 @@ public class CopyFormTest extends BaseClassificationTest {
         textNotPresent("CHAR");
 
         textPresent("Copy of: XyqIIyrBtx");
-         goToIdentifiers();
+        goToIdentifiers();
         textNotPresent("1234567");
     }
 

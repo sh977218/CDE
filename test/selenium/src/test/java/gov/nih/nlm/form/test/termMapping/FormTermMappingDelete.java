@@ -8,11 +8,9 @@ public class FormTermMappingDelete extends NlmCdeBaseTest {
 
     @Test
     public void delete() {
-
         mustBeLoggedInAs(nlm_username, nlm_password);
-
         goToFormByName("Socioeconomic Status");
-
+        goToMeshTopic();
         textPresent("D003710 - Demography");
         textPresent("D000328 - Adult");
         textPresent("D011795 - Surveys and Questionnaires");
@@ -21,7 +19,6 @@ public class FormTermMappingDelete extends NlmCdeBaseTest {
         clickElement(By.id("confirmRemoveMesh-2"));
         textPresent("Saved");
         closeAlert();
-
         textPresent("D003710 - Demography");
         textPresent("D000328 - Adult");
         textNotPresent("D011795 - Surveys and Questionnaires");
