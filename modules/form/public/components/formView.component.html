@@ -107,9 +107,9 @@
                             title="Pin CDEs" (click)="pinAllCdesIntoBoard()">
                         <i class="fa fa-cogs"></i><span class="hidden-xs-down"> Pin CDEs</span>
                     </button>
-                    <button *ngIf="isAllowedModel.loggedIn()"
+                    <button *ngIf="isAllowedModel.isOrgCurator()"
                             id="copyFormBtn" class="btn btn-small btn-default"
-                            title="Copy CDE" type="button" (click)="openCopyElementModal()">
+                            title="Copy Form" type="button" (click)="openCopyElementModal()">
                         <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
                     </button>
                     <button id="discussBtn" class="btn btn-small btn-default"
