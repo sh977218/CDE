@@ -12,5 +12,19 @@
     "jquery": "~1.10.2",
     "bootstrap": "3.3.6",
     "bootstrap-css-only": "3.3.6"
+  },
+  "overrides": {
+    "jquery-ui": {
+      "main": [
+        "jquery-ui.js",
+        "themes/start/jquery-ui.min.css"
+      ]
+    },
+    "font-awesome": {
+      "main": [
+        "./css/font-awesome.css",
+        "./fonts/*"
+      ]
+    }
   }
 }
