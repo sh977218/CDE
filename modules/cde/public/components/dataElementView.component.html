@@ -43,16 +43,22 @@
                 type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
             <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
         </button>
-        <div class="dropdown">
-            <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+        <div class="float-left ngbDropdown">
+            <button ngbDropdownToggle id="export"class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i><span class="hidden-xs-down"> Export</span>
             </button>
-            <div class="dropdown-menu" aria-labelledby="export" role="menu">
-                <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
-                    JSON File, NIH/CDE Schema</a>
-                <a id="xmlExport" class="dropdown-item" href="deById/{{elt._id}}?type=xml"
-                   target="_blank">XML File, NIH/CDE Schema</a>
+            <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="export">
+                <li>
+                    <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
+                        JSON File, NIH/CDE Schema</a>
+                    <a href="/schema/cde" target="_blank" class="d-inline">
+                        <i class="fa fa-info-circle"></i></a>
+                </li>
+                <li>
+                    <a id="xmlExport" class="dropdown-item" href="deById/{{elt._id}}?type=xml"
+                       target="_blank">XML File, NIH/CDE Schema</a>
+                </li>
             </div>
         </div>
         <button id="copyCdeBtn" class="btn btn-small btn-default" (click)="openCopyElementModal()"
