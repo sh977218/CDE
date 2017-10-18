@@ -55,6 +55,8 @@ public class EditSkipLogic extends BaseFormTest {
         textPresent("How often did you have to push yourself to get things done because of your fatigue?",
                 By.xpath("//*[*[text()='To what degree did your fatigue interfere with your physical functioning?']]" +
                         "//*[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
+
+        clickElement(By.id("dropdownMenuButton"));
         clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
 
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");

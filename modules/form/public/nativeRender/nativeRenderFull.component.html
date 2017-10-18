@@ -1,4 +1,4 @@
-<div>
+<div class="row">
     <div class="dropdown float-left">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -23,13 +23,13 @@
                    onclick="window.open(this.getAttribute('data-url'),'_blank')">SDC</a>
                 (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank">ONC</a>)
             </button>
-            <button class="dropdown-item" id="printableLogicCb">Printable Logic:
-                <input type="checkbox" [(ngModel)]="overridePrintable"
+            <button class="dropdown-item">Printable Logic:
+                <input id="printableLogicCb" type="checkbox" [(ngModel)]="overridePrintable"
                        (change)="render.setNativeRenderType(($event.target.checked ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF))">
             </button>
         </div>
     </div>
-    <div class="dropdown float-left">
+    <div *ngIf="elt.displayProfiles.length > 0" class="dropdown float-left">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="select_display_profile"
                 data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -42,5 +42,12 @@
             </button>
         </div>
     </div>
+</div>
+<div *ngIf="elt.noRenderAllowed"
+     class="text-center mt20">Rendering has been disabled for this form.
+</div>
+<div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)"
+     id="warningNoCde"
+     class="text-center mt20">This form has no content. There is nothing to preview.
 </div>
 <cde-native-render #render [elt]="elt" [showTitle]="false"></cde-native-render>

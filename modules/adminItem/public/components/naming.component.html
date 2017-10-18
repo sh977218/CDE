@@ -4,13 +4,7 @@
     <ng-container *ngFor="let name of elt.naming;let i = index">
         <div class="row">
             <dt class="col-sm-3 text-right">
-                <ng-container *ngIf="canEdit && name.edit">Confirm Delete
-                    <span class="btn-default fa fa-check" (click)="removeNamingByIndex(i)"
-                          id="confirmRemoveNaming-{{i}}" title="OK"></span>
-                    <span class="btn-default fa fa-times" (click)="name.edit = false"
-                          id="cancelRemoveNaming-{{i}}" title="Cancel"></span>
-                </ng-container>
-                <span (click)="name.edit = true" *ngIf="canEdit && !name.edit" class="btn-default fa fa-trash-o"
+                <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit" class="btn-default fa fa-trash-o"
                       id="removeNaming-{{i}}" title="Remove"></span>
                 <sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></sortable-array>
                 Name:

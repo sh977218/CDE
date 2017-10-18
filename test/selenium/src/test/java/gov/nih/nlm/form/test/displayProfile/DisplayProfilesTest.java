@@ -34,10 +34,9 @@ public class DisplayProfilesTest extends BaseFormTest {
 
     @Test
     public void displayProfiles() {
+        String formName = "PROMIS SF v1.1 - Anger 5a";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToFormByName("PROMIS SF v1.1 - Anger 5a");
-        textPresent("In the past 7 days");
-
+        goToFormByName(formName);
         goToFormDescription();
         clickElement(By.xpath("//div[@id='question_0_3']//i[contains(@class,'fa-pencil')]"));
         clickElement(By.xpath("//div[@id='question_0_3']//div[text()='Invisible:']/following-sibling::div/input"));

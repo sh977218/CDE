@@ -26,7 +26,7 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         goToFormByName(formName);
         textPresent(newFormLabel);
         textPresent("Symptomology");
-
+        clickElement(By.id("dropdownMenuButton"));
         clickElement(By.id("button_lforms"));
         switchTab(1);
         textPresent(newFormLabel);

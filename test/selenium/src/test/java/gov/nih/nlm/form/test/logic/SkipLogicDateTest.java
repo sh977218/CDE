@@ -50,7 +50,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         findElement(By.xpath("//*[@id='Macula volume (OS)_1']"));
         textPresent("left eye");
 
-        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
+                clickElement(By.id("dropdownMenuButton"));        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textPresent("Display Profile");
         textNotPresent("Macula volume (OD)");
         textNotPresent("Macula volume (OS)");
