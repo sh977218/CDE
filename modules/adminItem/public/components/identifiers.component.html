@@ -1,18 +1,18 @@
 <div id="identifiersDiv" class="col-12">
     <h4>Identifiers</h4>
     <dl class="row">
-        <dt class="col-sm-3 text-right">Source:</dt>
-        <dd id="dd_origin_nlm" class="col-sm-9">NLM</dd>
+        <dt class="col-xs-3 text-right">Source:</dt>
+        <dd id="dd_origin_nlm" class="col-xs-9">NLM</dd>
         <meta itemprop="codingSystem" content="NIH CDE Repository"/>
-        <dt class="col-sm-3 text-right">Id:</dt>
-        <dd id="dd_id_nlm" class="col-sm-9" itemprop="codeValue">{{elt.tinyId}}</dd>
-        <dt class="col-sm-3 text-right">Version:</dt>
-        <dd id="dd_version_nlm" class="col-sm-9">{{elt.version}}</dd>
+        <dt class="col-xs-3 text-right">Id:</dt>
+        <dd id="dd_id_nlm" class="col-xs-9" itemprop="codeValue">{{elt.tinyId}}</dd>
+        <dt class="col-xs-3 text-right">Version:</dt>
+        <dd id="dd_version_nlm" class="col-xs-9">{{elt.version}}</dd>
     </dl>
     <hr>
     <ng-container *ngFor="let id of elt.ids; let i = index">
         <dl class="row">
-            <dt class="col-sm-3 text-right">
+            <dt class="col-xs-3 text-right">
                 <ng-container *ngIf="id.edit">Confirm Delete
                     <span class="btn-default fa fa-check" (click)="removeIdentifierByIndex(i)"
                           id="confirmRemoveIdentifier-{{i}}" title="OK"></span>
@@ -23,9 +23,9 @@
                       (click)="id.edit = true" title="Remove"></span>
                 Source:
             </dt>
-            <dd id="source_{{i}}" class="col-sm-9">{{id.source}}</dd>
-            <dt class="col-sm-3 text-right">Id:</dt>
-            <dd id="id_{{i}}" class="col-sm-9">
+            <dd id="source_{{i}}" class="col-xs-9">{{id.source}}</dd>
+            <dt class="col-xs-3 text-right">Id:</dt>
+            <dd id="id_{{i}}" class="col-xs-9">
                 <ng-container [ngSwitch]="id.source">
                     <a *ngSwitchCase="'LOINC'"
                        href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
@@ -36,8 +36,8 @@
                     <span *ngSwitchDefault>{{id.id}}</span>
                 </ng-container>
             </dd>
-            <dt class="col-sm-3 text-right">Version:</dt>
-            <dd id="version_{{i}}" class="col-sm-9">{{id.version}}</dd>
+            <dt class="col-xs-3 text-right">Version:</dt>
+            <dd id="version_{{i}}" class="col-xs-9">{{id.version}}</dd>
         </dl>
         <hr>
     </ng-container>

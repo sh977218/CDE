@@ -11,7 +11,9 @@ public class NotEqualsLogic extends BaseFormTest {
     @Test
     public void NotEqualsLogic() {
         goToFormByName("Not Equals Test");
-        clickElement(By.xpath("//label[contains(., 'Printable Logic')]"));
+        clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
+
+        clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
 
         // test numbers
         textPresent("Spinal surgery indicator");
