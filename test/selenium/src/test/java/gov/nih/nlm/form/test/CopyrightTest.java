@@ -32,7 +32,7 @@ public class CopyrightTest extends BaseFormTest {
         textPresent("Authority");
         textPresent(statement);
         textPresent(authority);
-        findElement(By.xpath("//small[@id='copyrightStatement' and contains(. = '" + statement + "')]"));
+        findElement(By.xpath("//small[@id='copyrightStatement' and contains(., '" + statement + "')]"));
     }
 
 }
