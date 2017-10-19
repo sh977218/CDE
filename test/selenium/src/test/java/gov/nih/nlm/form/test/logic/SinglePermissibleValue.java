@@ -15,7 +15,7 @@ public class SinglePermissibleValue extends BaseFormTest {
         textPresent("Breast Carcinoma Estrogen Receptor Status", By.xpath("//div[label/span[text()='Female Gender']]//table"));
 
         goToPreview();
-                clickElement(By.id("dropdownMenuButton"));        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
+                clickElement(By.id("dropdownMenuButton"));                clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
         textNotPresent("Female Patient Screening");
         textNotPresent("Breast Carcinoma Estrogen Receptor Status");
         findElement(By.xpath("//*[*[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
