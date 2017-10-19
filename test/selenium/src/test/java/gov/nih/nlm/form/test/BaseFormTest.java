@@ -168,4 +168,26 @@ public class BaseFormTest extends FormCommentTest {
     }
 
 
+    protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
+                                        boolean numbering, String dispType, int numberOfColumns, boolean displayInvisible) {
+        textPresent("Add Profile");
+        clickElement(By.id("addDisplayProfile"));
+        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
+        findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
+        findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
+        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//button[contains(@class, 'fa-check')]"));
+        if (!matrix) clickElement(By.id("displayAsMatrix_" + index));
+        if (displayValues) clickElement(By.id("displayValues_" + index));
+        if (!instructions) clickElement(By.id("displayInstructions_" + index));
+        if (!numbering) clickElement(By.id("displayNumbering_" + index));
+        if (!"Follow-up".equals(dispType)) clickElement(By.id("displayType_" + index));
+
+        WebElement slider = findElement(By.id("nc_" + index));
+        Actions slide = new Actions(driver);
+        int width = slider.getSize().getWidth() / 6;
+        slide.moveToElement(slider, width * (numberOfColumns - 1) + width / 2, slider.getSize().getHeight() / 2).click().build().perform();
+
+        if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
+    }
+
 }

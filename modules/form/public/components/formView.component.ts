@@ -70,10 +70,7 @@ export class FormViewComponent implements OnInit {
                 public userService: UserService,
                 private route: ActivatedRoute,
                 private router: Router) {
-
-
         this.mobileView = window.innerWidth <= 800;
-
     }
 
     @HostListener('window:resize', ['$event'])

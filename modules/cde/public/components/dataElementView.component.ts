@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -61,6 +61,13 @@ export class DataElementViewComponent implements OnInit {
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService) {
+        this.mobileView = window.innerWidth <= 800;
+    }
+
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.mobileView = window.innerWidth <= 800;
     }
 
     ngOnInit() {
@@ -84,8 +91,6 @@ export class DataElementViewComponent implements OnInit {
                             return {id: t, text: t};
                         });
                     });
-                    if (window.innerWidth <= 800)
-                        this.mobileView = true;
                 });
             });
         });
