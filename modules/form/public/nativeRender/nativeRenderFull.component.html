@@ -2,7 +2,7 @@
     <div class="dropdown float-left">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-            Printing?
+            Options
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <button class="dropdown-item">
@@ -29,7 +29,7 @@
             </button>
         </div>
     </div>
-    <div class="dropdown float-left">
+    <div class="dropdown float-left" *ngIf="elt.displayProfiles?.length > 0">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="select_display_profile"
                 data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -50,4 +50,7 @@
      id="warningNoCde"
      class="text-center mt20">This form has no content. There is nothing to preview.
 </div>
-<cde-native-render #render [elt]="elt" [showTitle]="false"></cde-native-render>
+
+<div [ngClass]="{'bot-left': !mobileView}">
+    <cde-native-render #render [elt]="elt" [showTitle]="false"></cde-native-render>
+</div>

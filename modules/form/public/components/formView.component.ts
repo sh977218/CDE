@@ -1,4 +1,6 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import {
+    ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild
+} from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -22,6 +24,7 @@ import { OrgHelperService } from 'core/public/orgHelper.service';
         }
 
         #leftNav {
+            margin-top: 20px;
             z-index: 1;
         }
 
@@ -67,6 +70,15 @@ export class FormViewComponent implements OnInit {
                 public userService: UserService,
                 private route: ActivatedRoute,
                 private router: Router) {
+
+
+        this.mobileView = window.innerWidth <= 800;
+
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.mobileView = window.innerWidth <= 800;
     }
 
     ngOnInit() {
@@ -90,8 +102,6 @@ export class FormViewComponent implements OnInit {
                             return {id: t, text: t};
                         });
                     });
-                    if (window.innerWidth <= 800)
-                        this.mobileView = true;
                 });
             });
         });

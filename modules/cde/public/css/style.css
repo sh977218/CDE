@@ -204,11 +204,6 @@ ngb-accordion .card-header a:hover {
     margin: 0 auto;
 }
 
-.navbar-brand {
-    margin-top: -7px;
-    margin-right: 10px;
-}
-
 .matched-by {
     float: right;
     color: #4c4c4c;

@@ -1,23 +1,21 @@
 <div class="navbar navbar-toggleable-sm navbar-inverse" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only sr-only-focusable">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" routerLink="/home" id="homeLink">
-                <img alt="Home" src="../../../cde/public/assets/img/nih-cde-logo-simple.png"/>
-            </a>
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only sr-only-focusable">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" routerLink="/home" id="homeLink">
+            <img alt="Home" src="../../../cde/public/assets/img/nih-cde-logo-simple.png" style="margin-top: -7px"/>
+        </a>
+    </div>
+    <div class="navbar-collapse collapse" id="main-navigation">
+        <div class="hidden-sm-down">
+            <ng-container *ngTemplateOutlet="topMenu; context: largeContext;"></ng-container>
         </div>
-        <div class="navbar-collapse collapse" id="main-navigation">
-            <div class="hidden-sm-down">
-                <ng-container *ngTemplateOutlet="topMenu; context: largeContext;"></ng-container>
-            </div>
-            <div class="hidden-md-up">
-                <ng-container *ngTemplateOutlet="topMenu; context: smallContext"></ng-container>
-            </div>
+        <div class="hidden-md-up">
+            <ng-container *ngTemplateOutlet="topMenu; context: smallContext"></ng-container>
         </div>
     </div>
 </div>
