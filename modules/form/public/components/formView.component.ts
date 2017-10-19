@@ -11,6 +11,8 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: "cde-form-view",
@@ -45,6 +47,8 @@ export class FormViewComponent implements OnInit {
     formInput;
     drafts = [];
     formId;
+    savingText: string = "";
+    draftSubscription: Subscription;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
@@ -133,10 +137,6 @@ export class FormViewComponent implements OnInit {
             administrativeNote: "Copy of: " + this.elt.tinyId
         };
         this.modalRef = this.modalService.open(this.copyFormContent, {size: "lg"});
-    }
-
-    closeCopyFormModal() {
-        this.modalRef.close();
     }
 
     beforeChange(event) {
@@ -299,10 +299,16 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft(cb) {
+        this.savingText = 'Saving ...';
         this.elt._id = this.formId;
-        this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
+        if (this.draftSubscription) this.draftSubscription.unsubscribe();
+        this.draftSubscription = this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
             this.elt.isDraft = true;
+            this.savingText = "Saved";
+            setTimeout(() => {
+                this.savingText = "";
+            }, 3000);
             this.areDerivationRulesSatisfied();
             this.validateForm();
             if (cb) cb(res);

@@ -2,7 +2,7 @@
     <span class="form-inline">
         <span class="form-group">
             <label for="select_display_profile">Display Profile: </label>
-            <select [(ngModel)]="profileIndex" (change)="selectProfile(render)"
+            <select [(ngModel)]="profileIndex" (change)="selectProfile()"
                     id="select_display_profile" class="form-control mb3">
                 <option *ngFor="let p of elt.displayProfiles; let i = index" [value]="i"
                         [textContent]="p.name"></option>
@@ -41,4 +41,4 @@
     Save form to update rendering
 </div>
 
-<cde-native-render #render [elt]="elt"></cde-native-render>
+<cde-native-render [elt]="elt" [profile]="profile"></cde-native-render>

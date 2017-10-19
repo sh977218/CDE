@@ -11,6 +11,7 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as deValidator from "../../shared/deValidator.js";
 import { AlertService } from '_app/alert/alert.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: "cde-data-element-view",
@@ -40,6 +41,8 @@ export class DataElementViewComponent implements OnInit {
     deId;
     tinyId;
     url;
+    draftSubscription: Subscription;
+    savingText: String;
 
     constructor(private http: Http,
                 private route: ActivatedRoute,
@@ -235,10 +238,16 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDraft(cb) {
+        this.savingText = 'Saving ...';
         this.elt._id = this.deId;
-        this.http.post("/draftDataElement/" + this.elt.tinyId, this.elt)
+        if (this.draftSubscription) this.draftSubscription.unsubscribe();
+        this.draftSubscription = this.http.post("/draftDataElement/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
-            this.elt.isDraft = true;
+                this.savingText = "Saved";
+                setTimeout(() => {
+                    this.savingText = "";
+                }, 3000);
+                this.elt.isDraft = true;
             if (cb) cb(res);
         }, err => this.alert.addAlert("danger", err));
     }
