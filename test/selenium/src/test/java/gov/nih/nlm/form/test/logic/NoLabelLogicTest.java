@@ -20,7 +20,7 @@ public class NoLabelLogicTest extends BaseFormTest {
         saveEditQuestionSectionById("question_0_1");
         newFormVersion();
         textPresent("Show if: \"Gender type\" = \"Unknown\"");
-        goToGeneralDetail();
+        goToPreview();
         textPresent("Walking speed value");
         clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
         textNotPresent("Walking speed value");
