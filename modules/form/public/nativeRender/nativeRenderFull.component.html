@@ -37,8 +37,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="select_display_profile">
             <button class="dropdown-item" *ngFor="let p of elt.displayProfiles; let i = index"
-                    (click)="selectProfile(render,i);">
-                {{p.name}}
+                    (click)="selectProfile(render,i);">{{p.name}}
             </button>
         </div>
     </div>
