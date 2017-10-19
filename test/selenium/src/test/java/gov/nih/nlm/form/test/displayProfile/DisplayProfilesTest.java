@@ -68,14 +68,14 @@ public class DisplayProfilesTest extends BaseFormTest {
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("I was grouchy");
 
-        new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("Matrix No Values");
+        selectDisplayProfileByName("Matrix No Values");
         hangon(1);
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("1", By.xpath("//table"));
         textPresent("I was grouchy");
 
-        new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values");
+        selectDisplayProfileByName("No Matrix No Values");
         hangon(1);
         assertNoElt(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']"));
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
@@ -83,7 +83,7 @@ public class DisplayProfilesTest extends BaseFormTest {
                 findElement(By.xpath("//div[@id='I was irritated more than people knew_0']//*/span[text()[contains(., 'Rarely')]]")).getLocation().y
         );
 
-        new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values Wider");
+        selectDisplayProfileByName("No Matrix No Values Wider");
         hangon(1);
         Assert.assertEquals(findElement(By.xpath("//*[*[text()='I was irritated more than people knew']]//*/span[text()='Never']")).getLocation().y,
                 findElement(By.xpath("//*[*[text()='I was irritated more than people knew']]//*/span[text()='Always']")).getLocation().y

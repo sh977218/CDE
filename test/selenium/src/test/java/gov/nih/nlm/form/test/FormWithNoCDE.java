@@ -8,7 +8,6 @@ public class FormWithNoCDE extends NlmCdeBaseTest {
     @Test
     public void formWithNoCDE() {
         goToFormByName("Form with no CDE");
-        goToGeneralDetail();
         textPresent("This form has no content. There is nothing to preview.");
     }
 

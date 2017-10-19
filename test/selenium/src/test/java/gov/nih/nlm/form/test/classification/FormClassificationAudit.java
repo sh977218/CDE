@@ -16,6 +16,7 @@ public class FormClassificationAudit extends NlmCdeBaseTest {
         openClassificationAudit("TEST > Eligibility Criteria");
         clickElement(By.linkText("Functional Imaging"));
         switchTab(1);
+        goToGeneralDetail();
         textPresent("Contains data elements collected when an imaging study");
         switchTabAndClose(0);
     }

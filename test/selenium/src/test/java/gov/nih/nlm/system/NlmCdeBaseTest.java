@@ -1163,7 +1163,7 @@ public class NlmCdeBaseTest {
      * @param index Index of identifiers, starting from 0.
      */
     protected void removeIdentifier(int index) {
-         goToIdentifiers();
+        goToIdentifiers();
         clickElement(By.id("removeIdentifier-" + index));
         clickElement(By.id("confirmRemoveIdentifier-" + index));
     }
@@ -1513,8 +1513,12 @@ public class NlmCdeBaseTest {
         clickIFrameElement(By.xpath("//button[. = 'Execute']"));
         findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
         findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-//        hangon(3000);
         textPresent(text, By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
+    }
+
+    protected void selectDisplayProfileByName(String name) {
+        clickElement(By.id("select_display_profile"));
+        clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button[normalize-space(text()) = '" + name + "']"));
     }
 
 }

@@ -33,7 +33,7 @@ public class NativeTableTest extends BaseFormTest {
         clickElement(By.xpath("//div[@id='question_0_1_0']//i[contains(@class, 'fa-pencil')]"));
         clickElement(By.xpath("//div[@id='question_0_1_0']//div[text()='Multiple Selections:']/following-sibling::div/input"));
 
-        goToGeneralDetail();
+        goToPreview();
         findElement(By.xpath("//div[@class='native-table-cell']/label[text()='Mother']"));
         findElement(By.xpath("//div[contains(@class,'native-table-cell')]//input[@type='checkbox']"));
     }
