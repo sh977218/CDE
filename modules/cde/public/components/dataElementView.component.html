@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <button id="copyCdeBtn" class="btn btn-small btn-default" (click)="openCopyElementModal()"
-                            title="Copy CDE" type="button">
+                            title="Copy CDE" type="button" *ngIf="isAllowedModel.isOrgCurator()">
                         <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
                     </button>
                     <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
