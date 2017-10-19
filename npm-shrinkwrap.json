@@ -9321,11 +9321,6 @@
       "integrity": "sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=",
       "dev": true
     },
-    "string": {
-      "version": "3.3.3",
-      "resolved": "https://registry.npmjs.org/string/-/string-3.3.3.tgz",
-      "integrity": "sha1-XqIRzZLSKOGEKUmQpsyXs2anfLA="
-    },
     "string_decoder": {
       "version": "1.0.3",
       "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.0.3.tgz",
@@ -9594,7 +9589,7 @@
       }
     },
     "swagger-tools": {
-      "version": "git+https://github.com/apigee-127/swagger-tools.git#3d0a6075647c48f11edfed5eeb8ec32245eb68b7",
+      "version": "git+https://github.com/apigee-127/swagger-tools.git#0cea535b122265c6d01546e199e2e8fda4c0f5da",
       "requires": {
         "async": "2.5.0",
         "body-parser": "1.18.2",
@@ -9609,7 +9604,6 @@
         "qs": "6.5.1",
         "serve-static": "1.13.1",
         "spark-md5": "3.0.0",
-        "string": "3.3.3",
         "superagent": "3.6.3",
         "swagger-converter": "0.1.7",
         "traverse": "0.6.6",
