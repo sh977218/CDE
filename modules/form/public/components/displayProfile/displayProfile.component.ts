@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import "nouislider/distribute/nouislider.min.css";
 import "rxjs/add/operator/map";
 
 @Component({
@@ -12,7 +11,8 @@ export class DisplayProfileComponent implements OnInit {
         this.elt.displayProfiles.forEach(() => this.samples.push(JSON.parse(JSON.stringify(this.sampleElt))));
     }
 
-    constructor() {}
+    constructor() {
+    }
 
     @Input() elt: any;
     @Input() public canEdit: boolean = false;
@@ -49,6 +49,11 @@ export class DisplayProfileComponent implements OnInit {
 
     setDisplayType(profile, $event) {
         profile.displayType = $event.target.checked ? 'Follow-up' : 'Dynamic';
+        this.onEltChange.emit();
+    }
+
+    onChange(p,event) {
+        p.numberOfColumns = parseInt(event);
         this.onEltChange.emit();
     }
 
@@ -280,54 +285,54 @@ export class DisplayProfileComponent implements OnInit {
                             "uoms": [],
                             "cde": {
                                 "ids": [],
-                                "permissibleValues" : [
+                                "permissibleValues": [
                                     {
-                                        "permissibleValue" : "Never attended/Kindergarten only",
-                                        "valueMeaningName" : "Never attended/Kindergarten only"
+                                        "permissibleValue": "Never attended/Kindergarten only",
+                                        "valueMeaningName": "Never attended/Kindergarten only"
                                     },
                                     {
-                                        "permissibleValue" : "1st Grade",
-                                        "valueMeaningName" : "1st Grade"
+                                        "permissibleValue": "1st Grade",
+                                        "valueMeaningName": "1st Grade"
                                     },
                                     {
-                                        "permissibleValue" : "2nd Grade",
-                                        "valueMeaningName" : "2nd Grade"
+                                        "permissibleValue": "2nd Grade",
+                                        "valueMeaningName": "2nd Grade"
                                     },
                                     {
-                                        "permissibleValue" : "3rd Grade",
-                                        "valueMeaningName" : "3rd Grade"
+                                        "permissibleValue": "3rd Grade",
+                                        "valueMeaningName": "3rd Grade"
                                     },
                                     {
-                                        "permissibleValue" : "4th Grade",
-                                        "valueMeaningName" : "4th Grade"
+                                        "permissibleValue": "4th Grade",
+                                        "valueMeaningName": "4th Grade"
                                     },
                                     {
-                                        "permissibleValue" : "5th Grade",
-                                        "valueMeaningName" : "5th Grade"
+                                        "permissibleValue": "5th Grade",
+                                        "valueMeaningName": "5th Grade"
                                     },
                                     {
-                                        "permissibleValue" : "6th Grade",
-                                        "valueMeaningName" : "6th Grade"
+                                        "permissibleValue": "6th Grade",
+                                        "valueMeaningName": "6th Grade"
                                     },
                                     {
-                                        "permissibleValue" : "7th Grade",
-                                        "valueMeaningName" : "7th Grade"
+                                        "permissibleValue": "7th Grade",
+                                        "valueMeaningName": "7th Grade"
                                     },
                                     {
-                                        "permissibleValue" : "8th Grade",
-                                        "valueMeaningName" : "8th Grade"
+                                        "permissibleValue": "8th Grade",
+                                        "valueMeaningName": "8th Grade"
                                     },
                                     {
-                                        "permissibleValue" : "9th Grade",
-                                        "valueMeaningName" : "9th Grade"
+                                        "permissibleValue": "9th Grade",
+                                        "valueMeaningName": "9th Grade"
                                     },
                                     {
-                                        "permissibleValue" : "10th Grade",
-                                        "valueMeaningName" : "10th Grade"
+                                        "permissibleValue": "10th Grade",
+                                        "valueMeaningName": "10th Grade"
                                     },
                                     {
-                                        "permissibleValue" : "11th Grade",
-                                        "valueMeaningName" : "11th Grade"
+                                        "permissibleValue": "11th Grade",
+                                        "valueMeaningName": "11th Grade"
                                     }
                                 ]
                             }

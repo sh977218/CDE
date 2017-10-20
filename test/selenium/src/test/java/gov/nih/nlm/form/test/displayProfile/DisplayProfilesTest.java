@@ -30,6 +30,7 @@ public class DisplayProfilesTest extends BaseFormTest {
                 findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label/span[text()='1st Grade']")).getLocation().y + 8 <
                         findElement(By.xpath("//div[@id='profile_2']//div[@id='Education level USA type_1']//label/span[text()='2nd Grade']")).getLocation().y
         );
+        scrollToViewById("profile_3");
         Assert.assertEquals(
                 findElement(By.xpath("//*[@id='profile_3']//*[*[text()='Education level USA type']]//*/span[text()='1st Grade']")).getLocation().y,
                 findElement(By.xpath("//*[@id='profile_3']//*[*[text()='Education level USA type']]//*/span[text()='5th Grade']")).getLocation().y

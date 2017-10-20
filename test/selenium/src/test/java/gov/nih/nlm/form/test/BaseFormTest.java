@@ -182,10 +182,7 @@ public class BaseFormTest extends FormCommentTest {
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
         if (!"Follow-up".equals(dispType)) clickElement(By.id("displayType_" + index));
 
-        WebElement slider = findElement(By.id("nc_" + index));
-        Actions slide = new Actions(driver);
-        int width = slider.getSize().getWidth() / 6;
-        slide.moveToElement(slider, width * (numberOfColumns - 1) + width / 2, slider.getSize().getHeight() / 2).click().build().perform();
+        new Select(findElement(By.id("nc_" + index))).selectByVisibleText(String.valueOf(numberOfColumns));
 
         if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
     }
