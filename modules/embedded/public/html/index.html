@@ -1,11 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="embeddedApp">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>CDE Embedded Search</title>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-resource.js"></script>
 
     <!-- build:js /embedded/public/js/embeded-scripts.js -->
     <!-- endbuild -->
@@ -24,7 +21,7 @@
 
     <style>
         body {
-            padding: 0px 0px 0px 0px;
+            padding: 0 0 0 0;
         }
         #pageWrapper{
             height: 97%;
@@ -43,7 +40,7 @@
         }
 
         #advSearchForm {
-            margin: 0px 0px 5px 0px;
+            margin: 0 0 5px 0;
         }
 
         .gridListView .name {width: auto;}
@@ -58,64 +55,12 @@
 <body>
 
 
-<nih-cde></nih-cde>
+<cde-embed></cde-embed>
 
 <div class="loading">
     <br><br><br><br><br><br>
     <h2 class="text-center">Loading...</h2>
     <br><br><br><br><br><br>
-</div>
-
-<div ng-controller="SearchCtrl" id="pageWrapper" class="boxed-div" style="border: none">
-
-    <h2 class="text-center" ng-if="!searchStarted" id="searchCdesFormsHeading">Search CDEs</h2>
-
-    <form name="advSearchForm" id="advSearchForm" novalidate="" class="ng-pristine ng-valid ng-valid-maxlength"
-          ng-class="{'extraPadding': !searchStarted }" ng-action="">
-
-        <div class="input-group input-group">
-            <select class="form-control" ng-change="selectElement(selectedClassif)" placeholder="Browse"
-                    ng-model="selectedClassif" style="width:50%;" ng-switch="searchSettings.classification.length > 0"
-                    ng-disabled="aggregations.flatClassifications.length === 0"
-                    ng-class="{'halfOpacity':aggregations.flatClassifications.length === 0}"
-            >
-                <option value="" selected ng-switch-when="true">All Sub Classifications</option>
-                <option value="" selected ng-switch-default="true">All Classifications</option>
-                <option ng-repeat="classif in aggregations.flatClassifications">{{classif.name}}</option>
-            </select>
-            <label class="sr-only" for="ftsearch-input">Search Terms</label>
-            <input name="q" id="ftsearch-input" style="width: 50%"
-                   class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched"
-                   type="text" ng-model="searchSettings.q"
-                   placeholder="Search..."
-            autocomplete="off">
-        <div class="input-group-btn">
-            <button id="search.submit" ng-click="searchStarted = true;  search()" type="submit" class="btn btn-danger ">
-                <i class="fa fa-search"></i> Search</button>
-            <button id="search.reset" ng-click="reset()" class="btn">
-                <i class="fa fa-search"></i> Reset</button>
-        </div>
-        </div>
-    </form>
-
-    <div> Search Inside
-        <ol  class="breadcrumb" class="form-control" style="display: inline-block;">
-            <li ng-if="!searchSettings.classification.length>0">All Classifications</li>
-            <li ng-repeat="c in searchSettings.classification track by $index"><a href="#" ng-click="crumbSelect($index)">{{c}}</a></li>
-            <li ng-if="searchSettings.classification.length>0 && aggregations.flatClassifications.length > 0" >All Sub Classifications</li>
-        </ol>
-        <span ng-if="searchStarted" class="pull-right" style="padding-top:10px">{{totalItems}} results <small> ({{took / 1000}} secs)</small></span>
-    </div>
-    <div class="clearfix"></div>
-
-
-    <div ng-if="searchStarted" >
-        <div ng-if="totalItems > 0" id="searchResult" ng-include="'/embedded/public/html/' + searchType + 'GridList.html'"></div>
-        <ul uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
-                        ng-model="searchSettings.page" next-text="Next" ng-change="search()"></ul>
-    </div>
-
-    <small id="poweredByNihCde">Search provided by the <a target="_blank" href="https://cde.nlm.nih.gov/">NIH CDE repository</a></small>
 </div>
 
 </body>

@@ -6,13 +6,12 @@ import { BrowserModule } from "@angular/platform-browser";
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { CdeAppComponent } from '_app/app.component';
 import { FrontExceptionHandler } from '_app/frontExceptionHandler';
 import { EmbedAppComponent } from '_embedApp/embedApp.component';
 
 @NgModule({
     declarations: [
-        CdeAppComponent,
+        EmbedAppComponent,
     ],
     providers: [
         {provide: ErrorHandler, useClass: FrontExceptionHandler}
