@@ -18,6 +18,7 @@ public class CreateFormFromBoardTest extends NlmCdeBaseTest {
         addClassificationByTree("TEST", new String[]{"Classify Board", "Classif_Board_Sub"}, null);
         findElement(By.linkText("Classif_Board_Sub"));
         clickElement(By.id("submit"));
+        goToGeneralDetail();
         textPresent("Incomplete");
         textNotPresent("have newer version");
         textPresent("Form Description");
