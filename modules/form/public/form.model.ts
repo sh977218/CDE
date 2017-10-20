@@ -60,16 +60,22 @@ export class CdeForm extends Elt {
 }
 
 export class DisplayProfile {
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
     _id: ObjectId = null;
-    displayInstructions: boolean;
-    displayInvisible: boolean;
-    displayNumbering: boolean;
-    displayType: string = 'Dynamic';
-    displayValues: boolean;
+    displayCopyright: boolean = true;
+    displayInstructions: boolean = true;
+    displayInvisible: boolean = false;
+    displayNumbering: boolean = true;
+    displayType: string = 'Follow-up';
+    displayValues: boolean = false;
     name: String;
-    numberOfColumns: number;
-    repeatFormat: string = '';
-    sectionsAsMatrix: boolean;
+    numberOfColumns: number = 4;
+    repeatFormat: string = '#.';
+    sectionsAsMatrix: boolean = true;
 }
 
 export interface FormElement {
