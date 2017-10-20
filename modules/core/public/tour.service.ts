@@ -36,12 +36,10 @@ export class TourService {
             title: "Help",
             content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
             onNext: tour => {
-                return TourService.router.navigate(["/cde/search"]);
-                /*
-                                return new Promise(resolve => {
-                                    setTimeout(resolve, 3000);
-                                })
-                */
+                return new Promise(resolve => {
+                    TourService.router.navigate(["/cde/search"]);
+                    setTimeout(resolve, 3000);
+                })
             }
         },
         {
@@ -53,13 +51,18 @@ export class TourService {
             element: "#browseByTopic",
             content: "Or by topic. Topics are MeSH terms.",
             title: "Browse by Topic"
-        }/*,
+        },
         {
             element: "#search_by_classification_NLM",
             title: "Browse by Organization",
             content: "These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.",
             placement: "left",
-            onNext: tour => TourService.router.navigate(["resultList"])
+            onNext: tour => {
+                return new Promise(resolve => {
+                    TourService.router.navigate(["/cde/search"], {queryParams: {selectedOrg: 'NLM'}});
+                    setTimeout(resolve, 3000);
+                })
+            }
         },
         {
             element: "#resultList",
@@ -82,11 +85,20 @@ export class TourService {
             element: "#datatype_filter",
             content: "Finally, we can narrow our results down by datatype. For example, only see CDEs that represent a number.",
             title: "Data Types"
-        }, {
+        },
+        {
             element: "#linkToElt_0",
             content: "The tour will now take us to an individual record by clicking its name.",
             title: "Search Result",
-            onNext: tour => TourService.router.navigate(["addToQuickBoard"])
+            onNext: tour => {
+                return new Promise(resolve => {
+                    let url = document.getElementById('linkToElt_0')['href'];
+                    let tinyIdStringArray = url.match(/=.*/ig);
+                    let tinyId = tinyIdStringArray[0].substring(1, tinyIdStringArray[0].length);
+                    TourService.router.navigate(["/deView"], {queryParams: {tinyId: tinyId}});
+                    setTimeout(resolve, 3000);
+                })
+            }
         },
         {
             element: "#general_tab",
@@ -219,17 +231,38 @@ export class TourService {
             title: "Forms",
             content: "We will now continue the tour and show Form features.",
             placement: "bottom",
+            onNext: tour => {
+                return new Promise(resolve => {
+                    TourService.router.navigate(["/form/search"]);
+                    setTimeout(resolve, 3000);
+                })
+            }
         },
         {
             element: "#browseByClassification",
             content: "Forms are also browsed by Classification",
-            title: "Browse by Classification"
+            title: "Browse by Classification",
+            onNext: tour => {
+                return new Promise(resolve => {
+                    TourService.router.navigate(["/form/search"], {queryParams: {selectedOrg: 'NLM'}});
+                    setTimeout(resolve, 3000);
+                })
+            }
         },
         {
             element: "#resultList",
             title: "Search Result",
             content: "We will now go into a form.",
-            placement: "top"
+            placement: "top",
+            onNext: tour => {
+                return new Promise(resolve => {
+                    let url = document.getElementById('linkToElt_0')['href'];
+                    let tinyIdStringArray = url.match(/=.*/ig);
+                    let tinyId = tinyIdStringArray[0].substring(1, tinyIdStringArray[0].length);
+                    TourService.router.navigate(["/formView"], {queryParams: {tinyId: tinyId}});
+                    setTimeout(resolve, 3000);
+                })
+            }
         },
         {
             element: "#general_tab",
@@ -254,7 +287,7 @@ export class TourService {
             title: "Thank you",
             content: "Thank you for taking this tour. Consider creating a free UMLS account to get access to the full suite of features this repository has to offer.",
             placement: "bottom"
-        }*/
+        }
     ];
 
     static steps = TourService.navigationSteps;
