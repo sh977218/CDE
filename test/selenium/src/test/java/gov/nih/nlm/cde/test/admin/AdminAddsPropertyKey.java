@@ -24,11 +24,11 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         // is this fixed yet?
 //        int count = 0;
 //        while (count < 5) {
-//            goToCdeByName("Distance from Closest Margin Value");
-//
-//            clickElement(By.id("properties_tab"));
-//            clickElement(By.id("openNewPropertyModalBtn"));
-//            clickElement(By.id("newKey"));
+            goToCdeByName("Distance from Closest Margin Value");
+
+            clickElement(By.id("properties_tab"));
+            clickElement(By.id("openNewPropertyModalBtn"));
+            clickElement(By.id("newKey"));
 //
 //            try {
 //                findElement(By.xpath("//option[@value='doYouSeeThis']"));
