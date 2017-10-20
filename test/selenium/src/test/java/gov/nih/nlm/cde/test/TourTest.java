@@ -4,6 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class TourTest extends NlmCdeBaseTest {
 
@@ -58,28 +59,15 @@ public class TourTest extends NlmCdeBaseTest {
         textPresent(expectedText);
     }
 
-    /*
-        @TODO
-        //@Test
-    */
+    @Test
     public void tourTest() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
-        clickElement(By.linkText("Server Statuses"));
-        clickElement(By.id("syncWithMeshButton"));
+        mustBeLoggedOut();
         goHome();
         clickElement(By.id("takeATourBtn"));
-
         textPresent(steps[0]);
         for (int i = 1; i < steps.length; i++) {
             String expectedText = steps[i];
-            try {
-                getNext(expectedText.trim());
-            } catch (TimeoutException e) {
-                if (!expectedText.startsWith("Or by topic. Topics"))
-                    Assert.fail("Test fails on index: " + i + "\nCannot find: " + expectedText);
-            }
+            getNext(expectedText.trim());
         }
         clickElement(By.xpath("//button[@data-role='end']"));
     }
