@@ -124,6 +124,7 @@
                         <i class="fa fa-eye fa-lg"></i> View Draft
                     </button>
                     <ng-container *ngIf="elt.isDraft">
+                        {{savingText}}
                         <button class="btn btn-success" id="openSave" (click)="saveModal.openSaveModal();">
                             <i class="fa fa-globe fa-lg"></i> Publish
                         </button>

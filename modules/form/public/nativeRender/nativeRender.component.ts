@@ -10,8 +10,20 @@ import { SkipLogicService } from 'form/public/skipLogic.service';
     providers: [NativeRenderService]
 })
 export class NativeRenderComponent implements OnChanges {
+    _profile: DisplayProfile;
+
     @Input() elt: CdeForm;
-    @Input() profile: DisplayProfile;
+
+    @Input() set profile(p : DisplayProfile) {
+        this.nativeRenderService.setElt(this.elt);
+        this._profile = p;
+        this.nativeRenderService.profile = p;
+        this.nativeRenderService.setSelectedProfile();
+    };
+    get profile(): DisplayProfile {
+        return this._profile;
+    };
+
     @Input() submitForm: boolean;
 
     endpointUrl: string;
@@ -42,11 +54,6 @@ export class NativeRenderComponent implements OnChanges {
 
     getEndpointUrl() {
         return this.sanitizer.bypassSecurityTrustUrl(this.endpointUrl);
-    }
-
-    setProfile(profile) {
-        this.nativeRenderService.profile = profile;
-        this.nativeRenderService.setSelectedProfile();
     }
 
     setNativeRenderType(userType) {
