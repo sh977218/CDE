@@ -5,7 +5,7 @@ import * as _ from "lodash";
 @Injectable()
 export class TourService {
     static router;
-    static navigationSteps: Array<any> = [
+    static steps: Array<any> = [
         {
             title: "Welcome",
             content: "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here.",
@@ -290,15 +290,11 @@ export class TourService {
         }
     ];
 
-    static steps = TourService.navigationSteps;
-    static currentSteps = _.cloneDeep(TourService.steps);
-
-    static takeATour(from: number = 0) {
+    static takeATour() {
         let tour = new Tour({
             name: "CDE-Tour",
             storage: false,
-            debug: true,
-            steps: TourService.currentSteps
+            steps: TourService.steps
         });
         tour.init();
         tour.start();
@@ -306,7 +302,6 @@ export class TourService {
 
     static newTour(r) {
         this.router = r;
-        TourService.currentSteps = _.cloneDeep(TourService.steps);
         TourService.takeATour();
     }
 
