@@ -6,6 +6,7 @@ import * as _ from "lodash";
 export class TourService {
     static router;
     static navigationSteps: Array<any> = [
+/*
         {
             title: "Welcome",
             content: "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here.",
@@ -21,6 +22,7 @@ export class TourService {
             title: "Forms",
             content: "Or here to browse forms"
         },
+*/
         {
             element: "#boardsMenu",
             title: "Boards",
@@ -35,7 +37,21 @@ export class TourService {
             element: "#menu_help_link",
             title: "Help",
             content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
-            onNext: tour => TourService.router.navigate(["/cde/search"])
+            onNext: tour => {
+                return new Promise(resolve => {
+                   TourService.router.navigate(["/cde/search"]);
+                    setTimeout(resolve, 3000);
+                    /*
+                                        TourService.router.navigate(["/cde/search"]);
+                                        resolve();
+                    */
+                })
+            }
+        },
+        {
+            element: "#menu_qb_link",
+            title: "Quick Board",
+            content: "The quick board is a volatile board that can be used for temporarily storing CDEs and forms. You can also use the quick board to compare CDEs and Forms."
         },
         {
             element: "#browseByClassification",
@@ -46,7 +62,7 @@ export class TourService {
             element: "#browseByTopic",
             content: "Or by topic. Topics are MeSH terms.",
             title: "Browse by Topic"
-        },
+        }/*,
         {
             element: "#search_by_classification_NLM",
             title: "Browse by Organization",
@@ -247,7 +263,7 @@ export class TourService {
             title: "Thank you",
             content: "Thank you for taking this tour. Consider creating a free UMLS account to get access to the full suite of features this repository has to offer.",
             placement: "bottom"
-        }
+        }*/
     ];
 
     static steps = TourService.navigationSteps;
@@ -257,6 +273,7 @@ export class TourService {
         let tour = new Tour({
             name: "CDE-Tour",
             storage: false,
+            debug: true,
             steps: TourService.currentSteps
         });
         tour.init();
