@@ -50,6 +50,6 @@
      class="text-center mt20">This form has no content. There is nothing to preview.
 </div>
 
-<div *ngIf="elt.formElements.length > 0" [ngClass]="{'bot-left': !mobileView}">
+<div [ngClass]="{'bot-left': !mobileView}">
     <cde-native-render #render [elt]="elt" [showTitle]="false"></cde-native-render>
 </div>
