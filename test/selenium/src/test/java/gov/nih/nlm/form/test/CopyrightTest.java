@@ -29,12 +29,12 @@ public class CopyrightTest extends BaseFormTest {
         newFormVersion();
         mustBeLoggedOut();
         goToFormByName(formName);
+        findElement(By.xpath("//small[@id='copyrightStatement' and contains(., '" + statement + "')]"));
         goToGeneralDetail();
         textPresent("Statement");
         textPresent("Authority");
         textPresent(statement);
         textPresent(authority);
-        findElement(By.xpath("//small[@id='copyrightStatement' and contains(., '" + statement + "')]"));
     }
 
 }

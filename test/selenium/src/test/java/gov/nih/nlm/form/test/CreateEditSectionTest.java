@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class CreateEditSectionTest extends BaseFormTest {
+public class CreateEditSectionTest extends QuestionTest {
 
     @Test
     public void createEditSection() {
@@ -17,7 +17,8 @@ public class CreateEditSectionTest extends BaseFormTest {
         addSectionTop("Section 1", null);
         addSectionBottom("Section 2", "2");
         addSectionBottom("Section 3", "F");
-
+        String cdeName = "Race Category Text";
+        addQuestionToSection(cdeName, 2);
         newFormVersion();
 
         goToFormByName(formName);
