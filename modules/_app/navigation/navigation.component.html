@@ -29,7 +29,7 @@
                attr.aria-controls="main-navigation" attr.aria-expanded="false">CDEs</a>
         </li>
         <li class="nav-item" [ngClass]="{active: isPageActive('/form/search')}">
-            <a id="menu_forms_link" routerLink="/form" [attr.data-toggle]="toggleaction"
+            <a id="menu_forms_link" routerLink="/form/search" [attr.data-toggle]="toggleaction"
                attr.aria-controls="main-navigation" attr.aria-expanded="false">Forms</a>
         </li>
         <li ngbDropdown class="nav-item" [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}"

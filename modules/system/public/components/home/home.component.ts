@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { TourService } from "core/public/tour.service";
+import { Router } from '@angular/router';
 
 @Component({
     selector: "cde-home",
@@ -8,8 +9,11 @@ import { TourService } from "core/public/tour.service";
 })
 
 export class HomeComponent {
+    constructor(private router: Router) {
+
+    }
 
     takeATour() {
-        TourService.newTour();
+        TourService.newTour(this.router);
     }
 }
