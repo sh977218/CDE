@@ -1,18 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import "rxjs/add/operator/map";
+import { DisplayProfile } from 'form/public/form.model';
 
 @Component({
     selector: "cde-display-profile",
     templateUrl: "./displayProfile.component.html"
 })
 export class DisplayProfileComponent implements OnInit {
-
-    ngOnInit() {
-        this.elt.displayProfiles.forEach(() => this.samples.push(JSON.parse(JSON.stringify(this.sampleElt))));
-    }
-
-    constructor() {
-    }
 
     @Input() elt: any;
     @Input() public canEdit: boolean = false;
@@ -21,18 +15,12 @@ export class DisplayProfileComponent implements OnInit {
     samples = [];
     showDelete: boolean;
 
+    ngOnInit() {
+        this.elt.displayProfiles.forEach(() => this.samples.push(JSON.parse(JSON.stringify(this.sampleElt))));
+    }
+
     addProfile() {
-        let newProfile = {
-            name: "New Profile",
-            displayInstructions: true,
-            displayNumbering: true,
-            sectionsAsMatrix: true,
-            displayValues: false,
-            displayType: 'Follow-up',
-            numberOfColumns: 4,
-            displayInvisible: false,
-            repeatFormat: "#."
-        };
+        let newProfile = new DisplayProfile("New Profile");
         if (!this.elt.displayProfiles)
             this.elt.displayProfiles = [newProfile];
         else

@@ -138,6 +138,7 @@ exports.formJson = {
     , displayProfiles: [{
         name: String
         , sectionsAsMatrix: {type: Boolean}
+        , displayCopyright: {type: Boolean}
         , displayValues: {type: Boolean}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}

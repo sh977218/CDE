@@ -1,6 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'form/public/nativeRender/nativeRender.service';
-import { CdeForm } from 'form/public/form.model';
+import { CdeForm, DisplayProfile } from 'form/public/form.model';
 
 @Component({
     selector: "cde-native-render-full",
@@ -15,34 +15,6 @@ import { CdeForm } from 'form/public/form.model';
             border-radius: 20px;
             border: solid lightgrey 3px;
         }
-        /*.bot-left:before {*/
-            /*content: "";*/
-            /*position: absolute;*/
-            /*bottom: -3px;*/
-            /*left: -3px;*/
-        /*}*/
-        /*.bot-left:after {*/
-              /*content: "";*/
-              /*position: absolute;*/
-              /*top: -3px;*/
-              /*left: -3px;*/
-        /*}*/
-        /*.bot-left:before {*/
-            /*top: -3px;*/
-            /*width: 3px;*/
-            /*background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#000), to(transparent));*/
-            /*background-image: -webkit-linear-gradient(#000, transparent);*/
-            /*background-image: -moz-linear-gradient(#000, transparent);*/
-            /*background-image: -o-linear-gradient(#000, transparent);*/
-        /*}*/
-        /*.bot-left:after {*/
-            /*right: -3px;*/
-            /*height: 3px;*/
-            /*background-image: -webkit-gradient(linear, 0 0, 100% 0, from(#000), to(transparent));*/
-            /*background-image: -webkit-linear-gradient(left, #000, transparent);*/
-            /*background-image: -moz-linear-gradient(left, #000, transparent);*/
-            /*background-image: -o-linear-gradient(left, #000, transparent);*/
-        /*}*/
     `]
 })
 export class NativeRenderFullComponent {
@@ -52,6 +24,7 @@ export class NativeRenderFullComponent {
         this.mobileView = window.innerWidth <= 800;
     }
 
+    profile: DisplayProfile;
     selectedProfileName;
     overridePrintable: boolean = true;
     NativeRenderService = NativeRenderService;
@@ -64,6 +37,7 @@ export class NativeRenderFullComponent {
     mobileView: Boolean = false;
 
     selectProfile(render, profileIndex) {
+        this.profile = this.elt.displayProfiles[profileIndex];
         this.selectedProfileName = this.elt.displayProfiles[profileIndex].name;
         render.setProfile(this.elt.displayProfiles[profileIndex]);
         this.overridePrintable = this.elt.displayProfiles[profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;

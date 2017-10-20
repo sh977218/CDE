@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CopyrightTest extends BaseFormTest {
@@ -15,6 +16,7 @@ public class CopyrightTest extends BaseFormTest {
         goToGeneralDetail();
         textNotPresent("Statement");
         textNotPresent("Authority");
+        Assert.assertEquals(driver.findElements(By.id("copyrightStatement")).size(), 0);
         clickElement(By.id("isCopyrighted"));
         textPresent("Statement");
         textPresent("Authority");
@@ -32,6 +34,7 @@ public class CopyrightTest extends BaseFormTest {
         textPresent("Authority");
         textPresent(statement);
         textPresent(authority);
+        findElement(By.xpath("//small[@id='copyrightStatement' and contains(., '" + statement + "')]"));
     }
 
 }

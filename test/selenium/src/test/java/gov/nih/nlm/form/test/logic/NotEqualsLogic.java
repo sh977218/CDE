@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class NotEqualsLogic extends BaseFormTest {
 
     @Test
-    public void NotEqualsLogic() {
+    public void notEqualsLogic() {
         goToFormByName("Not Equals Test");
         clickElement(By.id("dropdownMenuButton"));
         clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
@@ -25,22 +25,22 @@ public class NotEqualsLogic extends BaseFormTest {
 
         // test date
         textPresent("Diagnosis age type");
-        findElement(By.name("q3_date")).sendKeys("01/01/2016");
+        findElement(By.name("q4_date")).sendKeys("01/01/2016");
         textPresent("Diagnosis age type");
-        findElement(By.name("q3_date")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("q3_date")).sendKeys("5" + Keys.TAB);
+        findElement(By.name("q4_date")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("q4_date")).sendKeys("5" + Keys.TAB);
         textNotPresent("Diagnosis age type");
 
         // text and empty logic
         textPresent("Birth Weight");
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
-        findElement(By.name("q5")).sendKeys("Swe");
+        findElement(By.name("q7")).sendKeys("Swe");
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
         textPresent("Birth Weight");
-        findElement(By.name("q5")).sendKeys("den");
+        findElement(By.name("q7")).sendKeys("den");
         textNotPresent("Birth Weight");
-        findElement(By.name("q5")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("q5")).clear();
+        findElement(By.name("q7")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("q7")).clear();
         textPresent("Scale for the Assessment of Positive Symptoms (SAPS) - incoherence word salad schizophasia scale");
 
         // value list
