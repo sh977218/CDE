@@ -15,8 +15,10 @@ require('expose-loader?bootstrap!bootstrap');
 import { enableProdMode } from "@angular/core";
 import { CdeAppModule } from '_app/app.module';
 
+// path to node_modules required to override module/components/bootstrap
+import "../node_modules/bootstrap/dist/css/bootstrap.css";
+
 if (PRODUCTION)
     enableProdMode();
 
-platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/).then(() => {
-});
+platformBrowserDynamic().bootstrapModule(CdeAppModule/*, options*/);

@@ -83,42 +83,51 @@ export class FormViewComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.loadForm(form => {
+            this.loadForm(() => {
                 this.userService.then(() => {
-                    this.orgHelperService.then(() => {
-                        let user = this.userService.user;
-                        if (user && user.username) {
-                            this.loadComments(form, null);
-                            this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                        }
-                        else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
-                        this.elt.naming.forEach(n => {
-                            n.tags.forEach(t => {
-                                allNamingTags.push(t);
-                            });
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                });
+                this.orgHelperService.then(() => {
+                    let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                    this.elt.naming.forEach(n => {
+                        n.tags.forEach(t => {
+                            allNamingTags.push(t);
                         });
-                        this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
-                            return {id: t, text: t};
-                        });
+                    });
+                    this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
+                        return {id: t, text: t};
                     });
                 });
             });
         });
     }
 
-    loadForm(cb) {
+    loadForm(cb = _.noop) {
+        this.userService.then(() => {
+            if (this.userService.user && this.userService.user.username)
+                this.loadDraft(() => {
+                    if (this.elt)
+                        cb();
+                    else
+                        this.loadPublished(cb);
+                });
+            else
+                this.loadPublished(cb);
+        });
+    }
+
+    loadPublished(cb = _.noop) {
         let formId = this.route.snapshot.queryParams['formId'];
         let url = "/form/" + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
-                this.formId = this.elt._id;
-                this.userService.then(() => {
+                if (this.elt) {
+                    this.formId = this.elt._id;
                     this.areDerivationRulesSatisfied();
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                });
-                if (cb) cb(this.elt);
+                    this.loadComments(this.elt, null);
+                }
+                cb();
             },
             () => this.router.navigate(['/pageNotFound'])
         );
@@ -311,15 +320,21 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    loadDraft(cb) {
-        this.http.get("/draftForm/" + this.elt.tinyId)
+    loadDraft(cb = _.noop) {
+        this.http.get("/draftForm/" + this.route.snapshot.queryParams['tinyId'])
             .map(res => res.json()).subscribe(res => {
             if (res && res.length > 0) {
                 this.drafts = res;
                 this.elt = res[0];
-            } else this.drafts = [];
-            if (cb) cb();
-        }, err => this.alert.addAlert("danger", err));
+            } else {
+                this.drafts = [];
+                this.elt = null;
+            }
+            cb();
+        }, err => {
+            this.alert.addAlert("danger", err);
+            cb();
+        });
     }
 
     saveDraft(cb) {
@@ -340,19 +355,20 @@ export class FormViewComponent implements OnInit {
     }
 
     saveForm() {
-        this.http.put("/form/" + this.elt.tinyId, this.elt)
-            .map(res => res.json()).subscribe(res => {
-            if (res) {
-                this.loadForm(() => this.alert.addAlert("success", "Form saved."));
-                this.loadDraft(null);
-            }
-        }, err => this.router.navigate(['/pageNotFound']));
+        this.http.put("/form/" + this.elt.tinyId, this.elt).map(res => res.json()).subscribe(
+            res => {
+                if (res) // TODO: use res instead of loading and block PUT /form/ when drafted?
+                    this.loadForm(() => this.alert.addAlert("success", "Form saved."));
+            },
+            err => this.router.navigate(['/pageNotFound'])
+        );
     }
 
     removeDraft() {
         this.http.delete("/draftForm/" + this.elt.tinyId)
             .subscribe(res => {
-                if (res) this.loadForm(() => this.drafts = []);
+                if (res)
+                    this.loadForm(() => this.drafts = []);
             }, err => this.alert.addAlert("danger", err));
     }
 

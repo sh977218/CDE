@@ -3,10 +3,12 @@ import { Observable } from "rxjs/Observable";
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 
+import { AlertService } from '_app/alert/alert.service';
 import { FormElement, SkipLogic } from "../../form.model";
 import { SkipLogicService } from 'form/public/skipLogic.service';
 import { FormattedValue } from 'core/public/models.model';
 import { FormService } from 'form/public/form.service';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
 
 @Component({
     selector: "cde-form-description-section",
@@ -35,6 +37,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     ];
 
     constructor(private localStorageService: LocalStorageService,
+                private alert: AlertService,
                 public skipLogicService: SkipLogicService) {
     }
 
@@ -42,7 +45,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.section = this.node.data;
         this.parent = this.node.parent.data;
         this.section.repeatOption = FormDescriptionSectionComponent.getRepeatOption(this.section);
-        this.section.repeatNumber = this.getRepeatNumber(this.section);
+        this.section.repeatNumber = FormDescriptionSectionComponent.getRepeatNumber(this.section);
         if (!this.section.instructions)
             this.section.instructions = new FormattedValue;
         if (!this.section.skipLogic)
@@ -55,10 +58,18 @@ export class FormDescriptionSectionComponent implements OnInit {
             if (FormService.isSubForm(this.node))
                 this.isSubForm = FormService.isSubForm(this.node);
         }
+
+        this.checkRepeatOptions();
     }
 
     canEditSection() {
         return this.section.edit && !this.isSubForm && this.canEdit;
+    }
+
+    checkRepeatOptions() {
+        if (this.section.repeat[0] === "F" && !NativeRenderService.getFirstQuestion(this.section))
+            this.alert.addAlert('danger',
+                this.section.label + " Repeat on First Question: Value List is not available.");
     }
 
     removeNode(node) {
@@ -76,7 +87,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             return "N";
     }
 
-    getRepeatNumber(section) {
+    static getRepeatNumber(section) {
         return parseInt(section.repeat);
     }
 
@@ -98,7 +109,11 @@ export class FormDescriptionSectionComponent implements OnInit {
             if (section.repeat > 0)
                 this.stageElt.emit();
         }
-        else section.repeat = undefined;
+        else {
+            section.repeat = undefined;
+        }
+
+        this.checkRepeatOptions();
     }
 
     getRepeatLabel(section) {
@@ -106,6 +121,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             return "";
         if (section.repeat[0] === "F")
             return "over First Question";
+
         return parseInt(section.repeat) + " times";
     }
 
