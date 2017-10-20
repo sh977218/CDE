@@ -166,7 +166,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     }
 
     browseByTopic(event) {
-        this.byTopic = event.nextId !== 'treeViewTab';
+        this.byTopic = event.nextId !== 'browseByClassification';
 
         this.doSearch();
     }
@@ -717,7 +717,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
             // ngAfterViewChecked
             setTimeout(() => {
                 if (this.byTopic)
-                    this.tabset.select('topicTab');
+                    this.tabset.select('browseByTopic');
             }, 100);
         }
         if (this.view === 'results') {

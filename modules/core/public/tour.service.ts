@@ -6,7 +6,6 @@ import * as _ from "lodash";
 export class TourService {
     static router;
     static navigationSteps: Array<any> = [
-/*
         {
             title: "Welcome",
             content: "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here.",
@@ -22,7 +21,6 @@ export class TourService {
             title: "Forms",
             content: "Or here to browse forms"
         },
-*/
         {
             element: "#boardsMenu",
             title: "Boards",
@@ -38,20 +36,13 @@ export class TourService {
             title: "Help",
             content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
             onNext: tour => {
-                return new Promise(resolve => {
-                   TourService.router.navigate(["/cde/search"]);
-                    setTimeout(resolve, 3000);
-                    /*
-                                        TourService.router.navigate(["/cde/search"]);
-                                        resolve();
-                    */
-                })
+                return TourService.router.navigate(["/cde/search"]);
+                /*
+                                return new Promise(resolve => {
+                                    setTimeout(resolve, 3000);
+                                })
+                */
             }
-        },
-        {
-            element: "#menu_qb_link",
-            title: "Quick Board",
-            content: "The quick board is a volatile board that can be used for temporarily storing CDEs and forms. You can also use the quick board to compare CDEs and Forms."
         },
         {
             element: "#browseByClassification",
