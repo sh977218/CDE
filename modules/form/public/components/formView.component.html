@@ -5,7 +5,7 @@
 </div>
 <div *ngIf="elt?.tinyId" class="container-fluid" itemscope="http://schema.org/MedicalCode">
     <div id="warning">
-        <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
+        <div *ngIf="elt.archived" class="row alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this form is archived. You can
             <a id="viewCurrentEltLink" routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current
@@ -17,7 +17,7 @@
             <a *ngIf="elt.registrationState.replacedBy"
                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
         </div>
-        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
+        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="row alert alert-warning mt20"
              role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this form is about to be retired.
@@ -25,11 +25,11 @@
                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible
                 Replacement</a>
         </div>
-        <div *ngIf="elt.outdated" class="alert alert-info mt20" role="alert">
+        <div *ngIf="elt.outdated" class="row alert alert-info mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Note: </strong>Some CDEs in this form have newer version.
         </div>
-        <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
+        <div *ngIf="missingCdes.length > 0" class="row alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             The following CDEs are part of a score but are missing from this form:
             <ul class="list-inline">
