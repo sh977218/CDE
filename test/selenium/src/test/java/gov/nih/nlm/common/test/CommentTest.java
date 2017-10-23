@@ -11,8 +11,6 @@ public abstract class CommentTest extends CommonTest {
         hangon(2);
         clickElement(By.id("postComment"));
         textPresent(text);
-        textPresent("Comment added");
-        closeAlert();
     }
 
     private void addCommentNeedApproval(String text) {
@@ -22,8 +20,6 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("postComment"));
         textNotPresent(text);
         textPresent("This comment is pending approval");
-        textPresent("Comment added. Approval required.");
-        closeAlert();
     }
 
     public void showLongComments(String eltName) {
@@ -46,8 +42,6 @@ public abstract class CommentTest extends CommonTest {
         goToNaming();
         findElement(By.name("commentTextArea")).sendKeys("another comment about Naming");
         clickElement(By.name("postComment"));
-        textPresent("Comment added");
-        closeAlert();
         Assert.assertEquals(false, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));
         Assert.assertEquals(true, findElement(By.id("comment_1")).getAttribute("class").contains("currentTabComment"));
 
@@ -74,23 +68,15 @@ public abstract class CommentTest extends CommonTest {
 
         scrollToTop();
         clickElement(By.id("resolveReply-0-0"));
-        textPresent("Saved");
-        closeAlert();
         textPresent("Reply to First comment", By.cssSelector(".strike"));
 
         clickElement(By.id("reopenReply-0-0"));
-        textPresent("Saved");
-        closeAlert();
 
         scrollDownBy(500);
         clickElement(By.id("resolveReply-1-0"));
-        textPresent("Saved");
-        closeAlert();
         textPresent("Reply to another comment", By.cssSelector(".strike"));
 
         clickElement(By.id("removeReply-0-1"));
-        textPresent("Comment removed");
-        closeAlert();
 
         textPresent("My First Comment about Status!");
         textPresent("Reply to First comment about Status");
@@ -113,7 +99,6 @@ public abstract class CommentTest extends CommonTest {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
                 clickElement(By.id("removeComment-" + i));
                 i = length;
-                textPresent("Comment removed");
                 textNotPresent(commentText);
             }
         }
@@ -133,8 +118,6 @@ public abstract class CommentTest extends CommonTest {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
                 clickElement(By.id("removeComment-" + i));
                 i = length;
-                textPresent("Comment removed");
-                hangon(1);
                 textNotPresent(commentText);
             }
         }
