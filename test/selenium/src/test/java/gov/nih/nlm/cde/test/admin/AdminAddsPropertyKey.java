@@ -60,7 +60,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("newKey"));
 
         findElement(By.xpath("//option[@value='propKey0']"));
-        Assert.assertEquals(driver.findElements(By.xpath("//option[@value='doYouSeeThis']")), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//option[@value='doYouSeeThis']")).size(), 0);
     }
 
 }

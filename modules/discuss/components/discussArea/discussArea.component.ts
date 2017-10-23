@@ -131,17 +131,21 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
             comment: this.newComment.text,
             linkedTab: tabMap[this.selectedElt],
             element: {eltId: this.eltId}
-        }).map(r => r.json()).subscribe(() => {this.newComment.text = ""});
+        }).map(r => r.json()).subscribe(() => {
+            this.newComment.text = "";
+            this.loadComments();
+        });
     };
 
     removeComment(commentId, replyId) {
         this.http.post("/comments/" + this.elt.elementType + "/remove", {
             commentId: commentId, replyId: replyId
-        }).map(r => r.json()).subscribe();
+        }).map(r => r.json()).subscribe(() => this.loadComments());
     };
 
     updateCommentStatus(commentId, status) {
-        this.http.post("/comments/status/" + status, {commentId: commentId}).map(r => r.json()).subscribe();
+        this.http.post("/comments/status/" + status, {commentId: commentId})
+            .map(r => r.json()).subscribe(() => this.loadComments());
     };
 
     updateReplyStatus(commentId, replyId, status) {
