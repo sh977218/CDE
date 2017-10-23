@@ -12,7 +12,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
 
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         textNotPresent("Add Score");
     }
 
@@ -22,7 +22,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         emptyQuickBoardByModule("cde");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
 
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         clickElement(By.id("addNewScore"));
         textPresent("There are no CDEs in your Quick Board. Add some before you can create a rule.");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
@@ -36,7 +36,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         goToCdeByName("Common Toxicity Criteria Adverse Event Diaphoresis Grade");
         clickElement(By.id("addToQuickBoard"));
 
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         clickElement(By.id("addNewScore"));
         textPresent("You are trying to add a CDE to itself. Please edit your Quick Board.");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
@@ -52,7 +52,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         textPresent("Quick Board (1)");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
 
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         clickElement(By.id("addNewScore"));
         textPresent("CDE Excisional Biopsy Colorectal Pathology Comment java.lang.String has a datatype other than 'Number' and may not be added to a score");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));

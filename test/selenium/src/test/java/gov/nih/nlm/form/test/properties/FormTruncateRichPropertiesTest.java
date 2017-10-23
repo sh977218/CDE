@@ -15,7 +15,7 @@ public class FormTruncateRichPropertiesTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.id("properties_tab"));
+        goToProperties();
         addNewProperty(newKey, newValue);
         editPropertyValueByIndex(1, null, true);
         scrollToViewById("openNewPropertyModalBtn");

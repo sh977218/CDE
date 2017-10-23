@@ -8,7 +8,7 @@ public class SearchByConcept extends NlmCdeBaseTest{
     @Test
     public void searchByConcept() {
         goToCdeByName("Classification Scheme Item Relationship Database Identifier java.lang.String");
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.xpath("//*[@id='concept_cde_name_0' and . = 'Database']"));
         textPresent("Organism External Database Accession Number java.lang.String");
         textPresent("2 results for property.concepts.name:\"Database\"");

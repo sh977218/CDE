@@ -11,14 +11,14 @@ public class WorkingGroupClassificationInvisibleTest extends BaseClassificationT
         mustBeLoggedInAs(wguser_username, password);
         goToCdeByName(cdeName);
 
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         addClassificationByTree("WG-TEST", new String[]{"WG Classif", "WG Sub Classif"});
         textPresent("WG Sub Classif");
         logout();
         goToCdeByName(cdeName);
         textNotPresent("WG-TEST", By.id("dd_usedBy"));
 
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textNotPresent("WG Sub Classif");
     }
 

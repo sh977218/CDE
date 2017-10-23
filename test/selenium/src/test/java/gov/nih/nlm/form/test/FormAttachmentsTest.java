@@ -13,7 +13,7 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
 
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         textNotPresent("Upload more files");
 
         mustBeLoggedInAs(ctep_fileCurator_username, password);

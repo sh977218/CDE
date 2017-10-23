@@ -13,7 +13,7 @@ public class CdeOverrideVersionTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         editDesignationByIndex(0, nameChange);
 
         clickElement(By.id("openSave"));

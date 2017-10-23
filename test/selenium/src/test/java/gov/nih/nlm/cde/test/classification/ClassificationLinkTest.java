@@ -9,7 +9,7 @@ public class ClassificationLinkTest extends NlmCdeBaseTest {
     public void classificationLink() {
         String cdeName = "Spectroscopy water signal removal filter text";
         goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         clickElement(By.xpath("//*[@id='Disease,Amyotrophic Lateral Sclerosis,Domain,Assessments and Examinations,Imaging Diagnostics']"));
         showSearchFilters();
         textPresent("Classification");

@@ -13,7 +13,7 @@ public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         editDefinitionByIndex(0, definitionChange, false);
         newCdeVersion();
 

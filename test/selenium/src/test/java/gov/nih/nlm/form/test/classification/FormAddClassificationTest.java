@@ -11,7 +11,7 @@ public class FormAddClassificationTest extends NlmCdeBaseTest {
         String formName = "Traumatic Brain Injury - Adverse Events";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         addClassificationByTree("NINDS", new String[]{"Disease", "Traumatic Brain Injury"});
     }
 }

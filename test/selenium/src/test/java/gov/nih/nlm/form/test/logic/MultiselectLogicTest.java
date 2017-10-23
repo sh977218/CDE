@@ -4,12 +4,13 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class MultiselectLogic extends NlmCdeBaseTest {
+public class MultiselectLogicTest extends NlmCdeBaseTest {
 
     @Test
     public void multiselectLogic() {
         goToFormByName("MultiSelect Logic");
-        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
+        clickElement(By.id("dropdownMenuButton"));
+        clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
         textNotPresent("Own home with self care");
         textNotPresent("Slight ataxia (slowness or unsteady turning)");
         clickElement(By.xpath("//label[normalize-space(.)='Medicare']//input"));

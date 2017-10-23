@@ -12,7 +12,7 @@ public class NavigateThroughClassificationTreeTest extends NlmCdeBaseTest {
         String cdeName = "McGill Quality of Life Questionnaire (MQOL) - two day total life quality score";
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         clickElement(By.id("openClassificationModalBtn"));
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("NINDS");
         textPresent("Domain", By.id("newClassifyItemModalBody"));

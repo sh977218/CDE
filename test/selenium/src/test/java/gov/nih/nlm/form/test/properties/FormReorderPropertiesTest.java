@@ -10,7 +10,7 @@ public class FormReorderPropertiesTest extends NlmCdeBaseTest {
         String formName = "form for test cde reorder detail tabs";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.id("properties_tab"));
+        goToProperties();
         clickElement(By.id("moveDown-0"));
         textPresent("Draft");
         closeAlert();

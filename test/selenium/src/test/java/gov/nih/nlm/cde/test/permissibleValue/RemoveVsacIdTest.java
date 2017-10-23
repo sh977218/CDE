@@ -12,7 +12,7 @@ public class RemoveVsacIdTest extends NlmCdeBaseTest {
         String cdeName = "Left Colon Excision Ind-2";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         clickElement(By.id("updateOIDBtn"));
         findElement(By.name("vsacId")).sendKeys("2.16.840.1.114222.4.11.837");
         clickElement(By.id("vsacIdCheck"));
@@ -22,14 +22,14 @@ public class RemoveVsacIdTest extends NlmCdeBaseTest {
         hangon(1);
 
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         clickElement(By.id("removeVSButton"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("2.16.840.1.114222.4.11.837"), -1);
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeVSButton")));
     }
 }

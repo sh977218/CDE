@@ -47,7 +47,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
+        NgbModule.forRoot(),
         Select2Module,
         TreeModule,
         // internal
