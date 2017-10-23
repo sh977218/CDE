@@ -25,6 +25,7 @@ export class NativeRenderComponent implements OnChanges {
     };
 
     @Input() submitForm: boolean;
+    @Input() showTitle: boolean = true;
 
     endpointUrl: string;
     formUrl: string;

@@ -24,7 +24,7 @@ public class CdeChangeStewardTest extends NlmCdeBaseTest {
         newCdeVersion();
         Assert.assertEquals(newStewardOrgName, findElement(By.id("dd_general_steward")).getText());
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent(newStewardOrgName, By.xpath("//*[@id='Steward Org']//ins"));
         textPresent(oldStewardOrgName, By.xpath("//*[@id='Steward Org']//del"));

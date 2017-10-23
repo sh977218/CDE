@@ -184,7 +184,7 @@ export class NativeRenderStandaloneComponent {
     }
 
     getForm(tinyId, cb) {
-        this.http.get('https://cde.nlm.nih.gov/form/' + tinyId).map(res => res.json()).subscribe(elt => {
+        this.http.get('/form/' + tinyId).map(res => res.json()).subscribe(elt => {
             cb(null, elt);
         }, (err) => {
             cb(err.statusText);
@@ -329,9 +329,7 @@ export class NativeRenderStandaloneComponent {
     }
 
     loadForm(err = null, elt = null) {
-        if (err)
-            return this.errorMessage = "Sorry, we are unable to retrieve this element.";
-
+        if (err) return this.errorMessage = "Sorry, we are unable to retrieve this element.";
         this.elt = elt;
         this.loadFhirData();
     }

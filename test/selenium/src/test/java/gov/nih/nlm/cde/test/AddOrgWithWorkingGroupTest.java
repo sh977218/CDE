@@ -51,7 +51,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         editRegistrationStatus("Qualified", null, null, null, null);
         closeAlert();
 
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         addClassificationByTree(orgWG, new String[]{classification, subClassification});
         waitForESUpdate();
         // Make sure ctepCurator user can see it

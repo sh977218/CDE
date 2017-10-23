@@ -1,51 +1,3 @@
-/* Bootstrap 4 overrides for Bootstrap 3 */
-.row {
-    display: block;
-}
-
-.nav, .navbar, .navbar-nav {
-    display: block;
-}
-
-.navbar-collapse.collapse.in,
-.navbar-collapse.collapsing {
-    display: block !important;
-    width: auto;
-}
-
-.form-inline, .form-inline label {
-    display: inline-block;
-}
-
-.navbar {
-    padding: 0;
-}
-
-.dropdown-toggle::after {
-    content: "";
-    display: block;
-    border: none;
-    margin: 0;
-}
-
-select.form-control:not([size]):not([multiple]) {
-    height: auto;
-}
-
-.col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6,
-.col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
-.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
-.col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12,
-.col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6,
-.col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
-    max-width: none;
-}
-
-label.input-group-addon:last-child {
-    border-left: 1px solid #ccc;
-}
-
-/*fixes an issue in bootstrap #1078 */
 .hand-cursor {
     cursor: pointer;
 }
@@ -252,11 +204,6 @@ ngb-accordion .card-header a:hover {
     margin: 0 auto;
 }
 
-.navbar-brand {
-    margin-top: -7px;
-    margin-right: 10px;
-}
-
 .matched-by {
     float: right;
     color: #4c4c4c;
@@ -334,7 +281,6 @@ a.paginate_button {
     opacity: 0.5;
 }
 
-/* Disable modal slide down effect */
 .modal.fade .modal-dialog {
     -moz-transform: none !important;
     -ms-transform: none !important;
@@ -398,7 +344,9 @@ dl.dl-horizontal dd {
     border-color: #ddd;
 }
 
-/* Style for log in page */
+ /*
+ Style for log in page
+ */
 .form-signin {
     max-width: 330px;
     padding: 15px;
@@ -880,9 +828,7 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompareSameArray {
     overflow: hidden;
-    /*
     background-color: rgba(223, 240, 216, 0.79);
-    */
 }
 
 .quickBoardContentCompareSame {
@@ -1030,8 +976,8 @@ div + .questionPlaceholder {
 
 .codeCell {
     word-wrap: break-word;
-    /*min-width: 8%;*/
-    /*max-width: 8%;*/
+    min-width: 8%;
+    max-width: 8%;
     width: 8%;
 }
 
@@ -1050,7 +996,7 @@ div + .questionPlaceholder {
 }
 
 #sidebar-wrapper {
-    /*border: 1px solid rgb(220, 220, 220);*/
+    border: 1px solid rgb(220, 220, 220);
     border-radius: 5px;
     position: fixed;
     width: inherit;
@@ -1314,11 +1260,11 @@ input.ng-invalid {
 }
 
 .ng-valid[required], .ng-valid.required {
-    border-left: 5px solid #42A948; /* green */
+    border-left: 5px solid #42A948;
 }
 
 .ng-invalid:not(form) {
-    border-left: 5px solid #a94442; /* red */
+    border-left: 5px solid #a94442;
 }
 
 .compareMessage {
@@ -1337,7 +1283,7 @@ input.ng-invalid {
     vertical-align: bottom;
     -webkit-animation: ellipsis steps(4, end) 1500ms infinite;
     animation: ellipsis steps(4, end) 1500ms infinite;
-    content: "\2026"; /* ascii code for the ellipsis character */
+    content: "\2026";/* ascii code for the ellipsis character */
     width: 0;
 }
 
@@ -1543,12 +1489,6 @@ div.row .native-question-oneline-r {
     overflow-wrap: break-word;
 }
 
-.hr {
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
-}
-
 .native-instructions {
     margin-bottom: 5px;
     word-wrap: break-word;
@@ -1717,3 +1657,4 @@ del {
 nih-cde:empty + .loading {
     display: block;
 }
+

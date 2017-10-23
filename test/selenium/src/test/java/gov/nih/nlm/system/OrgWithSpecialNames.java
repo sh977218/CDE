@@ -13,7 +13,7 @@ public class OrgWithSpecialNames extends NlmCdeBaseTest {
         gotoClassificationMgt();
         createOrgClassification("org / or Org", new String[]{"Sub / Classification"});
         goToCdeByName("SCI Classification light touch single side score");
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");

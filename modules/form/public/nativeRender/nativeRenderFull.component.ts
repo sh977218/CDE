@@ -1,33 +1,47 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'form/public/nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile } from 'form/public/form.model';
 
 @Component({
     selector: "cde-native-render-full",
-    templateUrl: "./nativeRenderFull.component.html"
+    templateUrl: "./nativeRenderFull.component.html",
+    styles: [`
+        .bot-left {
+            position: relative;
+            margin: auto;
+            padding: 10px 10px;
+            margin-top: 5px;
+            max-width: 900px;
+            border-radius: 20px;
+            border: solid lightgrey 3px;
+        }
+    `]
 })
-export class NativeRenderFullComponent implements OnInit {
+export class NativeRenderFullComponent {
     @Input() elt: CdeForm;
 
-    profileIndex: any;
+    constructor() {
+        this.mobileView = window.innerWidth <= 800;
+    }
+
     profile: DisplayProfile;
+    selectedProfileName;
     overridePrintable: boolean = true;
     NativeRenderService = NativeRenderService;
 
-    ngOnInit() {
-        if (this.profileIndex == null && this.elt.displayProfiles.length) {
-            this.profileIndex = 0;
-            this.setOverride();
-        }
-        this.profile = this.elt.displayProfiles[this.profileIndex];
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.mobileView = window.innerWidth <= 800;
     }
 
-    selectProfile() {
-        this.profile = this.elt.displayProfiles[this.profileIndex];
-        this.setOverride();
+    mobileView: Boolean = false;
+
+    selectProfile(render, profileIndex) {
+        this.profile = this.elt.displayProfiles[profileIndex];
+        this.selectedProfileName = this.elt.displayProfiles[profileIndex].name;
+        render.setProfile(this.elt.displayProfiles[profileIndex]);
+        this.overridePrintable = this.elt.displayProfiles[profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;
     }
 
-    setOverride() {
-        this.overridePrintable = this.elt.displayProfiles[this.profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;
-    }
+
 }

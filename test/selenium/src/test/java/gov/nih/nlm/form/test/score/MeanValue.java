@@ -19,7 +19,7 @@ public class MeanValue extends NlmCdeBaseTest {
         addCdeToQuickBoard(cdeName2);
 
         goToCdeByName(cdeName);
-        clickElement(By.id("derivationRules_tab"));
+        goToScoreDerivations();
         clickElement(By.id("addNewScore"));
 
         findElement(By.id("newDerivationRule.name")).sendKeys("Mean Derivation Rule");
@@ -29,6 +29,7 @@ public class MeanValue extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToFormByName(formName);
+        clickElement(By.id("preview_tab"));
         findElement(By.name("q1")).sendKeys("8");
         findElement(By.name("q2")).sendKeys("11");
         textPresent("9.5");

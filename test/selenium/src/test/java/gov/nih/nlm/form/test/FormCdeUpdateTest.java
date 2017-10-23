@@ -12,7 +12,7 @@ public class FormCdeUpdateTest extends NlmCdeBaseTest {
         String formName = "Form Cde Update Test";
         goToFormByName(formName);
         textPresent("Some CDEs in this form have newer version.");
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("(Outdated)", By.id("question_0_0"));
         textPresent("Select Multiple", By.id("question_0_0"));
         clickElement(By.xpath("//*[@id='question_0_0']//button[contains(@class,'updateQuestionBtn')]"));
@@ -25,7 +25,7 @@ public class FormCdeUpdateTest extends NlmCdeBaseTest {
         newFormVersion();
 
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textNotPresent("(Outdated)", By.id("question_0_0"));
         textPresent("Select Multiple", By.id("question_0_0"));
     }

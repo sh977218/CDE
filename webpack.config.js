@@ -56,7 +56,9 @@ module.exports = {
             new webpack.ProvidePlugin({
                 $: 'jquery',
                 jQuery: 'jquery',
-                'windows.jQuery': 'jquery'
+                'windows.jQuery': 'jquery',
+                'Tether':'tether',
+                Popper: ['popper.js', 'default'],
             }),
             // new BundleAnalyzerPlugin()
         ] : [
@@ -73,7 +75,9 @@ module.exports = {
             new webpack.ProvidePlugin({
                 $: 'jquery',
                 jQuery: 'jquery',
-                'windows.jQuery': 'jquery'
+                'windows.jQuery': 'jquery',
+                'Tether':'tether',
+                Popper: ['popper.js', 'default'],
             })
         ],
     resolve: {

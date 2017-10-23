@@ -43,7 +43,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("My First Comment about Status!");
         Assert.assertEquals(true, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));
 
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         findElement(By.name("commentTextArea")).sendKeys("another comment about Naming");
         clickElement(By.name("postComment"));
         textPresent("Comment added");

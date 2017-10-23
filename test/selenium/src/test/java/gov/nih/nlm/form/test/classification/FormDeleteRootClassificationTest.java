@@ -11,7 +11,7 @@ public class FormDeleteRootClassificationTest extends NlmCdeBaseTest {
         String formName = "PROMIS SF v2.0 - Companionship 6a";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("PROMIS / Neuro-QOL");
         clickElement(By.xpath("//*[@id='PROMIS Instruments-unclassifyBtn']"));
         clickElement(By.id("confirmDeleteClassificationBtn"));

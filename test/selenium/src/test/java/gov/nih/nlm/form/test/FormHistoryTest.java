@@ -14,17 +14,17 @@ public class FormHistoryTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
 
         goToFormByName(formName);
-        clickElement(By.id("history_tab"));
+        goToHistory();
         textPresent("List of previous versions");
         Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
 
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         textPresent("Form testing history");
         editDefinitionByIndex(0, newFormDef, false);
         newFormVersion();
 
         goToFormByName(formName);
-        clickElement(By.id("history_tab"));
+        goToHistory();
         textPresent("List of previous versions");
         Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
         selectHistoryAndCompare(1, 2);

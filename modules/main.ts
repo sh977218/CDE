@@ -1,5 +1,8 @@
 import "zone.js";
 import "../node_modules/zone.js/dist/long-stack-trace-zone.js";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "../node_modules/bootstrap/dist/js/bootstrap.min.js";
+
 // reflect-metadata needed before enableProdMode for IE
 import "reflect-metadata";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
@@ -7,6 +10,8 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import "../node_modules/select2/dist/js/select2.js";
 // required for ng2-select2
 require('expose-loader?select2!select2');
+
+require('expose-loader?bootstrap!bootstrap');
 
 import { enableProdMode } from "@angular/core";
 import { CdeAppModule } from '_app/app.module';

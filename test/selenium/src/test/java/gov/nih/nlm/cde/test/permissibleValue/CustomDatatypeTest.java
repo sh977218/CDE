@@ -13,22 +13,22 @@ public class CustomDatatypeTest extends NlmCdeBaseTest {
         String newDatatype = "Custom Datatype";
         String newDatatype2 = "Other Datatype";
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         changeDatatype(newDatatype);
         newCdeVersion();
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
         textPresent(newDatatype, By.xpath("//*[@id='Data Type']//ins"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         changeDatatype(newDatatype2);
         newCdeVersion();
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent(newDatatype, By.xpath("//*[@id='Data Type']//del"));
         textPresent(newDatatype2, By.xpath("//*[@id='Data Type']//ins"));

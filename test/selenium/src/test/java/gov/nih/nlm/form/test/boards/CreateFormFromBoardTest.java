@@ -18,11 +18,12 @@ public class CreateFormFromBoardTest extends NlmCdeBaseTest {
         addClassificationByTree("TEST", new String[]{"Classify Board", "Classif_Board_Sub"}, null);
         findElement(By.linkText("Classif_Board_Sub"));
         clickElement(By.id("submit"));
+        textPresent("cdeCompare1");
+        textPresent("cdeCompare2");
+        goToGeneralDetail();
         textPresent("Incomplete");
         textNotPresent("have newer version");
         textPresent("Form Description");
-        textPresent("cdeCompare1");
-        textPresent("cdeCompare2");
     }
 
 }

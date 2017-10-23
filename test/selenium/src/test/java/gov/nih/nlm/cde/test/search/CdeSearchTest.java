@@ -13,15 +13,15 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("Text descriptor to indicate whether "
                 + "genotype directed therapy was based on mutation testing");
         textPresent("Qualified");
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         textPresent("Unknown");
 
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         textPresent("Mutation Analysis");
         textPresent("C18302");
-        clickElement(By.id("history_tab"));
+        goToHistory();
         textPresent("This Element has no history");
-        clickElement(By.id("classification_tab"));
+        goToClassification();
 
         textPresent("GO Trial", By.xpath("//*[@id='GO Trial']"));
         textPresent("GO Trial", By.xpath("//*[@id='GO Trial,GO Trial']"));
@@ -29,7 +29,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("CCR Implementation", By.xpath("//*[@id='CCR Implementation']"));
         textPresent("caBIG", By.xpath("//*[@id='C3D Domain,caBIG']"));
 
-        clickElement(By.id("ids_tab"));
+         goToIdentifiers();
         textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
     }
@@ -38,7 +38,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void cdeFullDetail() {
         fullDetail();
 
-        clickElement(By.id("general_tab"));
+        goToGeneralDetail();
         clickElement(By.linkText("SDC View"));
         switchTab(1);
         textPresent("Genotype Directed Therapy Bas");
@@ -50,7 +50,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     @Test
     public void vdInstruction() {
         goToCdeByName("Participant Identifier Source");
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         textPresent("One of \"GUID\" or \"Source Registry Specific Identifier\"", By.id("instructions"));
     }
 

@@ -12,7 +12,7 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         String formName = "Study Drug Compliance";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         addFormToSection("Vessel Imaging Angiography", 0);
         textPresent("Embedded Form: Vessel Imaging Angiography");
         String newFormLabel = "new inner form label";
@@ -26,7 +26,7 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         goToFormByName(formName);
         textPresent(newFormLabel);
         textPresent("Symptomology");
-
+        clickElement(By.id("dropdownMenuButton"));
         clickElement(By.id("button_lforms"));
         switchTab(1);
         textPresent(newFormLabel);

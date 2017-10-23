@@ -12,7 +12,7 @@ public class FormScoreTest extends QuestionTest {
         String formName = "ALS Score Form";
         goToFormByName(formName);
 
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         addSectionBottom("Score Section", null);
         addQuestionToSection("ALS Severity Score (ALSSS) - total score value", 0);
 
