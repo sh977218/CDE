@@ -24,7 +24,7 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         goHome();
 
         goToCdeByName(cdeName);
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newTags']//input"));
@@ -42,7 +42,7 @@ public class AdminAddRemoveTagsTest extends NlmCdeBaseTest {
         closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         clickElement(By.id("openNewNamingModalBtn"));
         clickElement(By.xpath("//*[@id='newTags']//input"));
         textNotPresent("canYouSeeThis");

@@ -12,6 +12,8 @@ import { UserService } from 'core/public/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 const tabMap = {
+    "preview_tab": "preview",
+    "meshTopic_tab": "meshTopic",
     "general_tab": "general",
     "description_tab": "description",
     "pvs_tab": "pvs",
@@ -50,7 +52,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     avatarUrls: any = {};
     showAllReplies: any = {};
 
-    private emitCurrentReplying = new Subject<{_id: string, comment: string}>();
+    private emitCurrentReplying = new Subject<{ _id: string, comment: string }>();
 
     @Input() public elt: any;
     @Input() public eltId: string;
@@ -78,7 +80,8 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         this.emitCurrentReplying.debounceTime(300).distinctUntilChanged().map(obj => {
             this.socket.emit('currentReplying', this.eltId, obj._id);
             return Observable.of<string[]>([]);
-        }).subscribe(() => {});
+        }).subscribe(() => {
+        });
 
     };
 
@@ -165,11 +168,11 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     cancelReply = (comment) => this.tempReplies[comment._id] = '';
 
-    changeOnReply (comment) {
+    changeOnReply(comment) {
         this.emitCurrentReplying.next({_id: comment._id, comment: this.tempReplies[comment._id]});
     }
 
-    setCurrentTab ($event) {
+    setCurrentTab($event) {
         if (this.eltComments)
             this.eltComments.forEach(c => c.currentComment = !!(c.linkedTab && c.linkedTab === tabMap[$event]));
     }

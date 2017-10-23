@@ -1,23 +1,21 @@
-<div class="navbar navbar-toggleable-sm navbar-inverse" style="z-index: 10" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only sr-only-focusable">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" routerLink="/home" id="homeLink">
-                <img alt="Home" src="../../../cde/public/assets/img/nih-cde-logo-simple.png"/>
-            </a>
+<div class="navbar navbar-toggleable-sm navbar-inverse" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only sr-only-focusable">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" routerLink="/home" id="homeLink">
+            <img alt="Home" src="../../../cde/public/assets/img/nih-cde-logo-simple.png" style="margin-top: -7px"/>
+        </a>
+    </div>
+    <div class="navbar-collapse collapse" id="main-navigation">
+        <div class="hidden-sm-down">
+            <ng-container *ngTemplateOutlet="topMenu; context: largeContext;"></ng-container>
         </div>
-        <div class="navbar-collapse collapse" id="main-navigation">
-            <div class="hidden-sm-down">
-                <ng-container *ngTemplateOutlet="topMenu; context: largeContext;"></ng-container>
-            </div>
-            <div class="hidden-md-up">
-                <ng-container *ngTemplateOutlet="topMenu; context: smallContext"></ng-container>
-            </div>
+        <div class="hidden-md-up">
+            <ng-container *ngTemplateOutlet="topMenu; context: smallContext"></ng-container>
         </div>
     </div>
 </div>
@@ -35,7 +33,7 @@
         <li ngbDropdown class="nav-item" [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}"
             *ngIf="userService.user?._id">
             <a ngbDropdownToggle class="dropdown-toggle" id="boardsMenu" title="Boards"
-               attr.aria-label="Boards">Boards<span class="caret"></span></a>
+               attr.aria-label="Boards">Boards</a>
             <div role="menu" class="dropdown-menu" attr.aria-labelledby="boardsMenu" attr.aria-expanded="true">
                 <a routerLink="/boardList" id="publicBoardsLink"
                    class="dropdown-item" [attr.data-toggle]="toggleaction"
@@ -54,7 +52,7 @@
             [ngClass]="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
             [hidden]="!authShared.isOrgCurator(userService.user)" id="createEltLink">
             <a ngbDropdownToggle class="dropdown-toggle" id="dropdownMenu2" title="Create"
-               attr.aria-label="Create">Create<span class="caret"></span></a>
+               attr.aria-label="Create">Create</a>
             <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu2">
                 <a id="createCDELink" routerLink="/createCde"
                    class="dropdown-item" [attr.data-toggle]="toggleaction"
@@ -73,7 +71,7 @@
         </li>
         <li id="menu_help_link" class="nav-item" ngbDropdown [ngClass]="{active: isPageActive('/help')}">
             <a ngbDropdownToggle class="dropdown-toggle" id="dropdownMenu_help" title="Help"
-               attr.aria-label="Help">Help<span class="caret"></span></a>
+               attr.aria-label="Help">Help</a>
             <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu_help">
                 <a routerLink="/api" class="dropdown-item"
                    id="apiDocumentationLink"
@@ -95,8 +93,7 @@
         <li ngbDropdown class="nav-item login" *ngIf="userService.user?._id">
             <a ngbDropdownToggle class="dropdown-toggle" id="username_link"
                title="{{userService.user?.username}}" attr.aria-label="{{userService.user?.username}}">
-                <span [textContent]="userService.user?.username | cdeTruncateLongName"></span><span
-                    class="caret"></span></a>
+                <span [textContent]="userService.user?.username | cdeTruncateLongName"></span></a>
             <div role="menu" class="dropdown-menu" attr.aria-labelledby="username_link">
                 <a routerLink="/profile" id="user_profile" class="dropdown-item" [hidden]="!userService.user?._id"
                    [attr.data-toggle]="toggleaction"

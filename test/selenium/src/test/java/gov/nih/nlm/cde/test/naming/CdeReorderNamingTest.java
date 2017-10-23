@@ -15,7 +15,7 @@ public class CdeReorderNamingTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
 
         goToCdeByName(cdeName);
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         clickElement(By.id("moveDown-0"));
         Assert.assertTrue(findElement(By.id("designation_1")).getText().contains("cde for test cde reorder detail tabs"));
         clickElement(By.id("moveUp-2"));

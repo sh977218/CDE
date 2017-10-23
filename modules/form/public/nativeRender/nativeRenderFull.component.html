@@ -1,44 +1,55 @@
-<div style="margin: 8px 0 20px;">
-    <span class="form-inline">
-        <span class="form-group">
-            <label for="select_display_profile">Display Profile: </label>
-            <select [(ngModel)]="profileIndex" (change)="selectProfile()"
-                    id="select_display_profile" class="form-control mb3">
-                <option *ngFor="let p of elt.displayProfiles; let i = index" [value]="i"
-                        [textContent]="p.name"></option>
-            </select>
-        </span>
-        <span>
-            <label style="margin-top: 3px;" id="printableLogicCb">Printable Logic:
-                <input type="checkbox" [(ngModel)]="overridePrintable"
+<div class="row">
+    <div class="dropdown float-left">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            Options
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <button class="dropdown-item">
+                <a id="button_print_follow"
+                   attr.data-url="/form/public/html/nativeRenderStandalone.html?tinyId={{elt.tinyId}}"
+                   onclick="window.open(this.getAttribute('data-url'),'_blank')">Printable</a>
+            </button>
+            <button class="dropdown-item">
+                <a class="d-inline" id="button_lforms"
+                   attr.data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
+                   onclick="window.open(this.getAttribute('data-url'),'_blank')">LHC-Forms</a>
+                (Provided by <a class="d-inline" href="https://lhncbc.nlm.nih.gov/project/lforms"
+                                target="_blank">LHNCBC</a>
+            </button>
+            <button class="dropdown-item ">
+                <a class="d-inline" id="button_sdc"
+                   attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                   onclick="window.open(this.getAttribute('data-url'),'_blank')">SDC</a>
+                (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank">ONC</a>)
+            </button>
+            <button class="dropdown-item">Printable Logic:
+                <input id="printableLogicCb" type="checkbox" [(ngModel)]="overridePrintable"
                        (change)="render.setNativeRenderType(($event.target.checked ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF))">
-            </label>
-        </span>
-    </span>
-
-    <span class="pull-right">
-        <span>New Tab: </span>
-        <button class="btn btn-default" id="button_print_follow"
-                attr.data-url="/form/public/html/nativeRenderStandalone.html?tinyId={{elt.tinyId}}"
-                onclick="window.open(this.getAttribute('data-url'),'_blank')">Printable</button>
-        <button class="btn btn-default" id="button_lforms"
-                attr.data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
-                onclick="window.open(this.getAttribute('data-url'),'_blank')">LHC-Forms</button>
-        <button class="btn btn-default" id="button_sdc"
-                attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                onclick="window.open(this.getAttribute('data-url'),'_blank')">SDC</button>
-    </span>
-    <div class="clearfix"></div>
-    <div class="pull-right">(Provided by
-        <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
-        <a href="https://www.healthit.gov/techlab/" target="_blank">ONC</a>)
+            </button>
+        </div>
+    </div>
+    <div class="dropdown float-left" *ngIf="elt.displayProfiles?.length > 0">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="select_display_profile"
+                data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            Display Profile: {{selectedProfileName}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="select_display_profile">
+            <button class="dropdown-item" *ngFor="let p of elt.displayProfiles; let i = index"
+                    (click)="selectProfile(render,i);">{{p.name}}
+            </button>
+        </div>
     </div>
 </div>
-
-<div *ngIf="elt.unsaved" class="mt10 alert alert-warning">
-    <span class="fa fa-warning" aria-hidden="true"></span>
-    <span class="sr-only">Warning:</span>
-    Save form to update rendering
+<div *ngIf="elt.noRenderAllowed"
+     class="text-center mt20">Rendering has been disabled for this form.
+</div>
+<div *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)"
+     id="warningNoCde"
+     class="text-center mt20">This form has no content. There is nothing to preview.
 </div>
 
-<cde-native-render #render [elt]="elt" [profile]="profile"></cde-native-render>
+<div [ngClass]="{'bot-left': !mobileView && elt.formElements.length > 0}">
+    <cde-native-render #render [elt]="elt" [showTitle]="false" [profile]="profile"></cde-native-render>
+</div>

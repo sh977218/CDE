@@ -4,7 +4,6 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
-import { NouisliderModule } from 'ng2-nouislider';
 
 import { AdminItemModule } from "adminItem/public/adminItem.module";
 import { BoardModule } from "board/public/board.module";
@@ -53,8 +52,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
-        NouisliderModule,
+        NgbModule.forRoot(),
         Select2Module,
         TreeModule,
         // internal

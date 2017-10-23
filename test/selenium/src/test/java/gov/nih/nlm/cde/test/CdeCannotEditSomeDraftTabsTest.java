@@ -10,9 +10,9 @@ public class CdeCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         String cdeName = "Draft Cde Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("Go to current non-draft version to see classifications");
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         textPresent("Go to current non-draft version to see attachments");
         clickElement(By.id("discussBtn"));
         textPresent("Go to current non-draft version to see comments");

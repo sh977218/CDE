@@ -22,7 +22,7 @@ public class NativeTableTest extends BaseFormTest {
         scrollTo(800);
         findElement(By.xpath("//div[@class='native-table-cell']/label[text()='2.']"));
 
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("Repeats: 5 times", By.xpath("//div[@id='section_0']//span[contains(@class,'label-primary')]"));
         startEditQuestionSectionById("section_0");
         clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
@@ -33,7 +33,7 @@ public class NativeTableTest extends BaseFormTest {
         clickElement(By.xpath("//div[@id='question_0_1_0']//i[contains(@class, 'fa-pencil')]"));
         clickElement(By.xpath("//div[@id='question_0_1_0']//div[text()='Multiple Selections:']/following-sibling::div/input"));
 
-        clickElement(By.id("general_tab"));
+        goToPreview();
         findElement(By.xpath("//div[@class='native-table-cell']/label[text()='Mother']"));
         findElement(By.xpath("//div[contains(@class,'native-table-cell')]//input[@type='checkbox']"));
     }

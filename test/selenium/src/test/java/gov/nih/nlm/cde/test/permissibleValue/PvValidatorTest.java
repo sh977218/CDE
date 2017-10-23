@@ -39,7 +39,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         String cdeName = "PvValidatorCde";
         mustBeLoggedInAs("selenium", password);
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         textNotPresent("There are validation errors");
 
         changeField(0, "pv2");

@@ -11,7 +11,7 @@ public class ReorderConceptTest extends NlmCdeBaseTest {
         String cdeName = "cde for test cde reorder detail tabs";
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
 
         clickElement(By.id("moveDown-0"));
         Assert.assertTrue(findElement(By.id("concept_cde_name_1")).getText().contains("cb1"));

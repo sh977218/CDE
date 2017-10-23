@@ -10,7 +10,7 @@ public class FormEditSectionTest extends NlmCdeBaseTest {
         String formName = "Form Edit Section And Question Test";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         String sectionId = "section_0";
         String newSectionName = "New Main Section";
         String newSectionInstruction = "New Section Instruction";
