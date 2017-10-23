@@ -63,7 +63,9 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         this.loadComments();
         this.setCurrentTab("general_tab");
         this.socket.emit("room", this.eltId);
-        this.socket.on("commentUpdated", () => this.loadComments());
+        this.socket.on("commentUpdated", data => {
+            if (data.username !== this.userService.user.username) this.loadComments();
+        });
         this.socket.on("userTyping", data => {
             this.eltComments.forEach(c => {
                 if (c._id === data.commentId && data.username !== this.userService.user.username) {
@@ -121,33 +123,27 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     canReopenComment = (com) => com.status === "resolved" && this.canRemoveComment(com);
 
-    addComment = function () {
+    addComment() {
         this.http.post("/comments/" + this.elt.elementType + "/add", {
             comment: this.newComment.text,
             linkedTab: tabMap[this.selectedElt],
             element: {eltId: this.eltId}
-        }).map(r => r.json()).subscribe(res => {
-            this.newComment.text = "";
-            this.loadComments(() => {
-                this.alert.addAlert("success", res.message);
-            });
-        });
+        }).map(r => r.json()).subscribe(() => {this.newComment.text = ""});
     };
 
     removeComment(commentId, replyId) {
         this.http.post("/comments/" + this.elt.elementType + "/remove", {
             commentId: commentId, replyId: replyId
-        }).map(r => r.json()).subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        }).map(r => r.json()).subscribe();
     };
 
     updateCommentStatus(commentId, status) {
-        this.http.post("/comments/status/" + status, {commentId: commentId}).map(r => r.json())
-            .subscribe((res) => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        this.http.post("/comments/status/" + status, {commentId: commentId}).map(r => r.json()).subscribe();
     };
 
     updateReplyStatus(commentId, replyId, status) {
-        this.http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId}).map(r => r.json())
-            .subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        this.http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId})
+            .map(r => r.json()).subscribe();
     };
 
     replyTo(commentId) {
