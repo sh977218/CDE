@@ -1,4 +1,4 @@
-import { DerivationRule, Elt } from "core/public/models.model";
+import { DerivationRule, Elt } from "core/models.model";
 
 export class DataElement extends Elt {
     primaryNameCopy: string;

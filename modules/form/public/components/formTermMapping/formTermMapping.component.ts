@@ -4,8 +4,8 @@ import { Subject } from "rxjs/Subject";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
-import { IsAllowedService } from 'core/public/isAllowed.service';
-import { UserService } from 'core/public/user.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from 'core/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

@@ -1,14 +1,14 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { NativeRenderService } from "./nativeRender.service";
-import { DomSanitizer } from "@angular/platform-browser";
-import { SkipLogicService } from "../skipLogic.service";
-import { FormService } from "../form.service";
-import { FormQuestion } from "../form.model";
+import { Component, Input, OnInit } from '@angular/core';
+import { NativeRenderService } from './nativeRender.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { FormService } from 'nativeRender/form.service';
+import { FormQuestion } from 'core/form.model';
 import * as moment from 'moment';
 
 @Component({
-    selector: "cde-native-question",
-    templateUrl: "./nativeQuestion.component.html"
+    selector: 'cde-native-question',
+    templateUrl: './nativeQuestion.component.html'
 })
 export class NativeQuestionComponent implements OnInit {
     @Input() formElement: FormQuestion;
@@ -36,26 +36,26 @@ export class NativeQuestionComponent implements OnInit {
         if (pvIndex !== -1 && this.nativeRenderService.profile && this.nativeRenderService.profile.numberOfColumns) {
             switch (this.nativeRenderService.profile.numberOfColumns) {
                 case 2:
-                    result = "col-sm-6";
+                    result = 'col-sm-6';
                     break;
                 case 3:
-                    result = "col-sm-4";
+                    result = 'col-sm-4';
                     break;
                 case 4:
-                    result = "col-sm-3";
+                    result = 'col-sm-3';
                     break;
                 case 5:
-                    result = "col-sm-2-4";
+                    result = 'col-sm-2-4';
                     break;
                 case 6:
-                    result = "col-sm-2";
+                    result = 'col-sm-2';
                     break;
                 default:
             }
         }
 
         if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index))
-            result += " clear";
+            result += ' clear';
         return result;
     }
 
@@ -72,7 +72,7 @@ export class NativeQuestionComponent implements OnInit {
 
     isOneLiner(question, numSubQuestions) {
         return numSubQuestions && !this.hasLabel(question) && !question.instructions
-            && question.elementType === "question" && question.question.datatype !== "Value List";
+            && question.elementType === 'question' && question.question.datatype !== 'Value List';
     }
 
     updateDateTime() {

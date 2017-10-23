@@ -4,11 +4,11 @@ import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 
 import { AlertService } from '_app/alert/alert.service';
-import { FormElement, SkipLogic } from "../../form.model";
-import { SkipLogicService } from 'form/public/skipLogic.service';
-import { FormattedValue } from 'core/public/models.model';
-import { FormService } from 'form/public/form.service';
+import { FormElement, SkipLogic } from "core/form.model";
+import { FormattedValue } from 'core/models.model';
+import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
 @Component({
     selector: "cde-form-description-section",

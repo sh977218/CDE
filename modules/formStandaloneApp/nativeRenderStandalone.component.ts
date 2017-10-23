@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import "fhirclient";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { mappings } from "./fhirMapping";
-import { FormService } from 'form/public/form.service';
+import { FormService } from 'nativeRender/form.service';
 
 @Component({
     selector: "cde-native-render-standalone",

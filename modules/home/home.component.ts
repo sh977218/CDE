@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
-import { TourService } from 'core/public/tour.service';
+import { TourService } from 'core/tour.service';
+import { FormService } from 'nativeRender/form.service';
 
 @Component({
     selector: 'cde-home',
@@ -194,20 +195,20 @@ export class HomeComponent {
         ]
     };
 
-    constructor(private http: Http) {}
+    constructor(private http: Http, private formService: FormService) {}
 
-    getStats(tab) {
+    getStats(tab = null) {
+        if (!tab)
+            tab = this.currentTab;
+        else
+            this.currentTab = tab;
+
         if (tab === 'tabFeatured')
             this.cdeFormSelection = 'formOnly';
         else if (tab === 'tabTop')
             this.cdeFormSelection = 'cdeOnly';
         else
             this.cdeFormSelection = 'both';
-
-        if (!tab)
-            tab = this.currentTab;
-        else
-            this.currentTab = tab;
 
         let type;
         if (this.statsType === 'CDEs')

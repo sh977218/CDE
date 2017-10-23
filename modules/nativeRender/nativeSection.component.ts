@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, Output } from "@angular/core";
-import { NativeRenderService } from "./nativeRender.service";
-import { SkipLogicService } from "../skipLogic.service";
-import { FormElement } from "../form.model";
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { NativeRenderService } from './nativeRender.service';
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { FormElement } from 'core/form.model';
 
 @Component({
-    selector: "cde-native-section",
-    templateUrl: "./nativeSection.component.html"
+    selector: 'cde-native-section',
+    templateUrl: './nativeSection.component.html'
 })
 export class NativeSectionComponent {
     @Input() formElements: FormElement[];
@@ -17,17 +17,17 @@ export class NativeSectionComponent {
     }
 
     sectionType() {
-        if (this.formElement.repeat && this.formElement.repeat !== "1")
-            return "table";
+        if (this.formElement.repeat && this.formElement.repeat !== '1')
+            return 'table';
         if (this.nativeRenderService.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement))
-            return "matrix";
-        return "section";
+            return 'matrix';
+        return 'section';
     }
 
     isSectionDisplayed(section) {
         return section.label ||
             section.formElements.some(function (elem) {
-                return elem.elementType === "question";
+                return elem.elementType === 'question';
             });
     }
 
@@ -39,10 +39,10 @@ export class NativeSectionComponent {
         if (section && section.formElements && section.formElements.length === 0)
             return false;
         section && section.formElements && section.formElements.forEach(function (formElem) {
-            if (formElem.elementType !== "question") {
+            if (formElem.elementType !== 'question') {
                 return result = false;
             } else {
-                if (formElem.question.datatype !== "Value List") {
+                if (formElem.question.datatype !== 'Value List') {
                     return result = false;
                 }
                 if (formElem.question.answers.length === 0 || !formElem.question.answers[0].valueMeaningName)

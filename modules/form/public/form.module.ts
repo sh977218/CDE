@@ -2,12 +2,14 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { RouterModule, Routes } from '@angular/router';
 import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
 
 import { AdminItemModule } from "adminItem/public/adminItem.module";
 import { BoardModule } from "board/public/board.module";
 import { CdeModule } from "cde/public/cde.module";
+import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SearchModule } from "search/search.module";
 import { WidgetModule } from "widget/widget.module";
 
@@ -21,16 +23,10 @@ import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formD
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
 import { FormSearchComponent } from "./components/search/formSearch.component";
 import { FormSummaryListContentComponent } from "./components/listView/formSummaryListContent.component";
-import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
-import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
-import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
-import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
-import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
-import { NativeTableComponent } from "./nativeRender/nativeTable.component";
 import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 
-import { FormService } from "./form.service";
-import { SkipLogicService } from "./skipLogic.service";
+import { FormService } from "nativeRender/form.service";
+import { SkipLogicService } from "nativeRender/skipLogic.service";
 import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
@@ -38,7 +34,7 @@ import { FormViewComponent } from "./components/formView.component";
 import { DiscussModule } from "discuss/discuss.module";
 import { CreateFormComponent } from 'form/public/components/createForm.component';
 import { FormClassificationComponent } from "./components/formClassification/formClassification.component";
-import { RouterModule, Routes } from '@angular/router';
+import { NativeRenderFullComponent } from 'form/public/nativeRender/nativeRenderFull.component';
 
 const appRoutes: Routes = [
     {path: 'form/search', component: FormSearchComponent},
@@ -52,17 +48,18 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule.forRoot(),
+        NgbModule,
+        RouterModule.forChild(appRoutes),
         Select2Module,
-        TreeModule,
         // internal
+        TreeModule,
         AdminItemModule,
         BoardModule,
         CdeModule,
+        NativeRenderModule,
         SearchModule,
         WidgetModule,
         DiscussModule,
-        RouterModule.forChild(appRoutes)
     ],
     declarations: [
         ArrayListPipe,
@@ -75,18 +72,12 @@ const appRoutes: Routes = [
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
         FormDescriptionQuestionDetailComponent,
-
         FormDescriptionSectionComponent,
         FormGeneralDetailsComponent,
         FormSearchComponent,
         FormSummaryListContentComponent,
         FormTermMappingComponent,
         NativeRenderFullComponent,
-        NativeRenderComponent,
-        NativeSectionComponent,
-        NativeSectionMatrixComponent,
-        NativeQuestionComponent,
-        NativeTableComponent,
         QuickBoardFormSummaryListContentComponent,
     ],
     entryComponents: [
@@ -101,13 +92,11 @@ const appRoutes: Routes = [
         FormDescriptionComponent,
         FormSearchComponent,
         FormSummaryListContentComponent,
-        NativeRenderComponent,
-        QuickBoardFormSummaryListContentComponent,
         NativeRenderFullComponent,
+        QuickBoardFormSummaryListContentComponent,
     ],
     exports: [
         FormAccordionListComponent,
-        NativeRenderComponent,
     ],
     providers: [
         FormService,

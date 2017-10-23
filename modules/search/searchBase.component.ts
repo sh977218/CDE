@@ -2,12 +2,12 @@ import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener, OnInit
 } from '@angular/core';
 import { SearchSettings } from './search.model';
-import { SharedService } from 'core/public/shared.service';
+import { SharedService } from 'core/shared.service';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
-import { CdeForm } from 'form/public/form.model';
-import { DataElement } from 'cde/public/dataElement.model';
-import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
+import { CdeForm } from 'core/form.model';
+import { DataElement } from 'core/dataElement.model';
+import { ElasticQueryResponse, Elt, User } from 'core/models.model';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 import { ParamMap } from '@angular/router';
 

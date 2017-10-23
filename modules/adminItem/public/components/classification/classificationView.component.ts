@@ -3,9 +3,9 @@ import { IActionMapping } from "angular-tree-component/dist/models/tree-options.
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
 import * as authShared from "system/shared/authorizationShared";
-import { IsAllowedService } from 'core/public/isAllowed.service';
-import { UserService } from 'core/public/user.service';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from 'core/user.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 
 const actionMapping: IActionMapping = {
     mouse: {

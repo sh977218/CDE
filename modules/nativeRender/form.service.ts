@@ -1,14 +1,56 @@
 import { Injectable } from "@angular/core";
 import { Http, Response } from "@angular/http";
-import * as async from "async";
+import * as async from "components/async";
 import * as _ from "lodash";
-import { FormQuestion } from "./form.model";
+import { FormQuestion } from "../core/form.model";
 
 function noop(a, cb) { cb(); }
 
 @Injectable()
 export class FormService {
     constructor(private http: Http) {
+    }
+
+    static areDerivationRulesSatisfied(elt) {
+        let missingCdes = [];
+        let allCdes = {};
+        let allQuestions = [];
+        FormService.iterateFeSync(elt, undefined, undefined, (fe) => {
+            if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer))
+                fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
+            else
+                fe.question.answer = fe.question.defaultAnswer;
+            allCdes[fe.question.cde.tinyId] = fe.question;
+            allQuestions.push(fe);
+        });
+        allQuestions.forEach(quest => {
+            if (quest.question.cde.derivationRules)
+                quest.question.cde.derivationRules.forEach(derRule => {
+                    delete quest.incompleteRule;
+                    if (derRule.ruleType === 'score') {
+                        quest.question.isScore = true;
+                        quest.question.scoreFormula = derRule.formula;
+                    }
+                    derRule.inputs.forEach(input => {
+                        if (allCdes[input]) {
+                            allCdes[input].partOf = 'score';
+                        } else {
+                            missingCdes.push({tinyId: input});
+                            quest.incompleteRule = true;
+                        }
+                    });
+                });
+        });
+        return missingCdes;
+    }
+
+    // cb(err, elt)
+    getForm(tinyId, id, cb = _.noop) {
+        let url = "/form/" + tinyId;
+        if (id) url = "/formById/" + id;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+            cb(null, res);
+        }, cb);
     }
 
     getQuestions(fe, qLabel) {
@@ -249,10 +291,4 @@ export class FormService {
         }
         return n.data.elementType === "form";
     }
-
-    get(tinyId) {
-        let url = "/form/" + tinyId;
-        return this.http.get(url).map(res => res.json());
-    }
-
 }

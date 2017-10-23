@@ -3,7 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import { Observable } from "rxjs/Observable";
 import { AlertService } from '_app/alert/alert.service';
-import { UserService } from 'core/public/user.service';
+import { UserService } from 'core/user.service';
 
 @Component({
     selector: "cde-org-account-management",

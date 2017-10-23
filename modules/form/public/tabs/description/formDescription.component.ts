@@ -14,8 +14,8 @@ import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import * as _ from 'lodash';
 
-import { FormService } from "../../form.service";
-import { CdeForm, FormElement, FormSection } from "../../form.model";
+import { FormService } from "../../../../nativeRender/form.service";
+import { CdeForm, FormElement, FormSection } from "../../../../core/form.model";
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 
 @Component({

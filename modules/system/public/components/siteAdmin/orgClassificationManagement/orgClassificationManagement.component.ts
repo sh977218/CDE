@@ -7,11 +7,11 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
 
-import { ClassificationService } from "core/public/core.module";
+import { ClassificationService } from "core/core.module";
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { Subject } from 'rxjs/Subject';
 import * as authShared from "system/shared/authorizationShared";
-import { UserService } from 'core/public/user.service';
+import { UserService } from 'core/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 const actionMapping: IActionMapping = {

@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CdeForm, DisplayProfile } from 'form/public/form.model';
-import { NativeRenderService } from 'form/public/nativeRender/nativeRender.service';
-import { SkipLogicService } from 'form/public/skipLogic.service';
+import { CdeForm, DisplayProfile } from 'core/form.model';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
 @Component({
     selector: "cde-native-render",
@@ -40,7 +40,7 @@ export class NativeRenderComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.elt)
+        if (changes.elt && changes.elt.currentValue)
             this.load();
     }
 

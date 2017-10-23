@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BrowserService } from 'widget/browser.service';
-import { Elt } from 'core/public/models.model';
+import { Elt } from 'core/models.model';
 
 @Component({
     selector: 'cde-accordion-list-heading',

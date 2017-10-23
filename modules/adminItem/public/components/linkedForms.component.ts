@@ -1,7 +1,7 @@
 import { Component, Inject, Input, ViewChild } from '@angular/core';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from '@ng-bootstrap/ng-bootstrap';
-import { CdeForm } from 'form/public/form.model';
-import { ElasticService } from 'core/public/elastic.service';
+import { CdeForm } from 'core/form.model';
+import { ElasticService } from 'core/elastic.service';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
 
 @Component({

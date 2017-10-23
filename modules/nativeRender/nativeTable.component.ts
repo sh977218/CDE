@@ -1,19 +1,20 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { NativeRenderService } from "./nativeRender.service";
-import { FormElement, FormQuestion } from "../form.model";
+import { Component, Input, OnInit } from '@angular/core';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { FormElement, FormQuestion } from 'core/form.model';
 
 @Component({
-    selector: "cde-native-table",
-    templateUrl: "./nativeTable.component.html"
+    selector: 'cde-native-table',
+    templateUrl: './nativeTable.component.html'
 })
 export class NativeTableComponent implements OnInit {
     @Input() formElement: FormElement;
 
+    canRender = false;
     firstQuestion: FormQuestion;
     sectionNumber: number;
     tableForm: any = {
         s: [{q: [{cspan: 1}]}],
-        q: [{type: "label", style: {}}]
+        q: [{type: 'label', style: {}}]
     };
     entry: any;
     rowNameCounter: number = 0;
@@ -28,33 +29,39 @@ export class NativeTableComponent implements OnInit {
 
     render() {
         this.entry = this.tableForm.s[0].q[0];
-        this.getRows();
         this.sectionNumber = 0;
-        let ret = this.renderSection(this.formElement, 0, "");
-        this.setDepth(ret.r + 1);
+        if (this.getRows()) {
+            this.canRender = true;
+            let ret = this.renderSection(this.formElement, 0, "");
+            this.setDepth(ret.r + 1);
 
-        this.entry.cspan = 1;
-        this.entry.rspan = ret.r + 1;
-        this.entry.style = {backgroundColor: "#ddd"};
-        this.tableForm.q[0].style = {backgroundColor: "#f2f2f2"};
+            this.entry.cspan = 1;
+            this.entry.rspan = ret.r + 1;
+            this.entry.style = {backgroundColor: '#ddd'};
+            this.tableForm.q[0].style = {backgroundColor: '#f2f2f2'};
+        } else {
+            this.canRender = false;
+        }
     }
 
     getRows() {
         this.tableForm.rows = [];
         if (!this.formElement.repeat)
-            throw "Not a table";
-        if (this.formElement.repeat[0] === "F") {
+            throw 'Not a table';
+        if (this.formElement.repeat[0] === 'F') {
             this.firstQuestion = NativeRenderService.getFirstQuestion(this.formElement);
+            if (!this.firstQuestion)
+                return false;
             this.firstQuestion.question.answers.forEach((a, i) => {
                 this.tableForm.rows.push({label: this.nativeRenderService.getPvLabel(a)});
-                this.nativeRenderService.elt.formInput[i + "-" + this.firstQuestion.questionId] = a.permissibleValue;
+                this.nativeRenderService.elt.formInput[i + '-' + this.firstQuestion.questionId] = a.permissibleValue;
             });
             this.entry.label = this.firstQuestion.label;
-            this.tableForm.q[0].name = "-" + this.firstQuestion.questionId;
+            this.tableForm.q[0].name = '-' + this.firstQuestion.questionId;
             this.tableForm.q[0].question = this.firstQuestion.question;
         } else {
             let maxValue = parseInt(this.formElement.repeat);
-            let format = "#.";
+            let format = '#.';
             if (this.nativeRenderService.profile)
                 format = this.nativeRenderService.profile.repeatFormat;
             if (!format)
@@ -63,6 +70,7 @@ export class NativeTableComponent implements OnInit {
                 this.tableForm.rows.push({label: format.replace(/\#/, (i + 1).toString())});
             }
         }
+        return true;
     }
 
     renderSection(s, level, sectionName, r = 1, c = 0) {
@@ -83,43 +91,43 @@ export class NativeTableComponent implements OnInit {
         return {r: r, c: c};
     }
     renderFormElement(f, tcontent, level, retr, r, c, sectionStyle, sectionName) {
-        if (f.elementType === "section" || f.elementType === "form") {
+        if (f.elementType === 'section' || f.elementType === 'form') {
             if (!f.repeat) {
                 let ret = this.renderSection(f, level + 1, sectionName);
                 c += ret.c;
                 retr = Math.max(retr, ret.r);
-            } else if (f.repeat[0] === "F") {
+            } else if (f.repeat[0] === 'F') {
                 NativeRenderService.getFirstQuestion(f).question.answers.forEach((a, i) => {
-                    let ret = this.renderSection(f, level + 1, sectionName + i + "-");
+                    let ret = this.renderSection(f, level + 1, sectionName + i + '-');
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 });
             } else {
                 let maxValue = parseInt(f.repeat);
                 for (let i = 0; i < maxValue; i++) {
-                    let ret = this.renderSection(f, level + 1, sectionName + i + "-");
+                    let ret = this.renderSection(f, level + 1, sectionName + i + '-');
                     c += ret.c;
                     retr = Math.max(retr, ret.r);
                 }
             }
         }
-        else if (f.elementType === "question" && f !== this.firstQuestion) {
+        else if (f.elementType === 'question' && f !== this.firstQuestion) {
             c++;
             tcontent.q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
             this.tableForm.q.push({
                 type: NativeTableComponent.getQuestionType(f),
-                name: "-" + sectionName + f.questionId,
+                name: '-' + sectionName + f.questionId,
                 question: f.question,
                 style: sectionStyle.answerStyle
             });
-            if (f.question.datatype === "Value List" && f.question.multiselect === true)
+            if (f.question.datatype === 'Value List' && f.question.multiselect === true)
                 this.tableForm.rows.forEach((r, i) => {
-                    this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId] = [];
-                    this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId].answer = this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId];
+                    this.nativeRenderService.elt.formInput[i + '-' + sectionName + f.questionId] = [];
+                    this.nativeRenderService.elt.formInput[i + '-' + sectionName + f.questionId].answer = this.nativeRenderService.elt.formInput[i + '-' + sectionName + f.questionId];
                 });
             if (f.question.uoms && f.question.uoms.length === 1)
                 this.tableForm.rows.forEach((r, i) => {
-                    this.nativeRenderService.elt.formInput[i + "-" + sectionName + f.questionId + "_uom"] = f.question.uoms[0];
+                    this.nativeRenderService.elt.formInput[i + '-' + sectionName + f.questionId + '_uom'] = f.question.uoms[0];
                 });
             f.question.answers.forEach(a => {
                 a.subQuestions && a.subQuestions.forEach(sf => {
@@ -147,34 +155,34 @@ export class NativeTableComponent implements OnInit {
 
     theme: Array<any> = [
         {
-            sectionStyle: {backgroundColor: "#d7f3da"},
-            questionStyle: {backgroundColor: "#d7f3da"},
-            answerStyle: {backgroundColor: "#f6fff9"}
+            sectionStyle: {backgroundColor: '#d7f3da'},
+            questionStyle: {backgroundColor: '#d7f3da'},
+            answerStyle: {backgroundColor: '#f6fff9'}
         },
         {
-            sectionStyle: {backgroundColor: "#dad7f3"},
-            questionStyle: {backgroundColor: "#dad7f3"},
-            answerStyle: {backgroundColor: "#f9f6ff"}
+            sectionStyle: {backgroundColor: '#dad7f3'},
+            questionStyle: {backgroundColor: '#dad7f3'},
+            answerStyle: {backgroundColor: '#f9f6ff'}
         },
         {
-            sectionStyle: {backgroundColor: "#f3dad7"},
-            questionStyle: {backgroundColor: "#f3dad7"},
-            answerStyle: {backgroundColor: "#fff9f6"}
+            sectionStyle: {backgroundColor: '#f3dad7'},
+            questionStyle: {backgroundColor: '#f3dad7'},
+            answerStyle: {backgroundColor: '#fff9f6'}
         },
         {
-            sectionStyle: {backgroundColor: "#f1f3d8"},
-            questionStyle: {backgroundColor: "#f1f3d8"},
-            answerStyle: {backgroundColor: "#fcfff5"}
+            sectionStyle: {backgroundColor: '#f1f3d8'},
+            questionStyle: {backgroundColor: '#f1f3d8'},
+            answerStyle: {backgroundColor: '#fcfff5'}
         },
         {
-            sectionStyle: {backgroundColor: "#d8f1f3"},
-            questionStyle: {backgroundColor: "#d8f1f3"},
-            answerStyle: {backgroundColor: "#f5fcff"}
+            sectionStyle: {backgroundColor: '#d8f1f3'},
+            questionStyle: {backgroundColor: '#d8f1f3'},
+            answerStyle: {backgroundColor: '#f5fcff'}
         },
         {
-            sectionStyle: {backgroundColor: "#f3d8f1"},
-            questionStyle: {backgroundColor: "#f3d8f1"},
-            answerStyle: {backgroundColor: "#fff5fc"}
+            sectionStyle: {backgroundColor: '#f3d8f1'},
+            questionStyle: {backgroundColor: '#f3d8f1'},
+            answerStyle: {backgroundColor: '#fff5fc'}
         },
     ];
     getSectionStyle(i) {
@@ -183,17 +191,17 @@ export class NativeTableComponent implements OnInit {
 
     static getQuestionType(fe) {
         switch (fe.question.datatype) {
-            case "Value List":
+            case 'Value List':
                 if (fe.question.multiselect)
-                    return "mlist";
+                    return 'mlist';
                 else
-                    return "list";
-            case "Date":
-                return "date";
-            case "Number":
-                return "number";
+                    return 'list';
+            case 'Date':
+                return 'date';
+            case 'Number':
+                return 'number';
             default:
-                return "text";
+                return 'text';
         }
     }
 }

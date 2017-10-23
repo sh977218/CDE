@@ -5,9 +5,9 @@ import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
-import { UserService } from 'core/public/user.service';
+import { UserService } from 'core/user.service';
 import * as authShared from "system/shared/authorizationShared";
-import { IsAllowedService } from 'core/public/isAllowed.service';
+import { IsAllowedService } from 'core/isAllowed.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as deValidator from "../../shared/deValidator.js";
 import { AlertService } from '_app/alert/alert.service';

@@ -5,9 +5,9 @@ import * as _ from "lodash";
 import { Observable } from "rxjs/Observable";
 
 import { TreeNode } from "angular-tree-component";
-import { SkipLogicService } from 'form/public/skipLogic.service';
-import { CdeForm, FormElement, FormQuestion, SkipLogic } from 'form/public/form.model';
-import { FormattedValue } from 'core/public/models.model';
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { CdeForm, FormElement, FormQuestion, SkipLogic } from 'core/form.model';
+import { FormattedValue } from 'core/models.model';
 
 @Component({
     selector: "cde-form-description-question-detail",

@@ -1,5 +1,5 @@
 import { Component, DoCheck, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { ElasticService } from "../../core/public/elastic.service";
+import { ElasticService } from "../../core/elastic.service";
 
 @Component({
     selector: 'cde-table-list',

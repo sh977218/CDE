@@ -1,6 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { NativeRenderService } from 'form/public/nativeRender/nativeRender.service';
-import { CdeForm, DisplayProfile } from 'form/public/form.model';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { CdeForm, DisplayProfile } from 'core/form.model';
 
 @Component({
     selector: "cde-native-render-full",
@@ -42,6 +42,4 @@ export class NativeRenderFullComponent {
         render.setProfile(this.elt.displayProfiles[profileIndex]);
         this.overridePrintable = this.elt.displayProfiles[profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;
     }
-
-
 }

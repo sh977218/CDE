@@ -3,7 +3,7 @@ import { Http } from "@angular/http";
 import { MergeCdeService } from "./mergeCde.service";
 import { MergeShareService } from "./mergeShare.service";
 import * as async from "async";
-import { IsAllowedService } from 'core/public/isAllowed.service';
+import { IsAllowedService } from 'core/isAllowed.service';
 
 @Injectable()
 export class MergeFormService {

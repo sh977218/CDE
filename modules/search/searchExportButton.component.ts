@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { UserService } from "../core/public/user.service";
+import { UserService } from "../core/user.service";
 
 @Component({
     selector: 'cde-search-export-button',

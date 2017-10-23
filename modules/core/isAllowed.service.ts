@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserService } from 'core/public/user.service';
+import { UserService } from 'core/user.service';
 
 import * as authShared from "system/shared/authorizationShared";
 

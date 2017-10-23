@@ -16,8 +16,8 @@ import { LocalStorageService } from "angular-2-local-storage/dist";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
 import * as ClassificationShared from "system/shared/classificationShared.js";
 import * as _ from "lodash";
-import { IsAllowedService } from 'core/public/isAllowed.service';
-import { UserService } from 'core/public/user.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from 'core/user.service';
 import { Router } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
 

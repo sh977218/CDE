@@ -11,7 +11,7 @@ import {
     Property,
     ReferenceDocument,
     RegistrationState, UserReference
-} from 'core/public/models.model';
+} from 'core/models.model';
 
 export class CdeForm extends Elt {
     archived: boolean = false;
@@ -150,6 +150,7 @@ export class Question {
     invisible: boolean = false;
     isScore: boolean = false;
     multiselect: boolean;
+    partOf: string; // display "(part of ...)" in Form Description
     required: boolean = false;
     uoms: string[];
 }

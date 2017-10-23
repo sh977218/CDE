@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { OrgHelperService } from "core/public/orgHelper.service";
+import { OrgHelperService } from "core/orgHelper.service";
 
 @Injectable()
 export class RegistrationValidatorService {

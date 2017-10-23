@@ -1,5 +1,5 @@
-import { CdeForm } from 'form/public/form.model';
-import { DataElement } from 'cde/public/dataElement.model';
+import { CdeForm } from 'core/form.model';
+import { DataElement } from 'core/dataElement.model';
 
 export class Attachment {
     comment: string;
