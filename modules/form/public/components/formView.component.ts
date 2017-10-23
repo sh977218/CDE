@@ -6,6 +6,7 @@ import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/
 import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+import { FormService } from 'nativeRender/form.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { QuickBoardListService } from "quickBoard/public/quickBoardList.service";
 import { UserService } from 'core/user.service';
@@ -40,14 +41,11 @@ export class FormViewComponent implements OnInit {
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
     @ViewChild("saveModal") public saveModal: SaveModalComponent;
-    @Input() routeParams: any;
-    @Input() missingCdes = [];
-    @Input() inScoreCdes = [];
-    @Output() public h = new EventEmitter();
 
-    public elt: any;
-    public eltCopy = {};
-    public modalRef: NgbModalRef;
+    elt: any;
+    eltCopy = {};
+    missingCdes = [];
+    modalRef: NgbModalRef;
     hasComments;
     commentMode;
     currentTab = "preview_tab";
@@ -70,6 +68,7 @@ export class FormViewComponent implements OnInit {
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
+                private formService: FormService,
                 public userService: UserService,
                 private route: ActivatedRoute,
                 private router: Router) {
@@ -124,7 +123,7 @@ export class FormViewComponent implements OnInit {
                 this.elt = res;
                 if (this.elt) {
                     this.formId = this.elt._id;
-                    this.areDerivationRulesSatisfied();
+                    this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
                     this.loadComments(this.elt, null);
                 }
                 cb();
@@ -223,42 +222,6 @@ export class FormViewComponent implements OnInit {
         this.isFormValid = valid;
     }
 
-    areDerivationRulesSatisfied() {
-        this.missingCdes = [];
-        this.inScoreCdes = [];
-        let allCdes = {};
-        let allQuestions = [];
-        let doFormElement = function (formElt) {
-            if (formElt.elementType === 'question') {
-                if (formElt.question.datatype === 'Number' && !Number.isNaN(formElt.question.defaultAnswer))
-                    formElt.question.answer = Number.parseFloat(formElt.question.defaultAnswer);
-                else formElt.question.answer = formElt.question.defaultAnswer;
-                allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
-                allQuestions.push(formElt);
-            } else if (formElt.elementType === 'section' || formElt.elementType === 'form') {
-                formElt.formElements.forEach(doFormElement);
-            }
-        };
-        this.elt.formElements.forEach(doFormElement);
-        allQuestions.forEach(quest => {
-            if (quest.question.cde.derivationRules)
-                quest.question.cde.derivationRules.forEach(derRule => {
-                    delete quest.incompleteRule;
-                    if (derRule.ruleType === 'score') {
-                        quest.question.isScore = true;
-                        quest.question.scoreFormula = derRule.formula;
-                        this.inScoreCdes = derRule.inputs;
-                    }
-                    derRule.inputs.forEach(input => {
-                        if (!allCdes[input]) {
-                            this.missingCdes.push({tinyId: input});
-                            quest.incompleteRule = true;
-                        }
-                    });
-                });
-        });
-    };
-
     validateForm() {
         this.isFormValid = true;
         let loopFormElements = form => {
@@ -348,7 +311,7 @@ export class FormViewComponent implements OnInit {
             setTimeout(() => {
                 this.savingText = "";
             }, 3000);
-            this.areDerivationRulesSatisfied();
+            this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
             this.validateForm();
             if (cb) cb(res);
         }, err => this.alert.addAlert("danger", err));

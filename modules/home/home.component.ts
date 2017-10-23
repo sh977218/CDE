@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { TourService } from 'core/tour.service';
+import { CdeForm } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 
 @Component({
@@ -180,6 +181,7 @@ import { FormService } from 'nativeRender/form.service';
 export class HomeComponent {
     cdeFormSelection = 'formOnly';
     currentTab: string;
+    elt: CdeForm;
     statsType = 'Forms';
     newItems = {CDEs: null, Forms: null};
     topItems = {CDEs: null, Forms: null};
@@ -196,6 +198,15 @@ export class HomeComponent {
     };
 
     constructor(private http: Http, private formService: FormService) {}
+
+    getForm(tinyId) {
+        this.formService.getForm(tinyId, undefined, (err, elt) => {
+            if (!err) {
+                FormService.areDerivationRulesSatisfied(elt);
+                this.elt = elt;
+            }
+        });
+    }
 
     getStats(tab = null) {
         if (!tab)

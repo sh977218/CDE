@@ -102,7 +102,6 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 export class FormDescriptionComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
-    @Input() inScoreCdes: any;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onEltChange = new EventEmitter();
 

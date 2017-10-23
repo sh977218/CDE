@@ -15,7 +15,6 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
-    @Input() inScoreCdes: any;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("updateCdeVersionTmpl") updateCdeVersionTmpl: NgbModalModule;

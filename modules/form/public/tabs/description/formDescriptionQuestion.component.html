@@ -16,8 +16,8 @@
                 <span [textContent]="question.question.cde.name"></span>
             </span>
         <span *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</span>
-        <small *ngIf="inScoreCdes && inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
-            (part of score)
+        <small *ngIf="question.question.partOf" class="text-info">
+            (part of {{question.question.partOf}})
         </small>
     </div>
     <div class="ib left">

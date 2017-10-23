@@ -17,7 +17,6 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt: any;
     @Input() canEdit: boolean = false;
-    @Input() inScoreCdes: any;
     @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
@@ -67,7 +66,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     checkRepeatOptions() {
-        if (this.section.repeat[0] === "F" && !NativeRenderService.getFirstQuestion(this.section))
+        if (this.section.repeat && this.section.repeat[0] === "F" && !NativeRenderService.getFirstQuestion(this.section))
             this.alert.addAlert('danger',
                 this.section.label + " Repeat on First Question: Value List is not available.");
     }
