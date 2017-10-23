@@ -79,7 +79,8 @@ export class TourService {
         {
             element: "#status_filter",
             content: "By default, only Qualified and above statuses will be returned. This can be changed in your preferences (the wheel in the upper right corner).",
-            title: "Registration Status"
+            title: "Registration Status",
+            placement: "top"
         },
         {
             element: "#datatype_filter",
@@ -116,79 +117,79 @@ export class TourService {
             element: "#sources_0",
             title: "Sources",
             content: "Many elements were imported from external sources. This section can give useful details about the source, such as copyright, status or created date.",
-            placement: "bottom"
+            placement: "top"
         },
         {
             element: "#registrationStateDiv",
             title: "Status",
             content: "The registration status represents the maturity level of an element, with Standard and Preferred Standard being highest. Only qualified and above are retrieved in search results by default. When elements are first created, they get an incomplete status.",
-            placement: "bottom"
+            placement: "top"
         },
         {
             element: "#pvs_tab",
             title: "Permissible Values",
             content: "This tab will tell us if a CDE is based on a number, text, value list or other datatype.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#naming_tab",
             title: "Names",
             content: "Any CDE may have multiple names. Names help identify the CDE and are also used as question labels on forms. A name can have one or more tags to describe the context of this name.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#classification_tab",
             title: "Classifications",
             content: "Classifications describe the way in which an organization may use a CDE or Form. A CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#concepts_tab",
             title: "Concepts",
             content: "CDEs are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#referenceDocument_tab",
             title: "Reference Document",
             content: "This section contains reference documents for the CDE.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#properties_tab",
             title: "Properties",
             content: "This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#ids_tab",
             title: "Identifiers",
             content: "CDEs and Forms can be identified using multiple identification sources. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#attachments_tab",
             title: "Attachments",
             content: "If a file is attached to a CDE, it can be viewed or downloaded here.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#history_tab",
             title: "History",
             content: "This section shows all prior states of the CDE. Each version can be view as it was at a given date. In addition, differences between versions can be highlighted to easily identify changes over time.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#derivationRules_tab",
             title: "Derivation Rules",
             content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#validRules_tab",
             title: "Validation Rules",
             content: "Validation Rules are used to validate CDE. ",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#export",
@@ -206,25 +207,25 @@ export class TourService {
             element: "#openLinkedBoardsModalBtn",
             title: "Boards",
             content: "If a CDE is used in public boards, the boards will be shown in this section.",
-            placement: "bottom"
+            placement: "top"
         },
         {
             element: "#mltButton",
             title: "More Like This",
             content: "This section lists CDEs that are most similar to the CDE currently viewed.",
-            placement: "bottom"
+            placement: "top"
         },
         {
             element: "#openLinkedFormsModalBtn",
             title: "Forms",
             content: "If a CDE is used in Forms, they will be displayed here. ",
-            placement: "bottom"
+            placement: "top"
         },
         {
             element: "#openDataSetModalBtn",
             title: "Data Sets",
             content: "CDEs may be used in research. If datasets are public, they can be found here.",
-            placement: "bottom"
+            placement: "top"
         },
         {
             element: "#menu_forms_link",
@@ -268,7 +269,7 @@ export class TourService {
             element: "#general_tab",
             title: "General Details",
             content: "Forms have similar administrative details to CDE. When rendering is allowed, a preview of the form will display in this tab. There are multiple form rending types including: skip logic, printable forms, tables, and hidden questions. More detail about these features can be found on the Display Profiles tab.",
-            placement: "top"
+            placement: "bottom"
         },
         {
             element: "#description_tab",
