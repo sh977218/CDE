@@ -6,15 +6,16 @@
           [ngClass]="{'extraPadding': !searchStarted }">
 
         <div class="input-group input-group">
-            <!--<select class="form-control" ng-change="selectElement(selectedClassif)" placeholder="Browse"-->
-                    <!--ng-model="selectedClassif" style="width:50%;" ng-switch="searchSettings.classification.length > 0"-->
-                    <!--ng-disabled="aggregations.flatClassifications.length === 0"-->
-                    <!--ng-class="{'halfOpacity':aggregations.flatClassifications.length === 0}"-->
-            <!--&gt;-->
-                <!--<option value="" selected ng-switch-when="true">All Sub Classifications</option>-->
-                <!--<option value="" selected ng-switch-default="true">All Classifications</option>-->
+            <select class="form-control" (change)="selectElement(selectedClassif)"
+                    name="selectedClassif"
+                    [ngModel]="selectedClassif" style="width:50%;"
+                    [disabled]="aggregations.flatClassifications?.length === 0"
+                    [ngClass]="{'halfOpacity':aggregations.flatClassifications?.length === 0}">
+                    <!--ng-switch="searchSettings.classification.length > 0"-->
+                <option value="" selected *ngIf="searchSettings.classification.length > 0">All Sub Classifications</option>
+                <option value="" selected *ngIf="searchSettings.classification.length === 0">All Classifications</option>
                 <!--<option ng-repeat="classif in aggregations.flatClassifications">{{classif.name}}</option>-->
-            <!--</select>-->
+            </select>
             <!--<label class="sr-only" for="ftsearch-input">Search Terms</label>-->
             <!--<input name="q" id="ftsearch-input" style="width: 50%"-->
                    <!--class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched"-->

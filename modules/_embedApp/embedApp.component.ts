@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../../node_modules/feedback/stable/2.0/html2canvas.js";
+import { Http } from '@angular/http';
 
 @Component({
     selector: "cde-embed",
@@ -8,6 +9,16 @@ import "../../node_modules/feedback/stable/2.0/html2canvas.js";
 })
 export class EmbedAppComponent {
     name = "Embedded NIH CDE Repository";
+
+    constructor(private http: Http) {
+
+        this.http.get('/embed/' + $scope.args.id).then(function onSuccess(response) {
+            //     $scope.embed = response.data;
+            //     $scope.searchSettings.selectedOrg = response.data.org;
+            //     $scope.search();
+            // })
+
+    }
 
     // $scope.args = {};
     // $scope.clLimit = 3;
@@ -23,25 +34,25 @@ export class EmbedAppComponent {
     //     $scope.args[argArr[0]] = argArr[1];
     // });
     //
-    // $scope.searchSettings = {
-    //     q: ""
-    //     , page: 1
-    //     , classification: []
-    //     , classificationAlt: []
-    //     , regStatuses: []
-    // };
-    //
-    // $http.get('/embed/' + $scope.args.id).then(function onSuccess(response) {
-    //     $scope.embed = response.data;
-    //     $scope.searchSettings.selectedOrg = response.data.org;
-    //     $scope.search();
-    // });
-    //
-    // $scope.selectElement = function(s) {
-    //     $scope.searchSettings.classification.push(s);
-    //     $scope.selectedClassif = "";
-    //     $scope.search();
-    // };
+
+    aggregations: any = {};
+    searchSettings = {
+        q: ""
+        , page: 1
+        , classification: []
+        , classificationAlt: []
+        , regStatuses: []
+    };
+    selectedClassif: string = "";
+
+    // $;
+
+    selectElement (s) {
+        this.searchSettings.classification.push(s);
+        this.selectedClassif = "";
+        this.search();
+    }
+
     //
     // $scope.crumbSelect = function(i) {
     //     $scope.searchSettings.classification.length = i + 1;
