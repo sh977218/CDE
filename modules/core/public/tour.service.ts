@@ -7,33 +7,33 @@ export class TourService {
     static router;
     static steps: Array<any> = [
         {
-            title: "Welcome",
+            title: " 1/42 Welcome",
             content: "Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here.",
             orphan: true
         },
         {
             element: "#menu_cdes_link",
-            title: "CDEs",
+            title: " 2/42 CDEs",
             content: "Click here to start browsing CDEs"
         },
         {
             element: "#menu_forms_link",
-            title: "Forms",
+            title: " 3/42 Forms",
             content: "Or here to browse forms"
         },
         {
             element: "#boardsMenu",
-            title: "Boards",
+            title: " 4/42 Boards",
             content: "Boards allow registered users to group CDEs or Forms. Boards can be private or public. Boards are persistent and will not disappear unless you remove them."
         },
         {
             element: "#menu_qb_link",
-            title: "Quick Board",
+            title: " 5/42 Quick Board",
             content: "The quick board is a volatile board that can be used for temporarily storing CDEs and forms. You can also use the quick board to compare CDEs and Forms."
         },
         {
             element: "#menu_help_link",
-            title: "Help",
+            title: " 6/42 Help",
             content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
             onNext: tour => {
                 return new Promise(resolve => {
@@ -45,16 +45,16 @@ export class TourService {
         {
             element: "#browseByClassification",
             content: "CDEs or Forms can be browsed by Classifications. Classifications are ways for content owners to organize their CDEs.",
-            title: "Browse by Classification"
+            title: " 7/42 Browse by Classification"
         },
         {
             element: "#browseByTopic",
             content: "Or by topic. Topics are MeSH terms.",
-            title: "Browse by Topic"
+            title: " 8/42 Browse by Topic"
         },
         {
             element: "#search_by_classification_NLM",
-            title: "Browse by Organization",
+            title: " 9/42 Browse by Organization",
             content: "These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.",
             placement: "left",
             onNext: tour => {
@@ -66,31 +66,31 @@ export class TourService {
         },
         {
             element: "#resultList",
-            title: "Search Result",
+            title: " 10/42 Search Result",
             content: "Browsing can return hundreds of elements, sorted by their registration and usage. When elements have list of values, the search summary shows a subset of those values. ",
             placement: "top"
         },
         {
             element: "#classif_filter_title",
             content: "We can continue browsing inside the NLM classification here. ",
-            title: "Classification Filter",
+            title: " 11/42 Classification Filter",
             placement: "top"
         },
         {
             element: "#status_filter",
             content: "By default, only Qualified and above statuses will be returned. This can be changed in your preferences (the wheel in the upper right corner).",
-            title: "Registration Status",
+            title: " 12/42 Registration Status",
             placement: "top"
         },
         {
             element: "#datatype_filter",
             content: "Finally, we can narrow our results down by datatype. For example, only see CDEs that represent a number.",
-            title: "Data Types"
+            title: " 13/42 Data Types"
         },
         {
             element: "#linkToElt_0",
             content: "The tour will now take us to an individual record by clicking its name.",
-            title: "Search Result",
+            title: " 14/42 Search Result",
             onNext: tour => {
                 return new Promise(resolve => {
                     let url = document.getElementById('linkToElt_0')['href'];
@@ -103,133 +103,133 @@ export class TourService {
         },
         {
             element: "#general_tab",
-            title: "General Details",
+            title: " 15/42 General Details",
             content: "This section shows an overview of the CDE attributes.",
             placement: "bottom"
         },
         {
             element: "#dd_updated",
-            title: "Dates",
+            title: " 16/42 Dates",
             content: "CDEs may have a date when they were last imported. If they were updated during that import, updated will show that date. Manual changes also show under updated. Created shows the date that the CDE was created in the NLM repository. If they were created or updated in a external repository, this information will show under Source.",
             placement: "bottom"
         },
         {
             element: "#sources_0",
-            title: "Sources",
+            title: " 17/42 Sources",
             content: "Many elements were imported from external sources. This section can give useful details about the source, such as copyright, status or created date.",
             placement: "top"
         },
         {
             element: "#registrationStateDiv",
-            title: "Status",
+            title: " 18/42 Status",
             content: "The registration status represents the maturity level of an element, with Standard and Preferred Standard being highest. Only qualified and above are retrieved in search results by default. When elements are first created, they get an incomplete status.",
             placement: "top"
         },
         {
             element: "#pvs_tab",
-            title: "Permissible Values",
+            title: " 19/42 Permissible Values",
             content: "This tab will tell us if a CDE is based on a number, text, value list or other datatype.",
             placement: "bottom"
         },
         {
             element: "#naming_tab",
-            title: "Names",
+            title: " 20/42 Names",
             content: "Any CDE may have multiple names. Names help identify the CDE and are also used as question labels on forms. A name can have one or more tags to describe the context of this name.",
             placement: "bottom"
         },
         {
             element: "#classification_tab",
-            title: "Classifications",
+            title: " 21/42 Classifications",
             content: "Classifications describe the way in which an organization may use a CDE or Form. A CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it.",
             placement: "bottom"
         },
         {
             element: "#concepts_tab",
-            title: "Concepts",
+            title: " 22/42 Concepts",
             content: "CDEs are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC.",
             placement: "bottom"
         },
         {
             element: "#referenceDocument_tab",
-            title: "Reference Document",
+            title: " 23/42 Reference Document",
             content: "This section contains reference documents for the CDE.",
             placement: "bottom"
         },
         {
             element: "#properties_tab",
-            title: "Properties",
+            title: " 24/42 Properties",
             content: "This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process.",
             placement: "bottom"
         },
         {
             element: "#ids_tab",
-            title: "Identifiers",
+            title: " 25/42 Identifiers",
             content: "CDEs and Forms can be identified using multiple identification sources. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here.",
             placement: "bottom"
         },
         {
             element: "#attachments_tab",
-            title: "Attachments",
+            title: " 26/42 Attachments",
             content: "If a file is attached to a CDE, it can be viewed or downloaded here.",
             placement: "bottom"
         },
         {
             element: "#history_tab",
-            title: "History",
+            title: " 27/42 History",
             content: "This section shows all prior states of the CDE. Each version can be view as it was at a given date. In addition, differences between versions can be highlighted to easily identify changes over time.",
             placement: "bottom"
         },
         {
             element: "#derivationRules_tab",
-            title: "Derivation Rules",
+            title: " 28/42 Derivation Rules",
             content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score.",
             placement: "bottom"
         },
         {
             element: "#validRules_tab",
-            title: "Validation Rules",
+            title: " 29/42 Validation Rules",
             content: "Validation Rules are used to validate CDE. ",
             placement: "bottom"
         },
         {
             element: "#export",
-            title: "Export",
+            title: " 30/42 Export",
             content: "CDEs can be exported in JSON or XML Format.",
             placement: "bottom"
         },
         {
             element: "#discussBtn",
-            title: "Discuss",
+            title: " 31/42 Discuss",
             content: "With an account, anyone can interactively discuss an element. Users can reply to comment or resolve them.",
             placement: "bottom"
         },
         {
             element: "#openLinkedBoardsModalBtn",
-            title: "Boards",
+            title: " 32/42 Boards",
             content: "If a CDE is used in public boards, the boards will be shown in this section.",
             placement: "top"
         },
         {
             element: "#mltButton",
-            title: "More Like This",
+            title: " 33/42 More Like This",
             content: "This section lists CDEs that are most similar to the CDE currently viewed.",
             placement: "top"
         },
         {
             element: "#openLinkedFormsModalBtn",
-            title: "Forms",
+            title: " 34/42 Forms",
             content: "If a CDE is used in Forms, they will be displayed here. ",
             placement: "top"
         },
         {
             element: "#openDataSetModalBtn",
-            title: "Data Sets",
+            title: " 35/42 Data Sets",
             content: "CDEs may be used in research. If datasets are public, they can be found here.",
             placement: "top"
         },
         {
             element: "#menu_forms_link",
-            title: "Forms",
+            title: " 36/42 Forms",
             content: "We will now continue the tour and show Form features.",
             placement: "bottom",
             onNext: tour => {
@@ -242,7 +242,7 @@ export class TourService {
         {
             element: "#browseByClassification",
             content: "Forms are also browsed by Classification",
-            title: "Browse by Classification",
+            title: " 37/42 Browse by Classification",
             onNext: tour => {
                 return new Promise(resolve => {
                     TourService.router.navigate(["/form/search"], {queryParams: {selectedOrg: 'NLM'}});
@@ -252,7 +252,7 @@ export class TourService {
         },
         {
             element: "#resultList",
-            title: "Search Result",
+            title: " 38/42 Search Result",
             content: "We will now go into a form.",
             placement: "top",
             onNext: tour => {
@@ -267,25 +267,25 @@ export class TourService {
         },
         {
             element: "#general_tab",
-            title: "General Details",
+            title: " 39/42 General Details",
             content: "Forms have similar administrative details to CDE. When rendering is allowed, a preview of the form will display in this tab. There are multiple form rending types including: skip logic, printable forms, tables, and hidden questions. More detail about these features can be found on the Display Profiles tab.",
             placement: "bottom"
         },
         {
             element: "#description_tab",
-            title: "Form Element",
+            title: " 40/42 Form Element",
             content: "The repository may not have permission to display all forms. If it does details of form questions and sections are displayed in this tab. Form support logic, selecting possible answer values, scores, repeating questions and many more features. ",
             placement: "bottom"
         },
         {
             element: "#export",
-            title: "Export",
+            title: " 41/42 Export",
             content: "Forms can be exported when users are logged in. Available formats are JSON, XML, ODM, SDC and RedCAP.",
             placement: "bottom"
         },
         {
             element: "#login_link",
-            title: "Thank you",
+            title: " 42/42 Thank you",
             content: "Thank you for taking this tour. Consider creating a free UMLS account to get access to the full suite of features this repository has to offer.",
             placement: "bottom"
         }
