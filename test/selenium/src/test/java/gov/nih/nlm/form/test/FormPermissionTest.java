@@ -12,7 +12,7 @@ public class FormPermissionTest extends BaseFormTest {
         String formName = "Fixed Dynamometry";
 
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
 
         String sec1 = "test permission section";
         addSectionBottom(sec1, null);
@@ -21,7 +21,7 @@ public class FormPermissionTest extends BaseFormTest {
 
         mustBeLoggedInAs(ctepCurator_username, password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textNotPresent("Delete");
         textNotPresent("Add Section");
     }

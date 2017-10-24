@@ -1,48 +1,35 @@
 <div id="namingDiv">
     <h4>Namings</h4>
-
     <div *ngIf="elt.naming.length === 0">There are no namings.</div>
-    <div *ngFor="let name of elt.naming;let i = index">
+    <ng-container *ngFor="let name of elt.naming;let i = index">
         <div class="row">
-            <div class="col-md-1 text-right">
-                <div class="row" *ngIf="canEdit">
-                    <span (click)="removeNamingByIndex(i)" class="btn-default fa fa-trash-o"
-                          id="removeNaming-{{i}}" title="Remove"></span>
-                    <sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></sortable-array>
-                </div>
-            </div>
-            <div class="col-md-11">
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Name:</div>
-                    <div class="col-xs-10" id="designation_{{i}}">
-                        <cde-inline-edit id="nameEdit" [(model)]="name.designation" (modelChange)="onEltChange.emit();"
-                                         [isAllowed]="canEdit"></cde-inline-edit>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Definition:</div>
-                    <div class="col-xs-10" id="definition_{{i}}">
-                        <cde-inline-area-edit [(model)]="name.definition" (modelChange)="onEltChange.emit();"
-                                              [(defFormat)]="name.definitionFormat"
-                                              [isAllowed]="canEdit"></cde-inline-area-edit>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Tags:</div>
-                    <div class="col-xs-10" id="tags_{{i}}">
-                        <span *ngIf="loaded">
-                            <select2 [data]="orgNamingTags" [(value)]="name.tags" [options]="options"
-                                     [disabled]="!canEdit" width="100%"
-                                     (valueChanged)="changedTags(name,$event)">
-                            </select2>
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <dt class="col-xs-3 text-right">
+                <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit" class="btn-default fa fa-trash-o"
+                      id="removeNaming-{{i}}" title="Remove"></span>
+                <sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></sortable-array>
+                Name:
+            </dt>
+            <dd id="designation_{{i}}" class="col-xs-9">
+                <cde-inline-edit id="nameEdit" [(model)]="name.designation" (modelChange)="onEltChange.emit();"
+                                 [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
+            <dt class="col-xs-3 text-right">Definition:</dt>
+            <dd id="definition_{{i}}" class="col-xs-9">
+                <cde-inline-area-edit [(model)]="name.definition" (modelChange)="onEltChange.emit();"
+                                      [(defFormat)]="name.definitionFormat"
+                                      [isAllowed]="canEdit"></cde-inline-area-edit>
+            </dd>
+            <dt class="col-xs-3 text-right">Tags:</dt>
+            <dd id="tags_{{i}}" class="col-xs-9">
+                <select2 [data]="orgNamingTags" [value]="name.tags" [options]="options"
+                         [disabled]="!canEdit" width="100%"
+                         (valueChanged)="changedTags(name,$event)">
+                </select2>
+            </dd>
         </div>
         <hr>
-    </div>
-    <button *ngIf="canEdit && onInitDone" id="openNewNamingModalBtn"
+    </ng-container>
+    <button *ngIf="canEdit" id="openNewNamingModalBtn"
             class="btn btn-small btn-default" (click)="openNewNamingModal();">
         <i class="fa fa-plus"></i> Add Naming
     </button>

@@ -9,9 +9,15 @@ import { LoginService } from 'system/public/components/login/login.service';
     selector: "cde-navigation",
     templateUrl: "./navigation.component.html",
     styles: [`
-        .navbar-fixed-top .navbar-collapse {
-            max-height: none;
+        .navbar-collapse.collapse.in, .navbar-collapse.collapsing {
+            display: block !important;
+            width: auto;
         }
+
+        .navbar {
+            padding: 0;
+        }
+
     `]
 })
 export class NavigationComponent {
@@ -23,8 +29,8 @@ export class NavigationComponent {
     largeContext = {$implicit: ""};
 
     constructor(public userService: UserService,
-            public quickBoardService: QuickBoardListService,
-            public loginSvc: LoginService) {
+                public quickBoardService: QuickBoardListService,
+                public loginSvc: LoginService) {
     }
 
     isPageActive(viewLocation) {

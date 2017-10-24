@@ -16,11 +16,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeNameChange = "[name change number 1]";
         String cdeDefinitionChange = "[def change number 1]";
         goToCdeByName(cdeName);
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         editDesignationByIndex(0, cdeNameChange);
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         editUninOfMeasurement("myUom");
 
         newCdeVersion("Change note for change number 1");
@@ -29,14 +29,14 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent(cdeNameChange);
         textPresent(cdeDefinitionChange);
 
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         textPresent("myUom");
 
-        clickElement(By.id("ids_tab"));
+         goToIdentifiers();
         Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());
 
         // Test history
-        clickElement(By.id("history_tab"));
+        goToHistory();
         textPresent(cdeName);
         textPresent("Change note for change number 1");
         selectHistoryAndCompare(1, 2);
@@ -52,7 +52,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent(cdeNameChange);
         textPresent(cdeDefinitionChange);
 
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         textPresent("myUom");
 
         openCdeAudit(cdeName);

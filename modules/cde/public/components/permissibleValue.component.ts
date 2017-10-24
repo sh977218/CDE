@@ -340,8 +340,8 @@ export class PermissibleValueComponent {
         this.onEltChange.emit();
     }
 
-    changedPvDatatype(data: { value: string[] }) {
-        this.elt.valueDomain.datatypeValueList.datatype = event;
+    savePvDatatype(data: { value: string[] }) {
+        this.elt.valueDomain.datatypeValueList.datatype = data;
         deValidator.fixDatatype(this.elt);
         this.onEltChange.emit();
     }

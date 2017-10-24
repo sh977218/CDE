@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -11,6 +11,8 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as deValidator from "../../shared/deValidator.js";
 import { AlertService } from '_app/alert/alert.service';
+import { OrgHelperService } from 'core/public/orgHelper.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: "cde-data-element-view",
@@ -18,6 +20,14 @@ import { AlertService } from '_app/alert/alert.service';
     styles: [`
         .marginTopBottom5 {
             margin: 5px 0
+        }
+
+        #leftNav {
+            z-index: 1;
+        }
+
+        .mobileViewH1 {
+            font-size: 20px;
         }
     `]
 })
@@ -38,8 +48,13 @@ export class DataElementViewComponent implements OnInit {
     canEdit: boolean = false;
     drafts = [];
     deId;
+    mobileView: boolean = false;
+    orgNamingTags = [];
+    tabsCommented = [];
     tinyId;
     url;
+    draftSubscription: Subscription;
+    savingText: String;
 
     constructor(private http: Http,
                 private route: ActivatedRoute,
@@ -47,67 +62,69 @@ export class DataElementViewComponent implements OnInit {
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
+                private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService) {
+        this.mobileView = window.innerWidth <= 800;
+    }
+
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.mobileView = window.innerWidth <= 800;
     }
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
-            this.deId = this.route.snapshot.queryParams['cdeId'];
-            this.tinyId = this.route.snapshot.queryParams['tinyId'];
-            this.url = "/de/" + this.tinyId;
-            if (this.deId) this.url = "/deById/" + this.deId;
-            if (this.tabSet) this.tabSet.select("general_tab");
-            this.userService.then(() => {
-                let user = this.userService.user;
-                if (user && user.username) {
-                    this.loadDraft(draft => {
-                        if (draft) {
-                            this.elt = draft;
-                            this.setDisplayStatusWarning();
-                            deValidator.checkPvUnicity(this.elt.valueDomain);
-                            this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                        } else this.loadDataElement(null);
+            this.loadDataElement(de => {
+                this.userService.then(() => {
+                    this.orgHelperService.then(() => {
+                        let user = this.userService.user;
+                        if (user && user.username) {
+                            this.loadComments(de, null);
+                            this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                        }
+                        else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                        this.elt.naming.forEach(n => {
+                            n.tags.forEach(t => {
+                                allNamingTags.push(t);
+                            });
+                        });
+                        this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
+                            return {id: t, text: t};
+                        });
                     });
-                } else this.loadDataElement(null);
+                });
             });
         });
     }
 
-    onLocationChange(event, oldUrl, elt) {
-        if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
-            let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            let answer = confirm(txt);
-            if (!answer) {
-                event.preventDefault();
-            }
-        }
-    }
-
     loadDataElement(cb) {
-        this.http.get(this.url).map(res => res.json()).subscribe(res => {
+        let cdeId = this.route.snapshot.queryParams['cdeId'];
+        let url = "/de/" + this.route.snapshot.queryParams['tinyId'];
+        if (cdeId) url = "/deById/" + cdeId;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
                 this.deId = this.elt._id;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.loadComments(this.elt, null);
                 this.userService.then(() => {
                     let user = this.userService.user;
-                    if (user && user.username) {
+                    if (user && user.username)
                         deValidator.checkPvUnicity(this.elt.valueDomain);
-                    }
                     this.setDisplayStatusWarning();
                     this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                    if (cb) cb();
+                    if (cb) cb(this.elt);
                 });
             }, () => this.router.navigate(['/pageNotFound'])
         );
     }
 
-    loadComments(form, cb) {
-        this.http.get("/comments/eltId/" + form.tinyId)
+    loadComments(de, cb) {
+        this.http.get("/comments/eltId/" + de.tinyId)
             .map(res => res.json()).subscribe(res => {
             this.hasComments = res && (res.length > 0);
+            this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             if (cb) cb();
         }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
     }
@@ -166,10 +183,9 @@ export class DataElementViewComponent implements OnInit {
         this.highlightedTabs = $event;
     }
 
-    beforeChange(event) {
-        this.currentTab = event.nextId;
-        if (this.commentMode)
-            this.commentAreaComponent.setCurrentTab(this.currentTab);
+    setCurrentTab(currentTab) {
+        this.currentTab = currentTab;
+        if (this.commentMode) this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
     doStageElt() {
@@ -226,19 +242,28 @@ export class DataElementViewComponent implements OnInit {
     }
 
     loadDraft(cb) {
-        this.http.get("/draftDataElement/" + this.tinyId)
-            .map(res => res.json()).subscribe(
-            res => {
-                if (cb) cb(res[0]);
+        this.http.get("/draftDataElement/" + this.elt.tinyId)
+            .map(res => res.json()).subscribe(res => {
+                if (res && res.length > 0) {
+                    this.drafts = res;
+                    this.elt = res[0];
+                } else this.drafts = [];
+                if (cb) cb();
             },
             err => this.alert.addAlert("danger", err));
     }
 
     saveDraft(cb) {
+        this.savingText = 'Saving ...';
         this.elt._id = this.deId;
-        this.http.post("/draftDataElement/" + this.elt.tinyId, this.elt)
+        if (this.draftSubscription) this.draftSubscription.unsubscribe();
+        this.draftSubscription = this.http.post("/draftDataElement/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
-            this.elt.isDraft = true;
+                this.savingText = "Saved";
+                setTimeout(() => {
+                    this.savingText = "";
+                }, 3000);
+                this.elt.isDraft = true;
             if (cb) cb(res);
         }, err => this.alert.addAlert("danger", err));
     }

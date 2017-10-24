@@ -10,9 +10,9 @@ public class FormCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         String formName = "Draft Form Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("Go to current non-draft version to see classifications");
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         textPresent("Go to current non-draft version to see attachments");
         clickElement(By.id("discussBtn"));
         textPresent("Go to current non-draft version to see comments");

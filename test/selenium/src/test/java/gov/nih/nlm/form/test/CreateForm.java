@@ -29,13 +29,14 @@ public class CreateForm extends BaseClassificationTest {
         addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         modalGone();
         clickElement(By.id("submit"));
-
+        goToGeneralDetail();
         textPresent(formName);
         textPresent(formDef);
 
         waitForESUpdate();
 
         goToFormByName(formName);
+        goToGeneralDetail();
         textPresent(formDef);
     }
 

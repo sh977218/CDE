@@ -11,7 +11,7 @@ public class ReorderPermissibleValueTest extends NlmCdeBaseTest {
         String cdeName = "cde for test cde reorder detail tabs";
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         clickElement(By.id("moveDown-0"));
         textPresent("pv1", By.id("pvValue_1"));
         clickElement(By.id("moveUp-2"));

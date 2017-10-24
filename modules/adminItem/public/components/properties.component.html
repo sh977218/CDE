@@ -1,43 +1,36 @@
 <div id="propertiesDiv">
     <h4>Properties</h4>
     <div *ngIf="elt.properties.length === 0">There are no properties.</div>
-    <div *ngFor="let prop of elt.properties;let i = index">
-        <div class="row">
-            <div class="col-md-1 text-right">
-                <div class="row" *ngIf="canEdit">
-                    <span *ngIf="prop.edit">Confirm Delete
-                        <span class="btn-default fa fa-check" (click)="removePropertyByIndex(i)"
-                              id="confirmRemoveProperty-{{i}}" title="OK"></span>
-                        <span class="btn-default fa fa-times" (click)="prop.edit = false"
-                              id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
-                    </span>
-                    <span (click)="prop.edit = true" *ngIf="!prop.edit" class="btn-default fa fa-trash-o"
-                          id="removeProperty-{{i}}" title="Remove"></span>
-                    <sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></sortable-array>
-                </div>
-            </div>
-            <div class="col-md-11">
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Key:</div>
-                    <div class="col-xs-10 ng-binding" id="key_{{i}}">{{prop.key}}</div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Value:</div>
-                    <div class="col-xs-10 ng-binding" id="value_{{i}}">
-                        <cde-inline-area-edit [(model)]="prop.value" (save)="onEltChange.emit()"
-                                              [(defFormat)]="prop.valueFormat"
-                                              [isAllowed]="canEdit"></cde-inline-area-edit>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <ng-container *ngFor="let prop of elt.properties;let i = index">
+        <dl class="row">
+            <dt class="col-sm-3 text-right">
+                <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
+                    <span class="btn-default fa fa-check" (click)="removePropertyByIndex(i)"
+                          id="confirmRemoveProperty-{{i}}" title="OK"></span>
+                    <span class="btn-default fa fa-times" (click)="prop.edit = false"
+                          id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
+                </ng-container>
+                <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-default fa fa-trash-o"
+                      id="removeProperty-{{i}}" title="Remove"></span>
+                <sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></sortable-array>
+                Key:
+            </dt>
+            <dd id="key_{{i}}" class="col-sm-9">{{prop.key}}</dd>
+            <dt class="col-sm-3 text-right">Id:</dt>
+            <dd id="value_{{i}}" class="col-sm-9">
+                <cde-inline-area-edit [(model)]="prop.value" (save)="onEltChange.emit()"
+                                      [(defFormat)]="prop.valueFormat"
+                                      [isAllowed]="canEdit"></cde-inline-area-edit>
+            </dd>
+        </dl>
         <hr>
-    </div>
+    </ng-container>
     <button *ngIf="canEdit && onInitDone" class="btn btn-small btn-default" id="openNewPropertyModalBtn"
             (click)="openNewPropertyModal();">
         <i class="fa fa-plus"></i> Add Property
     </button>
 </div>
+
 <ng-template #newPropertyContent id="newPropertyModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="newPropertyModalHeader">
         <h4 class="modal-title">Add Property</h4>
@@ -56,7 +49,7 @@
                           [(ngModel)]="newProperty.value" Placeholder="Property Value" required></textarea>
             </div>
             <div class="alert alert-info">
-                Property key are managed in Org Management > List Management
+                Property keys are managed in Org Management > List Management
             </div>
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">

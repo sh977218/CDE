@@ -1,4 +1,4 @@
-<div>
+<div id="displayProfileDiv" class="col-12">
     <h4>Display Profiles</h4>
     <div *ngFor="let profile of elt.displayProfiles; let index = index" class="hr" id="profile_{{index}}">
         <div class="text-right" *ngIf="canEdit">
@@ -21,22 +21,27 @@
                     <dt><label for="displayAsMatrix_{{index}}">Sections as matrices:</label></dt>
                     <dd>
                         <input type="checkbox" [(ngModel)]="profile.sectionsAsMatrix" [disabled]="!canEdit"
-                               id="displayAsMatrix_{{index}}" (click)="onEltChange.emit();"/>
+                               id="displayAsMatrix_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
                     <dt><label for="displayValues_{{index}}">Display answer values:</label></dt>
                     <dd>
                         <input type="checkbox" [(ngModel)]="profile.displayValues" [disabled]="!canEdit"
-                               id="displayValues_{{index}}" (click)="onEltChange.emit();"/>
+                               id="displayValues_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
                     <dt><label for="displayInstructions_{{index}}">Display Instructions:</label></dt>
                     <dd>
                         <input type="checkbox" [(ngModel)]="profile.displayInstructions" [disabled]="!canEdit"
-                               id="displayInstructions_{{index}}" (click)="onEltChange.emit();">
+                               id="displayInstructions_{{index}}" (change)="onEltChange.emit();">
+                    </dd>
+                    <dt><label for="displayCopyright_{{index}}">Display Copyright:</label></dt>
+                    <dd>
+                        <input type="checkbox" [(ngModel)]="profile.displayCopyright" [disabled]="!canEdit"
+                               id="displayCopyright_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt><label for="displayNumbering_{{index}}">Display Question Numbers:</label></dt>
                     <dd>
                         <input type="checkbox" [(ngModel)]="profile.displayNumbering" [disabled]="!canEdit"
-                               id="displayNumbering_{{index}}" (click)="onEltChange.emit();">
+                               id="displayNumbering_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt><label for="displayType_{{index}}">Display Printable Logic:</label></dt>
                     <dd>
@@ -46,18 +51,25 @@
                     <br/>
                     <dt><label>Number of Columns:</label></dt>
                     <dd>
-                        <nouislider [(ngModel)]="profile.numberOfColumns" id="nc_{{index}}" [connect]="true" [min]="1"
-                                    [max]="6" [step]="1" [tooltips]="true"></nouislider>
+                        <select [ngModel]="profile.numberOfColumns" id="nc_{{index}}"
+                                (ngModelChange)="onChange(profile,$event)">
+                            <option value=1>1</option>
+                            <option value=2>2</option>
+                            <option value=3>3</option>
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                            <option value=6>6</option>
+                        </select>
                     </dd>
                     <dt><label for="displayInvisible_{{index}}">Display Invisible Questions:</label></dt>
                     <dd>
                         <input type="checkbox" [(ngModel)]="profile.displayInvisible" [disabled]="!canEdit"
-                               id="displayInvisible_{{index}}" (click)="onEltChange.emit();">
+                               id="displayInvisible_{{index}}" (change)="onEltChange.emit();">
                     </dd>
                     <dt><label for="displayRepeatFormat_{{index}}">Repeat Format String:</label></dt>
                     <dd>
                         <input class="form-control" [(ngModel)]="profile.repeatFormat"
-                               [disabled]="!canEdit" id="displayRepeatFormat_{{index}}" (click)="onEltChange.emit();">
+                               [disabled]="!canEdit" id="displayRepeatFormat_{{index}}" (change)="onEltChange.emit();">
                         (Use # in place of number. Ex: "#." for "1.")
                     </dd>
                 </dl>

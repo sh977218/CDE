@@ -60,19 +60,7 @@ export class NativeRenderService {
             this.elt.displayProfiles.indexOf(this.profile) === -1)
             this.profile = this.elt.displayProfiles[0];
 
-        if (!this.profile)
-            this.profile = {
-                _id: null,
-                name: "Default Config",
-                displayInstructions: true,
-                displayNumbering: true,
-                sectionsAsMatrix: true,
-                displayValues: false,
-                displayType: NativeRenderService.FOLLOW_UP,
-                numberOfColumns: 4,
-                displayInvisible: false,
-                repeatFormat: "#."
-            };
+        if (!this.profile) this.profile = new DisplayProfile("Default Config");
         this.setNativeRenderType(this.profile.displayType);
     }
     getElt() {

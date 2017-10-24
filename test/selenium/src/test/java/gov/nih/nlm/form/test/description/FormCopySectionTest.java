@@ -14,13 +14,13 @@ public class FormCopySectionTest extends BaseFormTest {
         String form2 = "Copy Section Form Test";
         mustBeLoggedInAs(nlm_username, nlm_username);
         goToFormByName(form1);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         clickElement(By.xpath("//*[@id='section_1']//i[contains(@class,'copySection')]"));
         ((JavascriptExecutor) driver).executeScript("window.open()");
         hangon(5);
         switchTabAndClose(1);
         goToFormByName(form2);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         WebElement sourceElt = findElement(By.id("pasteSection"));
         WebElement targetElt = findElement(By.xpath("//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']"));
         (new Actions(driver)).moveToElement(targetElt).perform();

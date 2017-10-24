@@ -11,7 +11,7 @@ public class TwoLabelsNoVersionTest extends NlmCdeBaseTest {
         String formName = "NoVersionCdeFormTest";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         startEditQuestionSectionById("question_0_0");
         clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("No Label");

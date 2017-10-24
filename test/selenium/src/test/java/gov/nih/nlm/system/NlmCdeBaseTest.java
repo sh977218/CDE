@@ -216,7 +216,7 @@ public class NlmCdeBaseTest {
     @AfterMethod
     public void generateGif(Method m) {
         String methodName = m.getName();
-        System.out.println("TEST Complete: " +  className + "." + methodName);
+        System.out.println("TEST Complete: " + className + "." + methodName);
         if (m.getAnnotation(RecordVideo.class) != null) {
             try {
                 File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
@@ -334,6 +334,66 @@ public class NlmCdeBaseTest {
 
     protected void goToFormByName(String name) {
         goToElementByName(name, "form");
+    }
+
+    protected void goToPreview() {
+        clickElement(By.id("preview_tab"));
+    }
+
+    protected void goToGeneralDetail() {
+        clickElement(By.id("general_tab"));
+    }
+
+    protected void goToPermissibleValues() {
+        clickElement(By.id("pvs_tab"));
+    }
+
+    protected void goToFormDescription() {
+        clickElement(By.id("description_tab"));
+    }
+
+    protected void goToNaming() {
+        clickElement(By.id("naming_tab"));
+    }
+
+    protected void goToClassification() {
+        clickElement(By.id("classification_tab"));
+    }
+
+    protected void goToMeshTopic() {
+        clickElement(By.id("meshTopic_tab"));
+    }
+
+    protected void goToConcepts() {
+        clickElement(By.id("concepts_tab"));
+    }
+
+    protected void goToReferenceDocuments() {
+        clickElement(By.id("referenceDocuments_tab"));
+    }
+
+    protected void goToProperties() {
+        clickElement(By.id("properties_tab"));
+    }
+
+    protected void goToIdentifiers() {
+        clickElement(By.id("ids_tab"));
+    }
+
+    protected void goToAttachments() {
+        clickElement(By.id("attachments_tab"));
+    }
+
+    protected void goToHistory() {
+        clickElement(By.id("history_tab"));
+    }
+
+    protected void goToScoreDerivations() {
+        clickElement(By.id("derivationRules_tab"));
+    }
+
+    protected void goToValidationRules() {
+        goToValidationRules();
     }
 
     private void goToElementByName(String name, String type) {
@@ -990,7 +1050,7 @@ public class NlmCdeBaseTest {
 
     protected void addNewProperty(String key, String value) {
         clickElement(By.id("openNewPropertyModalBtn"));
-        textPresent("Property key are managed in Org Management > List Management");
+        textPresent("Property keys are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
         findElement(By.name("newValue")).sendKeys(value);
         hangon(2);
@@ -1103,7 +1163,7 @@ public class NlmCdeBaseTest {
      * @param index Index of identifiers, starting from 0.
      */
     protected void removeIdentifier(int index) {
-        clickElement(By.id("ids_tab"));
+        goToIdentifiers();
         clickElement(By.id("removeIdentifier-" + index));
         clickElement(By.id("confirmRemoveIdentifier-" + index));
     }
@@ -1114,7 +1174,7 @@ public class NlmCdeBaseTest {
      * @param index Index of concepts, starting from 0.
      */
     protected void removeDataElementConcept(int index) {
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.id("removedataElementConcept-" + index));
     }
 
@@ -1124,7 +1184,7 @@ public class NlmCdeBaseTest {
      * @param index Index of concepts, starting from 0.
      */
     protected void removeObjectClassConcept(int index) {
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.id("removeobjectClass-" + index));
     }
 
@@ -1134,7 +1194,7 @@ public class NlmCdeBaseTest {
      * @param index Index of concepts, starting from 0.
      */
     protected void removePropertyConcept(int index) {
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.id("removeproperty-" + index));
     }
 
@@ -1453,8 +1513,12 @@ public class NlmCdeBaseTest {
         clickIFrameElement(By.xpath("//button[. = 'Execute']"));
         findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
         findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
-//        hangon(3000);
         textPresent(text, By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
+    }
+
+    protected void selectDisplayProfileByName(String name) {
+        clickElement(By.id("select_display_profile"));
+        clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button[normalize-space(text()) = '" + name + "']"));
     }
 
 }

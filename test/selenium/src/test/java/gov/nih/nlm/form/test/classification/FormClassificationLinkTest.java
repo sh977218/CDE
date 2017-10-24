@@ -10,7 +10,7 @@ public class FormClassificationLinkTest extends BaseFormTest {
     @Test
     public void formClassificationLink() {
         goToFormByName("Skin Cancer Patient");
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("Disease");
         textPresent("Headache");
         textPresent("Participant/Subject History and Family History");

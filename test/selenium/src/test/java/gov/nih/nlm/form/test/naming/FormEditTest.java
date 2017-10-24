@@ -12,7 +12,7 @@ public class FormEditTest extends BaseFormTest {
         String formName = "Form Edit Section And Question Test";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         editQuestion();
         newFormVersion();
         goHome();

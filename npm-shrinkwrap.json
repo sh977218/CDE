@@ -305,6 +305,12 @@
         "repeat-string": "1.6.1"
       }
     },
+    "almond": {
+      "version": "0.3.3",
+      "resolved": "https://registry.npmjs.org/almond/-/almond-0.3.3.tgz",
+      "integrity": "sha1-oOfJWsdiTWQXtElLHmi/9pMWiiA=",
+      "dev": true
+    },
     "alphanum-sort": {
       "version": "1.0.2",
       "resolved": "https://registry.npmjs.org/alphanum-sort/-/alphanum-sort-1.0.2.tgz",
@@ -5346,6 +5352,12 @@
       "integrity": "sha1-XE2d5lKvbNCncBVKYxu6ErAVx4c=",
       "dev": true
     },
+    "jquery-mousewheel": {
+      "version": "3.1.13",
+      "resolved": "https://registry.npmjs.org/jquery-mousewheel/-/jquery-mousewheel-3.1.13.tgz",
+      "integrity": "sha1-BvAzXxbjU6aV5yBr9QUDy1I6buU=",
+      "dev": true
+    },
     "js-base64": {
       "version": "2.1.9",
       "resolved": "https://registry.npmjs.org/js-base64/-/js-base64-2.1.9.tgz",
@@ -8877,6 +8889,16 @@
         }
       }
     },
+    "select2": {
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/select2/-/select2-4.0.4.tgz",
+      "integrity": "sha1-oYpih4X5jROZmXGuldjX5XJoB2s=",
+      "dev": true,
+      "requires": {
+        "almond": "0.3.3",
+        "jquery-mousewheel": "3.1.13"
+      }
+    },
     "selenium-webdriver": {
       "version": "3.4.0",
       "resolved": "https://registry.npmjs.org/selenium-webdriver/-/selenium-webdriver-3.4.0.tgz",
@@ -9319,11 +9341,6 @@
       "integrity": "sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=",
       "dev": true
     },
-    "string": {
-      "version": "3.3.3",
-      "resolved": "https://registry.npmjs.org/string/-/string-3.3.3.tgz",
-      "integrity": "sha1-XqIRzZLSKOGEKUmQpsyXs2anfLA="
-    },
     "string_decoder": {
       "version": "1.0.3",
       "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.0.3.tgz",
@@ -9592,7 +9609,7 @@
       }
     },
     "swagger-tools": {
-      "version": "git+https://github.com/apigee-127/swagger-tools.git#241e221914ca6161d73f93097b318a8f6662cff5",
+      "version": "git+https://github.com/apigee-127/swagger-tools.git#0cea535b122265c6d01546e199e2e8fda4c0f5da",
       "requires": {
         "async": "2.5.0",
         "body-parser": "1.18.2",
@@ -9607,7 +9624,6 @@
         "qs": "6.5.1",
         "serve-static": "1.13.1",
         "spark-md5": "3.0.0",
-        "string": "3.3.3",
         "superagent": "3.6.3",
         "swagger-converter": "0.1.7",
         "traverse": "0.6.6",

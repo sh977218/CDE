@@ -1,4 +1,6 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import {
+    ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild
+} from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
@@ -11,6 +13,8 @@ import { IsAllowedService } from 'core/public/isAllowed.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
+import { OrgHelperService } from 'core/public/orgHelper.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: "cde-form-view",
@@ -18,6 +22,15 @@ import { AlertService } from '_app/alert/alert.service';
     styles: [`
         .marginTopBottom5 {
             margin: 5px 0
+        }
+
+        #leftNav {
+            margin-top: 20px;
+            z-index: 1;
+        }
+
+        .mobileViewH1 {
+            font-size: 20px;
         }
     `]
 })
@@ -27,7 +40,6 @@ export class FormViewComponent implements OnInit {
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
     @ViewChild("mltPinModalCde") public mltPinModalCde: PinBoardModalComponent;
     @ViewChild("saveModal") public saveModal: SaveModalComponent;
-    @ViewChild("tabSet") public tabSet: NgbTabset;
     @Input() routeParams: any;
     @Input() missingCdes = [];
     @Input() inScoreCdes = [];
@@ -38,35 +50,58 @@ export class FormViewComponent implements OnInit {
     public modalRef: NgbModalRef;
     hasComments;
     commentMode;
-    currentTab = "general_tab";
+    currentTab = "preview_tab";
     highlightedTabs = [];
     canEdit: boolean = false;
     isFormValid = true;
     formInput;
     drafts = [];
+    orgNamingTags = [];
+    tabsCommented = [];
     formId;
+    mobileView: boolean = false;
+    savingText: string = "";
+    draftSubscription: Subscription;
 
     constructor(private http: Http,
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
                 public isAllowedModel: IsAllowedService,
+                private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService,
                 private route: ActivatedRoute,
                 private router: Router) {
+        this.mobileView = window.innerWidth <= 800;
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.mobileView = window.innerWidth <= 800;
     }
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.loadForm(form => {
-                this.loadComments(form, null);
-                if (this.tabSet) this.tabSet.select("general_tab");
                 this.userService.then(() => {
-                    let user = this.userService.user;
-                    if (user && user.username)
-                        this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                    else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    this.orgHelperService.then(() => {
+                        let user = this.userService.user;
+                        if (user && user.username) {
+                            this.loadComments(form, null);
+                            this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                        }
+                        else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                        this.elt.naming.forEach(n => {
+                            n.tags.forEach(t => {
+                                allNamingTags.push(t);
+                            });
+                        });
+                        this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
+                            return {id: t, text: t};
+                        });
+                    });
                 });
             });
         });
@@ -79,11 +114,11 @@ export class FormViewComponent implements OnInit {
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
                 this.formId = this.elt._id;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.areDerivationRulesSatisfied();
-                this.loadComments(this.elt, null);
-                this.userService.then(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
-                cb(this.elt);
+                this.userService.then(() => {
+                    this.areDerivationRulesSatisfied();
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                });
+                if (cb) cb(this.elt);
             },
             () => this.router.navigate(['/pageNotFound'])
         );
@@ -93,16 +128,9 @@ export class FormViewComponent implements OnInit {
         this.http.get("/comments/eltId/" + form.tinyId)
             .map(res => res.json()).subscribe(res => {
             this.hasComments = res && (res.length > 0);
+            this.tabsCommented = res.map(c => c.linkedTab + '_tab');
             if (cb) cb();
         }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
-    }
-
-    onLocationChange(event, newUrl, oldUrl, elt) {
-        if (elt && elt.unsaved && oldUrl.indexOf("formView") > -1) {
-            let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            let answer = confirm(txt);
-            if (!answer) event.preventDefault();
-        }
     }
 
     openCopyElementModal() {
@@ -133,10 +161,6 @@ export class FormViewComponent implements OnInit {
             administrativeNote: "Copy of: " + this.elt.tinyId
         };
         this.modalRef = this.modalService.open(this.copyFormContent, {size: "lg"});
-    }
-
-    closeCopyFormModal() {
-        this.modalRef.close();
     }
 
     beforeChange(event) {
@@ -299,10 +323,16 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft(cb) {
+        this.savingText = 'Saving ...';
         this.elt._id = this.formId;
-        this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
+        if (this.draftSubscription) this.draftSubscription.unsubscribe();
+        this.draftSubscription = this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
             this.elt.isDraft = true;
+            this.savingText = "Saved";
+            setTimeout(() => {
+                this.savingText = "";
+            }, 3000);
             this.areDerivationRulesSatisfied();
             this.validateForm();
             if (cb) cb(res);
