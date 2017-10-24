@@ -5936,7 +5936,15 @@
       "integrity": "sha1-+Ob1tXip405UEXm1a47uv0oofgg=",
       "requires": {
         "lodash._isnative": "2.4.1",
-        "lodash.isobject": "2.4.1"
+        "lodash.isobject": "2.4.1",
+        "lodash.noop": "2.4.1"
+      },
+      "dependencies": {
+        "lodash.noop": {
+          "version": "2.4.1",
+          "resolved": "https://registry.npmjs.org/lodash.noop/-/lodash.noop-2.4.1.tgz",
+          "integrity": "sha1-T7VPgWZS5a4Q6PcvcXo4jHMmU4o="
+        }
       }
     },
     "lodash._basecreatecallback": {
@@ -6118,7 +6126,15 @@
       "resolved": "https://registry.npmjs.org/lodash._setbinddata/-/lodash._setbinddata-2.4.1.tgz",
       "integrity": "sha1-98IAzRuS7yNrOZ7s9zxkjReqlNI=",
       "requires": {
-        "lodash._isnative": "2.4.1"
+        "lodash._isnative": "2.4.1",
+        "lodash.noop": "2.4.1"
+      },
+      "dependencies": {
+        "lodash.noop": {
+          "version": "2.4.1",
+          "resolved": "https://registry.npmjs.org/lodash.noop/-/lodash.noop-2.4.1.tgz",
+          "integrity": "sha1-T7VPgWZS5a4Q6PcvcXo4jHMmU4o="
+        }
       }
     },
     "lodash._shimkeys": {

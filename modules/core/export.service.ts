@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as JSZip from "jszip";
-import * as JXON from "components/jxon";
+import * as JXON from "jxon";
 import { saveAs } from "file-saver";
 import { ElasticService } from 'core/elastic.service';
 import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
