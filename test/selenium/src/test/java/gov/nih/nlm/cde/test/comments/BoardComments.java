@@ -20,8 +20,6 @@ public class BoardComments extends NlmCdeBaseTest {
         String commentText = "Here is the first comment";
         findElement(By.id("commentTextArea")).sendKeys(commentText);
         clickElement(By.id("postComment"));
-        textPresent("Comment added. Approval required.");
-        closeAlert();
 
         mustBeLoggedInAs(test_username, password);
         goToBoard(boardName);
@@ -55,12 +53,7 @@ public class BoardComments extends NlmCdeBaseTest {
         textPresent(commentText);
 
         clickElement(By.id("removeReply-0-0"));
-        textPresent("Comment removed");
-        closeAlert();
-
         clickElement(By.id("removeComment-0"));
-        textPresent("Comment removed");
-        closeAlert();
 
         textNotPresent(commentText);
         textNotPresent(replyText);

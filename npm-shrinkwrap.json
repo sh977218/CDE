@@ -305,6 +305,12 @@
         "repeat-string": "1.6.1"
       }
     },
+    "almond": {
+      "version": "0.3.3",
+      "resolved": "https://registry.npmjs.org/almond/-/almond-0.3.3.tgz",
+      "integrity": "sha1-oOfJWsdiTWQXtElLHmi/9pMWiiA=",
+      "dev": true
+    },
     "alphanum-sort": {
       "version": "1.0.2",
       "resolved": "https://registry.npmjs.org/alphanum-sort/-/alphanum-sort-1.0.2.tgz",
@@ -5346,6 +5352,12 @@
       "integrity": "sha1-XE2d5lKvbNCncBVKYxu6ErAVx4c=",
       "dev": true
     },
+    "jquery-mousewheel": {
+      "version": "3.1.13",
+      "resolved": "https://registry.npmjs.org/jquery-mousewheel/-/jquery-mousewheel-3.1.13.tgz",
+      "integrity": "sha1-BvAzXxbjU6aV5yBr9QUDy1I6buU=",
+      "dev": true
+    },
     "js-base64": {
       "version": "2.1.9",
       "resolved": "https://registry.npmjs.org/js-base64/-/js-base64-2.1.9.tgz",
@@ -8863,6 +8875,16 @@
             "graceful-readlink": "1.0.1"
           }
         }
+      }
+    },
+    "select2": {
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/select2/-/select2-4.0.4.tgz",
+      "integrity": "sha1-oYpih4X5jROZmXGuldjX5XJoB2s=",
+      "dev": true,
+      "requires": {
+        "almond": "0.3.3",
+        "jquery-mousewheel": "3.1.13"
       }
     },
     "selenium-webdriver": {
