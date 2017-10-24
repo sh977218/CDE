@@ -29,7 +29,7 @@ public class TourTest extends NlmCdeBaseTest {
             "The registration status represents the maturity level of an element, with Standard and Preferred Standard being highest. Only qualified and above are retrieved in search results by default. When elements are first created, they get an incomplete status.",
             "This tab will tell us if a CDE is based on a number, text, value list or other datatype.",
             "Any CDE may have multiple names. Names help identify the CDE",
-            "Classifications describe the way in which an organization may use a CDE or Form. A CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it.",
+            "Classifications describe the way in which an organization may use a CDE or Form. Any CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it.",
             "CDEs are sometimes described by one or more concepts. These concepts",
             "This section contains reference documents for the CDE.",
             "This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process.",
@@ -60,7 +60,7 @@ public class TourTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void tourTest() {
+    public void takeTourTest() {
         mustBeLoggedOut();
         goHome();
         clickElement(By.id("takeATourBtn"));
