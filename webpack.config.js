@@ -2,7 +2,6 @@ const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
-const nodeExternals = require('webpack-node-externals');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 console.log("Are we prod? " + prod);
@@ -58,7 +57,7 @@ module.exports = {
                 $: 'jquery',
                 jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
-                'Tether': 'tether',
+                'Tether':'tether',
                 Popper: ['popper.js', 'default'],
             }),
             // new BundleAnalyzerPlugin()
@@ -77,7 +76,7 @@ module.exports = {
                 $: 'jquery',
                 jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
-                'Tether': 'tether',
+                'Tether':'tether',
                 Popper: ['popper.js', 'default'],
             })
         ],
@@ -99,10 +98,7 @@ module.exports = {
         inline: true,
         progress: true
     },
-    externals: [nodeExternals({
-        whitelist: [
-            /^@ng-bootstrap\/ng-bootstrap/,
-            /^angular2\-toaster/,
-        ]
-    })]
+    externals: {
+        angular: true
+    }
 };
