@@ -24,6 +24,9 @@ export class NativeRenderService {
     }
 
     render() {
+        if (!this.elt)
+            return;
+
         // clean up
         FormService.iterateFeSync(this.elt, undefined, undefined, f => {
             for (let i = 0; i < f.question.answers.length; i++) {
@@ -79,6 +82,7 @@ export class NativeRenderService {
             if (!this.elt.formInput)
                 this.elt.formInput = [];
 
+            this.render();
             return JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
 

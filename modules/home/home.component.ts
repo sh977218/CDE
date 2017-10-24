@@ -33,25 +33,43 @@ import { FormService } from 'nativeRender/form.service';
         }
         .morePages {
             border-left: 2px dashed #0275d8;
-            height: 20%;
+            bottom: -150px;
+            height: 300px;
             left: 50%;
             margin-left: -1px;
             position: absolute;
             text-align: center;
-            top: 90%;
             width: 2px;
         }
         .morePagesXsUnder {
-            height: 40%;
-            top: 80%;
+            bottom: -300px;
+            height: 600px;
             z-index: -1;
         }
         @media (min-width: 768px) {
             .morePagesXsUnder {
-                height: 20%;
-                top: 90%;
+                bottom: -150px;
+                height: 300px;
                 z-index: auto;
             }
+        }
+        .morePagesUnder {
+            bottom: -300px;
+            height: 600px;
+            left: 50%;
+            z-index: -1;
+        }
+        .morePagesUnderFrom {
+            bottom: -150px;
+            height: 450px;
+            left: 50%;
+            z-index: -1;
+        }
+        .morePagesUnderTo {
+            bottom: -300px;
+            height: 450px;
+            left: 50%;
+            z-index: -1;
         }
         .morePagesFromCircle::before {
             background-color: #0275d8;
@@ -102,24 +120,6 @@ import { FormService } from 'nativeRender/form.service';
             position: absolute;
             width: 10px;
         }
-        .morePagesUnder {
-            height: 40%;
-            left: 50%;
-            top: 80%;
-            z-index: -1;
-        }
-        .morePagesUnderFrom {
-            height: 30%;
-            left: 50%;
-            top: 90%;
-            z-index: -1;
-        }
-        .morePagesUnderTo {
-            height: 30%;
-            left: 50%;
-            top: 80%;
-            z-index: -1;
-        }
         .morePagesText {
             bottom: 10%;
             color: #0275d8;
@@ -158,6 +158,14 @@ import { FormService } from 'nativeRender/form.service';
             .morePagesText {
                 color: white;
                 z-index: -1;
+            }
+        }
+        .nativeRender {
+            margin-bottom: 0;
+        }
+        @media (min-width: 768px) {
+            .nativeRender {
+                margin-bottom: 200px;
             }
         }
         .carousel-caption {
@@ -207,7 +215,7 @@ export class HomeComponent {
     topItems = {CDEs: null, Forms: null};
 
     constructor(private http: Http, private formService: FormService) {
-        this.getForm(this.formFeatures[0].tinyId);
+        this.getForm(this.formFeatures[0]);
     }
 
     getForm(feature) {

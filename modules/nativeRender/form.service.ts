@@ -117,7 +117,7 @@ export class FormService {
     // callback(error)
     // feCb(fe, cbContinue(error))
     static iterateFe(elt, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
-        if (Array.isArray(elt.formElements))
+        if (elt && Array.isArray(elt.formElements))
             async.forEach(elt.formElements, (fe: any, cb) => {
                 if (fe.elementType === 'form') {
                     formCb(fe, (err) => {
@@ -141,7 +141,7 @@ export class FormService {
 
     // cb(fe)
     static iterateFeSync(elt, formCb = noop, sectionCb = noop, questionCb = noop) {
-        if (Array.isArray(elt.formElements))
+        if (elt && Array.isArray(elt.formElements))
             elt.formElements.forEach(fe => {
                 if (fe.elementType === 'form') {
                     formCb(fe);
