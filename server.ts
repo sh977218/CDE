@@ -41,5 +41,5 @@ app.get('*', (req, res) => res.render('index', {req, res}));
 
 // Server
 app.listen(PORT, () => {
-    console.log(`Listening on: http://localhost:${server.address().port}`);
+    console.log(`Listening on: http://localhost`);
 });
