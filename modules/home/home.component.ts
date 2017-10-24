@@ -263,6 +263,6 @@ export class HomeComponent {
     }
 
     takeATour() {
-        TourService.newTour();
+        TourService.takeATour();
     }
 }

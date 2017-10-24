@@ -9,7 +9,6 @@ import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
 import { IsAllowedService } from 'core/isAllowed.service';
 import { UserService } from 'core/user.service';
-import { AlertService } from '_app/alert/alert.service';
 
 const tabMap = {
     "preview_tab": "preview",
@@ -36,7 +35,6 @@ const tabMap = {
 export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     constructor(private http: Http,
-                private alert: AlertService,
                 public isAllowedModel: IsAllowedService,
                 public userService: UserService) {
     };
@@ -124,33 +122,30 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     canReopenComment = (com) => com.status === "resolved" && this.canRemoveComment(com);
 
-    addComment = function () {
+    addComment() {
         this.http.post("/comments/" + this.elt.elementType + "/add", {
             comment: this.newComment.text,
             linkedTab: tabMap[this.selectedElt],
             element: {eltId: this.eltId}
-        }).map(r => r.json()).subscribe(res => {
+        }).map(r => r.json()).subscribe(() => {
             this.newComment.text = "";
-            this.loadComments(() => {
-                this.alert.addAlert("success", res.message);
-            });
         });
     };
 
     removeComment(commentId, replyId) {
         this.http.post("/comments/" + this.elt.elementType + "/remove", {
             commentId: commentId, replyId: replyId
-        }).map(r => r.json()).subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        }).map(r => r.json()).subscribe();
     };
 
     updateCommentStatus(commentId, status) {
-        this.http.post("/comments/status/" + status, {commentId: commentId}).map(r => r.json())
-            .subscribe((res) => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        this.http.post("/comments/status/" + status, {commentId: commentId})
+            .map(r => r.json()).subscribe();
     };
 
     updateReplyStatus(commentId, replyId, status) {
-        this.http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId}).map(r => r.json())
-            .subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        this.http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId})
+            .map(r => r.json()).subscribe();
     };
 
     replyTo(commentId) {
@@ -161,7 +156,6 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 reply: this.tempReplies[commentId]
             }).subscribe(() => {
                 this.tempReplies[commentId] = '';
-                this.loadComments();
             });
         }, 0);
     };

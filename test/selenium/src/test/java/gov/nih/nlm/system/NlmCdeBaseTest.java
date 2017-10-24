@@ -1052,7 +1052,7 @@ public class NlmCdeBaseTest {
 
     protected void addNewProperty(String key, String value) {
         clickElement(By.id("openNewPropertyModalBtn"));
-        textPresent("Property key are managed in Org Management > List Management");
+        textPresent("Property keys are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
         findElement(By.name("newValue")).sendKeys(value);
         hangon(2);

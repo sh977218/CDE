@@ -39,6 +39,7 @@
     "modules/system/node-js",
     "modules/cde/node-js",
     "modules/form/node-js",
+    "modules/form/public/assets/*",
     "modules/board/node-js",
     "scripts",
     "test"

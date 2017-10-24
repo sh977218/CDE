@@ -101,10 +101,6 @@ export class FormTermMappingComponent implements OnInit {
         });
     }
 
-    isDescriptorAlreadyMapped (desc) {
-        return this.mapping.meshDescriptors.findIndex(e => e === desc) > -1;
-    };
-
     loadDescriptor  () {
         this.searchTerms.next(this.meshTerm);
     };

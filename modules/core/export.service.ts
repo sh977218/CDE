@@ -60,8 +60,9 @@ export class ExportService {
                         result.forEach(function (oneElt) {
                             zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt}));
                         });
-                        let content = zip.generate({type: "blob"});
-                        saveAs(content, "SearchExport_XML.zip");
+                        zip.generateAsync({type: "blob"}).then((content) => {
+                            saveAs(content, "SearchExport_XML.zip");
+                        } );
                     },
                     'odm': function (result) {
                         let zip = new JSZip();
@@ -70,8 +71,9 @@ export class ExportService {
                                 if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
                             });
                         });
-                        let content = zip.generate({type: "blob"});
-                        saveAs(content, "SearchExport_ODM.zip");
+                        zip.generateAsync({type: "blob"}).then((content) => {
+                            saveAs(content, "SearchExport_ODM.zip");
+                        });
                     },
                     'validationRules': (result) => {
                         let orgName = exportSettings.searchSettings.selectedOrg;

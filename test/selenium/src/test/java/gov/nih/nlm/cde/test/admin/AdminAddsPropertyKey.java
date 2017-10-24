@@ -21,23 +21,24 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         textPresent("Org Updated");
         closeAlert();
 
-        int count = 0;
-        while (count < 5) {
+        // is this fixed yet?
+//        int count = 0;
+//        while (count < 5) {
             goToCdeByName("Distance from Closest Margin Value");
 
             goToProperties();
             clickElement(By.id("openNewPropertyModalBtn"));
             clickElement(By.id("newKey"));
-
-            try {
-                findElement(By.xpath("//option[@value='doYouSeeThis']"));
-                findElement(By.xpath("//option[@value='propKey0']"));
-                break;
-            } catch (TimeoutException e) {}
-
-            hangon(10);
-            count++;
-        }
+//
+//            try {
+//                findElement(By.xpath("//option[@value='doYouSeeThis']"));
+//                findElement(By.xpath("//option[@value='propKey0']"));
+//                break;
+//            } catch (TimeoutException e) {}
+//
+//            hangon(10);
+//            count++;
+//        }
         findElement(By.xpath("//option[@value='doYouSeeThis']"));
         findElement(By.xpath("//option[@value='propKey0']"));
 
@@ -57,7 +58,9 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         goToProperties();
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
-        textNotPresent("doYouSeeThis");
+
+        findElement(By.xpath("//option[@value='propKey0']"));
+        Assert.assertEquals(driver.findElements(By.xpath("//option[@value='doYouSeeThis']")).size(), 0);
     }
 
 }
