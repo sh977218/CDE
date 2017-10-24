@@ -156,8 +156,8 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
         ])
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/")));
 
-    streamArray.push(gulp.src('./modules/form/public/assets/sdc/*')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc")));
+    streamArray.push(gulp.src('./modules/form/public/assets/**')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/")));
 
     return merge(streamArray);
 

@@ -25,7 +25,8 @@ var conn = connHelper.establishConnection(config.database.appData),
     Comment = conn.model('Comment', schemas.commentSchema),
     gfs = Grid(conn.db, mongoose.mongo),
     sessionStore = new MongoStore({
-        mongooseConnection: conn
+        mongooseConnection: conn,
+        touchAfter: 3600
     });
 
 exports.sessionStore = sessionStore;

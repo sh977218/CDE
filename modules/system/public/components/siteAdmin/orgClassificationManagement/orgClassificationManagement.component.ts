@@ -304,10 +304,6 @@ export class OrgClassificationManagementComponent implements OnInit {
             }, err => this.alert.addAlert("danger", "There was an issue saving this record."));
     };
 
-    isDescriptorAlreadyMapped = function (desc) {
-        return this.mapping.meshDescriptors.indexOf(desc) > -1;
-    };
-
     searchByClassification(node, orgName) {
         let classificationArray = [node.data.name];
         let _treeNode = node;

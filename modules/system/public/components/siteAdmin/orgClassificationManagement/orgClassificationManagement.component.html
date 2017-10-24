@@ -90,7 +90,7 @@
         <br/>
         <br/>Please confirm your decision by typing the name of the classification:
         <input id="removeClassificationUserTyped" [(ngModel)]="userTyped" class="form-control"
-               [placeholder]="selectedClassificationString">
+               [placeholder]="selectedClassificationString" title="Please confirm">
     </div>
     <div class="modal-footer" id="deleteClassificationModalFooter">
         <button class="btn cancel" (click)="c('cancel')" id="cancelDeleteClassificationBtn"
@@ -150,8 +150,8 @@
                 {{desc}} -{{descToName[desc]}}
             </div>
 
-            <label for="meshSearchTerm">MeSH Descriptor: </label>
-            <input class="form-control" [(ngModel)]="meshSearchTerm" id="meshSearchTerm" name="meshSearchTerm"
+            <label for="mapClassificationMeshInput">MeSH Descriptor: </label>
+            <input class="form-control" [(ngModel)]="meshSearchTerm" name="meshSearchTerm"
                    id="mapClassificationMeshInput" pattern="^[^;]+$" (keyup)="searchMesh()"
                    (ngModelChange)="searchMesh()" required>
             <span *ngIf="searching">searching...</span>
@@ -159,7 +159,7 @@
             <div *ngIf="descriptorID">
                 {{descriptorID}} -- {{descriptorName}}
                 <button *ngIf="descriptorName.length > 0" class="btn btn-default btn-sm" id="addMeshDescButton"
-                        (click)="addMeshDescriptor()" [disabled]="isDescriptorAlreadyMapped(descriptorID)">Add
+                        (click)="addMeshDescriptor()" [disabled]="this.mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
                 </button>
             </div>
 
