@@ -9,6 +9,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FrontExceptionHandler } from '_app/frontExceptionHandler';
 import { EmbedAppComponent } from '_embedApp/embedApp.component';
 
+import "rxjs/add/operator/map";
+
+
 @NgModule({
     declarations: [
         EmbedAppComponent,

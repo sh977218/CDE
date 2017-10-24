@@ -7,20 +7,25 @@ import { Http } from '@angular/http';
     selector: "cde-embed",
     templateUrl: "./embedApp.component.html"
 })
-export class EmbedAppComponent {
+export class EmbedAppComponent  {
     name = "Embedded NIH CDE Repository";
 
     constructor(private http: Http) {
+        let args = {};
+        let args1 = window.location.search.substr(1).split("&");
+        args1.forEach(arg => {
+            let argArr = arg.split("=");
+            args[argArr[0]] = argArr[1];
+        });
 
-        this.http.get('/embed/' + $scope.args.id).then(function onSuccess(response) {
-            //     $scope.embed = response.data;
-            //     $scope.searchSettings.selectedOrg = response.data.org;
-            //     $scope.search();
-            // })
+        this.http.get('/embed/' + args['id']).map(r => r.json()).subscribe(response => {
+            this.embed = response;
+            this.searchSettings.selectedOrg = response.org;
+            this.search();
+        });
 
     }
 
-    // $scope.args = {};
     // $scope.clLimit = 3;
     // $scope.raiseClLimit = function () {$scope.clLimit = 100;};
     // $scope.lowerClLimit = function () {$scope.clLimit = 3;};
@@ -42,10 +47,10 @@ export class EmbedAppComponent {
         , classification: []
         , classificationAlt: []
         , regStatuses: []
+        , selectedOrg: ""
     };
     selectedClassif: string = "";
-
-    // $;
+    embed: any;
 
     selectElement (s) {
         this.searchSettings.classification.push(s);
