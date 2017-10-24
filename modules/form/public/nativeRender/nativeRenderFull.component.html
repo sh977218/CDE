@@ -5,22 +5,21 @@
             Options
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <button class="dropdown-item">
-                <a id="button_print_follow"
-                   attr.data-url="/form/public/html/nativeRenderStandalone.html?tinyId={{elt.tinyId}}"
-                   onclick="window.open(this.getAttribute('data-url'),'_blank')">Printable</a>
+            <button class="dropdown-item"
+                    attr.data-url="/form/public/html/nativeRenderStandalone.html?tinyId={{elt.tinyId}}"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
+                <a id="button_print_follow">Printable</a>
             </button>
-            <button class="dropdown-item">
-                <a class="d-inline" id="button_lforms"
-                   attr.data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
-                   onclick="window.open(this.getAttribute('data-url'),'_blank')">LHC-Forms</a>
+            <button class="dropdown-item" attr.data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
+                <a class="d-inline" id="button_lforms">LHC-Forms</a>
                 (Provided by <a class="d-inline" href="https://lhncbc.nlm.nih.gov/project/lforms"
                                 target="_blank">LHNCBC</a>
             </button>
-            <button class="dropdown-item ">
+            <button class="dropdown-item" attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
                 <a class="d-inline" id="button_sdc"
-                   attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                   onclick="window.open(this.getAttribute('data-url'),'_blank')">SDC</a>
+                >SDC</a>
                 (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank">ONC</a>)
             </button>
             <button class="dropdown-item">Printable Logic:

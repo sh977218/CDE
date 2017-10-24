@@ -10,12 +10,12 @@ const navigationSteps: Array<any> = [
     {
         title: " 2/42 CDEs",
         element: "#menu_cdes_link",
-        content: "Click here to start browsing CDEs"
+        content: "Click here to start browsing CDEs."
     },
     {
         title: " 3/42 Forms",
         element: "#menu_forms_link",
-        content: "Or here to browse forms"
+        content: "Or here to browse forms."
     },
     {
         title: " 4/42 Boards",
@@ -56,13 +56,13 @@ const searchResultSteps: Array<any> = [
     {
         title: " 10/42 Search Result",
         element: "#resultList",
-        content: "Browsing can return hundreds of elements, sorted by their registration and usage. When elements have list of values, the search summary shows a subset of those values. ",
+        content: "Browsing can return hundreds of elements, sorted by their registration and usage. When elements have list of values, the search summary shows a subset of those values.",
         placement: "top"
     },
     {
         title: " 11/42 Classification Filter",
         element: "#classif_filter_title",
-        content: "We can continue browsing inside the NLM classification here. ",
+        content: "We can continue browsing inside the NLM classification here.",
         placement: "top"
     },
     {
@@ -101,6 +101,31 @@ const cdeSteps: Array<any> = [
         element: "#sources_0",
         content: "Many elements were imported from external sources. This section can give useful details about the source, such as copyright, status or created date.",
         placement: "bottom"
+    },
+
+    {
+        title: " 32/42 Linked Boards",
+        element: "#openLinkedBoardsModalBtn",
+        content: "If a CDE is used in public boards, the boards will be shown in this section.",
+        placement: "top"
+    },
+    {
+        title: " 33/42 More Like This",
+        element: "#mltButton",
+        content: "This section lists CDEs that are most similar to the CDE currently viewed.",
+        placement: "top"
+    },
+    {
+        title: " 34/42 Linked Forms",
+        element: "#openLinkedFormsModalBtn",
+        content: "If a CDE is used in Forms, they will be displayed here.",
+        placement: "top"
+    },
+    {
+        title: " 35/42 Data Sets",
+        element: "#openDataSetModalBtn",
+        content: "CDEs may be used in research. If datasets are public, they can be found here.",
+        placement: "top"
     },
     {
         title: " 18/42 Status",
@@ -185,8 +210,7 @@ const cdeSteps: Array<any> = [
         title: " 29/42 Validation Rules",
         element: "#validRules_tab",
         content: "Validation Rules are used to validate CDE. ",
-        placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#general_tab", "generalDiv", resolve))
+        placement: "bottom"
     },
     {
         title: " 30/42 Export",
@@ -199,30 +223,6 @@ const cdeSteps: Array<any> = [
         element: "#discussBtn",
         content: "With an account, anyone can interactively discuss an element. Users can reply to comment or resolve them.",
         placement: "bottom"
-    },
-    {
-        title: " 32/42 Linked Boards",
-        element: "#openLinkedBoardsModalBtn",
-        content: "If a CDE is used in public boards, the boards will be shown in this section.",
-        placement: "top"
-    },
-    {
-        title: " 33/42 More Like This",
-        element: "#mltButton",
-        content: "This section lists CDEs that are most similar to the CDE currently viewed.",
-        placement: "top"
-    },
-    {
-        title: " 34/42 Linked Forms",
-        element: "#openLinkedFormsModalBtn",
-        content: "If a CDE is used in Forms, they will be displayed here. ",
-        placement: "top"
-    },
-    {
-        title: " 35/42 Data Sets",
-        element: "#openDataSetModalBtn",
-        content: "CDEs may be used in research. If datasets are public, they can be found here.",
-        placement: "top"
     },
     {
         title: " 36/42 Forms",
@@ -238,7 +238,7 @@ const formSteps = [
         title: " 37/42 Browse by Classification",
         element: "#browseByClassification",
         content: "Forms are also browsed by Classification",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#search_by_classification_NLM", "resultList", resolve))
+        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#browseOrg-NLM", "resultList", resolve))
     },
     {
         title: " 38/42 Search Result",
@@ -252,7 +252,7 @@ const formSteps = [
         element: "#general_tab",
         content: "Forms have similar administrative details to CDE. When rendering is allowed, a preview of the form will display in this tab. There are multiple form rending types including: skip logic, printable forms, tables, and hidden questions. More detail about these features can be found on the Display Profiles tab.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#description_tab a", "addToQuickBoard", resolve))
+        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#description_tab", "addToQuickBoard", resolve))
     },
     {
         title: " 40/42 Form Element",
