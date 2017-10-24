@@ -5,19 +5,19 @@
 </div>
 <div *ngIf="elt?.tinyId" class="container-fluid" itemscope="http://schema.org/MedicalCode">
     <div id="warning">
-        <div *ngIf="elt.archived" class="row alert alert-warning mt20" role="alert">
+        <div *ngIf="elt.archived" class="alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this data element is archived. You can
             <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
         </div>
-        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="row alert alert-warning mt20" role="alert">
+        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this data element is retired.
             <span *ngIf="elt.registrationState.replacedBy">
             <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
         </span>
         </div>
-        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="row alert alert-warning mt20"
+        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'" class="alert alert-warning mt20"
              role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Warning:</strong> this data element is about to be retired.
@@ -25,7 +25,7 @@
             <a routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
         </span>
         </div>
-        <div *ngIf="displayStatusWarning" class="row alert alert-info mt20" role="alert">
+        <div *ngIf="displayStatusWarning" class="alert alert-info mt20" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>Note:</strong> You may not edit this CDE because it is standard.
         </div>
