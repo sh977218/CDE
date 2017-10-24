@@ -575,3 +575,7 @@ exports.enableRule = function (params, cb) {
         org.save(cb);
     });
 };
+
+exports.getStaticHtml = function (tinyId) {
+
+};

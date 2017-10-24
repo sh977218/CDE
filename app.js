@@ -19,13 +19,19 @@ var path = require('path')
     , compress = require('compression')
     , helmet = require('helmet')
     , ioServer = require('./modules/system/node-js/ioServer')
-    ;
+;
 
 require('./modules/system/node-js/elastic').initEs();
 
 require('log-buffer')(config.logBufferSize || 4096);
 
 var app = express();
+
+app.use(function (req, res) {
+    if (req.headers['user-agent'].toLowerCase() === 'googlebot') {
+        res.sent(mongo_data_system.getStaticHtml());
+    }
+});
 
 app.use(helmet());
 app.use(auth.ticketAuth);
@@ -126,7 +132,7 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
-app.use (function (req, res, next) {
+app.use(function (req, res, next) {
     try {
         if (req.headers.host === "cde.nlm.nih.gov") {
             if (req.user && req.user.tester) {
