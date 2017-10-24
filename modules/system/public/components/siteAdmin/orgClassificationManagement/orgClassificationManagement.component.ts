@@ -9,8 +9,8 @@ import 'rxjs/add/operator/map';
 
 import { ClassificationService } from "core/core.module";
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { SharedService } from 'core/shared.service';
 import { Subject } from 'rxjs/Subject';
-import * as authShared from "system/shared/authorizationShared";
 import { UserService } from 'core/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
@@ -121,7 +121,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     isOrgAdmin() {
-        return authShared.isOrgAdmin(this.userService.user);
+        return SharedService.auth.isOrgAdmin(this.userService.user);
     }
 
     openRenameClassificationModal(node) {

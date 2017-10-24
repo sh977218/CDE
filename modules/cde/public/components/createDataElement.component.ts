@@ -1,16 +1,16 @@
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
+import { Router } from '@angular/router';
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
-import * as ClassificationShared from "system/shared/classificationShared.js";
 import * as _ from "lodash";
-import { IsAllowedService } from 'core/isAllowed.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { UserService } from 'core/user.service';
-import { ElasticService } from 'core/elastic.service';
-import { Router } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { ElasticService } from 'core/elastic.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { SharedService } from 'core/shared.service';
+import { UserService } from 'core/user.service';
 
 @Component({
     selector: "cde-create-data-element",
@@ -56,7 +56,7 @@ export class CreateDataElementComponent implements OnInit {
             orgName: event.selectedOrg
         };
         let eltCopy = _.cloneDeep(this.elt);
-        ClassificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
+        SharedService.classificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
@@ -94,8 +94,8 @@ export class CreateDataElementComponent implements OnInit {
 
     confirmDelete(event) {
         let eltCopy = _.cloneDeep(this.elt);
-        let steward = ClassificationShared.findSteward(eltCopy, event.deleteOrgName);
-        ClassificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
+        let steward = SharedService.classificationShared.findSteward(eltCopy, event.deleteOrgName);
+        SharedService.classificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
             if (err) this.alert.addAlert("danger", err);
             else {
                 for (let i = eltCopy.classification.length - 1; i >= 0; i--) {

@@ -35,7 +35,7 @@ export class MergeFormService {
     private mergeQuestions(questionsFrom, questionsTo, fields, doneOne, cb) {
         let index = 0;
         //noinspection TypeScriptUnresolvedFunction
-        async.forEachSeries(questionsFrom, (questionFrom, doneOneQuestion) => {
+        async.forEachSeries(questionsFrom, (questionFrom: any, doneOneQuestion) => {
             let questionTo = questionsTo[index];
             if (!questionFrom.question.cde.tinyId || !questionTo.question.cde.tinyId) {
                 index++;

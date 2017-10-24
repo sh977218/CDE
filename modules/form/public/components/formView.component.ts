@@ -14,7 +14,7 @@ import { IsAllowedService } from 'core/isAllowed.service';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({

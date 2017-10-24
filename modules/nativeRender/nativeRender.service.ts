@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CdeForm, DisplayProfile } from 'core/form.model';
+import { FormService } from 'nativeRender/form.service';
 
 @Injectable()
 export class NativeRenderService {
@@ -21,6 +22,26 @@ export class NativeRenderService {
 
         return newType;
     }
+
+    render() {
+        // clean up
+        FormService.iterateFeSync(this.elt, undefined, undefined, f => {
+            for (let i = 0; i < f.question.answers.length; i++) {
+                let answer = f.question.answers[i];
+                if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
+                    f.question.answers.splice(i--, 1);
+                else if (answer.subQuestions)
+                    delete answer.subQuestions;
+            }
+        });
+
+        if (this.getNativeRenderType() === NativeRenderService.FOLLOW_UP) {
+            this.followForm = NativeRenderService.cloneForm(this.elt);
+            NativeRenderService.transformFormToInline(this.followForm);
+            NativeRenderService.preprocessValueLists(this.followForm.formElements);
+        }
+    }
+
     setNativeRenderType(userType) {
         if (userType === this.profile.displayType)
             this.overrideNativeRenderType = null;
@@ -28,39 +49,19 @@ export class NativeRenderService {
             this.overrideNativeRenderType = userType;
         else
             return;
-        this.currentNativeRenderType = userType;
 
-        function clearTransform(fe) {
-            fe.formElements.forEach(f => {
-                if (f.elementType === 'question') {
-                    for (let i = 0; i < f.question.answers.length; i++) {
-                        let answer = f.question.answers[i];
-                        if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue))
-                            f.question.answers.splice(i--, 1);
-                        else if (answer.subQuestions)
-                            delete answer.subQuestions;
-                    }
-                } else {
-                    clearTransform(f);
-                }
-            });
-        }
-        clearTransform(this.elt);
-        if (this.getNativeRenderType() === NativeRenderService.FOLLOW_UP) {
-            this.followForm = NativeRenderService.cloneForm(this.elt);
-            NativeRenderService.transformFormToInline(this.followForm);
-            NativeRenderService.preprocessValueLists(this.followForm.formElements);
-        }
+        this.currentNativeRenderType = userType;
+        this.render();
     }
     setSelectedProfile(profile = null) {
         if (profile)
             this.profile = profile;
-
         if (this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
             this.elt.displayProfiles.indexOf(this.profile) === -1)
             this.profile = this.elt.displayProfiles[0];
+        if (!this.profile)
+            this.profile = new DisplayProfile("Default Config");
 
-        if (!this.profile) this.profile = new DisplayProfile("Default Config");
         this.setNativeRenderType(this.profile.displayType);
     }
     getElt() {
@@ -75,7 +76,13 @@ export class NativeRenderService {
         if (elt !== this.elt) {
             this.elt = elt;
             this.followForm = null;
+            if (!this.elt.formInput)
+                this.elt.formInput = [];
+
+            return JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
+
+        return null;
     }
 
     addError(msg: string) {

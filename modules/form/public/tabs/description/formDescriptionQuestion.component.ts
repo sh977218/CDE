@@ -3,7 +3,7 @@ import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { CdeForm, FormElement, FormQuestion } from "../../../../core/form.model";
+import { CdeForm, FormElement, FormQuestion } from "core/form.model";
 import { TreeNode } from "angular-tree-component";
 import { FormService } from 'nativeRender/form.service';
 

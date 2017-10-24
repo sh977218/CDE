@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module';
 
-import { CoreModule } from 'core/core.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { NativeRenderStandaloneComponent } from './nativeRenderStandalone.component';
+import { CdeAmericanDateParserFormatter } from 'nativeRender/americanDateParserFormatter';
 
 @NgModule({
     imports: [
@@ -15,9 +15,7 @@ import { NativeRenderStandaloneComponent } from './nativeRenderStandalone.compon
         CommonModule,
         FormsModule,
         HttpModule,
-        NgbModule.forRoot(),
         // internal
-        CoreModule,
         NativeRenderModule,
     ],
     declarations: [
@@ -29,6 +27,7 @@ import { NativeRenderStandaloneComponent } from './nativeRenderStandalone.compon
     exports: [
     ],
     providers: [
+        {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
     ],
     bootstrap: [NativeRenderStandaloneComponent]
 })

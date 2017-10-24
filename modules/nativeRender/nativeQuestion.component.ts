@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { FormService } from 'nativeRender/form.service';
 import { FormQuestion } from 'core/form.model';
-import * as moment from 'moment';
+import * as moment from 'moment/min/moment.min';
 
 @Component({
     selector: 'cde-native-question',

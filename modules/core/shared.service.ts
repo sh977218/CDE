@@ -5,9 +5,9 @@ import * as exportShared from "system/shared/exportShared";
 import * as regStatusShared from "system/shared/regStatusShared";
 
 export class SharedService {
-    static readonly auth = authorizationShared;
-    static readonly classificationShared = classificationShared;
-    static readonly exportShared = exportShared;
-    static readonly formShared = formShared;
-    static readonly regStatusShared = regStatusShared;
+    static readonly auth: any = authorizationShared;
+    static readonly classificationShared: any = classificationShared;
+    static readonly exportShared: any = exportShared;
+    static readonly formShared: any = formShared;
+    static readonly regStatusShared: any = regStatusShared;
 }

@@ -152,6 +152,12 @@
         }
       }
     },
+    "@types/async": {
+      "version": "2.0.44",
+      "resolved": "https://registry.npmjs.org/@types/async/-/async-2.0.44.tgz",
+      "integrity": "sha512-tE5HO+BSq3xfLWTaXyty1ITfs9Uu8CA4dYf1TeEtcPAtQEOY0c/oZYMtbEHFsUExD0g+sWmKYxtjeRQ2ywrp8Q==",
+      "dev": true
+    },
     "@types/grecaptcha": {
       "version": "2.0.33",
       "resolved": "https://registry.npmjs.org/@types/grecaptcha/-/grecaptcha-2.0.33.tgz",
@@ -159,10 +165,22 @@
       "dev": true,
       "optional": true
     },
+    "@types/jasmine": {
+      "version": "2.6.0",
+      "resolved": "https://registry.npmjs.org/@types/jasmine/-/jasmine-2.6.0.tgz",
+      "integrity": "sha512-1ZZdFvYA5zARDXPj5+VF0bwDZWH/o0QQWJVDc5srdC/DngcCZXskR33eR/4PielGvBjLQpQOd6KiQbmtqVkeZA==",
+      "dev": true
+    },
     "@types/jquery": {
       "version": "2.0.48",
       "resolved": "https://registry.npmjs.org/@types/jquery/-/jquery-2.0.48.tgz",
       "integrity": "sha512-nNLzUrVjaRV/Ds1eHZLYTd7IZxs38cwwLSaqMJj8OTXY8xNUbxSK69bi9cMLvQ7dm/IBeQ1wHwQ0S1uYa0rd2w==",
+      "dev": true
+    },
+    "@types/lodash": {
+      "version": "4.14.78",
+      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.78.tgz",
+      "integrity": "sha512-AflcpYyLyf/VIgSJbG/WMx7Bk00UejtSjYUW176K7erXChVcZENFdgOKOKfOXX9MmcXKoZW1QVFbqYapkhn1rA==",
       "dev": true
     },
     "@types/node": {
@@ -5457,9 +5475,9 @@
       "dev": true
     },
     "js-polyfills": {
-      "version": "0.1.34",
-      "resolved": "https://registry.npmjs.org/js-polyfills/-/js-polyfills-0.1.34.tgz",
-      "integrity": "sha1-+TzS1yz/zn7JjR1OWq0NAMH3IcI=",
+      "version": "0.1.33",
+      "resolved": "https://registry.npmjs.org/js-polyfills/-/js-polyfills-0.1.33.tgz",
+      "integrity": "sha1-XjmsHTTvHfSWQjMpviJ2EuY8O2s=",
       "dev": true
     },
     "js-string-escape": {
@@ -5906,8 +5924,7 @@
       "integrity": "sha1-+Ob1tXip405UEXm1a47uv0oofgg=",
       "requires": {
         "lodash._isnative": "2.4.1",
-        "lodash.isobject": "2.4.1",
-        "lodash.noop": "2.4.1"
+        "lodash.isobject": "2.4.1"
       }
     },
     "lodash._basecreatecallback": {
@@ -6089,8 +6106,7 @@
       "resolved": "https://registry.npmjs.org/lodash._setbinddata/-/lodash._setbinddata-2.4.1.tgz",
       "integrity": "sha1-98IAzRuS7yNrOZ7s9zxkjReqlNI=",
       "requires": {
-        "lodash._isnative": "2.4.1",
-        "lodash.noop": "2.4.1"
+        "lodash._isnative": "2.4.1"
       }
     },
     "lodash._shimkeys": {
@@ -6265,9 +6281,10 @@
       "dev": true
     },
     "lodash.noop": {
-      "version": "2.4.1",
-      "resolved": "https://registry.npmjs.org/lodash.noop/-/lodash.noop-2.4.1.tgz",
-      "integrity": "sha1-T7VPgWZS5a4Q6PcvcXo4jHMmU4o="
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/lodash.noop/-/lodash.noop-3.0.1.tgz",
+      "integrity": "sha1-OBiPTWUKOkdCWEObluxFsyYXEzw=",
+      "dev": true
     },
     "lodash.reduce": {
       "version": "4.4.0",
@@ -6728,16 +6745,16 @@
       "dev": true
     },
     "moment": {
-      "version": "2.17.1",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.17.1.tgz",
-      "integrity": "sha1-/tlQYGPzaxDwZsi1mhRNf66+HYI="
+      "version": "2.19.1",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.19.1.tgz",
+      "integrity": "sha1-VtoaLRy/AdOLfhr8McELz6GSkWc="
     },
     "moment-timezone": {
       "version": "0.3.1",
       "resolved": "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.3.1.tgz",
       "integrity": "sha1-PvR4VrAtU7cYoQpewgI6opnge/U=",
       "requires": {
-        "moment": "2.17.1"
+        "moment": "2.19.1"
       }
     },
     "mongodb": {
@@ -7044,12 +7061,6 @@
       "integrity": "sha1-W1DfI9zLBvYP6tXgHLGeTKS18XU=",
       "dev": true
     },
-    "ng2-nouislider": {
-      "version": "1.6.1",
-      "resolved": "https://registry.npmjs.org/ng2-nouislider/-/ng2-nouislider-1.6.1.tgz",
-      "integrity": "sha1-DC9ul84V6O0mvNs2W5GjK5/QeZw=",
-      "dev": true
-    },
     "ng2-select2": {
       "version": "1.0.0-beta.10",
       "resolved": "https://registry.npmjs.org/ng2-select2/-/ng2-select2-1.0.0-beta.10.tgz",
@@ -7232,12 +7243,6 @@
           "dev": true
         }
       }
-    },
-    "nouislider": {
-      "version": "10.0.0",
-      "resolved": "https://registry.npmjs.org/nouislider/-/nouislider-10.0.0.tgz",
-      "integrity": "sha1-FmFFFovAVwHvUWjBfRcfeRVMF04=",
-      "dev": true
     },
     "npm-cache-filename": {
       "version": "1.0.2",

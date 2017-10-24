@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 @Injectable()
 export class CompareService {
@@ -37,7 +37,7 @@ export class CompareService {
         });
     }
 
-    doCompareArrayImpl(newer, older, option) {
+    doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
         option.result = [];
         let beginIndex = 0;
 
@@ -71,7 +71,7 @@ export class CompareService {
             }
             // found match in right array
             else {
-                let r = rightArrayCopy[rightIndex];
+                let r: any = rightArrayCopy[rightIndex];
                 for (let k = 0; k < rightIndex; k++) {
                     option.result.push({
                         match: false,
@@ -134,7 +134,7 @@ export class CompareService {
                     }
                 }
             });
-            option.result = _.uniqWith(option.result, (willRemove, willStay) => {
+            option.result = _.uniqWith(option.result, (willRemove: any, willStay) => {
                 if (willRemove.reorder && willStay.reorder) {
                     if (!willStay.newer) willStay.newer = willRemove.newer;
                     if (!willStay.older) willStay.older = willRemove.older;

@@ -5,13 +5,13 @@ import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { SharedService } from 'core/shared.service';
 import { UserService } from 'core/user.service';
-import * as authShared from "system/shared/authorizationShared";
 import { IsAllowedService } from 'core/isAllowed.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as deValidator from "../../shared/deValidator.js";
 import { AlertService } from '_app/alert/alert.service';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -136,7 +136,7 @@ export class DataElementViewComponent implements OnInit {
                 return false;
             } else {
                 if (this.userService.userOrgs) {
-                    return authShared.isCuratorOf(this.userService.user, this.elt.stewardOrg.name) &&
+                    return SharedService.auth.isCuratorOf(this.userService.user, this.elt.stewardOrg.name) &&
                         (this.elt.registrationState.registrationStatus === "Standard" ||
                             this.elt.registrationState.registrationStatus === "Preferred Standard");
                 } else {

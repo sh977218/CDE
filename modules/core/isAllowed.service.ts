@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserService } from 'core/user.service';
-
-import * as authShared from "system/shared/authorizationShared";
+import { SharedService } from 'core/shared.service';
 
 @Injectable()
 export class IsAllowedService {
@@ -21,7 +20,7 @@ export class IsAllowedService {
                 return false;
             }
             if (this.userService.userOrgs) {
-                return authShared.isCuratorOf(this.userService.user, CuratedItem.stewardOrg.name);
+                return SharedService.auth.isCuratorOf(this.userService.user, CuratedItem.stewardOrg.name);
             } else {
                 return false;
             }
@@ -29,15 +28,15 @@ export class IsAllowedService {
     }
 
     isOrgCurator () {
-        return authShared.isOrgCurator(this.userService.user);
+        return SharedService.auth.isOrgCurator(this.userService.user);
     }
 
     hasRole (role) {
-        return authShared.hasRole(this.userService.user, role);
+        return SharedService.auth.hasRole(this.userService.user, role);
     }
 
     isSiteAdmin () {
-        return authShared.isSiteAdmin(this.userService.user);
+        return SharedService.auth.isSiteAdmin(this.userService.user);
     }
 
     doesUserOwnElt (elt) {

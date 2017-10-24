@@ -1,4 +1,4 @@
-import { NgbDateParserFormatter, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDateParserFormatter, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module";
 import { isNumber, toInteger, padNumber } from "@ng-bootstrap/ng-bootstrap/util/util";
 
 export class CdeAmericanDateParserFormatter extends NgbDateParserFormatter {

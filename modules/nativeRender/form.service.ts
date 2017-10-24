@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Http, Response } from "@angular/http";
-import * as async from "components/async";
-import * as _ from "lodash";
-import { FormQuestion } from "../core/form.model";
+import * as async from "async";
+import noop from "lodash.noop";
+import { FormQuestion } from "core/form.model";
 
-function noop(a, cb) { cb(); }
+function noop1(a, cb) { cb(); }
 
 @Injectable()
 export class FormService {
@@ -45,7 +45,7 @@ export class FormService {
     }
 
     // cb(err, elt)
-    getForm(tinyId, id, cb = _.noop) {
+    getForm(tinyId, id, cb = noop) {
         let url = "/form/" + tinyId;
         if (id) url = "/formById/" + id;
         this.http.get(url).map(res => res.json()).subscribe(res => {
@@ -71,7 +71,7 @@ export class FormService {
 
     // modifies form to add sub-forms
     // callback(err: string)
-    fetchWholeForm(form, callback = _.noop) {
+    fetchWholeForm(form, callback = noop) {
         let formCb = (fe, cb) => {
             this.http.get('/form/' + fe.inForm.form.tinyId
                 + (fe.inForm.form.version ? '/version/' + fe.inForm.form.version : ''))
@@ -116,9 +116,9 @@ export class FormService {
 
     // callback(error)
     // feCb(fe, cbContinue(error))
-    static iterateFe(elt, callback = _.noop, formCb = noop, sectionCb = noop, questionCb = noop) {
+    static iterateFe(elt, callback = noop, formCb = noop1, sectionCb = noop1, questionCb = noop1) {
         if (Array.isArray(elt.formElements))
-            async.forEach(elt.formElements, (fe, cb) => {
+            async.forEach(elt.formElements, (fe: any, cb) => {
                 if (fe.elementType === 'form') {
                     formCb(fe, (err) => {
                         if (err)
@@ -140,7 +140,7 @@ export class FormService {
     }
 
     // cb(fe)
-    static iterateFeSync(elt, formCb = _.noop, sectionCb = _.noop, questionCb = _.noop) {
+    static iterateFeSync(elt, formCb = noop, sectionCb = noop, questionCb = noop) {
         if (Array.isArray(elt.formElements))
             elt.formElements.forEach(fe => {
                 if (fe.elementType === 'form') {

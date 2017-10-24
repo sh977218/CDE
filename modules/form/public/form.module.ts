@@ -16,25 +16,24 @@ import { WidgetModule } from "widget/widget.module";
 import { ArrayListPipe } from "./arrayList.pipe";
 import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "./components/listView/boardFormSummaryListContent.component";
+import { CreateFormComponent } from 'form/public/components/createForm.component';
+import { DiscussModule } from "discuss/discuss.module";
+import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
 import { FormAccordionListComponent } from "./components/listView/formAccordionList.component";
+import { FormClassificationComponent } from "./components/formClassification/formClassification.component";
 import { FormDescriptionComponent } from "./tabs/description/formDescription.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
 import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
-import { FormSearchComponent } from "./components/search/formSearch.component";
-import { FormSummaryListContentComponent } from "./components/listView/formSummaryListContent.component";
-import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
-
-import { FormService } from "nativeRender/form.service";
-import { SkipLogicService } from "nativeRender/skipLogic.service";
 import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
-import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
+import { FormSearchComponent } from "./components/search/formSearch.component";
+import { FormService } from "nativeRender/form.service";
+import { FormSummaryListContentComponent } from "./components/listView/formSummaryListContent.component";
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
 import { FormViewComponent } from "./components/formView.component";
-import { DiscussModule } from "discuss/discuss.module";
-import { CreateFormComponent } from 'form/public/components/createForm.component';
-import { FormClassificationComponent } from "./components/formClassification/formClassification.component";
-import { NativeRenderFullComponent } from 'form/public/nativeRender/nativeRenderFull.component';
+import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
+import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
+import { SkipLogicService } from "nativeRender/skipLogic.service";
 
 const appRoutes: Routes = [
     {path: 'form/search', component: FormSearchComponent},

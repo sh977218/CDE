@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { ElasticQueryResponse } from 'core/models.model';
 import { UserService } from "./user.service";
 import { LocalStorageService } from "angular-2-local-storage";
-import * as regStatusShared from "system/shared/regStatusShared";
+import { SharedService } from 'core/shared.service';
 
 @Injectable()
 export class ElasticService {
@@ -193,7 +193,7 @@ export class ElasticService {
 
     getUserDefaultStatuses () {
         let overThreshold = false;
-        let result = regStatusShared.orderedList.filter(status => {
+        let result = SharedService.regStatusShared.orderedList.filter(status => {
             if (overThreshold) return false;
             overThreshold = this.searchSettings.lowestRegistrationStatus === status;
             return true;

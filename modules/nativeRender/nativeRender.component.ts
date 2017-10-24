@@ -9,21 +9,15 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     templateUrl: "./nativeRender.component.html",
     providers: [NativeRenderService]
 })
-export class NativeRenderComponent implements OnChanges {
-    _profile: DisplayProfile;
-
-    @Input() elt: CdeForm;
-
-    @Input() set profile(p : DisplayProfile) {
-        this.nativeRenderService.setElt(this.elt);
-        this._profile = p;
-        this.nativeRenderService.profile = p;
-        this.nativeRenderService.setSelectedProfile();
+export class NativeRenderComponent {
+    @Input() set elt(e: CdeForm) {
+        let map = this.nativeRenderService.setElt(e);
+        if (map)
+            this.mapping = map;
     };
-    get profile(): DisplayProfile {
-        return this._profile;
+    @Input() set profile(p: DisplayProfile) {
+        this.nativeRenderService.setSelectedProfile(p);
     };
-
     @Input() submitForm: boolean;
     @Input() showTitle: boolean = true;
 
@@ -37,20 +31,6 @@ export class NativeRenderComponent implements OnChanges {
                 public nativeRenderService: NativeRenderService) {
         this.formUrl = window.location.href;
         this.endpointUrl = (<any>window).endpointUrl;
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes.elt && changes.elt.currentValue)
-            this.load();
-    }
-
-    private load() {
-        this.nativeRenderService.setElt(this.elt);
-        this.mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
-        this.nativeRenderService.setSelectedProfile(this.profile);
-
-        if (!this.nativeRenderService.elt.formInput)
-            this.nativeRenderService.elt.formInput = [];
     }
 
     getEndpointUrl() {

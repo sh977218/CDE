@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
-import { TourService } from 'core/tour.service';
+import { TourService } from 'home/tour.service';
 import { CdeForm } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 
@@ -182,9 +182,6 @@ export class HomeComponent {
     cdeFormSelection = 'formOnly';
     currentTab: string;
     elt: CdeForm;
-    statsType = 'Forms';
-    newItems = {CDEs: null, Forms: null};
-    topItems = {CDEs: null, Forms: null};
     featuredItems = {
         Forms: [
             {tinyId: '7kBFB4TUM', name: 'BRICS NINR SF-36'},
@@ -196,16 +193,31 @@ export class HomeComponent {
             {tinyId: 'XySUBn_NZ', name: 'SDC Adrenal'},
         ]
     };
+    formFeatures = [
+        {feature: 'Dynamic Logic', description: 'Fill out the form to get another question.',  tinyId: 'mJsGoMU1m'},
+        {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
+        {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
+        {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: 'mJsGoMU1m'},
+        {feature: 'Table', description: 'Questions can be asked multiple times to allow more than one answer.', tinyId: 'mJOLUXxrf'},
+        {feature: 'Calculated Fields', description: 'Calculations such as scoring automate the math.', tinyId: '71Rnf_pz7'},
+    ];
+    formFeatureDescription: string;
+    newItems = {CDEs: null, Forms: null};
+    statsType = 'Forms';
+    topItems = {CDEs: null, Forms: null};
 
-    constructor(private http: Http, private formService: FormService) {}
+    constructor(private http: Http, private formService: FormService) {
+        this.getForm(this.formFeatures[0].tinyId);
+    }
 
-    getForm(tinyId) {
-        this.formService.getForm(tinyId, undefined, (err, elt) => {
+    getForm(feature) {
+        this.formService.getForm(feature.tinyId, undefined, (err, elt) => {
             if (!err) {
                 FormService.areDerivationRulesSatisfied(elt);
                 this.elt = elt;
             }
         });
+        this.formFeatureDescription = feature.description;
     }
 
     getStats(tab = null) {
