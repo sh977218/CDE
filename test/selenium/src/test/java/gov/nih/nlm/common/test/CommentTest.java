@@ -1,6 +1,7 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 public abstract class CommentTest extends CommonTest {
@@ -42,8 +43,9 @@ public abstract class CommentTest extends CommonTest {
         goToNaming();
         findElement(By.name("commentTextArea")).sendKeys("another comment about Naming");
         clickElement(By.name("postComment"));
-        Assert.assertEquals(false, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));
-        Assert.assertEquals(true, findElement(By.id("comment_1")).getAttribute("class").contains("currentTabComment"));
+
+        findElement(By.xpath("//*[@id='comment_0' and not(contains(@class, 'currentTabComment'))]"));
+        findElement(By.xpath("//*[@id='comment_1' and contains(@class, 'currentTabComment')]"));
 
         clickElement(By.id("replyTextarea_0"));
         findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment about Status");
