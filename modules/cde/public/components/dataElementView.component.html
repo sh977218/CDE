@@ -228,7 +228,7 @@
                           (highlightedTabsChange)="loadHighlightedTabs($event)"
                           [eltName]="elt.naming[0].designation"></cde-discuss-area>
     </div>
-    <div *ngIf="elt.valueDomain.allValid === false" class="alert alert-danger mt20"
+    <div *ngIf="elt.valueDomain.allValid === false" class="row alert alert-danger mt20"
          role="alert">There are validation errors. {{elt.valueDomain.pvNotValidMsg}}
     </div>
     <cde-save-modal #saveModal [elt]="elt" (save)="saveDataElement()"></cde-save-modal>
