@@ -27,9 +27,15 @@ require('log-buffer')(config.logBufferSize || 4096);
 
 var app = express();
 
-app.use(function (req, res) {
+app.use(function (req, res, next) {
     if (req.headers['user-agent'].toLowerCase() === 'googlebot') {
-        res.sent(mongo_data_system.getStaticHtml());
+        if (req.url.match(/deView?tinyId=/ig) || req.url.match(/formView?tinyId=/ig)) {
+            mongo_data_system.getStaticHtml(req.query.tinyId, (err, html) => {
+                if (err) logging.errorLogger.error("Error: Static Html Error", {stack: err.stack, origin: req.url});
+                else if (html) res.send(html);
+                else res.end();
+            });
+        } else next();
     }
 });
 

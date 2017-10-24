@@ -23,6 +23,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     JobQueue = conn.model('JobQueue', schemas.jobQueue),
     Embeds = conn.model('Embed', schemas.embedSchema),
     Comment = conn.model('Comment', schemas.commentSchema),
+    StaticHtml = conn.model('StaticHtml', schemas.staticHtmlSchema),
     gfs = Grid(conn.db, mongoose.mongo),
     sessionStore = new MongoStore({
         mongooseConnection: conn,
@@ -576,6 +577,6 @@ exports.enableRule = function (params, cb) {
     });
 };
 
-exports.getStaticHtml = function (tinyId) {
-
+exports.getStaticHtml = function (tinyId, cb) {
+    StaticHtml.findOne({tinyId: tinyId}, cb);
 };
