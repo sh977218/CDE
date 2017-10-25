@@ -1,9 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module";
+import { NgbDatepickerModule, NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module";
 import { NgbTimepickerModule } from "@ng-bootstrap/ng-bootstrap/timepicker/timepicker.module";
 
+import { CdeAmericanDateParserFormatter } from 'nativeRender/americanDateParserFormatter';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderComponent } from 'nativeRender/nativeRender.component';
 import { NativeSectionComponent } from 'nativeRender/nativeSection.component';
@@ -35,6 +36,7 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
         NativeRenderComponent,
     ],
     providers: [
+        {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
         FormService,
         SkipLogicService,
     ],

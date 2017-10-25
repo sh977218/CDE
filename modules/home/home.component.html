@@ -55,7 +55,7 @@
 <section class="container" id="started">
     <div class="row">
         <div class="col-xs-12 col-sm-6 mt-5">
-            <div class="btn-group" ngbRadioGroup [(ngModel)]="statsType" style="float: right; margin-top: 3px"
+            <div class="btn-group" ngbRadioGroup [(ngModel)]="statsType" style="float: right; margin-top: 6px; border: 1px solid; border-color: #fff #fff #ddd;"
                  [hidden]="cdeFormSelection !== 'both'">
                 <label ngbButtonLabel class="btn-primary" (click)="statsType = 'Forms'; getStats()">
                     <input ngbButton type="radio" [value]="'Forms'">Forms
@@ -64,9 +64,9 @@
                     <input ngbButton type="radio" [value]="'CDEs'">CDEs
                 </label>
             </div>
-            <span class="featuredHeading" style="float: right; margin-top: 3px"
+            <span class="featuredHeading" style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
                   [hidden]="cdeFormSelection !== 'cdeOnly'">CDEs</span>
-            <span class="featuredHeading" style="float: right; margin-top: 3px"
+            <span class="featuredHeading" style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
                   [hidden]="cdeFormSelection !== 'formOnly'">Forms</span>
             <ngb-tabset #tbset="ngbTabset" (tabChange)="getStats($event.nextId)">
                 <ngb-tab id="tabFeatured">

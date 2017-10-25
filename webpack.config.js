@@ -50,7 +50,7 @@ module.exports = {
                 output: {
                     comments: false
                 },
-                compressor: {
+                compress: {
                     warnings: false
                 }
             }),
