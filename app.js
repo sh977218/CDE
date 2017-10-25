@@ -217,19 +217,6 @@ try {
 app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/public/robots.txt')));
 
 
-app.use((req, res, next) => {
-    if (req.headers['user-agent'].toLowerCase() === 'googlebot') {
-        if (req.url && (req.url.indexOf('deView?tinyId=') > -1 || req.url.indexOf('formView?tinyId=') > -1)) {
-            mongo_data_system.getStaticHtml(req.query.tinyId, (err, html) => {
-                if (err) logging.errorLogger.error("Error: Static Html Error", {stack: err.stack, origin: req.url});
-                else if (html) res.send(html);
-                else res.end();
-            });
-        } else next();
-    } else next();
-});
-
-
 // final route -> 404
 app.use((req, res, next) => {
     // swagger does something i dont get. This will let swagger work

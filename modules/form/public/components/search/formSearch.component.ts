@@ -14,11 +14,11 @@ import { AlertService } from '_app/alert/alert.service';
     selector: 'cde-form-search',
     templateUrl: '../../../../search/searchBase.component.html',
     styles: [`
-        a.browseLink {
+        .browseLink {
             color: #337ab7;
         }
 
-        a.browseLink:hover {
+        .browseLink:hover {
             color: #23527c;
             text-decoration: underline;
         }

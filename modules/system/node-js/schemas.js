@@ -489,6 +489,7 @@ schemas.feedbackIssueSchema = new mongoose.Schema({
 schemas.staticHtmlSchema = new mongoose.Schema({
     tinyId: String,
     html: String,
+    location: String
 });
 
 schemas.classificationAudit.set('collection', 'classificationAudit');

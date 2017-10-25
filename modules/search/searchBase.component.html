@@ -53,7 +53,7 @@
                                 <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
                                           (click)="browseOrg(org.name)">
                                     <legend>
-                                        <a id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</a>
+                                        <span id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</span>
                                     </legend>
                                     <div *ngIf="org.longName">{{org.longName}}</div>
                                     <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>

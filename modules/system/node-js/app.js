@@ -44,18 +44,22 @@ exports.init = function (app) {
     function checkHttps(req, res, next) {
         if (config.proxy) {
             if (req.protocol !== 'https') {
-                if (req.query.gotohttps === "1") {
-                    return res.send("Missing X-Forward-Proto Header");
-                } else {
-                    return res.redirect(config.publicUrl + "?gotohttps=1");
-                }
+                if (req.query.gotohttps === "1") res.send("Missing X-Forward-Proto Header");
+                else res.redirect(config.publicUrl + "?gotohttps=1");
             }
-        }
-        next();
+        } else if (req.headers['user-agent'].toLowerCase() === 'googlebot') {
+            if (req.url && (req.url.indexOf('deView?tinyId=') > -1 || req.url.indexOf('formView?tinyId=') > -1)) {
+                mongo_date.getStaticHtml(req.query.tinyId, (err, html) => {
+                    if (err) logging.errorLogger.error("Error: Static Html Error", {stack: err.stack, origin: req.url});
+                    else if (html) res.render('bot');
+                    else res.end();
+                });
+            } else next();
+        } else next();
     }
 
     ["/", "/cde/search", "/form/search", "/home", "/help/:title", "/createForm", "/createCde", "/boardList",
-        "/board/:id", "/deview", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview","/404",
+        "/board/:id", "/deview", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
         "/formView", "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, checkHttps, function (req, res) {
