@@ -18,8 +18,8 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
     imports: [
         CommonModule,
         FormsModule,
-        NgbDatepickerModule,
-        NgbTimepickerModule,
+        NgbDatepickerModule.forRoot(),
+        NgbTimepickerModule.forRoot(),
         // internal
     ],
     declarations: [

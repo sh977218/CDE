@@ -1,4 +1,5 @@
-<h1 *ngIf="showTitle" [textContent]="elt?.naming && elt.naming[0]?.designation"></h1>
+<h1 *ngIf="showTitle"
+    [textContent]="nativeRenderService.getElt()?.naming && nativeRenderService.getElt().naming[0]?.designation"></h1>
 
 <form *ngIf="!endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal">
     <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== NativeRenderService.SHOW_IF
@@ -20,8 +21,8 @@
            style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" [disabled]="formData.$invalid">
 </form>
 
-<small *ngIf="elt?.isCopyrighted && (!nativeRenderService.profile || nativeRenderService.profile.displayCopyright)"
-       id="copyrightStatement">{{elt.copyright.text}}</small>
+<small *ngIf="nativeRenderService.getElt()?.isCopyrighted && (!nativeRenderService.profile || nativeRenderService.profile.displayCopyright)"
+       id="copyrightStatement">{{nativeRenderService.getElt().copyright.text}}</small>
 
 <ngb-alert type="danger" *ngIf="nativeRenderService.hasErrors()">
     <span [textContent]="nativeRenderService.getErrors().join(' -- ')"></span>
