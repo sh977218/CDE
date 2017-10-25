@@ -13,12 +13,12 @@ import { AlertService } from '_app/alert/alert.service';
 @Component({
     selector: 'cde-cde-search',
     templateUrl: '../../../../search/searchBase.component.html',
-    styles: [`            
-        .browseLink {
+    styles: [`
+        a.browseLink {
             color: #337ab7;
         }
-        
-        .browseLink:hover {
+
+        a.browseLink:hover {
             color: #23527c;
             text-decoration: underline;
         }

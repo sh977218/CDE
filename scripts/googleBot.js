@@ -8,8 +8,8 @@ const mongo_form = require('../modules/form/node-js/mongo-form');
 const FormModal = mongo_form.Form;
 const StaticHtmlModel = require('../ingester/createNlmcdeConnection').StaticHtmlModel;
 
-//const prefix_url = 'https://cde.nlm.nih.gov/';
-const prefix_url = 'http://localhost:3001/';
+const prefix_url = 'https://cde.nlm.nih.gov/';
+//const prefix_url = 'http://localhost:3001/';
 let count = 0;
 
 let doHtml = (type, tinyId, cb) => {
@@ -17,33 +17,38 @@ let doHtml = (type, tinyId, cb) => {
     if (type === 'form') url = prefix_url + 'formView?tinyId=' + tinyId;
     setTimeout(() => {
         driver.get(url).then(() => {
-            setTimeout(() => {
-                driver.findElement(By.xpath('//html')).then(htmlEle => {
+            driver.findElement(By.xpath('//html')).then(htmlEle => {
+                htmlEle.getAttribute('innerHTML').then(html => {
                     setTimeout(() => {
-                        htmlEle.getAttribute('innerHTML').then(html => {
-                            setTimeout(() => {
-                                new StaticHtmlModel({tinyId: tinyId, html: html}).save(err => {
-                                    if (err) throw err;
-                                    else {
-                                        count++;
-                                        if (count % 300 === 0) {
-                                            console.log('count: ' + count + ' take a timeout.');
-                                            setTimeout(cb, 10 * 60 * 1000);
-                                        } else {
-                                            console.log('count: ' + count);
-                                            cb();
-                                        }
-                                    }
-                                });
-                            }, 5000);
+                        new StaticHtmlModel({tinyId: tinyId, html: html}).save(err => {
+                            if (err) throw err;
+                            else {
+                                count++;
+                                console.log('count: ' + count + ' take a timeout.');
+                                setTimeout(() => {
+                                    cb();
+                                    driver.quit();
+                                }, 5000);
+                            }
                         });
                     }, 5000);
                 });
-            }, 3000);
+            });
         });
     }, 5000);
 };
 async.series([
+    cb => {
+        StaticHtmlModel.remove({}, () => {
+            cb();
+        });
+    },
+    cb => {
+        driver.get(prefix_url + 'home').then(() => {
+
+            cb();
+        });
+    },
     cb => {
         DataElementModal.distinct('tinyId', (err, tinyIds) => {
             async.forEach(tinyIds, (tinyId, doneOne) => {
