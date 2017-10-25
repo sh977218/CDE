@@ -219,7 +219,7 @@ app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/publ
 
 app.use((req, res, next) => {
     if (req.headers['user-agent'].toLowerCase() === 'googlebot') {
-        if (req.url.match(/deView?tinyId=/ig) || req.url.match(/formView?tinyId=/ig)) {
+        if (req.url && (req.url.indexOf('deView?tinyId=') > -1 || req.url.indexOf('formView?tinyId=') > -1)) {
             mongo_data_system.getStaticHtml(req.query.tinyId, (err, html) => {
                 if (err) logging.errorLogger.error("Error: Static Html Error", {stack: err.stack, origin: req.url});
                 else if (html) res.send(html);
