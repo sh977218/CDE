@@ -17,4 +17,4 @@ mongoConn.once('open', function callback() {
 exports.DataElementModel = mongoConn.model('DataElement', new Schema(cde_schemas.deJson));
 exports.FormModel = mongoConn.model('Form', new Schema(form_schemas.formJson));
 exports.OrgModel = mongoConn.model('Org', new Schema(sharedSchemas.orgJson));
-exports.StaticHtmlModel = mongoConn.model('StaticHtml', new Schema({tinyId: String, html: String}));
+exports.StaticHtmlModel = mongoConn.model('StaticHtml', new Schema({html: String, url: String}));

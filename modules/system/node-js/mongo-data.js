@@ -577,6 +577,6 @@ exports.enableRule = function (params, cb) {
     });
 };
 
-exports.getStaticHtml = function (tinyId, cb) {
-    StaticHtml.findOne({tinyId: tinyId}, cb);
+exports.getStaticHtml = function (url, cb) {
+    StaticHtml.findOne({url: url}, cb);
 };

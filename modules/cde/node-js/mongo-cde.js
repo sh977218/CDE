@@ -140,8 +140,9 @@ exports.desByConcept = function (concept, callback) {
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     let cond = {
         'tinyId': tinyId,
-        "version": version
+        'version': null
     };
+    if (version) cond.version = version;
     DataElement.find(cond).sort({"updated": -1}).limit(1).exec(function (err, des) {
         callback(err, des[0]);
     });
