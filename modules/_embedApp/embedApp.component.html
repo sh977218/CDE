@@ -11,17 +11,16 @@
                     [ngModel]="selectedClassif" style="width:50%;"
                     [disabled]="aggregations.flatClassifications?.length === 0"
                     [ngClass]="{'halfOpacity':aggregations.flatClassifications?.length === 0}">
-                    <!--ng-switch="searchSettings.classification.length > 0"-->
                 <option value="" selected *ngIf="searchSettings.classification.length > 0">All Sub Classifications</option>
                 <option value="" selected *ngIf="searchSettings.classification.length === 0">All Classifications</option>
-                <!--<option ng-repeat="classif in aggregations.flatClassifications">{{classif.name}}</option>-->
+                <option *ngFor="let classif of aggregations.flatClassifications">{{classif.name}}</option>
             </select>
-            <!--<label class="sr-only" for="ftsearch-input">Search Terms</label>-->
-            <!--<input name="q" id="ftsearch-input" style="width: 50%"-->
-                   <!--class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched"-->
-                   <!--type="text" ng-model="searchSettings.q"-->
-                   <!--placeholder="Search..."-->
-                   <!--autocomplete="off">-->
+            <label class="sr-only" for="ftsearch-input">Search Terms</label>
+            <input name="q" id="ftsearch-input" style="width: 50%"
+                   class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched"
+                   type="text" [(ngModel)]="searchSettings.q"
+                   placeholder="Search..."
+                   autocomplete="off">
             <div class="input-group-btn">
                 <button id="search.submit" (click)="searchStarted = true;  search()" type="submit"
                         class="btn btn-danger">
@@ -36,23 +35,28 @@
 
     <div> Search Inside
         <ol class="breadcrumb form-control" style="display: inline-block">
-            <!--<li *ngIf="!searchSettings.classification.length>0">All Classifications</li>-->
-            <!--<li ng-repeat="c in searchSettings.classification track by $index"><a href="#"-->
-                                                                                  <!--ng-click="hrefcrumbSelect($index)">{{c}}</a>-->
-            <!--</li>-->
-            <!--<li ng-if="searchSettings.classification.length>0 && aggregations.flatClassifications.length > 0">All Sub-->
-                <!--Classifications-->
-            <!--</li>-->
+            <li *ngIf="!searchSettings.classification.length > 0">All Classifications</li>
+            <li *ngFor="let c of searchSettings.classification; let index = index">
+                <span class="fake-link" (click)="crumbSelect(index)">{{c}}</span>
+            </li>
+            <li *ngIf="searchSettings.classification.length > 0 && aggregations.flatClassifications.length > 0">All Sub Classifications
+            </li>
         </ol>
-        <span *ngIf="searchStarted" class="pull-right" style="padding-top:10px">
+        <span *ngIf="took" class="pull-right" style="padding-top:10px">
             {{totalItems}} results <small> ({{took / 1000}} secs)</small></span>
     </div>
 
     <div class="clearfix"></div>
 
-    <div *ngIf="searchStarted">
-        <!--<div *ngIf="totalItems > 0" id="searchResult"-->
-             <!--ng-include="'/embedded/public/html/' + searchType + 'GridList.html'"></div>-->
+    <!--<div *ngIf="searchStarted">-->
+    <div>
+        <div *ngIf="totalItems > 0" id="searchResult">
+            <cde-embedded-cde-search-result
+                    [elts]="elts"
+                    [searchViewSettings]="searchViewSettings"
+                    [embed]="embed"
+            ></cde-embedded-cde-search-result>
+        </div>
         <!--<ul uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"-->
             <!--ng-model="searchSettings.page" next-text="Next" ng-change="search()"></ul>-->
     </div>

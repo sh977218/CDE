@@ -10,11 +10,15 @@ import { FrontExceptionHandler } from '_app/frontExceptionHandler';
 import { EmbedAppComponent } from '_embedApp/embedApp.component';
 
 import "rxjs/add/operator/map";
+import { CoreModule } from 'core/public/core.module';
+import { LocalStorageModule } from 'angular-2-local-storage';
+import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embeddedCdeSearchResult.component';
 
 
 @NgModule({
     declarations: [
         EmbedAppComponent,
+        EmbeddedCdeSearchResultComponent,
     ],
     providers: [
         {provide: ErrorHandler, useClass: FrontExceptionHandler}
@@ -22,6 +26,11 @@ import "rxjs/add/operator/map";
     imports: [
         BrowserModule,
         CommonModule,
+        LocalStorageModule.withConfig({
+            prefix: "nlmcde",
+            storageType: "localStorage"
+        }),
+        CoreModule,
         FormsModule,
         HttpModule,
         BrowserAnimationsModule,
