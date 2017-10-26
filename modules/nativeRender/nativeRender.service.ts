@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CdeForm, DisplayProfile } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
 
 @Injectable()
 export class NativeRenderService {
@@ -9,6 +10,7 @@ export class NativeRenderService {
     private errors: Array<string> = [];
     private overrideNativeRenderType: string = null;
     private currentNativeRenderType: string;
+    readonly SkipLogicService = SkipLogicService;
 
     profile: DisplayProfile;
     elt: CdeForm;

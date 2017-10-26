@@ -5,9 +5,9 @@ import { FormService } from "./form.service";
 export class SkipLogicService {
     preSkipLogicSelect = "";
 
-    constructor(private formService: FormService) {}
+    constructor() {}
 
-    evaluateSkipLogic(condition, formElements, fe, elt, errors = []) {
+    static evaluateSkipLogic(condition, formElements, fe, elt, errors = []) {
         if (!condition) return true;
         let rule = condition.trim();
         if (rule.indexOf("AND") > -1) {
@@ -27,10 +27,10 @@ export class SkipLogicService {
         }
         let operator = operatorArr[0];
         let expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
-        let realAnswerArr = this.formService.getQuestions(formElements, questionLabel);
+        let realAnswerArr = FormService.getQuestions(formElements, questionLabel);
         let realAnswerObj = realAnswerArr[0];
         let realAnswer = realAnswerObj ? (realAnswerObj.question.isScore ?
-            this.formService.score(realAnswerObj, elt) : realAnswerObj.question.answer) : undefined;
+            FormService.score(realAnswerObj, elt) : realAnswerObj.question.answer) : undefined;
         if (realAnswer === undefined || realAnswer === null ||
             (typeof realAnswer === "number" && isNaN(realAnswer))) realAnswer = "";
         if (expectedAnswer === "" && operator === "=") {
@@ -89,14 +89,14 @@ export class SkipLogicService {
             return false;
     }
 
-    evaluateSkipLogicAndClear(rule, formElements, fe, elt, errors = []) {
+    static evaluateSkipLogicAndClear(rule, formElements, fe, elt, errors = []) {
         let skipLogicResult = this.evaluateSkipLogic(rule, formElements, fe, elt, errors);
 
         if (!skipLogicResult && fe.question) fe.question.answer = undefined;
         return skipLogicResult;
     }
 
-    getAnswer(previousLevel, questionName) {
+    static getAnswer(previousLevel, questionName) {
         let searchQuestion = questionName.substring(1, questionName.length - 1);
         let questions = previousLevel.filter(function (q) {
             let label = q.label;
@@ -121,7 +121,7 @@ export class SkipLogicService {
         if (!currentContent) currentContent = '';
         if (!thisQuestion.skipLogic) thisQuestion.skipLogic = {condition: ''};
 
-        let tokens = this.tokenSplitter(currentContent);
+        let tokens = SkipLogicService.tokenSplitter(currentContent);
         this.preSkipLogicSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
 
         let options = [];
@@ -141,7 +141,7 @@ export class SkipLogicService {
         } else if (tokens.length % 4 === 1) {
             options = ["= ", "< ", "> ", ">= ", "<= ", "!= "];
         } else if (tokens.length % 4 === 2) {
-            options = this.getAnswer(previousQuestions, tokens[tokens.length - 2]);
+            options = SkipLogicService.getAnswer(previousQuestions, tokens[tokens.length - 2]);
         } else if (tokens.length % 4 === 3) {
             options = ["AND ", "OR "];
         }
@@ -156,7 +156,7 @@ export class SkipLogicService {
         return options;
     }
 
-    tokenSplitter(str) {
+    static tokenSplitter(str) {
         let tokens: any = [];
         if (!str) {
             tokens.unmatched = "";
@@ -208,7 +208,7 @@ export class SkipLogicService {
         }
     }
 
-    validateSingleExpression(tokens, previousQuestions) {
+    static validateSingleExpression(tokens, previousQuestions) {
         let filteredQuestions = previousQuestions.filter(function (pq) {
             let label = pq.label;
             if ((!label || label.length === 0) && pq.question) label = pq.question.cde.name;
@@ -250,7 +250,7 @@ export class SkipLogicService {
             skipLogic.condition = event;
 
         let logic = skipLogic.condition.trim();
-        let tokens = this.tokenSplitter(logic);
+        let tokens = SkipLogicService.tokenSplitter(logic);
         delete skipLogic.validationError;
         if (tokens.unmatched) {
             skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
@@ -263,7 +263,7 @@ export class SkipLogicService {
             skipLogic.validationError = "Unexpected number of tokens in expression " + tokens.length;
             return false;
         }
-        let err = this.validateSingleExpression(tokens.slice(0, 3), previousQuestions);
+        let err = SkipLogicService.validateSingleExpression(tokens.slice(0, 3), previousQuestions);
         if (err) {
             skipLogic.validationError = err;
             return false;

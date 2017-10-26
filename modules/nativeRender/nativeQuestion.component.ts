@@ -1,10 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NativeRenderService } from './nativeRender.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import * as moment from 'moment/min/moment.min';
 import { FormService } from 'nativeRender/form.service';
 import { FormQuestion } from 'core/form.model';
-import * as moment from 'moment/min/moment.min';
+import { NativeRenderService } from './nativeRender.service';
 
 @Component({
     selector: 'cde-native-question',
@@ -16,6 +14,7 @@ export class NativeQuestionComponent implements OnInit {
     @Input() parentValue: any;
     @Input() index: any;
 
+    FormService = FormService;
     hasTime: boolean;
     static readonly reHasTime = /[hHmsSkaAZ]/;
 
@@ -24,17 +23,13 @@ export class NativeQuestionComponent implements OnInit {
             ? !!NativeQuestionComponent.reHasTime.exec(this.formElement.question.datatypeDate.format) : false;
     }
 
-    constructor(private sanitizer: DomSanitizer,
-                public formService: FormService,
-                public skipLogicService: SkipLogicService,
-                public nativeRenderService: NativeRenderService) {
-    }
+    constructor(public nrs: NativeRenderService) {}
 
     classColumns(pvIndex, index) {
         let result = "";
 
-        if (pvIndex !== -1 && this.nativeRenderService.profile && this.nativeRenderService.profile.numberOfColumns) {
-            switch (this.nativeRenderService.profile.numberOfColumns) {
+        if (pvIndex !== -1 && this.nrs.profile && this.nrs.profile.numberOfColumns) {
+            switch (this.nrs.profile.numberOfColumns) {
                 case 2:
                     result = 'col-sm-6';
                     break;
@@ -60,8 +55,8 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     isFirstInRow(index) {
-        if (this.nativeRenderService.profile && this.nativeRenderService.profile.numberOfColumns > 0)
-            return index % this.nativeRenderService.profile.numberOfColumns === 0;
+        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0)
+            return index % this.nrs.profile.numberOfColumns === 0;
         else
             return index % 4 === 0;
     }

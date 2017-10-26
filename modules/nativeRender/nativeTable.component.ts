@@ -18,9 +18,9 @@ export class NativeTableComponent implements OnInit {
     };
     entry: any;
     rowNameCounter: number = 0;
-    NativeRenderService = NativeRenderService;
+    readonly NRS = NativeRenderService;
 
-    constructor(public nativeRenderService: NativeRenderService) {
+    constructor(public nrs: NativeRenderService) {
     }
 
     ngOnInit() {
@@ -53,8 +53,8 @@ export class NativeTableComponent implements OnInit {
             if (!this.firstQuestion)
                 return false;
             this.firstQuestion.question.answers.forEach((a, i) => {
-                this.tableForm.rows.push({label: this.nativeRenderService.getPvLabel(a)});
-                this.nativeRenderService.elt.formInput[i + '-' + this.firstQuestion.questionId] = a.permissibleValue;
+                this.tableForm.rows.push({label: this.nrs.getPvLabel(a)});
+                this.nrs.elt.formInput[i + '-' + this.firstQuestion.questionId] = a.permissibleValue;
             });
             this.entry.label = this.firstQuestion.label;
             this.tableForm.q[0].name = '-' + this.firstQuestion.questionId;
@@ -62,8 +62,8 @@ export class NativeTableComponent implements OnInit {
         } else {
             let maxValue = parseInt(this.formElement.repeat);
             let format = '#.';
-            if (this.nativeRenderService.profile)
-                format = this.nativeRenderService.profile.repeatFormat;
+            if (this.nrs.profile)
+                format = this.nrs.profile.repeatFormat;
             if (!format)
                 format = "";
             for (let i = 0; i < maxValue; i++) {
@@ -122,12 +122,12 @@ export class NativeTableComponent implements OnInit {
             });
             if (f.question.datatype === 'Value List' && f.question.multiselect === true)
                 this.tableForm.rows.forEach((r, i) => {
-                    this.nativeRenderService.elt.formInput[i + '-' + sectionName + f.questionId] = [];
-                    this.nativeRenderService.elt.formInput[i + '-' + sectionName + f.questionId].answer = this.nativeRenderService.elt.formInput[i + '-' + sectionName + f.questionId];
+                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId] = [];
+                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId].answer = this.nrs.elt.formInput[i + '-' + sectionName + f.questionId];
                 });
             if (f.question.uoms && f.question.uoms.length === 1)
                 this.tableForm.rows.forEach((r, i) => {
-                    this.nativeRenderService.elt.formInput[i + '-' + sectionName + f.questionId + '_uom'] = f.question.uoms[0];
+                    this.nrs.elt.formInput[i + '-' + sectionName + f.questionId + '_uom'] = f.question.uoms[0];
                 });
             f.question.answers.forEach(a => {
                 a.subQuestions && a.subQuestions.forEach(sf => {

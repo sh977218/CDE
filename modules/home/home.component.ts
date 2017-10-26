@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component } from '@angular/core';
 import { Http } from '@angular/http';
+import { ActivatedRoute } from '@angular/router';
 import { TourService } from 'home/tour.service';
 import { CdeForm } from 'core/form.model';
 import { FormService } from 'nativeRender/form.service';
 
 @Component({
     selector: 'cde-home',
-    providers: [TourService],
     styles: [`
         .bordered-tab {
             background-color: #fff;
@@ -171,6 +171,10 @@ import { FormService } from 'nativeRender/form.service';
         .carousel-caption {
             background-color: rgba(255, 255, 255, .8);
             color: #000;
+            text-shadow: none;
+        }
+        .carousel-caption h3 {
+            font-weight: 900;
         }
         :host >>> .carousel-control-next, :host >>> .carousel-control-prev {
             background-color: #eee;
@@ -178,7 +182,7 @@ import { FormService } from 'nativeRender/form.service';
         }
         :host >>> .carousel-indicators li {
             background-color: #fff;
-            border-color: #eee;
+            border: 1px solid #0275d8;
         }
         :host >>> .carousel-indicators li.active {
             background-color: #0275d8;
@@ -186,10 +190,12 @@ import { FormService } from 'nativeRender/form.service';
     `],
     templateUrl: 'home.component.html'
 })
-export class HomeComponent {
+export class HomeComponent implements AfterViewChecked {
     cdeFormSelection = 'formOnly';
+    currentFragement: string;
     currentTab: string;
     elt: CdeForm;
+    currentFormFeature: any;
     featuredItems = {
         Forms: [
             {tinyId: '7kBFB4TUM', name: 'BRICS NINR SF-36'},
@@ -214,8 +220,23 @@ export class HomeComponent {
     statsType = 'Forms';
     topItems = {CDEs: null, Forms: null};
 
-    constructor(private http: Http, private formService: FormService) {
+    constructor(private http: Http, private route: ActivatedRoute, private formService: FormService) {
         this.getForm(this.formFeatures[0]);
+    }
+
+    ngAfterViewChecked() {
+        this.route.fragment.subscribe(fragment => {
+            if (fragment && this.currentFragement !== fragment) {
+                setTimeout(function () {
+                    document.querySelector('#' + fragment).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                        inline: 'nearest'
+                    });
+                }, 100);
+                this.currentFragement = fragment;
+            }
+        });
     }
 
     getForm(feature) {
@@ -225,6 +246,7 @@ export class HomeComponent {
                 this.elt = elt;
             }
         });
+        this.currentFormFeature = feature;
         this.formFeatureDescription = feature.description;
     }
 

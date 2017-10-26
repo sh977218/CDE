@@ -11,12 +11,12 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
 })
 export class NativeRenderComponent {
     @Input() set elt(e: CdeForm) {
-        let map = this.nativeRenderService.setElt(e);
+        let map = this.nrs.setElt(e);
         if (map)
             this.mapping = map;
     };
     @Input() set profile(p: DisplayProfile) {
-        this.nativeRenderService.setSelectedProfile(p);
+        this.nrs.setSelectedProfile(p);
     };
     @Input() submitForm: boolean;
     @Input() showTitle: boolean = true;
@@ -24,11 +24,11 @@ export class NativeRenderComponent {
     endpointUrl: string;
     formUrl: string;
     mapping: any;
-    NativeRenderService = NativeRenderService;
+    readonly NRS = NativeRenderService;
 
     constructor(private sanitizer: DomSanitizer,
                 public skipLogicService: SkipLogicService,
-                public nativeRenderService: NativeRenderService) {
+                public nrs: NativeRenderService) {
         this.formUrl = window.location.href;
         this.endpointUrl = (<any>window).endpointUrl;
     }
@@ -38,6 +38,6 @@ export class NativeRenderComponent {
     }
 
     setNativeRenderType(userType) {
-        this.nativeRenderService.setNativeRenderType(userType);
+        this.nrs.setNativeRenderType(userType);
     }
 }

@@ -10,6 +10,6 @@ export class NativeSectionMatrixComponent {
     @Input() formElement: FormElement;
     @Input() numSubQuestions: number;
 
-    constructor(public nativeRenderService: NativeRenderService) {
+    constructor(public nrs: NativeRenderService) {
     }
 }

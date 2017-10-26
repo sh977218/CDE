@@ -1,19 +1,19 @@
 <h1 *ngIf="showTitle"
-    [textContent]="nativeRenderService.getElt()?.naming && nativeRenderService.getElt().naming[0]?.designation"></h1>
+    [textContent]="nrs.getElt()?.naming && nrs.getElt().naming[0]?.designation"></h1>
 
-<form *ngIf="!endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal">
-    <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== NativeRenderService.SHOW_IF
-                                  || skipLogicService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition,
-                                  null, nativeRenderService.getElt(), nativeRenderService.getElt(), nativeRenderService.getErrors())"
-                        [formElement]="nativeRenderService.getElt()"></cde-native-section>
+<form *ngIf="!endpointUrl && nrs.getElt()" name="sectionLabel" role="form" class="form-horizontal">
+    <cde-native-section *ngIf="nrs.getNativeRenderType() !== NRS.SHOW_IF
+                                  || nrs.SkipLogicService.evaluateSkipLogic(nrs.getElt().skipLogic?.condition,
+                                  null, nrs.getElt(), nrs.getElt(), nrs.getErrors())"
+                        [formElement]="nrs.getElt()"></cde-native-section>
 </form>
-<form ngNoForm #formData *ngIf="endpointUrl && nativeRenderService.getElt()" name="sectionLabel" role="form" class="form-horizontal"
+<form ngNoForm #formData *ngIf="endpointUrl && nrs.getElt()" name="sectionLabel" role="form" class="form-horizontal"
       [action]="getEndpointUrl()" method="post">
 
-    <cde-native-section *ngIf="nativeRenderService.getNativeRenderType() !== NativeRenderService.SHOW_IF
-                                  || skipLogicService.evaluateSkipLogic(nativeRenderService.getElt().skipLogic?.condition,
-                                  null, nativeRenderService.getElt(), nativeRenderService.getElt(), nativeRenderService.getErrors())"
-                        [formElement]="nativeRenderService.getElt()"></cde-native-section>
+    <cde-native-section *ngIf="nrs.getNativeRenderType() !== NRS.SHOW_IF
+                                  || nrs.SkipLogicService.evaluateSkipLogic(nrs.getElt().skipLogic?.condition,
+                                  null, nrs.getElt(), nrs.getElt(), nrs.getErrors())"
+                        [formElement]="nrs.getElt()"></cde-native-section>
 
     <input type="hidden" name="formUrl" [value]="formUrl">
     <input type="hidden" name="mapping" [value]="mapping">
@@ -21,9 +21,9 @@
            style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" [disabled]="formData.$invalid">
 </form>
 
-<small *ngIf="nativeRenderService.getElt()?.isCopyrighted && (!nativeRenderService.profile || nativeRenderService.profile.displayCopyright)"
-       id="copyrightStatement">{{nativeRenderService.getElt().copyright.text}}</small>
+<small *ngIf="nrs.getElt()?.isCopyrighted && (!nrs.profile || nrs.profile.displayCopyright)"
+       id="copyrightStatement">{{nrs.getElt().copyright.text}}</small>
 
-<ngb-alert type="danger" *ngIf="nativeRenderService.hasErrors()">
-    <span [textContent]="nativeRenderService.getErrors().join(' -- ')"></span>
+<ngb-alert type="danger" *ngIf="nrs.hasErrors()">
+    <span [textContent]="nrs.getErrors().join(' -- ')"></span>
 </ngb-alert>

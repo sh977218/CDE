@@ -2,53 +2,61 @@
     <div class="jumbotron" style="padding: 2rem 1rem; margin-bottom: 0;">
         <img class="img-center-responsive" style="width: 300px; max-width: 50%"
              src="/cde/public/assets/img/NIH-CDE.png" alt="NIH Common Data Elements (CDE) logo" />
-    </div>
-    <div class="container mt-0 mt-sm-5" style="background-color: #eee; padding: 10px">
-        <ngb-carousel style="margin: auto">
-            <ng-template ngbSlide>
-                <img class="slideContent" src="drafting.png" alt="Draft of a Form">
-                <div class="carousel-caption">
-                    <h3>Edit Drafting</h3>
-                    <p>Autosave and Collaboration Prior to Publishing</p>
-                </div>
-            </ng-template>
-            <ng-template ngbSlide>
-                <a href="https://smarthealthit.org/" target="_blank">
-                    <img class="slideContent" src="smart.png" alt="SMART ON FHIR">
+
+        <div class="container mt-0 mt-sm-5" style="background-color: #eee; padding: 10px">
+            <ngb-carousel style="margin: auto">
+                <ng-template ngbSlide>
+                    <a href="https://smarthealthit.org/" target="_blank">
+                        <img class="slideContent" src="forms.png" alt="SMART ON FHIR">
+                        <div class="carousel-caption">
+                            <h3>Search and Reuse Standard Forms</h3>
+                        </div>
+                    </a>
+                </ng-template>
+                <ng-template ngbSlide>
+                    <a href="https://smarthealthit.org/" target="_blank">
+                        <img class="slideContent" src="smart.png" alt="SMART ON FHIR">
+                        <div class="carousel-caption">
+                            <h3>EHR Integration with FHIR</h3>
+                        </div>
+                    </a>
+                </ng-template>
+                <ng-template ngbSlide>
+                    <img class="slideContent" src="drafting.png" alt="Draft of a Form">
                     <div class="carousel-caption">
-                        <h3>EHR Integration</h3>
-                        <p>On the SMART Health IT Platform</p>
+                        <h3>Draft, Share and Collaborate</h3>
                     </div>
-                </a>
-            </ng-template>
-            <ng-template ngbSlide>
-                <img class="slideContent" src="google-spreadsheets.png" alt="Send data to Google Spreadsheet">
-                <div class="carousel-caption">
-                    <h3>Google Spreadsheet Integration</h3>
-                    <p>Form Submission to Your Google Account</p>
-                </div>
-            </ng-template>
-        </ngb-carousel>
+                </ng-template>
+                <ng-template ngbSlide>
+                    <img class="slideContent" src="google-spreadsheets.png" alt="Send data to Google Spreadsheet">
+                    <div class="carousel-caption">
+                        <h3>Google Spreadsheet Integration</h3>
+                    </div>
+                </ng-template>
+            </ngb-carousel>
+        </div>
     </div>
-    <a href="#formFeatures">
+    <a routerLink="/home" fragment="formFeatures">
         <div class="morePagesText">What are some Form Features?</div>
     </a>
 </section>
 <section class="sectionPage container" id="formFeatures">
     <div class="row pt-3">
-        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
-            <ul class="btn-group-vertical p-3 w-100" style="background-color: aliceblue">
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <ul class="btn-group-vertical p-3 w-100" style="border-radius: 20px; border: solid lightgrey 3px;">
                 <li *ngFor="let f of formFeatures" class="btn btn-outline-primary"
+                    style="border-radius: 20px; border-color: lightgray"
+                    [style.border-width]="currentFormFeature === f ? '2px' : '0'"
                     (click)="getForm(f)">{{f.feature}}</li>
             </ul>
         </div>
-        <div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
-            <div class="p-3" style="background-color: #ecdada">{{formFeatureDescription}}</div>
+        <div class="col-xs-12 col-sm-8 col-md-9">
+            <div class="p-3" style="background-color: #ecdada; border-radius: 20px">{{formFeatureDescription}}</div>
             <cde-native-render [elt]="elt" [profile]="null" class="d-block p-3 nativeRender"
-                               style="min-height: 80vh; background-color: #dff3df"></cde-native-render>
+                               style="min-height: 80vh; border-radius: 20px; border: solid lightgrey 3px;"></cde-native-render>
         </div>
     </div>
-    <a href="#started">
+    <a routerLink="/home" fragment="started">
         <div class="morePages morePagesXsUnder morePagesFromText morePagesToCircle contentStartedFrom"></div>
     </a>
 </section>
@@ -76,7 +84,7 @@
                             <div class="featuredHeading">Featured Forms</div>
                             <ul>
                                 <li *ngFor="let item of featuredItems['Forms']">
-                                    <a href="/formView?tinyId={{item.tinyId}}">{{item.name}}</a>
+                                    <a routerLink="/formView?tinyId={{item.tinyId}}">{{item.name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -89,7 +97,7 @@
                             <div class="featuredHeading">Most Viewed CDEs</div>
                             <ul>
                                 <li *ngFor="let item of topItems['CDEs']">
-                                    <a href="/deView?tinyId={{item.tinyId}}">{{item.name}}</a>
+                                    <a routerLink="/deView?tinyId={{item.tinyId}}">{{item.name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -102,7 +110,7 @@
                             <div class="featuredHeading">Newest {{statsType}}</div>
                             <ul>
                                 <li *ngFor="let item of newItems[statsType]">
-                                    <a href="/{{statsType==='CDEs'?'de':'form'}}View?tinyId={{item.tinyId}}">{{item.name}}</a>
+                                    <a routerLink="/{{statsType==='CDEs'?'de':'form'}}View?tinyId={{item.tinyId}}">{{item.name}}</a>
                                 </li>
                             </ul>
                         </div>

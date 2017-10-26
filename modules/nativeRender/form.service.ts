@@ -53,7 +53,7 @@ export class FormService {
         }, cb);
     }
 
-    getQuestions(fe, qLabel) {
+    static getQuestions(fe, qLabel) {
         let result = [];
         fe.forEach((element) => {
             if (element.elementType !== "question")
@@ -99,7 +99,7 @@ export class FormService {
         FormService.iterateFe(form, callback, formCb, undefined, questionCb);
     }
 
-    findQuestionByTinyId(tinyId, elt) {
+    static findQuestionByTinyId(tinyId, elt) {
         let result = null;
         let doFormElement = function (formElt) {
             if (formElt.elementType === "question") {
@@ -155,8 +155,9 @@ export class FormService {
             });
     };
 
-    score(question, elt) {
-        if (!question.question.isScore) return;
+    static score(question, elt) {
+        if (!question.question.isScore)
+            return;
         let result: any = 0;
         let service = this;
         question.question.cde.derivationRules.forEach(function (derRule) {
@@ -167,14 +168,18 @@ export class FormService {
                         if (isNaN(result)) return;
                         if (q) {
                             let answer = q.question.answer;
-                            if (answer == null) return result = "Incomplete answers";
-                            if (isNaN(answer)) return result = "Unable to score";
-                            else result = result + parseFloat(answer);
+                            if (answer == null)
+                                return result = "Incomplete answers";
+                            if (isNaN(answer))
+                                return result = "Unable to score";
+                            else
+                                result = result + parseFloat(answer);
                         }
                     });
                 }
                 if (derRule.formula === "mean") {
-                    if (!isNaN(result)) result = result / derRule.inputs.length;
+                    if (!isNaN(result))
+                        result = result / derRule.inputs.length;
                 }
             }
         });

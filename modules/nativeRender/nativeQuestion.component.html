@@ -1,16 +1,16 @@
-<div [hidden]="formElement.question.invisible && !nativeRenderService.profile.displayInvisible">
+<div [hidden]="formElement.question.invisible && !nrs.profile.displayInvisible">
     <fieldset>
         <legend class="native-question-label"></legend>
         <label *ngIf="formElement.question.datatype !== 'Value List'"
                [hidden]="!hasLabel(formElement)" class="native-question-label"
                attr.for="{{formElement.label}}_{{index}}_box"
-                [ngClass]="{'native-question-label-number': !numSubQuestions && nativeRenderService.profile.displayNumbering}">
+                [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
             <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</label>
         <div *ngIf="formElement.question.datatype === 'Value List'"
                [hidden]="!hasLabel(formElement)" class="native-question-label"
-               [ngClass]="{'native-question-label-number': !numSubQuestions && nativeRenderService.profile.displayNumbering}">
+               [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}">
             <span *ngIf="parentValue">If {{parentValue}}: </span>{{formElement.label}}</div>
-        <div *ngIf="nativeRenderService.profile.displayInstructions && formElement?.instructions?.value"
+        <div *ngIf="nrs.profile.displayInstructions && formElement?.instructions?.value"
              class="native-instructions">
             <span *ngIf="formElement.instructions.valueFormat === 'html'"
                   [innerHtml]="formElement.instructions.value"></span>
@@ -19,7 +19,7 @@
 
         <div attr.id="{{formElement.label}}_{{index}}" [ngClass]="{'native-box': hasLabel(formElement)}">
             <div *ngIf="formElement.question.isScore">Score: <span
-                    [textContent]="formService.score(formElement, nativeRenderService.getElt())"></span></div>
+                    [textContent]="FormService.score(formElement, nrs.getElt())"></span></div>
             <div *ngIf="!formElement.question.isScore">
                 <div [ngSwitch]="formElement.question.datatype">
                     <div *ngSwitchCase="'Value List'">
@@ -31,7 +31,7 @@
                                                           && isOneLiner(pv.subQuestions[0], pv.subQuestions.length),
                                                    'checkbox-inline': formElement.question.multiselect,
                                                    'radio-inline': !formElement.question.multiselect}"
-                                           [title]="nativeRenderService.getPvLabel(pv)">
+                                           [title]="nrs.getPvLabel(pv)">
                                         <input type="radio" *ngIf="!formElement.question.multiselect"
                                                [name]="formElement.questionId"
                                                [attr.name]="formElement.questionId"
@@ -43,20 +43,20 @@
                                         <input type="checkbox" *ngIf="formElement.question.multiselect"
                                                [name]="formElement.questionId" title="multiple select"
                                                [attr.name]="formElement.questionId"
-                                               [checked]="nativeRenderService.checkboxIsChecked(formElement.question, pv.permissibleValue)"
-                                               (change)="nativeRenderService.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
+                                               [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
+                                               (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
                                                [value]="pv.permissibleValue"
                                                [required]="formElement.question.required"
                                                [disabled]="!formElement.question.editable"/>
-                                        <span [textContent]="nativeRenderService.getPvLabel(pv)"></span>
-                                    <span class="native-value" *ngIf="nativeRenderService.profile.displayValues"
-                                          [textContent]="nativeRenderService.getPvValue(pv)"></span>
+                                        <span [textContent]="nrs.getPvLabel(pv)"></span>
+                                    <span class="native-value" *ngIf="nrs.profile.displayValues"
+                                          [textContent]="nrs.getPvValue(pv)"></span>
                                     </label>
                                     <div *ngIf="pv?.subQuestions">
                                         <div *ngFor="let fe of pv.subQuestions; let j = index">
-                                            <div *ngIf="nativeRenderService.getNativeRenderType() !== nativeRenderService.SHOW_IF
-                                               || skipLogicService.evaluateSkipLogicAndClear(fe.skipLogic?.condition,
-					       pv.subQuestions, fe, nativeRenderService.getElt(), nativeRenderService.getErrors())"
+                                            <div *ngIf="nrs.getNativeRenderType() !== nrs.SHOW_IF
+                                               || nrs.SkipLogicService.evaluateSkipLogicAndClear(fe.skipLogic?.condition,
+					       pv.subQuestions, fe, nrs.getElt(), nrs.getErrors())"
                                                  [ngClass]="{'native-question-oneline-r': pv.subQuestions && isOneLiner(pv.subQuestions[0], (pv && pv.subQuestions ? pv.subQuestions.length : 0)),
                                                             'native-box': pv.subQuestions && !isOneLiner(fe, (pv && pv.subQuestions ? pv.subQuestions.length : 0))}"
                                                  class="native-question-header">
@@ -144,16 +144,16 @@
                                        [required]="formElement.question.required"
                                        [disabled]="!formElement.question.editable"/> {{uom}}</label>
                         </div>
-                        <!--<div [textContent]="nativeRenderService.form.$$element[0][formElement.questionId].validationMessage"></div>-->
+                        <!--<div [textContent]="nrs.form.$$element[0][formElement.questionId].validationMessage"></div>-->
                     </div>
                 </div>
             </div>
             <div *ngFor="let pv of formElement.question.answers; let i = index">
                 <div *ngIf="pv.nonValuelist && pv.subQuestions">
                     <div *ngFor="let fe of pv.subQuestions; let j = index">
-                        <div *ngIf="nativeRenderService.getNativeRenderType() !== this.nativeRenderService.SHOW_IF
-                                        || skipLogicService.evaluateSkipLogicAndClear(fe.skipLogic?.condition,
-					pv.subQuestions, fe, nativeRenderService.getElt(), nativeRenderService.getErrors())"
+                        <div *ngIf="nrs.getNativeRenderType() !== this.nrs.SHOW_IF
+                                        || nrs.SkipLogicService.evaluateSkipLogicAndClear(fe.skipLogic?.condition,
+					pv.subQuestions, fe, nrs.getElt(), nrs.getErrors())"
                              [ngClass]="{'native-question-oneline-r': pv.subQuestions && isOneLiner(pv.subQuestions[0], (pv && pv.subQuestions ? pv.subQuestions.length : 0))}"
                              class="native-question-header">
                             <cde-native-question

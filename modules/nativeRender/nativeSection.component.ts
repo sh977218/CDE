@@ -13,13 +13,13 @@ export class NativeSectionComponent {
     @Input() numSubQuestions: number;
 
     constructor(public skipLogicService: SkipLogicService,
-                public nativeRenderService: NativeRenderService) {
+                public nrs: NativeRenderService) {
     }
 
     sectionType() {
         if (this.formElement.repeat && this.formElement.repeat !== '1')
             return 'table';
-        if (this.nativeRenderService.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement))
+        if (this.nrs.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement))
             return 'matrix';
         return 'section';
     }
@@ -72,7 +72,7 @@ export class NativeSectionComponent {
     }
 
     removeSection(index) {
-        this.nativeRenderService.elt.formElements.splice(index, 1);
+        this.nrs.elt.formElements.splice(index, 1);
     }
 
     canRepeat(formElt) {
