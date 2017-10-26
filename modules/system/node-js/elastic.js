@@ -791,6 +791,16 @@ exports.elasticSearchExport = function (dataCb, query, type) {
 
 exports.queryMostViewed = {
     size: 10,
+    query: {
+        bool: {
+            filter: [
+                {bool: {should: [
+                    {"term": {"registrationState.registrationStatus": "Standard"}},
+                    {"term": {"registrationState.registrationStatus": "Qualified"}}
+                ]}}
+            ]
+        }
+    },
     sort: {
         views: "desc"
     }
@@ -798,6 +808,16 @@ exports.queryMostViewed = {
 
 exports.queryNewest = {
     size: 10,
+    query: {
+        bool: {
+            filter: [
+                {bool: {should: [
+                    {"term": {"registrationState.registrationStatus": "Standard"}},
+                    {"term": {"registrationState.registrationStatus": "Qualified"}}
+                ]}}
+            ]
+        }
+    },
     sort: {
         _script : {
             type : 'number',

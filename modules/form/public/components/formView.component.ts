@@ -101,6 +101,33 @@ export class FormViewComponent implements OnInit {
         });
     }
 
+    formLoaded(cb) {
+        if (this.elt) {
+            this.formId = this.elt._id;
+            this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
+            this.loadComments(this.elt, null);
+        }
+        cb();
+    }
+
+    loadDraft(cb = _.noop) {
+        this.http.get("/draftForm/" + this.route.snapshot.queryParams['tinyId'])
+            .map(res => res.json()).subscribe(res => {
+            if (res && res.length > 0) {
+                this.drafts = res;
+                this.elt = res[0];
+                this.formLoaded(cb);
+            } else {
+                this.drafts = [];
+                this.elt = null;
+                cb();
+            }
+        }, err => {
+            this.alert.addAlert("danger", err);
+            cb();
+        });
+    }
+
     loadForm(cb = _.noop) {
         this.userService.then(() => {
             if (this.userService.user && this.userService.user.username)
@@ -121,12 +148,10 @@ export class FormViewComponent implements OnInit {
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
                 this.elt = res;
-                if (this.elt) {
-                    this.formId = this.elt._id;
-                    this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
-                    this.loadComments(this.elt, null);
-                }
-                cb();
+                if (this.elt)
+                    this.formLoaded(cb);
+                else
+                    cb();
             },
             () => this.router.navigate(['/pageNotFound'])
         );
@@ -283,23 +308,6 @@ export class FormViewComponent implements OnInit {
         }
     }
 
-    loadDraft(cb = _.noop) {
-        this.http.get("/draftForm/" + this.route.snapshot.queryParams['tinyId'])
-            .map(res => res.json()).subscribe(res => {
-            if (res && res.length > 0) {
-                this.drafts = res;
-                this.elt = res[0];
-            } else {
-                this.drafts = [];
-                this.elt = null;
-            }
-            cb();
-        }, err => {
-            this.alert.addAlert("danger", err);
-            cb();
-        });
-    }
-
     saveDraft(cb) {
         this.savingText = 'Saving ...';
         this.elt._id = this.formId;
@@ -307,6 +315,8 @@ export class FormViewComponent implements OnInit {
         this.draftSubscription = this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
             this.elt.isDraft = true;
+            if (!this.drafts.length)
+                this.drafts = [this.elt];
             this.savingText = "Saved";
             setTimeout(() => {
                 this.savingText = "";

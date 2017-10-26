@@ -212,7 +212,7 @@ export class HomeComponent implements AfterViewChecked {
         {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
         {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
         {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: 'mJsGoMU1m'},
-        {feature: 'Table', description: 'Questions can be asked multiple times to allow more than one answer.', tinyId: 'mJOLUXxrf'},
+        {feature: 'Table', description: 'Questions can be asked multiple times.', tinyId: 'XJtA5M63ix'},
         {feature: 'Calculated Fields', description: 'Calculations such as scoring automate the math.', tinyId: '71Rnf_pz7'},
     ];
     formFeatureDescription: string;

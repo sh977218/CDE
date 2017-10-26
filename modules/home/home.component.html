@@ -51,7 +51,7 @@
             </ul>
         </div>
         <div class="col-xs-12 col-sm-8 col-md-9">
-            <div class="p-3" style="background-color: #ecdada; border-radius: 20px">{{formFeatureDescription}}</div>
+            <div class="p-3" style="background-color: #000; border-radius: 20px; color: #fff; font-weight: 900">{{formFeatureDescription}}</div>
             <cde-native-render [elt]="elt" [profile]="null" class="d-block p-3 nativeRender"
                                style="min-height: 80vh; border-radius: 20px; border: solid lightgrey 3px;"></cde-native-render>
         </div>
@@ -84,7 +84,7 @@
                             <div class="featuredHeading">Featured Forms</div>
                             <ul>
                                 <li *ngFor="let item of featuredItems['Forms']">
-                                    <a routerLink="/formView?tinyId={{item.tinyId}}">{{item.name}}</a>
+                                    <a routerLink="/formView" [queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -97,7 +97,7 @@
                             <div class="featuredHeading">Most Viewed CDEs</div>
                             <ul>
                                 <li *ngFor="let item of topItems['CDEs']">
-                                    <a routerLink="/deView?tinyId={{item.tinyId}}">{{item.name}}</a>
+                                    <a routerLink="/deView" [queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -110,7 +110,8 @@
                             <div class="featuredHeading">Newest {{statsType}}</div>
                             <ul>
                                 <li *ngFor="let item of newItems[statsType]">
-                                    <a routerLink="/{{statsType==='CDEs'?'de':'form'}}View?tinyId={{item.tinyId}}">{{item.name}}</a>
+                                    <a routerLink="/{{statsType==='CDEs'?'de':'form'}}View"
+                                       [queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>
                                 </li>
                             </ul>
                         </div>

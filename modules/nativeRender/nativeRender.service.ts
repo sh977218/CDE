@@ -84,8 +84,9 @@ export class NativeRenderService {
             if (!this.elt.formInput)
                 this.elt.formInput = [];
 
+            let mapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
             this.render();
-            return JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
+            return mapping;
         }
 
         return null;
