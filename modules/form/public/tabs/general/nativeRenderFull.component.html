@@ -14,17 +14,16 @@
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
                 <a class="d-inline" id="button_lforms">LHC-Forms</a>
                 (Provided by <a class="d-inline" href="https://lhncbc.nlm.nih.gov/project/lforms"
-                                target="_blank">LHNCBC</a>
+                                target="_blank" (click)="$event.stopPropagation()">LHNCBC</a>
             </button>
             <button class="dropdown-item" attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
-                <a class="d-inline" id="button_sdc"
-                >SDC</a>
-                (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank">ONC</a>)
+                <a class="d-inline" id="button_sdc">SDC</a>
+                (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank" (click)="$event.stopPropagation()">ONC</a>)
             </button>
-            <button class="dropdown-item">Printable Logic:
-                <input id="printableLogicCb" type="checkbox" [(ngModel)]="overridePrintable"
-                       (change)="render.setNativeRenderType(($event.target.checked ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF))">
+            <button class="dropdown-item" (click)="pritableCb.click()">Printable Logic:
+                <input #pritableCb id="printableLogicCb" type="checkbox" [(ngModel)]="overridePrintable" (click)="$event.stopPropagation()"
+                       (change)="render.setNativeRenderType(($event.target.checked ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF));">
             </button>
         </div>
     </div>
