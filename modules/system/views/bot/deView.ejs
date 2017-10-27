@@ -11,15 +11,6 @@
           content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-            integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-            crossorigin="anonymous"></script>
     <style>
         .card {
             padding: 5px;
@@ -56,71 +47,133 @@
         </ul>
     </div>
 </nav>
-
 <div class="container">
-    <div class="row">
-        <div class="col-2">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#general_tab" role="tab">General Detail</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#pvs_tab" role="tab">Permissible Values</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#naming_tab" role="tab">Naming</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#classification_tab" role="tab">Classification</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#meshTopic_tab" role="tab">Mesh Topic</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#concepts_tab" role="tab">Concepts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#referenceDocuments_tab" role="tab">Reference
-                        Documents</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#properties_tab" role="tab">Properties</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#ids_tab" role="tab">Identifiers</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#attachments_tab" role="tab">Attachments</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#history_tab" role="tab">History</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#derivationRules_tab" role="tab">Score Derivations</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#validRules_tab" role="tab">Validation Rules</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-10">
-            <div class="tab-content">
-                <div class="tab-pane" id="general_tab" role="tabpanel">
-                    <h4>General Details:</h4>
-                    <dl class="row">
-                        <dt class="col-3 text-right">Name:</dt>
-                        <dd class="col-9"><%= cde.naming[0].designation %></dd>
-                        <dt class="col-3 text-right">Steward:</dt>
-                        <dd class="col-9"><%= cde.stewardOrg.name %></dd>
-                        <dt class="col-3 text-right">Definition:</dt>
-                        <dd class="col-9"><%= cde.naming[0].definition %></dd>
-                    </dl>
-                </div>
-                <div class="tab-pane" id="pvs_tab" role="tabpanel">
-                    pv
-                </div>
-            </div>
-        </div>
+    <div class="row" id="general_tab">
+        <h4 class="">General Details:</h4>
+        <div class="clearfix"></div>
+        <dl class="row">
+            <dt class="col-3 text-right">Name:</dt>
+            <dd class="col-9"><%= cde.naming[0].designation %></dd>
+            <dt class="col-3 text-right">Steward:</dt>
+            <dd class="col-9"><%= cde.stewardOrg.name %></dd>
+            <dt class="col-3 text-right">Definition:</dt>
+            <dd class="col-9"><%= cde.naming[0].definition %></dd>
+            <dt class="col-3 text-right">Registration Status:</dt>
+            <dd class="col-9"><%= cde.registrationState.registrationStatus %></dd>
+        </dl>
+    </div>
+    <div class="row" id="pvs_tab">
+        <h4>Permissible Values:</h4>
+        <dl class="row">
+            <dt class="col-3 text-right">Value Type:</dt>
+            <dd class="col-9"><%= cde.valueDomain.datatype %></dd>
+            <dt class="col-3 text-right">Unit of Measure:</dt>
+            <dd class="col-9"><%= cde.valueDomain.uom %></dd>
+            <dt class="col-3 text-right">Ids:</dt>
+            <dd class="col-9"><%= cde.valueDomain.ids %></dd>
+        </dl>
+        <% if (cde.valueDomain.permissibleValues.length) { %>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Value</th>
+                <th>Code Name</th>
+                <th>Code</th>
+                <th>Code System</th>
+                <th>Code Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for(var i = 0; i < cde.valueDomain.permissibleValues.length; i++) {
+                var pv = cde.valueDomain.permissibleValues[i]; %>
+            <tr>
+                <td><%= pv.permissibleValue %></td>
+                <td><%= pv.valueMeaningName %></td>
+                <td><%= pv.valueMeaningCode %></td>
+                <td><%= pv.codeSystemName %></td>
+                <td><%= pv.valueMeaningDefinition %></td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+        <% } %>
+    </div>
+    <div class="row" id="naming_tab">
+        <h4>Naming:</h4>
+        <% for(var i = 0; i < cde.naming.length; i++) {
+            var name = cde.naming[i];
+        %>
+        <dl class="row">
+            <dt class="col-3 text-right">Name:</dt>
+            <dd class="col-9"><%= name.designation %></dd>
+            <dt class="col-3 text-right">Definition:</dt>
+            <dd class="col-9"><%= name.definition %></dd>
+            <dt class="col-3 text-right">Tags:</dt>
+            <dd class="col-9"><%= name.tags %></dd>
+        </dl>
+        <% } %>
+    </div>
+    <div class="row" id="referenceDocuments_tab">
+        <h4>Reference Documents:</h4>
+        <% for(var i = 0; i < cde.referenceDocuments.length; i++) {
+            var referenceDocument = cde.referenceDocuments[i];
+        %>
+        <dl class="row">
+            <dt class="col-3 text-right">ID:</dt>
+            <dd class="col-9"><%= referenceDocument.referenceDocumentId %></dd>
+            <dt class="col-3 text-right">Title:</dt>
+            <dd class="col-9"><%= referenceDocument.title %></dd>
+            <dt class="col-3 text-right">URI:</dt>
+            <dd class="col-9"><%= referenceDocument.uri %></dd>
+            <dt class="col-3 text-right">Provider Org:</dt>
+            <dd class="col-9"><%= referenceDocument.providerOrg %></dd>
+            <dt class="col-3 text-right">Language Code:</dt>
+            <dd class="col-9"><%= referenceDocument.languageCode %></dd>
+            <dt class="col-3 text-right">Document:</dt>
+            <dd class="col-9"><%= referenceDocument.document %></dd>
+        </dl>
+        <% } %>
+    </div>
+    <div class="row" id="properties_tab">
+        <h4>Properties:</h4>
+        <% for(var i = 0; i < cde.properties.length; i++) {
+            var property = cde.properties[i];
+        %>
+        <dl class="row">
+            <dt class="col-3 text-right">Key:</dt>
+            <dd class="col-9"><%= property.key %></dd>
+            <dt class="col-3 text-right">Value:</dt>
+            <% if (property.valueFormat === 'html') { %>
+            <dd class="col-9"><%- property.value %></dd>
+            <% } %>
+            <% if (property.valueFormat !== 'html') { %>
+            <dd class="col-9"><%= property.value %></dd>
+            <% } %>
+        </dl>
+        <% } %>
+    </div>
+    <div class="row" id="ids_tab">
+        <h4>Identifiers:</h4>
+        <dl class="row">
+            <dt class="col-3 text-right">Source:</dt>
+            <dd class="col-9">NLM</dd>
+            <dt class="col-3 text-right">Id:</dt>
+            <dd class="col-9"><%= cde.tinyId %></dd>
+            <dt class="col-3 text-right">Version:</dt>
+            <dd class="col-9"><%= cde.version %></dd>
+        </dl>
+        <% for(var i = 0; i < cde.ids.length; i++) {
+            var id = cde.ids[i];
+        %>
+        <dl class="row">
+            <dt class="col-3 text-right">Source:</dt>
+            <dd class="col-9"><%= id.source %></dd>
+            <dt class="col-3 text-right">Id:</dt>
+            <dd class="col-9"><%= id.id %></dd>
+            <dt class="col-3 text-right">Version:</dt>
+            <dd class="col-9"><%= id.version %></dd>
+        </dl>
+        <% } %>
     </div>
 </div>
 <footer class="footer">
@@ -208,6 +261,35 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 <script type="application/ld+json">
         {
@@ -217,6 +299,35 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
