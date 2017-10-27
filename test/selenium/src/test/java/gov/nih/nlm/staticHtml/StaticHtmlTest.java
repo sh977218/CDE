@@ -31,7 +31,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     @Test
     @SelectUserAgent()
     public void staticDeViewHtml() {
-        driver.get(baseUrl + "/devView?tinyId=QJxhjQVkke");
+        driver.get(baseUrl + "/deView?tinyId=QJxhjQVkke");
         textPresent("Patient Health Questionnaire (PHQ-9) Last Two Weeks How Often Little Interest or Pleasure in Doing Things Score 4 Point Scale");
         textPresent("Value List");
         textPresent("A subjective answer of non-agreement.");
