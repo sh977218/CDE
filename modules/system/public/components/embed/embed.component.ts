@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Http } from "@angular/http";
 import { DomSanitizer } from "@angular/platform-browser";
-import { UserService } from 'core/public/user.service';
+import { UserService } from 'core/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

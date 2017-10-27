@@ -47,7 +47,7 @@ module.exports = {
                 output: {
                     comments: false
                 },
-                compressor: {
+                compress: {
                     warnings: false
                 }
             }),
@@ -76,7 +76,7 @@ module.exports = {
     resolve: {
         unsafeCache: false,
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
-        modules: ["modules", "modules/components", "node_modules"]
+        modules: ["modules", "node_modules", "modules/components"]
     },
     devtool: prod ? '#source-map' : '#cheap-eval-source-map',
     watch: !prod,

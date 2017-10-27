@@ -12,7 +12,6 @@ import { RecaptchaModule } from 'ng-recaptcha';
 import { SelectBoardDirective } from "./upgrade-components";
 import { ProfileComponent } from "./components/profile.component";
 import { UserCommentsComponent } from "./components/userComments.component";
-import { HomeComponent } from "./components/home/home.component";
 import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
@@ -24,7 +23,7 @@ import { AuditLogComponent } from "./components/siteAdmin/auditLog/auditLog.comp
 import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffPopulate.service";
 import { ClassificationAuditLogComponent } from "./components/siteAdmin/classificationAuditLog/classificationAuditLog.component";
 
-import { CamelCaseToHumanPipe } from 'core/public/camelCaseToHumanPipe';
+import { CamelCaseToHumanPipe } from 'core/camelCaseToHumanPipe';
 import { ClientErrorsComponent } from "./components/siteAdmin/clientErrors/clientErrors.component";
 import { ServerErrorsComponent } from "./components/siteAdmin/serverErrors/serverErrors.component";
 import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.component";
@@ -51,8 +50,6 @@ import { RouterModule, Routes } from "@angular/router";
 import { LatestCommentsComponent } from "discuss/components/latestComments/latestComments.component";
 
 const appRoutes: Routes = [
-    {path: '', redirectTo: "/home", pathMatch: 'full'},
-    {path: 'home', component: HomeComponent},
     {path: 'api', component: SwaggerComponent},
     {path: 'login', component: LoginComponent},
     {path: 'siteAudit', component: SiteAuditComponent},
@@ -74,14 +71,14 @@ const appRoutes: Routes = [
         JsonpModule,
         NgbModule,
         RecaptchaModule.forRoot(),
+        RouterModule.forChild(appRoutes),
         Select2Module,
-        TreeModule,
         // internal
+        TreeModule,
         AdminItemModule,
         SearchModule,
         WidgetModule,
-        DiscussModule,
-        RouterModule.forChild(appRoutes)
+        DiscussModule
     ],
     declarations: [
         AppLogComponent,
@@ -93,7 +90,6 @@ const appRoutes: Routes = [
         EditSiteAdminsComponent,
         EmbedComponent,
         FeedbackIssuesComponent,
-        HomeComponent,
         InboxComponent,
         ListManagementComponent,
         LogAuditComponent,

@@ -2,10 +2,10 @@ import { Component, ViewChild, Input, Output, EventEmitter } from "@angular/core
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { NgbModalRef, NgbModal, NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
-import * as authShared from "system/shared/authorizationShared";
-import { IsAllowedService } from 'core/public/isAllowed.service';
-import { UserService } from 'core/public/user.service';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { SharedService } from 'core/shared.service';
+import { UserService } from 'core/user.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -47,7 +47,7 @@ export class ClassificationViewComponent {
 
     showWorkingGroups = function (stewardClassifications) {
         return this.orgHelper.showWorkingGroup(stewardClassifications.stewardOrg.name, this.userService.user) ||
-            authShared.isSiteAdmin(this.userService.user);
+            SharedService.auth.isSiteAdmin(this.userService.user);
     };
 
 

@@ -17,6 +17,7 @@ public class CreateEditSectionTest extends QuestionTest {
         addSectionTop("Section 1", null);
         addSectionBottom("Section 2", "2");
         addSectionBottom("Section 3", "F");
+        closeAlert();
         String cdeName = "Race Category Text";
         addQuestionToSection(cdeName, 2);
         newFormVersion();

@@ -6,7 +6,7 @@
             <dt class="col-xs-3 text-right">
                 <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit" class="btn-default fa fa-trash-o"
                       id="removeNaming-{{i}}" title="Remove"></span>
-                <sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></sortable-array>
+                <cde-sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></cde-sortable-array>
                 Name:
             </dt>
             <dd id="designation_{{i}}" class="col-xs-9">

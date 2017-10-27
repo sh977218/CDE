@@ -58,13 +58,11 @@
                                                 *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
                                                 [elt]="elt" [canEdit]="canEdit"
                                                 [node]="node"
-                                                [inScoreCdes]="inScoreCdes"
                                                 (isFormValid)="isFormValid.emit($event)"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
                                                 [elt]="elt" [canEdit]="canEdit"
-                                                [inScoreCdes]="inScoreCdes"
                                                 [node]="node"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-question>
                                     </div>

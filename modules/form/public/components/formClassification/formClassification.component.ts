@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { IsAllowedService } from 'core/public/isAllowed.service';
+import { IsAllowedService } from 'core/isAllowed.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { ClassificationService } from 'core/public/classification.service';
-import { UserService } from 'core/public/user.service';
+import { ClassificationService } from 'core/classification.service';
+import { UserService } from 'core/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

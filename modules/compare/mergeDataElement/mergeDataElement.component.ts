@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { MergeCdeService } from 'core/public/mergeCde.service';
-import { IsAllowedService } from 'core/public/isAllowed.service';
+import { MergeCdeService } from 'core/mergeCde.service';
+import { IsAllowedService } from 'core/isAllowed.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

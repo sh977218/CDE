@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import "rxjs/add/operator/map";
-import { DisplayProfile } from 'form/public/form.model';
+import { DisplayProfile } from 'core/form.model';
 
 @Component({
     selector: "cde-display-profile",
@@ -40,7 +40,7 @@ export class DisplayProfileComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    onChange(p,event) {
+    onChange(p, event) {
         p.numberOfColumns = parseInt(event);
         this.onEltChange.emit();
     }

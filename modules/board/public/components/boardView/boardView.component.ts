@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { SharedService } from "core/public/shared.service";
+import { SharedService } from "core/shared.service";
 import { saveAs } from "file-saver";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
-import { OrgHelperService } from "core/public/orgHelper.service";
-import { UserService } from "core/public/user.service";
-import { ElasticService } from "core/public/elastic.service";
+import { OrgHelperService } from "core/orgHelper.service";
+import { UserService } from "core/user.service";
+import { ElasticService } from "core/elastic.service";
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
 

@@ -7,8 +7,8 @@ import * as io from "socket.io-client";
 import { TimerObservable } from "rxjs/observable/TimerObservable";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
-import { IsAllowedService } from 'core/public/isAllowed.service';
-import { UserService } from 'core/public/user.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from 'core/user.service';
 
 const tabMap = {
     "preview_tab": "preview",

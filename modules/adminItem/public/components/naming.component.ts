@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, OnInit, EventEmitter, Output } from "@angu
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from 'lodash';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 
 @Component({
     selector: "cde-naming",

@@ -3,9 +3,9 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-boots
 import 'rxjs/add/operator/map';
 import { Http } from '@angular/http';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { SharedService } from 'core/public/shared.service';
-import { IsAllowedService } from 'core/public/isAllowed.service';
-import { UserService } from 'core/public/user.service';
+import { SharedService } from 'core/shared.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from 'core/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

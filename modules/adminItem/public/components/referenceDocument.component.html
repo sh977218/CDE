@@ -12,8 +12,8 @@
                 </ng-container>
                 <span (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" class="btn-default fa fa-trash-o"
                       id="removeReferenceDocument-{{i}}" title="Remove"></span>
-                <sortable-array [theArray]="elt.referenceDocuments" [index]="i"
-                                (cb)="onEltChange.emit()"></sortable-array>
+                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i"
+                                (cb)="onEltChange.emit()"></cde-sortable-array>
                 ID:
             </dt>
             <dd id="id_{{i}}" class="col-sm-9">{{rd.referenceDocumentId}}</dd>
