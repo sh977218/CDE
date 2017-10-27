@@ -43,15 +43,9 @@ exports.init = function (app) {
 
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
-    var whiteUsernames = ['peterhuang'];
-
     /* for search engine | javascript disabled*/
     function staticHtml(req, res, next) {
-        var userAgent = req.headers['user-agent'].toLowerCase();
-        var user = req.user;
-        var isBot = userAgent.match(/bot|crawler|spider|crawling/gi);
-        if (user && whiteUsernames.indexOf(user.username) > -1) next();
-        else if (isBot) next();
+        if (req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) next();
         else res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
     }
 
