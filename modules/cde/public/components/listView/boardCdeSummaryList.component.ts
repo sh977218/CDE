@@ -1,7 +1,7 @@
 import { Component, DoCheck, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { BoardCdeSummaryListContentComponent } from 'cde/public/components/listView/boardCdeSummaryListContent.component';
 import { BoardListService } from 'board/public/components/listView/boardList.service';
-import { DataElement } from 'cde/public/dataElement.model';
+import { DataElement } from 'core/dataElement.model';
 
 @Component({
     selector: 'cde-board-cde-summary-list',

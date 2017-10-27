@@ -22,8 +22,9 @@ module.exports = {
                 test: /\.ts$/,
                 use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
             },
-            {test: /\.css$/, use: ['style-loader?insertAt=top', 'raw-loader']},
-            {test: /\.html$/, use: ['raw-loader']}
+            {test: /\.css$/, use: ['style-loader?insertAt=top', 'css-loader']},
+            {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false} }]},
+            {test: /\.png$/, use: ['url-loader']}
         ]
     },
     plugins: prod ?
@@ -49,7 +50,7 @@ module.exports = {
                 output: {
                     comments: false
                 },
-                compressor: {
+                compress: {
                     warnings: false
                 }
             }),
@@ -83,7 +84,7 @@ module.exports = {
     resolve: {
         unsafeCache: false,
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
-        modules: ["modules", "modules/components", "node_modules"]
+        modules: ["modules", "node_modules", "modules/components"]
     },
     devtool: prod ? '#source-map' : '#cheap-eval-source-map',
     watch: !prod,

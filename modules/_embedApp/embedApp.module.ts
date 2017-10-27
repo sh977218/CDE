@@ -10,10 +10,9 @@ import { FrontExceptionHandler } from '_app/frontExceptionHandler';
 import { EmbedAppComponent } from '_embedApp/embedApp.component';
 
 import "rxjs/add/operator/map";
-import { CoreModule } from 'core/public/core.module';
+import { CoreModule } from 'core/core.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embeddedCdeSearchResult.component';
-
 
 @NgModule({
     declarations: [

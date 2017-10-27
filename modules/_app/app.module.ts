@@ -13,9 +13,10 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { CdeModule } from 'cde/public/cde.module';
 import { BoardModule } from 'board/public/board.module';
-import { CoreModule } from 'core/public/core.module';
+import { CoreModule } from 'core/core.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormModule } from 'form/public/form.module';
+import { HomeModule } from 'home/home.module';
 import { SystemModule } from 'system/public/system.module';
 import { CdeAppComponent } from '_app/app.component';
 import { FrontExceptionHandler } from '_app/frontExceptionHandler';
@@ -49,16 +50,17 @@ const appRoutes: Routes = [
         HttpModule,
         BrowserAnimationsModule,
         NgbModule.forRoot(),
-        UpgradeModule,
+        RouterModule.forRoot(appRoutes),
         // internal
+        UpgradeModule,
         BoardModule,
         CdeModule,
         CoreModule,
         DiscussModule,
+        HomeModule,
         FormModule,
         SystemModule,
         QuickBoardModule,
-        RouterModule.forRoot(appRoutes)
     ],
     exports: [
         PageNotFoundComponent,

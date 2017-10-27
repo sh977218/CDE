@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" routerLink="/home" id="homeLink">
-            <img alt="Home" src="../../../cde/public/assets/img/nih-cde-logo-simple.png" style="margin-top: -7px"/>
+            <img alt="Home" src="../../cde/public/assets/img/nih-cde-logo-simple.png" style="margin-top: -7px"/>
         </a>
     </div>
     <div class="navbar-collapse collapse" id="main-navigation">
@@ -27,7 +27,7 @@
                attr.aria-controls="main-navigation" attr.aria-expanded="false">CDEs</a>
         </li>
         <li class="nav-item" [ngClass]="{active: isPageActive('/form/search')}">
-            <a id="menu_forms_link" routerLink="/form" [attr.data-toggle]="toggleaction"
+            <a id="menu_forms_link" routerLink="/form/search" [attr.data-toggle]="toggleaction"
                attr.aria-controls="main-navigation" attr.aria-expanded="false">Forms</a>
         </li>
         <li ngbDropdown class="nav-item" [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}"

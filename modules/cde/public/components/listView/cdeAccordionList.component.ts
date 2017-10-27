@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
-import { Elt, User } from 'core/public/models.model';
-import { DataElement } from 'cde/public/dataElement.model';
+import { Elt, User } from 'core/models.model';
+import { DataElement } from 'core/dataElement.model';
 import { PinBoardModalComponent } from "board/public/components/pins/pinBoardModal.component";
-import { UserService } from "core/public/user.service";
+import { UserService } from "core/user.service";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({

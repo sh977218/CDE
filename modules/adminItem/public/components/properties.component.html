@@ -12,7 +12,7 @@
                 </ng-container>
                 <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-default fa fa-trash-o"
                       id="removeProperty-{{i}}" title="Remove"></span>
-                <sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></sortable-array>
+                <cde-sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></cde-sortable-array>
                 Key:
             </dt>
             <dd id="key_{{i}}" class="col-sm-9">{{prop.key}}</dd>

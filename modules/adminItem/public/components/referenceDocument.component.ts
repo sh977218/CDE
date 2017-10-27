@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
-import { DataElement } from 'cde/public/dataElement.model';
-import { ReferenceDocument } from 'core/public/models.model';
+import { DataElement } from 'core/dataElement.model';
+import { ReferenceDocument } from 'core/models.model';
 
 @Component({
     selector: "cde-reference-document",

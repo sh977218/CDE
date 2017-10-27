@@ -2,8 +2,8 @@ import { Component } from "@angular/core";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../../node_modules/feedback/stable/2.0/html2canvas.js";
 import { Http } from '@angular/http';
-import { SharedService } from 'core/public/shared.service';
-import { ElasticService } from 'core/public/elastic.service';
+import { SharedService } from 'core/shared.service';
+import { ElasticService } from 'core/elastic.service';
 
 @Component({
     selector: "cde-embed",
