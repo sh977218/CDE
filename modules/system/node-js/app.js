@@ -43,66 +43,82 @@ exports.init = function (app) {
 
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
+    /* for search engine | javascript disabled*/
+    function staticHtml(req, res, next) {
+        var userAgent = req.headers['user-agent'].toLowerCase();
+        var user = req.user;
+        if (user && user.username === 'peterhuang') {
+        } else if (userAgent.test(/bot|crawler|spider|crawling/i) > -1) {
+        } else next();
+    }
+
+    app.get("/home", staticHtml, function (req, res) {
+        res.render('bot/home', 'system');
+    });
+    app.get("/cde/search", staticHtml, function (req, res) {
+        var selectedOrg = req.query.selectedOrg;
+        if (selectedOrg) {
+            var cond = {
+                'classification.stewardOrg.name': selectedOrg,
+                'archived': false,
+                'registrationState.registrationStatus': 'Qualified'
+            };
+            mongo_cde.DataElement.find(cond, 'tinyId naming', (err, cdes) => {
+                if (err) logging.errorLogger.error("Error: Static Html Error", {
+                    stack: err.stack,
+                    origin: req.url
+                });
+                else res.render('bot/cdeSearchOrg', 'system', {cdes: cdes});
+            });
+        } else res.render('bot/cdeSearch', 'system');
+    });
+    app.get("/deView", staticHtml, function (req, res) {
+        var tinyId = req.query.tinyId;
+        var version = req.query.version;
+        mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+            if (err) logging.errorLogger.error("Error: Static Html Error", {
+                stack: err.stack,
+                origin: req.url
+            });
+            else res.render('bot/deView', 'system', {elt: cde});
+        });
+    });
+    app.get("/form/search", staticHtml, function (req, res) {
+        var selectedOrg = req.query.selectedOrg;
+        if (selectedOrg) {
+            var cond = {
+                'classification.stewardOrg.name': selectedOrg,
+                'archived': false,
+                'registrationState.registrationStatus': 'Qualified'
+            };
+            mongo_form.Form.find(cond, 'tinyId naming', (err, forms) => {
+                if (err) logging.errorLogger.error("Error: Static Html Error", {
+                    stack: err.stack,
+                    origin: req.url
+                });
+                else res.render('bot/formSearchOrg', 'system', {forms: forms});
+            });
+        } else res.render('bot/formSearch', 'system');
+    });
+    app.get("/formView", staticHtml, function (req, res) {
+        var tinyId = req.query.tinyId;
+        var version = req.query.version;
+        mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+            if (err) logging.errorLogger.error("Error: Static Html Error", {
+                stack: err.stack,
+                origin: req.url
+            });
+            else res.render('bot/formView', 'system', {elt: cde});
+        });
+    });
+
     function checkHttps(req, res, next) {
         if (config.proxy) {
             if (req.protocol !== 'https') {
-                if (req.query.gotohttps === "1") res.send("Missing X-Forward-Proto Header");
+                if (req.query.gotohttps === "1")
+                    res.send("Missing X-Forward-Proto Header");
                 else res.redirect(config.publicUrl + "?gotohttps=1");
             }
-        } else if ((req.user && req.user.username === 'peterhuang') || req.headers['user-agent'].toLowerCase() === 'googlebot') {
-            if (req.url) {
-                if (req.url.indexOf('/home') > -1)
-                    res.render('bot/home', 'system');
-                else if (req.url.indexOf('/cde/search/') > -1)
-                    res.render('bot/cdeSearch', 'system');
-                else if (req.url.indexOf('/cde/search?selectedOrg=') > -1) {
-                    mongo_cde.DataElement.find({
-                        'classification.stewardOrg.name': req.query.selectedOrg,
-                        'archived': false,
-                        'registrationState.registrationStatus': 'Qualified'
-                    }, 'tinyId naming', (err, cdes) => {
-                        if (err)
-                            logging.errorLogger.error("Error: Static Html Error", {
-                                stack: err.stack,
-                                origin: req.url
-                            });
-                        else res.render('bot/cdeSearchOrg', 'system', {cdes: cdes});
-                    });
-                } else if (req.url.indexOf('/form/search?selectedOrg=') > -1) {
-                    mongo_form.Form.find({
-                        'classification.stewardOrg.name': req.query.selectedOrg,
-                        'archived': false,
-                        'registrationState.registrationStatus': 'Qualified'
-                    }, 'tinyId naming', (err, forms) => {
-                        if (err)
-                            logging.errorLogger.error("Error: Static Html Error", {
-                                stack: err.stack,
-                                origin: req.url
-                            });
-                        else res.render('bot/formSearchOrg', 'system', {forms: forms});
-                    });
-                } else if (req.url.indexOf('/form/search/') > -1)
-                    res.render('bot/formSearch', 'system');
-                else if (req.url.indexOf('deView?tinyId=') > -1) {
-                    mongo_cde.byTinyIdAndVersion(req.query.tinyId, req.query.version, (err, cde) => {
-                        if (err)
-                            logging.errorLogger.error("Error: Static Html Error", {
-                                stack: err.stack,
-                                origin: req.url
-                            });
-                        else res.render('bot/deView', 'system', {cde: cde});
-                    });
-                } else if (req.url.indexOf('formView?tinyId=') > -1) {
-                    mongo_data.getStaticHtml(req.query.tinyId, (err) => {
-                        if (err)
-                            logging.errorLogger.error("Error: Static Html Error", {
-                                stack: err.stack,
-                                origin: req.url
-                            });
-                        else res.render('bot/formView', 'system');
-                    });
-                }
-            } else next();
         } else next();
     }
 
