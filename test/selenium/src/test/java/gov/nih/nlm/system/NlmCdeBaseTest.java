@@ -118,7 +118,7 @@ public class NlmCdeBaseTest {
         }
     };
 
-    private void setDriver(String b) {
+    private void setDriver(String b, String u) {
         if (b == null) b = browser;
 
         hangon(new Random().nextInt(10));
@@ -136,6 +136,7 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
+            if (u != null) options.addArguments("--user-agent=googleBot");
             options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
@@ -183,12 +184,13 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     public void setUp(Method m) {
         filePerms = new HashSet();
+        String browserName = null, userAgent = null;
+        if (m.getAnnotation(SelectBrowser.class) != null)
+            browserName = "internet explorer";
+        if (m.getAnnotation(SelectUserAgent.class) != null)
+            userAgent = "bot";
+        setDriver(browserName, userAgent);
 
-        if (m.getAnnotation(SelectBrowser.class) != null) {
-            setDriver("internet explorer");
-        } else {
-            setDriver(null);
-        }
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
