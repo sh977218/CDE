@@ -3,9 +3,9 @@ import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { CdeForm, FormElement, FormQuestion } from "../../form.model";
+import { CdeForm, FormElement, FormQuestion } from "core/form.model";
 import { TreeNode } from "angular-tree-component";
-import { FormService } from 'form/public/form.service';
+import { FormService } from 'nativeRender/form.service';
 
 @Component({
     selector: "cde-form-description-question",
@@ -15,7 +15,6 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
-    @Input() inScoreCdes: any;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("updateCdeVersionTmpl") updateCdeVersionTmpl: NgbModalModule;

@@ -42,6 +42,8 @@
     <h1 [ngClass]="{'mobileViewH1':mobileView}">
         <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
+
+
     <div class="pull-left marginTopBottom5">
         <button *ngIf="quickBoardService.canAddElement(elt)"
                 id="addToQuickBoard" class="btn btn-small btn-default"
@@ -53,8 +55,8 @@
             <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
         </button>
         <div class="float-left" ngbDropdown>
-            <button ngbDropdownToggle id="export" class="btn btn-default dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button ngbDropdownToggle id="export" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i>
                 <span class="hidden-xs-down"> Export</span>
             </button>
@@ -68,16 +70,16 @@
                     </li>
                     <li>
                         <a id='odmExport' class="dropdown-item d-inline"
-                           href="formById/{{elt._id}}?type=xml&subtype=odm"
-                           target="_blank">XML File, CDISC / ODM</a>
-                        <a href="https://www.cdisc.org/standards/transport/odm" target="_blank" class="d-inline">
+                           href="formById/{{elt._id}}?type=xml&subtype=odm" target="_blank">XML File, CDISC / ODM</a>
+                        <a href="https://www.cdisc.org/standards/transport/odm" target="_blank"
+                           class="d-inline">
                             <i class="fa fa-info-circle"></i></a>
                     </li>
                     <li>
                         <a id='sdcExport' href="formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
                            class="dropdown-item d-inline">XML File, SDC Schema</a>
-                        <a href="https://github.com/esacinc/sdc-schema-package" target="_blank" class="d-inline"><i
-                                class="fa fa-info-circle"></i></a>
+                        <a href="https://github.com/esacinc/sdc-schema-package" target="_blank"
+                           class="d-inline"><i class="fa fa-info-circle"></i></a>
                     </li>
                     <li>
                         <a class="dropdown-item" *ngIf="!isIe()" id='sdcHtmlExport'
@@ -136,7 +138,7 @@
             <button class="btn btn-danger" id="deleteDraftBtn" (click)="removeDraft();">
                 <i class="fa fa-trash fa-lg"></i> Delete Draft
             </button>
-            <button class="btn btn-info" (click)="loadForm(null);">
+            <button class="btn btn-info" (click)="loadPublished();">
                 <i class="fa fa-eye fa-lg"></i> View Published
             </button>
         </ng-container>
@@ -145,7 +147,7 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="row">
-                <div id="leftNav" class="col-lg-2 col-xs-12 collapse navbar-collapse mt-20">
+                <div id="leftNav" class="col-lg-2 col-md-3 col-xs-12 collapse navbar-collapse mt-20">
                     <ul class="list-group">
                         <a id="preview_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='preview_tab'}"
                            (click)="currentTab ='preview_tab'">Preview
@@ -155,7 +157,8 @@
                            (click)="currentTab ='general_tab'">General Detail
                             <i *ngIf="tabsCommented.indexOf('general_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
-                        <a id="description_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='description_tab'}"
+                        <a id="description_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='description_tab'}"
                            (click)="currentTab ='description_tab'">Form Description
                             <i *ngIf="tabsCommented.indexOf('description_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
@@ -178,7 +181,8 @@
                            (click)="currentTab = 'displayProfiles_tab'">Display Profiles
                             <i *ngIf="tabsCommented.indexOf('displayProfiles_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
-                        <a id="properties_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='properties_tab'}"
+                        <a id="properties_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='properties_tab'}"
                            (click)="currentTab = 'properties_tab'">Properties
                             <i *ngIf="tabsCommented.indexOf('properties_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
@@ -186,7 +190,8 @@
                            (click)="currentTab = 'ids_tab'">Identifiers
                             <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
-                        <a id="attachments_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='attachments_tab'}"
+                        <a id="attachments_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='attachments_tab'}"
                            (click)="currentTab = 'attachments_tab'">Attachments
                             <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
@@ -196,7 +201,7 @@
                                aria-hidden="true"></i></a>
                     </ul>
                 </div>
-                <div id="middleView" class="col-lg-10 col-xs-12">
+                <div id="middleView" class="col-lg-10 col-md-9 col-xs-12">
                     <ng-container *ngIf="currentTab === 'preview_tab'">
                         <cde-native-render-full [elt]="elt"></cde-native-render-full>
                     </ng-container>
@@ -209,42 +214,42 @@
                         <cde-linked-forms [elt]="elt"></cde-linked-forms>
                         <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'description_tab'">
+                    <ng-container *ngIf="currentTab=== 'description_tab'">
                         <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit"
-                                              [inScoreCdes]="inScoreCdes"
+
                                               (isFormValid)="setIsValid($event)"
                                               (onEltChange)="saveDraft()"></cde-form-description>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'naming_tab'">
+                    <ng-container *ngIf="currentTab=== 'naming_tab'">
                         <cde-naming [elt]="elt" [orgNamingTags]="orgNamingTags" [canEdit]="canEdit"
                                     (onEltChange)="saveDraft();"></cde-naming>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'classification_tab'">
+                    <ng-container *ngIf="currentTab=== 'classification_tab'">
                         <cde-form-classification [elt]="elt"></cde-form-classification>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'referenceDocuments_tab'">
+                    <ng-container *ngIf="currentTab=== 'referenceDocuments_tab'">
                         <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-reference-document>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'displayProfiles_tab'">
+                    <ng-container *ngIf="currentTab=== 'displayProfiles_tab'">
                         <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-display-profile>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'properties_tab'">
+                    <ng-container *ngIf="currentTab=== 'properties_tab'">
                         <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-properties>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'ids_tab'">
+                    <ng-container *ngIf="currentTab=== 'ids_tab'">
                         <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
                         </cde-identifiers>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'attachments_tab'">
+                    <ng-container *ngIf="currentTab=== 'attachments_tab'">
                         <cde-attachments [elt]="elt" [canEdit]="canEdit"
                                          (removeAttachment)="removeAttachment($event);"
                                          (setDefault)="setDefault($event);"
                                          (upload)="upload($event);"></cde-attachments>
                     </ng-container>
-                    <ng-container *ngIf="currentTab === 'history_tab'">
+                    <ng-container *ngIf="currentTab=== 'history_tab'">
                         <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
                     </ng-container>
                 </div>

@@ -2,9 +2,9 @@ import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from "@angu
 import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
 
-import { Property } from 'core/public/models.model';
-import { DataElement } from 'cde/public/dataElement.model';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { Property } from 'core/models.model';
+import { DataElement } from 'core/dataElement.model';
+import { OrgHelperService } from 'core/orgHelper.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

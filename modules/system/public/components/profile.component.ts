@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
-import { CdeForm } from 'form/public/form.model';
-import { DataElement } from 'cde/public/dataElement.model';
-import { User } from 'core/public/models.model';
+import { CdeForm } from 'core/form.model';
+import { DataElement } from 'core/dataElement.model';
+import { User } from 'core/models.model';
 import * as _ from "lodash";
-import { UserService } from 'core/public/user.service';
+import { UserService } from 'core/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

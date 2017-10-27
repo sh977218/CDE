@@ -2,12 +2,12 @@ import {
     Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener, OnInit
 } from '@angular/core';
 import { SearchSettings } from './search.model';
-import { SharedService } from 'core/public/shared.service';
+import { SharedService } from 'core/shared.service';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
-import { CdeForm } from 'form/public/form.model';
-import { DataElement } from 'cde/public/dataElement.model';
-import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
+import { CdeForm } from 'core/form.model';
+import { DataElement } from 'core/dataElement.model';
+import { ElasticQueryResponse, Elt, User } from 'core/models.model';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 import { ParamMap } from '@angular/router';
 
@@ -20,7 +20,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer: ViewContainerRef;
     @ViewChild('tbset') public tabset: NgbTabset;
     @ViewChild('validRulesModal') validRulesModal: NgbModal;
-    accordionListStyle: string;
     add: EventEmitter<any>;
     addMode: string;
     aggregations: any;
@@ -467,14 +466,12 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
         this.userService.then(() => {
             let timestamp = new Date().getTime();
             this.lastQueryTimeStamp = timestamp;
-            this.accordionListStyle = 'semi-transparent';
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
             this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
                 this.searchedTerm = this.searchSettings.q;
                 if (corrected && this.searchSettings.q)
                     this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
                 if (err) {
-                    this.accordionListStyle = '';
                     this.alert.addAlert('danger', 'There was a problem with your query');
                     this[module + 's'] = [];
                     return;
@@ -514,7 +511,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                         elt.usedBy = this.orgHelperService.getUsedBy(elt, this.userService.user);
                     });
                 });
-                this.accordionListStyle = '';
 
                 this.aggregations = result.aggregations;
 

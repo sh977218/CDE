@@ -13,7 +13,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-import { IsAllowedService } from 'core/public/isAllowed.service';
+import { IsAllowedService } from 'core/isAllowed.service';
 import { AlertService } from '_app/alert/alert.service';
 
 

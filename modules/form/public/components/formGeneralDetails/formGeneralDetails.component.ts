@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
-import { UserService } from 'core/public/user.service';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { UserService } from 'core/user.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 
 @Component({
     selector: "cde-form-general-details",

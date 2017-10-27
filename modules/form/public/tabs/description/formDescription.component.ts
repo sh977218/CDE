@@ -14,8 +14,8 @@ import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import * as _ from 'lodash';
 
-import { FormService } from "../../form.service";
-import { CdeForm, FormElement, FormSection } from "../../form.model";
+import { FormService } from "../../../../nativeRender/form.service";
+import { CdeForm, FormElement, FormSection } from "../../../../core/form.model";
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 
 @Component({
@@ -102,7 +102,6 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 export class FormDescriptionComponent implements OnChanges {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
-    @Input() inScoreCdes: any;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onEltChange = new EventEmitter();
 
@@ -180,7 +179,7 @@ export class FormDescriptionComponent implements OnChanges {
     addQuestionFromSearch(cde) {
         this.formService.convertCdeToQuestion(cde, question => {
             question.formElements = [];
-            question.expanced = true;
+            question.expanded = true;
             this.addIndex(this.toolDropTo.parent.data.formElements, question, this.toolDropTo.index++);
             this.tree.treeModel.update();
             this.tree.treeModel.expandAll();

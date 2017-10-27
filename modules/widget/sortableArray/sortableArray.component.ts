@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-    selector: "sortable-array",
-    templateUrl: "./sortableArray.component.html"
+    selector: 'cde-sortable-array',
+    templateUrl: './sortableArray.component.html'
 })
 
 export class SortableArrayComponent {

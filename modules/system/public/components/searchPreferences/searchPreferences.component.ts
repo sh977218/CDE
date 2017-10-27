@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ElasticService } from 'core/public/elastic.service';
+import { ElasticService } from 'core/elastic.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({
