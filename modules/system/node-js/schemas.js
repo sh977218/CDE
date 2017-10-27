@@ -485,13 +485,6 @@ schemas.feedbackIssueSchema = new mongoose.Schema({
     reportedUrl: String
 });
 
-
-schemas.staticHtmlSchema = new mongoose.Schema({
-    tinyId: String,
-    html: String,
-    location: String
-});
-
 schemas.classificationAudit.set('collection', 'classificationAudit');
 
 schemas.fs_files.set('collection', 'fs.files');
