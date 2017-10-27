@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import "rxjs/add/operator/map";
-import { IsAllowedService } from 'core/public/isAllowed.service';
-import { UserService } from 'core/public/user.service';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from 'core/user.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 
 @Component({
     selector: "cde-de-general-details",

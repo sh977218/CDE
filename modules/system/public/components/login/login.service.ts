@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import "rxjs/add/operator/map";
 import { Http } from "@angular/http";
 import { ActivatedRoute, Router } from "@angular/router";
-import { UserService } from 'core/public/user.service';
+import { UserService } from 'core/user.service';
 
 @Injectable()
 export class LoginService {

@@ -22,8 +22,8 @@
                             <td headers="actions" *ngIf="canEdit">
                                 <span id="remove{{config.type}}-{{$index}}" class="btn-default fa fa-trash-o"
                                       (click)="removeConcept(config.type, $index)" title="Remove" href></span>
-                                <sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
-                                                (cb)="onEltChange.emit()"></sortable-array>
+                                <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
+                                                (cb)="onEltChange.emit()"></cde-sortable-array>
                             </td>
                         </tr>
                     </table>

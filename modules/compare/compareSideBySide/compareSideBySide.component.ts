@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 import { Observable } from "rxjs/Observable";
 import { Http } from '@angular/http';
-import { IsAllowedService } from 'core/public/isAllowed.service';
+import { IsAllowedService } from 'core/isAllowed.service';
 import { AlertService } from '_app/alert/alert.service';
 
 const URL_MAP = {

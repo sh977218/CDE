@@ -15,7 +15,7 @@ var ticketValidationOptions = {
     , hostname: config.uts.ticketValidation.host
     , port: config.uts.ticketValidation.port
     , path: config.uts.ticketValidation.path
-    , method: 'POST'
+    , method: 'GET'
     , agent: false
     , requestCert: true
     , rejectUnauthorized: false

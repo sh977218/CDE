@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CdeForm } from 'form/public/form.model';
+import { CdeForm } from 'core/form.model';
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
 
 

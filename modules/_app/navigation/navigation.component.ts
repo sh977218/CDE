@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from "@angular/core";
-import { SharedService } from "core/public/shared.service";
+import { SharedService } from "core/shared.service";
 import "../../../node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
-import { UserService } from "core/public/user.service";
+import { UserService } from "core/user.service";
 import { LoginService } from 'system/public/components/login/login.service';
 
 @Component({
