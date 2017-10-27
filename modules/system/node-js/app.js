@@ -43,13 +43,16 @@ exports.init = function (app) {
 
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
+    var whiteUsernames = ['peterhuang'];
+
     /* for search engine | javascript disabled*/
     function staticHtml(req, res, next) {
         var userAgent = req.headers['user-agent'].toLowerCase();
         var user = req.user;
-        if (user && user.username === 'peterhuang') {
-        } else if (userAgent.test(/bot|crawler|spider|crawling/i) > -1) {
-        } else next();
+        var isBot = userAgent.match(/bot|crawler|spider|crawling/gi);
+        if (user && whiteUsernames.indexOf(user.username) > -1) next();
+        else if (isBot) next();
+        else res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
     }
 
     app.get("/home", staticHtml, function (req, res) {
@@ -1080,7 +1083,7 @@ exports.init = function (app) {
             res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
         });
     });
-    app.get('/statsNew/form',  function (req, res) {
+    app.get('/statsNew/form', function (req, res) {
         elastic.elasticsearch(elastic.queryNewest, 'form', (err, result) => {
             if (err) return res.status(400).send("invalid query");
             res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
