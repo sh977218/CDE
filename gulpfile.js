@@ -1,5 +1,4 @@
 const gulp = require('gulp'),
-    concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     config = require('./modules/system/node-js/parseConfig'),
     usemin = require('gulp-usemin'),
@@ -8,11 +7,7 @@ const gulp = require('gulp'),
     bower = require('gulp-bower'),
     install = require('gulp-install'),
     wiredep = require('gulp-wiredep'),
-    tar = require('tar'),
-    zlib = require('zlib'),
     fs = require('fs'),
-    fstream = require('fstream'),
-    spawn = require('child_process').spawn,
     esInit = require('./modules/system/node-js/elasticSearchInit'),
     git = require('gulp-git'),
     templateCache = require('gulp-angular-templatecache'),
@@ -68,7 +63,7 @@ gulp.task('lhc-wiredep', ['bower'], function () {
         .pipe(gulp.dest("./modules/form/public/html"));
 });
 
-gulp.task('nativefollow-wiredep', ['bower'], function() {
+gulp.task('nativefollow-wiredep', ['bower'], function () {
     return gulp.src("./modules/form/public/html/nativeRenderStandalone.html")
         .pipe(wiredep({
             directory: "modules/components",
@@ -111,6 +106,8 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/')));
         streamArray.push(gulp.src('./modules/' + module + '/views/**/*.html')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/')));
+        streamArray.push(gulp.src('./modules/' + module + '/views/bot/*.ejs')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/bot/')));
     });
 
     ['supportedBrowsers.ejs', 'loginText.ejs'].forEach(function (file) {
@@ -187,9 +184,9 @@ gulp.task('prepareVersion', ['copyCode'], function () {
     git.revParse({args: '--short HEAD'}, function (err, hash) {
         fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';",
             function (err) {
-            if (err)  console.log("ERROR generating version.html: " + err);
-            else console.log("generated " + config.node.buildDir + "/modules/system/node-js/version.js");
-        });
+                if (err) console.log("ERROR generating version.html: " + err);
+                else console.log("generated " + config.node.buildDir + "/modules/system/node-js/version.js");
+            });
     });
 });
 
@@ -237,6 +234,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function ()
 gulp.task('copyUsemin', ['usemin'], function () {
     let streamArray = [];
     [
+        {folder: "./modules/system/views/bot/"},
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
@@ -250,7 +248,7 @@ gulp.task('copyUsemin', ['usemin'], function () {
 gulp.task('emptyTemplates', ['usemin'], () => {
     let module = 'embedded';
     return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
-            .pipe(gulp.dest("modules/" + module + "/public/js/"));
+        .pipe(gulp.dest("modules/" + module + "/public/js/"));
 });
 
 gulp.task('es', function () {
