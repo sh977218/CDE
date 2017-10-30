@@ -9,7 +9,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     @Test
     @SelectUserAgent()
     public void staticHomeHtml() {
-        goHome();
+        driver.get(baseUrl + "/home");
         textPresent("Browse CDEs");
         textPresent("Browse Forms");
     }
@@ -45,7 +45,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
         driver.get(baseUrl + "/formView?tinyId=mJsGoMU1m");
         textPresent("PHQ-9 quick depression assessment panel [Reported.PHQ]");
         textPresent("Description: Kroenke K, Spitzer RL, Williams JB.");
-        textPresent("PHQ-9 quick depression assessment Pnl\t");
+        textPresent("PHQ-9 quick depression assessment Pnl");
         textPresent("44249-1");
     }
 }
