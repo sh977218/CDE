@@ -31,7 +31,7 @@ app.use(helmet());
 app.use(auth.ticketAuth);
 app.use(compress());
 
-app.use(require('hsts')({maxAge: 31536001}));
+app.use(require('hsts')({maxAge: 31537111}));
 
 var localRedirectProxy = httpProxy.createProxyServer({});
 
