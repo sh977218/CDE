@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org" lang="en">
+<%- include head.ejs %>
+<body role="application">
+<%- include navigation.ejs %>
+
+<div class="container">
+    <div class="jumbotron text-center" style="background-color: white;">
+        <img alt="NIH Common Data Elements (CDE) logo" class="img-center-responsive"
+             src="/cde/public/assets/img/NIH-CDE.png">
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8 align-self-center">
+            <div class="input-group">
+                <input type="text" class="form-control">
+                <button class="btn btn-danger" type="button">
+                    <i class="fa fa-search"></i> Search
+                </button>
+            </div>
+        </div>
+    </div>
+    <ul class="nav nav-tabs mt-3">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#classification" role="tab">Browse by Classification</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="classification" role="tabpanel">
+            <div class="row">
+                <div class="card-group col">
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=AHRQ">AHRQ</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">Agency for Healthcare Research and Quality</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            95 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=GRDR">GRDR</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">Global Rare Diseases Patient Registry Data Repository</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            75 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=NCI">NCI</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">National Cancer Institute</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            1096 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=NEI">NEI</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">National Eye Institute</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            190 elements
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="card-group col">
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=NIDA">NIDA</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">National Institute on Drug Abuse</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            120 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=NINDS">NINDS</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">National Institute of Neurological Disorders and Stroke</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            15243 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=NINR">NINR</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">National Institute of Nursing Research</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            79 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=NLM">NLM</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">National Library of Medicine</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            291 elements
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="card-group col">
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=ONC">ONC</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">Office of the National Coordinator</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            33 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=PROMIS%20%2F%20Neuro-QOL">PROMIS / Neuro-QOL</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">Patient Reported Outcomes Measurement Information System</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            625 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=PhenX">PhenX</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">Consensus measures for Phenotypes and eXposures</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            3568 elements
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">
+                            <a href="/cde/search?selectedOrg=cLBP">cLBP</a>
+                        </h5>
+                        <div class="card-block">
+                            <p class="card-text">Chronic Low Back Pain</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            28 elements
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <div class="container">
+        <hr>
+        <div class="row">
+            <div class="col-sm-4 text-md-left col-xs-12 text-center">
+                <a href="http://www.nlm.nih.gov/copyright.html">
+                    <small>Copyright</small>
+                </a>,
+                <a href="http://www.nlm.nih.gov/privacy.html">
+                    <small>Privacy</small>
+                </a>,
+                <a href="http://www.nlm.nih.gov/accessibility.html">
+                    <small>Accessibility</small>
+                </a>
+                <br/><br/>
+                <small>U.S. National Library of Medicine<br/>8600 Rockville Pike, Bethesda, MD 20894</small>
+            </div>
+            <div class="col-sm-4 col-xs-12 text-center">
+                <a href="http://www.usa.gov">
+                    <img alt="USA.gov logo" src="/cde/public/assets/img/usagov_logo.gif"/>
+                </a>
+                <a href="http://www.nlm.nih.gov/">
+                    <img width="150px" alt="National Library of Medicine logo"
+                         src="/cde/public/assets/img/NLM-logo.png"/>
+                </a>
+            </div>
+            <div class="col-sm-4 text-md-right col-xs-12 text-center">
+                <a href="http://www.nih.gov/">
+                    <small>National Institutes of Health</small>
+                </a><br/>
+                <a href="http://www.hhs.gov/">
+                    <small>Health &amp; Human Services</small>
+                </a><br/>
+                <a href="http://www.nih.gov/icd/od/foia/index.htm">
+                    <small>Freedom of Information Act</small>
+                </a><br/>
+                <a href="https://support.nlm.nih.gov/ics/support/default.asp?deptID=28054&category=Terminologies&from=CDE">
+                    <small>NLM Customer Support</small>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "GovernmentOrganization",
+          "name":"U.S. National Library of Medicine",
+          "address":{
+            "@type":"PostalAddress",
+            "addressCountry":"US",
+            "addressLocality":"Bethesda",
+            "addressRegion":"MD",
+            "postalCode":"20894",
+            "streetAddress":"8600 Rockville Pike",
+            },
+          "description" : "NIH Common Data Elements Repository",
+          "url": "https://cde.nlm.nih.gov",
+          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
+          }
+
+</script>
+<script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "WebSite",
+          "name" : "NIH CDE Repository",
+          "description" : "NIH Common Data Elements Repository",
+          "url" : "https://cde.nlm.nih.gov"
+        }
+</script>
+</body>
+</html>

@@ -19,7 +19,7 @@ var path = require('path')
     , compress = require('compression')
     , helmet = require('helmet')
     , ioServer = require('./modules/system/node-js/ioServer')
-    ;
+;
 
 require('./modules/system/node-js/elastic').initEs();
 
@@ -31,7 +31,7 @@ app.use(helmet());
 app.use(auth.ticketAuth);
 app.use(compress());
 
-app.use(require('hsts')({maxAge: 31536000}));
+app.use(require('hsts')({maxAge: 31537111}));
 
 var localRedirectProxy = httpProxy.createProxyServer({});
 
@@ -126,7 +126,7 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
-app.use (function (req, res, next) {
+app.use(function (req, res, next) {
     try {
         if (req.headers.host === "cde.nlm.nih.gov") {
             if (req.user && req.user.tester) {
@@ -215,6 +215,7 @@ try {
 }
 
 app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/public/robots.txt')));
+
 
 // final route -> 404
 app.use((req, res, next) => {

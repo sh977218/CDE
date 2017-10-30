@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include head.ejs %>
+<body role="application">
+<%- include navigation.ejs %>
+<div class="container" itemscope="http://schema.org/MedicalCode">
+    <%- include generalDetail.ejs %>
+    <div class="row" id="pvs_tab">
+        <h2 class="w-100">Permissible Values:</h2>
+        <div class="col-12">
+            <dl class="row">
+                <dt class="col-3 text-right">Value Type:</dt>
+                <dd class="col-9"><%= elt.valueDomain.datatype %></dd>
+                <dt class="col-3 text-right">Unit of Measure:</dt>
+                <dd class="col-9"><%= elt.valueDomain.uom %></dd>
+                <dt class="col-3 text-right">Ids:</dt>
+                <dd class="col-9"><%= elt.valueDomain.ids %></dd>
+            </dl>
+        </div>
+        <% if (elt.valueDomain.permissibleValues.length) { %>
+        <div class="col-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Value</th>
+                    <th>Code Name</th>
+                    <th>Code</th>
+                    <th>Code System</th>
+                    <th>Code Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% for(var i = 0; i < elt.valueDomain.permissibleValues.length; i++) {
+                    var pv = elt.valueDomain.permissibleValues[i]; %>
+                <tr>
+                    <td><%= pv.permissibleValue %></td>
+                    <td><%= pv.valueMeaningName %></td>
+                    <td><%= pv.valueMeaningCode %></td>
+                    <td><%= pv.codeSystemName %></td>
+                    <td><%= pv.valueMeaningDefinition %></td>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+    </div>
+    <%- include naming.ejs %>
+    <%- include referenceDocuments.ejs %>
+    <%- include properties.ejs %>
+    <%- include identifiers.ejs %>
+</div>
+<footer class="footer">
+    <div class="container">
+        <hr>
+        <div class="row">
+            <div class="col-sm-4 text-md-left col-xs-12 text-center">
+                <a href="http://www.nlm.nih.gov/copyright.html">
+                    <small>Copyright</small>
+                </a>,
+                <a href="http://www.nlm.nih.gov/privacy.html">
+                    <small>Privacy</small>
+                </a>,
+                <a href="http://www.nlm.nih.gov/accessibility.html">
+                    <small>Accessibility</small>
+                </a>
+                <br/><br/>
+                <small>U.S. National Library of Medicine<br/>8600 Rockville Pike, Bethesda, MD 20894</small>
+            </div>
+            <div class="col-sm-4 col-xs-12 text-center">
+                <a href="http://www.usa.gov">
+                    <img alt="USA.gov logo" src="/cde/public/assets/img/usagov_logo.gif"/>
+                </a>
+                <a href="http://www.nlm.nih.gov/">
+                    <img width="150px" alt="National Library of Medicine logo"
+                         src="/cde/public/assets/img/NLM-logo.png"/>
+                </a>
+            </div>
+            <div class="col-sm-4 text-md-right col-xs-12 text-center">
+                <a href="http://www.nih.gov/">
+                    <small>National Institutes of Health</small>
+                </a><br/>
+                <a href="http://www.hhs.gov/">
+                    <small>Health &amp; Human Services</small>
+                </a><br/>
+                <a href="http://www.nih.gov/icd/od/foia/index.htm">
+                    <small>Freedom of Information Act</small>
+                </a><br/>
+                <a href="https://support.nlm.nih.gov/ics/support/default.asp?deptID=28054&category=Terminologies&from=CDE">
+                    <small>NLM Customer Support</small>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "GovernmentOrganization",
+          "name":"U.S. National Library of Medicine",
+          "address":{
+            "@type":"PostalAddress",
+            "addressCountry":"US",
+            "addressLocality":"Bethesda",
+            "addressRegion":"MD",
+            "postalCode":"20894",
+            "streetAddress":"8600 Rockville Pike",
+            },
+          "description" : "NIH Common Data Elements Repository",
+          "url": "https://cde.nlm.nih.gov",
+          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
+          }
+</script>
+<script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "WebSite",
+          "name" : "NIH CDE Repository",
+          "description" : "NIH Common Data Elements Repository",
+          "url" : "https://cde.nlm.nih.gov"
+        }
+</script>
+</body>
+</html>
