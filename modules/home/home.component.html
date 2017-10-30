@@ -1,16 +1,16 @@
 <section class="sectionPage">
     <div class="" style="padding: 2rem 1rem; margin-bottom: 0;">
         <div class=" mt-0 mt-sm-5" style="background-color: #eee; padding: 10px">
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-md-3 col-xs-12 ">
-                    <img class="img-fluid"
-                         src="/cde/public/assets/img/NIH-CDE.png"
-                         alt="NIH Common Data Elements (CDE) logo" />
+                    <img class="img-fluid" src="/cde/public/assets/img/NIH-CDE.png"
+                         alt="NIH Common Data Elements (CDE) logo"/>
                 </div>
                 <div class="col-md-7 hidden-xs">
                     <ngb-carousel style="margin: auto">
                         <ng-template ngbSlide>
-                            <img class="slideContent" src="/cde/public/assets/img/forms.png" alt="Screenshot of finding and using forms">
+                            <img class="slideContent" src="/cde/public/assets/img/forms.png"
+                                 alt="Screenshot of finding and using forms">
                             <div class="carousel-caption">
                                 <h3>Search and Reuse Standard Forms</h3>
                             </div>
@@ -24,12 +24,12 @@
                     </ngb-carousel>
                 </div>
                 <div class="col-md-2 col-xs-12 btn-group-vertical text-center" id='searchDiv'>
-                        <a routerLink="/cde/search" id="browseCdes" class="btn btn-lg btn-default mt-1">
-                            <i class="fa fa-search"></i> Browse CDEs</a>
-                        <a routerLink="/form/search" id="browseForms" class="btn btn-lg btn-default mt-1">
-                            <i class="fa fa-search"></i> Browse Forms</a>
-                        <a (click)="takeATour();" id="takeATourBtn" class="btn btn-lg btn-default mt-1">
-                            <i class="fa fa-flag discussWrench"></i> Interactive Tour</a>
+                    <a routerLink="/cde/search" id="browseCdes" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-search"></i> Browse CDEs</a>
+                    <a routerLink="/form/search" id="browseForms" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-search"></i> Browse Forms</a>
+                    <a (click)="takeATour();" id="takeATourBtn" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-flag discussWrench"></i> Interactive Tour</a>
                 </div>
 
             </div>
@@ -46,11 +46,14 @@
                 <li *ngFor="let f of formFeatures" class="btn btn-outline-primary"
                     style="border-radius: 20px; border-color: lightgray"
                     [style.border-width]="currentFormFeature === f ? '2px' : '0'"
-                    (click)="getForm(f)">{{f.feature}}</li>
+                    (click)="getForm(f)">{{f.feature}}
+                </li>
             </ul>
         </div>
         <div class="col-xs-12 col-sm-8 col-md-9">
-            <div class="p-3" style="background-color: #000; border-radius: 20px; color: #fff; font-weight: 900">{{formFeatureDescription}}</div>
+            <div class="p-3" style="background-color: #000; border-radius: 20px; color: #fff; font-weight: 900">
+                {{formFeatureDescription}}
+            </div>
             <cde-native-render [elt]="elt" [profile]="null" class="d-block p-3 nativeRender"
                                style="min-height: 80vh; border-radius: 20px; border: solid lightgrey 3px;"></cde-native-render>
         </div>
@@ -62,7 +65,8 @@
 <section class="container" id="started">
     <div class="row">
         <div class="col-xs-12 col-sm-6 mt-5">
-            <div class="btn-group" ngbRadioGroup [(ngModel)]="statsType" style="float: right; margin-top: 6px; border: 1px solid; border-color: #fff #fff #ddd;"
+            <div class="btn-group" ngbRadioGroup [(ngModel)]="statsType"
+                 style="float: right; margin-top: 6px; border: 1px solid; border-color: #fff #fff #ddd;"
                  [hidden]="cdeFormSelection !== 'both'">
                 <label ngbButtonLabel class="btn-primary" (click)="statsType = 'Forms'; getStats()">
                     <input ngbButton type="radio" [value]="'Forms'">Forms
@@ -71,9 +75,11 @@
                     <input ngbButton type="radio" [value]="'CDEs'">CDEs
                 </label>
             </div>
-            <span class="featuredHeading" style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
+            <span class="featuredHeading"
+                  style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
                   [hidden]="cdeFormSelection !== 'cdeOnly'">CDEs</span>
-            <span class="featuredHeading" style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
+            <span class="featuredHeading"
+                  style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
                   [hidden]="cdeFormSelection !== 'formOnly'">Forms</span>
             <ngb-tabset #tbset="ngbTabset" (tabChange)="getStats($event.nextId)">
                 <ngb-tab id="tabFeatured">
