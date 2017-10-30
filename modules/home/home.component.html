@@ -1,39 +1,38 @@
 <section class="sectionPage">
-    <div class="jumbotron" style="padding: 2rem 1rem; margin-bottom: 0;">
-        <img class="img-center-responsive" style="width: 300px; max-width: 50%"
-             src="/cde/public/assets/img/NIH-CDE.png" alt="NIH Common Data Elements (CDE) logo" />
+    <div class="" style="padding: 2rem 1rem; margin-bottom: 0;">
+        <div class=" mt-0 mt-sm-5" style="background-color: #eee; padding: 10px">
+            <div class="row">
+                <div class="col-md-3 col-xs-12 ">
+                    <img class="img-fluid"
+                         src="/cde/public/assets/img/NIH-CDE.png"
+                         alt="NIH Common Data Elements (CDE) logo" />
+                </div>
+                <div class="col-md-7 hidden-xs">
+                    <ngb-carousel style="margin: auto">
+                        <ng-template ngbSlide>
+                            <img class="slideContent" src="/cde/public/assets/img/forms.png" alt="Screenshot of finding and using forms">
+                            <div class="carousel-caption">
+                                <h3>Search and Reuse Standard Forms</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <img class="slideContent" src="/cde/public/assets/img/drafting.png" alt="Draft of a Form">
+                            <div class="carousel-caption">
+                                <h3>Create, Draft, Share and Collaborate</h3>
+                            </div>
+                        </ng-template>
+                    </ngb-carousel>
+                </div>
+                <div class="col-md-2 col-xs-12 btn-group-vertical text-center" id='searchDiv'>
+                        <a routerLink="/cde/search" id="browseCdes" class="btn btn-lg btn-default mt-1">
+                            <i class="fa fa-search"></i> Browse CDEs</a>
+                        <a routerLink="/form/search" id="browseForms" class="btn btn-lg btn-default mt-1">
+                            <i class="fa fa-search"></i> Browse Forms</a>
+                        <a (click)="takeATour();" id="takeATourBtn" class="btn btn-lg btn-default mt-1">
+                            <i class="fa fa-flag discussWrench"></i> Interactive Tour</a>
+                </div>
 
-        <div class="container mt-0 mt-sm-5" style="background-color: #eee; padding: 10px">
-            <ngb-carousel style="margin: auto">
-                <ng-template ngbSlide>
-                    <a href="https://smarthealthit.org/" target="_blank">
-                        <img class="slideContent" src="/cde/public/assets/img/forms.png" alt="SMART ON FHIR">
-                        <div class="carousel-caption">
-                            <h3>Search and Reuse Standard Forms</h3>
-                        </div>
-                    </a>
-                </ng-template>
-                <ng-template ngbSlide>
-                    <a href="https://smarthealthit.org/" target="_blank">
-                        <img class="slideContent" src="/cde/public/assets/img/smart.png" alt="SMART ON FHIR">
-                        <div class="carousel-caption">
-                            <h3>EHR Integration with FHIR</h3>
-                        </div>
-                    </a>
-                </ng-template>
-                <ng-template ngbSlide>
-                    <img class="slideContent" src="/cde/public/assets/img/drafting.png" alt="Draft of a Form">
-                    <div class="carousel-caption">
-                        <h3>Draft, Share and Collaborate</h3>
-                    </div>
-                </ng-template>
-                <ng-template ngbSlide>
-                    <img class="slideContent" src="/cde/public/assets/img/google-spreadsheets.png" alt="Send data to Google Spreadsheet">
-                    <div class="carousel-caption">
-                        <h3>Google Spreadsheet Integration</h3>
-                    </div>
-                </ng-template>
-            </ngb-carousel>
+            </div>
         </div>
     </div>
     <a routerLink="/home" fragment="formFeatures">
@@ -132,14 +131,6 @@
                 <a id="vsacLink" class="homeDescriptionLink" href="http://vsac.nlm.nih.gov" target="_blank">Value Set
                     Authority Center (VSAC).</a></p>
         </div>
-    </div>
-    <div class="text-center mt-5" id='searchDiv'>
-        <a routerLink="/cde/search" id="browseCdes" class="btn btn-lg btn-default mt-1">
-            <i class="fa fa-search"></i> Browse CDEs</a>
-        <a routerLink="/form/search" id="browseForms" class="btn btn-lg btn-default mt-1">
-            <i class="fa fa-search"></i> Browse Forms</a>
-        <a (click)="takeATour();" id="takeATourBtn" class="btn btn-lg btn-default mt-1">
-            <i class="fa fa-flag discussWrench"></i> Interactive Tour</a>
     </div>
     <div class="row mt-5">
         <div class="col-md-4">
