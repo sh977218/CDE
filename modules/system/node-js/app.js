@@ -45,7 +45,7 @@ exports.init = function (app) {
 
     /* for search engine | javascript disabled*/
     function staticHtml(req, res, next) {
-        if (req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) next();
+        if (req.user && req.user.username === 'peterhuang' || req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) next();
         else res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
     }
 
@@ -115,8 +115,8 @@ exports.init = function (app) {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /formView");
                 logging.errorLogger.error("Error: Static Html Error", {
-                stack: err.stack,
-                origin: req.url
+                    stack: err.stack,
+                    origin: req.url
                 });
             }
             else res.render('bot/formView', 'system', {elt: cde});

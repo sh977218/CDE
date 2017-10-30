@@ -75,14 +75,21 @@ exports.byTinyIdVersion = function (tinyId, version, cb) {
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    let cond = {
-        'tinyId': tinyId,
-        'version': null
-    };
-    if (version) cond.version = version;
-    Form.find(cond).sort({"updated": -1}).limit(1).exec(function (err, des) {
-        callback(err, des[0]);
-    });
+    var query = {'tinyId': tinyId};
+    if (version) {
+        query.version = version;
+        Form.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+            if (err) callback(err);
+            else if (elts.length) callback("", elts[0]);
+            else callback("", null);
+        });
+    } else {
+        query.archived = false;
+        Form.findOne(query).exec(function (err, elt) {
+            if (err) callback(err);
+            else callback("", elt);
+        });
+    }
 };
 
 exports.draftForms = function (tinyId, cb) {

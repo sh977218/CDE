@@ -18,14 +18,14 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     @SelectUserAgent()
     public void staticCdeSearchHtml() {
         driver.get(baseUrl + "/cde/search");
-        textPresent("Cancer Therapy Evaluation Program");
+        textPresent("Global Rare Diseases Patient Registry Data Repository");
     }
 
     @Test
     @SelectUserAgent()
     public void staticFormSearchHtml() {
         driver.get(baseUrl + "/form/search");
-        textPresent("Cancer Biomedical Informatics Grid");
+        textPresent("Patient Reported Outcomes Measurement Information System");
     }
 
     @Test
