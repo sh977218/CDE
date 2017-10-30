@@ -1,0 +1,19 @@
+<% if (elt.naming.length) { %>
+<div class="row" id="naming_tab">
+    <h2 class="w-100">Naming:</h2>
+    <% for(var i = 0; i < elt.naming.length; i++) {
+        var name = elt.naming[i];
+    %>
+    <div class="col-12">
+        <dl class="row">
+            <dt class="col-3 text-right">Name:</dt>
+            <dd class="col-9"><%= name.designation %></dd>
+            <dt class="col-3 text-right">Definition:</dt>
+            <dd class="col-9"><%= name.definition %></dd>
+            <dt class="col-3 text-right">Tags:</dt>
+            <dd class="col-9"><%= name.tags %></dd>
+        </dl>
+    </div>
+    <% } %>
+</div>
+<% } %>

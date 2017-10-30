@@ -79,20 +79,15 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     if (version) {
         query.version = version;
         Form.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
-            if (err)
-                callback(err);
-            else if (elts.length)
-                callback("", elts[0]);
-            else
-                callback("", null);
+            if (err) callback(err);
+            else if (elts.length) callback("", elts[0]);
+            else callback("", null);
         });
     } else {
         query.archived = false;
         Form.findOne(query).exec(function (err, elt) {
-            if (err)
-                callback(err);
-            else
-                callback("", elt);
+            if (err) callback(err);
+            else callback("", elt);
         });
     }
 };

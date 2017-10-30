@@ -6,7 +6,6 @@ var cde_schemas = require('../modules/cde/node-js/schemas');
 var form_schemas = require('../modules/form/node-js/schemas');
 var sharedSchemas = require('../modules/system/node-js/schemas.js');
 
-
 var mongoUri = config.mongoUri;
 var mongoConn = mongoose.createConnection(mongoUri);
 mongoConn.once('open', function callback() {

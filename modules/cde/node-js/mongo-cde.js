@@ -138,13 +138,22 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    let cond = {
-        'tinyId': tinyId,
-        "version": version
-    };
-    DataElement.find(cond).sort({"updated": -1}).limit(1).exec(function (err, des) {
-        callback(err, des[0]);
-    });
+    var query = {'tinyId': tinyId};
+    if (version) {
+        query.version = version;
+        DataElement.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+            if (err)
+                callback(err);
+            else if (elts.length) callback("", elts[0]);
+            else callback("", null);
+        });
+    } else {
+        query.archived = false;
+        DataElement.findOne(query).exec(function (err, elt) {
+            if (err) callback(err);
+            else callback("", elt);
+        });
+    }
 };
 
 exports.eltByTinyId = function (tinyId, callback) {
