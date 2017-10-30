@@ -4,6 +4,7 @@ import "../../node_modules/feedback/stable/2.0/html2canvas.js";
 import { Http } from '@angular/http';
 import { SharedService } from 'core/shared.service';
 import { ElasticService } from 'core/elastic.service';
+import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: "cde-embed",
@@ -24,16 +25,10 @@ export class EmbedAppComponent  {
         this.http.get('/embed/' + args['id']).map(r => r.json()).subscribe(response => {
             this.embed = response;
             this.searchSettings.selectedOrg = response.org;
-            // this.search();
+            this.search();
         });
 
         this.searchViewSettings = elasticSvc.getDefault();
-
-        // this.searchViewSettings.tableViewFields.nbOfPVs = args['numberOfPvs'];
-        // this.searchViewSettings.tableViewFields.permissibleValues = args['permissibleValues'];
-        // this.searchViewSettings.tableViewFields.naming = args['naming'];
-        // this.searchViewSettings.tableViewFields.ids = args['ids'];
-
 
     }
 
@@ -62,9 +57,10 @@ export class EmbedAppComponent  {
     selectedClassif: string = "";
     embed: any;
 
-    selectElement (s) {
-        this.searchSettings.classification.push(s);
+    selectElement () {
+        this.searchSettings.classification.push(this.selectedClassif);
         this.selectedClassif = "";
+        this.searchStarted = true;
         this.search();
     }
 

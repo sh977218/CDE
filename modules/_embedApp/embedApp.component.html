@@ -6,9 +6,9 @@
           [ngClass]="{'extraPadding': !searchStarted }">
 
         <div class="input-group input-group">
-            <select class="form-control" (change)="selectElement(selectedClassif)"
+            <select class="form-control" (change)="selectElement()"
                     name="selectedClassif"
-                    [ngModel]="selectedClassif" style="width:50%;"
+                    [(ngModel)]="selectedClassif" style="width:50%;"
                     [disabled]="aggregations.flatClassifications?.length === 0"
                     [ngClass]="{'halfOpacity':aggregations.flatClassifications?.length === 0}">
                 <option value="" selected *ngIf="searchSettings.classification.length > 0">All Sub Classifications</option>
@@ -48,15 +48,19 @@
 
     <div class="clearfix"></div>
 
-    <!--<div *ngIf="searchStarted">-->
     <div>
-        <div *ngIf="totalItems > 0" id="searchResult">
+        <div *ngIf="searchStarted" id="searchResult">
             <cde-embedded-cde-search-result
                     [elts]="elts"
                     [searchViewSettings]="searchViewSettings"
                     [embed]="embed"
             ></cde-embedded-cde-search-result>
         </div>
+
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="currentPage" (pageChange)="searchLogs()"
+                        [pageSize]="itemsPerPage" [maxSize]="10"></ngb-pagination>
+
+
         <!--<ul uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"-->
             <!--ng-model="searchSettings.page" next-text="Next" ng-change="search()"></ul>-->
     </div>
