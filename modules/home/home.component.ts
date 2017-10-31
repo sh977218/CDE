@@ -208,12 +208,12 @@ export class HomeComponent implements AfterViewChecked {
         ]
     };
     formFeatures = [
-        {feature: 'Dynamic Logic', description: 'Fill out the form to get another question.',  tinyId: 'mJsGoMU1m'},
-        {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
-        {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
-        {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: 'mJsGoMU1m'},
+        {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: '71pwc60mQ'},
+        {feature: 'Scores', description: 'Calculations such as scoring automate the math.', tinyId: 'mJsGoMU1m'},
         {feature: 'Table', description: 'Questions can be asked multiple times.', tinyId: 'XJtA5M63ix'},
-        {feature: 'Calculated Fields', description: 'Calculations such as scoring automate the math.', tinyId: '71Rnf_pz7'},
+        {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
+        {feature: 'Dynamic Logic', description: 'Fill out the form to get another question.',  tinyId: 'mJsGoMU1m'},
+        {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
     ];
     formFeatureDescription: string;
     newItems = {CDEs: null, Forms: null};
