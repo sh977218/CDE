@@ -47,8 +47,21 @@
             </div>
             <div class="form-group">
                 <label for="newDefinition">Definition</label>
-                <textarea class="form-control" id="newDefinition" name="newDefinition"
-                          [(ngModel)]="newNaming.definition" Placeholder="Naming Definition" required></textarea>
+                <button type="button" class="btn btn-default btn-xs" (click)="newNaming.definitionFormat = '';">
+                    Plain Text
+                </button>
+                <button type="button" class="btn btn-default btn-xs" (click)="newNaming.definitionFormat = 'html';">
+                    Rich Text
+                </button>
+                <div id="newDefinition">
+                    <textarea name="definition" *ngIf="newNaming.definitionFormat !== 'html'"
+                              [(ngModel)]="newNaming.definition" required
+                              class="form-control" Placeholder="Naming Definition"></textarea>
+                    <ckeditor name="definition" *ngIf="newNaming.definitionFormat === 'html'"
+                              [config]="{extraPlugins: 'divarea'}" [(ngModel)]="newNaming.definition"
+                              Placeholder="Naming Definition">
+                    </ckeditor>
+                </div>
             </div>
             <div class="form-group">
                 <label for="newTags">Tags</label>

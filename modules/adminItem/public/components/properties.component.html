@@ -12,7 +12,8 @@
                 </ng-container>
                 <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-default fa fa-trash-o"
                       id="removeProperty-{{i}}" title="Remove"></span>
-                <cde-sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></cde-sortable-array>
+                <cde-sortable-array [theArray]="elt.properties" [index]="i"
+                                    (cb)="reorderProperty();"></cde-sortable-array>
                 Key:
             </dt>
             <dd id="key_{{i}}" class="col-sm-9">{{prop.key}}</dd>
@@ -45,17 +46,18 @@
             </div>
             <div class="form-group">
                 <label for="newValue">Value</label>
-                <button type="button" class="btn btn-default btn-xs" (click)="setHtml(false);">
+                <button type="button" class="btn btn-default btn-xs" (click)="newProperty.valueFormat = '';">
                     Plain Text
                 </button>
-                <button type="button" class="btn btn-default btn-xs" (click)="setHtml(true);">
+                <button type="button" class="btn btn-default btn-xs" (click)="newProperty.valueFormat = 'html'" ;>
                     Rich Text
                 </button>
                 <div id="newValue">
-                    <textarea *ngIf="newProperty.valueFormat !== 'html'" [(ngModel)]="newProperty.value"
-                              class="form-control" Placeholder="Property Value"></textarea>
-                    <ckeditor *ngIf="newProperty.valueFormat === 'html'" [config]="{extraPlugins: 'divarea'}"
-                              [(ngModel)]="newProperty.value" Placeholder="Property Value">
+                    <textarea name="value" *ngIf="newProperty.valueFormat !== 'html'" [(ngModel)]="newProperty.value"
+                              class="form-control" Placeholder="Property Value" required></textarea>
+                    <ckeditor name="value" *ngIf="newProperty.valueFormat === 'html'"
+                              [config]="{extraPlugins: 'divarea'}" [(ngModel)]="newProperty.value"
+                              Placeholder="Property Value">
                     </ckeditor>
                 </div>
             </div>
