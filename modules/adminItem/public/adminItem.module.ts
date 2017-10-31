@@ -4,7 +4,6 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { Select2Module } from "ng2-select2";
-import { LocalStorageModule } from "angular-2-local-storage";
 
 import { CompareModule } from 'compare/compare.module';
 import { SearchModule } from 'search/search.module';
@@ -22,7 +21,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
-import { CreateFormComponent } from 'form/public/components/createForm.component';
+import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { RouterModule } from '@angular/router';
 
@@ -32,10 +31,6 @@ import { RouterModule } from '@angular/router';
         FormsModule,
         Select2Module,
         NgbModule,
-        LocalStorageModule.withConfig({
-            prefix: "nlmcde",
-            storageType: "localStorage"
-        }),
         TreeModule,
         // internal
         CompareModule,

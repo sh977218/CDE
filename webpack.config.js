@@ -9,41 +9,44 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        main: './modules/main.ts'
+        cde: './modules/main.ts',
     },
     output: {
         path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
-        filename: '[name].js'
+        publicPath: '/static/',
+        filename: '[name].js',
+        chunkFilename: 'cde-[name].js',
     },
     module: {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {
                 test: /\.ts$/,
-                use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
+                use: prod ? ['@ngtools/webpack'] : ['ts-loader', 'angular-router-loader', 'angular2-template-loader']
             },
             {test: /\.css$/, use: ['style-loader?insertAt=top', 'css-loader']},
             {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false} }]},
-            {test: /\.png$/, use: ['url-loader']}
+            {test: /\.png$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]}
         ]
     },
     plugins: prod ?
         [
-            new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
-                /angular(\\|\/)core(\\|\/)@angular/,
-                path.resolve(__dirname, '../src')
-            ),
-            new AotPlugin.AotPlugin({
-                tsConfigPath: './tsconfig.json',
-                entryModule: path.join(__dirname, 'modules', '_app/app.module') + '#CdeAppModule',
-                mainPath: 'modules/main-aot',
-                exclude: ['/node-js/']
-            }),
+            new webpack.NoEmitOnErrorsPlugin(),
+            new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.DefinePlugin({
                 PRODUCTION: JSON.stringify(true),
             }),
-            new webpack.NoEmitOnErrorsPlugin(),
-            new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
+            new webpack.ProvidePlugin({
+                $: 'jquery',
+                jQuery: 'jquery',
+                'windows.jQuery': 'jquery',
+                'Tether':'tether',
+                Popper: ['popper.js', 'default'],
+            }),
+            new AotPlugin.AotPlugin({
+                tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
+                entryModule: path.resolve(__dirname, 'modules/_app/app.module') + '#CdeAppModule'
+            }),
             new webpack.optimize.UglifyJsPlugin({ // sourcemap
                 mangle: true,
                 sourceMap: true,
@@ -53,13 +56,6 @@ module.exports = {
                 compress: {
                     warnings: false
                 }
-            }),
-            new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'windows.jQuery': 'jquery',
-                'Tether':'tether',
-                Popper: ['popper.js', 'default'],
             }),
             // new BundleAnalyzerPlugin()
         ] : [

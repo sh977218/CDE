@@ -8,7 +8,7 @@ import { TimerObservable } from "rxjs/observable/TimerObservable";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
 import { IsAllowedService } from 'core/isAllowed.service';
-import { UserService } from 'core/user.service';
+import { UserService } from '_app/user.service';
 
 const tabMap = {
     "preview_tab": "preview",

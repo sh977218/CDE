@@ -5,7 +5,7 @@ import { SharedService } from "core/shared.service";
 import { saveAs } from "file-saver";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
 import { OrgHelperService } from "core/orgHelper.service";
-import { UserService } from "core/user.service";
+import { UserService } from "_app/user.service";
 import { ElasticService } from "core/elastic.service";
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';

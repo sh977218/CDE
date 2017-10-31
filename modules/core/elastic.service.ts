@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { ElasticQueryResponse } from 'core/models.model';
-import { UserService } from "./user.service";
-import { LocalStorageService } from "angular-2-local-storage";
+import { UserService } from '_app/user.service';
+import { LocalStorageService } from 'angular-2-local-storage';
 import { SharedService } from 'core/shared.service';
 
 @Injectable()

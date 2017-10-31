@@ -4,7 +4,7 @@ import { CdeForm } from 'core/form.model';
 import { DataElement } from 'core/dataElement.model';
 import { User } from 'core/models.model';
 import * as _ from "lodash";
-import { UserService } from 'core/user.service';
+import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

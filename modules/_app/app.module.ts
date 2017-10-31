@@ -1,36 +1,34 @@
-import { CommonModule } from "@angular/common";
 import { ErrorHandler, NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
-import { BrowserModule } from "@angular/platform-browser";
-import { UpgradeModule } from "@angular/upgrade/static";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-
-import { QuickBoardModule } from 'quickBoard/public/quickBoard.module';
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule, Routes } from "@angular/router";
+import { BrowserModule } from "@angular/platform-browser";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { LocalStorageModule } from 'angular-2-local-storage';
 
-import { CdeModule } from 'cde/public/cde.module';
-import { BoardModule } from 'board/public/board.module';
-import { CoreModule } from 'core/core.module';
-import { DiscussModule } from 'discuss/discuss.module';
-import { FormModule } from 'form/public/form.module';
-import { HomeModule } from 'home/home.module';
-import { SystemModule } from 'system/public/system.module';
+import { AlertComponent } from '_app/alert/alert.component';
+import { AlertService } from '_app/alert/alert.service';
+import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
 import { FrontExceptionHandler } from '_app/frontExceptionHandler';
+import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { PageNotFoundComponent } from '_app/pageNotFound/pageNotFoundComponent';
-import { AlertService } from '_app/alert/alert.service';
-import { AlertComponent } from '_app/alert/alert.component';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
-
-const appRoutes: Routes = [
-    { path: '**', component: PageNotFoundComponent }
-];
+import { UserService } from '_app/user.service';
 
 @NgModule({
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpModule,
+        LocalStorageModule.withConfig({
+            prefix: "nlmcde",
+            storageType: "localStorage"
+        }),
+        NgbModule.forRoot(),
+        CdeAppRoutingModule,
+    ],
     declarations: [
         AlertComponent,
         CdeAppComponent,
@@ -40,31 +38,13 @@ const appRoutes: Routes = [
     ],
     providers: [
         AlertService,
+        {provide: ErrorHandler, useClass: FrontExceptionHandler},
+        LoginService,
         QuickBoardListService,
-        {provide: ErrorHandler, useClass: FrontExceptionHandler}
-    ],
-    imports: [
-        BrowserModule,
-        CommonModule,
-        FormsModule,
-        HttpModule,
-        BrowserAnimationsModule,
-        NgbModule.forRoot(),
-        RouterModule.forRoot(appRoutes),
-        // internal
-        UpgradeModule,
-        BoardModule,
-        CdeModule,
-        CoreModule,
-        DiscussModule,
-        HomeModule,
-        FormModule,
-        SystemModule,
-        QuickBoardModule,
+        UserService
     ],
     exports: [
         PageNotFoundComponent,
-        RouterModule,
     ],
     bootstrap: [CdeAppComponent]
 })

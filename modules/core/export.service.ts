@@ -3,9 +3,9 @@ import * as JSZip from "jszip";
 import * as JXON from "jxon";
 import { saveAs } from "file-saver";
 import { ElasticService } from 'core/elastic.service';
-import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
-import { SharedService } from "./shared.service";
-import { UserService } from "./user.service";
+import { RegistrationValidatorService } from "core/registrationValidator.service";
+import { SharedService } from 'core/shared.service';
+import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Injectable()
