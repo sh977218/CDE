@@ -129,7 +129,7 @@ exports.init = function (app) {
                 if (req.query.gotohttps === "1")
                     res.send("Missing X-Forward-Proto Header");
                 else res.redirect(config.publicUrl + "?gotohttps=1");
-            }
+            } else next();
         } else next();
     }
 
