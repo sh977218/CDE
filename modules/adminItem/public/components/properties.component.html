@@ -12,54 +12,41 @@
                 </ng-container>
                 <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-default fa fa-trash-o"
                       id="removeProperty-{{i}}" title="Remove"></span>
-                <cde-sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></cde-sortable-array>
+                <cde-sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();">
+                </cde-sortable-array>
                 Key:
             </dt>
-            <dd id="key_{{i}}" class="col-sm-9">{{prop.key}}</dd>
+            <dd id="key_{{i}}" class="col-sm-9">
+                <cde-inline-select-edit [(value)]="prop.key" [selectOptions]="orgPropertyKeys" [isAllowed]="canEdit"
+                                        (save)="aa($event);">
+                </cde-inline-select-edit>
+            </dd>
             <dt class="col-sm-3 text-right">Id:</dt>
             <dd id="value_{{i}}" class="col-sm-9">
                 <cde-inline-area-edit [(model)]="prop.value" (save)="onEltChange.emit()"
-                                      [(defFormat)]="prop.valueFormat"
-                                      [isAllowed]="canEdit"></cde-inline-area-edit>
+                                      [(defFormat)]="prop.valueFormat" [isAllowed]="canEdit"></cde-inline-area-edit>
             </dd>
         </dl>
         <hr>
     </ng-container>
+    <ng-container *ngIf="newProperty">
+        <dl class="row">
+            <dt class="col-sm-3 text-right">Key:</dt>
+            <dd id="newKey" class="col-sm-9">
+                <cde-inline-select-edit [(value)]="newProperty.key" [selectOptions]="orgPropertyKeys"
+                                        [isAllowed]="canEdit" (save)="editNewPropertyKey($event);">
+                </cde-inline-select-edit>
+            </dd>
+            <dt class="col-sm-3 text-right">Id:</dt>
+            <dd id="newValue" class="col-sm-9">
+                <cde-inline-area-edit [(model)]="newProperty.value" (save)="editNewPropertyValue();"
+                                      [(defFormat)]="newProperty.valueFormat"
+                                      [isAllowed]="canEdit"></cde-inline-area-edit>
+            </dd>
+        </dl>
+    </ng-container>
     <button *ngIf="canEdit && onInitDone" class="btn btn-small btn-default" id="openNewPropertyModalBtn"
-            (click)="openNewPropertyModal();">
+            (click)="addNewProperty();">
         <i class="fa fa-plus"></i> Add Property
     </button>
 </div>
-
-<ng-template #newPropertyContent id="newPropertyModal" let-c="close" let-d="dismiss">
-    <div class="modal-header" id="newPropertyModalHeader">
-        <h4 class="modal-title">Add Property</h4>
-    </div>
-    <form role="form" #newPropertyForm="ngForm" (ngSubmit)="addNewProperty()">
-        <div class="modal-body" id="newPropertyModalBody">
-            <div class="form-group">
-                <label for="newKey">Key</label>
-                <select class="form-control" id="newKey" name="newKey" [(ngModel)]="newProperty.key" required>
-                    <option *ngFor="let key of orgPropertyKeys;" value="{{key}}">{{key}}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="newValue">Value</label>
-                <textarea class="form-control" id="newValue" name="newValue"
-                          [(ngModel)]="newProperty.value" Placeholder="Property Value" required></textarea>
-            </div>
-            <div class="alert alert-info">
-                Property keys are managed in Org Management > List Management
-            </div>
-        </div>
-        <div class="modal-footer" id="newPropertyModalFooter">
-            <button class="btn cancel" (click)="c('Close click')" id="cancelNewPropertyBtn" type="button">
-                Cancel
-            </button>
-            <button class="btn btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"
-                    type="submit">
-                Save
-            </button>
-        </div>
-    </form>
-</ng-template>

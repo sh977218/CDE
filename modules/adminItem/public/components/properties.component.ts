@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
 import "rxjs/add/operator/map";
+import * as _ from 'lodash';
 
 import { Property } from 'core/models.model';
 import { DataElement } from 'core/dataElement.model';
@@ -16,8 +17,8 @@ export class PropertiesComponent implements OnInit {
     @Input() public elt: DataElement;
     @Input() public canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
-    orgPropertyKeys: string[] = [];
-    public newProperty: Property = new Property();
+    orgPropertyKeys = [];
+    public newProperty;
     public modalRef: NgbModalRef;
     public onInitDone: boolean = false;
 
@@ -28,28 +29,33 @@ export class PropertiesComponent implements OnInit {
 
     ngOnInit() {
         this.orgHelperService.then(() => {
-            this.orgPropertyKeys = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+            let eltKeys = this.elt.properties.filter(k => k.key).map(p => p.key);
+            let orgKeys = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+            this.orgPropertyKeys = _.uniq(orgKeys.concat(eltKeys));
             this.onInitDone = true;
         });
     }
 
-    openNewPropertyModal() {
+    addNewProperty() {
         if (this.orgPropertyKeys.length === 0) {
             this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
-        } else {
-            this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-            this.modalRef.result.then(() => {
-                this.newProperty = new Property();
-            }, () => {
-            });
-        }
+        } else this.newProperty = new Property();
     }
 
-    addNewProperty() {
-        this.elt.properties.push(this.newProperty);
+    editNewPropertyKey(event) {
+        this.newProperty.key = event;
         this.onEltChange.emit();
-        this.modalRef.close();
     }
+
+
+    editNewPropertyValue() {
+        if (this.newProperty && this.newProperty.value) {
+            this.elt.properties.push(this.newProperty);
+            this.onEltChange.emit();
+            this.newProperty = null;
+        } else this.alert.addAlert("danger", "Key and Value can not be empty.");
+    }
+
 
     removePropertyByIndex(index) {
         this.elt.properties.splice(index, 1);
