@@ -1,7 +1,7 @@
 <div id="conceptsDiv">
     <h4>Concepts</h4>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-12">
             <div *ngFor="let config of conceptConfigurations; ">
                 <div *ngIf="elt[config.type].concepts.length > 0">
                     <h5 [innerHTML]="config.details.display"></h5>
@@ -15,7 +15,7 @@
                         <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                             itemtype="http://schema.org/MedicalCode">
                             <td><span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
-                                   itemprop="name" class="fake-link">{{concept.name}}</span>
+                                      itemprop="name" class="fake-link">{{concept.name}}</span>
                             </td>
                             <td itemprop="codeSystem">{{concept.origin}}</td>
                             <td itemprop="codeValue">{{concept.originId}}</td>
@@ -23,7 +23,7 @@
                                 <span id="remove{{config.type}}-{{$index}}" class="btn-default fa fa-trash-o"
                                       (click)="removeConcept(config.type, $index)" title="Remove" href></span>
                                 <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
-                                                (cb)="onEltChange.emit()"></cde-sortable-array>
+                                                    (cb)="onEltChange.emit()"></cde-sortable-array>
                             </td>
                         </tr>
                     </table>

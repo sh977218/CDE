@@ -12,7 +12,8 @@
                 </ng-container>
                 <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-default fa fa-trash-o"
                       id="removeProperty-{{i}}" title="Remove"></span>
-                <cde-sortable-array [theArray]="elt.properties" [index]="i" (cb)="reorderProperty();"></cde-sortable-array>
+                <cde-sortable-array [theArray]="elt.properties" [index]="i"
+                                    (cb)="reorderProperty();"></cde-sortable-array>
                 Key:
             </dt>
             <dd id="key_{{i}}" class="col-sm-9">{{prop.key}}</dd>
@@ -45,8 +46,19 @@
             </div>
             <div class="form-group">
                 <label for="newValue">Value</label>
-                <textarea class="form-control" id="newValue" name="newValue"
-                          [(ngModel)]="newProperty.value" Placeholder="Property Value" required></textarea>
+                <button type="button" class="btn btn-default btn-xs" (click)="setHtml(false);">
+                    Plain Text
+                </button>
+                <button type="button" class="btn btn-default btn-xs" (click)="setHtml(true);">
+                    Rich Text
+                </button>
+                <div id="newValue">
+                    <textarea *ngIf="newProperty.valueFormat !== 'html'" [(ngModel)]="newProperty.value"
+                              class="form-control" Placeholder="Property Value"></textarea>
+                    <ckeditor *ngIf="newProperty.valueFormat === 'html'" [config]="{extraPlugins: 'divarea'}"
+                              [(ngModel)]="newProperty.value" Placeholder="Property Value">
+                    </ckeditor>
+                </div>
             </div>
             <div class="alert alert-info">
                 Property keys are managed in Org Management > List Management
