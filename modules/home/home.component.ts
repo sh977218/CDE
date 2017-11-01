@@ -144,22 +144,22 @@ import { FormService } from 'nativeRender/form.service';
             width: 2px;
             z-index: -1;
         }
-        @media (max-height: 449px),
-        (min-height: 450px) and (max-height: 475px) and (min-width: 220px),
-        (min-height: 475px) and (max-height: 499px) and (min-width: 240px),
-        (min-height: 500px) and (max-height: 524px) and (min-width: 280px),
-        (min-height: 525px) and (max-height: 549px) and (min-width: 320px),
-        (min-height: 550px) and (max-height: 574px) and (min-width: 360px),
-        (min-height: 575px) and (max-height: 599px) and (min-width: 400px),
-        (min-height: 600px) and (max-height: 624px) and (min-width: 430px),
-        (min-height: 625px) and (max-height: 649px) and (min-width: 460px),
-        (min-height: 650px) and (max-height: 674px) and (min-width: 490px),
-        (min-height: 675px) and (max-height: 770px) and (min-width: 575px){
-            .morePagesText {
-                color: white;
-                z-index: -1;
-            }
-        }
+        /*@media (max-height: 449px),*/
+        /*(min-height: 450px) and (max-height: 475px) and (min-width: 220px),*/
+        /*(min-height: 475px) and (max-height: 499px) and (min-width: 240px),*/
+        /*(min-height: 500px) and (max-height: 524px) and (min-width: 280px),*/
+        /*(min-height: 525px) and (max-height: 549px) and (min-width: 320px),*/
+        /*(min-height: 550px) and (max-height: 574px) and (min-width: 360px),*/
+        /*(min-height: 575px) and (max-height: 599px) and (min-width: 400px),*/
+        /*(min-height: 600px) and (max-height: 624px) and (min-width: 430px),*/
+        /*(min-height: 625px) and (max-height: 649px) and (min-width: 460px),*/
+        /*(min-height: 650px) and (max-height: 674px) and (min-width: 490px),*/
+        /*(min-height: 675px) and (max-height: 770px) and (min-width: 575px){*/
+            /*.morePagesText {*/
+                /*color: white;*/
+                /*z-index: -1;*/
+            /*}*/
+        /*}*/
         .nativeRender {
             margin-bottom: 0;
         }
@@ -208,12 +208,12 @@ export class HomeComponent implements AfterViewChecked {
         ]
     };
     formFeatures = [
-        {feature: 'Dynamic Logic', description: 'Fill out the form to get another question.',  tinyId: 'mJsGoMU1m'},
-        {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
-        {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
-        {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: 'mJsGoMU1m'},
+        {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: '71pwc60mQ'},
+        {feature: 'Scores', description: 'Calculations such as scoring automate the math.', tinyId: 'mJsGoMU1m'},
         {feature: 'Table', description: 'Questions can be asked multiple times.', tinyId: 'XJtA5M63ix'},
-        {feature: 'Calculated Fields', description: 'Calculations such as scoring automate the math.', tinyId: '71Rnf_pz7'},
+        {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
+        {feature: 'Dynamic Logic', description: 'Fill out the form to get another question.',  tinyId: 'mJsGoMU1m'},
+        {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
     ];
     formFeatureDescription: string;
     newItems = {CDEs: null, Forms: null};
