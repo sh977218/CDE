@@ -1,0 +1,23 @@
+<% if (elt.properties.length) { %>
+<div class="row" id="properties_tab">
+    <h2 class="w-100">Properties:</h2>
+    <% for(var i = 0; i < elt.properties.length; i++) {
+        var property = elt.properties[i];
+    %>
+    <div class="col-12">
+        <dl class="row">
+            <dt class="col-3 text-right">Key:</dt>
+            <dd class="col-9"><%= property.key %></dd>
+            <dt class="col-3 text-right">Value:</dt>
+            <% if (property.valueFormat === 'html') { %>
+            <dd class="col-9"><%- property.value %></dd>
+            <% } %>
+            <% if (property.valueFormat !== 'html') { %>
+            <dd class="col-9"><%= property.value %></dd>
+            <% } %>
+        </dl>
+    </div>
+    <% } %>
+</div>
+<% } %>
+

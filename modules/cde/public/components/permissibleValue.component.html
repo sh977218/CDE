@@ -102,7 +102,8 @@
         <h4>Permissible Value</h4>
         <div class="col-xs-2 text-right text_label">Datatype:</div>
         <div class="col-xs-10">
-            <cde-inline-select-edit [(value)]="elt.valueDomain.datatypeValueList.datatype" [selectOptions]="dataTypeValueListOptions"
+            <cde-inline-select-edit [(value)]="elt.valueDomain.datatypeValueList.datatype"
+                                    [selectOptions]="dataTypeValueListOptions"
                                     (save)="savePvDatatype($event);" [isAllowed]="canEdit">
             </cde-inline-select-edit>
         </div>
@@ -137,7 +138,9 @@
                         <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
                                          (modelChange)="checkPvUnicity();onEltChange.emit();"></cde-inline-edit>
                     </td>
-                    <td id="pvMeaningName_{{i}}">{{pv.valueMeaningName}}</td>
+                    <td id="pvMeaningName_{{i}}">
+                        <cde-inline-edit [(model)]="pv.valueMeaningName" [isAllowed]="canEdit"
+                                         (modelChange)="checkPvUnicity();onEltChange.emit();"></cde-inline-edit>
                     <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
                     <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
                     <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
@@ -177,7 +180,7 @@
                             <span id="pvRemove_{{i}}" class="btn-default fa fa-trash-o" (click)="removePv(i)"
                                   title="Remove"></span>
                             <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
-                                            (cb)="sortPermissibleValue();"></cde-sortable-array>
+                                                (cb)="sortPermissibleValue();"></cde-sortable-array>
                         </ng-container>
                     </td>
                 </tr>
@@ -310,8 +313,7 @@
                     type="button">Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newPermissibleValueForm.form.valid"
-                    id="createNewPermissibleValueBtn" name="createNewPermissibleValueBtn" type="submit"
-                    >Save
+                    id="createNewPermissibleValueBtn" name="createNewPermissibleValueBtn" type="submit">Save
             </button>
         </div>
     </form>

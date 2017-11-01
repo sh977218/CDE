@@ -118,7 +118,7 @@ public class NlmCdeBaseTest {
         }
     };
 
-    private void setDriver(String b) {
+    private void setDriver(String b, String u) {
         if (b == null) b = browser;
 
         hangon(new Random().nextInt(10));
@@ -136,6 +136,7 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
+            if (u != null) options.addArguments("--user-agent=googleBot");
             options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
@@ -183,12 +184,13 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     public void setUp(Method m) {
         filePerms = new HashSet();
+        String browserName = null, userAgent = null;
+        if (m.getAnnotation(SelectBrowser.class) != null)
+            browserName = "internet explorer";
+        if (m.getAnnotation(SelectUserAgent.class) != null)
+            userAgent = "bot";
+        setDriver(browserName, userAgent);
 
-        if (m.getAnnotation(SelectBrowser.class) != null) {
-            setDriver("internet explorer");
-        } else {
-            setDriver(null);
-        }
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
@@ -1523,4 +1525,48 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button[normalize-space(text()) = '" + name + "']"));
     }
 
+    /**
+     * This method is used to edit registration status for cde or form.
+     *
+     * @param index              Permissible Value Index from 0.
+     * @param value              Permissible Value.
+     * @param codeName           Permissible Value Code Name.
+     * @param code               Permissible Value Code.
+     * @param codeSystem         Permissible Value Code System
+     */
+    protected void editPermissibleValueByIndex(int index, String value, String codeName, String code, String codeSystem, String codeDescription) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv_" + index)));
+        if (value != null) {
+            clickElement(By.xpath("//*[@id='pvValue_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(value);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button[text()='Confirm']"));
+
+        }
+        if (codeName != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//button[text()='Confirm']"));
+        }
+        if (code != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//button[text()='Confirm']"));
+        }
+        if (codeSystem != null) {
+            clickElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//button[text()='Confirm']"));
+        }
+        if (codeDescription != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//button[text()='Confirm']"));
+        }
+
+    }
 }

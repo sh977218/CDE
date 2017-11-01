@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org" lang="en">
+<%- include head.ejs %>
+
+<body role="application">
+<%- include navigation.ejs %>
+
+<div class="container">
+    <ul class="list-group">
+        <% for(var i = 0; i < forms.length; i++) { %>
+        <li class="list-group-item">
+            <a href="/formView?tinyId=<%= forms[i].tinyId %>">
+                <%= forms[i].naming[0].designation %></a>
+        </li>
+        <% } %>
+    </ul>
+    <footer class="footer">
+        <div class="container">
+            <hr>
+            <div class="row">
+                <div class="col-sm-4 text-md-left col-xs-12 text-center">
+                    <a href="http://www.nlm.nih.gov/copyright.html">
+                        <small>Copyright</small>
+                    </a>,
+                    <a href="http://www.nlm.nih.gov/privacy.html">
+                        <small>Privacy</small>
+                    </a>,
+                    <a href="http://www.nlm.nih.gov/accessibility.html">
+                        <small>Accessibility</small>
+                    </a>
+                    <br/><br/>
+                    <small>U.S. National Library of Medicine<br/>8600 Rockville Pike, Bethesda, MD 20894</small>
+                </div>
+                <div class="col-sm-4 col-xs-12 text-center">
+                    <a href="http://www.usa.gov">
+                        <img alt="USA.gov logo" src="/cde/public/assets/img/usagov_logo.gif"/>
+                    </a>
+                    <a href="http://www.nlm.nih.gov/">
+                        <img width="150px" alt="National Library of Medicine logo"
+                             src="/cde/public/assets/img/NLM-logo.png"/>
+                    </a>
+                </div>
+                <div class="col-sm-4 text-md-right col-xs-12 text-center">
+                    <a href="http://www.nih.gov/">
+                        <small>National Institutes of Health</small>
+                    </a><br/>
+                    <a href="http://www.hhs.gov/">
+                        <small>Health &amp; Human Services</small>
+                    </a><br/>
+                    <a href="http://www.nih.gov/icd/od/foia/index.htm">
+                        <small>Freedom of Information Act</small>
+                    </a><br/>
+                    <a href="https://support.nlm.nih.gov/ics/support/default.asp?deptID=28054&category=Terminologies&from=CDE">
+                        <small>NLM Customer Support</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "GovernmentOrganization",
+          "name":"U.S. National Library of Medicine",
+          "address":{
+            "@type":"PostalAddress",
+            "addressCountry":"US",
+            "addressLocality":"Bethesda",
+            "addressRegion":"MD",
+            "postalCode":"20894",
+            "streetAddress":"8600 Rockville Pike",
+            },
+          "description" : "NIH Common Data Elements Repository",
+          "url": "https://cde.nlm.nih.gov",
+          "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
+          }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "WebSite",
+          "name" : "NIH CDE Repository",
+          "description" : "NIH Common Data Elements Repository",
+          "url" : "https://cde.nlm.nih.gov"
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>

@@ -16,11 +16,12 @@ public class CopyFormTest extends BaseClassificationTest {
         textPresent("CHAR");
         goToIdentifiers();
         textPresent("1234567");
+        goToGeneralDetail();
+        textPresent("CHAR");
         clickElement(By.id("copyFormBtn"));
         textPresent("Create a copy");
         textPresent("Disease/Injury Related Events");
         clickElement(By.id("submit"));
-        goToGeneralDetail();
         textPresent("Incomplete", By.id("registrationStatus"));
         textPresent("Copy of: Type, Place, Cause and Mechanism of Injury", By.id("dd_general_name"));
         textNotPresent("LOINC");

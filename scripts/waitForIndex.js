@@ -5,7 +5,7 @@ let indexInt = setInterval(() => {
     console.log("Waiting for indexing to be complete");
     request.get("http://localhost:3001/status/cde", (err, res, body) => {
         console.log(body);
-       if (body.indexOf("ERROR") === -1 && body.indexOf("false") === -1 &&
+       if (!!body && body.indexOf("ERROR") === -1 && body.indexOf("false") === -1 &&
            body.indexOf('indices":[]') === -1 && body.indexOf('indices') > 0) {
             console.log("indexing complete, status returned: ");
             clearInterval(indexInt);
