@@ -1,59 +1,87 @@
 <section class="sectionPage">
-    <div class="jumbotron" style="padding: 2rem 1rem; margin-bottom: 0;">
-        <img class="img-center-responsive" style="width: 300px; max-width: 50%"
-             src="/cde/public/assets/img/NIH-CDE.png" alt="NIH Common Data Elements (CDE) logo" />
+    <div class="" style="padding: 2rem 1rem; margin-bottom: 0;">
+        <div class=" mt-0 mt-sm-5" style="background-color: #eee; padding: 10px">
+            <div class="row align-items-center">
+                <div class="col-md-3 col-xs-12 ">
+                    <img class="img-fluid" src="/cde/public/assets/img/NIH-CDE.png"
+                         alt="NIH Common Data Elements (CDE) logo"/>
+                    <div>
+                        <p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to structured
+                            human and machine-readable definitions of data elements that have been recommended or required by
+                            NIH Institutes and Centers and other organizations for use in research and for other purposes.
+                            Visit the
+                            <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE ResourcePortal</a>
+                            for contextual information about the repository.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 hidden-xs">
+                    <ngb-carousel style="margin: auto">
+                        <ng-template ngbSlide>
+                            <img class="slideContent" src="forms.png"
+                                 alt="Screenshot of finding and using forms">
+                            <div class="carousel-caption">
+                                <h3>Search and Reuse Standard Forms</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <img class="slideContent" src="drafting.png" alt="Draft of a Form">
+                            <div class="carousel-caption">
+                                <h3>Create, Draft and Share</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <img class="slideContent" src="mlt.png" alt="More Like This">
+                            <div class="carousel-caption">
+                                <h3>Compare and Harmonize</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <img class="slideContent" src="history.png" alt="History">
+                            <div class="carousel-caption">
+                                <h3>See full history of a CDE</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <img class="slideContent" src="discuss.png" alt="Discuss">
+                            <div class="carousel-caption">
+                                <h3>Discuss and Collaborate</h3>
+                            </div>
+                        </ng-template>
+                    </ngb-carousel>
+                </div>
+                <div class="col-md-3 col-xs-12 btn-group-vertical text-center" id='searchDiv'>
+                    <a routerLink="/cde/search" id="browseCdes" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-search"></i> Browse CDEs</a>
+                    <a routerLink="/form/search" id="browseForms" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-search"></i> Browse Forms</a>
+                    <a (click)="takeATour();" id="takeATourBtn" class="btn btn-lg btn-default mt-1">
+                        <i class="fa fa-flag discussWrench"></i> Interactive Tour</a>
+                </div>
 
-        <div class="container mt-0 mt-sm-5" style="background-color: #eee; padding: 10px">
-            <ngb-carousel style="margin: auto">
-                <ng-template ngbSlide>
-                    <a href="https://smarthealthit.org/" target="_blank">
-                        <img class="slideContent" src="forms.png" alt="SMART ON FHIR">
-                        <div class="carousel-caption">
-                            <h3>Search and Reuse Standard Forms</h3>
-                        </div>
-                    </a>
-                </ng-template>
-                <ng-template ngbSlide>
-                    <a href="https://smarthealthit.org/" target="_blank">
-                        <img class="slideContent" src="smart.png" alt="SMART ON FHIR">
-                        <div class="carousel-caption">
-                            <h3>EHR Integration with FHIR</h3>
-                        </div>
-                    </a>
-                </ng-template>
-                <ng-template ngbSlide>
-                    <img class="slideContent" src="drafting.png" alt="Draft of a Form">
-                    <div class="carousel-caption">
-                        <h3>Draft, Share and Collaborate</h3>
-                    </div>
-                </ng-template>
-                <ng-template ngbSlide>
-                    <img class="slideContent" src="google-spreadsheets.png" alt="Send data to Google Spreadsheet">
-                    <div class="carousel-caption">
-                        <h3>Google Spreadsheet Integration</h3>
-                    </div>
-                </ng-template>
-            </ngb-carousel>
+            </div>
         </div>
     </div>
-    <a routerLink="/home" fragment="formFeatures">
+    <a routerLink="/home" fragment="formFeatures" class="hidden-xs">
         <div class="morePagesText">What are some Form Features?</div>
     </a>
 </section>
 <section class="sectionPage container" id="formFeatures">
     <div class="row pt-3">
         <div class="col-xs-12 col-sm-4 col-md-3">
-            <ul class="btn-group-vertical p-3 w-100" style="border-radius: 20px; border: solid lightgrey 3px;">
+            <ul class="btn-group-vertical p-3 w-100" style="border-radius: 20px; border: solid lightgrey 3px; background-color: white">
                 <li *ngFor="let f of formFeatures" class="btn btn-outline-primary"
                     style="border-radius: 20px; border-color: lightgray"
                     [style.border-width]="currentFormFeature === f ? '2px' : '0'"
-                    (click)="getForm(f)">{{f.feature}}</li>
+                    (click)="getForm(f)">{{f.feature}}
+                </li>
             </ul>
         </div>
         <div class="col-xs-12 col-sm-8 col-md-9">
-            <div class="p-3" style="background-color: #000; border-radius: 20px; color: #fff; font-weight: 900">{{formFeatureDescription}}</div>
+            <div class="p-3" style="background-color: black; border-radius: 20px; color: #fff; font-weight: 900">
+                {{formFeatureDescription}}
+            </div>
             <cde-native-render [elt]="elt" [profile]="null" class="d-block p-3 nativeRender"
-                               style="min-height: 80vh; border-radius: 20px; border: solid lightgrey 3px;"></cde-native-render>
+                               style="min-height: 80vh; border-radius: 20px; border: solid lightgrey 3px; background-color: white"></cde-native-render>
         </div>
     </div>
     <a routerLink="/home" fragment="started">
@@ -63,7 +91,8 @@
 <section class="container" id="started">
     <div class="row">
         <div class="col-xs-12 col-sm-6 mt-5">
-            <div class="btn-group" ngbRadioGroup [(ngModel)]="statsType" style="float: right; margin-top: 6px; border: 1px solid; border-color: #fff #fff #ddd;"
+            <div class="btn-group" ngbRadioGroup [(ngModel)]="statsType"
+                 style="float: right; margin-top: 6px; border: 1px solid; border-color: #fff #fff #ddd;"
                  [hidden]="cdeFormSelection !== 'both'">
                 <label ngbButtonLabel class="btn-primary" (click)="statsType = 'Forms'; getStats()">
                     <input ngbButton type="radio" [value]="'Forms'">Forms
@@ -72,9 +101,11 @@
                     <input ngbButton type="radio" [value]="'CDEs'">CDEs
                 </label>
             </div>
-            <span class="featuredHeading" style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
+            <span class="featuredHeading"
+                  style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
                   [hidden]="cdeFormSelection !== 'cdeOnly'">CDEs</span>
-            <span class="featuredHeading" style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
+            <span class="featuredHeading"
+                  style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
                   [hidden]="cdeFormSelection !== 'formOnly'">Forms</span>
             <ngb-tabset #tbset="ngbTabset" (tabChange)="getStats($event.nextId)">
                 <ngb-tab id="tabFeatured">
@@ -131,32 +162,6 @@
                 including the value sets in the
                 <a id="vsacLink" class="homeDescriptionLink" href="http://vsac.nlm.nih.gov" target="_blank">Value Set
                     Authority Center (VSAC).</a></p>
-        </div>
-    </div>
-    <div class="text-center mt-5" id='searchDiv'>
-        <a routerLink="/cde/search" id="browseCdes" class="btn btn-lg btn-default mt-1">
-            <i class="fa fa-search"></i> Browse CDEs</a>
-        <a routerLink="/form/search" id="browseForms" class="btn btn-lg btn-default mt-1">
-            <i class="fa fa-search"></i> Browse Forms</a>
-        <a (click)="takeATour();" id="takeATourBtn" class="btn btn-lg btn-default mt-1">
-            <i class="fa fa-flag discussWrench"></i> Interactive Tour</a>
-    </div>
-    <div class="row mt-5">
-        <div class="col-md-4">
-            <h3>Search</h3>
-            <p>Search for individual data elements, by definition, users or sources.
-                Search for sets of data elements ("boards") identified by a particular group for a
-                particular use (e.g particular research solicitation).</p>
-        </div>
-        <div class="col-md-4">
-            <h3>Compare / Harmonize</h3>
-            <p>Analyze and resolve differences between data elements.
-                Assure that your forms are using variables that will be usable by certified EHRs.
-            </p>
-        </div>
-        <div class="col-md-4">
-            <h3>Create</h3>
-            <p>Draw upon the experience of colleagues and others to design unique data elements and measures.</p>
         </div>
     </div>
 </section>
