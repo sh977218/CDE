@@ -23,20 +23,20 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
     templateUrl: "formDescription.component.html",
     animations: [copySectionAnimation],
     styles: [`
-        :host >>> .panel {
+        :host > > > .panel {
             margin-bottom: 1px;
         }
 
-        :host >>> .tree-children {
+        :host > > > .tree-children {
             padding-left: 0;
         }
 
-        :host >>> .node-drop-slot {
+        :host > > > .node-drop-slot {
             height: 10px;
             margin-bottom: 1px;
         }
 
-        :host >>> .panel-badge-btn {
+        :host > > > .panel-badge-btn {
             color: white;
             background-color: #333;
         }
@@ -113,7 +113,8 @@ export class FormDescriptionComponent implements OnChanges {
 
     @HostListener('window:scroll', ['$event'])
     doIt() {
-        this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
+        if (this.descToolbox)
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
     }
 
     addIndex = function (elems, elem, i) {
