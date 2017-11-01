@@ -47,13 +47,13 @@
             </div>
             <div class="form-group">
                 <label for="newDefinition">Definition</label>
-                <button type="button" class="btn btn-default btn-xs" (click)="newNaming.definitionFormat = '';">
-                    Plain Text
-                </button>
-                <button type="button" class="btn btn-default btn-xs" (click)="newNaming.definitionFormat = 'html';">
-                    Rich Text
-                </button>
                 <div id="newDefinition">
+                    <button type="button" class="btn btn-default btn-xs" (click)="newNaming.definitionFormat = '';">
+                        Plain Text
+                    </button>
+                    <button type="button" class="btn btn-default btn-xs" (click)="newNaming.definitionFormat = 'html';">
+                        Rich Text
+                    </button>
                     <textarea name="definition" *ngIf="newNaming.definitionFormat !== 'html'"
                               [(ngModel)]="newNaming.definition" required
                               class="form-control" Placeholder="Naming Definition"></textarea>

@@ -1,8 +1,8 @@
-import { Component, Input, ViewChild, OnInit, EventEmitter, Output } from "@angular/core";
+import { Component, Input, ViewChild, EventEmitter, Output } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import * as _ from 'lodash';
-import { OrgHelperService } from 'core/orgHelper.service';
+import { Naming } from 'core/models.model';
+
 
 @Component({
     selector: "cde-naming",
@@ -16,7 +16,7 @@ export class NamingComponent {
     @Input() orgNamingTags: { id: string; text: string }[] = [];
     @Output() onEltChange = new EventEmitter();
 
-    public newNaming: any = {};
+    public newNaming: Naming = new Naming();
     public modalRef: NgbModalRef;
 
     public options: Select2Options = {
@@ -34,7 +34,9 @@ export class NamingComponent {
 
     openNewNamingModal() {
         this.modalRef = this.modalService.open(this.newNamingContent, {size: "lg"});
-        this.modalRef.result.then(() => this.newNaming = {}, () => {
+        this.modalRef.result.then(() => {
+            this.newNaming = new Naming();
+        }, () => {
         });
     }
 

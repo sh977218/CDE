@@ -991,7 +991,6 @@ public class NlmCdeBaseTest {
             textPresent("Characters:");
         }
         findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
-//        hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
         textNotPresent("Confirm");
     }
@@ -1035,11 +1034,13 @@ public class NlmCdeBaseTest {
     }
 
 
-    protected void addNewName(String designation, String definition, String[] tags) {
+    protected void addNewName(String designation, String definition, boolean isHtml, String[] tags) {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
-        findElement(By.name("newDefinition")).sendKeys(definition);
+        findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
+        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Plain Text')]"));
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newTags']//input";
             for (String tag : tags) {
@@ -1052,12 +1053,13 @@ public class NlmCdeBaseTest {
         clickElement(By.id("createNewNamingBtn"));
     }
 
-    protected void addNewProperty(String key, String value) {
+    protected void addNewProperty(String key, String value, boolean isHtml) {
         clickElement(By.id("openNewPropertyModalBtn"));
         textPresent("Property keys are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
-        findElement(By.name("newValue")).sendKeys(value);
-        hangon(2);
+        findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
+        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Plain Text')]"));
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
     }
@@ -1528,11 +1530,11 @@ public class NlmCdeBaseTest {
     /**
      * This method is used to edit registration status for cde or form.
      *
-     * @param index              Permissible Value Index from 0.
-     * @param value              Permissible Value.
-     * @param codeName           Permissible Value Code Name.
-     * @param code               Permissible Value Code.
-     * @param codeSystem         Permissible Value Code System
+     * @param index      Permissible Value Index from 0.
+     * @param value      Permissible Value.
+     * @param codeName   Permissible Value Code Name.
+     * @param code       Permissible Value Code.
+     * @param codeSystem Permissible Value Code System
      */
     protected void editPermissibleValueByIndex(int index, String value, String codeName, String code, String codeSystem, String codeDescription) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv_" + index)));
