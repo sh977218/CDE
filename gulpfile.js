@@ -199,7 +199,8 @@ gulp.task('webpack-native', ['thirdParty'], () => {
 });
 
 gulp.task('webpack-embed', ['thirdParty'], () => {
-    return run('npm run buildEmbed').exec();
+    run('npm run buildEmbed').exec();
+    // return when embed is using webpack
 });
 
 gulp.task('copyWebpack', ['webpack-app', 'webpack-native', 'webpack-embed'], () => {
