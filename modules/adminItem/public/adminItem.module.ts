@@ -25,6 +25,7 @@ import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.compone
 import { CreateFormComponent } from 'form/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { RouterModule } from '@angular/router';
+import { CKEditorModule } from 'ng2-ckeditor';
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ import { RouterModule } from '@angular/router';
             storageType: "localStorage"
         }),
         TreeModule,
+        CKEditorModule,
         // internal
         CompareModule,
         SearchModule,

@@ -20,9 +20,9 @@ public class FormAddRemovePropertyTest extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToProperties();
 
-        addNewProperty(key0, value0);
-        addNewProperty(key1, value1);
-        addNewProperty(key2, value2);
+        addNewProperty(key0, value0, false);
+        addNewProperty(key1, value1, false);
+        addNewProperty(key2, value2, false);
 
         clickElement(By.id("removeProperty-1"));
         clickElement(By.id("confirmRemoveProperty-1"));

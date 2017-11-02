@@ -19,9 +19,9 @@ public class CdeAddRemovePropertyTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         goToProperties();
-        addNewProperty(key0, value0);
-        addNewProperty(key1, value1);
-        addNewProperty(key2, value2);
+        addNewProperty(key0, value0, false);
+        addNewProperty(key1, value1, false);
+        addNewProperty(key2, value2, false);
         removeProperty(1);
 
         goToCdeByName(cdeName);
