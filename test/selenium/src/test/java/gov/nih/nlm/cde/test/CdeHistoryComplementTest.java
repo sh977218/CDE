@@ -20,7 +20,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
 
         goToNaming();
-        addNewName(newName, newDefinition, null);
+        addNewName(newName, newDefinition, false, null);
 
         goToConcepts();
         clickElement(By.id("openNewConceptModalBtn"));
@@ -52,7 +52,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToCdeByName(cdeName);
-         goToIdentifiers();
+        goToIdentifiers();
         clickElement(By.id("openNewIdentifierModalBtn"));
         findElement(By.xpath("//label[text()='Source']/following-sibling::input")).sendKeys("Origin 1");
         findElement(By.xpath("//label[text()='Identifier']/following-sibling::input")).sendKeys("Identifier 1");
