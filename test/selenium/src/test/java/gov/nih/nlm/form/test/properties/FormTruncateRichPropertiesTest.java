@@ -16,7 +16,7 @@ public class FormTruncateRichPropertiesTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         goToProperties();
-        addNewProperty(newKey, newValue);
+        addNewProperty(newKey, newValue, false);
         editPropertyValueByIndex(1, null, true);
         scrollToViewById("openNewPropertyModalBtn");
         clickElement(By.xpath("//*[@id='value_1']/descendant::span[text()='More']"));
