@@ -654,7 +654,6 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
         findElement(By.cssSelector(".carousel-indicators"));
-        findElement(By.cssSelector(".native-section"));
     }
 
     protected void goToCdeSearch() {
