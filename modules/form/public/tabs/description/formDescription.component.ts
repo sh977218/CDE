@@ -1,14 +1,4 @@
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Inject,
-    Input, OnChanges,
-    Output, SimpleChanges,
-    TemplateRef,
-    ViewChild
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TREE_ACTIONS, TreeComponent } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -113,7 +103,7 @@ export class FormDescriptionComponent implements OnChanges {
 
     @HostListener('window:scroll', ['$event'])
     doIt() {
-        if (this.descToolbox)
+        if (this.descToolbox && this.descToolbox.nativeElement)
             this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
     }
 
