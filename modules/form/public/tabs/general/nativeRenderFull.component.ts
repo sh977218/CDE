@@ -39,7 +39,7 @@ export class NativeRenderFullComponent {
     selectProfile(render, profileIndex) {
         this.profile = this.elt.displayProfiles[profileIndex];
         this.selectedProfileName = this.elt.displayProfiles[profileIndex].name;
-        render.setProfile(this.elt.displayProfiles[profileIndex]);
+        if (render) render.setProfile(this.elt.displayProfiles[profileIndex]);
         this.overridePrintable = this.elt.displayProfiles[profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;
     }
 }
