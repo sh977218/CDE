@@ -113,7 +113,8 @@ export class FormDescriptionComponent implements OnChanges {
 
     @HostListener('window:scroll', ['$event'])
     doIt() {
-        this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
+        if (this.descToolbox)
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
     }
 
     addIndex = function (elems, elem, i) {

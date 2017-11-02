@@ -189,9 +189,10 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     slOptionsRetrigger() {
-        setTimeout(() => {
-            this.slInput.nativeElement.dispatchEvent(FormDescriptionQuestionDetailComponent.inputEvent);
-        }, 0);
+        if (this.slInput)
+            setTimeout(() => {
+                this.slInput.nativeElement.dispatchEvent(FormDescriptionQuestionDetailComponent.inputEvent);
+            }, 0);
     }
 
     validateSkipLogic(skipLogic, previousQuestions, item) {
