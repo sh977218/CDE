@@ -4,7 +4,6 @@ import "../../node_modules/feedback/stable/2.0/html2canvas.js";
 import { Http } from '@angular/http';
 import { SharedService } from 'core/shared.service';
 import { ElasticService } from 'core/elastic.service';
-import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: "cde-embed",
