@@ -4,12 +4,16 @@ import { FormsModule } from '@angular/forms';
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { LatestCommentsComponent } from 'discuss/components/latestComments/latestComments.component';
+import { WidgetModule } from 'widget/widget.module';
 
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
+        // core
+        WidgetModule,
+        // internal
     ],
     declarations: [
         DiscussAreaComponent,

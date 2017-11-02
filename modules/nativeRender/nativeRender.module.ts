@@ -12,6 +12,7 @@ import { NativeSectionMatrixComponent } from 'nativeRender/nativeSectionMatrix.c
 import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
 import { NativeTableComponent } from 'nativeRender/nativeTable.component';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { WidgetModule } from 'widget/widget.module';
 
 
 @NgModule({
@@ -20,6 +21,8 @@ import { SkipLogicService } from 'nativeRender/skipLogic.service';
         FormsModule,
         NgbDatepickerModule.forRoot(),
         NgbTimepickerModule.forRoot(),
+        // core
+        WidgetModule,
         // internal
     ],
     declarations: [

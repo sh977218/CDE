@@ -6,6 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { NativeRenderStandaloneComponent } from './nativeRenderStandalone.component';
+import { WidgetModule } from 'widget/widget.module';
 
 
 @NgModule({
@@ -14,6 +15,8 @@ import { NativeRenderStandaloneComponent } from './nativeRenderStandalone.compon
         CommonModule,
         FormsModule,
         HttpModule,
+        // core
+        WidgetModule,
         // internal
         NativeRenderModule,
     ],

@@ -3,13 +3,15 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SortableModule } from 'ngx-bootstrap';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { DiffMatchPatchModule, DiffDirective } from "ng-diff-match-patch";
-import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
-import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
+import { DiffMatchPatchModule } from "ng-diff-match-patch";
+
+import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
 import { CompareArrayComponent } from 'compare/compareArray/compareArray.component';
 import { CompareObjectComponent } from 'compare/compareObject/compareObject.component';
-import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
+import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
+import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
+import { WidgetModule } from 'widget/widget.module';
 
 @NgModule({
     imports: [
@@ -18,6 +20,9 @@ import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataEle
         NgbModule,
         SortableModule.forRoot(),
         DiffMatchPatchModule,
+        // core
+        WidgetModule,
+        // internal
     ],
     declarations: [
         CdeSortableComponent,
