@@ -199,11 +199,13 @@ gulp.task('webpack-native', ['thirdParty'], () => {
 });
 
 gulp.task('webpack-embed', ['thirdParty'], () => {
-    run('npm run buildEmbed').exec();
+    // run('npm run buildEmbed').exec();
     // return when embed is using webpack
 });
 
 gulp.task('copyWebpack', ['webpack-app', 'webpack-native', 'webpack-embed'], () => {
+    gulp.src('./modules/static/*.png')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
     return gulp.src('./modules/static/*.js')
         .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
 });
