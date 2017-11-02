@@ -35,7 +35,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="select_display_profile">
             <button class="dropdown-item" *ngFor="let p of elt.displayProfiles; let i = index"
-                    (click)="selectProfile(render,i);">{{p.name}}
+                    (click)="selectProfile(i);">{{p.name}}
             </button>
         </div>
     </div>
@@ -49,5 +49,5 @@
 </div>
 
 <div [ngClass]="{'bot-left': !mobileView && elt.formElements.length > 0}">
-    <cde-native-render #render [elt]="elt" [showTitle]="false" [profile]="profile"></cde-native-render>
+    <cde-native-render [elt]="elt" [showTitle]="false" [profile]="profile"></cde-native-render>
 </div>
