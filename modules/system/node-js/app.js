@@ -59,7 +59,8 @@ exports.init = function (app) {
     app.get("/cde/search", [checkHttps, staticHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
-        if (selectedOrg && pageString) {
+        if (!pageString) pageString = "1";
+        if (selectedOrg) {
             let pageNum = _.toInteger(pageString);
             let pageSize = 20;
             let cond = {
@@ -115,7 +116,8 @@ exports.init = function (app) {
     app.get("/form/search", [checkHttps, staticHtml], function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
-        if (selectedOrg && pageString) {
+        if (!pageString) pageString = "1";
+        if (selectedOrg) {
             let pageNum = _.toInteger(pageString);
             let pageSize = 20;
             let cond = {
