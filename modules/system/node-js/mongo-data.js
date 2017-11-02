@@ -260,12 +260,10 @@ exports.removeOrg = function (id, callback) {
 };
 
 exports.formatElt = function (elt) {
-    if (elt) {
-        if (elt.toObject) elt = elt.toObject();
-        elt.stewardOrgCopy = elt.stewardOrg;
-        elt.primaryNameCopy = _.escape(elt.naming[0].designation);
-        elt.primaryDefinitionCopy = _.escape(elt.naming[0].definition);
-    }
+    if (elt.toObject) elt = elt.toObject();
+    elt.stewardOrgCopy = elt.stewardOrg;
+    elt.primaryNameCopy = _.escape(elt.naming[0].designation);
+    elt.primaryDefinitionCopy = _.escape(elt.naming[0].definition);
     return elt;
 };
 
