@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
 import { Select2Module } from "ng2-select2";
@@ -10,6 +11,7 @@ import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
+import { FormSearchModule } from 'form/public/formSearch.module';
 import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
@@ -23,7 +25,7 @@ import { ClassificationViewComponent } from "./components/classification/classif
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
-import { RouterModule } from '@angular/router';
+
 
 @NgModule({
     imports: [
@@ -34,6 +36,7 @@ import { RouterModule } from '@angular/router';
         TreeModule,
         // internal
         CompareModule,
+        FormSearchModule,
         SearchModule,
         WidgetModule,
         RouterModule.forChild([])

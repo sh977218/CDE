@@ -48,6 +48,8 @@ import { WidgetModule } from "widget/widget.module";
     ],
     exports: [
         BoardViewTemplateComponent,
+        CreateBoardComponent,
+        CreateFormFromBoardComponent,
         LinkedBoardsComponent,
         ListSortComponent,
         PinBoardComponent,
