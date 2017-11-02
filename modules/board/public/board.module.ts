@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { Select2Module } from 'ng2-select2';
 
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardViewTemplateComponent } from 'board/public/components/boardViewTemplate/boardViewTemplate.component';
 import { CreateBoardComponent } from "./components/createBoard/createBoard.component";
 import { CreateFormFromBoardComponent } from 'board/public/components/createFormFromBoard.component';
@@ -28,6 +29,7 @@ import { WidgetModule } from "widget/widget.module";
         // core
         WidgetModule,
         // internal
+        AdminItemModule,
     ],
     declarations: [
         BoardViewTemplateComponent,

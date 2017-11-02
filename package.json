@@ -102,7 +102,7 @@
     "@types/select2": "^4.0.31",
     "angular-2-local-storage": "1.0.1",
     "angular-router-loader": "0.6.0",
-    "angular-tree-component": "5.1.2",
+    "angular-tree-component": "3.7.3",
     "angular2-template-loader": "0.6.0",
     "babel-polyfill": "6.22.0",
     "bootstrap": "4.0.0-alpha.6",

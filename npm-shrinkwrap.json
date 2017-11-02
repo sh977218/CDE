@@ -323,12 +323,13 @@
       }
     },
     "angular-tree-component": {
-      "version": "5.1.2",
-      "resolved": "https://registry.npmjs.org/angular-tree-component/-/angular-tree-component-5.1.2.tgz",
-      "integrity": "sha1-oAxWiGqZ9fjuq+d4yd7EfYhYTNs=",
+      "version": "3.7.3",
+      "resolved": "https://registry.npmjs.org/angular-tree-component/-/angular-tree-component-3.7.3.tgz",
+      "integrity": "sha1-RFi8etqtU0PdibPq1Kyb8W2bxQU=",
       "dev": true,
       "requires": {
         "lodash": "4.17.4",
+        "lodash-es": "4.17.4",
         "mobx": "3.1.11",
         "mobx-angular": "1.5.0"
       }
@@ -6016,6 +6017,12 @@
       "version": "4.17.4",
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
       "integrity": "sha1-eCA6TRwyiuHYbcpkYONptX9AVa4="
+    },
+    "lodash-es": {
+      "version": "4.17.4",
+      "resolved": "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.4.tgz",
+      "integrity": "sha1-3MHXVS4VCgZABzupyzHXDwMpUOc=",
+      "dev": true
     },
     "lodash._arraypool": {
       "version": "2.4.1",

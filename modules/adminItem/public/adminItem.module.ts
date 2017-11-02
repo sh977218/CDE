@@ -11,7 +11,6 @@ import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
-import { FormSearchModule } from 'form/public/formSearch.module';
 import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
@@ -33,13 +32,13 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         FormsModule,
         Select2Module,
         NgbModule,
+        RouterModule,
         TreeModule,
+        // core
+        WidgetModule,
         // internal
         CompareModule,
-        FormSearchModule,
         SearchModule,
-        WidgetModule,
-        RouterModule.forChild([])
     ],
     declarations: [
         AttachmentsComponent,

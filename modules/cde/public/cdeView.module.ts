@@ -21,6 +21,7 @@ import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { WidgetModule } from "widget/widget.module";
+import { FormSearchModule } from 'form/public/formSearch.module';
 
 
 const appRoutes: Routes = [
@@ -42,6 +43,7 @@ const appRoutes: Routes = [
         BoardModule,
         CdeModule,
         DiscussModule,
+        FormSearchModule,
     ],
     declarations: [
         CdeClassificationComponent,
