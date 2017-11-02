@@ -20,7 +20,7 @@ public class FormTruncatePlainPropertiesTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         goToProperties();
-        addNewProperty("Great CTX", newValue);
+        addNewProperty("Great CTX", newValue, false);
         scrollToViewById("openNewPropertyModalBtn");
         clickElement(By.xpath("//*[@id='value_0']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");

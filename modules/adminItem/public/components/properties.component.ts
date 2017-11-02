@@ -60,4 +60,8 @@ export class PropertiesComponent implements OnInit {
         this.onEltChange.emit();
     }
 
+    setHtml(isHtml) {
+        this.newProperty.valueFormat = isHtml ? 'html' : '';
+    }
+
 }
