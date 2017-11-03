@@ -35,7 +35,7 @@ import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embedd
         FormsModule,
         HttpModule,
         BrowserAnimationsModule,
-        NgbModule,
+        NgbModule.forRoot(),
     ],
     exports: [
     ],
