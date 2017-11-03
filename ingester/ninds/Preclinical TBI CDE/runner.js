@@ -3,6 +3,7 @@ const util = require('util');
 const async = require('async');
 const _ = require('lodash');
 const XLSX = require('xlsx');
+const Papa = require('papaparse');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
@@ -127,23 +128,33 @@ function deToQuestion(row, cde) {
     return question;
 }
 
-function rowToDataElement(file, row, rowIndex) {
+function rowToDataElement(file, row) {
     let de = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {
             name: 'NINDS'
         },
-        createdBy: {
-            username: 'batchloader'
-        },
         registrationState: {
             registrationStatus: 'Qualified'
+        },
+        createdBy: {
+            username: 'batchloader'
         },
         referenceDocuments: [],
         properties: [],
         valueDomain: {},
         classification: []
     };
+
+    /*
+        let effectiveDateString = getCell(row, 'Effective Date');
+        if (effectiveDateString)
+            de.registrationState.effectiveDate = new Date(effectiveDateString);
+        let untilDateString = getCell(row, 'Until Date');
+        if (untilDateString)
+            de.registrationState.untilDate = new Date(untilDateString);
+    */
+
     let variableName = getCell(row, 'Variable Name');
     if (variableName) {
         de.ids = [{
@@ -202,7 +213,7 @@ function rowToDataElement(file, row, rowIndex) {
             de.valueDomain.datatypeText = {};
             console.log("---------------------------------");
             console.log("| file: " + file);
-            console.log("| rowIndex: " + rowIndex);
+            console.log("| rowIndex: " + row.__rowNum__);
             console.log("| Unknown datatype: " + datatype);
             console.log("---------------------------------");
             console.log("\n");
@@ -215,13 +226,13 @@ function rowToDataElement(file, row, rowIndex) {
         let permissibleValueOutputCodes = getCell(row, 'Permissible Value Output Codes');
         if (permissibleValues && permissibleValueDescriptions && permissibleValueOutputCodes) {
             let pvs = permissibleValues.split(';');
-            let pvDescs = permissibleValueDescriptions.split(';');
+            let pvDescriptions = permissibleValueDescriptions.split(';');
             let pvCodes = permissibleValueOutputCodes.split(';');
-            if (pvs.length === pvDescs.length && pvDescs.length === pvCodes.length && pvs.length === pvCodes.length) {
+            if (pvs.length === pvDescriptions.length && pvDescriptions.length === pvCodes.length && pvs.length === pvCodes.length) {
                 for (let i = 0; i < pvs.length; i++) {
                     let pv = {
                         permissibleValue: pvs[i],
-                        valueMeaningDefinition: pvDescs[i],
+                        valueMeaningDefinition: pvDescriptions[i],
                         valueMeaningCode: pvCodes[i]
                     };
                     de.valueDomain.permissibleValues.push(pv);
@@ -229,8 +240,8 @@ function rowToDataElement(file, row, rowIndex) {
             } else {
                 console.log("---------------------------------");
                 console.log("| file: " + file);
-                console.log("| rowIndex: " + rowIndex);
-                console.log("| PV Length mismatch. pv:" + pvs.length + " pvDescs:" + pvDescs.length + " pvCodes:" + pvCodes.length);
+                console.log("| rowIndex: " + row.__rowNum__);
+                console.log("| PV Length mismatch. pv:" + pvs.length + " pvDescriptions:" + pvDescriptions.length + " pvCodes:" + pvCodes.length);
                 console.log("---------------------------------");
                 console.log("\n");
             }
@@ -239,8 +250,7 @@ function rowToDataElement(file, row, rowIndex) {
 
     let references = getCell(row, 'References');
     if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
-        let refDocStrings = references;
-        refDocStrings.split("-----").forEach(refDocString => {
+        references.split("-----").forEach(refDocString => {
             let regs = [
                 new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*/g),
                 new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*/g),
@@ -295,9 +305,21 @@ function rowToDataElement(file, row, rowIndex) {
 function run() {
     let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
     async.forEachSeries(files, (file, doneOneFile) => {
+/*
+        let rows = [];
+        if (file.indexOf('.csv') > -1) {
+            let fileString = fs.readFileSync(FILE_PATH+file);
+            rows = Papa.parse(fileString, {delimiter: ",", newline: "\n"});
+        } else if (file.indexOf('.xlsx') > -1) {
+            let workbook = XLSX.readFile(FILE_PATH + file);
+            let sheetName = workbook.SheetNames[0];
+            rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
+        } else throw "Unknown supported file format.";
+*/
         let workbook = XLSX.readFile(FILE_PATH + file);
         let sheetName = workbook.SheetNames[0];
-        let rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
+       let rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
+
         let form = {
             tinyId: mongo_data.generateTinyId(),
             naming: [
@@ -305,23 +327,39 @@ function run() {
             ],
             formElements: []
         };
-        let rowIndex = 0;
+        let lastSection = "";
+        let currentSection = "";
+        let formElements = form.formElements;
         async.forEachSeries(rows, (row, doneOneRow) => {
-            let de = rowToDataElement(file, row, rowIndex);
+            currentSection = getCell(row, 'Category/Group');
+            if (currentSection !== lastSection) {
+                let newSection = {
+                    elementType: 'section',
+                    label: currentSection,
+                    formElements: []
+                };
+                form.formElements.push(newSection);
+                formElements = newSection.formElements;
+            }
+            let de = rowToDataElement(file, row);
             if (!de.naming || !de.naming[0].designation) {
                 console.log("a");
             }
-            let deObj = new DataElementModel(de);
-            deObj.save((err, newCde) => {
-                if (err) throw err;
+            new DataElementModel(de).save((err, newCde) => {
+                if (err)
+                    throw err;
                 let question = deToQuestion(row, newCde);
-                form.formElements.push(question);
-                rowIndex++;
+                formElements.push(question);
+                lastSection = currentSection;
                 doneOneRow();
             });
         }, () => new FormModel(form).save(err => {
             if (err) throw err;
-            doneOneFile();
+            new FormModel(form).save(err => {
+                if (err)
+                    throw err;
+                doneOneFile();
+            });
         }));
     }, () => process.exit(1));
 }
