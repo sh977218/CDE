@@ -24,7 +24,6 @@ const appRoutes: Routes = [
         // internal
         AdminItemModule,
         CdeModule,
-        SearchModule,
     ],
     declarations: [
     ],

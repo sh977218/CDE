@@ -8,6 +8,7 @@ import { Select2Module } from "ng2-select2";
 
 import { AdminItemModule } from "adminItem/public/adminItem.module";
 import { ArrayListPipe } from "./arrayList.pipe";
+import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { DiscussModule } from "discuss/discuss.module";
 import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
@@ -23,7 +24,6 @@ import { FormViewComponent } from "./components/formView.component";
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { WidgetModule } from "widget/widget.module";
-import { BoardModule } from 'board/public/board.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -35,17 +35,17 @@ const appRoutes: Routes = [
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        TreeModule,
         Select2Module,
+        TreeModule,
         // core
         WidgetModule,
         // internal
         AdminItemModule,
         BoardModule,
         CdeSearchModule,
+        DiscussModule,
         FormSearchModule,
         NativeRenderModule,
-        DiscussModule,
     ],
     declarations: [
         ArrayListPipe,

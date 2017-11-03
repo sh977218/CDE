@@ -2,7 +2,8 @@ import { ErrorHandler, NgModule } from "@angular/core";
 import { HttpModule } from "@angular/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from "@angular/platform-browser";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap/alert/alert.module';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 
 import { AlertComponent } from '_app/alert/alert.component';
@@ -26,7 +27,9 @@ import { UserService } from '_app/user.service';
             prefix: "nlmcde",
             storageType: "localStorage"
         }),
-        NgbModule.forRoot(),
+        NgbAlertModule.forRoot(),
+        NgbDropdownModule.forRoot(),
+        // internal
         CdeAppRoutingModule,
     ],
     declarations: [

@@ -17,11 +17,11 @@ import { DataElementViewComponent } from "./components/dataElementView.component
 import { DerivationRulesComponent } from "./components/derivationRules.component";
 import { DeGeneralDetailsComponent } from "./components/deGeneralDetails/deGeneralDetails.component";
 import { DiscussModule } from 'discuss/discuss.module';
+import { FormSearchModule } from 'form/public/formSearch.module';
 import { MoreLikeThisComponent } from "./components/mlt/moreLikeThis.component";
 import { PermissibleValueComponent } from "./components/permissibleValue.component";
 import { ValidRulesComponent } from "./components/validationRules/validRules.component";
 import { WidgetModule } from "widget/widget.module";
-import { FormSearchModule } from 'form/public/formSearch.module';
 
 
 const appRoutes: Routes = [

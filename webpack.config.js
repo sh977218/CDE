@@ -56,11 +56,6 @@ module.exports = {
                 tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
                 entryModule: path.resolve(__dirname, 'modules/_app/app.module') + '#CdeAppModule'
             }),
-            new ExtractTextPlugin({filename: '[name].css'}),
-            new webpack.optimize.ModuleConcatenationPlugin(),
-            new OptimizeJsPlugin({
-                sourceMap: false
-            }),
             new webpack.optimize.UglifyJsPlugin({ // sourcemap
                 parallel: true,
                 uglifyOptions: {
@@ -74,6 +69,11 @@ module.exports = {
                     }
                 },
                 warnings: true,
+            }),
+            new ExtractTextPlugin({filename: '[name].css'}),
+            new webpack.optimize.ModuleConcatenationPlugin(),
+            new OptimizeJsPlugin({
+                sourceMap: false
             }),
             new webpack.optimize.CommonsChunkPlugin({
                 name: ['cde'],
@@ -120,7 +120,8 @@ module.exports = {
                 'windows.jQuery': 'jquery',
                 'Tether':'tether',
                 Popper: ['popper.js', 'default'],
-            })
+            }),
+            new ExtractTextPlugin({filename: '[name].css'}),
         ],
     resolve: {
         unsafeCache: false,

@@ -17,7 +17,7 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
         CKEditorModule,
         CommonModule,
         FormsModule,
-        NgbModule,
+        NgbModule.forRoot(),
         // internal
         CoreModule
     ],

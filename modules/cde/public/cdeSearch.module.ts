@@ -7,7 +7,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
 import { BoardCdeSummaryListContentComponent } from 'cde/public/components/listView/boardCdeSummaryListContent.component';
 import { BoardModule } from 'board/public/board.module';
-import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
 import { CdeModule } from 'cde/public/cde.module';
 import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.component';
 import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
@@ -32,7 +31,6 @@ import { WidgetModule } from 'widget/widget.module';
     declarations: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
-        CdeAccordionListComponent,
         CdeSearchComponent,
         CdeSummaryListContentComponent,
         QuickBoardCdeSummaryListContentComponent,
@@ -40,7 +38,6 @@ import { WidgetModule } from 'widget/widget.module';
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
-        CdeAccordionListComponent,
         CdeSummaryListContentComponent,
         QuickBoardCdeSummaryListContentComponent,
     ],
