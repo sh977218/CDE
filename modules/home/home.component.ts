@@ -20,7 +20,7 @@ import { FormService } from 'nativeRender/form.service';
             padding: 5px;
         }
         .sectionPage {
-            min-height: 100vh;
+            /*min-height: 100vh;*/
         }
         .slideContent {
             display: block;
@@ -177,8 +177,9 @@ import { FormService } from 'nativeRender/form.service';
             font-weight: 900;
         }
         :host >>> .carousel-control-next, :host >>> .carousel-control-prev {
-            background-color: #eee;
-            width: 10%;
+            display: none;
+            /*background-color: #eee;*/
+            /*width: 10%;*/
         }
         :host >>> .carousel-indicators li {
             background-color: #fff;

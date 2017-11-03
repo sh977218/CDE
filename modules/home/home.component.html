@@ -4,23 +4,25 @@
             <div class="row align-items-center">
                 <div class="col-md-3 col-xs-12 ">
                     <img class="img-fluid" src="/cde/public/assets/img/NIH-CDE.png"
-                         alt="NIH Common Data Elements (CDE) logo"/>
+                         alt="NIH Common Data Elements (CDE) logo" style="margin-bottom: 20px"/>
                     <div>
                         <p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to structured
                             human and machine-readable definitions of data elements that have been recommended or required by
                             NIH Institutes and Centers and other organizations for use in research and for other purposes.
+                        </p>
+                        <p>
                             Visit the
-                            <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE ResourcePortal</a>
-                            for contextual information about the repository.</p>
+                            <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE Resource Portal</a>
+                            for contextual information about the repository.
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-6 hidden-xs">
                     <ngb-carousel style="margin: auto">
                         <ng-template ngbSlide>
-                            <img class="slideContent" src="forms.png"
-                                 alt="Screenshot of finding and using forms">
+                            <img class="slideContent" src="discuss.png" alt="Discuss">
                             <div class="carousel-caption">
-                                <h3>Search and Reuse Standard Forms</h3>
+                                <h3>Search, Discuss and Collaborate</h3>
                             </div>
                         </ng-template>
                         <ng-template ngbSlide>
@@ -30,7 +32,7 @@
                             </div>
                         </ng-template>
                         <ng-template ngbSlide>
-                            <img class="slideContent" src="mlt.png" alt="More Like This">
+                            <img class="slideContent" src="compare.png" alt="More Like This">
                             <div class="carousel-caption">
                                 <h3>Compare and Harmonize</h3>
                             </div>
@@ -38,13 +40,14 @@
                         <ng-template ngbSlide>
                             <img class="slideContent" src="history.png" alt="History">
                             <div class="carousel-caption">
-                                <h3>See full history of a CDE</h3>
+                                <h3>Track Changes Across Versions</h3>
                             </div>
                         </ng-template>
                         <ng-template ngbSlide>
-                            <img class="slideContent" src="discuss.png" alt="Discuss">
+                            <img class="slideContent" src="tobacco.png"
+                                 alt="Screenshot of finding and using forms">
                             <div class="carousel-caption">
-                                <h3>Discuss and Collaborate</h3>
+                                <h3>Export and Publish in Multiple Formats</h3>
                             </div>
                         </ng-template>
                     </ngb-carousel>
@@ -61,107 +64,107 @@
             </div>
         </div>
     </div>
-    <a routerLink="/home" fragment="formFeatures" class="hidden-xs">
-        <div class="morePagesText">What are some Form Features?</div>
-    </a>
+    <!--<a routerLink="/home" fragment="formFeatures" class="hidden-xs">-->
+        <!--<div class="morePagesText">What are some Form Features?</div>-->
+    <!--</a>-->
 </section>
-<section class="sectionPage container" id="formFeatures">
-    <div class="row pt-3">
-        <div class="col-xs-12 col-sm-4 col-md-3">
-            <ul class="btn-group-vertical p-3 w-100" style="border-radius: 20px; border: solid lightgrey 3px; background-color: white">
-                <li *ngFor="let f of formFeatures" class="btn btn-outline-primary"
-                    style="border-radius: 20px; border-color: lightgray"
-                    [style.border-width]="currentFormFeature === f ? '2px' : '0'"
-                    (click)="getForm(f)">{{f.feature}}
-                </li>
-            </ul>
-        </div>
-        <div class="col-xs-12 col-sm-8 col-md-9">
-            <div class="p-3" style="background-color: black; border-radius: 20px; color: #fff; font-weight: 900">
-                {{formFeatureDescription}}
-            </div>
-            <cde-native-render [elt]="elt" [profile]="null" class="d-block p-3 nativeRender"
-                               style="min-height: 80vh; border-radius: 20px; border: solid lightgrey 3px; background-color: white"></cde-native-render>
-        </div>
-    </div>
-    <a routerLink="/home" fragment="started">
-        <div class="morePages morePagesXsUnder morePagesFromText morePagesToCircle contentStartedFrom"></div>
-    </a>
-</section>
-<section class="container" id="started">
-    <div class="row">
-        <div class="col-xs-12 col-sm-6 mt-5">
-            <div class="btn-group" ngbRadioGroup [(ngModel)]="statsType"
-                 style="float: right; margin-top: 6px; border: 1px solid; border-color: #fff #fff #ddd;"
-                 [hidden]="cdeFormSelection !== 'both'">
-                <label ngbButtonLabel class="btn-primary" (click)="statsType = 'Forms'; getStats()">
-                    <input ngbButton type="radio" [value]="'Forms'">Forms
-                </label>
-                <label ngbButtonLabel class="btn-primary" (click)="statsType = 'CDEs'; getStats()">
-                    <input ngbButton type="radio" [value]="'CDEs'">CDEs
-                </label>
-            </div>
-            <span class="featuredHeading"
-                  style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
-                  [hidden]="cdeFormSelection !== 'cdeOnly'">CDEs</span>
-            <span class="featuredHeading"
-                  style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"
-                  [hidden]="cdeFormSelection !== 'formOnly'">Forms</span>
-            <ngb-tabset #tbset="ngbTabset" (tabChange)="getStats($event.nextId)">
-                <ngb-tab id="tabFeatured">
-                    <ng-template ngbTabTitle><i class="fa fa-star" aria-hidden="true"></i></ng-template>
-                    <ng-template ngbTabContent>
-                        <div class="bordered-tab">
-                            <div class="featuredHeading">Featured Forms</div>
-                            <ul>
-                                <li *ngFor="let item of featuredItems['Forms']">
-                                    <a routerLink="/formView" [queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </ng-template>
-                </ngb-tab>
-                <ngb-tab id="tabTop">
-                    <ng-template ngbTabTitle><i class="fa fa-arrow-up" aria-hidden="true"></i></ng-template>
-                    <ng-template ngbTabContent>
-                        <div class="bordered-tab">
-                            <div class="featuredHeading">Most Viewed CDEs</div>
-                            <ul>
-                                <li *ngFor="let item of topItems['CDEs']">
-                                    <a routerLink="/deView" [queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </ng-template>
-                </ngb-tab>
-                <ngb-tab id="tabNew">
-                    <ng-template ngbTabTitle><i class="fa fa-plus-square" aria-hidden="true"></i></ng-template>
-                    <ng-template ngbTabContent>
-                        <div class="bordered-tab">
-                            <div class="featuredHeading">Newest {{statsType}}</div>
-                            <ul>
-                                <li *ngFor="let item of newItems[statsType]">
-                                    <a routerLink="/{{statsType==='CDEs'?'de':'form'}}View"
-                                       [queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </ng-template>
-                </ngb-tab>
-            </ngb-tabset>
-        </div>
-        <div class="col-xs-12 col-sm-6 mt-5">
-            <p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to structured
-                human and machine-readable definitions of data elements that have been recommended or required by
-                NIH Institutes and Centers and other organizations for use in research and for other purposes.
-                Visit the
-                <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE ResourcePortal</a>
-                for contextual information about the repository.</p>
-            <p>The Repository is a platform for identifying related data elements in use across diverse areas,
-                for harmonizing data elements,and for linking CDEs to other existing standards and terminologies,
-                including the value sets in the
-                <a id="vsacLink" class="homeDescriptionLink" href="http://vsac.nlm.nih.gov" target="_blank">Value Set
-                    Authority Center (VSAC).</a></p>
-        </div>
-    </div>
-</section>
+<!--<section class="sectionPage container" id="formFeatures">-->
+    <!--<div class="row pt-3">-->
+        <!--<div class="col-xs-12 col-sm-4 col-md-3">-->
+            <!--<ul class="btn-group-vertical p-3 w-100" style="border-radius: 20px; border: solid lightgrey 3px; background-color: white">-->
+                <!--<li *ngFor="let f of formFeatures" class="btn btn-outline-primary"-->
+                    <!--style="border-radius: 20px; border-color: lightgray"-->
+                    <!--[style.border-width]="currentFormFeature === f ? '2px' : '0'"-->
+                    <!--(click)="getForm(f)">{{f.feature}}-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+        <!--<div class="col-xs-12 col-sm-8 col-md-9">-->
+            <!--<div class="p-3" style="background-color: black; border-radius: 20px; color: #fff; font-weight: 900">-->
+                <!--{{formFeatureDescription}}-->
+            <!--</div>-->
+            <!--<cde-native-render [elt]="elt" [profile]="null" class="d-block p-3 nativeRender"-->
+                               <!--style="min-height: 80vh; border-radius: 20px; border: solid lightgrey 3px; background-color: white"></cde-native-render>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<a routerLink="/home" fragment="started">-->
+        <!--<div class="morePages morePagesXsUnder morePagesFromText morePagesToCircle contentStartedFrom"></div>-->
+    <!--</a>-->
+<!--</section>-->
+<!--<section class="container" id="started">-->
+    <!--<div class="row">-->
+        <!--<div class="col-xs-12 col-sm-6 mt-5">-->
+            <!--<div class="btn-group" ngbRadioGroup [(ngModel)]="statsType"-->
+                 <!--style="float: right; margin-top: 6px; border: 1px solid; border-color: #fff #fff #ddd;"-->
+                 <!--[hidden]="cdeFormSelection !== 'both'">-->
+                <!--<label ngbButtonLabel class="btn-primary" (click)="statsType = 'Forms'; getStats()">-->
+                    <!--<input ngbButton type="radio" [value]="'Forms'">Forms-->
+                <!--</label>-->
+                <!--<label ngbButtonLabel class="btn-primary" (click)="statsType = 'CDEs'; getStats()">-->
+                    <!--<input ngbButton type="radio" [value]="'CDEs'">CDEs-->
+                <!--</label>-->
+            <!--</div>-->
+            <!--<span class="featuredHeading"-->
+                  <!--style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"-->
+                  <!--[hidden]="cdeFormSelection !== 'cdeOnly'">CDEs</span>-->
+            <!--<span class="featuredHeading"-->
+                  <!--style="float: right; margin-top: 5px; border: 1px solid; border-color: #fff #fff #ddd;"-->
+                  <!--[hidden]="cdeFormSelection !== 'formOnly'">Forms</span>-->
+            <!--<ngb-tabset #tbset="ngbTabset" (tabChange)="getStats($event.nextId)">-->
+                <!--<ngb-tab id="tabFeatured">-->
+                    <!--<ng-template ngbTabTitle><i class="fa fa-star" aria-hidden="true"></i></ng-template>-->
+                    <!--<ng-template ngbTabContent>-->
+                        <!--<div class="bordered-tab">-->
+                            <!--<div class="featuredHeading">Featured Forms</div>-->
+                            <!--<ul>-->
+                                <!--<li *ngFor="let item of featuredItems['Forms']">-->
+                                    <!--<a routerLink="/formView" [queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</ng-template>-->
+                <!--</ngb-tab>-->
+                <!--<ngb-tab id="tabTop">-->
+                    <!--<ng-template ngbTabTitle><i class="fa fa-arrow-up" aria-hidden="true"></i></ng-template>-->
+                    <!--<ng-template ngbTabContent>-->
+                        <!--<div class="bordered-tab">-->
+                            <!--<div class="featuredHeading">Most Viewed CDEs</div>-->
+                            <!--<ul>-->
+                                <!--<li *ngFor="let item of topItems['CDEs']">-->
+                                    <!--<a routerLink="/deView" [queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</ng-template>-->
+                <!--</ngb-tab>-->
+                <!--<ngb-tab id="tabNew">-->
+                    <!--<ng-template ngbTabTitle><i class="fa fa-plus-square" aria-hidden="true"></i></ng-template>-->
+                    <!--<ng-template ngbTabContent>-->
+                        <!--<div class="bordered-tab">-->
+                            <!--<div class="featuredHeading">Newest {{statsType}}</div>-->
+                            <!--<ul>-->
+                                <!--<li *ngFor="let item of newItems[statsType]">-->
+                                    <!--<a routerLink="/{{statsType==='CDEs'?'de':'form'}}View"-->
+                                       <!--[queryParams]="{tinyId: item.tinyId}">{{item.name}}</a>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</ng-template>-->
+                <!--</ngb-tab>-->
+            <!--</ngb-tabset>-->
+        <!--</div>-->
+        <!--<div class="col-xs-12 col-sm-6 mt-5">-->
+            <!--<p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to structured-->
+                <!--human and machine-readable definitions of data elements that have been recommended or required by-->
+                <!--NIH Institutes and Centers and other organizations for use in research and for other purposes.-->
+                <!--Visit the-->
+                <!--<a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE ResourcePortal</a>-->
+                <!--for contextual information about the repository.</p>-->
+            <!--<p>The Repository is a platform for identifying related data elements in use across diverse areas,-->
+                <!--for harmonizing data elements,and for linking CDEs to other existing standards and terminologies,-->
+                <!--including the value sets in the-->
+                <!--<a id="vsacLink" class="homeDescriptionLink" href="http://vsac.nlm.nih.gov" target="_blank">Value Set-->
+                    <!--Authority Center (VSAC).</a></p>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</section>-->

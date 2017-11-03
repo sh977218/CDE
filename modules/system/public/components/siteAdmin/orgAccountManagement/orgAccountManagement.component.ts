@@ -25,7 +25,6 @@ export class OrgAccountManagementComponent implements OnInit {
     }
 
     getOrgCurators () {
-        console.log("HELLO");
         this.http.get("/orgCurators").map(r => r.json()).subscribe(response => {
             this.orgCurators = response.orgs.sort((a, b) => a.name - b.name);
         });

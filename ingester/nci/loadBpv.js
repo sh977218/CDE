@@ -1,1 +1,1 @@
-require('./LoadNciCdeIntoMigration').loadNciCdesIntoMigrationByOrgName('NCI-BPV');
+require('./LoadNciCdeIntoMigration').loadNciCdesIntoMigrationByOrgNames('NCI-BPV');

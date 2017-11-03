@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import { CKEditorModule } from 'ng2-ckeditor';
 import { Select2Module } from "ng2-select2";
 
 import { CompareModule } from 'compare/compare.module';
@@ -29,6 +30,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 @NgModule({
     imports: [
         CommonModule,
+        CKEditorModule,
         FormsModule,
         Select2Module,
         NgbModule,

@@ -188,14 +188,6 @@ export class DataElementViewComponent implements OnInit {
         if (this.commentMode) this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
-    doStageElt() {
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Save to confirm.");
-        } else {
-            this.saveDataElement();
-        }
-    }
-
     removeAttachment(index) {
         this.http.post("/attachments/cde/remove", {
             index: index,
@@ -247,6 +239,7 @@ export class DataElementViewComponent implements OnInit {
                 if (res && res.length > 0) {
                     this.drafts = res;
                     this.elt = res[0];
+                    deValidator.checkPvUnicity(this.elt.valueDomain);
                 } else this.drafts = [];
                 if (cb) cb();
             },
@@ -264,8 +257,8 @@ export class DataElementViewComponent implements OnInit {
                     this.savingText = "";
                 }, 3000);
                 this.elt.isDraft = true;
-            if (cb) cb(res);
-        }, err => this.alert.addAlert("danger", err));
+                if (cb) cb(res);
+            }, err => this.alert.addAlert("danger", err));
     }
 
     saveDataElement() {
@@ -285,6 +278,5 @@ export class DataElementViewComponent implements OnInit {
                 if (res) this.loadDataElement(null);
             }, err => this.alert.addAlert("danger", err));
     }
-
 
 }

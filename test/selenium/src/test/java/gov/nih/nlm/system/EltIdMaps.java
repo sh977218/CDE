@@ -76,6 +76,8 @@ public class EltIdMaps {
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]", "m1xj2YMI1X");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
+        eltMap.put("Urinary tract drug type last year type", "c56fasYoV1T");
+        eltMap.put("Vision (aura) typical symptom type", "rRqc8KG1RNO");
 
         // Forms
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
