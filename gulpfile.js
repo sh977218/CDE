@@ -93,7 +93,7 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
 
     let streamArray = [];
 
-    ['cde', 'form', 'processManager', 'system', 'embedded', 'board'].forEach(function (module) {
+    ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
         streamArray.push(gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/')));
         streamArray.push(gulp.src('./modules/' + module + '/shared/**/*')
@@ -159,25 +159,6 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
     return merge(streamArray);
 
 
-});
-
-gulp.task('angularTemplates', function () {
-    let module = 'embedded';
-    let streamArray = [];
-    streamArray.push(gulp
-        .src("modules/" + module + "/public/js/angularTemplates.js")
-        .pipe(gulp.dest("modules/" + module + "/public/js/bkup/")));
-    streamArray.push(gulp
-        .src("modules/" + module + "/public/html/**/*.html")
-        .pipe(templateCache({
-            root: "/" + module + "/public/html",
-            filename: "angularTemplates.js",
-            module: module + "Templates",
-            standalone: true
-        }))
-        .pipe(gulp.dest("modules/" + module + "/public/js/")));
-
-    return merge(streamArray);
 });
 
 gulp.task('prepareVersion', ['copyCode'], function () {

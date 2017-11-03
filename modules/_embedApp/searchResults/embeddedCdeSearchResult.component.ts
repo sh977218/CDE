@@ -11,7 +11,7 @@ export class EmbeddedCdeSearchResultComponent {
     @Input() embed;
 
     concatenatePVs (elt) {
-        return elt.valueDomain.permissibleValues.map(a => a.permissibleValue).join(",");
+        return elt.valueDomain.permissibleValues.map(a => a.permissibleValue).join(",").substr(0, 200);
     };
 
     lfLimit = 3;

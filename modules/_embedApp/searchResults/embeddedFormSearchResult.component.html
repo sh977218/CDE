@@ -1,0 +1,31 @@
+<table id="gridList" class="gridListView table table-condensed table-striped table-bordered" >
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th *ngIf="searchViewSettings.tableViewFields.questions">Questions</th>
+        <th *ngIf="args.nbOfQuestions">Questions</th>
+        <th *ngIf="args.cdes">CDEs</th>
+        <th *ngIf="args.sdcLink">SDC</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let f of elts">
+        <td *ngIf="searchViewSettings.tableViewFields.name">
+            <a href="https://cde.nlm.nih.gov/formView?tinyId={{f.tinyId}}" target="_blank">
+                {{f.naming[0].designation}}
+            </a>
+        </td>
+        <td *ngIf="args.nbOfQuestions">
+            {{f.numQuestions}}
+        </td>
+        <td *ngIf="args.cdes">
+            <span>{{concatenateQuestions(f)}}</span>
+            <!--<span class="lastItem" *ngIf="concatenateQuestions(f).length > 200">(More...)</span>-->
+        </td>
+        <td *ngIf="args.sdcLink">
+            <a href="https://cde.nlm.nih.gov/form/{{f.tinyId}}?type=xml&subtype=sdc" target="_blank"><i class="fa fa-wpforms fa-2x"></i>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>

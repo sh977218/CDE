@@ -76,18 +76,6 @@ export class EmbedAppComponent  {
         this.searchStarted = false;
     };
 
-
-
-// $scope.concatenateQuestions = function(form) {
-    //     var cdes = formShared.getFormCdes(form);
-    //     return cdes.map(function(c) {return c.name;}).join(",");
-    // };
-
-
-
-    // $scope.searchCDEs = function() {$scope.searchType = 'cde';};
-    // $scope.searchForms = function() {$scope.searchType = 'form';};
-
     doClassif(currentString, classif, result) {
         if (currentString.length > 0) {
             currentString = currentString + ';';

@@ -5,7 +5,6 @@ import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FrontExceptionHandler } from '_app/frontExceptionHandler';
@@ -15,11 +14,13 @@ import "rxjs/add/operator/map";
 import { CoreModule } from 'core/core.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embeddedCdeSearchResult.component';
+import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embeddedFormSearchResult.component';
 
 @NgModule({
     declarations: [
         EmbedAppComponent,
         EmbeddedCdeSearchResultComponent,
+        EmbeddedFormSearchResultComponent,
     ],
     providers: [
         {provide: ErrorHandler, useClass: FrontExceptionHandler}

@@ -51,10 +51,16 @@
     <div>
         <div *ngIf="searchStarted" id="searchResult">
             <cde-embedded-cde-search-result
+                    *ngIf="searchType === 'cde'"
                     [elts]="elts"
                     [searchViewSettings]="searchViewSettings"
                     [embed]="embed"
             ></cde-embedded-cde-search-result>
+            <cde-embedded-form-search-result
+                    *ngIf="searchType === 'form'"
+                    [elts]="elts"
+                    [searchViewSettings]="searchViewSettings"
+            ></cde-embedded-form-search-result>
         </div>
 
         <ngb-pagination [collectionSize]="totalItems" [(page)]="searchSettings.page" (pageChange)="searchLogs()"
