@@ -60,7 +60,7 @@ exports.byTinyIdList = function (tinyIdList, callback) {
             forms.forEach(mongo_data_system.formatElt);
             _.forEach(tinyIdList, t => {
                 let c = _.find(forms, form => form.tinyId === t);
-                result.push(c);
+                if (c) result.push(c);
             });
             callback(err, result);
         });
