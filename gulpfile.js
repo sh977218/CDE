@@ -10,7 +10,6 @@ const gulp = require('gulp'),
     fs = require('fs'),
     esInit = require('./modules/system/node-js/elasticSearchInit'),
     git = require('gulp-git'),
-    templateCache = require('gulp-angular-templatecache'),
     run = require('gulp-run'),
     merge = require('merge-stream')
 ;
@@ -188,7 +187,7 @@ gulp.task('copyWebpack', ['webpack-app', 'webpack-native', 'webpack-embed'], () 
         .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
 });
 
-gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function () {
+gulp.task('usemin', ['copyCode', 'copyWebpack'], function () {
     let streamArray = [];
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
@@ -224,12 +223,6 @@ gulp.task('copyUsemin', ['usemin'], function () {
             .pipe(gulp.dest(config.node.buildDir + "/" + item.folder)));
     });
     return merge(streamArray);
-});
-
-gulp.task('emptyTemplates', ['usemin'], () => {
-    let module = 'embedded';
-    return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
-        .pipe(gulp.dest("modules/" + module + "/public/js/"));
 });
 
 gulp.task('es', function () {
