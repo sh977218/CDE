@@ -80,7 +80,7 @@ exports.byTinyIdList = function (tinyIdList, callback) {
             cdes.forEach(mongo_data_system.formatElt);
             _.forEach(tinyIdList, t => {
                 let c = _.find(cdes, cde => cde.tinyId === t);
-                result.push(c);
+                if(c) result.push(c);
             });
             callback(err, result);
         });
