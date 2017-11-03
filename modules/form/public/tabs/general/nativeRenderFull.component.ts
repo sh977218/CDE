@@ -36,10 +36,9 @@ export class NativeRenderFullComponent {
 
     mobileView: Boolean = false;
 
-    selectProfile(render, profileIndex) {
+    selectProfile(profileIndex) {
         this.profile = this.elt.displayProfiles[profileIndex];
         this.selectedProfileName = this.elt.displayProfiles[profileIndex].name;
-        render.setProfile(this.elt.displayProfiles[profileIndex]);
         this.overridePrintable = this.elt.displayProfiles[profileIndex].displayType === this.NativeRenderService.FOLLOW_UP;
     }
 }

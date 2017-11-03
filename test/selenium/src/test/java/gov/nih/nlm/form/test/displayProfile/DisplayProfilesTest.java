@@ -37,7 +37,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         );
         newFormVersion();
 
-        goToFormByName("PROMIS SF v1.1 - Anger 5a");
+        goToFormByName(formName);
         textPresent("In the past 7 days");
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//div[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
