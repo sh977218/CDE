@@ -3,9 +3,10 @@ import {
     ElementRef,
     EventEmitter,
     HostListener,
-    Inject,
-    Input, OnChanges,
-    Output, SimpleChanges,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges,
     TemplateRef,
     ViewChild
 } from "@angular/core";
@@ -113,7 +114,7 @@ export class FormDescriptionComponent implements OnChanges {
 
     @HostListener('window:scroll', ['$event'])
     doIt() {
-        if (this.descToolbox)
+        if (this && this.descToolbox && this.descToolbox.nativeElement)
             this.descToolbox.nativeElement.style.top = (window.pageYOffset > 50 ? 0 : (50 - window.pageYOffset)) + 'px';
     }
 

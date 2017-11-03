@@ -133,10 +133,10 @@ exports.loadNciCdesIntoMigrationByOrgNames = function (orgNames) {
                 async.forEachSeries(orgInfos, function (orgInfo, doneOneOrgInfo) {
                     doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
                         doneOneOrgInfo();
-                    })
+                    });
                 }, function doneAllOrgInfos() {
                     cb();
-                })
+                });
             });
         }
     ], function (err) {
