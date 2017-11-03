@@ -55,12 +55,7 @@ const ALL_POSSIBLE_CLASSIFICATIONS = [
 ];
 
 const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
-const EXCLUDE_FILE = [
-    '01_Public_Review_Instructions_PreclinicalTBI.pdf',
-    '02_CDE_SpreadsheetGuide_PreclinicalTBI.xlsx',
-    '03_Quick_Start_Guide_PreclinicalTBI.pdf',
-    '05_Public_Review_Comments_Form_PreclinicalTBI.xlsx',
-];
+const EXCLUDE_FILE = [];
 const EXCLUDE_REF_DOC = [
     'No references available',
     'Please fill out'
