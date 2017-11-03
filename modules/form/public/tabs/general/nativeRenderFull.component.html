@@ -49,5 +49,5 @@
 </div>
 
 <div [ngClass]="{'bot-left': !mobileView && elt.formElements.length > 0}">
-    <cde-native-render [elt]="elt" [showTitle]="false" [profile]="profile"></cde-native-render>
+    <cde-native-render #render [elt]="elt" [showTitle]="false" [profile]="profile"></cde-native-render>
 </div>
