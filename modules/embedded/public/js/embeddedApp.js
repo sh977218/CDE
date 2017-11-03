@@ -5,14 +5,14 @@ if (PRODUCTION) {
 import * as formShared from "../../../form/shared/formShared";
 import * as regStatusShared from "../../../system/shared/regStatusShared";
 
-import "../../../system/public/js/elastic.js";
-import "../../../system/public/js/orgFactories.js";
-import "../../../embedded/public/js/SearchSettings.js";
+import "./elastic.js";
+import "./orgFactories.js";
+import "./SearchSettings.js";
 import "../../../components/angular-bootstrap/ui-bootstrap-tpls.js";
-import "../../../embedded/public/js/angularTemplates.js";
+import "./angularTemplates.js";
 
 angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFactories', 'embeddedTemplates'])
-    .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http, SearchSettings) {
+    .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http) {
 
         $scope.args = {};
         $scope.clLimit = 3;

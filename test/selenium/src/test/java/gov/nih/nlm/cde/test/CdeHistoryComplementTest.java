@@ -19,10 +19,10 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         String newDefinition = "Alternative Definition 1";
         goToCdeByName(cdeName);
 
-        clickElement(By.id("naming_tab"));
-        addNewName(newName, newDefinition, null);
+        goToNaming();
+        addNewName(newName, newDefinition, false, null);
 
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.id("openNewConceptModalBtn"));
         findElement(By.xpath("//label[text()='Code Name']/following-sibling::input")).sendKeys("Code Name 1");
         findElement(By.xpath("//label[text()='Code ID']/following-sibling::input")).sendKeys("Code ID 1");
@@ -30,7 +30,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         modalGone();
         newCdeVersion();
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("Alternative Name 1", By.xpath("//*[@id='Naming_2']"));
         textPresent("Alternative Definition 1", By.xpath("//*[@id='Naming_2']"));
@@ -45,14 +45,14 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         closeAlert();
         modalGone();
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent(newStatus, By.xpath("//*[@id='Status']//ins"));
         textPresent(oldStatus, By.xpath("//*[@id='Status']//del"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToCdeByName(cdeName);
-        clickElement(By.id("ids_tab"));
+        goToIdentifiers();
         clickElement(By.id("openNewIdentifierModalBtn"));
         findElement(By.xpath("//label[text()='Source']/following-sibling::input")).sendKeys("Origin 1");
         findElement(By.xpath("//label[text()='Identifier']/following-sibling::input")).sendKeys("Identifier 1");
@@ -60,7 +60,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("createNewIdentifierBtn"));
         modalGone();
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("Origin 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
         textPresent("Identifier 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));

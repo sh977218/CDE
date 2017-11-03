@@ -22,9 +22,9 @@ schemas.formSchema.pre('save', function (next) {
 });
 
 var Form = conn.model('Form', schemas.formSchema);
-var Draft = conn.model('Draft', schemas.draftSchema);
+var FormDraft = conn.model('Draft', schemas.draftSchema);
 exports.Form = Form;
-exports.Draft = Draft;
+exports.FormDraft = FormDraft;
 
 exports.elastic = elastic;
 
@@ -79,20 +79,15 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     if (version) {
         query.version = version;
         Form.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
-            if (err)
-                callback(err);
-            else if (elts.length)
-                callback("", elts[0]);
-            else
-                callback("", null);
+            if (err) callback(err);
+            else if (elts.length) callback("", elts[0]);
+            else callback("", null);
         });
     } else {
         query.archived = false;
         Form.findOne(query).exec(function (err, elt) {
-            if (err)
-                callback(err);
-            else
-                callback("", elt);
+            if (err) callback(err);
+            else callback("", elt);
         });
     }
 };
@@ -100,18 +95,19 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
 exports.draftForms = function (tinyId, cb) {
     let cond = {
         tinyId: tinyId,
-        archived: false
+        archived: false,
+        elementType: 'form'
     };
-    Draft.find(cond, cb);
+    FormDraft.find(cond, cb);
 };
 
 exports.saveDraftForm = function (elt, cb) {
     delete elt.__v;
-    Draft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+    FormDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
 };
 
 exports.deleteDraftForm = function (tinyId, cb) {
-    Draft.remove({tinyId: tinyId}, cb);
+    FormDraft.remove({tinyId: tinyId}, cb);
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {

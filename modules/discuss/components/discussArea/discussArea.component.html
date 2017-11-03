@@ -4,7 +4,7 @@
 
 <div *ngIf="!elt.isDraft">
     <br/>
-    <div *ngIf="!(userService.user?._id)">Please <a href="/login">log in</a> to comment.</div>
+    <div *ngIf="!(userService.user?._id)">Please <a routerLink="/login">log in</a> to comment.</div>
     <div *ngIf="userService.user?._id">
         <form #commentForm="ngForm" name="commentForm" id="commentForm" novalidate>
             <label class="sr-only" for="commentTextArea">Comments</label>
@@ -165,7 +165,7 @@
                     <div class="showRepliesButtonDiv"
                          *ngIf="!showAllReplies[comment._id] && replyIndex === 3 && replyIndex >= 2 && replyIndex < comment.replies.length - 2">
                         <a class="showRepliesButton" id="showAllRepliesButton-{{commentIndex}}-{{replyIndex}}"
-                           (click)="showAllReplies[comment._id] = true" href="">
+                           (click)="showAllReplies[comment._id] = true">
                             Show all {{comment.replies.length}} replies
                         </a>
                     </div>

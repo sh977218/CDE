@@ -33,7 +33,7 @@ module.exports = {
             ),
             new AotPlugin.AotPlugin({
                 tsConfigPath: './tsconfig.json',
-                entryModule: path.join(__dirname, 'modules', 'app.module') + '#CdeAppModule',
+                entryModule: path.join(__dirname, 'modules', '_app/app.module') + '#CdeAppModule',
                 mainPath: 'modules/main-aot'
             }),
             new webpack.DefinePlugin({
@@ -47,7 +47,7 @@ module.exports = {
                 output: {
                     comments: false
                 },
-                compressor: {
+                compress: {
                     warnings: false
                 }
             }),
@@ -76,7 +76,7 @@ module.exports = {
     resolve: {
         unsafeCache: false,
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
-        modules: ["modules", "modules/components", "node_modules"]
+        modules: ["modules", "node_modules", "modules/components"]
     },
     devtool: prod ? '#source-map' : '#cheap-eval-source-map',
     watch: !prod,

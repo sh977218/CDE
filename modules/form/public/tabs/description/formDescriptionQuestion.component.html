@@ -16,8 +16,8 @@
                 <span [textContent]="question.question.cde.name"></span>
             </span>
         <span *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</span>
-        <small *ngIf="inScoreCdes && inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
-            (part of score)
+        <small *ngIf="question.question.partOf" class="text-info">
+            (part of {{question.question.partOf}})
         </small>
     </div>
     <div class="ib left">
@@ -45,10 +45,10 @@
            class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
         <span *ngIf="question.confirmDelete" class="badge">Confirm Delete
                 <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
-                      id="confirmRemoveProperty-{{i}}" title="Delete" href=""></span>
+                      id="confirmRemoveProperty-{{i}}" title="Delete"></span>
                 <span class="btn-default fa fa-times panel-badge-btn hand-cursor"
                       (click)="question.confirmDelete = false"
-                      id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
+                      id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
             </span>
     </div>
 </div>

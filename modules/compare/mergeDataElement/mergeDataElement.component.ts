@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from 'system/public/components/alert/alert.service';
-import { Http } from '@angular/http';
-import { MergeCdeService } from 'core/public/mergeCde.service';
+import { MergeCdeService } from 'core/mergeCde.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-merge-data-element",
@@ -30,12 +30,10 @@ export class MergeDataElementComponent {
         retireCde: true
     };
 
-    constructor(private http: Http,
-                public modalService: NgbModal,
+    constructor(public modalService: NgbModal,
                 private alert: AlertService,
                 public mergeCdeService: MergeCdeService,
-                @Inject("isAllowedModel") private isAllowedModel,
-                @Inject('userResource') private userService) {
+                public isAllowedModel: IsAllowedService) {
     }
 
     checkAllMergerFields() {
@@ -49,24 +47,6 @@ export class MergeDataElementComponent {
         this.mergeFields.dataSets = true;
         this.mergeFields.derivationRules = true;
         this.mergeFields.retireCde = true;
-    }
-
-    approvalNecessary() {
-        return {
-            fieldsRequireApproval: this.mergeFields.ids ||
-            this.mergeFields.naming ||
-            this.mergeFields.properties ||
-            this.mergeFields.attachments ||
-            this.mergeFields.sources ||
-            this.mergeFields.referenceDocuments ||
-            this.mergeFields.dataSets ||
-            this.mergeFields.derivationRules,
-            ownDestinationCde: this.userService.user.orgAdmin.concat(this.userService.user.orgCurator).indexOf(this.destination.stewardOrg.name) > -1
-        };
-    };
-
-    showApprovalAlert() {
-        return this.approvalNecessary().fieldsRequireApproval && !this.approvalNecessary().ownDestinationCde;
     }
 
     openMergeDataElementModal() {

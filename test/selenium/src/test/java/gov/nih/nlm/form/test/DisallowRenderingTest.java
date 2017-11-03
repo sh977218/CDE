@@ -11,21 +11,21 @@ public class DisallowRenderingTest extends NlmCdeBaseTest {
         String formName = "Short Form 36-Item Health Survey (SF-36)";
         goToFormByName(formName);
         textNotPresent("In general, would you say");
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("Rendering is disabled for this form");
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("In general, would you say");
-        clickElement(By.id("general_tab"));
+        goToGeneralDetail();
         clickElement(By.id("disallowRendering"));
         newFormVersion();
 
         mustBeLoggedOut();
         goToFormByName(formName);
         textPresent("In general, would you say");
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("In general, would you say");
     }
 

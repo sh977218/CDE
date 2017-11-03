@@ -1,4 +1,4 @@
-<div class="row" *ngIf="elt">
+<div *ngIf="elt" id="descriptionDiv" class="row">
     <div class="col-xs-12">
         <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
@@ -58,13 +58,11 @@
                                                 *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
                                                 [elt]="elt" [canEdit]="canEdit"
                                                 [node]="node"
-                                                [inScoreCdes]="inScoreCdes"
                                                 (isFormValid)="isFormValid.emit($event)"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
                                                 [elt]="elt" [canEdit]="canEdit"
-                                                [inScoreCdes]="inScoreCdes"
                                                 [node]="node"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-question>
                                     </div>
@@ -72,6 +70,11 @@
                             </div>
                             <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
+                                <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
+                                     (click)="node.data.expanded = true; node.expand()"
+                                     class="btn btn-default expand-form">
+                                    <i class="fa fa-chevron-right" aria-hidden="true"></i> Expand
+                                </div>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
                                                                       [elt]="elt" [node]="node" [canEdit]="canEdit"
                                                                       (isFormValid)="isFormValid.emit($event)"

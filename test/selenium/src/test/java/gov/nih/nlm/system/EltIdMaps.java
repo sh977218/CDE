@@ -17,8 +17,10 @@ public class EltIdMaps {
         eltMap.put("Common Toxicity Criteria Adverse Event Colitis Grade", "exWjxFqAU7r");
         eltMap.put("Common Toxicity Criteria Adverse Event Hypophosphatemia Grade", "75Y5R3FH5ar");
         eltMap.put("cde for test cde reorder detail tabs", "7yl__aTQOe");
+        eltMap.put("Cde Delete Test", "7yl_YaTQOe");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
+        eltMap.put("Draft Cde Test", "QyT6ElNKLl");
         eltMap.put("ExportLatest", "XkZpBf60z");
         eltMap.put("FAD Total score value", "fp-oYN6A-SJ");
         eltMap.put("Family Assessment Device (FAD) - Discuss problem indicator", "mrKyN-kpt86");
@@ -74,6 +76,8 @@ public class EltIdMaps {
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]", "m1xj2YMI1X");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
+        eltMap.put("Urinary tract drug type last year type", "c56fasYoV1T");
+        eltMap.put("Vision (aura) typical symptom type", "rRqc8KG1RNO");
 
         // Forms
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");

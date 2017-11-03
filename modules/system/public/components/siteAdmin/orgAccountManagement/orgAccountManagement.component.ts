@@ -1,8 +1,9 @@
 import { Http } from "@angular/http";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
-import { AlertService } from "../../alert/alert.service";
 import { Observable } from "rxjs/Observable";
+import { AlertService } from '_app/alert/alert.service';
+import { UserService } from 'core/user.service';
 
 @Component({
     selector: "cde-org-account-management",
@@ -12,7 +13,7 @@ export class OrgAccountManagementComponent implements OnInit {
 
     constructor(private http: Http,
         private alert: AlertService,
-        @Inject("userResource") public userService) {}
+        public userService: UserService) {}
 
     newUsername: string;
     newOrgName: string;
@@ -66,7 +67,7 @@ export class OrgAccountManagementComponent implements OnInit {
         this.http.post('/transferSteward', this.transferStewardObj).map(r => r.text()).subscribe(r => {
             this.alert.addAlert("success", r);
             this.transferStewardObj = {};
-        }, function onError(response) {
+        }, () => {
             this.alert.addAlert("danger", "An error occured.");
             this.transferStewardObj = {};
         });

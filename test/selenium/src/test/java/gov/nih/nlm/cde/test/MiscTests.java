@@ -54,7 +54,7 @@ public class MiscTests extends NlmCdeBaseTest {
 
         // Test to make sure user isn't logged in
         String notLoggedInResponse = get(baseUrl + "/user/me").asString();
-        Assert.assertEquals("Not logged in.", notLoggedInResponse);
+        Assert.assertEquals(notLoggedInResponse, "{}");
 
         Header header = new Header("Content-Type", "application/x-www-form-urlencoded");
         Response tpgResponse = RestAssured.given().formParam("username", username).formParam("password", password).header(header).request().post(tgtUrl);
@@ -77,11 +77,11 @@ public class MiscTests extends NlmCdeBaseTest {
     public void checkTicketInvalid() {
         // Test to make sure user isn't logged in
         String response = get(baseUrl + "/user/me").asString();
-        Assert.assertEquals("Not logged in.", response);
+        Assert.assertEquals(response, "{}");
 
         // Provide fake invalid ticket and make sure user info is NOT retrieved
         response = get(baseUrl + "/user/me?ticket=invalid").asString();
-        Assert.assertEquals("Not logged in.", response);
+        Assert.assertEquals(response, "{}");
     }
 
     @Test

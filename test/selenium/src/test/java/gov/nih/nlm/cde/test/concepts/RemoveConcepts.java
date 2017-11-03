@@ -11,7 +11,7 @@ public class RemoveConcepts extends NlmCdeBaseTest {
         String cdeName = "ConceptCDE";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         textPresent("DEC1");
         textPresent("DEC_ID_1");
         textPresent("DEC2");
@@ -57,8 +57,6 @@ public class RemoveConcepts extends NlmCdeBaseTest {
         textNotPresent("Prop_ID_2");
         textPresent("Prop3");
         textPresent("Prop_ID_3");
-
-        clickElement(By.id("discardChanges"));
     }
 
 }

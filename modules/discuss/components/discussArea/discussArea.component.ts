@@ -1,15 +1,18 @@
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { Http } from "@angular/http";
 import { Comment } from "../../discuss.model";
 
 import "rxjs/add/operator/map";
 import * as io from "socket.io-client";
 import { TimerObservable } from "rxjs/observable/TimerObservable";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from 'core/user.service';
 
 const tabMap = {
+    "preview_tab": "preview",
+    "meshTopic_tab": "meshTopic",
     "general_tab": "general",
     "description_tab": "description",
     "pvs_tab": "pvs",
@@ -32,9 +35,8 @@ const tabMap = {
 export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     constructor(private http: Http,
-                private alert: AlertService,
-                @Inject("isAllowedModel") private isAllowedModel,
-                @Inject("userResource") public userService) {
+                public isAllowedModel: IsAllowedService,
+                public userService: UserService) {
     };
 
     newComment: Comment = new Comment();
@@ -48,7 +50,7 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
     avatarUrls: any = {};
     showAllReplies: any = {};
 
-    private emitCurrentReplying = new Subject<{_id: string, comment: string}>();
+    private emitCurrentReplying = new Subject<{ _id: string, comment: string }>();
 
     @Input() public elt: any;
     @Input() public eltId: string;
@@ -76,7 +78,8 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
         this.emitCurrentReplying.debounceTime(300).distinctUntilChanged().map(obj => {
             this.socket.emit('currentReplying', this.eltId, obj._id);
             return Observable.of<string[]>([]);
-        }).subscribe(() => {});
+        }).subscribe(() => {
+        });
 
     };
 
@@ -119,33 +122,30 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
 
     canReopenComment = (com) => com.status === "resolved" && this.canRemoveComment(com);
 
-    addComment = function () {
+    addComment() {
         this.http.post("/comments/" + this.elt.elementType + "/add", {
             comment: this.newComment.text,
             linkedTab: tabMap[this.selectedElt],
             element: {eltId: this.eltId}
-        }).map(r => r.json()).subscribe(res => {
+        }).map(r => r.json()).subscribe(() => {
             this.newComment.text = "";
-            this.loadComments(() => {
-                this.alert.addAlert("success", res.message);
-            });
         });
     };
 
     removeComment(commentId, replyId) {
         this.http.post("/comments/" + this.elt.elementType + "/remove", {
             commentId: commentId, replyId: replyId
-        }).map(r => r.json()).subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        }).map(r => r.json()).subscribe();
     };
 
     updateCommentStatus(commentId, status) {
-        this.http.post("/comments/status/" + status, {commentId: commentId}).map(r => r.json())
-            .subscribe((res) => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        this.http.post("/comments/status/" + status, {commentId: commentId})
+            .map(r => r.json()).subscribe();
     };
 
     updateReplyStatus(commentId, replyId, status) {
-        this.http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId}).map(r => r.json())
-            .subscribe(res => this.loadComments(() => this.alert.addAlert("success", res.message)));
+        this.http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId})
+            .map(r => r.json()).subscribe();
     };
 
     replyTo(commentId) {
@@ -156,23 +156,18 @@ export class DiscussAreaComponent implements OnInit, OnDestroy {
                 reply: this.tempReplies[commentId]
             }).subscribe(() => {
                 this.tempReplies[commentId] = '';
-                this.loadComments();
             });
         }, 0);
     };
 
     cancelReply = (comment) => this.tempReplies[comment._id] = '';
 
-    changeOnReply (comment) {
+    changeOnReply(comment) {
         this.emitCurrentReplying.next({_id: comment._id, comment: this.tempReplies[comment._id]});
     }
 
     setCurrentTab($event) {
         if (this.eltComments)
-            this.eltComments.forEach(c => {
-                if (c.linkedTab && c.linkedTab === tabMap[$event])
-                    c.currentComment = true;
-                else c.currentComment = false;
-            });
+            this.eltComments.forEach(c => c.currentComment = !!(c.linkedTab && c.linkedTab === tabMap[$event]));
     }
 }

@@ -1,11 +1,14 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { AlertService } from "system/public/components/alert/alert.service";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { SharedService } from "core/public/shared.service";
+import { SharedService } from "core/shared.service";
 import { saveAs } from "file-saver";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
-import { OrgHelperService } from "core/public/orgHelper.service";
+import { OrgHelperService } from "core/orgHelper.service";
+import { UserService } from "core/user.service";
+import { ElasticService } from "core/elastic.service";
+import { ActivatedRoute } from '@angular/router';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-board-view',
@@ -13,7 +16,6 @@ import { OrgHelperService } from "core/public/orgHelper.service";
 })
 export class BoardViewComponent implements OnInit {
 
-    @Input() boardId: string;
     @ViewChild("shareBoardModal") public shareBoardModal: NgbModalModule;
     @ViewChild("classifyCdesModal") public classifyCdesModal: ClassifyItemModalComponent;
 
@@ -43,18 +45,21 @@ export class BoardViewComponent implements OnInit {
         icon: 'fa-eye'
     }];
     url: string;
+    boardId: string;
 
     shareModalRef: NgbModalRef;
     classifyCdesRefModal: NgbModalRef;
 
     constructor(private http: Http,
                 private alert: AlertService,
-                @Inject('userResource') protected userService,
+                protected userService: UserService,
                 private modalService: NgbModal,
-                @Inject('SearchSettings') public searchSettings,
-                private orgHelper: OrgHelperService) {}
+                public esService: ElasticService,
+                private orgHelper: OrgHelperService,
+                private route: ActivatedRoute) {}
 
     ngOnInit () {
+        this.boardId = this.route.snapshot.params['boardId'];
         this.reload();
         this.url = location.href;
     }
@@ -80,7 +85,7 @@ export class BoardViewComponent implements OnInit {
                     });
                 });
 
-                this.userService.getPromise().then(() => {
+                this.userService.then(() => {
                     this.board.users.forEach(u => {
                         if (u.username === this.userService.user.username &&
                             u.role === 'reviewer' && u.status.approval === 'approved' &&
@@ -124,7 +129,8 @@ export class BoardViewComponent implements OnInit {
     exportBoard () {
         this.http.get('/board/' + this.board._id + '/0/500/?type=csv')
             .map(r => r.json()).subscribe(response => {
-                this.searchSettings.getPromise().then(settings => {
+                this.esService.then(() => {
+                    let settings = this.esService.searchSettings;
                     let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
                     response.elts.forEach(ele => {
                         csv += SharedService.exportShared.convertToCsv(

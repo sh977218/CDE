@@ -2,8 +2,8 @@ import { Http } from "@angular/http";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Component, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import { MyBoardsService } from "../../myBoards.service";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { AlertService } from '_app/alert/alert.service';
+import { MyBoardsService } from 'board/public/myBoards.service';
 
 @Component({
     selector: "cde-create-board",

@@ -16,7 +16,7 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         editDesignationByIndex(0, newName);
         clickElement(By.id("openSave"));
         textNotPresent(validationError);
@@ -31,10 +31,6 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
         textPresent(validationError);
         clickElement(By.id("cancelSaveBtn"));
         modalGone();
-        clickElement(By.id("discardChanges"));
-        textPresent("Changes discarded.");
-        closeAlert();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("discardChanges")));
     }
 
 

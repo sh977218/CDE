@@ -12,7 +12,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         changeDatatype(datatype);
 
         clickElement(By.xpath("//*[@id='datatypeNumberMin']//i[contains(@class,'fa fa-edit')]"));
@@ -24,7 +24,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='datatypeNumberMax']//button[contains(@class,'fa fa-check')]"));
         newCdeVersion();
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("123", By.xpath("//*[@id='Data Type Number Minimal Value']//ins"));
         textPresent("456", By.xpath("//*[@id='Data Type Number Maximal Value']//ins"));
@@ -32,7 +32,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         textPresent("Text", By.xpath("//*[@id='Data Type']//del"));
         clickElement(By.id("closeHistoryCompareModal"));
 
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         clickElement(By.xpath("//*[@id='datatypeNumberMin']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id='datatypeNumberMin']//input")).sendKeys("789");
         clickElement(By.xpath("//*[@id='datatypeNumberMin']//button[contains(@class,'fa fa-check')]"));
@@ -44,7 +44,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("789", By.xpath("//*[@id='Data Type Number Minimal Value']//ins"));
         textPresent("987", By.xpath("//*[@id='Data Type Number Maximal Value']//ins"));

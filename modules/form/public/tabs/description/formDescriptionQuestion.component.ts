@@ -3,9 +3,9 @@ import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { CdeForm, FormElement, FormQuestion } from "../../form.model";
+import { CdeForm, FormElement, FormQuestion } from "core/form.model";
 import { TreeNode } from "angular-tree-component";
-import { FormService } from 'form/public/form.service';
+import { FormService } from 'nativeRender/form.service';
 
 @Component({
     selector: "cde-form-description-question",
@@ -15,7 +15,6 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() elt: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
-    @Input() inScoreCdes: any;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild("updateCdeVersionTmpl") updateCdeVersionTmpl: NgbModalModule;
@@ -28,7 +27,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     constructor(public formService: FormService,
                 private http: Http,
-                public modalService: NgbModal) {}
+                public modalService: NgbModal) {
+    }
 
     ngOnInit() {
         this.question = this.node.data;
@@ -57,8 +57,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     openUpdateCdeVersion(question) {
         this.http.get('/de/' + question.question.cde.tinyId).map((res: Response) => res.json())
-            .subscribe((response) => {
-                this.formService.convertCdeToQuestion(response, (newQuestion) => {
+            .subscribe(response => {
+                this.formService.convertCdeToQuestion(response, newQuestion => {
                     this.updateCdeVersion = (() => {
                         let modal: any = {
                             currentQuestion: question,
@@ -75,15 +75,16 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         newQuestion.repeat = currentQuestion.repeat;
 
                         this.http.get("/de/" + newQuestion.question.cde.tinyId).map((res: Response) => res.json())
-                            .subscribe((newCde) => {
-                                let cdeUrl = currentQuestion.question.cde.tinyId +
-                                    (currentQuestion.question.cde.version ? "/" + currentQuestion.question.cde.version : "");
-                                this.http.get("/de/" + cdeUrl).map((res: Response) => res.json())
+                            .subscribe(newCde => {
+                                let cdeUrl = "/de/" + currentQuestion.question.cde.tinyId;
+                                if (currentQuestion.question.cde.version && currentQuestion.question.cde.version.length > 0)
+                                    cdeUrl = cdeUrl + "/version/" + currentQuestion.question.cde.version;
+                                this.http.get(cdeUrl).map((res: Response) => res.json())
                                     .subscribe((oldCde) => {
                                         modal.bLabel = !_.isEqual(newCde.naming, oldCde.naming);
                                     });
                                 let found = false;
-                                newCde.naming.forEach(function (result) {
+                                newCde.naming.forEach(result => {
                                     if (result.designation === currentQuestion.label) found = true;
                                 });
                                 if (found) newQuestion.label = currentQuestion.label;
@@ -122,12 +123,11 @@ export class FormDescriptionQuestionComponent implements OnInit {
                         return modal;
                     })();
 
-                    let self = this;
-
-                    this.modalService.open(this.updateCdeVersionTmpl).result.then(function () {
+                    this.modalService.open(this.updateCdeVersionTmpl).result.then(() => {
                         question.question = newQuestion.question;
                         question.label = newQuestion.label;
-                        self.stageElt.emit();
+                        this.stageElt.emit();
+                    }, () => {
                     });
                 });
             });

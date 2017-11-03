@@ -12,7 +12,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeSearch();
 
-        clickElement(By.id("topicTab"));
+        clickElement(By.id("browseByTopic"));
         clickElement(By.partialLinkText("Environment and Public Health"));
         textPresent("results for");
         int count = 0;

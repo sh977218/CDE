@@ -1,10 +1,11 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
-import { AlertService } from "system/public/components/alert/alert.service";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 import { Observable } from "rxjs/Observable";
 import { Http } from '@angular/http';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { AlertService } from '_app/alert/alert.service';
 
 const URL_MAP = {
     "cde": "/de/",
@@ -50,7 +51,7 @@ export class CompareSideBySideComponent implements OnInit {
                 public modalService: NgbModal,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                public isAllowedModel: IsAllowedService) {
     }
 
     flatFormQuestions(fe) {
@@ -99,14 +100,9 @@ export class CompareSideBySideComponent implements OnInit {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
-                },
+                partialMatchFn: (a, b) => [],
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _.isEqual(a, b);
-                },
+                notMatchFn: (a, b) => _.isEqual(a, b),
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -215,10 +211,7 @@ export class CompareSideBySideComponent implements OnInit {
                     return _.isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    let diff = [];
-                    return diff;
-                },
+                partialMatchFn: (a, b) => [],
                 partialMatches: [],
                 notMatchFn: (a, b) => {
                     return _.isEqual(a.source, b.source) && _.isEqual(a.id, b.id);

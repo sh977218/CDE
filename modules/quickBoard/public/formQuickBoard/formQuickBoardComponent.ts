@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
 
 @Component({
@@ -8,6 +8,5 @@ import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service'
 export class FormQuickBoardComponent {
     listViews = {};
 
-    constructor(public quickBoardService: QuickBoardListService) {
-    }
+    constructor(public quickBoardService: QuickBoardListService) {}
 }

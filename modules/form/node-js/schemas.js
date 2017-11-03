@@ -1,6 +1,5 @@
 var mongoose = require('mongoose')
     , Schema = mongoose.Schema
-    , _ = require('lodash')
     , sharedSchemas = require('../../system/node-js/schemas.js')
     , config = require("config")
 ;
@@ -139,6 +138,7 @@ exports.formJson = {
     , displayProfiles: [{
         name: String
         , sectionsAsMatrix: {type: Boolean}
+        , displayCopyright: {type: Boolean}
         , displayValues: {type: Boolean}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
@@ -164,5 +164,5 @@ exports.draftSchema.virtual('isDraft').get(function () {
     return true;
 });
 exports.formSchema.set('collection', 'forms');
-exports.draftSchema.set('collection', 'drafts');
+exports.draftSchema.set('collection', 'formdrafts');
 

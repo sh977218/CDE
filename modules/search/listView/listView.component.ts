@@ -1,11 +1,11 @@
 import {
-    Component, ComponentFactoryResolver, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, Type,
+    Component, ComponentFactoryResolver, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, Type,
     ViewChild, ViewContainerRef
 } from '@angular/core';
 import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
 import { BoardFormSummaryListComponent } from 'form/public/components/listView/boardFormSummaryList.component';
 import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
-import { Elt } from 'core/public/models.model';
+import { Elt } from 'core/models.model';
 import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/public/components/listView/formAccordionList.component';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
@@ -13,6 +13,7 @@ import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/
 import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { TableListComponent } from 'search/listView/tableList.component';
+import { ElasticService } from "../../core/elastic.service";
 
 @Component({
     selector: 'cde-list-view',
@@ -78,17 +79,17 @@ export class ListViewComponent implements OnChanges, OnInit {
             this.setListView(this.listView);
     }
 
+    constructor(private _componentFactoryResolver: ComponentFactoryResolver,
+                private esService: ElasticService) {
+    }
+
     ngOnInit() {
         if (!this._listView)
             setTimeout(() => {
                 if (!this.setListView(window.localStorage['nlmcde.' + (this.location ? this.location + '-' : '')
                     + this.module + '-searchViewType']))
-                    this.setListView(this.searchSettingsService.getDefaultSearchView());
+                    this.setListView(this.esService.getDefaultSearchView());
             }, 0);
-    }
-
-    constructor(private _componentFactoryResolver: ComponentFactoryResolver,
-                @Inject('SearchSettings') private searchSettingsService) {
     }
 
     render() {

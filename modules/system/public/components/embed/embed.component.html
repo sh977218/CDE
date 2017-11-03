@@ -11,13 +11,13 @@
                     <li *ngFor="let e of embeds[org]; let $index = index">
                         <span *ngIf="showDelete">Confirm Delete
                             <a class="fa fa-check" (click)="showDelete = false; remove(e)"
-                               id="confirmRemoveEmbed-{{$index}}" title="OK" href=""></a>
-                            <a class="fa fa-times" (click)="showDelete = false" title="Cancel" href=""></a>
+                               id="confirmRemoveEmbed-{{$index}}" title="OK"></a>
+                            <a class="fa fa-times" (click)="showDelete = false" title="Cancel"></a>
                         </span>
                         <a (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
-                           id="removeEmbed-{{$index}}" title="Remove" href=""></a>
+                           id="removeEmbed-{{$index}}" title="Remove"></a>
                         <a title="editEmbed" class="fa fa-pencil" (click)="edit(org, e)"
-                           id="{{org}}.{{$index}}.editEmbed" href=""> </a> {{e.name}}
+                           id="{{org}}.{{$index}}.editEmbed"> </a> {{e.name}}
                     (id = {{e._id}})</li>
                 </ul>
             </span>

@@ -1,7 +1,7 @@
 import { Http } from "@angular/http";
 import { Component } from "@angular/core";
 import "rxjs/add/operator/map";
-import { AlertService } from "../../alert/alert.service";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-log-audit",

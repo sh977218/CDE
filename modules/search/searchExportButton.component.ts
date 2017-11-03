@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { UserService } from "../core/user.service";
 
 @Component({
     selector: 'cde-search-export-button',
@@ -8,5 +9,5 @@ export class SearchExportButtonComponent {
     @Input() module: string;
     @Output() exportType = new EventEmitter<string>();
 
-    constructor(@Inject('userResource') public userService) {}
+    constructor(public userService: UserService) {}
 }

@@ -32,9 +32,9 @@ public class InlineEditTest extends BaseAttachmentTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
 
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
-        clickElement(By.id("properties_tab"));
+        goToProperties();
         clickElement(By.xpath("//*[@id='value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='value_0']//button[contains(text(),'Rich Text')]"));
@@ -64,8 +64,6 @@ public class InlineEditTest extends BaseAttachmentTest {
 
         clickElement(By.cssSelector("button.fa-check"));
         textPresent("validate image url");
-        textPresent("saved.");
-        closeAlert();
         Assert.assertTrue(findElement(By.xpath("//*[@id='value_0']//img")).getAttribute("src").contains("cde"));
     }
 }

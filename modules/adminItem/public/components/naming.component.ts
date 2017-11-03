@@ -1,25 +1,23 @@
-import { Component, Input, ViewChild, OnInit, EventEmitter, Output } from "@angular/core";
+import { Component, Input, ViewChild, EventEmitter, Output } from "@angular/core";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import * as _ from 'lodash';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { Naming } from 'core/models.model';
+
 
 @Component({
     selector: "cde-naming",
     templateUrl: "./naming.component.html"
 })
-export class NamingComponent implements OnInit {
+export class NamingComponent {
 
     @ViewChild("newNamingContent") public newNamingContent: NgbModalModule;
     @Input() public elt: any;
     @Input() public canEdit: boolean = false;
+    @Input() orgNamingTags: { id: string; text: string }[] = [];
     @Output() onEltChange = new EventEmitter();
-    public newNaming: any = {};
-    public modalRef: NgbModalRef;
-    public orgNamingTags: { id: string; text: string }[] = [];
 
-    loaded: boolean;
-    public onInitDone: boolean;
+    public newNaming: Naming = new Naming();
+    public modalRef: NgbModalRef;
 
     public options: Select2Options = {
         multiple: true,
@@ -30,31 +28,15 @@ export class NamingComponent implements OnInit {
             }
         }
     };
-    constructor(private orgHelperService: OrgHelperService,
-                public modalService: NgbModal) {
-    }
 
-    ngOnInit(): void {
-        this.orgHelperService.then(() => {
-            this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags.forEach(nt => {
-                if (!this.orgNamingTags.find((elt) => nt === elt.text)) {
-                    this.orgNamingTags.push({"id": nt, "text": nt});
-                }
-                this.elt.naming.forEach(n => {
-                    n.tags.forEach(t => {
-                        this.orgNamingTags.push({"id": t, "text": t});
-                    });
-                });
-                this.orgNamingTags = _.uniqWith(this.orgNamingTags, _.isEqual);
-                this.onInitDone = true;
-            });
-            this.loaded = true;
-        });
+    constructor(public modalService: NgbModal) {
     }
 
     openNewNamingModal() {
         this.modalRef = this.modalService.open(this.newNamingContent, {size: "lg"});
-        this.modalRef.result.then(() => this.newNaming = {}, () => {
+        this.modalRef.result.then(() => {
+            this.newNaming = new Naming();
+        }, () => {
         });
     }
 
@@ -69,9 +51,9 @@ export class NamingComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    changedTags(name, data: { value: string[] }, needToSave = true) {
+    changedTags(name, data: { value: string[] }) {
         name.tags = data.value;
-        if (needToSave) this.onEltChange.emit();
+        this.onEltChange.emit();
     }
 
 }

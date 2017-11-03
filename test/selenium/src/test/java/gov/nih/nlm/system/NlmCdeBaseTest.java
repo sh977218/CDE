@@ -99,8 +99,8 @@ public class NlmCdeBaseTest {
     private int videoRate = 300;
 
 
-    ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
-    Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
+    private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
+    private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
         {
             put("rename", "fa-pencil");
             put("remove", "fa-trash-o");
@@ -109,8 +109,16 @@ public class NlmCdeBaseTest {
             put("meshmapping", "fa-link");
         }
     };
+    private Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {
+        {
+            put("cdeTinyId", "operations-CDE-get_de__tinyId_");
+            put("cdeTinyIdVersion", "operations-CDE-get_de__tinyId__version__version_");
+            put("formTinyId", "operations-Form-get_form__tinyId_");
+            put("formTinyIdVersion", "operations-Form-get_form__tinyId__version__version_");
+        }
+    };
 
-    private void setDriver(String b) {
+    private void setDriver(String b, String u) {
         if (b == null) b = browser;
 
         hangon(new Random().nextInt(10));
@@ -128,6 +136,7 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
+            if (u != null) options.addArguments("--user-agent=googleBot");
             options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
@@ -175,12 +184,13 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     public void setUp(Method m) {
         filePerms = new HashSet();
+        String browserName = null, userAgent = null;
+        if (m.getAnnotation(SelectBrowser.class) != null)
+            browserName = "internet explorer";
+        if (m.getAnnotation(SelectUserAgent.class) != null)
+            userAgent = "bot";
+        setDriver(browserName, userAgent);
 
-        if (m.getAnnotation(SelectBrowser.class) != null) {
-            setDriver("internet explorer");
-        } else {
-            setDriver(null);
-        }
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
@@ -207,8 +217,9 @@ public class NlmCdeBaseTest {
 
     @AfterMethod
     public void generateGif(Method m) {
+        String methodName = m.getName();
+        System.out.println("TEST Complete: " + className + "." + methodName);
         if (m.getAnnotation(RecordVideo.class) != null) {
-            String methodName = m.getName();
             try {
                 File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
                 File[] inputScreenshotsArray = inputScreenshots.listFiles();
@@ -232,6 +243,7 @@ public class NlmCdeBaseTest {
                 System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
             driver.quit();
         } catch (Exception e) {
+            System.out.println(e);
         }
 
     }
@@ -324,6 +336,66 @@ public class NlmCdeBaseTest {
 
     protected void goToFormByName(String name) {
         goToElementByName(name, "form");
+    }
+
+    protected void goToPreview() {
+        clickElement(By.id("preview_tab"));
+    }
+
+    protected void goToGeneralDetail() {
+        clickElement(By.id("general_tab"));
+    }
+
+    protected void goToPermissibleValues() {
+        clickElement(By.id("pvs_tab"));
+    }
+
+    protected void goToFormDescription() {
+        clickElement(By.id("description_tab"));
+    }
+
+    protected void goToNaming() {
+        clickElement(By.id("naming_tab"));
+    }
+
+    protected void goToClassification() {
+        clickElement(By.id("classification_tab"));
+    }
+
+    protected void goToMeshTopic() {
+        clickElement(By.id("meshTopic_tab"));
+    }
+
+    protected void goToConcepts() {
+        clickElement(By.id("concepts_tab"));
+    }
+
+    protected void goToReferenceDocuments() {
+        clickElement(By.id("referenceDocuments_tab"));
+    }
+
+    protected void goToProperties() {
+        clickElement(By.id("properties_tab"));
+    }
+
+    protected void goToIdentifiers() {
+        clickElement(By.id("ids_tab"));
+    }
+
+    protected void goToAttachments() {
+        clickElement(By.id("attachments_tab"));
+    }
+
+    protected void goToHistory() {
+        clickElement(By.id("history_tab"));
+    }
+
+    protected void goToScoreDerivations() {
+        clickElement(By.id("derivationRules_tab"));
+    }
+
+    protected void goToValidationRules() {
+        goToValidationRules();
     }
 
     private void goToElementByName(String name, String type) {
@@ -427,6 +499,7 @@ public class NlmCdeBaseTest {
 
     protected void checkTooltipText(By by, String text) {
         try {
+            hoverOverElement(findElement(by));
             textPresent(text);
         } catch (TimeoutException e) {
             hoverOverElement(findElement(By.id("searchSettings")));
@@ -461,12 +534,9 @@ public class NlmCdeBaseTest {
 
     protected void clickElement(By by) {
         // Wait for angular digest cycle.
-
         try {
-            ((JavascriptExecutor) driver).executeAsyncScript(
-                    "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
-                    , ""
-            );
+            String script = "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);";
+            ((JavascriptExecutor) driver).executeAsyncScript(script, "");
         } catch (Exception e) {
         }
         try {
@@ -562,10 +632,6 @@ public class NlmCdeBaseTest {
         }
     }
 
-    private boolean classPresent(String text, By by) {
-        return findElement(by).getAttribute("class").contains(text);
-    }
-
     public boolean textPresent(String text, By by) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
         return true;
@@ -587,6 +653,7 @@ public class NlmCdeBaseTest {
     protected void goHome() {
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
+        findElement(By.cssSelector(".carousel-indicators"));
     }
 
     protected void goToCdeSearch() {
@@ -720,6 +787,7 @@ public class NlmCdeBaseTest {
     protected void scrollDownBy(Integer y) {
         String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+        hangon(5);
     }
 
     protected void scrollContainerDownBy(WebElement c, Integer y) {
@@ -922,7 +990,6 @@ public class NlmCdeBaseTest {
             textPresent("Characters:");
         }
         findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
-//        hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
         textNotPresent("Confirm");
     }
@@ -966,11 +1033,13 @@ public class NlmCdeBaseTest {
     }
 
 
-    protected void addNewName(String designation, String definition, String[] tags) {
+    protected void addNewName(String designation, String definition, boolean isHtml, String[] tags) {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
-        findElement(By.name("newDefinition")).sendKeys(definition);
+        findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
+        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Plain Text')]"));
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newTags']//input";
             for (String tag : tags) {
@@ -983,12 +1052,13 @@ public class NlmCdeBaseTest {
         clickElement(By.id("createNewNamingBtn"));
     }
 
-    protected void addNewProperty(String key, String value) {
+    protected void addNewProperty(String key, String value, boolean isHtml) {
         clickElement(By.id("openNewPropertyModalBtn"));
-        textPresent("Property key are managed in Org Management > List Management");
+        textPresent("Property keys are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
-        findElement(By.name("newValue")).sendKeys(value);
-        hangon(2);
+        findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
+        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Plain Text')]"));
         clickElement(By.id("createNewPropertyBtn"));
         modalGone();
     }
@@ -1098,7 +1168,7 @@ public class NlmCdeBaseTest {
      * @param index Index of identifiers, starting from 0.
      */
     protected void removeIdentifier(int index) {
-        clickElement(By.id("ids_tab"));
+        goToIdentifiers();
         clickElement(By.id("removeIdentifier-" + index));
         clickElement(By.id("confirmRemoveIdentifier-" + index));
     }
@@ -1109,7 +1179,7 @@ public class NlmCdeBaseTest {
      * @param index Index of concepts, starting from 0.
      */
     protected void removeDataElementConcept(int index) {
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.id("removedataElementConcept-" + index));
     }
 
@@ -1119,7 +1189,7 @@ public class NlmCdeBaseTest {
      * @param index Index of concepts, starting from 0.
      */
     protected void removeObjectClassConcept(int index) {
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.id("removeobjectClass-" + index));
     }
 
@@ -1129,7 +1199,7 @@ public class NlmCdeBaseTest {
      * @param index Index of concepts, starting from 0.
      */
     protected void removePropertyConcept(int index) {
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.id("removeproperty-" + index));
     }
 
@@ -1351,7 +1421,8 @@ public class NlmCdeBaseTest {
             findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
             hangon(2);
             clickElement(By.id("confirmAddChildClassificationBtn"));
-
+            textPresent("Classification added");
+            closeAlert();
         }
         for (int i = 1; i < categories.length; i++) {
             String[] nextCategories = Arrays.copyOfRange(categories, 0, i + 1);
@@ -1363,8 +1434,140 @@ public class NlmCdeBaseTest {
                 findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
                 hangon(2);
                 clickElement(By.id("confirmAddChildClassificationBtn"));
+                textPresent("Classification added");
+                closeAlert();
             }
         }
     }
 
+    protected void editStewardOrgAndCancel(String newStewardOrg) {
+        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Discard')]"));
+        textNotPresent(newStewardOrg);
+    }
+
+    protected void editStewardOrgAndSave(String newStewardOrg) {
+        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Confirm')]"));
+        textPresent(newStewardOrg);
+    }
+
+    protected void editUninOfMeasurement(String newUom) {
+        clickElement(By.xpath("//*[@id = 'uom']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys(newUom);
+        clickElement(By.xpath("//*[@id = 'uom']//button[contains(@class,'fa fa-check')]"));
+        textPresent(newUom, By.id("uom"));
+    }
+
+    private void clickIFrameElement(By by) {
+        int num_try = 0;
+        boolean clickable = false;
+        while (!clickable) {
+            try {
+                num_try++;
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                wait.until(ExpectedConditions.presenceOfElementLocated(by));
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                clickable = true;
+            } catch (Exception e) {
+                System.out.println("   exception: " + e);
+                clickable = false;
+                if (num_try == 10) clickable = true;
+            }
+        }
+        hangon(2);
+        driver.findElement(by).click();
+    }
+
+    private void sendKeyIFrameElement(By by, String key) {
+        int num_try = 0;
+        boolean clickable = false;
+        while (!clickable) {
+            try {
+                num_try++;
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                clickable = true;
+            } catch (Exception e) {
+                System.out.println("   exception: " + e);
+                clickable = false;
+                if (num_try == 10) clickable = true;
+            }
+        }
+        hangon(2);
+        driver.findElement(by).sendKeys(key);
+        hangon(5);
+    }
+
+
+    protected void swaggerApi(String api, String text, String tinyId, String version) {
+        clickElement(By.id("dropdownMenu_help"));
+        clickElement(By.id("apiDocumentationLink"));
+        driver.switchTo().frame(findElement(By.cssSelector("iframe")));
+        textPresent("CDE API");
+        findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
+        clickIFrameElement(By.xpath("//button[. = 'Try it out ']"));
+        sendKeyIFrameElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input"), tinyId);
+        if (version != null)
+            sendKeyIFrameElement(By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input)[2]"), version);
+        clickIFrameElement(By.xpath("//button[. = 'Execute']"));
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+        textPresent(text, By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
+    }
+
+    protected void selectDisplayProfileByName(String name) {
+        clickElement(By.id("select_display_profile"));
+        clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button[normalize-space(text()) = '" + name + "']"));
+    }
+
+    /**
+     * This method is used to edit registration status for cde or form.
+     *
+     * @param index      Permissible Value Index from 0.
+     * @param value      Permissible Value.
+     * @param codeName   Permissible Value Code Name.
+     * @param code       Permissible Value Code.
+     * @param codeSystem Permissible Value Code System
+     */
+    protected void editPermissibleValueByIndex(int index, String value, String codeName, String code, String codeSystem, String codeDescription) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv_" + index)));
+        if (value != null) {
+            clickElement(By.xpath("//*[@id='pvValue_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(value);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button[text()='Confirm']"));
+
+        }
+        if (codeName != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//button[text()='Confirm']"));
+        }
+        if (code != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//button[text()='Confirm']"));
+        }
+        if (codeSystem != null) {
+            clickElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//button[text()='Confirm']"));
+        }
+        if (codeDescription != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//button[text()='Confirm']"));
+        }
+
+    }
 }

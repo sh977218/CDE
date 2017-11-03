@@ -34,7 +34,7 @@ public class CreateCdeTest extends BaseClassificationTest {
         textPresent(definition);
 
 
-        clickElement(By.id("classification_tab"));
+        goToClassification();
 
         textPresent("Submission and Reporting");
         textPresent("Breast Cancer Data Mart");
@@ -42,7 +42,7 @@ public class CreateCdeTest extends BaseClassificationTest {
         textPresent("Disease");
         textPresent("Headache");
 
-        clickElement(By.id("ids_tab"));
+         goToIdentifiers();
         Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());
     }
 

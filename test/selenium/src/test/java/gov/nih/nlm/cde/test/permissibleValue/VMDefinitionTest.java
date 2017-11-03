@@ -10,7 +10,7 @@ public class VMDefinitionTest extends NlmCdeBaseTest {
     public void vmDefinitions() {
         setLowStatusesVisible();
         goToCdeByName("Specimen Integrity Type SpecimenIntegrity");
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         textPresent("Undamaged in any way; whole");
     }
 

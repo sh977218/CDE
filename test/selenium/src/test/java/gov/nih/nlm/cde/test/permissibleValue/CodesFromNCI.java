@@ -11,7 +11,7 @@ public class CodesFromNCI extends NlmCdeBaseTest {
     public void codesFromNCI() {
         String cdeName = "Race Category Text";
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         clickElement(By.id("displayNCICodes"));
         textPresent("Enterovirus", By.id("nameAsNCI_0"));
         textPresent("TCGA", By.id("codeAsNCI_0"));
@@ -23,7 +23,7 @@ public class CodesFromNCI extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(test_username, password);
         goToCdeByName("Race Category Text");
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
 
         clickElement(By.id("displayLNCCodes"));
         textPresent("American Indian or Alaska Native", By.id("nameAsLNC_0"));

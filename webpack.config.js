@@ -22,8 +22,9 @@ module.exports = {
                 test: /\.ts$/,
                 use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
             },
-            {test: /\.css$/, use: ['style-loader?insertAt=top', 'raw-loader']},
-            {test: /\.html$/, use: ['raw-loader']}
+            {test: /\.css$/, use: ['style-loader?insertAt=top', 'css-loader']},
+            {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false} }]},
+            {test: /\.png$/, use: ['url-loader']}
         ]
     },
     plugins: prod ?
@@ -34,9 +35,9 @@ module.exports = {
             ),
             new AotPlugin.AotPlugin({
                 tsConfigPath: './tsconfig.json',
-                entryModule: path.join(__dirname, 'modules', 'app.module') + '#CdeAppModule',
+                entryModule: path.join(__dirname, 'modules', '_app/app.module') + '#CdeAppModule',
                 mainPath: 'modules/main-aot',
-                exclude: '/node-js/'
+                exclude: ['/node-js/']
             }),
             new webpack.DefinePlugin({
                 PRODUCTION: JSON.stringify(true),
@@ -49,14 +50,16 @@ module.exports = {
                 output: {
                     comments: false
                 },
-                compressor: {
+                compress: {
                     warnings: false
                 }
             }),
             new webpack.ProvidePlugin({
                 $: 'jquery',
                 jQuery: 'jquery',
-                'windows.jQuery': 'jquery'
+                'windows.jQuery': 'jquery',
+                'Tether':'tether',
+                Popper: ['popper.js', 'default'],
             }),
             // new BundleAnalyzerPlugin()
         ] : [
@@ -73,13 +76,15 @@ module.exports = {
             new webpack.ProvidePlugin({
                 $: 'jquery',
                 jQuery: 'jquery',
-                'windows.jQuery': 'jquery'
+                'windows.jQuery': 'jquery',
+                'Tether':'tether',
+                Popper: ['popper.js', 'default'],
             })
         ],
     resolve: {
         unsafeCache: false,
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
-        modules: ["modules", "modules/components", "node_modules"]
+        modules: ["modules", "node_modules", "modules/components"]
     },
     devtool: prod ? '#source-map' : '#cheap-eval-source-map',
     watch: !prod,

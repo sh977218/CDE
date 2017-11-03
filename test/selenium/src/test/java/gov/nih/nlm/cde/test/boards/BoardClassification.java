@@ -14,7 +14,7 @@ public class BoardClassification extends BoardTest {
         textPresent("Elements classified");
         closeAlert();
         clickElement(By.linkText("Manual muscle testing date and time"));
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("Classify Board");
     }
 

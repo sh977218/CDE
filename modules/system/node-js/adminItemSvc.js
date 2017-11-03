@@ -227,7 +227,7 @@ setInterval(function () {
 
                     if (!emails[commentOrReply.username]) emails[commentOrReply.username] = [];
                     usernamesForThisComment.push(commentOrReply.username);
-                    var message = 'Somebody replied to one of your comments. See the comment here: ' +
+                    let message = 'Somebody replied to one of your comments. See the comment here: ' +
                         urlMap[comment.element.eltType] + comment.element.eltId;
                     if (emails[commentOrReply.username].indexOf(message) === -1) {
                         emails[commentOrReply.username].push(message);
@@ -254,12 +254,12 @@ setInterval(function () {
 
 exports.addComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
-        var idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
+        let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
         idRetrievalFunc(req.body.element.eltId, function (err, elt) {
             if (!elt || err) res.status(404).send("Element does not exist.");
             else {
-                var eltId = req.body.element.eltId;
-                var commentObj = {
+                let eltId = req.body.element.eltId;
+                let commentObj = {
                     user: req.user._id,
                     username: req.user.username,
                     created: new Date().toJSON(),
@@ -272,10 +272,10 @@ exports.addComment = function (req, res, dao) {
                 if (req.body.linkedTab) {
                     commentObj.linkedTab = req.body.linkedTab;
                 }
-                var comment = new mongo_data_system.Comment(commentObj);
+                let comment = new mongo_data_system.Comment(commentObj);
                 if (!authorizationShared.canComment(req.user)) {
                     comment.pendingApproval = true;
-                    var details = {
+                    let details = {
                         element: {
                             eltId: req.body.element.eltId,
                             name: dao.getPrimaryName(elt),
@@ -296,8 +296,9 @@ exports.addComment = function (req, res, dao) {
                         });
                         res.status(500).send("There was an issue saving this comment.");
                     } else {
-                        var message = "Comment added.";
-                        ioServer.ioServer.of("/comment").emit('commentUpdated');
+                        let message = "Comment added.";
+                        ioServer.ioServer.of("/comment")
+                            .emit('commentUpdated', {username: req.user.username});
                         if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
                     }
@@ -312,7 +313,7 @@ exports.replyToComment = function (req, res) {
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) return res.status(404).send("Comment not found");
-            var reply = {
+            let reply = {
                 user: req.user._id,
                 username: req.user.username,
                 created: new Date().toJSON(),
@@ -335,7 +336,7 @@ exports.replyToComment = function (req, res) {
                 exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
             }
             comment.replies.push(reply);
-            comment.save(function (err) {
+            comment.save(err => {
                 if (err) {
                     logging.errorLogger.error("Error: Cannot add comment.", {
                         origin: "system.adminItemSvc.addComment",
@@ -343,10 +344,10 @@ exports.replyToComment = function (req, res) {
                     });
                     res.status(500).send("ERROR - Cannot save comment");
                 } else {
-                    ioServer.ioServer.of("/comment").emit('commentUpdated');
+                    ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
                     res.send({message: "Reply added"});
                     if (req.user.username !== comment.username) {
-                        var message = {
+                        let message = {
                             recipient: {recipientType: "user", name: comment.username},
                             author: {authorType: "user", name: req.user.username},
                             date: new Date(),
@@ -379,7 +380,7 @@ exports.removeComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) return res.status(404).send("Comment not found");
-            var removedComment;
+            let removedComment;
             if (req.body.replyId) {
                 if (comment.replies) {
                     comment.replies.forEach(r => {
@@ -408,7 +409,7 @@ exports.removeComment = function (req, res, dao) {
                                 });
                                 res.status(500).send("ERROR - cannot save/remove comment");
                             } else {
-                                ioServer.ioServer.of("/comment").emit('commentUpdated');
+                                ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
                                 res.send({message: "Comment removed"});
                             }
                         });
@@ -431,7 +432,7 @@ exports.updateCommentStatus = function (req, res, status) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) return res.status(404).send("Comment not found");
 
-            var updatedComment;
+            let updatedComment;
             if (req.body.replyId) {
                 if (comment.replies) {
                     comment.replies.forEach(function (r) {
@@ -453,7 +454,7 @@ exports.updateCommentStatus = function (req, res, status) {
                         });
                         res.status(500).send("ERROR - cannot update comment");
                     } else {
-                        ioServer.ioServer.of("/comment").emit('commentUpdated');
+                        ioServer.ioServer.of("/comment").emit('commentUpdated', {username: req.user.username});
                         res.send({message: "Saved."});
                     }
                 });

@@ -14,18 +14,20 @@ public class PvTest extends NlmCdeBaseTest {
     public void changePermissibleValue(String cdeName) {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/div/span/span[1]/i")));
-        clickElement(By.cssSelector("#pv-0 .fa-edit"));
-        findElement(By.cssSelector("#pv-0 input")).sendKeys(" added to pv");
-        clickElement(By.cssSelector("#pv-0 .fa-check"));
+        goToPermissibleValues();
+        String value = " added to pv";
+        String codeName = " added to code name";
+
+        editPermissibleValueByIndex(0, value, codeName, null, null, null);
         newCdeVersion("Changed PV");
 
-        textPresent("added to pv");
-        
-        clickElement(By.id("history_tab"));
+        textPresent(value);
+        textPresent(codeName);
+
+        goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("Absent added to pv", By.xpath("//*[@id='historyCompareLeft_Data Type Value List_0_0']"));
+        textPresent("Absent " + value, By.xpath("//*[@id='historyCompareLeft_Data Type Value List_0_0']"));
+        textPresent("Absent " + codeName, By.xpath("//*[@id='historyCompareLeft_Data Type Value List_0_0']"));
         textPresent("Indeterminate", By.xpath("//*[@id='historyCompareLeft_Data Type Value List_0_0']"));
     }
 }

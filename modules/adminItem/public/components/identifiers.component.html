@@ -1,59 +1,46 @@
 <div id="identifiersDiv">
     <h4>Identifiers</h4>
-    <div class="row">
-        <div class="col-xs-12">
-            <dl class="dl-horizontal">
-                <dt>Source:</dt>
-                <dd id="dd_origin_nlm">NLM</dd>
-                <meta itemprop="codingSystem" content="NIH CDE Repository"/>
-                <dt>Id:</dt>
-                <dd id="dd_id_nlm" itemprop="codeValue">{{elt.tinyId}}</dd>
-                <dt>Version:</dt>
-                <dd id="dd_version_nlm">{{elt.version}}</dd>
-            </dl>
-        </div>
-    </div>
-    <hr/>
-    <div *ngFor="let id of elt.ids; let i = index">
-        <div class="row">
-            <div class="col-md-1 text-right">
-                <div class="row" *ngIf="canEdit">
-                    <span *ngIf="id.edit">Confirm Delete
-                        <span class="btn-default fa fa-check" (click)="removeIdentifierByIndex(i)"
-                              id="confirmRemoveIdentifier-{{i}}" title="OK" href=""></span>
-                        <span class="btn-default fa fa-times" (click)="id.edit = false"
-                              id="cancelRemoveIdentifier-{{i}}" title="Cancel" href=""></span>
-                    </span>
-                    <span *ngIf="!id.edit" class="btn-default fa fa-trash-o" id="removeIdentifier-{{i}}"
-                          (click)="id.edit = true" title="Remove" href=""></span>
-                </div>
-            </div>
-            <div class="col-md-11">
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Source:</div>
-                    <div class="col-xs-10 ng-binding" id="source_{{i}}">{{id.source}}</div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Id:</div>
-                    <div class="col-xs-10 ng-binding" id="value_{{i}}" [ngSwitch]="id.source">
-                        <a *ngSwitchCase="'LOINC'"
-                           href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
-                           target="_blank">{{id.id}}</a>
-                        <a *ngSwitchCase="'PhenX'"
-                           href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"
-                           target="_blank">{{id.id}}</a>
-                        <span *ngSwitchDefault>{{id.id}}</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Version:</div>
-                    <div class="col-xs-10 ng-binding" id="version_{{i}}">{{id.version}}</div>
-                </div>
-            </div>
-        </div>
+    <dl class="row">
+        <dt class="col-xs-3 text-right">Source:</dt>
+        <dd id="dd_origin_nlm" class="col-xs-9">NLM</dd>
+        <meta itemprop="codingSystem" content="NIH CDE Repository"/>
+        <dt class="col-xs-3 text-right">Id:</dt>
+        <dd id="dd_id_nlm" class="col-xs-9" itemprop="codeValue">{{elt.tinyId}}</dd>
+        <dt class="col-xs-3 text-right">Version:</dt>
+        <dd id="dd_version_nlm" class="col-xs-9">{{elt.version}}</dd>
+    </dl>
+    <hr>
+    <ng-container *ngFor="let id of elt.ids; let i = index">
+        <dl class="row">
+            <dt class="col-xs-3 text-right">
+                <ng-container *ngIf="id.edit">Confirm Delete
+                    <span class="btn-default fa fa-check" (click)="removeIdentifierByIndex(i)"
+                          id="confirmRemoveIdentifier-{{i}}" title="OK"></span>
+                    <span class="btn-default fa fa-times" (click)="id.edit = false" id="cancelRemoveIdentifier-{{i}}"
+                          title="Cancel"></span>
+                </ng-container>
+                <span *ngIf="canEdit && !id.edit" class="btn-default fa fa-trash-o" id="removeIdentifier-{{i}}"
+                      (click)="id.edit = true" title="Remove"></span>
+                Source:
+            </dt>
+            <dd id="source_{{i}}" class="col-xs-9">{{id.source}}</dd>
+            <dt class="col-xs-3 text-right">Id:</dt>
+            <dd id="id_{{i}}" class="col-xs-9">
+                <ng-container [ngSwitch]="id.source">
+                    <a *ngSwitchCase="'LOINC'"
+                       href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
+                       target="_blank">{{id.id}}</a>
+                    <a *ngSwitchCase="'PhenX'"
+                       href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"
+                       target="_blank">{{id.id}}</a>
+                    <span *ngSwitchDefault>{{id.id}}</span>
+                </ng-container>
+            </dd>
+            <dt class="col-xs-3 text-right">Version:</dt>
+            <dd id="version_{{i}}" class="col-xs-9">{{id.version}}</dd>
+        </dl>
         <hr>
-    </div>
-
+    </ng-container>
     <button *ngIf="canEdit" class="btn btn-small btn-default" id="openNewIdentifierModalBtn"
             (click)="openNewIdentifierModal();">
         <i class="fa fa-plus"></i> Add Identifier
@@ -64,7 +51,7 @@
     <div class="modal-header" id="newIdentifierModalHeader">
         <h4 class="modal-title">Add Identifier</h4>
     </div>
-    <form role="form" #newIdentifierForm="ngForm">
+    <form role="form" #newIdentifierForm="ngForm" (ngSubmit)="addNewIdentifier()">
         <div class="modal-body" id="newIdentifierModalBody">
             <div class="form-group">
                 <label for="newSource">Source</label>
@@ -86,7 +73,7 @@
             <button class="btn cancel" (click)="c('Close click')" id="cancelNewIdentifierBtn" type="button">
                 Cancel
             </button>
-            <button class="btn btn-warning" (click)="addNewIdentifier()" [disabled]="!newIdentifierForm.form.valid"
+            <button class="btn btn-warning" [disabled]="!newIdentifierForm.form.valid"
                     id="createNewIdentifierBtn" type="submit">Save
             </button>
         </div>

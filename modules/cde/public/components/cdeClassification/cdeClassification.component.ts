@@ -1,9 +1,11 @@
-import { Component, Input, ViewChild, Inject } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
-import { ClassificationService } from "../../../../core/public/classification.service";
-import { ClassifyItemModalComponent } from "../../../../adminItem/public/components/classification/classifyItemModal.component";
+import { IsAllowedService } from 'core/isAllowed.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { ClassificationService } from 'core/classification.service';
+import { UserService } from 'core/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-cde-classification",
@@ -17,8 +19,8 @@ export class CdeClassificationComponent {
     constructor(public http: Http,
                 private alert: AlertService,
                 private classificationSvc: ClassificationService,
-                @Inject("userResource") public userService,
-                @Inject("isAllowedModel") public isAllowedModel) {
+                public userService: UserService,
+                public isAllowedModel: IsAllowedService) {
     }
 
     openClassifyItemModal() {

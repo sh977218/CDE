@@ -67,10 +67,39 @@ exports.byTinyIdVersion = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_cde.byTinyIdVersion(tinyId, version, function (err, dataElement) {
+    mongo_cde.byTinyIdAndVersion(tinyId, version, function (err, dataElement) {
         if (err) return res.status(500).send("ERROR - cannot get CDE by tinyId / Version");
         if (!dataElement) return res.status(404).send();
         res.send(dataElement);
+    });
+};
+
+exports.draftDataElements = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    mongo_cde.draftDataElements(tinyId, function (err, dataElements) {
+        if (err) return res.status(500).send("ERROR - get draft data element. " + tinyId);
+        res.send(dataElements);
+    });
+};
+
+exports.saveDraftDataElement = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    let elt = req.body;
+    if (elt.tinyId !== tinyId) return res.status(500);
+    mongo_cde.saveDraftDataElement(elt, function (err, dataElement) {
+        if (err) return res.status(500).send("ERROR - save draft data element. " + tinyId);
+        res.send(dataElement);
+    });
+};
+
+exports.deleteDraftDataElement = function (req, res) {
+    let tinyId = req.params.tinyId;
+    if (!tinyId) return res.status(400).send();
+    mongo_cde.deleteDraftDataElement(tinyId, function (err) {
+        if (err) return res.status(500).send("ERROR - delete draft data element. " + tinyId);
+        res.send();
     });
 };
 
@@ -116,7 +145,7 @@ exports.updateDataElement = function (req, res) {
         if (!item) return res.status(404).send();
         authorization.allowUpdate(req.user, item, function (err) {
             if (err) return res.status(500).send("ERROR - update - cannot allow");
-            mongo_data_system.orgByName(item.stewardOrg.name, function (err,org) {
+            mongo_data_system.orgByName(item.stewardOrg.name, function (err, org) {
                 let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
                 if (org && org.workingGroupOf && org.workingGroupOf.length > 0 &&
                     allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1)
@@ -125,7 +154,10 @@ exports.updateDataElement = function (req, res) {
                 deValidator.wipeDatatype(elt);
                 mongo_cde.update(elt, req.user, function (err, response) {
                     if (err) return res.status(500).send("ERROR - cannot update de");
-                    res.send(response);
+                    mongo_cde.deleteDraftDataElement(elt.tinyId, err => {
+                        if (err) return res.status(500).send("ERROR - cannot delete draft. ");
+                        res.send(response);
+                    });
                 });
             });
         });
@@ -162,7 +194,7 @@ exports.viewHistory = function (req, res) {
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 exports.show = function (req, res, cb) {
-    var cdeId = req.params.id;
+    let cdeId = req.params.id;
     if (!cdeId) return res.send("No Data Element Id");
     mongo_data.byId(cdeId, function (err, cde) {
         cb(cde);
@@ -183,7 +215,7 @@ exports.save = function (req, res) {
 };
 
 var hideProprietaryCodes = function (cdes, user) {
-    var hiddenFieldMessage = 'Login to see the value.';
+    let hiddenFieldMessage = 'Login to see the value.';
     this.systemWhitelist = ["RXNORM", "HSLOC", "CDCREC", "SOP", "AHRQ", "HL7", "CDC Race and Ethnicity", "NCI", "UMLS"];
     this.censorPv = function (pvSet) {
         var toBeCensored = true;

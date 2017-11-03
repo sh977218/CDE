@@ -21,7 +21,7 @@ public class LiveCommentTest extends CdeCommentTest {
 
     @Test
     public void cdeLiveCommentTest() {
-        clickElement(By.id("vsacLink"));
+        clickElement(By.linkText("NIH CDE Resource Portal"));
         String cdeName = "Sensory system abnormality stocking glove present text";
         switchTab(0);
         mustBeLoggedInAs(ninds_username, password);

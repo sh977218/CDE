@@ -1,6 +1,5 @@
 import {
     Component,
-    Inject,
     Input,
     Output,
     OnInit,
@@ -15,9 +14,12 @@ import { TreeComponent } from "angular-tree-component";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
-import * as ClassificationShared from "../../../system/shared/classificationShared.js";
 import * as _ from "lodash";
-import { AlertService } from "system/public/components/alert/alert.service";
+import { IsAllowedService } from 'core/isAllowed.service';
+import { SharedService } from 'core/shared.service';
+import { UserService } from 'core/user.service';
+import { Router } from '@angular/router';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-create-form",
@@ -28,15 +30,16 @@ export class CreateFormComponent implements OnInit {
     @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
     @Input() elt;
+    @Input() extModalRef: NgbModalRef;
     @Output() eltChange = new EventEmitter();
     modalRef: NgbModalRef;
 
-    constructor(@Inject("userResource") public userService,
-                @Inject("isAllowedModel") public isAllowedModel,
+    constructor(public userService: UserService,
+                public isAllowedModel: IsAllowedService,
                 private localStorageService: LocalStorageService,
                 private http: Http,
                 private alert: AlertService,
-                @Inject("SearchSettings") private searchSettings) {
+                private router: Router) {
     }
 
     ngOnInit(): void {
@@ -47,10 +50,6 @@ export class CreateFormComponent implements OnInit {
             }],
             registrationState: {registrationStatus: "Incomplete"}
         };
-    }
-
-    updateThisElt(event) {
-        console.log(event);
     }
 
     openClassifyItemModal() {
@@ -64,7 +63,7 @@ export class CreateFormComponent implements OnInit {
             orgName: event.selectedOrg
         };
         let eltCopy = _.cloneDeep(this.elt);
-        ClassificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
+        SharedService.classificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
@@ -96,8 +95,8 @@ export class CreateFormComponent implements OnInit {
 
     confirmDelete(event) {
         let eltCopy = _.cloneDeep(this.elt);
-        let steward = ClassificationShared.findSteward(eltCopy, event.deleteOrgName);
-        ClassificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
+        let steward = SharedService.classificationShared.findSteward(eltCopy, event.deleteOrgName);
+        SharedService.classificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
             if (err) this.alert.addAlert("danger", err);
             else {
                 this.elt = eltCopy;
@@ -120,7 +119,8 @@ export class CreateFormComponent implements OnInit {
     createForm() {
         this.http.post("/form", this.elt).map(res => res.json())
             .subscribe(res => {
-                    window.location.href = "/formView?tinyId=" + res.tinyId;
+                    this.router.navigate(["/formView"], {queryParams: {tinyId: res.tinyId}});
+                    if (this.extModalRef) this.extModalRef.close();
                 },
                 err => {
                     this.alert.addAlert("danger", err);
@@ -128,7 +128,11 @@ export class CreateFormComponent implements OnInit {
     }
 
     cancelCreateForm() {
-        window.location.href = "/";
+        if (this.extModalRef) {
+            this.extModalRef.close();
+        } else {
+            this.router.navigate(["/"]);
+        }
     }
 
 }

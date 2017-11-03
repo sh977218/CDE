@@ -1,5 +1,7 @@
 let passport = require('passport')
-    , mongo_date = require('./mongo-data')
+    , mongo_cde = require('../../cde/node-js/mongo-cde')
+    , mongo_form = require('../../form/node-js/mongo-form')
+    , mongo_data = require('./mongo-data')
     , config = require('./parseConfig')
     , dbLogger = require('./dbLogger.js')
     , logging = require('./logging.js')
@@ -25,6 +27,7 @@ let passport = require('passport')
     , async = require('async')
     , request = require('request')
     , CronJob = require('cron').CronJob
+    , _ = require('lodash')
 ;
 
 exports.init = function (app) {
@@ -41,23 +44,146 @@ exports.init = function (app) {
 
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
+    /* for search engine | javascript disabled*/
+    function staticHtml(req, res, next) {
+        if (req.headers['user-agent'] && req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) next();
+        else res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
+    }
+
+    app.get("/", [checkHttps, staticHtml], function (req, res) {
+        res.render('bot/home', 'system');
+    });
+    app.get("/home", [checkHttps, staticHtml], function (req, res) {
+        res.render('bot/home', 'system');
+    });
+    app.get("/cde/search", [checkHttps, staticHtml], function (req, res) {
+        let selectedOrg = req.query.selectedOrg;
+        let pageString = req.query.page;// starting from 1
+        if (!pageString) pageString = "1";
+        if (selectedOrg) {
+            let pageNum = _.toInteger(pageString);
+            let pageSize = 20;
+            let cond = {
+                'classification.stewardOrg.name': selectedOrg,
+                'archived': false,
+                'registrationState.registrationStatus': 'Qualified'
+            };
+            mongo_cde.DataElement.count(cond, (err, totalCount) => {
+                if (err) {
+                    res.status(500).send("ERROR - Static Html Error, /cde/search");
+                    logging.errorLogger.error("Error: Static Html Error", {
+                        stack: err.stack,
+                        origin: req.url
+                    });
+                } else
+                    mongo_cde.DataElement.find(cond, 'tinyId naming', {
+                        skip: pageSize * (pageNum - 1),
+                        limit: pageSize
+                    }, (err, cdes) => {
+                        if (err) {
+                            res.status(500).send("ERROR - Static Html Error, /cde/search");
+                            logging.errorLogger.error("Error: Static Html Error", {
+                                stack: err.stack,
+                                origin: req.url
+                            });
+                        } else {
+                            let totalPages = totalCount / pageSize;
+                            if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                            res.render('bot/cdeSearchOrg', 'system', {
+                                cdes: cdes,
+                                totalPages: totalPages,
+                                selectedOrg: selectedOrg
+                            });
+                        }
+                    });
+            });
+        } else res.render('bot/cdeSearch', 'system');
+    });
+    app.get("/deView", [checkHttps, staticHtml], function (req, res) {
+        var tinyId = req.query.tinyId;
+        var version = req.query.version;
+        mongo_cde.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+            if (err) {
+                res.status(500).send("ERROR - Static Html Error, /deView");
+                logging.errorLogger.error("Error: Static Html Error", {
+                    stack: err.stack,
+                    origin: req.url
+                });
+            }
+            else res.render('bot/deView', 'system', {elt: cde});
+        });
+    });
+    app.get("/form/search", [checkHttps, staticHtml], function (req, res) {
+        let selectedOrg = req.query.selectedOrg;
+        let pageString = req.query.page;// starting from 1
+        if (!pageString) pageString = "1";
+        if (selectedOrg) {
+            let pageNum = _.toInteger(pageString);
+            let pageSize = 20;
+            let cond = {
+                'classification.stewardOrg.name': selectedOrg,
+                'archived': false,
+                'registrationState.registrationStatus': 'Qualified'
+            };
+            mongo_form.Form.count(cond, (err, totalCount) => {
+                if (err) {
+                    res.status(500).send("ERROR - Static Html Error, /form/search");
+                    logging.errorLogger.error("Error: Static Html Error", {
+                        stack: err.stack,
+                        origin: req.url
+                    });
+                } else
+                    mongo_form.Form.find(cond, 'tinyId naming', {
+                        skip: pageSize * (pageNum - 1),
+                        limit: pageSize
+                    }, (err, forms) => {
+                        if (err) {
+                            res.status(500).send("ERROR - Static Html Error, /form/search");
+                            logging.errorLogger.error("Error: Static Html Error", {
+                                stack: err.stack,
+                                origin: req.url
+                            });
+                        } else {
+                            let totalPages = totalCount / pageSize;
+                            if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                            res.render('bot/formSearchOrg', 'system', {
+                                forms: forms,
+                                totalPages: totalPages,
+                                selectedOrg: selectedOrg
+                            });
+                        }
+                    });
+            });
+        } else res.render('bot/formSearch', 'system');
+    });
+    app.get("/formView", [checkHttps, staticHtml], function (req, res) {
+        var tinyId = req.query.tinyId;
+        var version = req.query.version;
+        mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
+            if (err) {
+                res.status(500).send("ERROR - Static Html Error, /formView");
+                logging.errorLogger.error("Error: Static Html Error", {
+                    stack: err.stack,
+                    origin: req.url
+                });
+            }
+            else res.render('bot/formView', 'system', {elt: cde});
+        });
+    });
+
     function checkHttps(req, res, next) {
         if (config.proxy) {
             if (req.protocol !== 'https') {
-                if (req.query.gotohttps === "1") {
-                    return res.send("Missing X-Forward-Proto Header");
-                } else {
-                    return res.redirect(config.publicUrl + "?gotohttps=1");
-                }
-            }
-        }
-        next();
+                if (req.query.gotohttps === "1")
+                    res.send("Missing X-Forward-Proto Header");
+                else res.redirect(config.publicUrl + "?gotohttps=1");
+            } else next();
+        } else next();
     }
 
-    ["/", "/cde/search", "/form/search", "/home", "/help/:title", "/createForm", "/createCde", "/boardList",
-        "/board/:id", "/deview", "/myboards", "/sdcview", "/cde", "/form",
-        "/cdeStatusReport", "/api", "/sdcview", "/triggerClientException",
-        "/formView", "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
+    ["/help/:title", "/createForm", "/createCde", "/boardList",
+        "/board/:id", "/myboards", "/sdcview", "/cdeStatusReport", "/api", "/sdcview", "/404",
+        "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, checkHttps, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
@@ -70,7 +196,7 @@ exports.init = function (app) {
         let settings = req.body.settings;
         if (!deleteClassification || !settings) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, deleteClassification.orgName)) return res.status(403).end();
-        mongo_date.jobStatus("deleteClassification", (err, j) => {
+        mongo_data.jobStatus("deleteClassification", (err, j) => {
             if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings, err => {
@@ -87,7 +213,7 @@ exports.init = function (app) {
         let settings = req.body.settings;
         if (!newName || !newClassification || !settings) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
-        mongo_date.jobStatus("renameClassification", (err, j) => {
+        mongo_data.jobStatus("renameClassification", (err, j) => {
             if (err) return res.status(409).send("Error - rename classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings, err => {
@@ -99,10 +225,10 @@ exports.init = function (app) {
 
     // add org classification
     app.put('/orgClassification/', function (req, res) {
-        let newClassification = req.body.newClassification
+        let newClassification = req.body.newClassification;
         if (!newClassification) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
-        mongo_date.jobStatus("addClassification", (err, j) => {
+        mongo_data.jobStatus("addClassification", (err, j) => {
             if (err) return res.status(409).send("Error - delete classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.addOrgClassification(newClassification, err => {
@@ -119,7 +245,7 @@ exports.init = function (app) {
         let settings = req.body.settings;
         if (!oldClassification || !newClassification || !settings) return res.status(400).send();
         if (!usersrvc.isCuratorOf(req.user, newClassification.orgName)) return res.status(403).end();
-        mongo_date.jobStatus("reclassifyClassification", (err, j) => {
+        mongo_data.jobStatus("reclassifyClassification", (err, j) => {
             if (err) return res.status(409).send("Error - reclassify classification is in processing, try again later.");
             if (j) return res.status(401).send();
             orgClassificationSvc.reclassifyOrgClassification(req.user, oldClassification, newClassification, settings, err => {
@@ -133,7 +259,7 @@ exports.init = function (app) {
     app.get('/jobStatus/:type', function (req, res) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
-        mongo_date.jobStatus(jobType, (err, j) => {
+        mongo_data.jobStatus(jobType, (err, j) => {
             if (err) res.status(409).send("Error - job status " + jobType);
             if (j) return res.send({done: false});
             else res.send({done: true});
@@ -169,7 +295,7 @@ exports.init = function (app) {
     app.get('/serverStatuses', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             app_status.getStatus(function () {
-                mongo_date.getClusterHostStatuses(function (err, statuses) {
+                mongo_data.getClusterHostStatuses(function (err, statuses) {
                     res.send({esIndices: esInit.indices, statuses: statuses});
                 });
             });
@@ -183,14 +309,14 @@ exports.init = function (app) {
     });
 
     app.get('/listOrgs', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_date.listOrgs(function (err, orgs) {
+        mongo_data.listOrgs(function (err, orgs) {
             if (err) return res.status(500).send("ERROR - unable to list orgs");
             res.send(orgs);
         });
     });
 
     app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_date.listOrgsDetailedInfo(function (err, orgs) {
+        mongo_data.listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
                 logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
                 res.status(403).send('Failed to get list of orgs detailed info.');
@@ -314,14 +440,14 @@ exports.init = function (app) {
 
 
     app.get('/org/:name', exportShared.nocacheMiddleware, function (req, res) {
-        return mongo_date.orgByName(req.params.name, function (err, result) {
+        return mongo_data.orgByName(req.params.name, function (err, result) {
             res.send(result);
         });
     });
 
     app.get('/usernamesByIp/:ip', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            return mongo_date.usernamesByIp(req.params.ip, function (result) {
+            return mongo_data.usernamesByIp(req.params.ip, function (result) {
                 res.send(result);
             });
         } else {
@@ -332,7 +458,7 @@ exports.init = function (app) {
 
     app.get('/siteadmins', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_date.siteadmins(function (err, users) {
+            mongo_data.siteadmins(function (err, users) {
                 res.send(users);
             });
         } else {
@@ -354,23 +480,23 @@ exports.init = function (app) {
 
     app.post('/updateOrg', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
-            mongo_date.updateOrg(req.body, res);
+            mongo_data.updateOrg(req.body, res);
         } else {
             res.status(401).send();
         }
     });
 
     app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.send("Not logged in.");
+        if (!req.user) return res.send({});
         else if (!req.params.search) {
-            return res.send("search is empty.");
+            return res.send({});
         } else if (req.params.search === 'me') {
-            mongo_date.userById(req.user._id, function (err, user) {
+            mongo_data.userById(req.user._id, function (err, user) {
                 if (err) return res.status(500).send("ERROR retrieve user by id");
                 res.send(user);
             });
         } else {
-            mongo_date.usersByName(req.params.search, function (err, users) {
+            mongo_data.usersByName(req.params.search, function (err, users) {
                 if (err) return res.status(500).send("ERROR getting user by name");
                 res.send(users);
             });
@@ -381,7 +507,7 @@ exports.init = function (app) {
         if (!req.user) return res.status(401).send();
         if (req.user._id.toString() !== req.body._id)
             return res.status(401).send();
-        mongo_date.userById(req.user._id, function (err, user) {
+        mongo_data.userById(req.user._id, function (err, user) {
             user.email = req.body.email;
             user.publishedForms = req.body.publishedForms;
             user.save(function (err) {
@@ -394,12 +520,12 @@ exports.init = function (app) {
     app.put('/user', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
             return res.status(401).send("Not Authorized");
-        mongo_date.addUser({
+        mongo_data.addUser({
             username: req.body.username,
             password: "umls",
             quota: 1024 * 1024 * 1024
         }, function (err, newUser) {
-            if (err) return res.status(500).end("ERROR");
+            if (err) return res.status(500).end("ERROR adding user");
             res.send(newUser.username + " added.");
         });
     });
@@ -468,7 +594,7 @@ exports.init = function (app) {
     app.get('/searchUsers/:username?', function (req, res) {
         if (!authorization.isSiteOrgAdmin(req))
             return res.status(401).send("Not Authorized");
-        mongo_date.usersByPartialName(req.params.username, function (err, users) {
+        mongo_data.usersByPartialName(req.params.username, function (err, users) {
             res.send({users: users});
         });
     });
@@ -483,7 +609,7 @@ exports.init = function (app) {
     });
 
     app.get('/user/avatar/:username', function (req, res) {
-        mongo_date.userByName(req.params.username, function (err, u) {
+        mongo_data.userByName(req.params.username, function (err, u) {
             res.send(u && u.avatarUrl ? u.avatarUrl : "");
         });
     });
@@ -500,7 +626,7 @@ exports.init = function (app) {
     app.post('/updateTesterStatus', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority"))
             return res.status(401).send("Not Authorized");
-        mongo_date.User.findOne({_id: req.body._id}, function (err, u) {
+        mongo_data.User.findOne({_id: req.body._id}, function (err, u) {
             u.tester = req.body.tester;
             u.save(() => res.send());
         });
@@ -519,11 +645,11 @@ exports.init = function (app) {
     });
 
     app.get('/data/:imgtag', function (req, res) {
-        mongo_date.getFile(req.user, req.params.imgtag, res);
+        mongo_data.getFile(req.user, req.params.imgtag, res);
     });
 
     app.get('/data/status/:imgtag', function (req, res) {
-        mongo_date.getFileStatus(req.params.imgtag, function (err, status) {
+        mongo_data.getFileStatus(req.params.imgtag, function (err, status) {
             if (err) res.status(404).send();
             res.send(status);
         });
@@ -547,7 +673,7 @@ exports.init = function (app) {
             res.send("Processing");
             adminItemSvc.bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
         }
-        mongo_date.addToClassifAudit({
+        mongo_data.addToClassifAudit({
             date: new Date(),
             user: {
                 username: req.user.username
@@ -624,7 +750,7 @@ exports.init = function (app) {
     });
 
     app.get('/triggerServerErrorMongoose', function (req, res) {
-        mongo_date.orgByName("none", function () {
+        mongo_data.orgByName("none", function () {
             res.send("received");
             trigger.error(); // jshint ignore:line
         });
@@ -637,7 +763,7 @@ exports.init = function (app) {
                 message.author.name = req.user.username;
             }
             message.date = new Date();
-            mongo_date.createMessage(message, function () {
+            mongo_data.createMessage(message, function () {
                 res.send();
             });
         } else {
@@ -647,7 +773,7 @@ exports.init = function (app) {
 
     app.post('/mail/messages/update', function (req, res) {
         if (req.isAuthenticated()) {
-            mongo_date.updateMessage(req.body, function (err) {
+            mongo_data.updateMessage(req.body, function (err) {
                 if (err) {
                     res.statusCode = 404;
                     res.send("Error while updating the message");
@@ -662,7 +788,7 @@ exports.init = function (app) {
 
     app.post('/mail/messages/:type', function (req, res) {
         if (req.isAuthenticated()) {
-            mongo_date.getMessages(req, function (err, messages) {
+            mongo_data.getMessages(req, function (err, messages) {
                 if (err) res.status(404).send(err);
                 else res.send(messages);
             });
@@ -673,7 +799,7 @@ exports.init = function (app) {
 
     app.post('/addUserRole', function (req, res) {
         if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
-            mongo_date.addUserRole(req.body, function (err) {
+            mongo_data.addUserRole(req.body, function (err) {
                 if (err) res.status(404).send(err);
                 else res.send("Role added.");
             });
@@ -682,7 +808,7 @@ exports.init = function (app) {
 
     app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.send({count: 0});
-        mongo_date.mailStatus(req.user, function (err, result) {
+        mongo_data.mailStatus(req.user, function (err, result) {
             res.send({count: result});
         });
     });
@@ -690,7 +816,7 @@ exports.init = function (app) {
     // @TODO this should be POST
     app.get('/attachment/approve/:id', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
-        mongo_date.alterAttachmentStatus(req.params.id, "approved", function (err) {
+        mongo_data.alterAttachmentStatus(req.params.id, "approved", function (err) {
             if (err) res.status(500).send("Unable to approve attachment");
             else res.send("Attachment approved.");
         });
@@ -702,13 +828,13 @@ exports.init = function (app) {
             if (dao.removeAttachmentLinks)
                 dao.removeAttachmentLinks(req.params.id);
         });
-        mongo_date.deleteFileById(req.params.id);
+        mongo_data.deleteFileById(req.params.id);
         res.send("Attachment declined");
     });
 
     app.post('/getClassificationAuditLog', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_date.getClassificationAuditLog(req.body, function (err, result) {
+            mongo_data.getClassificationAuditLog(req.body, function (err, result) {
                 if (err) return res.status(500).send();
                 res.send(result);
             });
@@ -718,6 +844,7 @@ exports.init = function (app) {
     });
 
     app.post('/user/update/searchSettings', function (req, res) {
+        if (!req.user) return;
         usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
             if (err) res.status(500).send("ERROR - cannot update search settings. ");
             else res.send("Search settings updated.");
@@ -726,7 +853,7 @@ exports.init = function (app) {
 
     app.post('/embed/', function (req, res) {
         if (authorization.isOrgAdmin(req, req.body.org)) {
-            mongo_date.embeds.save(req.body, function (err, embed) {
+            mongo_data.embeds.save(req.body, function (err, embed) {
                 if (err) res.status(500).send("There was an error saving this embed.");
                 else res.send(embed);
             });
@@ -736,12 +863,12 @@ exports.init = function (app) {
     });
 
     app.delete('/embed/:id', function (req, res) {
-        mongo_date.embeds.find({_id: req.params.id}, function (err, embeds) {
+        mongo_data.embeds.find({_id: req.params.id}, function (err, embeds) {
             if (err) return res.status(500).send();
             if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
             let embed = embeds[0];
             if (authorization.isOrgAdmin(req, embed.org)) {
-                mongo_date.embeds.delete(req.params.id, function (err) {
+                mongo_data.embeds.delete(req.params.id, function (err) {
                     if (err) res.status(500).send("There was an error removing this embed.");
                     else res.send();
                 });
@@ -753,7 +880,7 @@ exports.init = function (app) {
 
 
     app.get('/embed/:id', function (req, res) {
-        mongo_date.embeds.find({_id: req.params.id}, function (err, embeds) {
+        mongo_data.embeds.find({_id: req.params.id}, function (err, embeds) {
             if (err) return res.status(500).send();
             if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
             else res.send(embeds[0]);
@@ -762,7 +889,7 @@ exports.init = function (app) {
     });
 
     app.get('/embeds/:org', function (req, res) {
-        mongo_date.embeds.find({org: req.params.org}, function (err, embeds) {
+        mongo_data.embeds.find({org: req.params.org}, function (err, embeds) {
             if (err) res.status(500).send();
             else res.send(embeds);
         });
@@ -834,7 +961,7 @@ exports.init = function (app) {
 
     app.post('/disableRule', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-        mongo_date.disableRule(req.body, function (err, org) {
+        mongo_data.disableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
             else res.send(org);
         });
@@ -842,7 +969,7 @@ exports.init = function (app) {
 
     app.post('/enableRule', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
-        mongo_date.enableRule(req.body, function (err, org) {
+        mongo_data.enableRule(req.body, function (err, org) {
             if (err) res.status(500).send(org);
             else res.send(org);
         });
@@ -850,7 +977,7 @@ exports.init = function (app) {
 
     app.get('/meshClassification', function (req, res) {
         if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        mongo_date.findMeshClassification({flatClassification: req.query.classification}, function (err, mm) {
+        mongo_data.findMeshClassification({flatClassification: req.query.classification}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm[0]);
         });
@@ -858,7 +985,7 @@ exports.init = function (app) {
 
     app.get('/meshByEltId/:id', function (req, res) {
         if (!req.params.id) return res.status(400).send("Missing Id parameter");
-        mongo_date.findMeshClassification({eltId: req.params.id}, function (err, mm) {
+        mongo_data.findMeshClassification({eltId: req.params.id}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm[0]);
         });
@@ -866,7 +993,7 @@ exports.init = function (app) {
 
 
     app.get('/meshClassifications', function (req, res) {
-        mongo_date.findMeshClassification({}, function (err, mm) {
+        mongo_data.findMeshClassification({}, function (err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm);
         });
@@ -922,7 +1049,7 @@ exports.init = function (app) {
             delete req.body._id;
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
-                mongo_date.MeshClassification.findOne({_id: id}, function (err, elt) {
+                mongo_data.MeshClassification.findOne({_id: id}, function (err, elt) {
                     elt.meshDescriptors = req.body.meshDescriptors;
                     elt.flatTrees = req.body.flatTrees;
                     elt.save(function (err, o) {
@@ -933,7 +1060,7 @@ exports.init = function (app) {
         } else {
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
                 req.body.flatTrees = trees;
-                new mongo_date.MeshClassification(req.body).save(function (err, obj) {
+                new mongo_data.MeshClassification(req.body).save(function (err, obj) {
                     if (err) res.status(500).send();
                     else {
                         res.send(obj);
@@ -965,7 +1092,7 @@ exports.init = function (app) {
     }).start();
 
     app.get('/comments/eltId/:eltId', function (req, res) {
-        mongo_date.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
+        mongo_data.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function (err, comments) {
             let result = comments.filter(c => c.status !== 'deleted');
             result.forEach(function (c) {
                 c.replies = c.replies.filter(r => r.status !== 'deleted');
@@ -981,7 +1108,7 @@ exports.init = function (app) {
     });
 
     app.get('/comment/:commentId', function (req, res) {
-        mongo_date.Comment.findOne({_id: req.params.commentId}).exec(function (err, comment) {
+        mongo_data.Comment.findOne({_id: req.params.commentId}).exec(function (err, comment) {
             if (err) res.send(500);
             else
                 res.send(comment);
@@ -1005,5 +1132,30 @@ exports.init = function (app) {
         adminItemSvc.updateCommentStatus(req, res, "active");
     });
     app.post('/comments/reply', adminItemSvc.replyToComment);
+
+    app.get('/statsNew/cde', function (req, res) {
+        elastic.elasticsearch(elastic.queryNewest, 'cde', (err, result) => {
+            if (err) return res.status(400).send("invalid query");
+            res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
+        });
+    });
+    app.get('/statsNew/form', function (req, res) {
+        elastic.elasticsearch(elastic.queryNewest, 'form', (err, result) => {
+            if (err) return res.status(400).send("invalid query");
+            res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
+        });
+    });
+    app.get('/statsTopViews/cde', function (req, res) {
+        elastic.elasticsearch(elastic.queryMostViewed, 'cde', (err, result) => {
+            if (err) return res.status(400).send("invalid query");
+            res.send(result.cdes.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
+        });
+    });
+    app.get('/statsTopViews/form', function (req, res) {
+        elastic.elasticsearch(elastic.queryMostViewed, 'form', (err, result) => {
+            if (err) return res.status(400).send("invalid query");
+            res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
+        });
+    });
 
 };

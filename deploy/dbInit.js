@@ -1,9 +1,9 @@
 db.users.remove({});
-db.users.remove({});
 db.dataelements.remove({});
+db.dataelementdrafts.remove({});
 db.orgs.remove({});
 db.forms.remove({});
-db.drafts.remove({});
+db.formdrafts.remove({});
 db.pinningBoards.remove({});
 db.messages.remove({});
 db.sessions.remove({});

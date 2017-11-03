@@ -7,7 +7,7 @@ import "rxjs/add/operator/distinctUntilChanged";
 
 //noinspection TypeScriptCheckImport
 import { Observable } from "rxjs/Rx";
-import { AlertService } from "../../alert/alert.service";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-edit-site-admins",

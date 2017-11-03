@@ -1,0 +1,141 @@
+<div class="navbar navbar-toggleable-sm navbar-inverse" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only sr-only-focusable">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" routerLink="/home" id="homeLink">
+            <img alt="Home" src="/cde/public/assets/img/nih-cde-logo-simple.png" style="margin-top: -7px"/>
+        </a>
+    </div>
+    <div class="navbar-collapse collapse" id="main-navigation">
+        <div class="hidden-sm-down">
+            <ng-container *ngTemplateOutlet="topMenu; context: largeContext;"></ng-container>
+        </div>
+        <div class="hidden-md-up">
+            <ng-container *ngTemplateOutlet="topMenu; context: smallContext"></ng-container>
+        </div>
+    </div>
+</div>
+
+<ng-template #topMenu let-toggleaction>
+    <ul class="nav navbar-nav">
+        <li class="nav-item" [ngClass]="{active: isPageActive('/cde/search')}">{{toggleaction}}
+            <a id="menu_cdes_link" routerLink="/cde/search" [attr.data-toggle]="toggleaction"
+               attr.aria-controls="main-navigation" attr.aria-expanded="false">CDEs</a>
+        </li>
+        <li class="nav-item" [ngClass]="{active: isPageActive('/form/search')}">
+            <a id="menu_forms_link" routerLink="/form/search" [attr.data-toggle]="toggleaction"
+               attr.aria-controls="main-navigation" attr.aria-expanded="false">Forms</a>
+        </li>
+        <li ngbDropdown class="nav-item" [ngClass]="{active: isPageActive('/boardList') || isPageActive('/myboards')}"
+            *ngIf="userService.user?._id">
+            <a ngbDropdownToggle class="dropdown-toggle" id="boardsMenu" title="Boards"
+               attr.aria-label="Boards">Boards<span class="caret"></span></a>
+            <div role="menu" class="dropdown-menu" attr.aria-labelledby="boardsMenu" attr.aria-expanded="true">
+                <a routerLink="/boardList" id="publicBoardsLink"
+                   class="dropdown-item" [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Public Boards</a>
+                <a routerLink="/myboards" id="myBoardsLink"
+                   class="dropdown-item" [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">My Boards</a>
+            </div>
+        </li>
+        <li id="boardsMenu" class="nav-item" [ngClass]="{active: isPageActive('/boardList')}"
+            *ngIf="!userService.user?._id">
+            <a routerLink="/boardList" attr.aria-controls="main-navigation" [attr.data-toggle]="toggleaction"
+               attr.aria-expanded="false">Boards</a>
+        </li>
+        <li ngbDropdown class="nav-item"
+            [ngClass]="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
+            [hidden]="!authShared.isOrgCurator(userService.user)" id="createEltLink">
+            <a ngbDropdownToggle class="dropdown-toggle" id="dropdownMenu2" title="Create"
+               attr.aria-label="Create">Create<span class="caret"></span></a>
+            <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu2">
+                <a id="createCDELink" routerLink="/createCde"
+                   class="dropdown-item" [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">CDE</a>
+                <a id="createFormLink" routerLink="/createForm" *ngIf="authShared.canCreateForms(userService.user)"
+                   class="dropdown-item" [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Form</a>
+            </div>
+        </li>
+        <li id="menu_qb_link" class="nav-item" [ngClass]="{ active: isPageActive('/quickBoard')}">
+            <a routerLink="/quickBoard"
+               [textContent]="'Quick Board (' + (quickBoardService.number_dataElements + quickBoardService.number_forms) + ')'"
+               attr.aria-controls="main-navigation" attr.aria-expanded="false" attr.aria-label="Quick Board"
+               [attr.data-toggle]="toggleaction">
+            </a>
+        </li>
+        <li id="menu_help_link" class="nav-item" ngbDropdown [ngClass]="{active: isPageActive('/help')}">
+            <a ngbDropdownToggle class="dropdown-toggle" id="dropdownMenu_help" title="Help"
+               attr.aria-label="Help">Help<span class="caret"></span></a>
+            <div role="menu" class="dropdown-menu" attr.aria-labelledby="dropdownMenu_help">
+                <a routerLink="/api" class="dropdown-item"
+                   id="apiDocumentationLink"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">API Documentation</a>
+            </div>
+        </li>
+    </ul>
+    <ul class="ieFix nav navbar-nav navbar-right" attr.data-userloaded="loaded-{{userService.user?true:false}}">
+        <li class="nav-item">
+            <a *ngIf="userService.user?.hasMail" title="New messages" routerLink="/inbox">
+                <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
+        </li>
+        <li class="nav-item login" [ngClass]="{active: isPageActive('/login')}" [hidden]="userService.user?._id">
+            <a (click)="loginSvc.goToLogin()" id="login_link" title="Log in" routerLink="/login"
+               [attr.data-toggle]="toggleaction"
+               attr.aria-controls="main-navigation" attr.aria-expanded="false">Log In</a>
+        </li>
+        <li ngbDropdown class="nav-item login" *ngIf="userService.user?._id">
+            <a ngbDropdownToggle class="dropdown-toggle" id="username_link"
+               title="{{userService.user?.username}}" attr.aria-label="{{userService.user?.username}}">
+                <span [textContent]="userService.user?.username | cdeTruncateLongName"></span><span class="caret"></span></a>
+            <div role="menu" class="dropdown-menu" attr.aria-labelledby="username_link">
+                <a routerLink="/profile" id="user_profile" class="dropdown-item" [hidden]="!userService.user?._id"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Profile</a>
+                <a routerLink="/inbox" id="user_inbox" class="dropdown-item"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Inbox</a>
+                <a routerLink="/orgComments" id="org_comments" class="dropdown-item"
+                   [hidden]="!authShared.isOrgCurator(userService.user) || userService.user?.siteAdmin"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Org Comments</a>
+                <a routerLink="/classificationmanagement" id="user_classifications" class="dropdown-item"
+                   [hidden]="!authShared.isOrgCurator(userService.user)"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Classifications</a>
+                <a routerLink="/orgAuthority" id="user_org_authority" class="dropdown-item"
+                   [hidden]="!authShared.canOrgAuthority(userService.user)"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Org Management</a>
+                <a routerLink="/orgaccountmanagement" id="user_account_management" class="dropdown-item"
+                   [hidden]="!authShared.isOrgAdmin(userService.user)"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Account Management</a>
+                <a routerLink="/siteaccountmanagement" id="user_site_management" class="dropdown-item"
+                   [hidden]="!userService.user?._id || !userService.user?.siteAdmin"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Site Management</a>
+                <a routerLink="/siteAudit" id="user_audit" class="dropdown-item"
+                   [hidden]="!userService.user?._id || !userService.user?.siteAdmin"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Audit</a>
+                <a (click)="loginSvc.logout()" target="_self" id="user_logout" class="dropdown-item"
+                   [hidden]="!userService.user?._id"
+                   [attr.data-toggle]="toggleaction"
+                   attr.aria-controls="main-navigation" attr.aria-expanded="false">Log Out</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a routerLink="/searchPreferences" title="open search setting"
+               [attr.data-toggle]="toggleaction"
+               attr.aria-controls="main-navigation" attr.aria-expanded="false">
+                <i class="fa fa-cog navbar-inverse text-muted" id="searchSettings"></i></a>
+        </li>
+    </ul>
+</ng-template>

@@ -15,12 +15,12 @@ public class FormEmptyPermissibleValueMeaningTest extends QuestionTest {
         String formName = "PROMIS SF v1.0 - Applied Cog Abilities 4a";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         addQuestionToSection(cdeName, 0);
         newFormVersion();
 
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//span[contains(@class, 'label')]"));
         Assert.assertEquals(lis.size(), 11);
         Assert.assertEquals(lis.get(0).getText(), "no problem");

@@ -1,137 +1,50 @@
 <!doctype html>
-<html xmlns:ng="http://angularjs.org" id="ng-app" lang="en">
+<html lang="en">
 <head>
-    <title>NIH CDE Repository</title>
-
-    <!-- bower:css -->
-    <link rel="stylesheet" href="/components/font-awesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="/components/selectize/dist/css/selectize.css" />
-    <link rel="stylesheet" href="/components/angular-ui-select/dist/select.css" />
-    <link rel="stylesheet" href="/components/textAngular/dist/textAngular.css" />
-    <link rel="stylesheet" href="/components/bootstrap-css-only/css/bootstrap.css" />
-    <link rel="stylesheet" href="/components/jquery-ui/themes/start/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/components/autocomplete-lhc/source/auto_completion.css" />
-    <link rel="stylesheet" href="/components/lforms/app/styles/lforms.css" />
-    <!-- endbower -->
+    <title>LForms / NIH CDE Repository</title>
+    <link  rel="stylesheet" href="https://clin-table-search.lhc.nlm.nih.gov/lforms-versions/11.2.1/styles/lforms.min.css"/>
 </head>
-<body ng-app="lformsWidget">
-<div ng-controller="CDELFormsController" style="max-width: 1000px;margin: 0 auto">
-    <lforms lf-data="lfData"
-            lf-options='lfOptions'></lforms>
-</div>
+<body >
 
-<!-- bower:js -->
-<script src="/components/jquery/jquery.js"></script>
-<script src="/components/angular/angular.js"></script>
-<script src="/components/angular-route/angular-route.js"></script>
-<script src="/components/angular-resource/angular-resource.js"></script>
-<script src="/components/angular-sanitize/angular-sanitize.js"></script>
-<script src="/components/angular-animate/angular-animate.js"></script>
-<script src="/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="/components/angular-local-storage/dist/angular-local-storage.js"></script>
-<script src="/components/angular-timeago/dist/angular-timeago.js"></script>
-<script src="/components/select2/dist/js/select2.js"></script>
-<script src="/components/sifter/sifter.js"></script>
-<script src="/components/microplugin/src/microplugin.js"></script>
-<script src="/components/selectize/dist/js/selectize.js"></script>
-<script src="/components/angular-ui-select/dist/select.js"></script>
-<script src="/components/rangy/rangy-core.js"></script>
-<script src="/components/rangy/rangy-classapplier.js"></script>
-<script src="/components/rangy/rangy-highlighter.js"></script>
-<script src="/components/rangy/rangy-selectionsaverestore.js"></script>
-<script src="/components/rangy/rangy-serializer.js"></script>
-<script src="/components/rangy/rangy-textrange.js"></script>
-<script src="/components/textAngular/dist/textAngular.js"></script>
-<script src="/components/textAngular/dist/textAngular-sanitize.js"></script>
-<script src="/components/textAngular/dist/textAngularSetup.js"></script>
-<script src="/components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="/components/angularjs-camelCase-human/camelcase-browser.js"></script>
-<script src="/components/html2canvas/build/html2canvas.js"></script>
-<script src="/components/angular-send-feedback/dist/angular-send-feedback.js"></script>
-<script src="/components/ng-file-upload/angular-file-upload.js"></script>
-<script src="/components/jszip/dist/jszip.js"></script>
-<script src="/components/jxon/index.js"></script>
-<script src="/components/jscrypto/crypto.js"></script>
-<script src="/components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
-<script src="/components/checklist-model/checklist-model.js"></script>
-<script src="/components/jquery-ui/jquery-ui.js"></script>
-<script src="/components/angular-ui-sortable/sortable.js"></script>
-<script src="/components/angular-ui-scrollpoint/dist/scrollpoint.js"></script>
-<script src="/components/async/dist/async.js"></script>
-<script src="/components/angular-elastic/elastic.js"></script>
-<script src="/components/autocomplete-lhc/source/polyfill.js"></script>
-<script src="/components/autocomplete-lhc/source/prototype_api.js"></script>
-<script src="/components/autocomplete-lhc/source/effects.js"></script>
-<script src="/components/autocomplete-lhc/source/effectScroll.js"></script>
-<script src="/components/autocomplete-lhc/source/event.simulate.js"></script>
-<script src="/components/autocomplete-lhc/source/observable.js"></script>
-<script src="/components/autocomplete-lhc/source/screenReaderLog.js"></script>
-<script src="/components/autocomplete-lhc/source/recordDataRequester.js"></script>
-<script src="/components/autocomplete-lhc/source/fieldAlarms.js"></script>
-<script src="/components/autocomplete-lhc/soundmanager/bonk.js"></script>
-<script src="/components/autocomplete-lhc/source/dialog.js"></script>
-<script src="/components/autocomplete-lhc/source/autoCompBase.js"></script>
-<script src="/components/autocomplete-lhc/source/suggestionDialog.js"></script>
-<script src="/components/autocomplete-lhc/source/autoCompPrefetch.js"></script>
-<script src="/components/autocomplete-lhc/source/autoCompSearch.js"></script>
-<script src="/components/autocomplete-lhc/source/autoCompEvents.js"></script>
-<script src="/components/autocomplete-lhc/source/autocomplete-lhc.js"></script>
-<script src="/components/ngSmoothScroll/lib/angular-smooth-scroll.js"></script>
-<script src="/components/element-resize-detector/dist/element-resize-detector.js"></script>
-<script src="/components/lforms/app/lforms.js"></script>
-<script src="/components/lforms/app/scripts/lforms-constants.js"></script>
-<script src="/components/lforms/app/scripts/lforms-config.js"></script>
-<script src="/components/lforms/app/scripts/lforms-controllers.js"></script>
-<script src="/components/lforms/app/scripts/lforms-directives.js"></script>
-<script src="/components/lforms/app/scripts/lib/date.js"></script>
-<script src="/components/lforms/app/scripts/lib/js-class.js"></script>
-<script src="/components/lforms/app/scripts/lib/cross_browser.js"></script>
-<script src="/components/lforms/app/scripts/lib/lforms-util.js"></script>
-<script src="/components/lforms/app/scripts/lib/polyfill.js"></script>
-<script src="/components/lforms/app/scripts/lib/lforms-hl7.js"></script>
-<script src="/components/lforms/app/scripts/lib/lforms-fhir.js"></script>
-<script src="/components/lforms/app/scripts/lib/lforms-validate.js"></script>
-<script src="/components/lforms/app/scripts/lib/lforms-data.js"></script>
-<script src="/components/lforms/app/lforms.tpl.js"></script>
-<script src="/components/oboe/dist/oboe-browser.js"></script>
-<script src="/components/traverse/traverse.js"></script>
-<script src="/components/lodash/lodash.js"></script>
-<script src="/components/lforms-converter/parser/ast.js"></script>
-<script src="/components/lforms-converter/parser/skl-parser.js"></script>
-<script src="/components/lforms-converter/parser/skl-condition-parser.js"></script>
-<script src="/components/lforms-converter/lforms-converter.js"></script>
-<!-- endbower -->
+<div id="myFormContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/oboe@2.1.4/dist/oboe-browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/object-traverse@1.1.1/index.min.js"></script>
+
+<script src="https://clin-table-search.lhc.nlm.nih.gov/lforms-versions/11.2.1/lforms.min.js"></script>
+<script src="/form/public/assets/traverse.js"></script>
+<script src="/form/public/assets/ast.js"></script>
+<script src="/form/public/assets/skl-parser.js"></script>
+<script src="/form/public/assets/skl-condition-parser.js"></script>
+<script src="/form/public/assets/lforms-converter.js"></script>
 
 <script language="JavaScript">
-    var getUrlParameter = function getUrlParameter(sParam) {
-        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-            sURLVariables = sPageURL.split('&'),
-            sParameterName,
-            i;
 
-        for (i = 0; i < sURLVariables.length; i++) {
-            sParameterName = sURLVariables[i].split('=');
-
-            if (sParameterName[0] === sParam) {
-                return sParameterName[1] === undefined ? true : sParameterName[1];
-            }
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results == null){
+            return null;
+        }
+        else{
+            return decodeURI(results[1]) || 0;
         }
     };
-    angular.module('lformsWidget').controller('CDELFormsController', ['$scope', function ($scope) {
-        $scope.lfOptions = {
-            showCodingInstruction: true
-        };
+
+    $(document).ready(function () {
         var converter = new LForms.LFormsConverter();
-        converter.convert('/form/' + getUrlParameter('tinyId'),
-            function (lfData) {
-                $scope.lfData = new LFormsData(lfData);
-                $scope.$apply($scope.lfData);
+
+        converter.convert("/form/" + $.urlParam('tinyId'),
+            function(lfData) {
+                window.myFormDefinition = lfData;
+                LForms.Util.addFormToPage('myFormDefinition', 'myFormContainer');
             },
-            function (err) {
-                $scope.error = err;
+            function(err) {
+                scope.error = err;
             }
         );
-    }]);
+    });
+
 </script>
 </body>
 </html>

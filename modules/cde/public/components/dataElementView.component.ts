@@ -1,20 +1,40 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
-import { AlertService } from "../../../system/public/components/alert/alert.service";
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { SharedService } from 'core/shared.service';
+import { UserService } from 'core/user.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as deValidator from "../../shared/deValidator.js";
+import { AlertService } from '_app/alert/alert.service';
+import { OrgHelperService } from 'core/orgHelper.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: "cde-data-element-view",
-    templateUrl: "dataElementView.component.html"
+    templateUrl: "dataElementView.component.html",
+    styles: [`
+        .marginTopBottom5 {
+            margin: 5px 0
+        }
+
+        #leftNav {
+            z-index: 1;
+        }
+
+        .mobileViewH1 {
+            font-size: 20px;
+        }
+    `]
 })
 export class DataElementViewComponent implements OnInit {
     @ViewChild("copyDataElementContent") public copyDataElementContent: NgbModalModule;
     @ViewChild("commentAreaComponent") public commentAreaComponent: DiscussAreaComponent;
-    @Input() routeParams: any;
+    @ViewChild("tabSet") public tabSet: NgbTabset;
     @Output() public h = new EventEmitter();
 
     elt: any;
@@ -26,68 +46,108 @@ export class DataElementViewComponent implements OnInit {
     currentTab = "general_tab";
     highlightedTabs = [];
     canEdit: boolean = false;
+    drafts = [];
+    deId;
+    mobileView: boolean = false;
+    orgNamingTags = [];
+    tabsCommented = [];
+    tinyId;
+    url;
+    draftSubscription: Subscription;
+    savingText: String;
 
     constructor(private http: Http,
+                private route: ActivatedRoute,
+                private router: Router,
                 private ref: ChangeDetectorRef,
                 public modalService: NgbModal,
-                @Inject("isAllowedModel") public isAllowedModel,
+                public isAllowedModel: IsAllowedService,
+                private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                @Inject("userResource") public userService) {
+                public userService: UserService) {
+        this.mobileView = window.innerWidth <= 800;
     }
 
-    ngOnInit(): void {
-        let cdeId = this.routeParams.cdeId;
-        let url = "/de/" + this.routeParams.tinyId;
-        if (cdeId) url = "/deById/" + cdeId;
-        this.http.get(url).map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.http.get("/comments/eltId/" + this.elt.tinyId)
-                    .map(res => res.json()).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    err => this.alert.addAlert("danger", "Error on loading comments. " + err)
-                );
-                this.isAllowedModel.setDisplayStatusWarning(this);
-                this.userService.getPromise().then(() => {
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.mobileView = window.innerWidth <= 800;
+    }
+
+    ngOnInit() {
+        this.route.queryParams.subscribe(() => {
+            this.loadDataElement(de => {
+                this.userService.then(() => {
+                    this.orgHelperService.then(() => {
+                        let user = this.userService.user;
+                        if (user && user.username) {
+                            this.loadComments(de, null);
+                            this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                        }
+                        else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                        let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
+                        this.elt.naming.forEach(n => {
+                            n.tags.forEach(t => {
+                                allNamingTags.push(t);
+                            });
+                        });
+                        this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
+                            return {id: t, text: t};
+                        });
+                    });
                 });
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
+            });
+        });
+    }
+
+    loadDataElement(cb) {
+        let cdeId = this.route.snapshot.queryParams['cdeId'];
+        let url = "/de/" + this.route.snapshot.queryParams['tinyId'];
+        if (cdeId) url = "/deById/" + cdeId;
+        this.http.get(url).map(res => res.json()).subscribe(res => {
+                this.elt = res;
+                this.deId = this.elt._id;
+                this.userService.then(() => {
+                    let user = this.userService.user;
+                    if (user && user.username)
+                        deValidator.checkPvUnicity(this.elt.valueDomain);
+                    this.setDisplayStatusWarning();
+                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
+                    if (cb) cb(this.elt);
+                });
+            }, () => this.router.navigate(['/pageNotFound'])
         );
     }
 
-    onLocationChange(event, oldUrl, elt) {
-        if (elt && elt.unsaved && oldUrl.indexOf("deView") > -1) {
-            let txt = "You have unsaved changes, are you sure you want to leave this page? ";
-            if ((window as any).debugEnabled) {
-                txt = txt + window.location.pathname;
+    loadComments(de, cb) {
+        this.http.get("/comments/eltId/" + de.tinyId)
+            .map(res => res.json()).subscribe(res => {
+            this.hasComments = res && (res.length > 0);
+            this.tabsCommented = res.map(c => c.linkedTab + '_tab');
+            if (cb) cb();
+        }, err => this.alert.addAlert("danger", "Error loading comments. " + err));
+    }
+
+    setDisplayStatusWarning() {
+        let assignValue = () => {
+            if (!this.elt) return false;
+            if (this.elt.archived || this.userService.user.siteAdmin) {
+                return false;
+            } else {
+                if (this.userService.userOrgs) {
+                    return SharedService.auth.isCuratorOf(this.userService.user, this.elt.stewardOrg.name) &&
+                        (this.elt.registrationState.registrationStatus === "Standard" ||
+                            this.elt.registrationState.registrationStatus === "Preferred Standard");
+                } else {
+                    return false;
+                }
             }
-            let answer = confirm(txt);
-            if (!answer) {
-                event.preventDefault();
-            }
-        }
-    }
-
-    reloadDataElement() {
-        this.http.get("/de/" + this.elt.tinyId).map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.alert.addAlert("success", "Changes discarded.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
-        );
-    }
-
-    saveDataElement() {
-        this.http.put("/de/" + this.elt.tinyId, this.elt).map(r => r.json()).subscribe(response => {
-                this.elt = response;
-                this.h.emit({elt: this.elt, fn: this.onLocationChange});
-                this.alert.addAlert("success", "Data Element saved.");
-            }, () => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element.")
-        );
-        this.isAllowedModel.setDisplayStatusWarning(this);
-        this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-    }
+        };
+        this.userService.then(() => {
+            this.displayStatusWarning = assignValue();
+        });
+    };
 
     openCopyElementModal() {
         this.eltCopy = _.cloneDeep(this.elt);
@@ -123,19 +183,9 @@ export class DataElementViewComponent implements OnInit {
         this.highlightedTabs = $event;
     }
 
-    beforeChange(event) {
-        this.currentTab = event.nextId;
-        if (this.commentMode)
-            this.commentAreaComponent.setCurrentTab(this.currentTab);
-    }
-
-    doStageElt() {
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Save to confirm.");
-        } else {
-            this.saveDataElement();
-            this.modalRef.close();
-        }
+    setCurrentTab(currentTab) {
+        this.currentTab = currentTab;
+        if (this.commentMode) this.commentAreaComponent.setCurrentTab(this.currentTab);
     }
 
     removeAttachment(index) {
@@ -162,7 +212,6 @@ export class DataElementViewComponent implements OnInit {
         });
     }
 
-
     upload(event) {
         if (event.srcElement.files) {
             let files = event.srcElement.files;
@@ -183,4 +232,51 @@ export class DataElementViewComponent implements OnInit {
             );
         }
     }
+
+    loadDraft(cb) {
+        this.http.get("/draftDataElement/" + this.elt.tinyId)
+            .map(res => res.json()).subscribe(res => {
+                if (res && res.length > 0) {
+                    this.drafts = res;
+                    this.elt = res[0];
+                    deValidator.checkPvUnicity(this.elt.valueDomain);
+                } else this.drafts = [];
+                if (cb) cb();
+            },
+            err => this.alert.addAlert("danger", err));
+    }
+
+    saveDraft(cb) {
+        this.savingText = 'Saving ...';
+        this.elt._id = this.deId;
+        if (this.draftSubscription) this.draftSubscription.unsubscribe();
+        this.draftSubscription = this.http.post("/draftDataElement/" + this.elt.tinyId, this.elt)
+            .map(res => res.json()).subscribe(res => {
+                this.savingText = "Saved";
+                setTimeout(() => {
+                    this.savingText = "";
+                }, 3000);
+                this.elt.isDraft = true;
+                if (cb) cb(res);
+            }, err => this.alert.addAlert("danger", err));
+    }
+
+    saveDataElement() {
+        this.http.put("/de/" + this.elt.tinyId, this.elt)
+            .map(res => res.json()).subscribe(res => {
+            if (res) {
+                this.loadDataElement(() => this.alert.addAlert("success", "Data Element saved."));
+                this.loadDraft(null);
+            }
+        }, err => this.alert.addAlert("danger", "Sorry, we are unable to retrieve this data element."));
+    }
+
+    removeDraft() {
+        this.http.delete("/draftDataElement/" + this.elt.tinyId)
+            .subscribe(res => {
+                this.drafts = [];
+                if (res) this.loadDataElement(null);
+            }, err => this.alert.addAlert("danger", err));
+    }
+
 }

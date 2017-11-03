@@ -1,7 +1,8 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MyBoardsService } from "../../myBoards.service";
 import { Http } from "@angular/http";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { UserService } from 'core/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-my-boards',
@@ -14,7 +15,7 @@ export class MyBoardsComponent implements OnInit {
     suggestTags = [];
 
     constructor(public myBoardsSvc: MyBoardsService,
-                @Inject("userResource") public userService,
+                public userService: UserService,
                 private http: Http,
                 private alert: AlertService) {}
 

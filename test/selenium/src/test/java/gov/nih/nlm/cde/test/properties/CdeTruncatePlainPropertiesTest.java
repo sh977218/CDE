@@ -21,10 +21,8 @@ public class CdeTruncatePlainPropertiesTest extends NlmCdeBaseTest {
         newValue = newValue + newValue + newValue;
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("properties_tab"));
+        goToProperties();
         editPropertyValueByIndex(1, newValue, false);
-        textPresent("Data Element saved.");
-        closeAlert();
 
         scrollToViewById("openNewPropertyModalBtn");
         clickElement(By.xpath("//*[@id='value_1']/descendant::span[text()='More']"));

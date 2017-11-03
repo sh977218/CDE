@@ -16,7 +16,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
 
         textNotPresent("Multiple Selections:");
         startEditQuestionSectionById("question_0_0");
@@ -36,7 +36,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         newFormVersion();
 
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textNotPresent("Female Gender");
         startEditQuestionSectionById("question_0_0");
         clickElement(By.cssSelector(".formDescriptionAnswerList .select2-search__field"));
@@ -45,7 +45,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         newFormVersion();
 
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("Female Gender");
     }
 

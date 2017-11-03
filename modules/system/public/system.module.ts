@@ -12,23 +12,18 @@ import { RecaptchaModule } from 'ng-recaptcha';
 import { SelectBoardDirective } from "./upgrade-components";
 import { ProfileComponent } from "./components/profile.component";
 import { UserCommentsComponent } from "./components/userComments.component";
-import { HomeComponent } from "./components/home/home.component";
 import { ListManagementComponent } from "./components/siteAdmin/listManagement/listManagement.component";
 import { LogAuditComponent } from "./components/siteAdmin/logAudit/logAudit.component";
 import { UsersMgtComponent } from "./components/siteAdmin/usersMgt/usersMgt.component";
 import { DailyUsageComponent } from "./components/siteAdmin/dailyUsage/dailyUsage.component";
 import { OrgAdminComponent } from "./components/siteAdmin/orgAdmin/orgAdmin.component";
-import { NavigationComponent } from "./components/navigation.component";
 import { SwaggerComponent } from "./components/swagger.component";
-import { TruncateLongNamePipe } from "./truncateLongName.pipe";
-import { AlertComponent } from "./components/alert/alert.component";
-import { AlertService } from "./components/alert/alert.service";
 import { AppLogComponent } from "./components/siteAdmin/appLogs/appLog.component";
 import { AuditLogComponent } from "./components/siteAdmin/auditLog/auditLog.component";
 import { CdeDiffPopulateService } from "./components/siteAdmin/auditLog/cdeDiffPopulate.service";
 import { ClassificationAuditLogComponent } from "./components/siteAdmin/classificationAuditLog/classificationAuditLog.component";
 
-import { CamelCaseToHumanPipe } from 'core/public/camelCaseToHumanPipe';
+import { CamelCaseToHumanPipe } from 'core/camelCaseToHumanPipe';
 import { ClientErrorsComponent } from "./components/siteAdmin/clientErrors/clientErrors.component";
 import { ServerErrorsComponent } from "./components/siteAdmin/serverErrors/serverErrors.component";
 import { SiteAuditComponent } from "./components/siteAdmin/siteAudit/siteAudit.component";
@@ -51,6 +46,22 @@ import { OrgAccountManagementComponent } from "./components/siteAdmin/orgAccount
 import { OrgClassificationManagementComponent } from 'system/public/components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component';
 import { TreeModule } from 'angular-tree-component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { RouterModule, Routes } from "@angular/router";
+import { LatestCommentsComponent } from "discuss/components/latestComments/latestComments.component";
+
+const appRoutes: Routes = [
+    {path: 'api', component: SwaggerComponent},
+    {path: 'login', component: LoginComponent},
+    {path: 'siteAudit', component: SiteAuditComponent},
+    {path: 'inbox', component: InboxComponent},
+    {path: 'siteaccountmanagement', component: SiteManagementComponent},
+    {path: 'orgaccountmanagement', component: OrgAccountManagementComponent},
+    {path: 'classificationmanagement', component: OrgClassificationManagementComponent},
+    {path: 'orgAuthority', component: OrgAuthorityComponent},
+    {path: 'profile', component: ProfileComponent},
+    {path: 'searchPreferences', component: SearchPreferencesComponent},
+    {path: 'orgComments', component: LatestCommentsComponent, data: {commentsUrl: "orgComments"}},
+];
 
 @NgModule({
     imports: [
@@ -60,16 +71,16 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         JsonpModule,
         NgbModule,
         RecaptchaModule.forRoot(),
+        RouterModule.forChild(appRoutes),
         Select2Module,
-        TreeModule,
         // internal
+        TreeModule,
         AdminItemModule,
         SearchModule,
         WidgetModule,
-        DiscussModule,
+        DiscussModule
     ],
     declarations: [
-        AlertComponent,
         AppLogComponent,
         AuditLogComponent,
         CamelCaseToHumanPipe,
@@ -79,12 +90,10 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         EditSiteAdminsComponent,
         EmbedComponent,
         FeedbackIssuesComponent,
-        HomeComponent,
         InboxComponent,
         ListManagementComponent,
         LogAuditComponent,
         LoginComponent,
-        NavigationComponent,
         OrgAccountManagementComponent,
         OrgAdminComponent,
         OrgAuthorityComponent,
@@ -100,20 +109,15 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         SwaggerComponent,
         SelectBoardDirective,
         TimeAgoPipe,
-        TruncateLongNamePipe,
         UserCommentsComponent,
         UsersMgtComponent,
     ],
     entryComponents: [
-        AlertComponent,
-        HomeComponent,
         InboxComponent,
         LoginComponent,
-        NavigationComponent,
         OrgAccountManagementComponent,
         OrgAuthorityComponent,
         OrgClassificationManagementComponent,
-        ProfileComponent,
         ServerStatusComponent,
         SearchPreferencesComponent,
         SiteAuditComponent,
@@ -122,9 +126,10 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
         SwaggerComponent,
         UsersMgtComponent,
     ],
-    exports: [],
+    exports: [
+        RouterModule,
+    ],
     providers: [
-        AlertService,
         CdeDiffPopulateService,
         LoginService,
         RegistrationValidatorService,

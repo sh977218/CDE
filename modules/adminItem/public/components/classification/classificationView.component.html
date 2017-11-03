@@ -1,11 +1,12 @@
 <div *ngFor="let classification of elt.classification;let i = index">
-    <div *ngIf="isAllowedModel.showWorkingGroups(classification)" class="floatLeft boxed-div"
+    <div *ngIf="showWorkingGroups(classification)" class="floatLeft boxed-div"
          id="classificationOrg-{{classification.stewardOrg.name}}">
         <h4>{{classification.stewardOrg.name}}</h4>
         <hr/>
         <tree-root #treeRoot [nodes]="classification.elements" [options]="options">
             <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                <a href="{{searchByClassification(node,classification.stewardOrg.name)}}" [id]="node.path">
+                <a [routerLink]="[getClassifLink()]"
+                   [queryParams]="searchByClassificationParams(node,classification.stewardOrg.name)" [id]="node.path">
                     {{ node.data.name }}</a>
                 <i *ngIf="isAllowedModel.isAllowed(elt)"
                    class="fa fa-trash-o hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"

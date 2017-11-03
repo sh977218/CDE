@@ -14,7 +14,6 @@ import { AttachmentsComponent } from "./components/attachments/attachments.compo
 import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
-import { SortableArrayDirective } from "./upgrade-components";
 import { NamingComponent } from "./components/naming.component";
 import { PropertiesComponent } from "./components/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
@@ -25,6 +24,8 @@ import { ClassificationViewComponent } from "./components/classification/classif
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
 import { CreateFormComponent } from 'form/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
+import { RouterModule } from '@angular/router';
+import { CKEditorModule } from 'ng2-ckeditor';
 
 @NgModule({
     imports: [
@@ -37,10 +38,12 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
             storageType: "localStorage"
         }),
         TreeModule,
+        CKEditorModule,
         // internal
         CompareModule,
         SearchModule,
         WidgetModule,
+        RouterModule.forChild([])
     ],
     declarations: [
         AttachmentsComponent,
@@ -56,7 +59,6 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         ReferenceDocumentComponent,
         RegistrationComponent,
         SaveModalComponent,
-        SortableArrayDirective,
         SourcesComponent,
     ],
     exports: [
@@ -73,7 +75,6 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
         ReferenceDocumentComponent,
         RegistrationComponent,
         SaveModalComponent,
-        SortableArrayDirective,
         SourcesComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

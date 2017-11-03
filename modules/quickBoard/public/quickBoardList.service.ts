@@ -1,12 +1,11 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { LocalStorageService } from 'angular-2-local-storage';
-import { AlertService } from 'system/public/components/alert/alert.service';
 import * as _ from "lodash";
+import { AlertService } from '_app/alert/alert.service';
 
 @Injectable()
 export class QuickBoardListService {
-    eltsToCompareMap = {};
     module: string = 'cde';
     quickBoard: any;
     number_dataElements: number = 0;

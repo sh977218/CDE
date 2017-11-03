@@ -16,9 +16,9 @@
             <td>{{err.user?.username?err.user.username:"Anonymous"}}</td>
             <td>{{err.userMessage}}</td>
             <td>{{err.reportedUrl}}</td>
-            <td><a href="" (click)="showScreenshot(err.screenshot.content)">Show Screenshot</a></td>
+            <td><a (click)="showScreenshot(err.screenshot.content)">Show Screenshot</a></td>
             <td>{{err.browser}}</td>
-            <td><a href="" (click)="showRawHtml(err.rawHtml)">Show HTML</a></td>
+            <td><a (click)="showRawHtml(err.rawHtml)">Show HTML</a></td>
         </tr>
     </tbody>
 </table>

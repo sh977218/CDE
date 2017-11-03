@@ -1,5 +1,6 @@
-import { Component, Inject, OnInit } from "@angular/core";
-import { AlertService } from "../alert/alert.service";
+import { Component, OnInit } from "@angular/core";
+import { ElasticService } from 'core/elastic.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-search-preferences",
@@ -8,19 +9,19 @@ import { AlertService } from "../alert/alert.service";
 
 export class SearchPreferencesComponent implements OnInit {
 
-    constructor(@Inject('SearchSettings') public SearchSettings,
+    constructor(public esService: ElasticService,
                 private alert: AlertService) {}
 
     searchSettings: any = {tableViewFields: {}};
 
     ngOnInit () {
-        this.SearchSettings.getPromise().then(settings => {
-            this.searchSettings = settings;
+        this.esService.then(() => {
+            this.searchSettings = this.esService.searchSettings;
         });
     }
 
     saveSettings () {
-        this.SearchSettings.saveConfiguration(this.searchSettings);
+        this.esService.saveConfiguration(this.searchSettings);
         this.alert.addAlert("success", "Settings saved!");
         window.history.back();
     };
@@ -31,7 +32,7 @@ export class SearchPreferencesComponent implements OnInit {
     };
 
     loadDefault = function () {
-        let defaultSettings = this.SearchSettings.getDefault();
+        let defaultSettings = this.esService.getDefault();
         Object.keys(defaultSettings).forEach(key => {
             this.searchSettings[key] = defaultSettings[key];
         });

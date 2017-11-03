@@ -2,59 +2,63 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { RouterModule, Routes } from '@angular/router';
 import { TreeModule } from "angular-tree-component";
 import { Select2Module } from "ng2-select2";
-import { NouisliderModule } from 'ng2-nouislider';
 
 import { AdminItemModule } from "adminItem/public/adminItem.module";
 import { BoardModule } from "board/public/board.module";
 import { CdeModule } from "cde/public/cde.module";
+import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SearchModule } from "search/search.module";
 import { WidgetModule } from "widget/widget.module";
 
 import { ArrayListPipe } from "./arrayList.pipe";
 import { BoardFormSummaryListComponent } from "./components/listView/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "./components/listView/boardFormSummaryListContent.component";
+import { CreateFormComponent } from 'form/public/components/createForm.component';
+import { DiscussModule } from "discuss/discuss.module";
+import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
 import { FormAccordionListComponent } from "./components/listView/formAccordionList.component";
+import { FormClassificationComponent } from "./components/formClassification/formClassification.component";
 import { FormDescriptionComponent } from "./tabs/description/formDescription.component";
 import { FormDescriptionQuestionComponent } from "./tabs/description/formDescriptionQuestion.component";
 import { FormDescriptionQuestionDetailComponent } from "./tabs/description/formDescriptionQuestionDetail.component";
 import { FormDescriptionSectionComponent } from "./tabs/description/formDescriptionSection.component";
-import { FormSearchComponent } from "./components/search/formSearch.component";
-import { FormSummaryListContentComponent } from "./components/listView/formSummaryListContent.component";
-import { NativeRenderComponent } from "./nativeRender/nativeRender.component";
-import { NativeRenderFullComponent } from "./nativeRender/nativeRenderFull.component";
-import { NativeSectionComponent } from "./nativeRender/nativeSection.component";
-import { NativeSectionMatrixComponent } from "./nativeRender/nativeSectionMatrix.component";
-import { NativeQuestionComponent } from "./nativeRender/nativeQuestion.component";
-import { NativeTableComponent } from "./nativeRender/nativeTable.component";
-import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
-
-import { FormService } from "./form.service";
-import { SkipLogicService } from "./skipLogic.service";
 import { FormGeneralDetailsComponent } from "./components/formGeneralDetails/formGeneralDetails.component";
-import { DisplayProfileComponent } from "./components/displayProfile/displayProfile.component";
+import { FormSearchComponent } from "./components/search/formSearch.component";
+import { FormService } from "nativeRender/form.service";
+import { FormSummaryListContentComponent } from "./components/listView/formSummaryListContent.component";
 import { FormTermMappingComponent } from "./components/formTermMapping/formTermMapping.component";
 import { FormViewComponent } from "./components/formView.component";
-import { DiscussModule } from "../../discuss/discuss.module";
-import { CreateFormComponent } from 'form/public/components/createForm.component';
-import { FormClassificationComponent } from "./components/formClassification/formClassification.component";
+import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
+import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
+import { SkipLogicService } from "nativeRender/skipLogic.service";
+
+const appRoutes: Routes = [
+    {path: 'form/search', component: FormSearchComponent},
+    {path: 'form', component: FormSearchComponent},
+    {path: 'formView', component: FormViewComponent},
+    {path: 'createForm', component: CreateFormComponent},
+];
+
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
-        NouisliderModule,
+        RouterModule.forChild(appRoutes),
         Select2Module,
-        TreeModule,
         // internal
+        TreeModule,
         AdminItemModule,
         BoardModule,
         CdeModule,
+        NativeRenderModule,
         SearchModule,
         WidgetModule,
-        DiscussModule
+        DiscussModule,
     ],
     declarations: [
         ArrayListPipe,
@@ -73,11 +77,6 @@ import { FormClassificationComponent } from "./components/formClassification/for
         FormSummaryListContentComponent,
         FormTermMappingComponent,
         NativeRenderFullComponent,
-        NativeRenderComponent,
-        NativeSectionComponent,
-        NativeSectionMatrixComponent,
-        NativeQuestionComponent,
-        NativeTableComponent,
         QuickBoardFormSummaryListContentComponent,
     ],
     entryComponents: [
@@ -92,13 +91,11 @@ import { FormClassificationComponent } from "./components/formClassification/for
         FormDescriptionComponent,
         FormSearchComponent,
         FormSummaryListContentComponent,
-        NativeRenderComponent,
-        QuickBoardFormSummaryListContentComponent,
         NativeRenderFullComponent,
+        QuickBoardFormSummaryListContentComponent,
     ],
     exports: [
         FormAccordionListComponent,
-        NativeRenderComponent,
     ],
     providers: [
         FormService,

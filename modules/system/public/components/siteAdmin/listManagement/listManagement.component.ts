@@ -1,8 +1,8 @@
 import { Http } from "@angular/http";
 import { Component, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
-import { OrgHelperService } from "../../../../../core/public/orgHelper.service";
-import { AlertService } from "../../alert/alert.service";
+import { OrgHelperService } from "core/orgHelper.service";
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-list-management",

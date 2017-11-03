@@ -1,13 +1,16 @@
-import { Component, Inject, Input, Output, OnInit, ViewChild, EventEmitter } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
+import { Router } from '@angular/router';
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 
-import { ClassifyItemModalComponent } from "../../../adminItem/public/components/classification/classifyItemModal.component";
-import * as ClassificationShared from "../../../system/shared/classificationShared.js";
 import * as _ from "lodash";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
-import { ElasticService } from "../../../core/public/elastic.service";
+import { AlertService } from '_app/alert/alert.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { ElasticService } from 'core/elastic.service';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { SharedService } from 'core/shared.service';
+import { UserService } from 'core/user.service';
 
 @Component({
     selector: "cde-create-data-element",
@@ -21,12 +24,13 @@ export class CreateDataElementComponent implements OnInit {
     validationMessage;
     suggestedCdes: any[] = [];
 
-    constructor(@Inject("userResource") public userService,
-                @Inject("isAllowedModel") public isAllowedModel,
+    constructor(public userService: UserService,
+                public isAllowedModel: IsAllowedService,
                 private localStorageService: LocalStorageService,
                 private elasticService: ElasticService,
                 private http: Http,
-                private alert: AlertService) {
+                private alert: AlertService,
+                private router: Router) {
     }
 
     ngOnInit(): void {
@@ -52,7 +56,7 @@ export class CreateDataElementComponent implements OnInit {
             orgName: event.selectedOrg
         };
         let eltCopy = _.cloneDeep(this.elt);
-        ClassificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
+        SharedService.classificationShared.classifyItem(eltCopy, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
         this.elt = eltCopy;
         this.modalRef.close();
@@ -90,8 +94,8 @@ export class CreateDataElementComponent implements OnInit {
 
     confirmDelete(event) {
         let eltCopy = _.cloneDeep(this.elt);
-        let steward = ClassificationShared.findSteward(eltCopy, event.deleteOrgName);
-        ClassificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
+        let steward = SharedService.classificationShared.findSteward(eltCopy, event.deleteOrgName);
+        SharedService.classificationShared.removeCategory(steward.object, event.deleteClassificationArray, err => {
             if (err) this.alert.addAlert("danger", err);
             else {
                 for (let i = eltCopy.classification.length - 1; i >= 0; i--) {
@@ -151,11 +155,11 @@ export class CreateDataElementComponent implements OnInit {
 
     createDataElement() {
         this.http.post("/de", this.elt).map(res => res.json())
-            .subscribe(res => window.location.href = "/deView?tinyId=" + res.tinyId,
+            .subscribe(res => this.router.navigate(["/deView"], {queryParams: {tinyId: res.tinyId}}),
                 err => this.alert.addAlert("danger", err));
     }
 
     cancelCreateDataElement() {
-        window.location.href = "/";
+        this.router.navigate(["/"]);
     }
 }

@@ -1,16 +1,28 @@
-import { Component, ComponentFactoryResolver, EventEmitter, Inject, Input, Output, Type } from '@angular/core';
+import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
 import { Http } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AlertService } from 'system/public/components/alert/alert.service';
-import { ElasticService } from 'core/public/elastic.service';
-import { ExportService } from 'core/public/export.service';
+import { ElasticService } from 'core/elastic.service';
+import { ExportService } from 'core/export.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { SearchBaseComponent } from 'search/searchBase.component';
-import { OrgHelperService } from 'core/public/orgHelper.service';
+import { OrgHelperService } from 'core/orgHelper.service';
+import { UserService } from "core/user.service";
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-cde-search',
-    templateUrl: '../../../../search/searchBase.component.html'
+    templateUrl: '../../../../search/searchBase.component.html',
+    styles: [`
+        .browseLink {
+            color: #337ab7;
+        }
+
+        .browseLink:hover {
+            color: #23527c;
+            text-decoration: underline;
+        }
+    `]
 })
 export class CdeSearchComponent extends SearchBaseComponent {
     @Input() addMode: string = undefined;
@@ -27,9 +39,11 @@ export class CdeSearchComponent extends SearchBaseComponent {
                 protected modalService: NgbModal,
                 protected elasticService: ElasticService,
                 protected orgHelperService: OrgHelperService,
-                @Inject('userResource') protected userService) {
+                protected userService: UserService,
+                protected router: Router,
+                protected route: ActivatedRoute) {
         super(_componentFactoryResolver, alert, elasticService, exportService, http, modalService,
-            orgHelperService, userService);
+            orgHelperService, userService, router, route);
 
         this.exporters.csv = {id: 'csvExport', display: 'CSV Export'};
     }

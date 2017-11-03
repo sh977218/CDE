@@ -12,25 +12,16 @@ const async = require('async');
 const CronJob = require('cron').CronJob;
 const elastic = require('./elastic');
 const deValidator = require('../shared/deValidator');
+const draftSchema = require('../../cde/node-js/schemas').draftSchema;
 
 exports.type = "cde";
 exports.name = "CDEs";
-
-var conn = connHelper.establishConnection(config.database.appData);
-
-var User = conn.model('User', schemas_system.userSchema);
-var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-exports.DataElement = DataElement;
-exports.User = User;
-
-var mongo_data = this;
 
 schemas.dataElementSchema.post('remove', function (doc, next) {
     elastic.dataElementDelete(doc, function (err) {
         next(err);
     });
 });
-
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     var cdeError = deValidator.checkPvUnicity(self.valueDomain);
@@ -47,9 +38,20 @@ schemas.dataElementSchema.pre('save', function (next) {
     }
 });
 
+
+var conn = connHelper.establishConnection(config.database.appData);
+
+var User = conn.model('User', schemas_system.userSchema);
+var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
+var DataElementDraft = conn.model('DataElementDraft', draftSchema);
+exports.User = User;
+exports.DataElementDraft = DataElementDraft;
+exports.elastic = elastic;
+
+var mongo_data = this;
+
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 exports.DataElement = DataElement;
-exports.elastic = elastic;
 
 exports.byId = function (id, cb) {
     DataElement.findOne({'_id': id}, cb);
@@ -61,10 +63,6 @@ exports.byIdList = function (idList, cb) {
 
 exports.byTinyId = function (tinyId, cb) {
     DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
-};
-
-exports.byTinyIdVersion = function (tinyId, version, cb) {
-    DataElement.findOne({tinyId: tinyId, version: version}, cb);
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
@@ -86,6 +84,22 @@ exports.byTinyIdList = function (tinyIdList, callback) {
             });
             callback(err, result);
         });
+};
+
+exports.draftDataElements = function (tinyId, cb) {
+    let cond = {
+        tinyId: tinyId,
+        archived: false
+    };
+    DataElementDraft.find(cond, cb);
+};
+exports.saveDraftDataElement = function (elt, cb) {
+    delete elt.__v;
+    DataElementDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+};
+
+exports.deleteDraftDataElement = function (tinyId, cb) {
+    DataElementDraft.remove({tinyId: tinyId}, cb);
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
@@ -124,14 +138,22 @@ exports.desByConcept = function (concept, callback) {
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    let cond = {
-        'tinyId': tinyId,
-        "version": version,
-        "registrationState.registrationStatus": {$ne: "Retired"}
-    };
-    DataElement.find(cond).sort({"updated": -1}).limit(1).exec(function (err, des) {
-        callback(err, des[0]);
-    });
+    var query = {'tinyId': tinyId};
+    if (version) {
+        query.version = version;
+        DataElement.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+            if (err)
+                callback(err);
+            else if (elts.length) callback("", elts[0]);
+            else callback("", null);
+        });
+    } else {
+        query.archived = false;
+        DataElement.findOne(query).exec(function (err, elt) {
+            if (err) callback(err);
+            else callback("", elt);
+        });
+    }
 };
 
 exports.eltByTinyId = function (tinyId, callback) {
@@ -232,9 +254,7 @@ exports.create = function (cde, user, callback) {
     newDe.createdBy.userId = user._id;
     newDe.createdBy.username = user.username;
     newDe.tinyId = mongo_data_system.generateTinyId();
-    newDe.save(function (err) {
-        callback(err, newDe);
-    });
+    newDe.save(callback);
 };
 
 exports.fork = function (elt, user, callback) {
@@ -445,11 +465,12 @@ exports.derivationOutputs = function (inputTinyId, cb) {
     DataElement.find({archived: false, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
-var correctBoardPinsForCde = function (doc, cb) {
-    mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
-        if (err) throw err;
-        if (cb) cb();
-    });
+let correctBoardPinsForCde = function (doc, cb) {
+    if (doc)
+        mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
+            if (err) throw err;
+            if (cb) cb();
+        });
 };
 
 schemas.dataElementSchema.post('save', function (doc) {
@@ -468,7 +489,7 @@ new CronJob({
             if (err) throw "Cannot repair CDE references.";
             async.eachSeries(ids, function (id, cb) {
                 DataElement.findOne({tinyId: id, archived: false}).exec(function (err, de) {
-                    if (!err) correctBoardPinsForCde(de, cb);
+                    if (!err && de) correctBoardPinsForCde(de, cb);
                 });
             }, function () {
                 dbLogger.consoleLog("Board <-> CDE reference repair done!");

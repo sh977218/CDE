@@ -13,7 +13,7 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         changeDatatype(datatype);
 
         clickElement(By.xpath("//*[@id='datatypeDateFormat']//i"));
@@ -21,14 +21,14 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='datatypeDateFormat']//button[contains(@class,'fa fa-check')]"));
         newCdeVersion();
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("Date", By.xpath("//*[@id='Data Type']//ins"));
         textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
         textPresent("format1", By.xpath("//*[@id='Data Type Date Format']//ins"));
         clickElement(By.id("closeHistoryCompareModal"));
 
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         clickElement(By.xpath("//*[@id='datatypeDateFormat']//i"));
         findElement(By.xpath("//*[@id='datatypeDateFormat']//input")).clear();
         findElement(By.xpath("//*[@id='datatypeDateFormat']//input")).sendKeys("format2");
@@ -36,7 +36,7 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("format2", By.xpath("//*[@id='Data Type Date Format']//ins"));
         textPresent("format1", By.xpath("//*[@id='Data Type Date Format']//del"));

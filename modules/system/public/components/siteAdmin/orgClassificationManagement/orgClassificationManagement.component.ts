@@ -1,4 +1,5 @@
-import { Component, OnInit, Inject, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
+
 import { Http } from '@angular/http';
 import { IActionMapping, TreeComponent } from 'angular-tree-component';
 import { NgbModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -6,11 +7,12 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
 
-import { ClassificationService } from "core/public/core.module";
-import { AlertService } from 'system/public/components/alert/alert.service';
+import { ClassificationService } from "core/core.module";
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { SharedService } from 'core/shared.service';
 import { Subject } from 'rxjs/Subject';
-import * as authShared from "system/shared/authorizationShared";
+import { UserService } from 'core/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -67,12 +69,12 @@ export class OrgClassificationManagementComponent implements OnInit {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private alert: AlertService,
-                @Inject("userResource") private userService,
+                private userService: UserService,
                 private classificationSvc: ClassificationService) {
     }
 
     ngOnInit(): void {
-        this.userService.getPromise().then(() => {
+        this.userService.then(() => {
             if (this.userService.userOrgs.length > 0) {
                 this.orgToManage = this.userService.userOrgs[0];
                 this.onChangeOrg(this.orgToManage, () => {
@@ -119,7 +121,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     isOrgAdmin() {
-        return authShared.isOrgAdmin(this.userService.user);
+        return SharedService.auth.isOrgAdmin(this.userService.user);
     }
 
     openRenameClassificationModal(node) {
@@ -300,10 +302,6 @@ export class OrgClassificationManagementComponent implements OnInit {
                 this.alert.addAlert("success", "Saved");
                 this.mapping = res;
             }, err => this.alert.addAlert("danger", "There was an issue saving this record."));
-    };
-
-    isDescriptorAlreadyMapped = function (desc) {
-        return this.mapping.meshDescriptors.indexOf(desc) > -1;
     };
 
     searchByClassification(node, orgName) {

@@ -1,4 +1,5 @@
-import { Component, DoCheck, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, DoCheck, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ElasticService } from "../../core/elastic.service";
 
 @Component({
     selector: 'cde-table-list',
@@ -13,8 +14,9 @@ export class TableListComponent implements DoCheck, OnChanges {
     rows: any[];
     tableSetup: any;
 
-    constructor(@Inject('SearchSettings') public searchSettings) {
-        searchSettings.getPromise().then(settings => {
+    constructor(public esService: ElasticService) {
+        esService.then(() => {
+            let settings = esService.searchSettings;
             if (settings && settings.tableViewFields) {
                 this.tableSetup = settings.tableViewFields;
                 this.render();
@@ -84,7 +86,7 @@ export class TableListComponent implements DoCheck, OnChanges {
             if (this.tableSetup.name)
                 row.push({
                     css: 'name',
-                    html: `<a href="/deView?tinyId=${e.tinyId}">${e.naming[0].designation}</a>`
+                    html: `<a routerLink="/deView" [queryParams]="{tinyId: ${e.tinyId}}">${e.naming[0].designation}</a>`
                 });
             if (this.tableSetup.questionTexts)
                 row.push({
@@ -189,7 +191,7 @@ export class TableListComponent implements DoCheck, OnChanges {
             if (this.tableSetup.name)
                 row.push({
                     css: 'name',
-                    html: `<a href="/formView?tinyId=${e.tinyId}">${e.naming[0].designation}</a>`
+                    html: `<a routerLink="/formView" [queryParams]="{tinyId: ${e.tinyId}}">${e.naming[0].designation}</a>`
                 });
             if (this.tableSetup.naming)
                 row.push({

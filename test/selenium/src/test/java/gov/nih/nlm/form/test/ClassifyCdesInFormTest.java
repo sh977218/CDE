@@ -12,19 +12,19 @@ public class ClassifyCdesInFormTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("ctepOnlyCurator", password);
 
         goToFormByName(formName);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         _addClassificationByTree("CTEP", new String[]{"ABTC", "ABTC 0904"});
 
         // Verify
         String cdeName1 = "Data source";
         goToCdeByName(cdeName1);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("ABTC");
         textPresent("ABTC 0904");
 
         String cdeName2 = "History data reliability type";
         goToCdeByName(cdeName2);
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("ABTC");
         textPresent("ABTC 0904");
     }

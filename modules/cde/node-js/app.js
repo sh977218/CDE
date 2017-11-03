@@ -32,6 +32,10 @@ exports.init = function (app, daoManager) {
     app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdVersion);
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
+    app.get("/draftDataElement/:tinyId",cdesvc.draftDataElements);
+    app.post("/draftDataElement/:tinyId",cdesvc.saveDraftDataElement);
+    app.delete("/draftDataElement/:tinyId",cdesvc.deleteDraftDataElement);
+
     app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
 
     app.post("/de/:id?", cdesvc.createDataElement);
@@ -46,7 +50,7 @@ exports.init = function (app, daoManager) {
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.status(403).send();
         elastic.myBoards(req.user, req.body, function (err, result) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR getting myBoards");
             res.send(result);
         });
     });
@@ -98,7 +102,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/classification/cde/moveclassif', function (req, res) {
         classificationNode.moveClassifications(req, function (err, cde) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR moving classification");
             res.send(cde);
         });
     });
@@ -180,7 +184,7 @@ exports.init = function (app, daoManager) {
         if (!req.params.source || !req.params.code || !req.params.targetSource)
             return res.status(401).end();
         vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, function (err, result) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR getting crosswalk");
             if (result.statusCode === 200)
                 return res.send({result: JSON.parse(result.body).result});
             return res.send({result: []});
@@ -236,7 +240,7 @@ exports.init = function (app, daoManager) {
                     res.type('application/json');
                     res.write("[");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send("ERROR");
+                        if (err) return res.status(500).send("ERROR with es search export");
                         else if (elt) {
                             if (!firstElt) res.write(',');
                             elt = exportShared.stripBsonIds(elt);
@@ -322,7 +326,7 @@ exports.init = function (app, daoManager) {
         let invalidateRequest = classificationNode_system.isInvalidatedClassificationRequest(req);
         if (invalidateRequest) return res.status(400).send(invalidateRequest);
         classificationNode_system.addClassification(req.body, mongo_cde, function (err, result) {
-            if (err) return res.status(500).send("ERROR");
+            if (err) return res.status(500).send("ERROR adding classification");
             if (result === "Classification Already Exists") return res.status(409).send(result);
             res.send(result);
             mongo_data_system.addToClassifAudit({

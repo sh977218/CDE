@@ -1,18 +1,17 @@
 import {
-    Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener,
-    OnInit, Input, OnChanges, SimpleChanges
+    Component, ViewChild, Type, ViewContainerRef, EventEmitter, AfterViewInit, HostListener, OnInit
 } from '@angular/core';
 import { SearchSettings } from './search.model';
-import { SharedService } from 'core/public/shared.service';
+import { SharedService } from 'core/shared.service';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
-import { CdeForm } from 'form/public/form.model';
-import { DataElement } from 'cde/public/dataElement.model';
-import { ElasticQueryResponse, Elt, User } from 'core/public/models.model';
+import { CdeForm } from 'core/form.model';
+import { DataElement } from 'core/dataElement.model';
+import { ElasticQueryResponse, Elt, User } from 'core/models.model';
 import { HelperObjectsService } from 'widget/helperObjects.service';
+import { ParamMap } from '@angular/router';
 
-export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnChanges {
-    @Input() reloads: number;
+export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname))
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
@@ -21,7 +20,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer: ViewContainerRef;
     @ViewChild('tbset') public tabset: NgbTabset;
     @ViewChild('validRulesModal') validRulesModal: NgbModal;
-    accordionListStyle: string;
     add: EventEmitter<any>;
     addMode: string;
     aggregations: any;
@@ -63,17 +61,13 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             SearchBaseComponent.waitScroll(2, previousSpot);
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes.reloads) {
-            this.oninit = true;
-            this.search();
-        }
-    }
-
     ngOnInit () {
         // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
-        if (!this.oninit)
-            this.search();
+        // if (!this.oninit)
+        //     this.search();
+        //
+        this.route.queryParams.subscribe(() => this.search());
+
     }
 
     constructor(protected _componentFactoryResolver,
@@ -83,7 +77,9 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                 protected http,
                 protected modalService,
                 protected orgHelperService,
-                protected userService) {
+                protected userService,
+                protected router,
+                protected route) {
         this.searchSettings.page = 1;
 
         // TODO: upgrade to Angular when router is available
@@ -169,7 +165,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
     }
 
     browseByTopic(event) {
-        this.byTopic = event.nextId !== 'treeViewTab';
+        this.byTopic = event.nextId !== 'browseByClassification';
 
         this.doSearch();
     }
@@ -243,9 +239,9 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
 
     doSearch() {
         if (!this.embedded) {
-            let loc = this.generateSearchForTerm();
-            window.sessionStorage.removeItem('nlmcde.scroll.' + loc);
-            this.redirect(loc);
+            // let loc = this.generateSearchForTerm();
+            // window.sessionStorage.removeItem('nlmcde.scroll.' + loc);
+            this.redirect(this.generateSearchForTerm());
         } else
             this.reload();
     }
@@ -259,7 +255,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
 
     private filterOutWorkingGroups(cb) {
         this.orgHelperService.then(() => {
-            this.userService.getPromise().then(() => {
+            this.userService.then(() => {
                 this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket => {
                     return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user)
                         || this.userService.user.siteAdmin;
@@ -280,31 +276,31 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
 
     generateSearchForTerm(pageNumber = null) {
         // TODO: replace with router
-        let searchTerms = [];
+        let searchTerms: any = {};
         if (this.searchSettings.q)
-            searchTerms.push('q=' + encodeURIComponent(this.searchSettings.q));
+            searchTerms.q = this.searchSettings.q;
         if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0)
-            searchTerms.push('regStatuses=' + this.searchSettings.regStatuses.join(';'));
+            searchTerms.regStatuses = this.searchSettings.regStatuses.join(';');
         if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0)
-            searchTerms.push('datatypes=' + encodeURIComponent(this.searchSettings.datatypes.join(';')));
+            searchTerms.datatypes = this.searchSettings.datatypes.join(';');
         if (this.searchSettings.selectedOrg)
-            searchTerms.push('selectedOrg=' + encodeURIComponent(this.searchSettings.selectedOrg));
+            searchTerms.selectedOrg = this.searchSettings.selectedOrg;
         if (this.searchSettings.classification && this.searchSettings.classification.length > 0)
-            searchTerms.push('classification=' + encodeURIComponent(this.searchSettings.classification.join(';')));
+            searchTerms.classification = this.searchSettings.classification.join(';');
         if (this.searchSettings.selectedOrgAlt)
-            searchTerms.push('selectedOrgAlt=' + encodeURIComponent(this.searchSettings.selectedOrgAlt));
+            searchTerms.selectedOrgAlt = this.searchSettings.selectedOrgAlt;
         if (this.altClassificationFilterMode)
             if (this.searchSettings.classificationAlt && this.searchSettings.classificationAlt.length > 0)
-                searchTerms.push('classificationAlt=' + encodeURIComponent(this.searchSettings.classificationAlt.join(';')));
+                searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
         if (pageNumber && pageNumber > 1)
-            searchTerms.push('page=' + pageNumber);
+            searchTerms.page = pageNumber;
         else if (this.searchSettings.page && this.searchSettings.page > 1)
-            searchTerms.push('page=' + this.searchSettings.page);
+            searchTerms.page = this.searchSettings.page;
         if (this.searchSettings.meshTree)
-            searchTerms.push('topic=' + encodeURIComponent(this.searchSettings.meshTree));
-        if (this.byTopic && !this.isSearched())
-            searchTerms.push('byTopic');
-        return '/' + this.module + '/search?' + searchTerms.join('&');
+            searchTerms.topic = this.searchSettings.meshTree;
+        if (this.byTopic && !this.isSearched()) searchTerms.byTopic = 1;
+        return searchTerms;
+        // return '/' + this.module + '/search?' + searchTerms.join('&');
     }
 
     getAutocompleteSuggestions = (text$: Observable<string>) =>
@@ -426,9 +422,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             params.set('searchSettings', JSON.stringify(report.searchSettings));
             params.set('status', report.status);
             let uri = params.toString();
-            window.location.href = '/cdeStatusReport?' + uri;
-        }, function () {
-        });
+            this.router.navigate(['/cdeStatusReport'], {queryParams:  {searchSettings: JSON.stringify(report.searchSettings), status: report.status}});
+        }, ()  => {});
     }
 
     pageChange() {
@@ -463,25 +458,20 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         });
     }
 
-    redirect(url: string) {
-        this.redirectPath = url;
-        setTimeout(function () {
-            (document.querySelector('#redirectMe')as any).click();
-        }, 0);
+    redirect(params: string[]) {
+        this.router.navigate(['/' + this.module + '/search'], {queryParams: params});
     }
 
     reload() {
-        this.userService.getPromise().then(() => {
+        this.userService.then(() => {
             let timestamp = new Date().getTime();
             this.lastQueryTimeStamp = timestamp;
-            this.accordionListStyle = 'semi-transparent';
             let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
             this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
                 this.searchedTerm = this.searchSettings.q;
                 if (corrected && this.searchSettings.q)
                     this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
                 if (err) {
-                    this.accordionListStyle = '';
                     this.alert.addAlert('danger', 'There was a problem with your query');
                     this[module + 's'] = [];
                     return;
@@ -521,7 +511,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
                         elt.usedBy = this.orgHelperService.getUsedBy(elt, this.userService.user);
                     });
                 });
-                this.accordionListStyle = '';
 
                 this.aggregations = result.aggregations;
 
@@ -667,19 +656,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
         return params;
     }
 
-    static searchParamsSet(params): string {
-        let search = [];
-        for (let p in params) {
-            if (params.hasOwnProperty(p)) {
-                if (params[p] !== null)
-                    search.push(p + '=' + encodeURIComponent(params[p]));
-                else
-                    search.push('' + p);
-            }
-        }
-        return location.origin + location.pathname + '?' + search.join('&');
-    }
-
     selectElement(e) {
         if (this.altClassificationFilterMode && !this.searchSettings.classificationAlt)
             this.searchSettings.classificationAlt = [];
@@ -737,7 +713,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit, OnCh
             // ngAfterViewChecked
             setTimeout(() => {
                 if (this.byTopic)
-                    this.tabset.select('topicTab');
+                    this.tabset.select('browseByTopic');
             }, 100);
         }
         if (this.view === 'results') {

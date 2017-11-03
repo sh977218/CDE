@@ -20,13 +20,13 @@ function loopFormElements(f, cb) {
                 else {
                     let systemForm = form.toObject();
                     fe.inForm.form.ids = systemForm.ids;
-                    doneOne();
+                    loopFormElements(fe, doneOne);
                 }
             });
         } else {
             let tinyId = fe.question.cde.tinyId;
             let version = fe.question.cde.version ? fe.question.cde.version : null;
-            mongo_cde.byTinyIdVersion(tinyId, version, function (err, dataElement) {
+            mongo_cde.byTinyIdAndVersion(tinyId, version, function (err, dataElement) {
                 if (err || !dataElement) cb(err);
                 else {
                     let systemDe = dataElement.toObject();
@@ -48,19 +48,13 @@ cursor.eachAsync(function (form) {
                 if (err) throw err;
                 count++;
                 console.log("count: " + count);
-                resolve();
+                if (count % 1000 === 0) setTimeout(resolve, 5000);
+                else resolve();
             });
         });
     });
-});
-
-cursor.on('close', function () {
+}).then(err => {
+    if (err) throw err;
     console.log("Finished all. count: " + count);
     process.exit(1);
 });
-cursor.on('error', function (err) {
-    console.log("error: " + err);
-    process.exit(1);
-});
-
-

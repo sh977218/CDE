@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
-import { ExportService } from 'core/public/export.service';
+import { ExportService } from 'core/export.service';
 
 @Component({
     selector: "cde-data-element-quick-board",
