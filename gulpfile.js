@@ -227,12 +227,10 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function ()
                         defer: true
                     },
                     assetsDir: "./modules/",
-                    webpcss: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
-                    cssng: ['concat', rev()],
+                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                    webpcss: ['concat', rev()],
                     js: [uglify({mangle: false}), 'concat', rev()],
-                    webp1: ['concat', rev()],
-                    webp2: ['concat', rev()],
-                    webp3: ['concat', rev()]
+                    webp: ['concat', rev()]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
         );
