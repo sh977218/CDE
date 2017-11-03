@@ -46,7 +46,7 @@
         <div class="modal-header" id="regStatusModalHeader">
             <h4>Update Registration Status</h4>
         </div>
-        <form #regForm="ngForm">
+        <form #regForm="ngForm" (ngSubmit)="ok()">
             <div class="modal-body" id="regStatusModalBody">
                 <div class="alert-warning">{{helpMessage}}</div>
                 <div class="form-group">
@@ -103,7 +103,8 @@
             </div>
             <div class="modal-footer" id="regStatusModalFooter">
                 <button class="btn cancel" (click)="d()" id="cancelRegStatus" type="button">Cancel</button>
-                <button class="btn btn-warning" (click)="ok()" [disabled]="!regForm.form.valid" id="saveRegStatus">Save</button>
+                <button class="btn btn-warning" type="submit" [disabled]="!regForm.form.valid" id="saveRegStatus">Save
+                </button>
             </div>
         </form>
     </div>
