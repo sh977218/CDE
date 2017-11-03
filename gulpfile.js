@@ -69,7 +69,9 @@ gulp.task('nativefollow-wiredep', ['bower'], function () {
             directory: "modules/components",
             exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
                 '/components/lforms', '/components/oboe', '/components/traverse',
-                '/components/lodash', '/components/lforms-converter'
+                '/components/lodash', '/components/lforms-converter',
+                '/components/angular', '/components/angular-bootstrap', '/components/angular-resource',
+                '/components/angular-route', '/components/angular-sanitize'
             ],
             ignorePath: "../../.."
         }))
@@ -82,7 +84,9 @@ gulp.task('wiredep', ['bower'], function () {
             directory: "modules/components",
             exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
                 '/components/lforms', '/components/oboe', '/components/traverse',
-                '/components/lodash', '/components/lforms-converter'
+                '/components/lodash', '/components/lforms-converter',
+                '/components/angular', '/components/angular-bootstrap', '/components/angular-resource',
+                '/components/angular-route', '/components/angular-sanitize'
             ],
             ignorePath: "../.."
         }))
@@ -223,9 +227,12 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function ()
                         defer: true
                     },
                     assetsDir: "./modules/",
-                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                    webpcss: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                    cssng: ['concat', rev()],
                     js: [uglify({mangle: false}), 'concat', rev()],
-                    webp: ['concat', rev()]
+                    webp1: ['concat', rev()],
+                    webp2: ['concat', rev()],
+                    webp3: ['concat', rev()]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
         );
