@@ -191,7 +191,7 @@ gulp.task('usemin', ['copyCode', 'copyWebpack'], function () {
     let streamArray = [];
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/embedded/public/html/", filename: "index.html"},
+        {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(item => {
         streamArray.push(
