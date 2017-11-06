@@ -42,7 +42,7 @@ import { UserService } from '_app/user.service';
     ],
     providers: [
         AlertService,
-        ElasticService,
+        ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
         {provide: ErrorHandler, useClass: FrontExceptionHandler},
         LoginService,
         QuickBoardListService,

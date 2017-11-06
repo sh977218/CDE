@@ -153,8 +153,9 @@ export class ElasticService {
         this.searchSettings = settings;
         let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
-        this.localStorageService.set("SearchSettings", settings);
-        if (this.userService.user.username) this.http.post("/user/update/searchSettings", settings).subscribe();
+        this.localStorageService.set("SearchSettings", savedSettings);
+        if (this.userService.user.username)
+            this.http.post("/user/update/searchSettings", savedSettings).subscribe();
     }
 
     getDefault () {
@@ -198,22 +199,22 @@ export class ElasticService {
     };
 
     loadSearchSettings () {
-        this.searchSettings = this.localStorageService.get("SearchSettings");
-        if (!this.searchSettings) this.searchSettings = this.getDefault();
+        if (!this.searchSettings) {
+            this.searchSettings = this.localStorageService.get("SearchSettings");
+            if (!this.searchSettings) this.searchSettings = this.getDefault();
 
-        this.userService.then(() => {
-            let user = this.userService.user;
-            if (user.username) {
-                if (!user.searchSettings) {
-                    user.searchSettings = this.getDefault();
+            this.userService.then(() => {
+                let user = this.userService.user;
+                if (user.username) {
+                    if (!user.searchSettings) {
+                        user.searchSettings = this.getDefault();
+                    }
+                    this.searchSettings = user.searchSettings;
                 }
-                this.searchSettings = user.searchSettings;
-            }
-            if (this.searchSettings.version !== this.getDefault().version) {
-                this.searchSettings = this.getDefault();
-            }
-        });
+                if (this.searchSettings.version !== this.getDefault().version) {
+                    this.searchSettings = this.getDefault();
+                }
+            });
+        }
     }
-
-
 }
