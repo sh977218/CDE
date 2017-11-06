@@ -3,9 +3,9 @@
     <tr>
         <th>Name</th>
         <th *ngIf="searchViewSettings.tableViewFields.questions">Questions</th>
-        <th *ngIf="args.nbOfQuestions">Questions</th>
-        <th *ngIf="args.cdes">CDEs</th>
-        <th *ngIf="args.sdcLink">SDC</th>
+        <th *ngIf="embed.form.nbOfQuestions">Questions</th>
+        <th *ngIf="embed.form.cdes">CDEs</th>
+        <th *ngIf="embed.form.sdcLink">SDC</th>
     </tr>
     </thead>
     <tbody>
@@ -15,14 +15,14 @@
                 {{f.naming[0].designation}}
             </a>
         </td>
-        <td *ngIf="args.nbOfQuestions">
+        <td *ngIf="embed.form.nbOfQuestions">
             {{f.numQuestions}}
         </td>
-        <td *ngIf="args.cdes">
-            <span>{{concatenateQuestions(f)}}</span>
-            <!--<span class="lastItem" *ngIf="concatenateQuestions(f).length > 200">(More...)</span>-->
+        <td *ngIf="embed.form.cdes">
+            <span>{{concatenateQuestions(f) | slice:0:200}}</span>
+            <span class="lastItem" *ngIf="concatenateQuestions(f).length > 200">(More...)</span>
         </td>
-        <td *ngIf="args.sdcLink">
+        <td *ngIf="embed.form.sdcLink">
             <a href="https://cde.nlm.nih.gov/form/{{f.tinyId}}?type=xml&subtype=sdc" target="_blank"><i class="fa fa-wpforms fa-2x"></i>
             </a>
         </td>

@@ -35,7 +35,7 @@
 
     <div> Search Inside
         <ol class="breadcrumb form-control" style="display: inline-block">
-            <li *ngIf="!searchSettings.classification.length > 0">All Classifications</li>
+            <li *ngIf="!(searchSettings.classification.length > 0)">All Classifications</li>
             <li *ngFor="let c of searchSettings.classification; let index = index">
                 <span class="fake-link" (click)="crumbSelect(index)">{{c}}</span>
             </li>
@@ -59,11 +59,12 @@
             <cde-embedded-form-search-result
                     *ngIf="searchType === 'form'"
                     [elts]="elts"
+                    [embed]="embed"
                     [searchViewSettings]="searchViewSettings"
             ></cde-embedded-form-search-result>
         </div>
 
-        <ngb-pagination [collectionSize]="totalItems" [(page)]="searchSettings.page" (pageChange)="searchLogs()"
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="searchSettings.page"
                         [maxSize]="10"></ngb-pagination>
     </div>
 
