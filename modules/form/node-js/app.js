@@ -70,7 +70,8 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/attachments/form/add', multer(config.multer), function (req, res) {
-        adminItemSvc.addAttachment(req, res, mongo_form);
+        if (req.files.uploadedFiles)
+            adminItemSvc.addAttachment(req, res, mongo_form);
     });
 
     app.post('/attachments/form/remove', function (req, res) {
