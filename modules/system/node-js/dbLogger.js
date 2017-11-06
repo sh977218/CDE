@@ -128,8 +128,8 @@ exports.logClientError = function (req, callback) {
     exc.date = new Date();
     exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
-    var logEvent = new ClientErrorModel(exc);
-    logEvent.save(function (err) {
+    let logEvent = new ClientErrorModel(exc);
+    logEvent.save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
         callback(err);
     });
