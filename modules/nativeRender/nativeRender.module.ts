@@ -4,7 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { NgbDatepickerModule, NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module";
 import { NgbTimepickerModule } from "@ng-bootstrap/ng-bootstrap/timepicker/timepicker.module";
 
-import { CdeAmericanDateParserFormatter } from 'nativeRender/americanDateParserFormatter';
+import { CdeAmericanDateParserFormatter } from 'core/americanDateParserFormatter';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderComponent } from 'nativeRender/nativeRender.component';
 import { NativeSectionComponent } from 'nativeRender/nativeSection.component';
@@ -12,7 +12,6 @@ import { NativeSectionMatrixComponent } from 'nativeRender/nativeSectionMatrix.c
 import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
 import { NativeTableComponent } from 'nativeRender/nativeTable.component';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
-import { WidgetModule } from 'widget/widget.module';
 
 
 @NgModule({
@@ -22,7 +21,7 @@ import { WidgetModule } from 'widget/widget.module';
         NgbDatepickerModule.forRoot(),
         NgbTimepickerModule.forRoot(),
         // core
-        WidgetModule,
+        // no WidgetModule,
         // internal
     ],
     declarations: [
