@@ -14,6 +14,7 @@ export class EmbedAppComponent  {
 
     constructor(private http: Http,
                 private elasticSvc: ElasticService) {
+
         let args = {};
         let args1 = window.location.search.substr(1).split("&");
         args1.forEach(arg => {
@@ -23,11 +24,39 @@ export class EmbedAppComponent  {
 
         this.http.get('/embed/' + args['id']).map(r => r.json()).subscribe(response => {
             this.embed = response;
+            this.searchViewSettings.tableViewFields.customFields = [];
+
+            let embed4Type = {...this.embed[this.searchType]};
+
+            embed4Type.ids.forEach(eId => {
+                this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel, label: eId.idLabel});
+                if (eId.version) {
+                    this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel + "_version", label: eId.versionLabel});
+                }
+            });
+
+            embed4Type.otherNames.forEach(eName => {
+                this.searchViewSettings.tableViewFields.customFields.push({key: eName.label, label: eName.label});
+            });
+
+            if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
+                this.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition",
+                    label: embed4Type.primaryDefinition.label, style: embed4Type.primaryDefinition.style});
+            }
+
+            if (embed4Type.registrationStatus && embed4Type.registrationStatus.show) {
+                this.searchViewSettings.tableViewFields.customFields.push({key: "registrationStatus",
+                    label: embed4Type.registrationStatus.label});
+            }
+
             this.searchSettings.selectedOrg = response.org;
             this.search();
         });
 
         this.searchViewSettings = elasticSvc.getDefault();
+
+
+
 
     }
 
@@ -82,7 +111,7 @@ export class EmbedAppComponent  {
         }
         currentString = currentString + classif.name;
         if (classif.elements && classif.elements.length > 0) {
-            classif.elements.forEach(function(cl) {
+            classif.elements.forEach(cl => {
                 this.doClassif(currentString, cl, result);
             });
         } else {
@@ -161,34 +190,6 @@ export class EmbedAppComponent  {
             } else {
                 this.aggregations.flatClassifications = [];
             }
-        //
-        //     OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
-        //
-
-
-            this.searchViewSettings.tableViewFields.customFields = [];
-
-            embed4Type.ids.forEach(eId => {
-                this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel, label: eId.idLabel});
-                if (eId.version) {
-                    this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel + "_version", label: eId.versionLabel});
-                }
-            });
-
-            embed4Type.otherNames.forEach(eName => {
-                this.searchViewSettings.tableViewFields.customFields.push({key: eName.label, label: eName.label});
-            });
-
-            if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
-                this.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition",
-                    label: embed4Type.primaryDefinition.label, style: embed4Type.primaryDefinition.style});
-            }
-
-            if (embed4Type.registrationStatus && embed4Type.registrationStatus.show) {
-                this.searchViewSettings.tableViewFields.customFields.push({key: "registrationStatus",
-                    label: embed4Type.registrationStatus.label});
-            }
-
 
             // Decorate
             this.elts.forEach(c => {

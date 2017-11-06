@@ -76,11 +76,11 @@
                                         id="name.{{$index}}.remove" title="Remove">
                                     <i class="fa fa-trash"></i></button>
                                 <label for="name.{{$index}}.tags">Name Tags:</label>
-                                <input [(ngModel)]="thisName.tags" id="name.{{$index}}.tags" name="tags"
+                                <input [(ngModel)]="thisName.tags" id="name.{{$index}}.tags" name="tags_{{$index}}"
                                        class="form-control" required>
                                 <br>
                                 <label for="name.{{$index}}.label">Choose a label for the Name:</label>
-                                <input [(ngModel)]="thisName.label" id="name.{{$index}}.label" name="la"
+                                <input [(ngModel)]="thisName.label" id="name.{{$index}}.label" name="la_{{$index}}"
                                        class="form-control" required>
                                 <br>
                             </div>
@@ -94,17 +94,18 @@
                                         id="id.{{$index}}.remove" title="Remove">
                                     <i class="fa fa-trash"></i></button>
                                 <label for="id.{{$index}}.source">ID Source Name:</label>
-                                <input [(ngModel)]="thisId.source" id="id.{{$index}}.source" name="src" class="form-control" required>
+                                <input [(ngModel)]="thisId.source" id="id.{{$index}}.source" name="src_{{$index}}" class="form-control" required>
                                 <br>
                                 <label for="id.{{$index}}.idLabel">Choose a label for the ID column:</label>
-                                <input [(ngModel)]="thisId.idLabel" id="id.{{$index}}.idLabel" name="idl" class="form-control" required>
+                                <input [(ngModel)]="thisId.idLabel" id="id.{{$index}}.idLabel" name="idl_{{$index}}" class="form-control" required>
                                 <br>
                                 <input type="checkbox" [(ngModel)]="thisId.version" id="id.{{$index}}.sourceVersion" name="v">
                                 <label for="id.{{$index}}.sourceVersion">Also see version number</label>
                                 <span *ngIf="thisId.version">
                                 <br>
                                 <label for="id.{{$index}}.versionLabel">Choose a label for the version column:</label>
-                                <input [(ngModel)]="thisId.versionLabel" id="id.{{$index}}.versionLabel" name="vl" class="form-control" required>
+                                <input [(ngModel)]="thisId.versionLabel" id="id.{{$index}}.versionLabel" name="vl_{{$index}}"
+                                       class="form-control" required>
                             </span>
                             </div>
                         </div>
@@ -117,15 +118,19 @@
                                         id="classif.{{$index}}.remove" title="Remove">
                                     <i class="fa fa-trash"></i></button>
                                 <label for="classif.{{$index}}.label">Choose a label:</label>
-                                <input [(ngModel)]="thisClassif.label" id="classif.{{$index}}.label" name="cll" class="form-control" required>
+                                <input [(ngModel)]="thisClassif.label" id="classif.{{$index}}.label" name="cll_{{$index}}"
+                                       class="form-control" required>
                                 <br>
                                 <label for="classif.{{$index}}.startsWith">Include classifications starting with: </label>
-                                <input [(ngModel)]="thisClassif.startsWith" name="clsw" id="classif.{{$index}}.startsWith" class="form-control">
+                                <input [(ngModel)]="thisClassif.startsWith" name="clsw_{{$index}}"
+                                       id="classif.{{$index}}.startsWith" class="form-control">
                                 <br>
                                 <label for="classif.{{$index}}.exclude">Exclude classifications with regEx: </label>
-                                <input [(ngModel)]="thisClassif.exclude" name="exc" id="classif.{{$index}}.exclude" class="form-control">
+                                <input [(ngModel)]="thisClassif.exclude" name="exc_{{$index}}" id="classif.{{$index}}.exclude"
+                                       class="form-control">
                                 <br>
-                                <input type="checkbox" [(ngModel)]="thisClassif.selectedOnly" name="clso" id="classif.{{$index}}.selectedOnly">
+                                <input type="checkbox" [(ngModel)]="thisClassif.selectedOnly" name="clso_{{$index}}"
+                                       id="classif.{{$index}}.selectedOnly">
                                 <label for="classif.{{$index}}.selectedOnly">Only show selected classifications </label>
                             </div>
                         </div>

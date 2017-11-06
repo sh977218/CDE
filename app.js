@@ -156,7 +156,8 @@ app.use("/embedded/public",
         res.removeHeader("x-frame-options");
         next();
     },
-    express.static(path.join(__dirname, '/modules/embedded/public')));
+    express.static(path.join(__dirname, '/modules/_embedApp/public'))
+);
 
 app.use(flash());
 auth.init(app);
