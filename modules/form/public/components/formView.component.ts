@@ -30,8 +30,10 @@ import { Subscription } from 'rxjs/Subscription';
             z-index: 1;
         }
 
-        .mobileViewH1 {
-            font-size: 20px;
+        @media (max-width: 767px) {
+            .mobileViewH1 {
+                font-size: 20px;
+            }
         }
     `]
 })
@@ -57,7 +59,6 @@ export class FormViewComponent implements OnInit {
     orgNamingTags = [];
     tabsCommented = [];
     formId;
-    mobileView: boolean = false;
     savingText: string = "";
     draftSubscription: Subscription;
 
@@ -72,12 +73,6 @@ export class FormViewComponent implements OnInit {
                 public userService: UserService,
                 private route: ActivatedRoute,
                 private router: Router) {
-        this.mobileView = window.innerWidth <= 800;
-    }
-
-    @HostListener('window:resize', ['$event'])
-    onResize(event) {
-        this.mobileView = window.innerWidth <= 800;
     }
 
     ngOnInit() {
