@@ -18,12 +18,10 @@ export class ElasticService {
     searchToken = "id" + Math.random().toString(16).slice(2);
 
     searchSettings: any;
-    private promise: Promise<void>;
 
     constructor(public http: Http,
                 private userService: UserService,
                 private localStorageService: LocalStorageService) {
-
         this.loadSearchSettings();
     }
 
@@ -152,8 +150,9 @@ export class ElasticService {
     }
 
     saveConfiguration (settings) {
-        this.searchSettings = JSON.parse(JSON.stringify(settings));
-        delete settings.includeRetired;
+        this.searchSettings = settings;
+        let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
+        delete savedSettings.includeRetired;
         this.localStorageService.set("SearchSettings", settings);
         if (this.userService.user.username) this.http.post("/user/update/searchSettings", settings).subscribe();
     }
@@ -187,10 +186,6 @@ export class ElasticService {
         return this.searchSettings.defaultSearchView;
     };
 
-    then (cb) {
-        return this.promise.then(cb);
-    };
-
     getUserDefaultStatuses () {
         let overThreshold = false;
         let result = SharedService.regStatusShared.orderedList.filter(status => {
@@ -203,23 +198,20 @@ export class ElasticService {
     };
 
     loadSearchSettings () {
-        this.promise = new Promise<void>(resolve => {
-            this.searchSettings = this.localStorageService.get("SearchSettings");
-            if (!this.searchSettings) this.searchSettings = this.getDefault();
+        this.searchSettings = this.localStorageService.get("SearchSettings");
+        if (!this.searchSettings) this.searchSettings = this.getDefault();
 
-            this.userService.then(() => {
-                let user = this.userService.user;
-                if (user.username) {
-                    if (!user.searchSettings) {
-                        user.searchSettings = this.getDefault();
-                    }
-                    this.searchSettings = user.searchSettings;
+        this.userService.then(() => {
+            let user = this.userService.user;
+            if (user.username) {
+                if (!user.searchSettings) {
+                    user.searchSettings = this.getDefault();
                 }
-                if (this.searchSettings.version !== this.getDefault().version) {
-                    this.searchSettings = this.getDefault();
-                }
-                resolve();
-            });
+                this.searchSettings = user.searchSettings;
+            }
+            if (this.searchSettings.version !== this.getDefault().version) {
+                this.searchSettings = this.getDefault();
+            }
         });
     }
 

@@ -3,7 +3,6 @@ import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 import { CdeAmericanDateParserFormatter } from 'core/americanDateParserFormatter';
 import { ClassificationService } from './classification.service';
-import { ElasticService } from 'core/elastic.service';
 import { ExportService } from 'core/export.service';
 import { MergeCdeService } from 'core/mergeCde.service';
 import { MergeFormService } from 'core/mergeForm.service';
@@ -19,7 +18,6 @@ import { RegistrationValidatorService } from 'core/registrationValidator.service
     providers: [
         ClassificationService,
         CompareService,
-        ElasticService,
         ExportService,
         IsAllowedService,
         MergeCdeService,

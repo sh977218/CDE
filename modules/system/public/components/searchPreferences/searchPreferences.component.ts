@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { ElasticService } from 'core/elastic.service';
+import { Component } from "@angular/core";
+import { ElasticService } from '_app/elastic.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({
@@ -7,17 +7,12 @@ import { AlertService } from '_app/alert/alert.service';
     templateUrl: "searchPreferences.component.html"
 })
 
-export class SearchPreferencesComponent implements OnInit {
+export class SearchPreferencesComponent {
+    searchSettings: any;
 
     constructor(public esService: ElasticService,
-                private alert: AlertService) {}
-
-    searchSettings: any = {tableViewFields: {}};
-
-    ngOnInit () {
-        this.esService.then(() => {
-            this.searchSettings = this.esService.searchSettings;
-        });
+                private alert: AlertService) {
+        this.searchSettings = this.esService.searchSettings;
     }
 
     saveSettings () {

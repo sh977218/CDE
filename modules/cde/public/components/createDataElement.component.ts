@@ -7,7 +7,7 @@ import { LocalStorageService } from "angular-2-local-storage/dist";
 import * as _ from "lodash";
 import { AlertService } from '_app/alert/alert.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { ElasticService } from 'core/elastic.service';
+import { ElasticService } from '_app/elastic.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { SharedService } from 'core/shared.service';
 import { UserService } from '_app/user.service';

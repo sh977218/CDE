@@ -10,6 +10,7 @@ import { AlertComponent } from '_app/alert/alert.component';
 import { AlertService } from '_app/alert/alert.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
+import { ElasticService } from '_app/elastic.service';
 import { FrontExceptionHandler } from '_app/frontExceptionHandler';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
@@ -41,6 +42,7 @@ import { UserService } from '_app/user.service';
     ],
     providers: [
         AlertService,
+        ElasticService,
         {provide: ErrorHandler, useClass: FrontExceptionHandler},
         LoginService,
         QuickBoardListService,

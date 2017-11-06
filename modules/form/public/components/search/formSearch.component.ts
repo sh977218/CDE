@@ -2,7 +2,7 @@ import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from
 import { Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ElasticService } from 'core/elastic.service';
+import { ElasticService } from '_app/elastic.service';
 import { ExportService } from 'core/export.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { SearchBaseComponent } from 'search/searchBase.component';

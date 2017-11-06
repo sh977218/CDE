@@ -5,6 +5,7 @@ import {
 import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
 import { BoardFormSummaryListComponent } from 'form/public/components/listView/boardFormSummaryList.component';
 import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
+import { ElasticService } from '_app/elastic.service';
 import { Elt } from 'core/models.model';
 import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/public/components/listView/formAccordionList.component';
@@ -13,7 +14,6 @@ import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/
 import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { TableListComponent } from 'search/listView/tableList.component';
-import { ElasticService } from "../../core/elastic.service";
 
 @Component({
     selector: 'cde-list-view',
