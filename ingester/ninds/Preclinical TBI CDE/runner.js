@@ -2,8 +2,7 @@ const fs = require('fs');
 const util = require('util');
 const async = require('async');
 const _ = require('lodash');
-const XLSX = require('xlsx');
-const Papa = require('papaparse');
+const csv = require('csv');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
@@ -62,7 +61,6 @@ const EXCLUDE_REF_DOC = [
     'Please fill out'
 ];
 
-
 let log_file = fs.createWriteStream(__dirname + '/debug.log', {flags: 'w'});
 let log_stdout = process.stdout;
 
@@ -76,7 +74,7 @@ function getCell(row, header) {
     else {
         let headerLower = _.toLower(header);
         if (row[headerLower]) return row[headerLower];
-        else console.log("No " + header + " found");
+//        else console.log("No " + header + " found");
     }
 }
 
@@ -109,8 +107,8 @@ function deToQuestion(row, cde) {
         question.label = row['Preferred Question Text'];
     else question.label = cde.naming[0].designation;
 
-    if (row['guidelines/instructions'])
-        question.instructions.value = row['guidelines/instructions'];
+    if (row['Guidelines/Instructions'])
+        question.instructions.value = row['Guidelines/Instructions'];
 
     if (row['Permissible Values'] && row['Permissible Value Descriptions'] && row['Permissible Value Output Codes']) {
         let pvs = row['Permissible Values'].split(';');
@@ -125,6 +123,8 @@ function deToQuestion(row, cde) {
             question.question.answers.push(pv);
         }
     }
+    if (row['Input Restriction'].indexOf('Multiple Pre-Defined Values Selected') > -1)
+        question.question.multiselect = true;
     return question;
 }
 
@@ -143,7 +143,13 @@ function rowToDataElement(file, row) {
         referenceDocuments: [],
         properties: [],
         valueDomain: {},
-        classification: []
+        classification: [{
+            stewardOrg: {name: 'NINDS'},
+            elements: [{
+                name: 'Preclinical TBI',
+                elements: []
+            }]
+        }]
     };
 
     /*
@@ -211,12 +217,14 @@ function rowToDataElement(file, row) {
         } else {
             de.valueDomain.datatype = 'Text';
             de.valueDomain.datatypeText = {};
-            console.log("---------------------------------");
-            console.log("| file: " + file);
-            console.log("| rowIndex: " + row.__rowNum__);
-            console.log("| Unknown datatype: " + datatype);
-            console.log("---------------------------------");
-            console.log("\n");
+            /*
+                        console.log("---------------------------------");
+                        console.log("| file: " + file);
+                        console.log("| rowIndex: " + row.__rowNum__);
+                        console.log("| Unknown datatype: " + datatype);
+                        console.log("---------------------------------");
+                        console.log("\n");
+            */
         }
     } else {
         de.valueDomain.datatype = 'Value List';
@@ -225,13 +233,14 @@ function rowToDataElement(file, row) {
         let permissibleValueDescriptions = getCell(row, 'Permissible Value Descriptions');
         let permissibleValueOutputCodes = getCell(row, 'Permissible Value Output Codes');
         if (permissibleValues && permissibleValueDescriptions && permissibleValueOutputCodes) {
-            let pvs = permissibleValues.split(';');
-            let pvDescriptions = permissibleValueDescriptions.split(';');
-            let pvCodes = permissibleValueOutputCodes.split(';');
+            let pvs = permissibleValues.split(';').filter(t => t);
+            let pvDescriptions = permissibleValueDescriptions.split(';').filter(t => t);
+            let pvCodes = permissibleValueOutputCodes.split(';').filter(t => t);
             if (pvs.length === pvDescriptions.length && pvDescriptions.length === pvCodes.length && pvs.length === pvCodes.length) {
                 for (let i = 0; i < pvs.length; i++) {
                     let pv = {
                         permissibleValue: pvs[i],
+                        valueMeaningName: pvs[i],
                         valueMeaningDefinition: pvDescriptions[i],
                         valueMeaningCode: pvCodes[i]
                     };
@@ -244,6 +253,7 @@ function rowToDataElement(file, row) {
                 console.log("| PV Length mismatch. pv:" + pvs.length + " pvDescriptions:" + pvDescriptions.length + " pvCodes:" + pvCodes.length);
                 console.log("---------------------------------");
                 console.log("\n");
+                throw "bad pvs.";
             }
         }
     }
@@ -271,98 +281,150 @@ function rowToDataElement(file, row) {
                         document: refDocString
                     });
                 });
-                console.log("reminding ref doc string: " + refDocString);
+                // console.log("reminding ref doc string: " + refDocString);
             }
         });
     }
 
-    let keywords = getCell(row, 'keywords');
-    if (keywords) de.properties.push({key: "keywords", value: keywords});
-    let guidelinesInstructions = getCell(row, 'guidelines/instructions');
-    if (guidelinesInstructions) de.properties.push({key: "guidelines/instructions", value: guidelinesInstructions});
-    let notes = getCell(row, 'notes');
-    if (notes) de.properties.push({key: "notes", value: notes});
+    let keywords = getCell(row, 'Keywords');
+    if (keywords) de.properties.push({key: "Keywords", value: keywords});
+    let guidelinesInstructions = getCell(row, 'Guidelines/Instructions');
+    if (guidelinesInstructions) de.properties.push({key: "Guidelines/Instructions", value: guidelinesInstructions});
+    let notes = getCell(row, 'Notes');
+    if (notes) de.properties.push({key: "Notes", value: notes});
 
-    ALL_POSSIBLE_CLASSIFICATIONS.forEach(possibleClassification => {
-        if (row[possibleClassification]) {
-            let categories = possibleClassification.split(".").concat(row[possibleClassification]);
-            classificationShared.classifyElt(de, 'NINDS', ['Preclinical TBI CDE'].concat(categories));
+    /*
+        ALL_POSSIBLE_CLASSIFICATIONS.forEach(possibleClassification => {
+            if (row[possibleClassification]) {
+                let categories = possibleClassification.split(".").concat(row[possibleClassification]);
+                classificationShared.classifyElt(de, 'NINDS', ['Preclinical TBI CDE'].concat(categories));
+            }
+        });
+
+        if (de.classification.length === 0) {
+            de.classification = [{
+                stewardOrg: {name: 'NINDS'},
+                elements: [{
+                    name: 'Preclinical TBI',
+                    elements: []
+                }]
+            }];
         }
-    });
-    if (de.classification.length === 0) {
-        de.classification = [{
-            stewardOrg: {name: 'NINDS'},
-            elements: [{
-                name: 'test',
-                elements: []
-            }]
-        }];
-    }
+    */
 
     return de;
 }
 
-function run() {
-    let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
-    async.forEachSeries(files, (file, doneOneFile) => {
-/*
-        let rows = [];
-        if (file.indexOf('.csv') > -1) {
-            let fileString = fs.readFileSync(FILE_PATH+file);
-            rows = Papa.parse(fileString, {delimiter: ",", newline: "\n"});
-        } else if (file.indexOf('.xlsx') > -1) {
-            let workbook = XLSX.readFile(FILE_PATH + file);
-            let sheetName = workbook.SheetNames[0];
-            rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
-        } else throw "Unknown supported file format.";
-*/
-        let workbook = XLSX.readFile(FILE_PATH + file);
-        let sheetName = workbook.SheetNames[0];
-       let rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
-
-        let form = {
-            tinyId: mongo_data.generateTinyId(),
-            naming: [
-                {designation: _.words('sheetName').join(" ")}
-            ],
-            formElements: []
-        };
-        let lastSection = "";
-        let currentSection = "";
-        let formElements = form.formElements;
-        async.forEachSeries(rows, (row, doneOneRow) => {
-            currentSection = getCell(row, 'Category/Group');
-            if (currentSection !== lastSection) {
-                let newSection = {
-                    elementType: 'section',
-                    label: currentSection,
-                    formElements: []
-                };
-                form.formElements.push(newSection);
-                formElements = newSection.formElements;
-            }
-            let de = rowToDataElement(file, row);
-            if (!de.naming || !de.naming[0].designation) {
-                console.log("a");
-            }
-            new DataElementModel(de).save((err, newCde) => {
-                if (err)
-                    throw err;
-                let question = deToQuestion(row, newCde);
-                formElements.push(question);
-                lastSection = currentSection;
-                doneOneRow();
-            });
-        }, () => new FormModel(form).save(err => {
+function saveDataElement(de, row, file, cb) {
+    if (row['Element Type'].indexOf('Unique Data Element') > -1)
+        new DataElementModel(de).save(cb);
+    else if (row['Element Type'].indexOf('Common Data Element') > -1) {
+        DataElementModel.findOne({'ids.id': de.ids[0].id}, (err, existingDe) => {
             if (err) throw err;
-            new FormModel(form).save(err => {
-                if (err)
-                    throw err;
-                doneOneFile();
-            });
-        }));
-    }, () => process.exit(1));
+            else if (!existingDe)
+                new DataElementModel(de).save(cb);
+            else
+                new DataElementModel(de).save(cb);
+        });
+    } else if (row['Element Type'].trim().length === 0) {
+        console.log("Empty Element Type. on file " + file);
+        new DataElementModel(de).save(cb);
+    } else if (row['Element Type'].indexOf('Type of animal subject pre-injury housing including individual or group housing') > -1) {
+        console.log("Element Type: " + row['Element Type'] + " on file " + file);
+        new DataElementModel(de).save(cb);
+    } else throw "Unknown Element Type. on file " + file;
 }
 
+function run() {
+    async.series([
+        function (cb) {
+            DataElementModel.remove({}, err => {
+                if (err) throw err;
+                cb();
+            });
+        },
+        function (cb) {
+            FormModel.remove({}, err => {
+                if (err) throw err;
+                cb();
+            });
+        },
+        function (cb) {
+            let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
+            async.forEachSeries(files, (file, doneOneFile) => {
+                let cond = {
+                    columns: true,
+                    relax_column_count: true,
+                    skip_empty_lines: true,
+                    skip_lines_with_empty_values: true
+                };
+                csv.parse(fs.readFileSync(FILE_PATH + file), cond, function (err, rows) {
+                    if (err) throw err;
+                    let formNameString = file.substring(0, file.indexOf('_'));
+                    let form = {
+                        tinyId: mongo_data.generateTinyId(),
+                        stewardOrg: {
+                            name: 'NINDS'
+                        },
+                        naming: [
+                            {designation: _.words(formNameString).join(" ")}
+                        ],
+                        registrationState: {
+                            registrationStatus: 'Qualified'
+                        },
+                        createdBy: {
+                            username: 'batchloader'
+                        },
+                        referenceDocuments: [],
+                        properties: [],
+                        formElements: [],
+                        classification: [{
+                            stewardOrg: {name: 'NINDS'},
+                            elements: [{
+                                name: 'Preclinical TBI',
+                                elements: []
+                            }]
+                        }]
+                    };
+                    let lastSection = "";
+                    let currentSection = "";
+                    let formElements = form.formElements;
+                    async.forEachSeries(rows, (row, doneOneRow) => {
+                        let de = rowToDataElement(file, row);
+                        if (!de.naming || !de.naming[0].designation) {
+                            console.log(file + ' has empty row.');
+                            doneOneRow();
+                        } else {
+                            saveDataElement(de, row, file, (err, newCde) => {
+                                if (err) throw err;
+                                else {
+                                    currentSection = getCell(row, 'Category/Group');
+                                    if (currentSection !== lastSection) {
+                                        let newSection = {
+                                            elementType: 'section',
+                                            label: currentSection,
+                                            formElements: []
+                                        };
+                                        form.formElements.push(newSection);
+                                        formElements = newSection.formElements;
+                                    }
+                                    let question = deToQuestion(row, newCde);
+                                    formElements.push(question);
+                                    lastSection = currentSection;
+                                    doneOneRow();
+                                }
+                            });
+                        }
+                    }, () => new FormModel(form).save(err => {
+                        if (err) throw err;
+                        doneOneFile();
+                    }));
+                });
+            }, () => cb());
+        }
+    ], () => {
+        process.exit(1);
+    });
+}
 
 run();
