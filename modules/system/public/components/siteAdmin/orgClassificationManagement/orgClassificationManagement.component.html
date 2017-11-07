@@ -46,7 +46,7 @@
 </div>
 
 <ng-template #renameClassificationContent id="renameClassificationModal" let-c="close" let-d="dismiss">
-    <form #renameClassificationForm="ngForm" (ngSubmit)="c('confirm')">
+    <form #renameClassificationForm="ngForm" (ngSubmit)="renameClassification(renameClassificationNode)">
         <div class="modal-header" id="renameClassificationModalHeader">
             <h4 class="modal-title">Rename Classification</h4>
         </div>
@@ -67,7 +67,7 @@
             </button>
             <button class="btn btn-danger" id="confirmRenameClassificationBtn"
                     [disabled]="!newClassificationName && !renameClassificationForm.form.valid"
-                    name="confirmRenameClassificationBtn" type="button">OK
+                    name="confirmRenameClassificationBtn" type="submit">OK
             </button>
         </div>
     </form>
@@ -98,7 +98,7 @@
         </button>
         <button class="btn btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
                 [disabled]="userTyped !== selectedClassificationString" name="confirmDeleteClassificationBtn"
-                type="button">OK
+                type="submit">OK
         </button>
     </div>
 </ng-template>
@@ -108,7 +108,7 @@
 </cde-classify-item-modal>
 
 <ng-template #addChildClassificationContent id="addChildClassificationModal" let-c="close" let-d="dismiss">
-    <form #addChildClassificationForm="ngForm" (ngSubmit)="c('confirm')">
+    <form #addChildClassificationForm="ngForm" (ngSubmit)="addChildClassification(childClassificationNode);">
         <div class="modal-header" id="addChildClassificationModalHeader">
             <h4 class="modal-title"> Add Child Classification</h4>
         </div>
@@ -159,7 +159,7 @@
             <div *ngIf="descriptorID">
                 {{descriptorID}} -- {{descriptorName}}
                 <button *ngIf="descriptorName.length > 0" class="btn btn-default btn-sm" id="addMeshDescButton"
-                        [disabled]="this.mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
+                        type="submit" [disabled]="mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
                 </button>
             </div>
 
