@@ -27,8 +27,7 @@
                 </button>
                 <button class="dropdown-item" (click)="pritableCb.click()">Printable Logic:
                     <input #pritableCb id="printableLogicCb" type="checkbox" [(ngModel)]="overridePrintable"
-                           (click)="$event.stopPropagation()"
-                           (change)="render.setNativeRenderType(($event.target.checked ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF));">
+                           (click)="$event.stopPropagation()">
                 </button>
             </div>
         </div>
@@ -57,7 +56,9 @@
         </div>
 
         <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0" class="bot-left">
-            <cde-native-render #render [elt]="elt" [showTitle]="false" [profile]="profile"></cde-native-render>
+            <cde-native-render [elt]="elt" [profile]="profile" [showTitle]="false"
+                               [nativeRenderType]="overridePrintable ? NativeRenderService.FOLLOW_UP : NativeRenderService.SHOW_IF"
+            ></cde-native-render>
         </div>
     </div>
 </div>

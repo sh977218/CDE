@@ -29,17 +29,20 @@ import { CdeForm, DisplayProfile } from 'core/form.model';
         }
     `]
 })
-export class NativeRenderFullComponent {
+export class NativeRenderFullComponent implements OnInit {
     @Input() elt: CdeForm;
-
-    constructor() {
-    }
-
     profile: DisplayProfile;
     selectedProfileName;
     overridePrintable: boolean = true;
     NativeRenderService = NativeRenderService;
 
+    ngOnInit() {
+        if (this.elt.displayProfiles.length)
+            this.selectProfile(0);
+    }
+
+    constructor() {
+    }
 
     selectProfile(profileIndex) {
         this.profile = this.elt.displayProfiles[profileIndex];
