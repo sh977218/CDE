@@ -62,7 +62,7 @@
             </dl>
             <hr>
         </ng-container>
-        <dl class="row" id="attachment_">
+        <dl *ngIf="canEdit" class="row" id="attachment_">
             <dt class="col-xs-3 text-right">
                 <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files:</label>
             </dt>
