@@ -223,6 +223,10 @@ exports.init = function (app) {
         });
     });
 
+    app.get('/nativeRender', checkHttps, function (req, res) {
+        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'));
+    });
+
     // delete org classification
     app.delete('/orgClassification/', function (req, res) {
         let deleteClassification = req.body.deleteClassification;

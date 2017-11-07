@@ -7,5 +7,5 @@ if (PRODUCTION)
     enableProdMode();
 
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
-import { NativeRenderStandaloneModule } from "./nativeRenderStandalone.module";
-platformBrowserDynamic().bootstrapModule(NativeRenderStandaloneModule);
+import { NativeRenderAppModule } from "./nativeRenderApp.module";
+platformBrowserDynamic().bootstrapModule(NativeRenderAppModule);

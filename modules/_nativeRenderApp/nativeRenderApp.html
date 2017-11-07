@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:ng="http://angularjs.org" id="ng-app" lang="en">
+<html lang="en">
 <head>
 	<title>NIH Common Data Elements (CDE) Repository</title>
 	<meta name="site-version" content="<%= version %>">
@@ -11,46 +11,48 @@
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
 
-	<!--[if lt IE 9]>
-	<script type="text/javascript">
-		window.location = "/supportedBrowsers";
-		document.createElement("inline-edit");
-		document.createElement("inline-area-edit");
-	</script>
-	<![endif]-->
+	<!-- build:webpcss /static/print.css -->
+	<link href="/static/cde.css" rel="stylesheet" type="text/css" media="all"/>
+	<!-- endbuild -->
 
-	<script type="text/javascript">
-        (function () {
-            function CustomEvent ( event, params ) {
-                params = params || { bubbles: false, cancelable: false, detail: undefined };
-                var evt = document.createEvent( 'CustomEvent' );
-                evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
-                return evt;
-            }
-
-            CustomEvent.prototype = window.Event.prototype;
-
-            if (typeof(window.Event) !== 'function')
-                window.Event = CustomEvent;
-        })();
-	</script>
-
-	<!--[if IE]><!-->
-	<style>
-		.ieFix {
-			margin-right: 5px !important;
-		}
-	</style>
-	<!--<![endif]-->
-
-	<!-- build:css /form/public/assets/css/styles-printable.css -->
+	<!-- build:css /static/styles-print.css -->
 	<link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
-
 	<!-- bower:css -->
 	<link rel="stylesheet" href="/components/font-awesome/css/font-awesome.css" />
 	<link rel="stylesheet" href="/components/bootstrap-css-only/css/bootstrap.css" />
 	<!-- endbower -->
+	<!-- endbuild -->
 
+	<!-- Polyfills for legacy browsers -->
+	<!-- build:poly /static/polyfill.js -->
+	<script type="text/javascript" src="/static/shim.min.js"></script>
+	<script type="text/javascript" src="/static/Intl.min.js"></script>
+	<script type="text/javascript" src="/static/en.js"></script>
+	<script type="text/javascript" src="/static/classList.min.js"></script>
+	<!-- endbuild -->
+
+	<!-- Polyfills for legacy browsers -->
+	<!-- build:polyIE /static/polyfillIE.js -->
+	<!--[if IE]>
+	<script type="text/javascript">
+		(function () {
+			function CustomEvent(event, params) {
+				params = params || {bubbles: false, cancelable: false, detail: undefined};
+				var evt = document.createEvent('CustomEvent');
+				evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+				return evt;
+			}
+
+			CustomEvent.prototype = window.Event.prototype;
+
+			if (typeof(window.Event) !== 'function')
+				window.Event = CustomEvent;
+		})();
+	</script>
+	<script type="text/javascript" src="/static/formdata.js"></script>
+	<script type="text/javascript" src="/static/typedarray.js"></script>
+	<script type="text/javascript" src="/static/Blob.js"></script>
+	<![endif]-->
 	<!-- endbuild -->
 
 	<!-- IFH -->
@@ -59,18 +61,17 @@
 <body role="application" id="top">
     <cde-native-render-standalone></cde-native-render-standalone>
 
-    <!--Polyfills for legacy browsers-->
-    <script type="text/javascript" src="/static/shim.min.js" defer></script>
-    <script type="text/javascript" src="/static/Intl.min.js" defer></script>
-    <script type="text/javascript" src="/static/en.js" defer></script>
-    <script type="text/javascript" src="/static/classList.min.js" defer></script>
-    <!--[if IE]><script type="text/javascript" src="/static/formdata.js" defer></script><![endif]-->
-    <!--[if IE]><script type="text/javascript" src="/static/typedarray.js" defer></script><![endif]-->
-    <!--[if IE]><script type="text/javascript" src="/static/Blob.js" defer></script><![endif]-->
-
-    <!-- build:webp /system/public/assets/js/print.js -->
+    <!-- build:webp /static/print.js -->
     <script src="/static/print.js" defer></script>
     <!-- endbuild -->
+
+	<!--[if lt IE 9]>
+	<script type="text/javascript">
+		window.location = "/supportedBrowsers";
+		document.createElement("inline-edit");
+		document.createElement("inline-area-edit");
+	</script>
+	<![endif]-->
 
     <script type="application/ld+json">
             {
@@ -100,5 +101,6 @@
               "url" : "https://cde.nlm.nih.gov"
             }
     </script>
+
 </body>
 </html>

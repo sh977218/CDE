@@ -1,4 +1,4 @@
-/* Bootstrap 4 overrides for Bootstrap 3 */
+/* ---------- BEGIN Bootstrap 4 overrides for Bootstrap 3 ---------- */
 .form-inline, .form-inline label {
     display: inline-block;
 }
@@ -17,6 +17,113 @@ select.form-control:not([size]):not([multiple]) {
 label.input-group-addon:last-child {
     border-left: 1px solid #ccc;
 }
+
+/* ---------- END Bootstrap 4 overrides for Bootstrap 3 ---------- */
+/* ---------- BEGIN Themeing ---------- */
+
+/* DOM */
+a {
+    color: #207b9e;
+}
+
+/* Bootstrap Buttons */
+.btn-primary {
+    color: #fff;
+    background-color: #207b9e;
+    border-color: #207b9e;
+}
+
+.btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active {
+    background-color: #791d1a;
+    border-color: #601714;
+}
+
+.btn-danger {
+    background-color: #92231f;
+    border-color: #791d1a;
+}
+
+/* Bootstrap Pagination */
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #207b9e;
+    color: #fff;
+}
+
+a.paginate_button {
+    color: #666666;
+    border: 1px solid #e7e7e7;
+}
+
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+    color: #155169;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination > li > a, .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    line-height: 1.42857143;
+    text-decoration: none;
+    color: #207b9e;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin-left: -1px;
+}
+
+.pagination > .disabled > span, .pagination > .disabled > span:hover, .pagination > .disabled > span:focus, .pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
+    color: #3d3d3d;
+    background-color: #fff;
+    border-color: #ddd;
+    cursor: not-allowed;
+}
+
+/* Font Awesome */
+.dark-icon {
+    color: black;
+}
+
+.dark-icon:hover {
+    color: white;
+}
+
+/* Alternatives */
+@media print {
+    @page {
+        size: 330mm 427mm;
+        margin: 14mm;
+    }
+
+    .container {
+        width: 1170px;
+    }
+
+    .keep-with-previous {
+        page-break-before: avoid;
+        break-before: avoid;
+    }
+
+    .keep-together {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+}
+
+/* Custom */
+.fake-link {
+    color: #337ab7;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.fake-link:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
+
+/* ---------- END Themeing ---------- */
+/* ---------- BEGIN Junk ---------- */
 
 /*fixes an issue in bootstrap #1078 */
 .hand-cursor {
@@ -139,35 +246,6 @@ ngb-accordion .card-header a:hover {
     text-decoration: none;
 }
 
-#taTextElement {
-    height: auto;
-}
-
-#repeatCs hr {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-#repeatCs h5 {
-    font-size: 19px;
-}
-
-#repeatCs h6 {
-    font-size: 15px;
-    font-weight: bold;
-}
-
-#repeatCs ul {
-    font-size: 12px;
-    list-style: none;
-}
-
-#repeatCm > .pull-left {
-    margin: 5px;
-    padding: 10px;
-    word-wrap: break-word;
-}
-
 .disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -175,17 +253,6 @@ ngb-accordion .card-header a:hover {
 
 .disabledText {
     color: darkgray;
-}
-
-.fake-link {
-    color: #337ab7;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.fake-link:hover {
-    color: #23527c;
-    text-decoration: underline;
 }
 
 #addClassificationModalBody ul {
@@ -236,61 +303,6 @@ ngb-accordion .card-header a:hover {
 .matched-by {
     float: right;
     color: #4c4c4c;
-}
-
-a {
-    color: #207b9e;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #207b9e;
-    border-color: #207b9e;
-}
-
-.btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active {
-    background-color: #791d1a;
-    border-color: #601714;
-}
-
-.btn-danger {
-    background-color: #92231f;
-    border-color: #791d1a;
-}
-
-.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
-    background-color: #207b9e;
-    color: #fff;
-}
-
-a.paginate_button {
-    color: #666666;
-    border: 1px solid #e7e7e7;
-}
-
-.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
-    color: #155169;
-    background-color: #eee;
-    border-color: #ddd;
-}
-
-.pagination > li > a, .pagination > li > span {
-    position: relative;
-    float: left;
-    padding: 6px 12px;
-    line-height: 1.42857143;
-    text-decoration: none;
-    color: #207b9e;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    margin-left: -1px;
-}
-
-.pagination > .disabled > span, .pagination > .disabled > span:hover, .pagination > .disabled > span:focus, .pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
-    color: #3d3d3d;
-    background-color: #fff;
-    border-color: #ddd;
-    cursor: not-allowed;
 }
 
 .tabbable > .nav > li.active > a {
@@ -418,14 +430,6 @@ Style for log in page
 
 .ta-scroll-window {
     max-height: 700px;
-}
-
-.dark-icon {
-    color: black;
-}
-
-.dark-icon:hover {
-    color: white;
 }
 
 button#selectDefault {
@@ -793,34 +797,6 @@ div + .questionPlaceholder {
     border: 1px solid #bce8f1;
     margin-bottom: 20px;
     border-radius: 5px;
-}
-
-@media (min-resolution: 150dpi), (-webkit-min-device-pixel-ratio: 2.0) {
-    body {
-        font-size: 20px;
-    }
-
-    .welcomeSearchOrganizationBox {
-        height: 185px;
-    }
-
-    .panel-title, .btn, .dropdown-menu > li > a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
-        font-size: 20px;
-    }
-}
-
-@media (min-resolution: 250dpi), (-webkit-min-device-pixel-ratio: 3.0) {
-    body {
-        font-size: 25px;
-    }
-
-    .welcomeSearchOrganizationBox {
-        height: 205px;
-    }
-
-    .panel-title, .btn, .dropdown-menu > li > a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
-        font-size: 25px;
-    }
 }
 
 .quickBoardContent {
@@ -1438,6 +1414,7 @@ input.ng-invalid {
     width: 0;
 }
 
+/* begin Native Render */
 .form-horizontal {
     counter-reset: section;
 }
@@ -1538,27 +1515,7 @@ div.row .native-question-oneline-r {
     font-weight: normal;
     margin-bottom: 0;
 }
-
-@media print {
-    @page {
-        size: 330mm 427mm;
-        margin: 14mm;
-    }
-
-    .container {
-        width: 1170px;
-    }
-
-    .keep-with-previous {
-        page-break-before: avoid;
-        break-before: avoid;
-    }
-
-    .keep-together {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-}
+/* end Native Render */
 
 .overlay-lower-right {
     position: relative;

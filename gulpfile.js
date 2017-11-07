@@ -64,7 +64,7 @@ gulp.task('lhc-wiredep', ['bower'], function () {
 });
 
 gulp.task('nativefollow-wiredep', ['bower'], function () {
-    return gulp.src("./modules/form/public/html/nativeRenderStandalone.html")
+    return gulp.src("./modules/_nativeRenderApp/nativeRenderApp.html")
         .pipe(wiredep({
             directory: "modules/components",
             exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
@@ -73,9 +73,9 @@ gulp.task('nativefollow-wiredep', ['bower'], function () {
                 '/components/angular', '/components/angular-bootstrap', '/components/angular-resource',
                 '/components/angular-route', '/components/angular-sanitize'
             ],
-            ignorePath: "../../.."
+            ignorePath: ".."
         }))
-        .pipe(gulp.dest("./modules/form/public/html"));
+        .pipe(gulp.dest("./modules/_nativeRenderApp"));
 });
 
 gulp.task('wiredep', ['bower'], function () {
@@ -150,11 +150,7 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
     streamArray.push(gulp.src('./ingester/**')
         .pipe(gulp.dest(config.node.buildDir + "/ingester/")));
 
-    streamArray.push(gulp.src(
-        [
-            './modules/form/public/html/lformsRender.html',
-            './modules/form/public/html/nativeRenderStandalone.html'
-        ])
+    streamArray.push(gulp.src('./modules/form/public/html/lformsRender.html')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/")));
 
     streamArray.push(gulp.src('./modules/form/public/assets/**')
@@ -218,17 +214,19 @@ gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function ()
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
-        {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
+        {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"}
     ].forEach(item => {
         streamArray.push(
             gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     jsAttributes: {
-                        defer: true
+                        defer: false
                     },
                     assetsDir: "./modules/",
                     css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
                     webpcss: ['concat', rev()],
+                    poly: ['concat', rev()],
+                    polyIE: ['concat', rev()],
                     js: [uglify({mangle: false}), 'concat', rev()],
                     webp: ['concat', rev()]
                 }))
@@ -244,7 +242,7 @@ gulp.task('copyUsemin', ['usemin'], function () {
         {folder: "./modules/system/views/bot/"},
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"},
-        {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
+        {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"}
     ].forEach(item => {
         streamArray.push(gulp.src(config.node.buildDir + '/modules/' + item.filename)
             .pipe(gulp.dest(config.node.buildDir + "/" + item.folder)));

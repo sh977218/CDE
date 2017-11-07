@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:ng="http://angularjs.org" lang="en">
+<html lang="en">
 <head>
     <base href="/">
     <title>NIH Common Data Elements (CDE) Repository</title>
@@ -12,14 +12,21 @@
     <meta name=viewport content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
 
-    <!--[if lt IE 9]>
-    <script type="text/javascript">
-        window.location = "/supportedBrowsers";
-        document.createElement("inline-edit");
-        document.createElement("inline-area-edit");
-    </script>
-    <![endif]-->
+    <!-- build:webpcss /static/cde.css -->
+    <link href="/static/cde.css" rel="stylesheet" type="text/css" media="all"/>
+    <!-- endbuild -->
 
+    <!-- build:css /static/styles.css -->
+    <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+    <!-- bower:css -->
+    <link rel="stylesheet" href="/components/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="/components/bootstrap-css-only/css/bootstrap.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- Polyfills for legacy browsers -->
+    <!-- build:polyIE /static/polyfillIE.js -->
+    <!--[if IE]>
     <script type="text/javascript">
         (function () {
             function CustomEvent(event, params) {
@@ -35,26 +42,22 @@
                 window.Event = CustomEvent;
         })();
     </script>
-
-    <style>
-        .ieFix {
-            margin-right: 5px !important;
-        }
-    </style>
-    <!--<![endif]-->
-
-    <!-- build:webpcss /system/public/assets/css/cde.css -->
-    <link href="/static/cde.css" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="/static/formdata.js"></script>
+    <script type="text/javascript" src="/static/typedarray.js"></script>
+    <script type="text/javascript" src="/static/Blob.js"></script>
+    <![endif]-->
     <!-- endbuild -->
 
-    <!-- build:css /system/public/assets/css/styles.css -->
-    <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
-
-    <!-- bower:css -->
-    <link rel="stylesheet" href="/components/font-awesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="/components/bootstrap-css-only/css/bootstrap.css" />
+    <!-- build:js /static/vendor.js -->
+    <!-- Polyfills for legacy browsers -->
+    <script type="text/javascript" src="/static/shim.min.js"></script>
+    <script type="text/javascript" src="/static/Intl.min.js"></script>
+    <script type="text/javascript" src="/static/en.js"></script>
+    <script type="text/javascript" src="/static/classList.min.js"></script>
+    <!-- bower:js -->
+    <script src="/components/jquery/jquery.js"></script>
+    <script src="/components/bootstrap/dist/js/bootstrap.js"></script>
     <!-- endbower -->
-
     <!-- endbuild -->
 
     <%- include config.html %>
@@ -78,28 +81,17 @@
 
 </div>
 
-<!-- Polyfills for legacy browsers -->
-<script type="text/javascript" src="/static/shim.min.js" defer></script>
-<script type="text/javascript" src="/static/Intl.min.js" defer></script>
-<script type="text/javascript" src="/static/en.js" defer></script>
-<script type="text/javascript" src="/static/classList.min.js" defer></script>
-<!--[if IE]>
-<script type="text/javascript" src="/static/formdata.js" defer></script><![endif]-->
-<!--[if IE]>
-<script type="text/javascript" src="/static/typedarray.js" defer></script><![endif]-->
-<!--[if IE]>
-<script type="text/javascript" src="/static/Blob.js" defer></script><![endif]-->
-
-<!-- build:js /system/public/assets/js/vendor.js -->
-<!-- bower:js -->
-<script src="/components/jquery/jquery.js"></script>
-<script src="/components/bootstrap/dist/js/bootstrap.js"></script>
-<!-- endbower -->
+<!-- build:webp /static/cde.js -->
+<script src="/static/cde.js"></script>
 <!-- endbuild -->
 
-<!-- build:webp /system/public/assets/js/cde.js -->
-<script src="/static/cde.js" defer></script>
-<!-- endbuild -->
+<!--[if lt IE 9]>
+<script type="text/javascript">
+    window.location = "/supportedBrowsers";
+    document.createElement("inline-edit");
+    document.createElement("inline-area-edit");
+</script>
+<![endif]-->
 
 <script type="application/ld+json">
         {
