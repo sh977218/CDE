@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 import { ExportService } from 'core/export.service';
 
 @Component({

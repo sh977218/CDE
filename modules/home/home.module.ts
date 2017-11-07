@@ -1,25 +1,23 @@
 import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap/carousel/carousel.module';
 
 import { HomeComponent } from 'home/home.component';
-import { RouterModule, Routes } from '@angular/router';
+import { HomeRoutingModule } from 'home/home-routing.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-
-const appRoutes: Routes = [
-    {path: '', redirectTo: "/home", pathMatch: 'full'},
-    {path: 'home', component: HomeComponent},
-];
+import { WidgetModule } from 'widget/widget.module';
 
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
-        RouterModule.forChild(appRoutes),
+        NgbCarouselModule.forRoot(),
+        // core
+        WidgetModule,
         // internal
+        HomeRoutingModule,
         NativeRenderModule,
     ],
     declarations: [
@@ -27,12 +25,9 @@ const appRoutes: Routes = [
     ],
     entryComponents: [
     ],
-    exports: [
-        RouterModule,
-    ],
     providers: [
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: []
 })
 export class HomeModule {
 }

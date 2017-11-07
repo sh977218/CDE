@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ExportService } from "core/export.service";
 import { OrgHelperService } from "core/orgHelper.service";
-import { UserService } from "core/user.service";
+import { UserService } from "_app/user.service";
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

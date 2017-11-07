@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 import { Observable } from "rxjs/Observable";
 import { Http } from '@angular/http';
 import { IsAllowedService } from 'core/isAllowed.service';

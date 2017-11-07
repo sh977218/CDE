@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 
 @Component({
     selector: "cde-form-quick-board",

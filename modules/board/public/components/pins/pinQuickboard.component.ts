@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { BrowserService } from 'widget/browser.service';
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 
 @Component({
     selector: 'cde-pin-quickboard',

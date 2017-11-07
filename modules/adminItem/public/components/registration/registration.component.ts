@@ -5,7 +5,7 @@ import { Http } from '@angular/http';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { SharedService } from 'core/shared.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-import { UserService } from 'core/user.service';
+import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

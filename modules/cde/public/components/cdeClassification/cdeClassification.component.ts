@@ -4,7 +4,7 @@ import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { IsAllowedService } from 'core/isAllowed.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { ClassificationService } from 'core/classification.service';
-import { UserService } from 'core/user.service';
+import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({
