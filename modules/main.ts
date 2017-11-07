@@ -1,6 +1,5 @@
 import "zone.js";
-// dev only
-import "../node_modules/zone.js/dist/long-stack-trace-zone.js";
+// import "../node_modules/zone.js/dist/long-stack-trace-zone.js"; // TODO: dev only
 // reflect-metadata needed before enableProdMode for IE
 import "reflect-metadata";
 

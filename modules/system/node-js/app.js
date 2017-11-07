@@ -738,10 +738,8 @@ exports.init = function (app) {
         }
     });
 
-    app.post('/logClientException', function (req, res) {
-        dbLogger.logClientError(req, function (err, result) {
-            res.send(result);
-        });
+    app.post('/logClientException', (req, res) => {
+        dbLogger.logClientError(req, (err, result) => res.send(result));
     });
 
     app.get('/triggerServerErrorExpress', function (req, res) {

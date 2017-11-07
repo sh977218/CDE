@@ -14,6 +14,8 @@ import { NativeRenderStandaloneComponent } from './nativeRenderStandalone.compon
         CommonModule,
         FormsModule,
         HttpModule,
+        // core
+        // no WidgetModule,
         // internal
         NativeRenderModule,
     ],

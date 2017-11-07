@@ -1,13 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { Http } from "@angular/http";
-import { LoginService } from "./login.service";
-import { UserService } from "core/user.service";
+import { Component, OnInit } from '@angular/core';
+import { Http } from '@angular/http';
 import { Router } from '@angular/router';
+
 import { AlertService } from '_app/alert/alert.service';
+import { LoginService } from '_app/login.service';
+import { UserService } from '_app/user.service';
 
 @Component({
-    selector: "cde-login",
-    templateUrl: "login.component.html"
+    selector: 'cde-login',
+    templateUrl: 'login.component.html'
 })
 export class LoginComponent implements OnInit {
 
@@ -48,21 +49,21 @@ export class LoginComponent implements OnInit {
             recaptcha: this.recaptcha
         }).map(r => r.text()).subscribe(res => {
             this.userService.reload();
-            if (res === "OK") {
+            if (res === 'OK') {
                 if (this.loginSvc.getPreviousRoute()) {
                     this.router.navigate([this.loginSvc.getPreviousRoute().url], {queryParams: this.loginSvc.getPreviousRoute().queryParams});
                 } else {
                     this.router.navigate(['/home']);
                 }
             } else {
-                this.alert.addAlert("danger", res);
+                this.alert.addAlert('danger', res);
                 this.getCsrf();
             }
         }, res => {
             if (res.status === 412) {
-                this.alert.addAlert("danger", "Please fill out the Captcha before login in.");
+                this.alert.addAlert('danger', 'Please fill out the Captcha before login in.');
             } else {
-                this.alert.addAlert("danger", "Failed to log in.");
+                this.alert.addAlert('danger', 'Failed to log in.');
             }
             this.getCsrf();
         });

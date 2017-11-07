@@ -1,7 +1,7 @@
 import { Http } from "@angular/http";
 import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 
 @Component({

@@ -4,6 +4,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { CKEditorModule } from 'ng2-ckeditor';
 
+import { CoreModule } from 'core/core.module';
 import { InlineEditComponent } from "./inlineEdit/inlineEdit.component";
 import { InlineAreaEditComponent } from "./inlineEdit/inlineAreaEdit.component";
 import { PlaceHoldEmptyPipe } from "./pipes/placeHoldEmpty.pipe";
@@ -16,7 +17,9 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
         CKEditorModule,
         CommonModule,
         FormsModule,
-        NgbModule,
+        NgbModule.forRoot(),
+        // internal
+        CoreModule
     ],
     declarations: [
         InlineAreaEditComponent,

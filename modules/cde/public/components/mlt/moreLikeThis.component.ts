@@ -3,7 +3,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-boots
 import { Component, Input, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Component({

@@ -192,42 +192,42 @@ import { FormService } from 'nativeRender/form.service';
     templateUrl: 'home.component.html'
 })
 export class HomeComponent implements AfterViewChecked {
-    cdeFormSelection = 'formOnly';
-    currentFragement: string;
-    currentTab: string;
-    elt: CdeForm;
-    currentFormFeature: any;
-    featuredItems = {
-        Forms: [
-            {tinyId: '7kBFB4TUM', name: 'BRICS NINR SF-36'},
-            {tinyId: '7JlBFjBiMf', name: 'Demography NCI Standard Template'},
-            {tinyId: 'mJP_B1HrFg', name: 'Patient Health Questionnaire - 9 (PHQ-9) Depression Scale'},
-            {tinyId: '7kjmoQ8xQ', name: 'Patient-Reported Outcomes with LASIK Pre-Operative Questionnaire'},
-            {tinyId: 'mJsGoMU1m', name: 'PHQ-9 quick depression assessment panel [Reported.PHQ]'},
-            {tinyId: '71_l5EnuFUl', name: 'PROMIS Parent Proxy SF v1.0 - Mobility 8a'},
-            {tinyId: 'XySUBn_NZ', name: 'SDC Adrenal'},
-        ]
-    };
-    formFeatures = [
-        {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: '71pwc60mQ'},
-        {feature: 'Scores', description: 'Calculations such as scoring automate the math.', tinyId: 'mJsGoMU1m'},
-        {feature: 'Table', description: 'Questions can be asked multiple times.', tinyId: 'XJtA5M63ix'},
-        {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
-        {feature: 'Dynamic Logic', description: 'Fill out the form to get another question.',  tinyId: 'mJsGoMU1m'},
-        {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
-    ];
-    formFeatureDescription: string;
-    newItems = {CDEs: null, Forms: null};
-    statsType = 'Forms';
-    topItems = {CDEs: null, Forms: null};
+    // cdeFormSelection = 'formOnly';
+    currentFragment: string;
+    // currentTab: string;
+    // elt: CdeForm;
+    // currentFormFeature: any;
+    // featuredItems = {
+    //     Forms: [
+    //         {tinyId: '7kBFB4TUM', name: 'BRICS NINR SF-36'},
+    //         {tinyId: '7JlBFjBiMf', name: 'Demography NCI Standard Template'},
+    //         {tinyId: 'mJP_B1HrFg', name: 'Patient Health Questionnaire - 9 (PHQ-9) Depression Scale'},
+    //         {tinyId: '7kjmoQ8xQ', name: 'Patient-Reported Outcomes with LASIK Pre-Operative Questionnaire'},
+    //         {tinyId: 'mJsGoMU1m', name: 'PHQ-9 quick depression assessment panel [Reported.PHQ]'},
+    //         {tinyId: '71_l5EnuFUl', name: 'PROMIS Parent Proxy SF v1.0 - Mobility 8a'},
+    //         {tinyId: 'XySUBn_NZ', name: 'SDC Adrenal'},
+    //     ]
+    // };
+    // formFeatures = [
+    //     {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: '71pwc60mQ'},
+    //     {feature: 'Scores', description: 'Calculations such as scoring automate the math.', tinyId: 'mJsGoMU1m'},
+    //     {feature: 'Table', description: 'Questions can be asked multiple times.', tinyId: 'XJtA5M63ix'},
+    //     {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
+    //     {feature: 'Dynamic Logic', description: 'Fill out the form to get another question.',  tinyId: 'mJsGoMU1m'},
+    //     {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
+    // ];
+    // formFeatureDescription: string;
+    // newItems = {CDEs: null, Forms: null};
+    // statsType = 'Forms';
+    // topItems = {CDEs: null, Forms: null};
 
     constructor(private http: Http, private route: ActivatedRoute, private formService: FormService) {
-        this.getForm(this.formFeatures[0]);
+        // this.getForm(this.formFeatures[0]);
     }
 
     ngAfterViewChecked() {
         this.route.fragment.subscribe(fragment => {
-            if (fragment && this.currentFragement !== fragment) {
+            if (fragment && this.currentFragment !== fragment) {
                 setTimeout(function () {
                     document.querySelector('#' + fragment).scrollIntoView({
                         behavior: 'smooth',
@@ -235,63 +235,63 @@ export class HomeComponent implements AfterViewChecked {
                         inline: 'nearest'
                     });
                 }, 100);
-                this.currentFragement = fragment;
+                this.currentFragment = fragment;
             }
         });
     }
 
-    getForm(feature) {
-        this.formService.getForm(feature.tinyId, undefined, (err, elt) => {
-            if (!err) {
-                FormService.areDerivationRulesSatisfied(elt);
-                this.elt = elt;
-            }
-        });
-        this.currentFormFeature = feature;
-        this.formFeatureDescription = feature.description;
-    }
-
-    getStats(tab = null) {
-        if (!tab)
-            tab = this.currentTab;
-        else
-            this.currentTab = tab;
-
-        if (tab === 'tabFeatured')
-            this.cdeFormSelection = 'formOnly';
-        else if (tab === 'tabTop')
-            this.cdeFormSelection = 'cdeOnly';
-        else
-            this.cdeFormSelection = 'both';
-
-        let type;
-        if (this.statsType === 'CDEs')
-            type = 'cde';
-        else if (this.statsType === 'Forms')
-            type = 'form';
-        else
-            return;
-
-        if (tab === 'tabTop') {
-            if (this.topItems['CDEs'] === null)
-                this.http.get('/statsTopViews/cde').map(res => res.json()).subscribe(
-                    res => {
-                        this.topItems['CDEs'] = res;
-                    },
-                    error => {
-                    }
-                );
-        } else if (tab === 'tabNew') {
-            if (this.newItems[this.statsType] === null)
-                this.http.get('/statsNew/' + type).map(res => res.json()).subscribe(
-                    res => {
-                        this.newItems[this.statsType] = res;
-                    },
-                    error => {
-                    }
-                );
-        }
-    }
+    // getForm(feature) {
+    //     this.formService.getForm(feature.tinyId, undefined, (err, elt) => {
+    //         if (!err) {
+    //             FormService.areDerivationRulesSatisfied(elt);
+    //             this.elt = elt;
+    //         }
+    //     });
+    //     this.currentFormFeature = feature;
+    //     this.formFeatureDescription = feature.description;
+    // }
+    //
+    // getStats(tab = null) {
+    //     if (!tab)
+    //         tab = this.currentTab;
+    //     else
+    //         this.currentTab = tab;
+    //
+    //     if (tab === 'tabFeatured')
+    //         this.cdeFormSelection = 'formOnly';
+    //     else if (tab === 'tabTop')
+    //         this.cdeFormSelection = 'cdeOnly';
+    //     else
+    //         this.cdeFormSelection = 'both';
+    //
+    //     let type;
+    //     if (this.statsType === 'CDEs')
+    //         type = 'cde';
+    //     else if (this.statsType === 'Forms')
+    //         type = 'form';
+    //     else
+    //         return;
+    //
+    //     if (tab === 'tabTop') {
+    //         if (this.topItems['CDEs'] === null)
+    //             this.http.get('/statsTopViews/cde').map(res => res.json()).subscribe(
+    //                 res => {
+    //                     this.topItems['CDEs'] = res;
+    //                 },
+    //                 error => {
+    //                 }
+    //             );
+    //     } else if (tab === 'tabNew') {
+    //         if (this.newItems[this.statsType] === null)
+    //             this.http.get('/statsNew/' + type).map(res => res.json()).subscribe(
+    //                 res => {
+    //                     this.newItems[this.statsType] = res;
+    //                 },
+    //                 error => {
+    //                 }
+    //             );
+    //     }
+    // }
 
     takeATour() {
         TourService.takeATour();
