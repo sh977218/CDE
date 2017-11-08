@@ -5,7 +5,7 @@ import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-boots
 import { LocalStorageService } from "angular-2-local-storage/dist";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
-import { UserService } from 'core/user.service';
+import { UserService } from '_app/user.service';
 import { ClassificationService } from 'core/classification.service';
 
 const actionMapping: IActionMapping = {

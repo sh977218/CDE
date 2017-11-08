@@ -207,25 +207,25 @@
                 <span id="topic_crumb">
                     | <span *ngIf="!hasSelectedTopics()" class="label label-default">All Topics</span>
                     <span *ngIf="hasSelectedTopics()" class="label label-success mr-2">{{getSelectedTopics()}}
-                        <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
+                        <span id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedTopics()"
-                           ngbTooltip="Remove this topics filter" placement="right" container="body"></i>
+                           ngbTooltip="Remove this topics filter" placement="right" container="body"></span>
                     </span>
                 </span>
                 <span id="status_crumb">
                     | <span *ngIf="!hasSelectedStatuses()" class="label label-default">All Statuses</span>
                     <span *ngIf="hasSelectedStatuses()" class="label label-success mr-2">{{getSelectedStatuses()}}
-                        <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
+                        <span id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedStatuses()"
-                           ngbTooltip="Remove this registration statuses filter" placement="right" container="body"></i>
+                           ngbTooltip="Remove this registration statuses filter" placement="right" container="body"></span>
                     </span>
                 </span>
                 <span *ngIf="module === 'cde'" id="datatype_crumb">
                     | <span *ngIf="!hasSelectedDatatypes()" class="label label-default">All Datatypes</span>
                     <span *ngIf="hasSelectedDatatypes()" class="label label-success mr-2">{{getSelectedDatatypes()}}
-                        <i id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
+                        <span id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedDatatypes()"
-                           ngbTooltip="Remove this datatypes filter" placement="right" container="body"></i>
+                           ngbTooltip="Remove this datatypes filter" placement="right" container="body"></span>
                     </span>
                 </span>
             </span>

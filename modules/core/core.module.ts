@@ -1,31 +1,31 @@
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
-import { ClassificationService } from "./classification.service";
-import { ElasticService } from 'core/elastic.service';
-import { ExportService } from "./export.service";
-import { MergeCdeService } from "./mergeCde.service";
-import { MergeFormService } from "./mergeForm.service";
-import { MergeShareService } from "./mergeShare.service";
-import { CompareService } from "./compare.service";
-import { OrgHelperService } from "./orgHelper.service";
-import { UserService } from "./user.service";
+import { CdeAmericanDateParserFormatter } from 'core/americanDateParserFormatter';
+import { ClassificationService } from './classification.service';
+import { ExportService } from 'core/export.service';
+import { MergeCdeService } from 'core/mergeCde.service';
+import { MergeFormService } from 'core/mergeForm.service';
+import { MergeShareService } from 'core/mergeShare.service';
+import { CompareService } from 'core/compare.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 import { IsAllowedService } from 'core/isAllowed.service';
-export { ClassificationService } from "./classification.service";
+import { RegistrationValidatorService } from 'core/registrationValidator.service';
 
 @NgModule({
     imports: [
     ],
     providers: [
         ClassificationService,
-        ElasticService,
+        CompareService,
         ExportService,
         IsAllowedService,
         MergeCdeService,
         MergeFormService,
         MergeShareService,
-        CompareService,
+        {provide: NgbDateParserFormatter, useClass: CdeAmericanDateParserFormatter},
         OrgHelperService,
-        UserService,
+        RegistrationValidatorService,
     ],
     exports: [
     ]

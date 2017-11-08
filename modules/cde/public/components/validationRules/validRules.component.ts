@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
+import { RegistrationValidatorService } from "core/registrationValidator.service";
 
 @Component({
     selector: "cde-valid-rules",

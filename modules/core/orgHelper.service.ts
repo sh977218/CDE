@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { Http } from "@angular/http";
-import { SharedService } from "./shared.service";
-import { UserService } from "./user.service";
+import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
+import { SharedService } from 'core/shared.service';
+import { UserService } from '_app/user.service';
 
 @Injectable()
 export class OrgHelperService  {

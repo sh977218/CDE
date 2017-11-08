@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { MyBoardsService } from 'board/public/myBoards.service';
 import { AlertService } from '_app/alert/alert.service';
-import { UserService } from 'core/user.service';
+import { UserService } from '_app/user.service';
 
 @Component({
     selector: 'cde-pin-board-modal',

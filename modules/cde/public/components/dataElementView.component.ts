@@ -4,9 +4,9 @@ import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/
 import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 import { SharedService } from 'core/shared.service';
-import { UserService } from 'core/user.service';
+import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as deValidator from "../../shared/deValidator.js";

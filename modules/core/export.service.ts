@@ -2,10 +2,10 @@ import { Injectable } from "@angular/core";
 import * as JSZip from "jszip";
 import * as JXON from "jxon";
 import { saveAs } from "file-saver";
-import { ElasticService } from 'core/elastic.service';
-import { RegistrationValidatorService } from "system/public/components/registrationValidator.service";
-import { SharedService } from "./shared.service";
-import { UserService } from "./user.service";
+import { ElasticService } from '_app/elastic.service';
+import { RegistrationValidatorService } from "core/registrationValidator.service";
+import { SharedService } from 'core/shared.service';
+import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 @Injectable()
@@ -40,16 +40,14 @@ export class ExportService {
 
                 let exporters = {
                     'csv': (result) => {
-                        this.elasticService.then(() => {
-                            let settings = this.elasticService.searchSettings;
-                            let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-                            result.forEach(function (ele) {
-                                csv += SharedService.exportShared.convertToCsv(
-                                    SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
-                            });
-                            let blob = new Blob([csv], {type: "text/csv"});
-                            saveAs(blob, 'SearchExport.csv');
+                        let settings = this.elasticService.searchSettings;
+                        let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+                        result.forEach(function (ele) {
+                            csv += SharedService.exportShared.convertToCsv(
+                                SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
                         });
+                        let blob = new Blob([csv], {type: "text/csv"});
+                        saveAs(blob, 'SearchExport.csv');
                     },
                     'json': function (result) {
                         let blob = new Blob([JSON.stringify(result)], {type: "application/json"});
@@ -120,23 +118,21 @@ export class ExportService {
     }
 
     quickBoardExport(elts) {
-        this.elasticService.then(() => {
-            let settings = this.elasticService.searchSettings;
-            let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-            elts.forEach(function (ele) {
-                result += SharedService.exportShared.convertToCsv(
-                    SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
-            });
-
-            if (result) {
-                let blob = new Blob([result], {
-                    type: "text/csv"
-                });
-                saveAs(blob, 'QuickBoardExport' + '.csv');
-                this.alertService.addAlert("success", "Export downloaded.");
-            } else {
-                this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
-            }
+        let settings = this.elasticService.searchSettings;
+        let result = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+        elts.forEach(function (ele) {
+            result += SharedService.exportShared.convertToCsv(
+                SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
         });
+
+        if (result) {
+            let blob = new Blob([result], {
+                type: "text/csv"
+            });
+            saveAs(blob, 'QuickBoardExport' + '.csv');
+            this.alertService.addAlert("success", "Export downloaded.");
+        } else {
+            this.alertService.addAlert("danger", "Something went wrong, please try again in a minute.");
+        }
     }
 }

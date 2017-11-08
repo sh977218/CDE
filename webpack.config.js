@@ -2,6 +2,8 @@ const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 console.log("Are we prod? " + prod);
@@ -9,50 +11,39 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        main: './modules/main.ts'
+        cde: './modules/main.ts',
     },
     output: {
         path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
-        filename: '[name].js'
+        publicPath: '/static/',
+        filename: '[name].js',
+        chunkFilename: 'cde-[name].js',
     },
     module: {
         rules: [
             {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
             {
                 test: /\.ts$/,
-                use: prod ? ['@ngtools/webpack', 'angular2-template-loader'] : ['ts-loader', 'angular2-template-loader']
+                use: prod ? ['@ngtools/webpack'] : ['ts-loader', 'angular-router-loader', 'angular2-template-loader']
             },
-            {test: /\.css$/, use: ['style-loader?insertAt=top', 'css-loader']},
-            {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false} }]},
-            {test: /\.png$/, use: ['url-loader']}
+            {
+                test: /\.css$/, include: /node_modules/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader'
+                })
+            },
+            {test: /\.css$/, exclude: /node_modules/, use: ['style-loader?insertAt=top', 'css-loader']},
+            {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false}}]},
+            {test: /\.png$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]}
         ]
     },
     plugins: prod ?
         [
-            new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
-                /angular(\\|\/)core(\\|\/)@angular/,
-                path.resolve(__dirname, '../src')
-            ),
-            new AotPlugin.AotPlugin({
-                tsConfigPath: './tsconfig.json',
-                entryModule: path.join(__dirname, 'modules', '_app/app.module') + '#CdeAppModule',
-                mainPath: 'modules/main-aot',
-                exclude: ['/node-js/']
-            }),
-            new webpack.DefinePlugin({
-                PRODUCTION: JSON.stringify(true),
-            }),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
-            new webpack.optimize.UglifyJsPlugin({ // sourcemap
-                mangle: true,
-                sourceMap: true,
-                output: {
-                    comments: false
-                },
-                compress: {
-                    warnings: false
-                }
+            new webpack.DefinePlugin({
+                PRODUCTION: JSON.stringify(true),
             }),
             new webpack.ProvidePlugin({
                 $: 'jquery',
@@ -60,6 +51,56 @@ module.exports = {
                 'windows.jQuery': 'jquery',
                 'Tether':'tether',
                 Popper: ['popper.js', 'default'],
+            }),
+            new AotPlugin.AotPlugin({
+                tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
+                entryModule: path.resolve(__dirname, 'modules/_app/app.module') + '#CdeAppModule'
+            }),
+            new webpack.optimize.UglifyJsPlugin({ // sourcemap
+                parallel: true,
+                uglifyOptions: {
+                    ie8: false,
+                    ecma: 5,
+                    warnings: true,
+                    mangle: true, // debug false
+                    output: {
+                        comments: false,
+                        beautify: false,  // debug true
+                    }
+                },
+                warnings: true,
+            }),
+            new ExtractTextPlugin({filename: '[name].css'}),
+            new webpack.optimize.ModuleConcatenationPlugin(),
+            new OptimizeJsPlugin({
+                sourceMap: false
+            }),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: ['cde'],
+            }),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: ['cde'],
+                children: true,
+                async: true,
+                minChunks: 15,
+            }),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: ['cde'],
+                children: true,
+                async: true,
+                minChunks: 10,
+            }),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: ['cde'],
+                children: true,
+                async: true,
+                minChunks: 5,
+            }),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: ['cde'],
+                children: true,
+                async: true,
+                minChunks: 3,
             }),
             // new BundleAnalyzerPlugin()
         ] : [
@@ -79,14 +120,15 @@ module.exports = {
                 'windows.jQuery': 'jquery',
                 'Tether':'tether',
                 Popper: ['popper.js', 'default'],
-            })
+            }),
+            new ExtractTextPlugin({filename: '[name].css'}),
         ],
     resolve: {
         unsafeCache: false,
         extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
         modules: ["modules", "node_modules", "modules/components"]
     },
-    devtool: prod ? '#source-map' : '#cheap-eval-source-map',
+    devtool: prod ? undefined : '#cheap-eval-source-map',
     watch: !prod,
     watchOptions: prod ? undefined : {
         aggregateTimeout: 1000,

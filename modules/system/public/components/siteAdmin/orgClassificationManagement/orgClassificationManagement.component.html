@@ -46,7 +46,7 @@
 </div>
 
 <ng-template #renameClassificationContent id="renameClassificationModal" let-c="close" let-d="dismiss">
-    <form #renameClassificationForm="ngForm">
+    <form #renameClassificationForm="ngForm" (ngSubmit)="renameClassification(renameClassificationNode)">
         <div class="modal-header" id="renameClassificationModalHeader">
             <h4 class="modal-title">Rename Classification</h4>
         </div>
@@ -65,9 +65,9 @@
             <button class="btn cancel" (click)="c('cancel')" id="cancelRenameClassificationBtn"
                     name="cancelRenameClassificationBtn" type="button">Cancel
             </button>
-            <button class="btn btn-danger" (click)="c('confirm')" id="confirmRenameClassificationBtn"
+            <button class="btn btn-danger" id="confirmRenameClassificationBtn"
                     [disabled]="!newClassificationName && !renameClassificationForm.form.valid"
-                    name="confirmRenameClassificationBtn" type="button">OK
+                    name="confirmRenameClassificationBtn" type="submit">OK
             </button>
         </div>
     </form>
@@ -98,7 +98,7 @@
         </button>
         <button class="btn btn-danger" (click)="c('confirm')" id="confirmDeleteClassificationBtn"
                 [disabled]="userTyped !== selectedClassificationString" name="confirmDeleteClassificationBtn"
-                type="button">OK
+                type="submit">OK
         </button>
     </div>
 </ng-template>
@@ -108,7 +108,7 @@
 </cde-classify-item-modal>
 
 <ng-template #addChildClassificationContent id="addChildClassificationModal" let-c="close" let-d="dismiss">
-    <form #addChildClassificationForm="ngForm">
+    <form #addChildClassificationForm="ngForm" (ngSubmit)="addChildClassification(childClassificationNode);">
         <div class="modal-header" id="addChildClassificationModalHeader">
             <h4 class="modal-title"> Add Child Classification</h4>
         </div>
@@ -126,7 +126,7 @@
             <button class="btn cancel" (click)="c('cancel')" id="cancelAddChildClassificationBtn"
                     name="cancelDeleteClassificationBtn">Cancel
             </button>
-            <button class="btn btn-danger" (click)="c('confirm')" id="confirmAddChildClassificationBtn"
+            <button class="btn btn-danger" type="submit" id="confirmAddChildClassificationBtn"
                     [disabled]="!newClassificationName && !addChildClassificationForm.form.valid"
                     name="confirmDeleteClassificationBtn">OK
             </button>
@@ -135,7 +135,7 @@
 </ng-template>
 
 <ng-template #mapClassificationMeshContent id="mapClassificationMeshModal" let-c="close" let-d="dismiss">
-    <form #mapClassificationMeshForm="ngForm">
+    <form #mapClassificationMeshForm="ngForm" (ngSubmit)="addMeshDescriptor()">
         <div class="modal-header" id="mapClassificationMeshModalHeader">
             <h4 class="modal-title">Mesh Mappings</h4>
         </div>
@@ -159,7 +159,7 @@
             <div *ngIf="descriptorID">
                 {{descriptorID}} -- {{descriptorName}}
                 <button *ngIf="descriptorName.length > 0" class="btn btn-default btn-sm" id="addMeshDescButton"
-                        (click)="addMeshDescriptor()" [disabled]="this.mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
+                        type="submit" [disabled]="mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
                 </button>
             </div>
 
