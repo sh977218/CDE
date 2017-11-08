@@ -18,10 +18,15 @@ export class EmbeddedCdeSearchResultComponent {
     raiseLfLimit () {
         return this.lfLimit = 100;
     }
-
     lowerLfLimit () {
         return this.lfLimit = 3;
     };
-
+    clLimit = 3;
+    raiseClLimit () {
+        return this.clLimit = 100;
+    }
+    lowerClLimit () {
+        return this.clLimit = 3;
+    };
 
 }

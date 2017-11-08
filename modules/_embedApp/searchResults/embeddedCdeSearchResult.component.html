@@ -6,9 +6,10 @@
             <th *ngIf="searchViewSettings.tableViewFields.permissibleValues">Permissible Values</th>
             <th *ngFor="let customField of searchViewSettings.tableViewFields.customFields"
                 style="{{customField.style}}">{{customField.label}}</th>
-            <!--<th ng-repeat="eCl in embed[searchType].classifications" ng-switch="clLimit === 100">{{eCl.label}} <span-->
-                    <!--ng-switch-when="true"> <a href="" ng-click="lowerClLimit()">(show 3)</a></span>-->
-                <!--<span ng-switch-default>(3 shown, <a href="" ng-click="raiseClLimit()">see all</a>)</span></th>-->
+            <th *ngFor="let eCl of embed[searchType].classifications">{{eCl.label}}
+                <span *ngIf="clLimit === 100"> <a href (click)="lowerClLimit()">(show 3)</a></span>
+                <span *ngIf="clLimit < 100">(3 shown, <a href="" (click)="raiseClLimit()">see all</a>)</span>
+            </th>
             <th *ngIf="embed.cde.linkedForms.show">
                 {{embed.cde.linkedForms.label}}
                 <span *ngIf="lfLimit === 100"> <span class="fake-link"
@@ -37,12 +38,12 @@
             <td *ngFor="let customField of searchViewSettings.tableViewFields.customFields">{{elt.embed[customField.key] | slice:0:200}}
                 <span *ngIf="elt.embed[customField.key]?.length > 200">(truncated...)</span>
             </td>
-            <!--<td ng-repeat="eCl in embed[searchType].classifications">-->
-                <!--<ul style="margin-bottom: 0">-->
-                    <!--<li ng-repeat="cl in c.embed[eCl.label] | limitTo:clLimit"><small>{{cl}}</small></li>-->
-                <!--</ul>-->
-                <!--<div ng-if="c.embed[eCl.label].length > clLimit" style="margin-left: 20px">...</div>-->
-            <!--</td>-->
+            <td *ngFor="let eCl of embed[searchType].classifications">
+                <ul style="margin-bottom: 0">
+                    <li *ngFor="let cl of c.embed[eCl.label] | slice:0:clLimit"><small>{{cl}}</small></li>
+                </ul>
+                <div *ngIf="c.embed[eCl.label].length > clLimit" style="margin-left: 20px">...</div>
+            </td>
             <td *ngIf="embed.cde.linkedForms.show">
                 <ul>
                     <li *ngFor="let lf of elt.embed.linkedForms | slice:0:lfLimit">{{lf.name}}</li>

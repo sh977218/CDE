@@ -84,14 +84,15 @@ public class EmbedTest extends NlmCdeBaseTest {
         Assert.assertEquals(ths.size(), 9);
 
         Assert.assertEquals(ths.get(0).getText(), "Name");
-        Assert.assertEquals(ths.get(1).getText(), "CDE ID");
-        Assert.assertEquals(ths.get(2).getText(), "Version");
-        Assert.assertEquals(ths.get(3).getText(), "Variable Name");
-        Assert.assertEquals(ths.get(4).getText(), "Question");
-        Assert.assertEquals(ths.get(5).getText(), "Description");
-        Assert.assertEquals(ths.get(6).getText(), "Status");
-        Assert.assertTrue(ths.get(7).getText().startsWith("Classification ("));
-        Assert.assertTrue(ths.get(8).getText().startsWith("Forms ("));
+        Assert.assertEquals(ths.get(1).getText(), "Permissible Values");
+        Assert.assertEquals(ths.get(2).getText(), "CDE ID");
+        Assert.assertEquals(ths.get(3).getText(), "Version");
+        Assert.assertEquals(ths.get(4).getText(), "Variable Name");
+        Assert.assertEquals(ths.get(5).getText(), "Question");
+        Assert.assertEquals(ths.get(6).getText(), "Description");
+        Assert.assertEquals(ths.get(7).getText(), "Status");
+        Assert.assertTrue(ths.get(8).getText().startsWith("Classification ("));
+        Assert.assertTrue(ths.get(9).getText().startsWith("Forms ("));
 
         textPresent("Ethnicity USA category");
         textPresent("C00020");
