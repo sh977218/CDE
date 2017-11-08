@@ -1,34 +1,33 @@
-let passport = require('passport')
-    , mongo_cde = require('../../cde/node-js/mongo-cde')
-    , mongo_form = require('../../form/node-js/mongo-form')
-    , mongo_data = require('./mongo-data')
-    , config = require('./parseConfig')
-    , dbLogger = require('./dbLogger.js')
-    , logging = require('./logging.js')
-    , orgsvc = require('./orgsvc')
-    , usersrvc = require('./usersrvc')
-    , orgClassificationSvc = require('./orgClassificationSvc')
-    , express = require('express')
-    , path = require('path')
-    , adminItemSvc = require("./adminItemSvc")
-    , csrf = require('csurf')
-    , authorizationShared = require("../../system/shared/authorizationShared")
-    , daoManager = require('./moduleDaoManager')
-    , fs = require('fs')
-    , multer = require('multer')
-    , exportShared = require('../../system/shared/exportShared')
-    , tar = require('tar-fs')
-    , zlib = require('zlib')
-    , spawn = require('child_process').spawn
-    , authorization = require('./authorization')
-    , esInit = require('./elasticSearchInit')
-    , elastic = require('./elastic.js')
-    , app_status = require("./status.js")
-    , async = require('async')
-    , request = require('request')
-    , CronJob = require('cron').CronJob
-    , _ = require('lodash')
-;
+const passport = require('passport');
+const mongo_cde = require('../../cde/node-js/mongo-cde');
+const mongo_form = require('../../form/node-js/mongo-form');
+const mongo_data = require('./mongo-data');
+const config = require('./parseConfig');
+const dbLogger = require('./dbLogger.js');
+const logging = require('./logging.js');
+const orgsvc = require('./orgsvc');
+const usersrvc = require('./usersrvc');
+const orgClassificationSvc = require('./orgClassificationSvc');
+const express = require('express');
+const path = require('path');
+const adminItemSvc = require("./adminItemSvc");
+const csrf = require('csurf');
+const authorizationShared = require("../../system/shared/authorizationShared");
+const daoManager = require('./moduleDaoManager');
+const fs = require('fs');
+const multer = require('multer');
+const exportShared = require('../../system/shared/exportShared');
+const tar = require('tar-fs');
+const zlib = require('zlib');
+const spawn = require('child_process').spawn;
+const authorization = require('./authorization');
+const esInit = require('./elasticSearchInit');
+const elastic = require('./elastic.js');
+const app_status = require("./status.js");
+const async = require('async');
+const request = require('request');
+const CronJob = require('cron').CronJob;
+const _ = require('lodash');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -169,6 +168,45 @@ exports.init = function (app) {
             }
             else res.render('bot/formView', 'system', {elt: cde});
         });
+    });
+    app.get("/sitemaps/cde/", checkHttps, function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            res.type('text');
+            let cond = {
+                'archived': false,
+                'registrationState.registrationStatus': 'Qualified'
+            };
+            let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
+            let formatter = doc => {
+                return config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
+            };
+            stream.on('data', function (doc) {
+                res.write(formatter(doc));
+            });
+            stream.on('end', function () {
+                res.end();
+            });
+        } else res.status(401).send("Not Authorized.");
+    });
+
+    app.get("/sitemaps/form/", checkHttps, function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            res.type('text');
+            let cond = {
+                'archived': false,
+                'registrationState.registrationStatus': 'Qualified'
+            };
+            let stream = mongo_form.Form.find(cond, "tinyId").stream();
+            let formatter = doc => {
+                return config.publicUrl + "/formView?tinyId=" + doc.tinyId + "\n";
+            };
+            stream.on('data', function (doc) {
+                res.write(formatter(doc));
+            });
+            stream.on('end', function () {
+                res.end();
+            });
+        } else res.status(401).send("Not Authorized.");
     });
 
     function checkHttps(req, res, next) {
