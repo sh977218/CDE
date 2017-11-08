@@ -108,8 +108,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/attachments/cde/add', multer(config.multer), function (req, res) {
-        if (req.files.uploadedFiles)
-            adminItemSvc.addAttachment(req, res, mongo_cde);
+        adminItemSvc.addAttachment(req, res, mongo_cde);
     });
 
     app.post('/attachments/cde/remove', function (req, res) {
