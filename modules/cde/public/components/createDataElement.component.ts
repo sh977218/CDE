@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
 import { Router } from '@angular/router';
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -17,8 +17,10 @@ import { UserService } from '_app/user.service';
     templateUrl: "./createDataElement.component.html"
 })
 export class CreateDataElementComponent implements OnInit {
-    @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
     @Input() elt;
+    @Output() close = new EventEmitter<void>();
+    @Output() dismiss = new EventEmitter<void>();
+    @ViewChild("classifyItemComponent") public classifyItemComponent: ClassifyItemModalComponent;
 
     modalRef: NgbModalRef;
     validationMessage;
@@ -155,11 +157,16 @@ export class CreateDataElementComponent implements OnInit {
 
     createDataElement() {
         this.http.post("/de", this.elt).map(res => res.json())
-            .subscribe(res => this.router.navigate(["/deView"], {queryParams: {tinyId: res.tinyId}}),
-                err => this.alert.addAlert("danger", err));
+            .subscribe(res => {
+                this.close.emit();
+                this.router.navigate(["/deView"], {queryParams: {tinyId: res.tinyId}});
+            }, err => this.alert.addAlert("danger", err));
     }
 
     cancelCreateDataElement() {
-        this.router.navigate(["/"]);
+        if (this.dismiss.observers.length)
+            this.dismiss.emit();
+        else
+            this.router.navigate(["/"]);
     }
 }
