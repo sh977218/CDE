@@ -216,7 +216,7 @@ gulp.task('copyUsemin', ['usemin'], function () {
     [
         {folder: "./modules/system/views/bot/"},
         {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/embedded/public/html/", filename: "index.html"},
+        {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(item => {
         streamArray.push(gulp.src(config.node.buildDir + '/modules/' + item.filename)
