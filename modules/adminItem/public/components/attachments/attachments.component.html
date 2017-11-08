@@ -4,10 +4,10 @@
     </h4>
     <ng-container *ngIf="!elt.isDraft">
         <h4>Attachments</h4>
-        <div *ngFor="let attachment of elt.attachments; let i = index" id="attachment_{{i}}">
-            <div class="row">
-                <div class="col-xs-3 text-right text_label">Filename:</div>
-                <div class="col-xs-9">
+        <ng-container *ngFor="let attachment of elt.attachments; let i = index">
+            <dl id="attachment_{{i}}" class="row">
+                <dt class="col-xs-3 text-right">Filename:</dt>
+                <dd class="col-xs-9">
                     <div *ngIf="!attachment.pendingApproval">
                         <a id="attachment_file_url_{{i}}" class="viewAttachmentLink"
                            href="/data/{{attachment.fileid}}"
@@ -19,69 +19,56 @@
                     <div *ngIf="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be
                         downloaded because it is pending approval.
                     </div>
-                </div>
-            </div>
-            <div class="row" *ngIf="!attachment.pendingApproval">
-                <div class="col-xs-3 text-right text_label">Default Image:</div>
-                <div class="col-xs-9">
-                    <div *ngIf="attachment.filesize > 512*1024">
-                        Attachments smaller than 500k can be marked as default
-                    </div>
-                    <div *ngIf="attachment.filesize <= 512*1024">
-                        <label id="defaultCbLabel">
-                            <input type="checkbox" id="defaultCb" [(ngModel)]="attachment.isDefault"
-                                   (change)="setDefault.emit(i)" [disabled]="!canEdit"/>
-                            Should this image be displayed in search results?</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row" *ngIf="canEdit">
-                <div class="col-xs-3 text-right text_label">Actions:</div>
-                <div class="col-xs-9">
-                    <div *ngIf="showDelete">
-                        Confirm Delete
-                        <i class="fa fa-check" (click)="showDelete = false; removeAttachment.emit(i)"
-                           id="confirmRemove-{{i}}"></i>
-                        <i class="fa fa-times" (click)="showDelete = false"></i>
-                    </div>
-                    <i (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
-                       id="removeAttachment-{{i}}"></i>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-3 text-right text_label">Size:</div>
-                <div class="col-xs-3" id="dd_attach_size_{{i}}">
+                </dd>
+                <ng-container *ngIf="!attachment.pendingApproval">
+                    <dt class="col-xs-3 text-right">Default Image:</dt>
+                    <dd id="dd_id_nlm" class="col-xs-9">
+                        <div *ngIf="attachment.filesize > 512*1024">
+                            Attachments smaller than 500k can be marked as default
+                        </div>
+                        <div *ngIf="attachment.filesize <= 512*1024">
+                            <label id="defaultCbLabel">
+                                <input type="checkbox" id="defaultCb" [(ngModel)]="attachment.isDefault"
+                                       (change)="setDefault.emit(i)" [disabled]="!canEdit"/>
+                                Should this image be displayed in search results?</label>
+                        </div>
+                    </dd>
+                </ng-container>
+                <ng-container *ngIf="canEdit">
+                    <dt class="col-xs-3 text-right">Actions:</dt>
+                    <dd id="dd_version_nlm" class="col-xs-9">
+                        <div *ngIf="showDelete">
+                            Confirm Delete
+                            <i class="fa fa-check" (click)="showDelete = false; removeAttachment.emit(i)"
+                               id="confirmRemove-{{i}}"></i>
+                            <i class="fa fa-times" (click)="showDelete = false"></i>
+                        </div>
+                        <i (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
+                           id="removeAttachment-{{i}}"></i>
+                    </dd>
+                </ng-container>
+                <dt class="col-xs-3 text-right">Size:</dt>
+                <dd class="col-xs-9">
                     <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}}
                         MB
                     </div>
                     <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-3 text-right text_label">Uploaded date:</div>
-                <div class="col-xs-9">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-3 text-right text_label">Uploaded by:</div>
-                <div class="col-xs-9">{{attachment.uploadedBy.username}}
-                </div>
-            </div>
-            <hr class="col-xs-9 divider compare-divider">
-        </div>
-        <hr/>
-        <div class="row" *ngIf="canEdit">
-            <div class="col-xs-12">
-                <div class="row">
-                    <div class="col-xs-3 text-right text_label">
-                        <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
-                    </div>
-                    <div class="col-xs-9">
-                        <input type="file" style="display: none" id="fileToUpload" (change)="upload.emit($event)"/>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </dd>
+                <dt class="col-xs-3 text-right">Uploaded date:</dt>
+                <dd class="col-xs-9">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+                <dt class="col-xs-3 text-right">Uploaded by:</dt>
+                <dd class="col-xs-9">{{attachment.uploadedBy.username}}</dd>
+            </dl>
+            <hr>
+        </ng-container>
+        <dl *ngIf="canEdit" class="row" id="attachment_">
+            <dt class="col-xs-3 text-right">
+                <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files:</label>
+            </dt>
+            <dd class="col-xs-9">
+                <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
+            </dd>
+        </dl>
     </ng-container>
 </div>
