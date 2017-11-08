@@ -1111,6 +1111,12 @@ div + .questionPlaceholder {
 }
 
 @media (max-width: 768px) {
+    .feedback-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
     .btn-responsive {
         padding: 3px 4px !important;
         font-size: 80% !important;
