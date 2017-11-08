@@ -23,8 +23,8 @@ import { CdeForm, DisplayProfile } from 'core/form.model';
         }
         @media (max-width: 767px) {
             .noGridPadSmall {
-                padding-left: 2px;
-                padding-right: 2px;
+                padding-left: 5px;
+                padding-right: 5px;
             }
         }
     `]
