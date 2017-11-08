@@ -5,41 +5,39 @@
                 (click)="openRegStatusUpdate()"><span class="fa fa-edit"> Edit</span>
         </button>
     </legend>
-    <div class="row" *ngIf="elt.registrationState.effectiveDate">
-        <div class="col-sm-5 questionSectionLabel">Effective Date:</div>
-        <div class="col-sm-7" id="effectiveDate">
-            {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.effectiveDate">
-        <div class="col-sm-5 questionSectionLabel">Until Date:</div>
-        <div class="col-sm-7" id="untilDate">
-            {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.administrativeNote">
-        <div class="col-sm-5 questionSectionLabel">Administrative Note:</div>
-        <div class="col-sm-7" id="administrativeNote">
-            {{elt.registrationState.administrativeNote | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.unresolvedIssue">
-        <div class="col-sm-5 questionSectionLabel">Unresolved Issue:</div>
-        <div class="col-sm-7" id="unresolvedIssue">{{elt.registrationState.unresolvedIssue | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.registrationStatus">
-        <div class="col-sm-5 questionSectionLabel">Registration Status:</div>
-        <div class="col-sm-7" id="registrationStatus">{{elt.registrationState.registrationStatus | cdePlaceholder}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.registrationState.administrativeStatus">
-        <div class="col-sm-5 questionSectionLabel">Administrative Status:</div>
-        <div class="col-sm-7" id="administrativeStatus">{{elt.registrationState.administrativeStatus}}
-        </div>
-    </div>
+    <dl class="row">
+        <ng-container *ngIf="elt.registrationState.effectiveDate">
+            <dt class="col-xs-3 text-right">Effective Date:</dt>
+            <dd class="col-xs-9">{{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | cdePlaceholder}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.registrationState.effectiveDate">
+            <dt class="col-xs-3 text-right">Until Date:</dt>
+            <dd id="untilDate" class="col-xs-9">
+                {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="elt.registrationState.administrativeNote">
+            <dt class="col-xs-3 text-right">Administrative Note:</dt>
+            <dd id="administrativeNote" class="col-xs-9">
+                {{elt.registrationState.administrativeNote | cdePlaceholder}}
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="elt.registrationState.unresolvedIssue">
+            <dt class="col-xs-3 text-right">Unresolved Issue:</dt>
+            <dd id="unresolvedIssue" class="col-xs-9">{{elt.registrationState.unresolvedIssue | cdePlaceholder}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.registrationState.registrationStatus">
+            <dt class="col-xs-3 text-right">Registration Status:</dt>
+            <dd id="registrationStatus" class="col-xs-9">
+                {{elt.registrationState.registrationStatus | cdePlaceholder}}
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="elt.registrationState.administrativeStatus">
+            <dt class="col-xs-3 text-right">Administrative Status:</dt>
+            <dd id="administrativeStatus" class="col-xs-9">{{elt.registrationState.administrativeStatus}}</dd>
+        </ng-container>
+    </dl>
 </fieldset>
-
 
 <ng-template #regStatusEdit id="newPropertyModal" let-c="close" let-d="dismiss">
     <div class="modal-content">
@@ -103,7 +101,9 @@
             </div>
             <div class="modal-footer" id="regStatusModalFooter">
                 <button class="btn cancel" (click)="d()" id="cancelRegStatus" type="button">Cancel</button>
-                <button class="btn btn-warning" (click)="ok()" [disabled]="!regForm.form.valid" id="saveRegStatus">Save</button>
+                <button class="btn btn-warning" (click)="ok()" [disabled]="!regForm.form.valid" id="saveRegStatus">
+                    Save
+                </button>
             </div>
         </form>
     </div>
