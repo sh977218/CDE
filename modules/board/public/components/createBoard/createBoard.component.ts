@@ -13,12 +13,11 @@ import { MyBoardsService } from 'board/public/myBoards.service';
 
 export class CreateBoardComponent {
 
-    constructor(
-        private http: Http,
-        public modalService: NgbModal,
-        private alert: AlertService,
-        private myBoardsSvc: MyBoardsService,
-    ) {}
+    constructor(private http: Http,
+                public modalService: NgbModal,
+                private alert: AlertService,
+                private myBoardsSvc: MyBoardsService,) {
+    }
 
     newBoard: any = {
         type: "cde"
@@ -27,11 +26,14 @@ export class CreateBoardComponent {
     @ViewChild("createBoardModal") public createBoardModal: NgbModalModule;
     public modalRef: NgbModalRef;
 
-    openNewBoard () {
+    openNewBoard() {
+        this.newBoard = {
+            type: "cde"
+        };
         this.modalRef = this.modalService.open(this.createBoardModal, {size: "lg"});
     };
 
-    doCreateBoard () {
+    doCreateBoard() {
         this.newBoard.shareStatus = "Private";
         this.http.post("/board", this.newBoard).subscribe(() => {
             this.myBoardsSvc.waitAndReload();
