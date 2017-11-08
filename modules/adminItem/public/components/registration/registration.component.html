@@ -8,7 +8,9 @@
     <dl class="row">
         <ng-container *ngIf="elt.registrationState.effectiveDate">
             <dt class="col-xs-3 text-right">Effective Date:</dt>
-            <dd class="col-xs-9">{{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | cdePlaceholder}}</dd>
+            <dd id="effectiveDate" class="col-xs-9">
+                {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | cdePlaceholder}}
+            </dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.effectiveDate">
             <dt class="col-xs-3 text-right">Until Date:</dt>
