@@ -15,6 +15,8 @@ import { CoreModule } from 'core/core.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embeddedCdeSearchResult.component';
 import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embeddedFormSearchResult.component';
+import { ElasticService } from '_app/elastic.service';
+import { UserService } from '_app/user.service';
 
 @NgModule({
     declarations: [
@@ -23,7 +25,9 @@ import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embed
         EmbeddedFormSearchResultComponent,
     ],
     providers: [
-        {provide: ErrorHandler, useClass: FrontExceptionHandler}
+        {provide: ErrorHandler, useClass: FrontExceptionHandler},
+        ElasticService,
+        UserService
     ],
     imports: [
         BrowserModule,
