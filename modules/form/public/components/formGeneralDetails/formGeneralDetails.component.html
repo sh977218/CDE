@@ -56,11 +56,11 @@
         </ng-container>
         <ng-container *ngIf="elt.updated">
             <dt class="col-xs-3 text-right">Updated:</dt>
-            <dd id="dt_updated" class="col-xs-9">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dd id="updated" class="col-xs-9">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.createdBy">
             <dt class="col-xs-3 text-right">Created By:</dt>
-            <dd id="dd_createdBy" class="col-xs-9">{{elt.createdBy.username}}</dd>
+            <dd id="createdBy" class="col-xs-9">{{elt.createdBy.username}}</dd>
         </ng-container>
     </dl>
 </div>

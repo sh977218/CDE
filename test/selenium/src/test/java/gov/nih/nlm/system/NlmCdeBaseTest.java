@@ -1573,10 +1573,10 @@ public class NlmCdeBaseTest {
     protected void editOrigin(String origin, boolean append) {
         clickElement(By.xpath("//*[@id='origin']//i[contains(@class,'fa-edit')]"));
         if (!append) {
-            findElement(By.xpath("//*[@id='origin']//input'")).clear();
+            findElement(By.xpath("//*[@id='origin']//input")).clear();
             hangon(2);
         }
-        findElement(By.xpath("//*[@id='origin']//input'")).sendKeys(origin);
+        findElement(By.xpath("//*[@id='origin']//input")).sendKeys(origin);
         hangon(2);
         clickElement(By.xpath("//*[@id='origin']//button[text()='Confirm']"));
         textPresent(origin, By.id("origin"));

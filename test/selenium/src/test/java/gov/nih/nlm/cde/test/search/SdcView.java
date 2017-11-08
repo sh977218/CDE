@@ -24,7 +24,7 @@ public class SdcView extends NlmCdeBaseTest {
         Assert.assertEquals("DCP", findElement(By.id("dd_ctx")).getText());
         Assert.assertEquals(findElement(By.id("dd_adminStatus")).getText(), "");
         Assert.assertEquals("Qualified", findElement(By.id("dd_regStatus")).getText());
-        Assert.assertEquals(findElement(By.id("dd_updated")).getText(), "");
+        Assert.assertEquals(findElement(By.id("updated")).getText(), "");
         Assert.assertEquals(findElement(By.id("dd_subOrg")).getText(), "");
         Assert.assertEquals(findElement(By.id("dd_subOrgName")).getText(), "");
         Assert.assertEquals("DCP", findElement(By.id("dd_stewOrg")).getText());
