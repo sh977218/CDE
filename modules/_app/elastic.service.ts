@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { ElasticQueryResponse } from 'core/models.model';
-import { UserService } from "./user.service";
-import { LocalStorageService } from "angular-2-local-storage";
+import { UserService } from '_app/user.service';
+import { LocalStorageService } from 'angular-2-local-storage';
 import { SharedService } from 'core/shared.service';
 
 @Injectable()
@@ -18,12 +18,10 @@ export class ElasticService {
     searchToken = "id" + Math.random().toString(16).slice(2);
 
     searchSettings: any;
-    private promise: Promise<void>;
 
     constructor(public http: Http,
                 private userService: UserService,
                 private localStorageService: LocalStorageService) {
-
         this.loadSearchSettings();
     }
 
@@ -152,10 +150,12 @@ export class ElasticService {
     }
 
     saveConfiguration (settings) {
-        this.searchSettings = JSON.parse(JSON.stringify(settings));
-        delete settings.includeRetired;
-        this.localStorageService.set("SearchSettings", settings);
-        if (this.userService.user.username) this.http.post("/user/update/searchSettings", settings).subscribe();
+        this.searchSettings = settings;
+        let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
+        delete savedSettings.includeRetired;
+        this.localStorageService.set("SearchSettings", savedSettings);
+        if (this.userService.user.username)
+            this.http.post("/user/update/searchSettings", savedSettings).subscribe();
     }
 
     getDefault () {
@@ -187,10 +187,6 @@ export class ElasticService {
         return this.searchSettings.defaultSearchView;
     };
 
-    then (cb) {
-        return this.promise.then(cb);
-    };
-
     getUserDefaultStatuses () {
         let overThreshold = false;
         let result = SharedService.regStatusShared.orderedList.filter(status => {
@@ -203,7 +199,7 @@ export class ElasticService {
     };
 
     loadSearchSettings () {
-        this.promise = new Promise<void>(resolve => {
+        if (!this.searchSettings) {
             this.searchSettings = this.localStorageService.get("SearchSettings");
             if (!this.searchSettings) this.searchSettings = this.getDefault();
 
@@ -218,10 +214,7 @@ export class ElasticService {
                 if (this.searchSettings.version !== this.getDefault().version) {
                     this.searchSettings = this.getDefault();
                 }
-                resolve();
             });
-        });
+        }
     }
-
-
 }

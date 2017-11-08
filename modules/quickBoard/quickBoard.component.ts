@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ExportService } from 'core/export.service';
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { QuickBoardListService } from '_app/quickBoardList.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 
 @Component({

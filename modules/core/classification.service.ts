@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { Http, RequestOptions } from "@angular/http";
 import { LocalStorageService } from "angular-2-local-storage";
 import * as _ from 'lodash';
-import { ElasticService } from "./elastic.service";
 import { AlertService } from '_app/alert/alert.service';
+import { ElasticService } from '_app/elastic.service';
 
 @Injectable()
 export class ClassificationService {

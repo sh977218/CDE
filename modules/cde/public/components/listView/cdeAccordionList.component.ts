@@ -2,8 +2,8 @@ import { Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angu
 import { Elt, User } from 'core/models.model';
 import { DataElement } from 'core/dataElement.model';
 import { PinBoardModalComponent } from "board/public/components/pins/pinBoardModal.component";
-import { UserService } from "core/user.service";
-import { QuickBoardListService } from 'quickBoard/public/quickBoardList.service';
+import { UserService } from "_app/user.service";
+import { QuickBoardListService } from '_app/quickBoardList.service';
 
 @Component({
     selector: 'cde-cde-accordion-list',

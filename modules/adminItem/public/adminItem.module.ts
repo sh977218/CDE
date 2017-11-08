@@ -1,10 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import { CKEditorModule } from 'ng2-ckeditor';
 import { Select2Module } from "ng2-select2";
-import { LocalStorageModule } from "angular-2-local-storage";
 
 import { CompareModule } from 'compare/compare.module';
 import { SearchModule } from 'search/search.module';
@@ -22,28 +23,24 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { LinkedFormsComponent } from "./components/linkedForms.component";
 import { ClassificationViewComponent } from "./components/classification/classificationView.component";
 import { CdeUpdateElementComponent } from "./components/cdeUpdateElement.component";
-import { CreateFormComponent } from 'form/public/components/createForm.component';
+import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
 import { SaveModalComponent } from "./components/saveModal/saveModal.component";
-import { RouterModule } from '@angular/router';
-import { CKEditorModule } from 'ng2-ckeditor';
+
 
 @NgModule({
     imports: [
         CommonModule,
+        CKEditorModule,
         FormsModule,
         Select2Module,
         NgbModule,
-        LocalStorageModule.withConfig({
-            prefix: "nlmcde",
-            storageType: "localStorage"
-        }),
+        RouterModule,
         TreeModule,
-        CKEditorModule,
+        // core
+        WidgetModule,
         // internal
         CompareModule,
         SearchModule,
-        WidgetModule,
-        RouterModule.forChild([])
     ],
     declarations: [
         AttachmentsComponent,

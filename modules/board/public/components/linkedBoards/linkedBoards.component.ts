@@ -10,7 +10,6 @@ import { AlertService } from '_app/alert/alert.service';
 })
 
 export class LinkedBoardsComponent {
-
     @ViewChild("linkedBoardsContent") public linkedBoardsContent: NgbModalModule;
     @Input() public elt: any;
     public modalRef: NgbModalRef;

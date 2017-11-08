@@ -13,7 +13,7 @@ public class CdeRemoveIdentifierTest extends NlmCdeBaseTest {
         removeIdentifier(0);
 
         goToCdeByName(cdeName);
-         goToIdentifiers();
+        goToIdentifiers();
         textNotPresent("caDSR");
         textNotPresent("2682865");
     }

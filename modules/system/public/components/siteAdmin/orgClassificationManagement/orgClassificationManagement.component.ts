@@ -7,11 +7,11 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
 
-import { ClassificationService } from "core/core.module";
+import { ClassificationService } from "core/classification.service";
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { SharedService } from 'core/shared.service';
 import { Subject } from 'rxjs/Subject';
-import { UserService } from 'core/user.service';
+import { UserService } from '_app/user.service';
 import { AlertService } from '_app/alert/alert.service';
 
 const actionMapping: IActionMapping = {
@@ -65,6 +65,9 @@ export class OrgClassificationManagementComponent implements OnInit {
         isExpandedField: "elements",
         actionMapping: actionMapping
     };
+
+    renameClassificationNode;
+    childClassificationNode;
 
     constructor(private http: Http,
                 public modalService: NgbModal,
@@ -125,9 +128,14 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     openRenameClassificationModal(node) {
+        this.renameClassificationNode = node;
+        this.newClassificationName = node.data.name;
         this.userTyped = "";
         this.selectedClassificationArray = "";
-        this.newClassificationName = node.data.name;
+        this.modalRef = this.modalService.open(this.renameClassificationContent);
+    }
+
+    renameClassification(node) {
         let classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
@@ -135,18 +143,15 @@ export class OrgClassificationManagementComponent implements OnInit {
             if (!_treeNode.data.virtual)
                 classificationArray.unshift(_treeNode.data.name);
         }
-        this.modalService.open(this.renameClassificationContent)
-            .result.then(result => {
-            if (result === "confirm") {
-                let newClassification = {
-                    orgName: this.selectedOrg.name,
-                    categories: classificationArray,
-                    newName: this.newClassificationName
-                };
-                this.classificationSvc.renameOrgClassification(newClassification, message => this.alert.addAlert("info", message));
-                this.checkJob("renameClassification", () => this.alert.addAlert("success", "Classification Renamed."));
-            }
-        }, () => {
+        let newClassification = {
+            orgName: this.selectedOrg.name,
+            categories: classificationArray,
+            newName: this.newClassificationName
+        };
+        this.classificationSvc.renameOrgClassification(newClassification, message => this.alert.addAlert("info", message));
+        this.checkJob("renameClassification", () => {
+            this.alert.addAlert("success", "Classification Renamed.");
+            this.modalRef.close();
         });
     }
 
@@ -212,8 +217,13 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     openAddChildClassificationModal(node) {
+        this.childClassificationNode = node;
         this.selectedClassificationArray = "";
         this.newClassificationName = "";
+        this.modalRef = this.modalService.open(this.addChildClassificationContent);
+    }
+
+    addChildClassification(node) {
         let classificationArray = [];
         if (node) {
             this.selectedClassificationString = node.data.name;
@@ -230,18 +240,16 @@ export class OrgClassificationManagementComponent implements OnInit {
                 else this.selectedClassificationArray = this.selectedClassificationArray.concat(" <strong> " + c + " </strong>");
             });
         } else this.selectedClassificationArray = " <strong> " + this.selectedOrg.name + " </strong>";
-        this.modalService.open(this.addChildClassificationContent).result.then(result => {
-            if (result === "confirm") {
-                classificationArray.push(this.newClassificationName);
-                let newClassification = {
-                    orgName: this.selectedOrg.name,
-                    categories: classificationArray
-                };
-                this.classificationSvc.addChildClassification(newClassification, message => {
-                    this.onChangeOrg(this.selectedOrg.name, () => this.alert.addAlert("success", message));
-                });
-            }
-        }, () => {
+        classificationArray.push(this.newClassificationName);
+        let newClassification = {
+            orgName: this.selectedOrg.name,
+            categories: classificationArray
+        };
+        this.classificationSvc.addChildClassification(newClassification, message => {
+            this.onChangeOrg(this.selectedOrg.name, () => {
+                this.alert.addAlert("success", message);
+                this.modalRef.close();
+            });
         });
     }
 

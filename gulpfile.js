@@ -68,7 +68,9 @@ gulp.task('nativefollow-wiredep', ['bower'], function () {
             directory: "modules/components",
             exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
                 '/components/lforms', '/components/oboe', '/components/traverse',
-                '/components/lodash', '/components/lforms-converter'
+                '/components/lodash', '/components/lforms-converter',
+                '/components/angular', '/components/angular-bootstrap', '/components/angular-resource',
+                '/components/angular-route', '/components/angular-sanitize'
             ],
             ignorePath: "../../.."
         }))
@@ -81,7 +83,9 @@ gulp.task('wiredep', ['bower'], function () {
             directory: "modules/components",
             exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
                 '/components/lforms', '/components/oboe', '/components/traverse',
-                '/components/lodash', '/components/lforms-converter'
+                '/components/lodash', '/components/lforms-converter',
+                '/components/angular', '/components/angular-bootstrap', '/components/angular-resource',
+                '/components/angular-route', '/components/angular-sanitize'
             ],
             ignorePath: "../.."
         }))
@@ -183,6 +187,8 @@ gulp.task('webpack-embed', ['thirdParty'], () => {
 });
 
 gulp.task('copyWebpack', ['webpack-app', 'webpack-native', 'webpack-embed'], () => {
+    gulp.src('./modules/static/*.png')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
     return gulp.src('./modules/static/*.js')
         .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
 });
@@ -202,6 +208,7 @@ gulp.task('usemin', ['copyCode', 'copyWebpack'], function () {
                     },
                     assetsDir: "./modules/",
                     css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                    webpcss: ['concat', rev()],
                     js: [uglify({mangle: false}), 'concat', rev()],
                     webp: ['concat', rev()]
                 }))

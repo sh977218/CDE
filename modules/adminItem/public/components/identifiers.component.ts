@@ -34,6 +34,5 @@ export class IdentifiersComponent {
     removeIdentifierByIndex(index) {
         this.elt.ids.splice(index, 1);
         this.onEltChange.emit();
-        this.modalRef.close();
     }
 }

@@ -5,8 +5,8 @@ import { SharedService } from "core/shared.service";
 import { saveAs } from "file-saver";
 import { ClassifyItemModalComponent } from "adminItem/public/components/classification/classifyItemModal.component";
 import { OrgHelperService } from "core/orgHelper.service";
-import { UserService } from "core/user.service";
-import { ElasticService } from "core/elastic.service";
+import { UserService } from "_app/user.service";
+import { ElasticService } from "_app/elastic.service";
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '_app/alert/alert.service';
 
@@ -129,24 +129,22 @@ export class BoardViewComponent implements OnInit {
     exportBoard () {
         this.http.get('/board/' + this.board._id + '/0/500/?type=csv')
             .map(r => r.json()).subscribe(response => {
-                this.esService.then(() => {
-                    let settings = this.esService.searchSettings;
-                    let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-                    response.elts.forEach(ele => {
-                        csv += SharedService.exportShared.convertToCsv(
-                            SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
-                    });
-                    if (csv) {
-                        let blob = new Blob([csv], {
-                            type: "text/csv"
-                        });
-                        saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
-                        this.alert.addAlert("success", "Export downloaded.");
-                        this.feedbackClass = ["fa-download"];
-                    } else {
-                        this.alert.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
-                    }
+                let settings = this.esService.searchSettings;
+                let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+                response.elts.forEach(ele => {
+                    csv += SharedService.exportShared.convertToCsv(
+                        SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
                 });
+                if (csv) {
+                    let blob = new Blob([csv], {
+                        type: "text/csv"
+                    });
+                    saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
+                    this.alert.addAlert("success", "Export downloaded.");
+                    this.feedbackClass = ["fa-download"];
+                } else {
+                    this.alert.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
+                }
             });
     };
 
