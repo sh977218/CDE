@@ -167,15 +167,15 @@ export class EmbedAppComponent  {
                 let maxJump = 0;
                 let maxJumpIndex = 100;
                 this.elts.map((e, i) => {
-                    if (!this.elts[i+1]) return;
-                    let jump = e.score - this.elts[i+1].score;
-                    if (jump>maxJump) {
+                    if (!this.elts[i + 1]) return;
+                    let jump = e.score - this.elts[i + 1].score;
+                    if (jump > maxJump) {
                         maxJump = jump;
-                        maxJumpIndex = i+1;
+                        maxJumpIndex = i + 1;
                     }
                 });
 
-                if (maxJump > (result.maxScore/4)) this.cutoffIndex = maxJumpIndex;
+                if (maxJump > (result.maxScore / 4)) this.cutoffIndex = maxJumpIndex;
                 else this.cutoffIndex = 100;
             } else {
                 this.cutoffIndex = 100;
