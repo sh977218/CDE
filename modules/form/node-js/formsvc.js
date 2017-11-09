@@ -201,6 +201,7 @@ exports.saveDraftForm = function (req, res) {
     if (!tinyId) return res.status(400).send();
     let elt = req.body;
     if (elt.tinyId !== tinyId) return res.status(500);
+    if (req.user && req.user.username) elt.createdBy.username = req.user.username;
     mongo_form.saveDraftForm(elt, function (err, form) {
         if (err) return res.status(500).send("ERROR - save draft form. " + tinyId);
         res.send(form);

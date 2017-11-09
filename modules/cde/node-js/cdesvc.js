@@ -88,6 +88,7 @@ exports.saveDraftDataElement = function (req, res) {
     if (!tinyId) return res.status(400).send();
     let elt = req.body;
     if (elt.tinyId !== tinyId) return res.status(500);
+    if (req.user && req.user.username) elt.createdBy.username = req.user.username;
     mongo_cde.saveDraftDataElement(elt, function (err, dataElement) {
         if (err) return res.status(500).send("ERROR - save draft data element. " + tinyId);
         res.send(dataElement);

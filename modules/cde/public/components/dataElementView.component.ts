@@ -243,6 +243,11 @@ export class DataElementViewComponent implements OnInit {
     saveDraft(cb) {
         this.savingText = 'Saving ...';
         this.elt._id = this.deId;
+        let username = this.userService.user.username;
+        if (this.elt.updatedBy) this.elt.updatedBy.username = username;
+        else this.elt.updatedBy = {username: username};
+        if (this.elt.createBy) this.elt.createBy.username = username;
+        else this.elt.createBy = {username: username};
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
         this.draftSubscription = this.http.post("/draftDataElement/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
