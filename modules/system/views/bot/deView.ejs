@@ -4,6 +4,7 @@
 <body role="application">
 <%- include navigation.ejs %>
 <div class="container" itemscope="http://schema.org/MedicalCode">
+    <% if (elt) { %>
     <%- include generalDetail.ejs %>
     <div class="row" id="pvs_tab">
         <h2 class="w-100">Permissible Values:</h2>
@@ -49,6 +50,8 @@
     <%- include referenceDocuments.ejs %>
     <%- include properties.ejs %>
     <%- include identifiers.ejs %>
+    <% } %>
+
 </div>
 <footer class="footer">
     <div class="container">

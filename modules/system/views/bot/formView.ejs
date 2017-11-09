@@ -6,11 +6,14 @@
 <%- include navigation.ejs %>
 
 <div class="container" itemscope="http://schema.org/MedicalCode">
+    <% if (elt) { %>
     <%- include generalDetail.ejs %>
     <%- include naming.ejs %>
     <%- include referenceDocuments.ejs %>
     <%- include properties.ejs %>
     <%- include identifiers.ejs %>
+    <% } %>
+
 </div>
 <footer class="footer">
     <div class="container">
