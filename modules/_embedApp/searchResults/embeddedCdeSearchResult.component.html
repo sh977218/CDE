@@ -40,9 +40,9 @@
             </td>
             <td *ngFor="let eCl of embed.cde.classifications">
                 <ul style="margin-bottom: 0">
-                    <li *ngFor="let cl of c.embed[eCl.label] | slice:0:clLimit"><small>{{cl}}</small></li>
+                    <li *ngFor="let cl of elt.embed[eCl.label] | slice:0:clLimit"><small>{{cl}}</small></li>
                 </ul>
-                <div *ngIf="c.embed[eCl.label].length > clLimit" style="margin-left: 20px">...</div>
+                <div *ngIf="elt.embed[eCl.label].length > clLimit" style="margin-left: 20px">...</div>
             </td>
             <td *ngIf="embed.cde.linkedForms.show">
                 <ul>
