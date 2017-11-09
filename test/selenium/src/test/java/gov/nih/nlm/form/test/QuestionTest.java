@@ -51,6 +51,8 @@ public class QuestionTest extends BaseFormTest {
         (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
         dragAndDrop(sourceElt, targetElt);
 
+        hangon(1);
+
         String sourceStr = findElement(By.xpath("//*[@id='section_" + sectionNumFrom + "']//*[contains(@class,'section_title')]")).getText();
         textPresent(sourceStr, By.id("section_" + sectionNumTo));
     }
