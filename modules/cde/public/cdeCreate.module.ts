@@ -6,7 +6,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement.component';
-import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
 
 
