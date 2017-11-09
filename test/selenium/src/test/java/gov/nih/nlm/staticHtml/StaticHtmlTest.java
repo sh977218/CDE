@@ -48,4 +48,16 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
         textPresent("PHQ-9 quick depression assessment Pnl");
         textPresent("44249-1");
     }
+
+    @Test
+    public void sitemap() {
+        mustBeLoggedOut();
+        driver.get(baseUrl + "/sitemaps/");
+        textPresent("Not Authorized.");
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        driver.get(baseUrl + "/sitemaps/");
+        textPresent("/deView?tinyId=");
+        textPresent("/formView?tinyId=");
+    }
+
 }
