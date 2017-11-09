@@ -6,7 +6,7 @@
             <th *ngIf="searchViewSettings.tableViewFields.permissibleValues">Permissible Values</th>
             <th *ngFor="let customField of searchViewSettings.tableViewFields.customFields"
                 style="{{customField.style}}">{{customField.label}}</th>
-            <th *ngFor="let eCl of embed[searchType].classifications">{{eCl.label}}
+            <th *ngFor="let eCl of embed.cde.classifications">{{eCl.label}}
                 <span *ngIf="clLimit === 100"> <a href (click)="lowerClLimit()">(show 3)</a></span>
                 <span *ngIf="clLimit < 100">(3 shown, <a href="" (click)="raiseClLimit()">see all</a>)</span>
             </th>
@@ -38,7 +38,7 @@
             <td *ngFor="let customField of searchViewSettings.tableViewFields.customFields">{{elt.embed[customField.key] | slice:0:200}}
                 <span *ngIf="elt.embed[customField.key]?.length > 200">(truncated...)</span>
             </td>
-            <td *ngFor="let eCl of embed[searchType].classifications">
+            <td *ngFor="let eCl of embed.cde.classifications">
                 <ul style="margin-bottom: 0">
                     <li *ngFor="let cl of c.embed[eCl.label] | slice:0:clLimit"><small>{{cl}}</small></li>
                 </ul>
