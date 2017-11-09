@@ -16,7 +16,7 @@ export class CreateBoardComponent {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private alert: AlertService,
-                private myBoardsSvc: MyBoardsService,) {
+                private myBoardsSvc: MyBoardsService) {
     }
 
     newBoard: any = {
