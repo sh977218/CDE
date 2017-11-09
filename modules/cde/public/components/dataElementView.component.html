@@ -30,7 +30,7 @@
             <strong>Note:</strong> You may not edit this CDE because it is standard.
         </div>
     </div>
-    <h1 [ngClass]="{'mobileViewH1':mobileView}">
+    <h1 class="mobileViewH1">
         <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
     <div class="pull-left marginTopBottom5">
@@ -70,7 +70,7 @@
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-xs-down"> Discuss</span>
         </button>
-        <button *ngIf="mobileView" class="btn btn-default navbar-expand-lg navbar-light navbar-toggler"
+        <button class="btn btn-default navbar-expand-lg navbar-light navbar-toggler visible-xs-inline"
                 data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -96,137 +96,140 @@
         </ng-container>
     </div>
     <div class="clearfix"></div>
-    <hr>
-    <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-        <div id="leftNav" class="col-lg-2" [ngClass]="{'positionAbsolute':mobileView}">
-            <ul class="list-group">
-                <a id="general_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='general_tab'}"
-                   (click)="setCurrentTab('general_tab');">General Detail
-                    <i *ngIf="tabsCommented.indexOf('general_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="pvs_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='pvs_tab'}"
-                   (click)="setCurrentTab('pvs_tab');">Permissible Values
-                    <i *ngIf="tabsCommented.indexOf('pvs_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="naming_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='naming_tab'}"
-                   (click)="setCurrentTab('naming_tab');">Naming
-                    <i *ngIf="tabsCommented.indexOf('naming_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="classification_tab" class="list-group-item"
-                   [ngClass]="{'active':currentTab ==='classification_tab'}"
-                   (click)="setCurrentTab('classification_tab');">Classification
-                    <i *ngIf="tabsCommented.indexOf('classification_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="meshTopic_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
-                   (click)="setCurrentTab('meshTopic_tab');">Mesh Topic
-                    <i *ngIf="tabsCommented.indexOf('meshTopic_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="concepts_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='concepts_tab'}"
-                   (click)="setCurrentTab('concepts_tab');">Concepts
-                    <i *ngIf="tabsCommented.indexOf('concepts_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="referenceDocuments_tab" class="list-group-item"
-                   [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
-                   (click)="setCurrentTab('referenceDocuments_tab');">Reference Documents
-                    <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="properties_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='properties_tab'}"
-                   (click)="setCurrentTab('properties_tab');">Properties
-                    <i *ngIf="tabsCommented.indexOf('properties_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
-                   (click)="setCurrentTab('ids_tab');">Identifiers
-                    <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="attachments_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='attachments_tab'}"
-                   (click)="setCurrentTab('attachments_tab');">Attachments
-                    <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="history_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='history_tab'}"
-                   (click)="setCurrentTab('history_tab');">History
-                    <i *ngIf="tabsCommented.indexOf('history_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="derivationRules_tab" class="list-group-item"
-                   [ngClass]="{'active':currentTab ==='derivationRules_tab'}"
-                   (click)="setCurrentTab('derivationRules_tab');">Score Derivations
-                    <i *ngIf="tabsCommented.indexOf('derivationRules_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-                <a id="validRules_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='validRules_tab'}"
-                   (click)="setCurrentTab('validRules_tab');">Validation Rules
-                    <i *ngIf="tabsCommented.indexOf('validRules_tab') > -1" class="fa fa-comments"
-                       aria-hidden="true"></i></a>
-            </ul>
-        </div>
-        <div id="middleView" class="col-lg-10 col-sm-12">
-            <ng-container *ngIf="currentTab === 'meshTopic_tab'">
-                <h4>Topics</h4>
-                <span>Topics are
+    <div class="row">
+        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+            <div class="row">
+                <div id="leftNav" class="col-lg-2 col-md-3 col-xs-12 mt-20">
+                    <ul class="list-group">
+                        <a id="general_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='general_tab'}"
+                           (click)="setCurrentTab('general_tab');">General Detail
+                            <i *ngIf="tabsCommented.indexOf('general_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="pvs_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='pvs_tab'}"
+                           (click)="setCurrentTab('pvs_tab');">Permissible Values
+                            <i *ngIf="tabsCommented.indexOf('pvs_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="naming_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='naming_tab'}"
+                           (click)="setCurrentTab('naming_tab');">Naming
+                            <i *ngIf="tabsCommented.indexOf('naming_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="classification_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='classification_tab'}"
+                           (click)="setCurrentTab('classification_tab');">Classification
+                            <i *ngIf="tabsCommented.indexOf('classification_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="meshTopic_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
+                           (click)="setCurrentTab('meshTopic_tab');">Mesh Topic
+                            <i *ngIf="tabsCommented.indexOf('meshTopic_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="concepts_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='concepts_tab'}"
+                           (click)="setCurrentTab('concepts_tab');">Concepts
+                            <i *ngIf="tabsCommented.indexOf('concepts_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="referenceDocuments_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
+                           (click)="setCurrentTab('referenceDocuments_tab');">Reference Documents
+                            <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="properties_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='properties_tab'}"
+                           (click)="setCurrentTab('properties_tab');">Properties
+                            <i *ngIf="tabsCommented.indexOf('properties_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
+                           (click)="setCurrentTab('ids_tab');">Identifiers
+                            <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="attachments_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='attachments_tab'}"
+                           (click)="setCurrentTab('attachments_tab');">Attachments
+                            <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="history_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='history_tab'}"
+                           (click)="setCurrentTab('history_tab');">History
+                            <i *ngIf="tabsCommented.indexOf('history_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="derivationRules_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='derivationRules_tab'}"
+                           (click)="setCurrentTab('derivationRules_tab');">Score Derivations
+                            <i *ngIf="tabsCommented.indexOf('derivationRules_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                        <a id="validRules_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='validRules_tab'}"
+                           (click)="setCurrentTab('validRules_tab');">Validation Rules
+                            <i *ngIf="tabsCommented.indexOf('validRules_tab') > -1" class="fa fa-comments"
+                               aria-hidden="true"></i></a>
+                    </ul>
+                </div>
+                <div id="middleView" class="col-lg-10 col-md-9 col-xs-12">
+                    <ng-container *ngIf="currentTab === 'meshTopic_tab'">
+                        <h4>Topics</h4>
+                        <span>Topics are
                                 <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> terms and appear here if classifications are mapped to
                                 <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> trees.</span>
-                <ul>
-                    <li *ngFor="let t of elt.flatMeshSimpleTrees">{{t}} <br></li>
-                </ul>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'general_tab'">
-                <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit"
-                                        (onEltChange)="saveDraft();"></cde-de-general-details>
-                <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                <cde-registration [elt]="elt" (save)="saveDataElement();"></cde-registration>
-                <div role="group" aria-label="More Info">
-                    <cde-linked-forms [elt]="elt"></cde-linked-forms>
-                    <cde-mlt [elt]="elt"></cde-mlt>
-                    <cde-linked-boards [elt]="elt"></cde-linked-boards>
-                    <cde-datasets [elt]="elt"></cde-datasets>
+                        <ul>
+                            <li *ngFor="let t of elt.flatMeshSimpleTrees">{{t}} <br></li>
+                        </ul>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'general_tab'">
+                        <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit"
+                                                (onEltChange)="saveDraft();"></cde-de-general-details>
+                        <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
+                        <cde-registration [elt]="elt" (save)="saveDataElement();"></cde-registration>
+                        <div role="group" aria-label="More Info">
+                            <cde-linked-forms [elt]="elt"></cde-linked-forms>
+                            <cde-mlt [elt]="elt"></cde-mlt>
+                            <cde-linked-boards [elt]="elt"></cde-linked-boards>
+                            <cde-datasets [elt]="elt"></cde-datasets>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'pvs_tab'">
+                        <cde-permissible-value [elt]="elt" [canEdit]="canEdit"
+                                               (onEltChange)="saveDraft();"></cde-permissible-value>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'naming_tab'">
+                        <cde-naming [elt]="elt" [orgNamingTags]="orgNamingTags" [canEdit]="canEdit"
+                                    (onEltChange)="saveDraft();"></cde-naming>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'classification_tab'">
+                        <cde-cde-classification [elt]="elt"></cde-cde-classification>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'concepts_tab'">
+                        <cde-concepts [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-concepts>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'referenceDocuments_tab'">
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        </cde-reference-document>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'properties_tab'">
+                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        </cde-properties>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'ids_tab'">
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        </cde-identifiers>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'attachments_tab'">
+                        <cde-attachments [elt]="elt" [canEdit]="canEdit"
+                                         (removeAttachment)="removeAttachment($event);"
+                                         (setDefault)="setDefault($event)"
+                                         (upload)="upload($event);"></cde-attachments>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'history_tab'">
+                        <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'derivationRules_tab'">
+                        <cde-derivation-rules [elt]="elt" (onEltChange)="saveDraft();"></cde-derivation-rules>
+                    </ng-container>
+                    <ng-container *ngIf="currentTab === 'validRules_tab'">
+                        <cde-valid-rules [elt]="elt"></cde-valid-rules>
+                    </ng-container>
                 </div>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'pvs_tab'">
-                <cde-permissible-value [elt]="elt" [canEdit]="canEdit"
-                                       (onEltChange)="saveDraft();"></cde-permissible-value>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'naming_tab'">
-                <cde-naming [elt]="elt" [orgNamingTags]="orgNamingTags" [canEdit]="canEdit"
-                            (onEltChange)="saveDraft();"></cde-naming>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'classification_tab'">
-                <cde-cde-classification [elt]="elt"></cde-cde-classification>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'concepts_tab'">
-                <cde-concepts [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();"></cde-concepts>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'referenceDocuments_tab'">
-                <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                </cde-reference-document>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'properties_tab'">
-                <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                </cde-properties>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'ids_tab'">
-                <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
-                </cde-identifiers>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'attachments_tab'">
-                <cde-attachments [elt]="elt" [canEdit]="canEdit"
-                                 (removeAttachment)="removeAttachment($event);"
-                                 (setDefault)="setDefault($event)"
-                                 (upload)="upload($event);"></cde-attachments>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'history_tab'">
-                <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'derivationRules_tab'">
-                <cde-derivation-rules [elt]="elt" (onEltChange)="saveDraft();"></cde-derivation-rules>
-            </ng-container>
-            <ng-container *ngIf="currentTab === 'validRules_tab'">
-                <cde-valid-rules [elt]="elt"></cde-valid-rules>
-            </ng-container>
+            </div>
         </div>
-    </div>
-    <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
-         style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-        <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
-                          (highlightedTabsChange)="loadHighlightedTabs($event)"
-                          [eltName]="elt.naming[0].designation"></cde-discuss-area>
+        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+            <cde-discuss-area #commentAreaComponent [selectedElt]="currentTab" [eltId]="elt.tinyId" [elt]="elt"
+                              (highlightedTabsChange)="loadHighlightedTabs($event)"
+                              [eltName]="elt.naming[0].designation"></cde-discuss-area>
+        </div>
     </div>
     <div *ngIf="elt.valueDomain.allValid === false" class="row alert alert-danger mt20"
          role="alert">There are validation errors. {{elt.valueDomain.pvNotValidMsg}}
@@ -241,7 +244,7 @@
     <div class="modal-body" id="copyDataElementModalBody">
         <p class="text-info">You are about to create a new CDE/Form by duplicating this one. Please specify a new name
             and a classification of the CDE/Form.</p>
-        <cde-create-data-element [elt]="eltCopy" (cancel)="c()"></cde-create-data-element>
+        <cde-create-data-element [elt]="eltCopy" (close)="c()" (dismiss)="d()"></cde-create-data-element>
     </div>
 </ng-template>
 
