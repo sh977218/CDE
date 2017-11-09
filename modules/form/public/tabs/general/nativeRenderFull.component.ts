@@ -6,35 +6,43 @@ import { CdeForm, DisplayProfile } from 'core/form.model';
     selector: "cde-native-render-full",
     templateUrl: "./nativeRenderFull.component.html",
     styles: [`
-        .bot-left {
-            position: relative;
-            margin: auto;
-            padding: 10px 10px;
-            margin-top: 5px;
-            max-width: 900px;
-            border-radius: 20px;
-            border: solid lightgrey 3px;
+        @media (min-width: 768px) {
+            .bot-left {
+                position: relative;
+                margin: auto;
+                padding: 10px 10px;
+                margin-top: 5px;
+                max-width: 900px;
+                border-radius: 20px;
+                border: solid lightgrey 3px;
+            }
+            .noGridPadLarge {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+        @media (max-width: 767px) {
+            .noGridPadSmall {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
         }
     `]
 })
-export class NativeRenderFullComponent {
+export class NativeRenderFullComponent implements OnInit {
     @Input() elt: CdeForm;
-
-    constructor() {
-        this.mobileView = window.innerWidth <= 800;
-    }
-
     profile: DisplayProfile;
     selectedProfileName;
     overridePrintable: boolean = true;
     NativeRenderService = NativeRenderService;
 
-    @HostListener('window:resize', ['$event'])
-    onResize(event) {
-        this.mobileView = window.innerWidth <= 800;
+    ngOnInit() {
+        if (this.elt.displayProfiles.length)
+            this.selectProfile(0);
     }
 
-    mobileView: Boolean = false;
+    constructor() {
+    }
 
     selectProfile(profileIndex) {
         this.profile = this.elt.displayProfiles[profileIndex];

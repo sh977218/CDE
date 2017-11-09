@@ -26,8 +26,10 @@ import { Subscription } from 'rxjs/Subscription';
             z-index: 1;
         }
 
-        .mobileViewH1 {
-            font-size: 20px;
+        @media (max-width: 767px) {
+            .mobileViewH1 {
+                font-size: 20px;
+            }
         }
     `]
 })
@@ -47,7 +49,6 @@ export class DataElementViewComponent implements OnInit {
     highlightedTabs = [];
     drafts = [];
     deId;
-    mobileView: boolean = false;
     orgNamingTags = [];
     tabsCommented = [];
     tinyId;
@@ -65,13 +66,6 @@ export class DataElementViewComponent implements OnInit {
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
                 public userService: UserService) {
-        this.mobileView = window.innerWidth <= 800;
-    }
-
-
-    @HostListener('window:resize', ['$event'])
-    onResize(event) {
-        this.mobileView = window.innerWidth <= 800;
     }
 
     ngOnInit() {
