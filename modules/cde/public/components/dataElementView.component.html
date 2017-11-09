@@ -99,7 +99,7 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="row">
-                <div id="leftNav" class="col-lg-2 col-md-3 col-xs-12 mt-20">
+                <div id="leftNav" class="col-lg-2 col-md-3 col-xs-12 collapse navbar-collapse mt-20">
                     <ul class="list-group">
                         <a id="general_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='general_tab'}"
                            (click)="setCurrentTab('general_tab');">General Detail
@@ -118,7 +118,8 @@
                            (click)="setCurrentTab('classification_tab');">Classification
                             <i *ngIf="tabsCommented.indexOf('classification_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
-                        <a id="meshTopic_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
+                        <a id="meshTopic_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='meshTopic_tab'}"
                            (click)="setCurrentTab('meshTopic_tab');">Mesh Topic
                             <i *ngIf="tabsCommented.indexOf('meshTopic_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
@@ -131,7 +132,8 @@
                            (click)="setCurrentTab('referenceDocuments_tab');">Reference Documents
                             <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
-                        <a id="properties_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='properties_tab'}"
+                        <a id="properties_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='properties_tab'}"
                            (click)="setCurrentTab('properties_tab');">Properties
                             <i *ngIf="tabsCommented.indexOf('properties_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
@@ -139,7 +141,8 @@
                            (click)="setCurrentTab('ids_tab');">Identifiers
                             <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
-                        <a id="attachments_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='attachments_tab'}"
+                        <a id="attachments_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='attachments_tab'}"
                            (click)="setCurrentTab('attachments_tab');">Attachments
                             <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
@@ -152,7 +155,8 @@
                            (click)="setCurrentTab('derivationRules_tab');">Score Derivations
                             <i *ngIf="tabsCommented.indexOf('derivationRules_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
-                        <a id="validRules_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='validRules_tab'}"
+                        <a id="validRules_tab" class="list-group-item"
+                           [ngClass]="{'active':currentTab ==='validRules_tab'}"
                            (click)="setCurrentTab('validRules_tab');">Validation Rules
                             <i *ngIf="tabsCommented.indexOf('validRules_tab') > -1" class="fa fa-comments"
                                aria-hidden="true"></i></a>
