@@ -50,7 +50,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void cdeSitemap() {
+    public void sitemap() {
         mustBeLoggedOut();
         driver.get(baseUrl + "/sitemaps/");
         textPresent("Not Authorized.");
