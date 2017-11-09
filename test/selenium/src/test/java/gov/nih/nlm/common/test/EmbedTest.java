@@ -81,7 +81,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         Assert.assertEquals(findElements(By.cssSelector("#gridList tbody tr")).size(), 6);
 
         List<WebElement> ths = findElements(By.cssSelector("#gridList th"));
-        Assert.assertEquals(ths.size(), 9);
+        Assert.assertEquals(ths.size(), 10);
 
         Assert.assertEquals(ths.get(0).getText(), "Name");
         Assert.assertEquals(ths.get(1).getText(), "Permissible Values");
