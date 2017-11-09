@@ -169,41 +169,36 @@ exports.init = function (app) {
             else res.render('bot/formView', 'system', {elt: cde});
         });
     });
-    app.get("/sitemaps/cde/", checkHttps, function (req, res) {
+    app.get("/sitemaps/", checkHttps, function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             res.type('text');
             let cond = {
                 'archived': false,
                 'registrationState.registrationStatus': 'Qualified'
             };
-            let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
-            let formatter = doc => {
-                return config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
-            };
-            stream.on('data', function (doc) {
-                res.write(formatter(doc));
-            });
-            stream.on('end', function () {
-                res.end();
-            });
-        } else res.status(401).send("Not Authorized.");
-    });
-
-    app.get("/sitemaps/form/", checkHttps, function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            res.type('text');
-            let cond = {
-                'archived': false,
-                'registrationState.registrationStatus': 'Qualified'
-            };
-            let stream = mongo_form.Form.find(cond, "tinyId").stream();
-            let formatter = doc => {
-                return config.publicUrl + "/formView?tinyId=" + doc.tinyId + "\n";
-            };
-            stream.on('data', function (doc) {
-                res.write(formatter(doc));
-            });
-            stream.on('end', function () {
+            async.forEachSeries([
+                cb => {
+                    let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
+                    let formatter = doc => config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
+                    stream.on('data', doc => res.write(formatter(doc)));
+                    stream.on('err', err => cb(err));
+                    stream.on('end', cb);
+                },
+                cb => {
+                    let stream = mongo_form.Form.find(cond, "tinyId").stream();
+                    let formatter = doc => config.publicUrl + "/formView?tinyId=" + doc.tinyId + "\n";
+                    stream.on('data', doc => res.write(formatter(doc)));
+                    stream.on('err', err => cb(err));
+                    stream.on('end', cb);
+                }
+            ], err => {
+                if (err) {
+                    res.status(500).send("ERROR - Static Html Error, /formView");
+                    logging.errorLogger.error("Error: Static Html Error", {
+                        stack: err.stack,
+                        origin: req.url
+                    });
+                }
                 res.end();
             });
         } else res.status(401).send("Not Authorized.");

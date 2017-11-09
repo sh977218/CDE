@@ -50,26 +50,14 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     }
 
     @Test
-    @SelectUserAgent()
     public void cdeSitemap() {
         mustBeLoggedOut();
-        driver.get(baseUrl + "/sitemaps/cde/");
+        driver.get(baseUrl + "/sitemaps/");
         textPresent("Not Authorized.");
         mustBeLoggedInAs(nlm_username, nlm_password);
-        driver.get(baseUrl + "/sitemaps/cde/");
+        driver.get(baseUrl + "/sitemaps/");
         textPresent("/deView?tinyId=");
-    }
-
-    @Test
-    @SelectUserAgent()
-    public void formSitemap() {
-        mustBeLoggedOut();
-        driver.get(baseUrl + "/sitemaps/form/");
-        textPresent("Not Authorized.");
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        driver.get(baseUrl + "/sitemaps/form/");
         textPresent("/formView?tinyId=");
     }
-
 
 }
