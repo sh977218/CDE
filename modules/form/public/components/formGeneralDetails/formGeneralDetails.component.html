@@ -13,6 +13,10 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-sm-5 questionSectionLabel">Used by:</div>
+        <div class="col-sm-7" id="dd_usedBy">{{elt.usedBy}}</div>
+    </div>
+    <div class="row">
         <div class="col-sm-5 questionSectionLabel">Copyrighted:</div>
         <div class="col-sm-7">
             <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
