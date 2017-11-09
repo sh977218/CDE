@@ -6,11 +6,12 @@
     "buildApp": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
     "buildEmbed": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackEmbed.config.js",
     "buildNative": "cross-env BUILD_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackNative.config.js",
-    "install": "napa",
-    "start": "node app.js",
-    "dev": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
+    "dev": "npm run devApp",
+    "devApp": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js",
     "devEmbed": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackEmbed.config.js",
-    "devNative": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackNative.config.js"
+    "devNative": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpackNative.config.js",
+    "install": "napa",
+    "start": "node app.js"
   },
   "engines": {
     "node": "0.12.x",
