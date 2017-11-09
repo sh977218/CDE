@@ -176,7 +176,7 @@ exports.init = function (app) {
                 'archived': false,
                 'registrationState.registrationStatus': 'Qualified'
             };
-            async.forEachSeries([
+            async.series([
                 cb => {
                     let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
                     let formatter = doc => config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
@@ -193,15 +193,15 @@ exports.init = function (app) {
                 }
             ], err => {
                 if (err) {
-                    res.status(500).send("ERROR - Static Html Error, /formView");
+                    res.status(500).send("ERROR - Static Html Error, /sitemaps");
                     logging.errorLogger.error("Error: Static Html Error", {
                         stack: err.stack,
                         origin: req.url
                     });
                 }
-                res.end();
+                else res.end();
             });
-        } else res.status(401).send("Not Authorized.");
+        } else res.status(403).send("Not Authorized.");
     });
 
     function checkHttps(req, res, next) {
