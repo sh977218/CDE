@@ -114,6 +114,11 @@ exports.scanFile = function (stream, res, cb) {
 };
 
 exports.addAttachment = function (req, res, dao) {
+    if (!req.files.uploadedFiles) {
+        res.status(400).send('No files to attach.');
+        return;
+    }
+
     var fileBuffer = req.files.uploadedFiles.buffer;
     var stream = streamifier.createReadStream(fileBuffer);
     var streamFS = streamifier.createReadStream(fileBuffer);
