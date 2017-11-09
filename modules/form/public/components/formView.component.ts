@@ -1,8 +1,8 @@
 import {
-    ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild
+    ChangeDetectorRef, Component, HostListener, OnInit, ViewChild
 } from "@angular/core";
 import { Http } from "@angular/http";
-import { NgbModalRef, NgbModal, NgbModalModule, NgbTabset } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
@@ -50,7 +50,6 @@ export class FormViewComponent implements OnInit {
     commentMode;
     currentTab = "preview_tab";
     highlightedTabs = [];
-    canEdit: boolean = false;
     isFormValid = true;
     formInput;
     drafts = [];
@@ -68,7 +67,6 @@ export class FormViewComponent implements OnInit {
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private alert: AlertService,
-                private formService: FormService,
                 public userService: UserService,
                 private route: ActivatedRoute,
                 private router: Router) {
@@ -83,9 +81,6 @@ export class FormViewComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.loadForm(() => {
-                this.userService.then(() => {
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
-                });
                 this.orgHelperService.then(() => {
                     let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
                     this.elt.naming.forEach(n => {
@@ -101,13 +96,17 @@ export class FormViewComponent implements OnInit {
         });
     }
 
+    canEdit () {
+        return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
+    }
+
     formLoaded(cb) {
         if (this.elt) {
             this.formId = this.elt._id;
             this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
             this.loadComments(this.elt, null);
         }
-        cb();
+        if (cb) cb();
     }
 
     loadDraft(cb = _.noop) {
@@ -147,13 +146,10 @@ export class FormViewComponent implements OnInit {
         let url = "/form/" + this.route.snapshot.queryParams['tinyId'];
         if (formId) url = "/formById/" + formId;
         this.http.get(url).map(res => res.json()).subscribe(res => {
-                this.elt = res;
-                if (this.elt)
-                    this.formLoaded(cb);
-                else
-                    cb();
-            },
-            () => this.router.navigate(['/pageNotFound'])
+            this.elt = res;
+            if (this.elt) this.formLoaded(cb);
+            else cb();
+        }, () => this.router.navigate(['/pageNotFound'])
         );
     }
 
