@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
 public class CdeCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
@@ -16,6 +17,10 @@ public class CdeCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         textPresent("Go to current non-draft version to see attachments");
         clickElement(By.id("discussBtn"));
         textPresent("Go to current non-draft version to see comments");
+
+        clickElement(By.id("viewPublished"));
+        goToNaming();
+        wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.id("openNewNamingModalBtn"))));
     }
 }
 
