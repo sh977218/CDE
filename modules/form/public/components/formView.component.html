@@ -39,7 +39,7 @@
             </ul>
         </div>
     </div>
-    <h1 [ngClass]="{'mobileViewH1':mobileView}">
+    <h1 class="mobileViewH1">
         <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
 
@@ -119,7 +119,7 @@
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-xs-down"> Discuss</span>
         </button>
-        <button *ngIf="mobileView" class="btn btn-default navbar-expand-lg navbar-light navbar-toggler"
+        <button class="btn btn-default navbar-expand-lg navbar-light navbar-toggler visible-xs-inline"
                 data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
                 aria-label="Toggle navigation" aria-expanded="false">
             <span class="navbar-toggler-icon"></span>
