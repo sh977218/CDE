@@ -213,8 +213,8 @@ export class DataElementViewComponent implements OnInit {
     }
 
     upload(event) {
-        if (event.srcElement.files) {
-            let files = event.srcElement.files;
+        let files = event.srcElement.files;
+        if (files && files.length > 0) {
             let formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append("uploadedFiles", files[i]);
