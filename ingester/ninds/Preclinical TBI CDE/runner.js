@@ -304,6 +304,7 @@ function saveDataElement(de, row, file, cb) {
 
 function run() {
     async.series([
+/*
         function (cb) {
             DataElementModel.remove({}, err => {
                 if (err) throw err;
@@ -316,6 +317,7 @@ function run() {
                 cb();
             });
         },
+*/
         function (cb) {
             let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
             async.forEachSeries(files, (file, doneOneFile) => {
