@@ -27,7 +27,15 @@
     <!-- Polyfills for legacy browsers -->
     <!-- build:polyIE /static/polyfillIE.js -->
     <!--[if IE]>
-    <script type="text/javascript">
+    <script type="text/javascript" src="/static/formdata.js"></script>
+    <script type="text/javascript" src="/static/typedarray.js"></script>
+    <script type="text/javascript" src="/static/Blob.js"></script>
+    <![endif]-->
+    <!-- endbuild -->
+
+    <!-- build:js /static/vendor.js -->
+    <!-- Polyfills for legacy browsers -->
+    <script type="text/javascript"><!-- Apply to all IE -->
         (function () {
             function CustomEvent(event, params) {
                 params = params || {bubbles: false, cancelable: false, detail: undefined};
@@ -42,14 +50,6 @@
                 window.Event = CustomEvent;
         })();
     </script>
-    <script type="text/javascript" src="/static/formdata.js"></script>
-    <script type="text/javascript" src="/static/typedarray.js"></script>
-    <script type="text/javascript" src="/static/Blob.js"></script>
-    <![endif]-->
-    <!-- endbuild -->
-
-    <!-- build:js /static/vendor.js -->
-    <!-- Polyfills for legacy browsers -->
     <script type="text/javascript" src="/static/shim.min.js"></script>
     <script type="text/javascript" src="/static/Intl.min.js"></script>
     <script type="text/javascript" src="/static/en.js"></script>
