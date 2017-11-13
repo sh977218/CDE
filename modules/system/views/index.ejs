@@ -35,21 +35,6 @@
 
     <!-- build:js /static/vendor.js -->
     <!-- Polyfills for legacy browsers -->
-    <script type="text/javascript"><!-- Apply to all IE -->
-        (function () {
-            function CustomEvent(event, params) {
-                params = params || {bubbles: false, cancelable: false, detail: undefined};
-                var evt = document.createEvent('CustomEvent');
-                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-                return evt;
-            }
-
-            CustomEvent.prototype = window.Event.prototype;
-
-            if (typeof(window.Event) !== 'function')
-                window.Event = CustomEvent;
-        })();
-    </script>
     <script type="text/javascript" src="/static/shim.min.js"></script>
     <script type="text/javascript" src="/static/Intl.min.js"></script>
     <script type="text/javascript" src="/static/en.js"></script>
@@ -80,6 +65,24 @@
     <%- include footer.html %>
 
 </div>
+
+<!-- Polyfills for legacy browsers -->
+<!-- Apply to all IE -->
+<script type="text/javascript">
+    (function () {
+        function CustomEvent(event, params) {
+            params = params || {bubbles: false, cancelable: false, detail: undefined};
+            var evt = document.createEvent('CustomEvent');
+            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+            return evt;
+        }
+
+        CustomEvent.prototype = window.Event.prototype;
+
+        if (typeof(window.Event) !== 'function')
+            window.Event = CustomEvent;
+    })();
+</script>
 
 <!-- build:webp /static/cde.js -->
 <script src="/static/cde.js"></script>
