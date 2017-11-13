@@ -29,7 +29,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
             waitForESUpdate();
             openCdeInList("Patient Race Category");
         }
-        String usedBy = findElement(By.id("dd_usedBy")).getText();
+        String usedBy = findElement(By.id("usedBy")).getText();
         Assert.assertTrue(usedBy.contains("NIDCR"));
         Assert.assertTrue(usedBy.contains("PS&CC"));
         Assert.assertTrue(usedBy.contains("caBIG"));
