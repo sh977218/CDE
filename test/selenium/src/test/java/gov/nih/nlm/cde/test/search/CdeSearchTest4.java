@@ -23,12 +23,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
     @Test
     public void usedBySummary() {
         goToCdeSearch();
-        try {
-            openCdeInList("Patient Race Category");
-        } catch (Exception e) {
-            waitForESUpdate();
-            openCdeInList("Patient Race Category");
-        }
+        openCdeInList("Patient Race Category");
         String usedBy = findElement(By.id("dd_usedBy")).getText();
         Assert.assertTrue(usedBy.contains("NIDCR"));
         Assert.assertTrue(usedBy.contains("PS&CC"));
@@ -36,6 +31,17 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         Assert.assertTrue(usedBy.contains("NHLBI"));
         Assert.assertTrue(usedBy.contains("CCR"));
         Assert.assertTrue(usedBy.contains("CIP"));
+
+        clickElement(By.id("linkToElt_0"));
+        textPresent("Source: caDSR");
+        usedBy = findElement(By.id("dd_usedBy")).getText();
+        Assert.assertTrue(usedBy.contains("NIDCR"));
+        Assert.assertTrue(usedBy.contains("PS&CC"));
+        Assert.assertTrue(usedBy.contains("caBIG"));
+        Assert.assertTrue(usedBy.contains("NHLBI"));
+        Assert.assertTrue(usedBy.contains("CCR"));
+        Assert.assertTrue(usedBy.contains("CIP"));
+
     }
 
 }
