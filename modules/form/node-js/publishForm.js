@@ -19,7 +19,8 @@ function storeHtmlInDb(req, res, form, fileStr) {
                 name: req.body.publishedFormName, id: newFile._id
             });
             user.save(function (err) {
-                if (err) res.status(500).send("Unable to save");
+                if (err)
+                    return res.status(500).send("Unable to save");
                 res.send(newFile._id);
             });
         });
