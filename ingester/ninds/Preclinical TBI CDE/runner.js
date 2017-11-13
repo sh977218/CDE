@@ -354,6 +354,8 @@ function run() {
             async.forEachSeries(files, (file, doneOneFile) => {
                 let cond = {
                     columns: true,
+                    rtrim: true,
+                    trim: true,
                     relax_column_count: true,
                     skip_empty_lines: true,
                     skip_lines_with_empty_values: true
@@ -389,10 +391,12 @@ function run() {
                     let lastSection = "";
                     let currentSection = "";
                     let formElements = form.formElements;
+                    let rowIndex = 0;
                     async.forEachSeries(rows, (row, doneOneRow) => {
                         let de = rowToDataElement(file, row);
                         if (!de.naming || !de.naming[0].designation) {
-                            console.log(file + ' has empty row.');
+                            console.log(file + ' has empty row: ' + rowIndex + '. Variable: ' + getCell(row, 'Variable Name'));
+                            rowIndex++;
                             doneOneRow();
                         } else {
                             saveDataElement(de, row, file, (err, newCde) => {
@@ -411,6 +415,7 @@ function run() {
                                     let question = deToQuestion(row, newCde);
                                     formElements.push(question);
                                     lastSection = currentSection;
+                                    rowIndex++;
                                     doneOneRow();
                                 }
                             });
