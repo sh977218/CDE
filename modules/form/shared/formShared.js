@@ -1,23 +1,23 @@
 var _crypto;
-if (typeof(window) === "undefined") {
-    // This will be executed in NodeJS
-    _crypto = require('crypto');
-} else {
+if (IS_BROWSER) { // jshint ignore:line
     // This will be executed in Chrome
     try {
-        _crypto = jscrypto; // jshin ignore:line
+        _crypto = jscrypto; // jshint ignore:line
     } catch (e) {
     }
+} else {
+    // This will be executed in NodeJS
+    _crypto = require('crypto');
 }
 var cdeOdmMapping;
 
-exports.flattenFormElement = function (fe) {
+export const flattenFormElement = function (fe) {
     var result = [];
     fe.formElements.map(function (subFe) {
         if (!subFe.formElements || subFe.formElements.length === 0) {
             result.push(subFe);
         } else {
-            var subEs = exports.flattenFormElement(subFe);
+            var subEs = flattenFormElement(subFe);
             subEs.forEach(function (e) {
                 result.push(e);
             });
@@ -26,7 +26,7 @@ exports.flattenFormElement = function (fe) {
     return result;
 };
 
-exports.getFormQuestions = function (form) {
+export const getFormQuestions = function (form) {
     var getQuestions = function (fe) {
         var qs = [];
         if (fe.formElements) {
@@ -40,14 +40,14 @@ exports.getFormQuestions = function (form) {
     return getQuestions(form);
 };
 
-exports.getFormCdes = function (form) {
-    return exports.getFormQuestions(form).map(function (q) {
+export const getFormCdes = function (form) {
+    return getFormQuestions(form).map(function (q) {
         return q.cde;
     });
 };
 
 
-exports.getFormOdm = function (form, cb) {
+export const getFormOdm = function (form, cb) {
 
     if (!form) return cb(null, "");
     if (!form.formElements) {
@@ -146,7 +146,7 @@ exports.getFormOdm = function (form, cb) {
 
     form.formElements.forEach(function (s1, si) {
         var childrenOids = [];
-        exports.flattenFormElement(s1).forEach(function (q1, qi) {
+        flattenFormElement(s1).forEach(function (q1, qi) {
             var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
             var odmQuestion = {

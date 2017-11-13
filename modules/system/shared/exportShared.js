@@ -1,9 +1,9 @@
-exports.exportHeader = {
+export const exportHeader = {
     cdeHeader: "Name, Question Texts, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n",
     redCapHeader: 'Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation\n'
 };
 
-exports.getCdeCsvHeader = function (settings) {
+export const getCdeCsvHeader = function (settings) {
     var cdeHeader = "Name";
 
     if (settings.questionTexts) {
@@ -50,7 +50,7 @@ exports.getCdeCsvHeader = function (settings) {
     return cdeHeader;
 };
 
-exports.projectFormForExport = function (ele) {
+export const projectFormForExport = function (ele) {
     var form = {
         name: ele.naming[0].designation
         , ids: ele.ids.map(function (id) {
@@ -66,7 +66,7 @@ exports.projectFormForExport = function (ele) {
     return form;
 };
 
-exports.projectCdeForExport = function (ele, settings) {
+export const projectCdeForExport = function (ele, settings) {
     var cde = {
         name: ele.naming[0].designation
     };
@@ -137,7 +137,7 @@ exports.projectCdeForExport = function (ele, settings) {
     return cde;
 };
 
-exports.convertToCsv = function (ele) {
+export const convertToCsv = function (ele) {
     var sanitize = function (v) {
         return v.trim ? v.trim().replace(/\"/g, "\"\"") : v;
     };
@@ -157,7 +157,7 @@ exports.convertToCsv = function (ele) {
     return row + "\n";
 };
 
-exports.stripBsonIds = function (elt) {
+export const stripBsonIds = function (elt) {
     delete elt._id;
     delete elt.updated;
     delete elt.history;
@@ -165,7 +165,7 @@ exports.stripBsonIds = function (elt) {
     return elt;
 };
 
-exports.nocacheMiddleware = function (req, res, next) {
+export const nocacheMiddleware = function (req, res, next) {
     if (req && req.headers['user-agent']) {
         if (req.headers['user-agent'].indexOf("Chrome") < 0 || req.headers['user-agent'].indexOf("Firefox") < 0) {
             res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');

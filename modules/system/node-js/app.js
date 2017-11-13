@@ -224,7 +224,10 @@ exports.init = function (app) {
     });
 
     app.get('/nativeRender', checkHttps, function (req, res) {
-        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'));
+        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'), undefined, function(err) {
+            if (err)
+                res.sendStatus(404);
+        });
     });
 
     // delete org classification
