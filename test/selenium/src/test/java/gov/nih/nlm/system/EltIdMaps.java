@@ -9,6 +9,7 @@ public class EltIdMaps {
 
     static {
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
+        eltMap.put("Atherosclerosis Risk in Communities transient ischemic attack/stroke form (ARIC TIA) - speech loss slurred symptom indicator", "0gqqG2jShnS");
         eltMap.put("Apgar Score Created By java.lang.Long", "GvOOag_P4Zg");
         eltMap.put("Biomarker Outcome Characteristics java.lang.String", "-dPmPekTRsb");
         eltMap.put("Brief Pain Inventory (BPI) - pain general activity interference scale", "hPzRsUF-xX5");
@@ -98,6 +99,7 @@ public class EltIdMaps {
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
         eltMap.put("Mean Value Test", "X17IaQ_NQ");
+        eltMap.put("Measures of Gas Exchange", "Q1eNEJrHtx");
         eltMap.put("Motor Evoked Potentials", "mkWON1SrFe");
         eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("Multi SubQuestion", "mk4r3nH77");
