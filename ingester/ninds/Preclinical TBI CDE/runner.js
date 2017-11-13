@@ -6,8 +6,8 @@ const csv = require('csv');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
-const classificationShared = require('../../../modules/system/shared/classificationShared');
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
+const config = require('../../../modules/system/node-js/parseConfig');
 
 const DATA_TYPE_MAP = {
     'Alphanumeric': 'Text',
@@ -15,44 +15,6 @@ const DATA_TYPE_MAP = {
     'Numeric Values': 'Number',
     'Numeric': 'Number'
 };
-const ALL_POSSIBLE_CLASSIFICATIONS = [
-    "population.all",
-    "domain.general (for all diseases)",
-    "domain.traumatic brain injury",
-    "domain.Parkinson's disease",
-    "domain.Friedreich's ataxia",
-    "domain.stroke",
-    "domain.amyotrophic lateral sclerosis",
-    "domain.Huntington's disease",
-    "domain.multiple sclerosis",
-    "domain.neuromuscular diseases",
-    "domain.myasthenia gravis",
-    "domain.spinal muscular atrophy",
-    "domain.Duchenne muscular dystrophy/Becker muscular dystrophy",
-    "domain.congenital muscular dystrophy",
-    "domain.spinal cord injury",
-    "domain.headache",
-    "domain.epilepsy",
-    "classification.general (for all diseases)",
-    "classification.acute hospitalized",
-    "classification.concussion/mild TBI",
-    "classification.epidemiology",
-    "classification.moderate/severe TBI: rehabilitation",
-    "classification.Parkinson's disease",
-    "classification.Friedreich's ataxia",
-    "classification.stroke",
-    "classification.amyotrophic lateral sclerosis",
-    "classification.Huntington's disease",
-    "classification.multiple sclerosis",
-    "classification.neuromuscular diseases",
-    "classification.myasthenia gravis",
-    "classification.spinal muscular atrophy",
-    "classification.Duchenne muscular dystrophy/Becker muscular dystrophy",
-    "classification.congenital muscular dystrophy",
-    "classification.spinal cord injury",
-    "classification.headache",
-    "classification.epilepsy",
-];
 
 const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
 const EXCLUDE_FILE = [];
@@ -74,7 +36,6 @@ function getCell(row, header) {
     else {
         let headerLower = _.toLower(header);
         if (row[headerLower]) return row[headerLower];
-//        else console.log("No " + header + " found");
     }
 }
 
@@ -260,11 +221,17 @@ function rowToDataElement(file, row) {
 
     let references = getCell(row, 'References');
     if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
+        de.referenceDocuments.push({
+            document: references
+        });
+    }
+    /*if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
         references.split("-----").forEach(refDocString => {
             let regs = [
-                new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*/g),
-                new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*/g),
-                new RegExp(/\s*PMID:*\s*(\d*[,|;]*)*/g),
+                new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*!/g),
+                new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*!/g),
+                new RegExp(/\s*PMID:*\s*(\d*[,|;]*)*!/g),
+                new RegExp(/\s*PMCID:*\s*(\d*[,|;]*)*!/g),
             ];
             let pmIds = [];
             regs.forEach(reg => {
@@ -284,7 +251,7 @@ function rowToDataElement(file, row) {
                 // console.log("reminding ref doc string: " + refDocString);
             }
         });
-    }
+    }*/
 
     let keywords = getCell(row, 'Keywords');
     if (keywords) de.properties.push({key: "Keywords", value: keywords});
