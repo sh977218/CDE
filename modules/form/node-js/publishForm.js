@@ -27,26 +27,26 @@ function storeHtmlInDb(req, res, form, fileStr) {
 }
 
 exports.getFormForPublishing = function (form, req, res) {
-    fs.readFile("modules/form/public/html/nativeRenderStandalone.html", "UTF-8", function (err, fileStr) {
+    fs.readFile("modules/_nativeRenderApp/nativeRenderApp.html", "UTF-8", function (err, fileStr) {
         let lines = fileStr.split("\n");
         let cssFileName = null, jsHash = null;
         lines.forEach(l => {
-            if (l.includes("<link") && l.includes('href="/form/public/assets/css/styles-printable-')) {
-                cssFileName = l.substring(l.indexOf('/css/') + 5, l.indexOf('.css"') + 4);
+            if (l.includes("<link") && l.includes('href="/static/styles-print-')) {
+                cssFileName = l.substring(l.indexOf('/static/styles-print') + 8, l.indexOf('.css"') + 4);
             }
         });
         let jsFileName;
         lines.forEach(l => {
-            if (l.includes("<script") && l.includes('src="/form/public/assets/js/vendor-printable')) {
-                jsFileName = l.substring(l.indexOf('/js/') + 4, l.indexOf('.js"') + 3);
-                jsHash = jsFileName.substring(jsFileName.indexOf("printable-") + 10, jsFileName.indexOf(".js") + 3);
+            if (l.includes("<script") && l.includes('src="/static/polyfill')) {
+                jsFileName = l.substring(l.indexOf('/static/polyfill-') + 8, l.indexOf('.js"') + 3);
+                jsHash = jsFileName.substring(jsFileName.indexOf("polyfill-") + 9, jsFileName.indexOf(".js") + 3);
             }
         });
         let jsPrintFileName;
         let jsPrintHash = null;
         lines.forEach(l => {
-            if (l.includes("<script") && l.includes('src="/system/public/assets/js/print')) {
-                jsPrintFileName = l.substring(l.indexOf('/js/') + 4, l.indexOf('.js"') + 3);
+            if (l.includes("<script") && l.includes('src="/static/print')) {
+                jsPrintFileName = l.substring(l.indexOf('/static/') + 4, l.indexOf('.js"') + 3);
                 jsPrintHash = jsPrintFileName.substring(jsPrintFileName.indexOf("printable-") + 10, jsPrintFileName.indexOf(".js") + 3);
             }
         });
@@ -59,11 +59,11 @@ exports.getFormForPublishing = function (form, req, res) {
             fileStr = lines.filter(l => !l.includes("<link") && !l.includes("<script src=")).join("\n");
 
             fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";" + "window.endpointUrl = '" + req.body.endpointUrl + "';</script>");
-            fs.readFile("modules/form/public/assets/css/" + cssFileName, "UTF-8", function (err, cssStr) {
+            fs.readFile("modules/static/" + cssFileName, "UTF-8", function (err, cssStr) {
                 if (err) dbLogger.consoleLog(err, 'error');
                 fileStr = fileStr.replace("<!-- ICSSH -->", "<style>" + cssStr + "</style>");
-                let filePath = "modules/form/public/assets/js/" + jsFileName;
-                let filePrintPath = "modules/system/public/assets/js/" + jsPrintFileName;
+                let filePath = "modules/static/" + jsFileName;
+                let filePrintPath = "modules/static/" + jsPrintFileName;
                 md5_file(filePath, function (err, hash) {
                     md5_file(filePrintPath, function (err, hashPrint) {
                         let f = {
