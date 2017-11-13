@@ -517,6 +517,7 @@ public class NlmCdeBaseTest {
     }
 
     protected WebElement findElement(By by) {
+        ngdriver.waitForAngularRequestsToFinish();
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
