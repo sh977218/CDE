@@ -27,7 +27,7 @@
                         <dt>Definition:</dt>
                         <dd id="dd_def" [innerHtml]="elt.naming[0].definition || 'N/A'"></dd>
                         <dt [hidden]="elt.classification.length <= 0">Used By:</dt>
-                        <dd [hidden]="elt.classification.length <= 0" id="dd_usedBy">
+                        <dd [hidden]="elt.classification.length <= 0" id="usedBy">
                             <span *ngIf="elt.classification.length <= 0">None</span>
                             <span *ngIf="elt.classification.length > 0">
                                 <ng-container

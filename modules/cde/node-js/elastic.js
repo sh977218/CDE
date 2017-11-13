@@ -289,7 +289,7 @@ exports.DataElementDistinct = function (field, cb) {
     });
 };
 exports.boardSearch = function (filter, cb) {
-    var query = {
+    let query = {
         "size": 100,
         "query": {
             "bool": {
@@ -301,10 +301,15 @@ exports.boardSearch = function (filter, cb) {
             }
         },
         "aggs": {
-            "aggregationsName": {
+            "tagAgg": {
                 "terms": {
                     "field": "tags",
                     "size": 50
+                }
+            },
+            "typeAgg": {
+                "terms": {
+                    "field": "type"
                 }
             }
         }
