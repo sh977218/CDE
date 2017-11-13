@@ -36,8 +36,7 @@
     </div>
     <div class="row">
         <div class="col-sm-5 questionSectionLabel">Version:</div>
-        <div class="col-sm-7">{{elt.version}}
-        </div>
+        <div class="col-sm-7">{{elt.version}}</div>
     </div>
     <div class="row">
         <div class="col-sm-5 questionSectionLabel">Steward:</div>
@@ -55,23 +54,23 @@
     </div>
     <div class="row" *ngIf="elt.imported">
         <div class="col-sm-5 questionSectionLabel">Last import:</div>
-        <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}
-        </div>
+        <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</div>
     </div>
     <div class="row" *ngIf="elt.created">
         <div class="col-sm-5 questionSectionLabel">Created:</div>
-        <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.updated">
-        <div class="col-sm-5 questionSectionLabel">Updated:</div>
-        <div class="col-sm-7" id="dt_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
-        </div>
+        <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
     </div>
     <div class="row" *ngIf="elt.createdBy">
         <div class="col-sm-5 questionSectionLabel">Created By:</div>
-        <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}
-        </div>
+        <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}</div>
+    </div>
+    <div class="row" *ngIf="elt.updated">
+        <div class="col-sm-5 questionSectionLabel">Updated:</div>
+        <div class="col-sm-7" id="dt_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</div>
+    </div>
+    <div class="row" *ngIf="elt.updatedBy">
+        <div class="col-sm-5 questionSectionLabel">Updated By:</div>
+        <div class="col-sm-7">{{elt.updatedBy.username}}</div>
     </div>
 </div>
 

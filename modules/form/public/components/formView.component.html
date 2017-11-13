@@ -141,6 +141,7 @@
             <button class="btn btn-info" (click)="loadPublished();">
                 <i class="fa fa-eye fa-lg"></i> View Published
             </button>
+            <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </ng-container>
     </div>
     <div class="clearfix"></div>

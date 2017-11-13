@@ -248,6 +248,7 @@ export class DataElementViewComponent implements OnInit {
         else this.elt.updatedBy = {username: username};
         if (this.elt.createdBy) this.elt.createdBy.username = username;
         else this.elt.createdBy = {username: username};
+        this.elt.updated = new Date();
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
         this.draftSubscription = this.http.post("/draftDataElement/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
