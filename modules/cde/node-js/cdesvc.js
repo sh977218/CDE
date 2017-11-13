@@ -6,9 +6,9 @@ let mongo_data_system = require('../../system/node-js/mongo-data');
 let authorization = require("../../system/node-js/authorization");
 let adminSvc = require('../../system/node-js/adminItemSvc.js');
 let elastic = require('../../cde/node-js/elastic');
-let deValidator = require('../../cde/shared/deValidator');
+let deValidator = require('@std/esm')(module)('../../cde/shared/deValidator');
 let vsac = require('./vsac-io');
-let exportShared = require('../../system/shared/exportShared');
+let exportShared = require('@std/esm')(module)('../../system/shared/exportShared');
 
 exports.byId = function (req, res) {
     let id = req.params.id;

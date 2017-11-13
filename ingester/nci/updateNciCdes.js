@@ -11,7 +11,7 @@ var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
 var DataElement = mongo_cde.DataElement;
 var Org = require('../../modules/system/node-js/mongo-data').Org;
 var cdesvc = require('../../modules/cde/node-js/cdediff');
-var classificationShared = require('../../modules/system/shared/classificationShared');
+var classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared');
 var updateShare = require('../updateShare');
 var logger = require('../log');
 

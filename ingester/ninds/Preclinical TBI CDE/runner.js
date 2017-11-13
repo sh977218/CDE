@@ -6,7 +6,7 @@ const csv = require('csv');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
-const classificationShared = require('../../../modules/system/shared/classificationShared');
+const classificationShared = require('@std/esm')(module)('../../../modules/system/shared/classificationShared');
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
 
 const DATA_TYPE_MAP = {

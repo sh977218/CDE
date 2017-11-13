@@ -1,5 +1,5 @@
 const archiver = require("archiver");
-const exportShared = require('../../system/shared/exportShared');
+const exportShared = require('@std/esm')(module)('../../system/shared/exportShared');
 const field_type_map = {
     "Text": "text",
     "Value List": "radio",

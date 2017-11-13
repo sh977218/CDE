@@ -1,7 +1,7 @@
 var cdash = require('./cdash1-1'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
     async = require('async'),
-    classificationShared = require('../modules/system/shared/classificationShared')
+    classificationShared = require('@std/esm')(module)('../modules/system/shared/classificationShared')
     ;
 
 var cdashOrg;

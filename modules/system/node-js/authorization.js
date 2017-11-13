@@ -1,4 +1,4 @@
-let authorizationShared = require('../shared/authorizationShared');
+let authorizationShared = require('@std/esm')(module)('../shared/authorizationShared');
 let mongo_board = require('../../board/node-js/mongo-board');
 
 exports.checkOwnership = function (dao, id, req, cb) {
