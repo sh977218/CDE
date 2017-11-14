@@ -169,6 +169,19 @@ exports.init = function (app) {
             else res.render('bot/formView', 'system', {elt: cde});
         });
     });
+
+
+    // every sunday at 4:04 AM
+    new CronJob({
+        cronTime: '* 4 4 * * 6',
+        //noinspection JSUnresolvedFunction
+        onTick: () => {
+
+        },
+        runOnInit: true,
+        timeZone: "America/New_York"
+    }).start();
+
     app.get("/sitemaps/", checkHttps, function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             res.type('text');
