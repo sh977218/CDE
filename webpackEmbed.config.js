@@ -8,7 +8,7 @@ console.log("Are we prod? " + prod);
 module.exports = {
     context: __dirname,
     entry: {
-        embed: './modules/embedded/public/js/embeddedApp.js'
+        embed: './modules/_embedApp/embeddedApp.ts'
     },
     output: {
         path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
@@ -33,7 +33,7 @@ module.exports = {
             ),
             new AotPlugin.AotPlugin({
                 tsConfigPath: './tsconfig.json',
-                entryModule: path.join(__dirname, 'modules', '_app/app.module') + '#CdeAppModule',
+                entryModule: path.join(__dirname, 'modules', '_embedApp/embedApp.module') + '#EmbedAppModule',
                 mainPath: 'modules/main-aot'
             }),
             new webpack.DefinePlugin({
