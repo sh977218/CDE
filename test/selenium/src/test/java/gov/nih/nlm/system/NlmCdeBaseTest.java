@@ -517,7 +517,7 @@ public class NlmCdeBaseTest {
     }
 
     protected WebElement findElement(By by) {
-        ngdriver.waitForAngularRequestsToFinish();
+        if (ngdriver != null) ngdriver.waitForAngularRequestsToFinish();
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
@@ -533,7 +533,6 @@ public class NlmCdeBaseTest {
                 hangon(2);
             }
         }
-
     }
 
     protected List<WebElement> findElements(By by) {
