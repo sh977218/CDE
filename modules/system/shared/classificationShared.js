@@ -121,8 +121,7 @@ export const findSteward = function (de, orgName) {
     }
 };
 export const deleteCategory = function (tree, fields) {
-    var classification = this;
-    var lastLevel = classification.fetchLevel(tree, fields);
+    var lastLevel = fetchLevel(tree, fields);
     for (var i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
             lastLevel.elements.splice(i, 1);
@@ -135,8 +134,7 @@ export const deleteCategory = function (tree, fields) {
     }
 };
 export const renameCategory = function (tree, fields, newName) {
-    var classification = this;
-    var lastLevel = classification.fetchLevel(tree, fields);
+    var lastLevel = fetchLevel(tree, fields);
     for (var i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
             lastLevel.elements.splice(i, 1);
@@ -150,17 +148,16 @@ export const renameCategory = function (tree, fields, newName) {
 };
 
 export const modifyCategory = function (tree, fields, action, cb) {
-    var classification = this;
-    var lastLevel = classification.fetchLevel(tree, fields);
+    var lastLevel = fetchLevel(tree, fields);
     for (var i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
             lastLevel.elements.splice(i, 1);
             i = i - 1;
         }
         if (lastLevel.elements[i].name === fields[fields.length - 1]) {
-            if (action.type === classification.actions.delete)
+            if (action.type === actions.delete)
                 lastLevel.elements.splice(i, 1);
-            if (action.type === classification.actions.rename)
+            if (action.type === actions.rename)
                 lastLevel.elements[i].name = action.newname;
             break;
         }
@@ -171,8 +168,7 @@ export const modifyCategory = function (tree, fields, action, cb) {
 };
 
 export const removeCategory = function (tree, fields, cb) {
-    var classification = this;
-    var lastLevel = classification.fetchLevel(tree, fields);
+    var lastLevel = fetchLevel(tree, fields);
     for (var i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
             lastLevel.elements.splice(i, 1);
@@ -202,9 +198,8 @@ export const classifyItem = function (item, orgName, classifPath) {
     }
 };
 export const addCategory = function (tree, fields, cb) {
-    var classification = this;
-    var lastLevel = classification.fetchLevel(tree, fields);
-    if (classification.isDuplicate(lastLevel.elements, fields[fields.length - 1])) {
+    var lastLevel = fetchLevel(tree, fields);
+    if (isDuplicate(lastLevel.elements, fields[fields.length - 1])) {
         if (cb) return cb("Classification Already Exists");
     } else {
         lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
@@ -213,9 +208,8 @@ export const addCategory = function (tree, fields, cb) {
 };
 
 export const fetchLevel = function (tree, fields) {
-    var classifications = this;
     var tempTree = tree;
-    this.findCategory = function (subTree, name) {
+    function findCategory(subTree, name) {
         for (var i = 0; i < subTree.elements.length; i++) {
             if (subTree.elements[i].name === name) {
                 if (!subTree.elements[i].elements) subTree.elements[i].elements = [];
@@ -224,22 +218,21 @@ export const fetchLevel = function (tree, fields) {
         }
         subTree.elements.push({name: name, elements: []});
         return subTree.elements[subTree.elements.length - 1];
-    };
+    }
     for (var j = 0; j < fields.length - 1; j++) {
         if (tempTree) {
-            tempTree = classifications.findCategory(tempTree, fields[j]);
+            tempTree = findCategory(tempTree, fields[j]);
         }
     }
     return tempTree;
 };
 
 export const treeChildren = function (tree, path, cb) {
-    var classification = this;
     tree.elements.forEach(function (element) {
         var newpath = path.slice(0);
         newpath.push(element.name);
         if (element.elements && element.elements.length > 0) {
-            classification.treeChildren(element, newpath, cb);
+            treeChildren(element, newpath, cb);
         } else {
             cb(newpath);
         }
@@ -247,7 +240,6 @@ export const treeChildren = function (tree, path, cb) {
 };
 
 export const transferClassifications = function (source, destination) {
-    var classification = this;
     source.classification.forEach(function (stewardOrgSource) {
         var st = findSteward(destination, stewardOrgSource.stewardOrg.name);
         var stewardOrgDestination;
@@ -258,8 +250,8 @@ export const transferClassifications = function (source, destination) {
             stewardOrgDestination = destination.classification[destination.classification.length - 1];
         }
         stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
-        classification.treeChildren(stewardOrgSource, [], function (path) {
-            classification.addCategory(stewardOrgDestination, path, function () {
+        treeChildren(stewardOrgSource, [], function (path) {
+            addCategory(stewardOrgDestination, path, function () {
             });
         });
     });

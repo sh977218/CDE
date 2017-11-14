@@ -38,7 +38,7 @@ exports.getFormForPublishing = function (form, req, res) {
         });
         let jsFileName;
         lines.forEach(l => {
-            if (l.includes("<script") && l.includes('src="/static/polyfill')) {
+            if (l.includes("<script") && l.includes('src="/static/polyfill-')) {
                 jsFileName = l.substring(l.indexOf('/static/polyfill-') + 8, l.indexOf('.js"') + 3);
                 jsHash = jsFileName.substring(jsFileName.indexOf("polyfill-") + 9, jsFileName.indexOf(".js") + 3);
             }
@@ -47,7 +47,7 @@ exports.getFormForPublishing = function (form, req, res) {
         let jsPrintHash = null;
         lines.forEach(l => {
             if (l.includes("<script") && l.includes('src="/static/print')) {
-                jsPrintFileName = l.substring(l.indexOf('/static/') + 4, l.indexOf('.js"') + 3);
+                jsPrintFileName = l.substring(l.indexOf('/static/') + 8, l.indexOf('.js"') + 3);
                 jsPrintHash = jsPrintFileName.substring(jsPrintFileName.indexOf("printable-") + 10, jsPrintFileName.indexOf(".js") + 3);
             }
         });
