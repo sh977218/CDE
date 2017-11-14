@@ -1,20 +1,15 @@
 <div id="generalDiv">
     <h4>General Details</h4>
-    <div class="row">
-        <div class="col-sm-5 questionSectionLabel">Name:</div>
-        <div class="col-sm-7" id="dd_general_name" itemprop="name">{{elt.naming[0].designation}}</div>
-    </div>
-    <div class="row">
-        <div class="col-sm-5 questionSectionLabel">Description:</div>
-        <div class="col-sm-7" id="dd_def" itemprop="description">
+    <dl class="row">
+        <dt class="col-xs-3 text-right">Name:</dt>
+        <dd id="dd_general_name" itemprop="name" class="col-xs-9">{{elt.naming[0].designation}}</dd>
+        <dt class="col-xs-3 text-right">Description:</dt>
+        <dd id="dd_def" itemprop="description" class="col-xs-9">
             <span *ngIf="elt.naming[0].definitionFormat !== 'html'">{{elt.naming[0].definition}}</span>
-            <span *ngIf="elt.naming[0].definitionFormat === 'html'"
-                  [innerHtml]="elt.naming[0].definition"></span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-5 questionSectionLabel">Copyrighted:</div>
-        <div class="col-sm-7">
+            <span *ngIf="elt.naming[0].definitionFormat === 'html'" [innerHtml]="elt.naming[0].definition"></span>
+        </dd>
+        <dt class="col-xs-3 text-right">Copyrighted:</dt>
+        <dd class="col-xs-9">
             <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
                    id="isCopyrighted" title="copyrighted" (change)="onEltChange.emit();"/>
             <div *ngIf="elt.isCopyrighted">
@@ -25,23 +20,22 @@
                 <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
                                  [isAllowed]="canEdit" (modelChange)="onEltChange.emit();"></cde-inline-edit>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-5 questionSectionLabel">Disallow Rendering:</div>
-        <div class="col-sm-7">
+        </dd>
+        <dt class="col-xs-3 text-right">Origin:</dt>
+        <dd class="col-xs-9">
+            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
+                             (modelChange)="onEltChange.emit();">
+            </cde-inline-edit>
+        </dd>
+        <dt class="col-xs-3 text-right">Disallow Rendering:</dt>
+        <dd class="col-xs-9">
             <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
                    id="disallowRendering" title="disallow rendering" (change)="onEltChange.emit();"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-5 questionSectionLabel">Version:</div>
-        <div class="col-sm-7">{{elt.version}}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-5 questionSectionLabel">Steward:</div>
-        <div class="col-sm-7">
+        </dd>
+        <dt class="col-xs-3 text-right">Version:</dt>
+        <dd class="col-xs-9">{{elt.version}}</dd>
+        <dt class="col-xs-3 text-right">Steward:</dt>
+        <dd class="col-xs-9">
             <ng-template #stewardTooltip>
                 <span *ngIf="orgHelperService.orgsDetailedInfo"
                       [innerHtml]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)">
@@ -51,28 +45,24 @@
                                     [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
                                     [isAllowed]="canEdit && !elt.isDraft">
             </cde-inline-select-edit>
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.imported">
-        <div class="col-sm-5 questionSectionLabel">Last import:</div>
-        <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.created">
-        <div class="col-sm-5 questionSectionLabel">Created:</div>
-        <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.updated">
-        <div class="col-sm-5 questionSectionLabel">Updated:</div>
-        <div class="col-sm-7" id="dt_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
-        </div>
-    </div>
-    <div class="row" *ngIf="elt.createdBy">
-        <div class="col-sm-5 questionSectionLabel">Created By:</div>
-        <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}
-        </div>
-    </div>
+        </dd>
+        <ng-container *ngIf="elt.imported">
+            <dt class="col-xs-3 text-right">Last import:</dt>
+            <dd class="col-xs-9">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.created">
+            <dt class="col-xs-3 text-right">Created:</dt>
+            <dd class="col-xs-9">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.updated">
+            <dt class="col-xs-3 text-right">Updated:</dt>
+            <dd id="updated" class="col-xs-9">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.createdBy">
+            <dt class="col-xs-3 text-right">Created By:</dt>
+            <dd id="createdBy" class="col-xs-9">{{elt.createdBy.username}}</dd>
+        </ng-container>
+    </dl>
 </div>
 
 

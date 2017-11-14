@@ -17,6 +17,11 @@ public class PublicBoardsTest extends BoardTest {
         textNotPresent("Epilepsy Board");
         clickElement(By.id("tag-Cancer"));
         textPresent("Epilepsy Board");
+        clickElement(By.id("type-form"));
+        textNotPresent("Epilepsy Board");
+        textPresent("TestQuickboard");
+        clickElement(By.id("type-form"));
+        textPresent("Epilepsy Board");
     }
 
     @Test

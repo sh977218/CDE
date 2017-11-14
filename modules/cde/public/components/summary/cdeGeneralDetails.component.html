@@ -3,7 +3,7 @@
 <table class="generalDetailsTable cdeTable cdeTable-noBorder table table-border" style="margin-bottom: 0px">
     <tr *ngIf="elt.usedBy">
         <th class="text-right">Used By: </th>
-        <td id="dd_usedBy">
+        <td id="usedBy">
             <span *ngIf="elt.classification.length === 0">None</span>
             <span *ngIf="elt.classification.length > 0">
                 <span *ngFor="let ub of elt.usedBy">{{ub}} </span>

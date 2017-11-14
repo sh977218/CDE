@@ -10,7 +10,6 @@ const gulp = require('gulp'),
     fs = require('fs'),
     esInit = require('./modules/system/node-js/elasticSearchInit'),
     git = require('gulp-git'),
-    templateCache = require('gulp-angular-templatecache'),
     run = require('gulp-run'),
     merge = require('merge-stream')
 ;
@@ -97,7 +96,7 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
 
     let streamArray = [];
 
-    ['cde', 'form', 'processManager', 'system', 'embedded', 'board'].forEach(function (module) {
+    ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
         streamArray.push(gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/')));
         streamArray.push(gulp.src('./modules/' + module + '/shared/**/*')
@@ -165,25 +164,6 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
 
 });
 
-gulp.task('angularTemplates', function () {
-    let module = 'embedded';
-    let streamArray = [];
-    streamArray.push(gulp
-        .src("modules/" + module + "/public/js/angularTemplates.js")
-        .pipe(gulp.dest("modules/" + module + "/public/js/bkup/")));
-    streamArray.push(gulp
-        .src("modules/" + module + "/public/html/**/*.html")
-        .pipe(templateCache({
-            root: "/" + module + "/public/html",
-            filename: "angularTemplates.js",
-            module: module + "Templates",
-            standalone: true
-        }))
-        .pipe(gulp.dest("modules/" + module + "/public/js/")));
-
-    return merge(streamArray);
-});
-
 gulp.task('prepareVersion', ['copyCode'], function () {
     git.revParse({args: '--short HEAD'}, function (err, hash) {
         fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';",
@@ -213,11 +193,11 @@ gulp.task('copyWebpack', ['webpack-app', 'webpack-native', 'webpack-embed'], () 
         .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
 });
 
-gulp.task('usemin', ['copyCode', 'angularTemplates', 'copyWebpack'], function () {
+gulp.task('usemin', ['copyCode', 'copyWebpack'], function () {
     let streamArray = [];
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/embedded/public/html/", filename: "index.html"},
+        {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(item => {
         streamArray.push(
@@ -243,19 +223,13 @@ gulp.task('copyUsemin', ['usemin'], function () {
     [
         {folder: "./modules/system/views/bot/"},
         {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/embedded/public/html/", filename: "index.html"},
+        {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
         {folder: "./modules/form/public/html/", filename: "nativeRenderStandalone.html"}
     ].forEach(item => {
         streamArray.push(gulp.src(config.node.buildDir + '/modules/' + item.filename)
             .pipe(gulp.dest(config.node.buildDir + "/" + item.folder)));
     });
     return merge(streamArray);
-});
-
-gulp.task('emptyTemplates', ['usemin'], () => {
-    let module = 'embedded';
-    return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
-        .pipe(gulp.dest("modules/" + module + "/public/js/"));
 });
 
 gulp.task('es', function () {
@@ -272,6 +246,6 @@ gulp.task('es', function () {
     setTimeout(() => process.exit(0), 3000);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'prepareVersion', 'copyUsemin', 'emptyTemplates']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'prepareVersion', 'copyUsemin']);
 
 
