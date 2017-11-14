@@ -593,7 +593,7 @@ definitions:
           properties:
             eltId:
               type: "string"
-              example: "dd_views"
+              example: "views"
             eltType:
               type: "string"
               example: "cde"

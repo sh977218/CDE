@@ -31,7 +31,7 @@ app.use(helmet());
 app.use(auth.ticketAuth);
 app.use(compress());
 
-app.use(require('hsts')({maxAge: 31537111}));
+app.use(require('hsts')({maxAge: 31536000000}));
 
 var localRedirectProxy = httpProxy.createProxyServer({});
 
@@ -151,12 +151,15 @@ app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 app.use("/static", express.static(path.join(__dirname, '/modules/static'))); // TODO: temporary until gulp stops packaging vendor.js, then use /dist
 
-app.use("/embedded/public",
-    function (req, res, next) {
-        res.removeHeader("x-frame-options");
-        next();
-    },
-    express.static(path.join(__dirname, '/modules/embedded/public')));
+
+["/embedded/public", "/_embedApp/public"].forEach(p => {
+    app.use(p, (req, res, next) => {
+            res.removeHeader("x-frame-options");
+            next();
+        },
+        express.static(path.join(__dirname, '/modules/_embedApp/public'))
+    );
+});
 
 app.use(flash());
 auth.init(app);

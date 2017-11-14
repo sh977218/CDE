@@ -93,7 +93,7 @@ const cdeSteps: Array<any> = [
     },
     {
         title: " 16/42 Dates",
-        element: "#dd_updated",
+        element: "#updated",
         content: "CDEs may have a date when they were last imported. If they were updated during that import, updated will show that date. Manual changes also show under updated. Created shows the date that the CDE was created in the NLM repository. If they were created or updated in a external repository, this information will show under Source.",
         placement: "bottom"
     },
