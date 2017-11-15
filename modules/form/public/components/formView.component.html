@@ -206,7 +206,7 @@
                         <cde-native-render-full [elt]="elt"></cde-native-render-full>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'general_tab'">
-                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft()">
+                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft()">
                         </cde-form-general-details>
                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
                         <cde-registration [elt]="elt" (save)="saveForm();"></cde-registration>
@@ -215,42 +215,42 @@
                         <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'description_tab'">
-                        <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit"
+                        <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit()"
 
                                               (isFormValid)="setIsValid($event)"
                                               (onEltChange)="saveDraft()"></cde-form-description>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'naming_tab'">
-                        <cde-naming [elt]="elt" [orgNamingTags]="orgNamingTags" [canEdit]="canEdit"
+                        <cde-naming [elt]="elt" [orgNamingTags]="orgNamingTags" [canEdit]="canEdit()"
                                     (onEltChange)="saveDraft();"></cde-naming>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'classification_tab'">
                         <cde-form-classification [elt]="elt"></cde-form-classification>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'referenceDocuments_tab'">
-                        <cde-reference-document [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
                         </cde-reference-document>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'displayProfiles_tab'">
-                        <cde-display-profile [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        <cde-display-profile [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
                         </cde-display-profile>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'properties_tab'">
-                        <cde-properties [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        <cde-properties [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
                         </cde-properties>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'ids_tab'">
-                        <cde-identifiers [elt]="elt" [canEdit]="canEdit" (onEltChange)="saveDraft();">
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
                         </cde-identifiers>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'attachments_tab'">
-                        <cde-attachments [elt]="elt" [canEdit]="canEdit"
+                        <cde-attachments [elt]="elt" [canEdit]="canEdit()"
                                          (removeAttachment)="removeAttachment($event);"
                                          (setDefault)="setDefault($event);"
                                          (upload)="upload($event);"></cde-attachments>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'history_tab'">
-                        <cde-history [elt]="elt" [canEdit]="canEdit"></cde-history>
+                        <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                     </ng-container>
                 </div>
             </div>
