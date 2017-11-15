@@ -24,11 +24,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
     public void usedBySummary() {
         goToCdeSearch();
         openCdeInList("Patient Race Category");
-<<<<<<< HEAD
-        String usedBy = findElement(By.id("dd_usedBy")).getText();
-=======
         String usedBy = findElement(By.id("usedBy")).getText();
->>>>>>> a4c2c09004e5f4c0a0cad543a08f8f9701b450a9
         Assert.assertTrue(usedBy.contains("NIDCR"));
         Assert.assertTrue(usedBy.contains("PS&CC"));
         Assert.assertTrue(usedBy.contains("caBIG"));
