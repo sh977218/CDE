@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class FormCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
+
     @Test
     public void formCannotEditSomeDraftTabs() {
         String formName = "Draft Form Test";
@@ -17,6 +18,7 @@ public class FormCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         clickElement(By.id("discussBtn"));
         textPresent("Go to current non-draft version to see comments");
     }
+
 }
 
 
