@@ -89,6 +89,7 @@ export class DataElementViewComponent implements OnInit {
                         this.orgNamingTags = _.uniqWith(allNamingTags, _.isEqual).map(t => {
                             return {id: t, text: t};
                         });
+                        this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
                     });
                 });
             });
