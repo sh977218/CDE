@@ -7,9 +7,6 @@
     <!-- build:js /embedded/public/js/embeded-scripts.js -->
     <!-- endbuild -->
 
-    <!-- build:webp /_embedApp/public/js/embed.js -->
-    <script src="/static/embed.js" defer></script>
-    <!-- endbuild -->
 
     <link href="/components/font-awesome/css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"
@@ -53,16 +50,17 @@
     </style>
 </head>
 <body>
+    <cde-embed></cde-embed>
 
+    <div class="loading">
+        <br><br><br><br><br><br>
+        <h2 class="text-center">Loading...</h2>
+        <br><br><br><br><br><br>
+    </div>
 
-<cde-embed></cde-embed>
-
-<div class="loading">
-    <br><br><br><br><br><br>
-    <h2 class="text-center">Loading...</h2>
-    <br><br><br><br><br><br>
-</div>
-
+    <!-- build:webp /_embedApp/public/js/embed.js -->
+    <script src="/static/embed.js"></script>
+    <!-- endbuild -->
 </body>
 
 </html>
