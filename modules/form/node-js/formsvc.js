@@ -44,18 +44,18 @@ function fetchWholeForm(form, callback) {
             } else {
                 let tinyId = fe.question.cde.tinyId;
                 let version = fe.question.cde.version ? fe.question.cde.version : null;
-                mongo_cde.byTinyId(tinyId, function (err, dataElement) {
-                    if (err || !dataElement) cb(err);
+                mongo_cde.DataElement.findOne({tinyId: tinyId, archived: false},  {version: 1}, (err, elt) => {
+                    if (err || !elt) cb(err);
                     else {
-                        let systemDe = dataElement.toObject();
-                        let systemDeVersion = systemDe.version ? systemDe.version : null;
+                        let systemDeVersion = elt.version ? elt.version : null;
                         if (!_.isEqual(version, systemDeVersion)) {
                             fe.question.cde.outdated = true;
                             formOutdated = true;
                         }
                         doneOne();
                     }
-                });
+
+                })
             }
         }, function doneAll() {
             cb();
@@ -135,13 +135,22 @@ exports.priorForms = function (req, res) {
 exports.byTinyId = function (req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
+    let d1 = new Date().getMilliseconds();
     mongo_form.byTinyId(tinyId, function (err, form) {
+        let d2 = new Date().getMilliseconds();
+        console.log("mongo --" + (d2 - d1));
         if (err) return res.status(500).send("ERROR - get form by tinyid");
         if (!form) return res.status(404).send();
         form = form.toObject();
+        let d3 = new Date().getMilliseconds() ;
+        console.log("toObject --" + (d3 - d2));
         fetchWholeForm(form, function (err, wholeForm) {
+            let d4 = new Date().getMilliseconds();
+            console.log("fetchWhole --" + (d4 - d3));
             if (err) return res.status(500).send("ERROR - form by tinyId whole form");
             wipeRenderDisallowed(wholeForm, req, function (err) {
+                let d5 = new Date().getMilliseconds();
+                console.log("wipe --" + (d5 - d4));
                 if (err) return res.status(500).send("ERROR - form by tinyId - wipe");
                 if (req.query.type === 'xml') {
                     setResponseXmlHeader(res);
