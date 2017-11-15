@@ -1,6 +1,7 @@
 import { AfterViewChecked, Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
+import { CdeForm } from 'core/form.model';
 import { TourService } from 'home/tour.service';
 import { FormService } from 'nativeRender/form.service';
 

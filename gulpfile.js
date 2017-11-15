@@ -6,6 +6,7 @@ const gulp = require('gulp'),
     minifyCss = require('gulp-clean-css'),
     bower = require('gulp-bower'),
     install = require('gulp-install'),
+    replace = require('gulp-replace'),
     wiredep = require('gulp-wiredep'),
     fs = require('fs'),
     esInit = require('./modules/system/node-js/elasticSearchInit'),
@@ -36,6 +37,7 @@ gulp.task('thirdParty', ['npm', 'bower'], function () {
     let streamArr = [];
 
     streamArr.push(gulp.src('./node_modules/core-js/client/shim.min.js')
+        .pipe(replace('//# sourceMappingURL=shim.min.js.map', ''))
         .pipe(gulp.dest('./modules/static/')));
     streamArr.push(gulp.src('./node_modules/classlist.js/classList.min.js')
         .pipe(gulp.dest('./modules/static/')));
@@ -48,6 +50,7 @@ gulp.task('thirdParty', ['npm', 'bower'], function () {
     streamArr.push(gulp.src('./node_modules/intl/locale-data/jsonp/en.js')
         .pipe(gulp.dest('./modules/static/')));
     streamArr.push(gulp.src('./node_modules/intl/dist/Intl.min.js')
+        .pipe(replace('//# sourceMappingURL=Intl.min.js.map', ''))
         .pipe(gulp.dest('./modules/static/')));
 
     return merge(streamArr);
