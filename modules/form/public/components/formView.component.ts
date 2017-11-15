@@ -303,20 +303,26 @@ export class FormViewComponent implements OnInit {
     saveDraft(cb) {
         this.savingText = 'Saving ...';
         this.elt._id = this.formId;
+        let username = this.userService.user.username;
+        if (this.elt.updatedBy) this.elt.updatedBy.username = username;
+        else this.elt.updatedBy = {username: username};
+        if (this.elt.createdBy) this.elt.createdBy.username = username;
+        else this.elt.createdBy = {username: username};
+        this.elt.updated = new Date();
         if (this.draftSubscription) this.draftSubscription.unsubscribe();
         this.draftSubscription = this.http.post("/draftForm/" + this.elt.tinyId, this.elt)
             .map(res => res.json()).subscribe(res => {
-            this.elt.isDraft = true;
-            if (!this.drafts.length)
-                this.drafts = [this.elt];
-            this.savingText = "Saved";
-            setTimeout(() => {
-                this.savingText = "";
-            }, 3000);
-            this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
-            this.validateForm();
-            if (cb) cb(res);
-        }, err => this.alert.addAlert("danger", err));
+                this.elt.isDraft = true;
+                if (!this.drafts.length)
+                    this.drafts = [this.elt];
+                this.savingText = "Saved";
+                setTimeout(() => {
+                    this.savingText = "";
+                }, 3000);
+                this.missingCdes = FormService.areDerivationRulesSatisfied(this.elt);
+                this.validateForm();
+                if (cb) cb(res);
+            }, err => this.alert.addAlert("danger", err));
     }
 
     saveForm() {
