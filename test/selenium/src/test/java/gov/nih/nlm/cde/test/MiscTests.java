@@ -93,7 +93,7 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void siteMap() {
-        Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("/deView?tinyId=rkh4tQrOgTw");
+        Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("/deView?tinyId=rkh4tQrOgTw"));
     }
 
 }
