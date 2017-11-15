@@ -211,10 +211,6 @@ ngb-accordion .card-header a:hover {
     padding-bottom: 10px;
 }
 
-.navbar-fixed-bottom {
-    z-index: 10000 !important;
-}
-
 .first-level-classification {
     font-weight: bold;
     font-size: 16px;
@@ -291,15 +287,6 @@ a.paginate_button {
     background-color: #fff;
     border-color: #ddd;
     cursor: not-allowed;
-}
-
-.tabbable > .nav > li.active > a {
-    background-color: #207b9e;
-    color: #fff;
-}
-
-.tabbable > .nav > li > a {
-    color: #207b9e;
 }
 
 .form-inline .form-group input {
@@ -434,10 +421,6 @@ button#selectDefault {
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
-}
-
-.nav.navbar-nav.navbar-right {
-    position: relative !important;
 }
 
 .userIcon {
@@ -961,17 +944,8 @@ div + .questionPlaceholder {
     font-size: small;
 }
 
-.navbar-btn {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-
 .searchDiv {
     margin: 30px 0 30px 0;
-}
-
-.navbar {
-    margin-bottom: 0 !important;
 }
 
 .singleSearchResult {
@@ -1110,26 +1084,6 @@ div + .questionPlaceholder {
     padding-top: 9px;
 }
 
-@media (max-width: 768px) {
-    .btn-responsive {
-        padding: 3px 4px !important;
-        font-size: 80% !important;
-        line-height: 1 !important;
-        border-radius: 3px !important;
-    }
-
-    .navbar-toggle {
-        margin: 0 !important;
-    }
-
-    .navbar-header > input {
-        padding: 0 !important;
-    }
-
-    .nav > li {
-        float: left !important;
-    }
-}
 
 @media (min-width: 768px) {
     div .col-sm-2-4 {
