@@ -6,17 +6,12 @@
         <dt class="col-xs-3 text-right">Description:</dt>
         <dd id="dd_def" itemprop="description" class="col-xs-9">
             <span *ngIf="elt.naming[0].definitionFormat !== 'html'">{{elt.naming[0].definition}}</span>
-            <span *ngIf="elt.naming[0].definitionFormat === 'html'"
-                  [innerHtml]="elt.naming[0].definition"></span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-5 questionSectionLabel">Used by:</div>
-        <div class="col-sm-7" id="dd_usedBy">{{elt.usedBy}}</div>
-    </div>
-    <div class="row">
-        <div class="col-xs-3 text-right">Copyrighted:</div>
-        <div class="col-xs-9">
+            <span *ngIf="elt.naming[0].definitionFormat === 'html'" [innerHtml]="elt.naming[0].definition"></span>
+        </dd>
+        <dt class="col-xs-3 text-right">Used by:</dt>
+        <dd class="col-xs-9" id="dd_usedBy">{{elt.usedBy}}</dd>
+        <dt class="col-xs-3 text-right">Copyrighted:</dt>
+        <dd class="col-xs-9">
             <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
                    id="isCopyrighted" title="copyrighted" (change)="onEltChange.emit();"/>
             <div *ngIf="elt.isCopyrighted">

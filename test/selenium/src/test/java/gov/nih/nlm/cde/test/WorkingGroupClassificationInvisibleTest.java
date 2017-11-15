@@ -16,7 +16,7 @@ public class WorkingGroupClassificationInvisibleTest extends BaseClassificationT
         textPresent("WG Sub Classif");
         logout();
         goToCdeByName(cdeName);
-        textNotPresent("WG-TEST", By.id("usedBy"));
+        textNotPresent("WG-TEST", By.id("dd_usedBy"));
 
         goToClassification();
         textNotPresent("WG Sub Classif");
