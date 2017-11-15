@@ -192,11 +192,11 @@ import { FormService } from 'nativeRender/form.service';
     templateUrl: 'home.component.html'
 })
 export class HomeComponent implements AfterViewChecked {
-    // cdeFormSelection = 'formOnly';
+    cdeFormSelection = 'formOnly';
     currentFragment: string;
-    // currentTab: string;
-    // elt: CdeForm;
-    // currentFormFeature: any;
+    currentTab: string;
+    elt: CdeForm;
+    currentFormFeature: any;
     // featuredItems = {
     //     Forms: [
     //         {tinyId: '7kBFB4TUM', name: 'BRICS NINR SF-36'},
@@ -208,21 +208,20 @@ export class HomeComponent implements AfterViewChecked {
     //         {tinyId: 'XySUBn_NZ', name: 'SDC Adrenal'},
     //     ]
     // };
-    // formFeatures = [
-    //     {feature: 'Matrix', description: 'Multiple choice answers are listed on columns.', tinyId: '71pwc60mQ'},
-    //     {feature: 'Scores', description: 'Calculations such as scoring automate the math.', tinyId: 'mJsGoMU1m'},
-    //     {feature: 'Table', description: 'Questions can be asked multiple times.', tinyId: 'XJtA5M63ix'},
-    //     {feature: 'Follow-up Logic', description: 'Some answers have their own questions.', tinyId: 'XySUBn_NZ'},
-    //     {feature: 'Dynamic Logic', description: 'Fill out the form to get another question.',  tinyId: 'mJsGoMU1m'},
-    //     {feature: 'Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
-    // ];
-    // formFeatureDescription: string;
-    // newItems = {CDEs: null, Forms: null};
-    // statsType = 'Forms';
-    // topItems = {CDEs: null, Forms: null};
+    formFeatures = [
+        {feature: 'Answer Grid', description: 'Multiple choice answers are displayed as a grid / matrix.', tinyId: '71pwc60mQ'},
+        {feature: 'Scoring', description: 'Fields calculated from previous answers.', tinyId: 'mJsGoMU1m'},
+        {feature: 'Repeating Questions', description: 'Questions can repeat based on previous options', tinyId: 'XJtA5M63ix'},
+        {feature: 'Follow-up Questions', description: 'Follow-up questions depend on previous answers', tinyId: 'XySUBn_NZ'},
+        {feature: 'Field Validation', description: 'Fields marked with red are required.', tinyId: 'myGNFiSjMG'},
+    ];
+    formFeatureDescription: string;
+    newItems = {CDEs: null, Forms: null};
+    statsType = 'Forms';
+    topItems = {CDEs: null, Forms: null};
 
     constructor(private http: Http, private route: ActivatedRoute, private formService: FormService) {
-        // this.getForm(this.formFeatures[0]);
+        this.getForm(this.formFeatures[0]);
     }
 
     ngAfterViewChecked() {
@@ -240,58 +239,59 @@ export class HomeComponent implements AfterViewChecked {
         });
     }
 
-    // getForm(feature) {
-    //     this.formService.getForm(feature.tinyId, undefined, (err, elt) => {
-    //         if (!err) {
-    //             FormService.areDerivationRulesSatisfied(elt);
-    //             this.elt = elt;
-    //         }
-    //     });
-    //     this.currentFormFeature = feature;
-    //     this.formFeatureDescription = feature.description;
-    // }
-    //
-    // getStats(tab = null) {
-    //     if (!tab)
-    //         tab = this.currentTab;
-    //     else
-    //         this.currentTab = tab;
-    //
-    //     if (tab === 'tabFeatured')
-    //         this.cdeFormSelection = 'formOnly';
-    //     else if (tab === 'tabTop')
-    //         this.cdeFormSelection = 'cdeOnly';
-    //     else
-    //         this.cdeFormSelection = 'both';
-    //
-    //     let type;
-    //     if (this.statsType === 'CDEs')
-    //         type = 'cde';
-    //     else if (this.statsType === 'Forms')
-    //         type = 'form';
-    //     else
-    //         return;
-    //
-    //     if (tab === 'tabTop') {
-    //         if (this.topItems['CDEs'] === null)
-    //             this.http.get('/statsTopViews/cde').map(res => res.json()).subscribe(
-    //                 res => {
-    //                     this.topItems['CDEs'] = res;
-    //                 },
-    //                 error => {
-    //                 }
-    //             );
-    //     } else if (tab === 'tabNew') {
-    //         if (this.newItems[this.statsType] === null)
-    //             this.http.get('/statsNew/' + type).map(res => res.json()).subscribe(
-    //                 res => {
-    //                     this.newItems[this.statsType] = res;
-    //                 },
-    //                 error => {
-    //                 }
-    //             );
-    //     }
-    // }
+
+    getForm(feature) {
+        this.formService.getForm(feature.tinyId, undefined, (err, elt) => {
+            if (!err) {
+                FormService.areDerivationRulesSatisfied(elt);
+                this.elt = elt;
+            }
+        });
+        this.currentFormFeature = feature;
+        this.formFeatureDescription = feature.description;
+    }
+
+    getStats(tab = null) {
+        if (!tab)
+            tab = this.currentTab;
+        else
+            this.currentTab = tab;
+
+        if (tab === 'tabFeatured')
+            this.cdeFormSelection = 'formOnly';
+        else if (tab === 'tabTop')
+            this.cdeFormSelection = 'cdeOnly';
+        else
+            this.cdeFormSelection = 'both';
+
+        let type;
+        if (this.statsType === 'CDEs')
+            type = 'cde';
+        else if (this.statsType === 'Forms')
+            type = 'form';
+        else
+            return;
+
+        if (tab === 'tabTop') {
+            if (this.topItems['CDEs'] === null)
+                this.http.get('/statsTopViews/cde').map(res => res.json()).subscribe(
+                    res => {
+                        this.topItems['CDEs'] = res;
+                    },
+                    error => {
+                    }
+                );
+        } else if (tab === 'tabNew') {
+            if (this.newItems[this.statsType] === null)
+                this.http.get('/statsNew/' + type).map(res => res.json()).subscribe(
+                    res => {
+                        this.newItems[this.statsType] = res;
+                    },
+                    error => {
+                    }
+                );
+        }
+    }
 
     takeATour() {
         TourService.takeATour();
