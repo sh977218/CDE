@@ -46,7 +46,7 @@ exports.init = function (app) {
     /* for search engine | javascript disabled*/
     function staticHtml(req, res, next) {
         if (req.headers['user-agent'] && req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) next();
-        else res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
+        else res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
     }
 
     app.get("/", [checkHttps, staticHtml], function (req, res) {
@@ -156,8 +156,8 @@ exports.init = function (app) {
         } else res.render('bot/formSearch', 'system');
     });
     app.get("/formView", [checkHttps, staticHtml], function (req, res) {
-        var tinyId = req.query.tinyId;
-        var version = req.query.version;
+        let tinyId = req.query.tinyId;
+        let version = req.query.version;
         mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /formView");
@@ -170,21 +170,12 @@ exports.init = function (app) {
         });
     });
 
-
-    // every sunday at 4:04 AM
+    // every sunday at 4:07 AM
     new CronJob({
-        cronTime: '* 4 4 * * 6',
-        //noinspection JSUnresolvedFunction
+        cronTime: '* 7 4 * * 6',
         onTick: () => {
-
-        },
-        runOnInit: true,
-        timeZone: "America/New_York"
-    }).start();
-
-    app.get("/sitemaps/", checkHttps, function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            res.type('text');
+            dbLogger.consoleLog("Creating sitemap")
+            let wstream = fs.createWriteStream('./modules/static/sitemap.txt');
             let cond = {
                 'archived': false,
                 'registrationState.registrationStatus': 'Qualified'
@@ -193,29 +184,31 @@ exports.init = function (app) {
                 cb => {
                     let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
                     let formatter = doc => config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
-                    stream.on('data', doc => res.write(formatter(doc)));
+                    stream.on('data', doc => wstream.write(formatter(doc)));
                     stream.on('err', err => cb(err));
                     stream.on('end', cb);
                 },
                 cb => {
                     let stream = mongo_form.Form.find(cond, "tinyId").stream();
                     let formatter = doc => config.publicUrl + "/formView?tinyId=" + doc.tinyId + "\n";
-                    stream.on('data', doc => res.write(formatter(doc)));
+                    stream.on('data', doc => wstream.write(formatter(doc)));
                     stream.on('err', err => cb(err));
                     stream.on('end', cb);
                 }
             ], err => {
                 if (err) {
-                    res.status(500).send("ERROR - Static Html Error, /sitemaps");
-                    logging.errorLogger.error("Error: Static Html Error", {
+                    logging.errorLogger.error("Error generating sitemap", {
                         stack: err.stack,
                         origin: req.url
                     });
                 }
-                else res.end();
+                dbLogger.consoleLog("done with sitemap");
+                wstream.end();
             });
-        } else res.status(403).send("Not Authorized.");
-    });
+        },
+        runOnInit: true,
+        timeZone: "America/New_York"
+    }).start();
 
     function checkHttps(req, res, next) {
         if (config.proxy) {
@@ -232,7 +225,7 @@ exports.init = function (app) {
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, checkHttps, function (req, res) {
-            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
+            res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
         });
     });
 
