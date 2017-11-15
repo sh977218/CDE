@@ -6,10 +6,6 @@ const csv = require('csv');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
-<<<<<<< HEAD
-const classificationShared = require('@std/esm')(module)('../../../modules/system/shared/classificationShared');
-=======
->>>>>>> origin/master
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
 const config = require('../../../modules/system/node-js/parseConfig');
 
