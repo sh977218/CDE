@@ -1,6 +1,6 @@
-<section class="sectionPage">
+<section class="sectionPage" style="background-color: #eee; padding: 10px; padding-bottom: 40px">
     <div class="" style="padding: 2rem 1rem; margin-bottom: 0;">
-        <div class=" mt-0 mt-sm-5" style="background-color: #eee; padding: 10px">
+        <div class=" mt-0 mt-sm-5" >
             <div class="row align-items-center">
                 <div class="col-md-3 col-xs-12 ">
                     <img class="img-fluid" src="/cde/public/assets/img/NIH-CDE.png"
@@ -64,33 +64,36 @@
             </div>
         </div>
     </div>
-    <!--<a routerLink="/home" fragment="formFeatures" class="hidden-xs">-->
-        <!--<div class="morePagesText">What are some Form Features?</div>-->
-    <!--</a>-->
+    <a routerLink="/home" fragment="formFeatures" class="hidden-xs">
+        <div class="morePagesText">What are some Form Features?</div>
+    </a>
 </section>
-<!--<section class="sectionPage container" id="formFeatures">-->
-    <!--<div class="row pt-3">-->
-        <!--<div class="col-xs-12 col-sm-4 col-md-3">-->
-            <!--<ul class="btn-group-vertical p-3 w-100" style="border-radius: 20px; border: solid lightgrey 3px; background-color: white">-->
-                <!--<li *ngFor="let f of formFeatures" class="btn btn-outline-primary"-->
-                    <!--style="border-radius: 20px; border-color: lightgray"-->
-                    <!--[style.border-width]="currentFormFeature === f ? '2px' : '0'"-->
-                    <!--(click)="getForm(f)">{{f.feature}}-->
-                <!--</li>-->
-            <!--</ul>-->
-        <!--</div>-->
-        <!--<div class="col-xs-12 col-sm-8 col-md-9">-->
+<section class="sectionPage container" id="formFeatures" style="margin-top: 40px">
+    <h1>Form Features</h1>
+    <div class="row pt-3">
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <ul class="btn-group-vertical p-3 w-100" style="border-radius: 20px; border: solid lightgrey 3px; background-color: white">
+                <li *ngFor="let f of formFeatures" class="btn btn-outline-primary"
+                    style="border-radius: 20px; border-color: lightgray"
+                    [style.border-width]="currentFormFeature === f ? '2px' : '0'"
+                    (click)="getForm(f)">{{f.feature}}
+                </li>
+            </ul>
+            {{formFeatureDescription}}
+        </div>
+
+        <div class="col-xs-12 col-sm-8 col-md-9">
             <!--<div class="p-3" style="background-color: black; border-radius: 20px; color: #fff; font-weight: 900">-->
                 <!--{{formFeatureDescription}}-->
             <!--</div>-->
-            <!--<cde-native-render [elt]="elt" [profile]="null" class="d-block p-3 nativeRender"-->
-                               <!--style="min-height: 80vh; border-radius: 20px; border: solid lightgrey 3px; background-color: white"></cde-native-render>-->
-        <!--</div>-->
-    <!--</div>-->
+            <cde-native-render [elt]="elt" [profile]="null" class="d-block p-3 nativeRender"
+                               style="min-height: 30vh; border-radius: 20px; border: solid lightgrey 3px; background-color: white"></cde-native-render>
+        </div>
+    </div>
     <!--<a routerLink="/home" fragment="started">-->
         <!--<div class="morePages morePagesXsUnder morePagesFromText morePagesToCircle contentStartedFrom"></div>-->
     <!--</a>-->
-<!--</section>-->
+</section>
 <!--<section class="container" id="started">-->
     <!--<div class="row">-->
         <!--<div class="col-xs-12 col-sm-6 mt-5">-->

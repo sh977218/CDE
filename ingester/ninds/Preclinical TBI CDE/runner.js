@@ -6,8 +6,12 @@ const csv = require('csv');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
+<<<<<<< HEAD
 const classificationShared = require('@std/esm')(module)('../../../modules/system/shared/classificationShared');
+=======
+>>>>>>> origin/master
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
+const config = require('../../../modules/system/node-js/parseConfig');
 
 const DATA_TYPE_MAP = {
     'Alphanumeric': 'Text',
@@ -15,44 +19,6 @@ const DATA_TYPE_MAP = {
     'Numeric Values': 'Number',
     'Numeric': 'Number'
 };
-const ALL_POSSIBLE_CLASSIFICATIONS = [
-    "population.all",
-    "domain.general (for all diseases)",
-    "domain.traumatic brain injury",
-    "domain.Parkinson's disease",
-    "domain.Friedreich's ataxia",
-    "domain.stroke",
-    "domain.amyotrophic lateral sclerosis",
-    "domain.Huntington's disease",
-    "domain.multiple sclerosis",
-    "domain.neuromuscular diseases",
-    "domain.myasthenia gravis",
-    "domain.spinal muscular atrophy",
-    "domain.Duchenne muscular dystrophy/Becker muscular dystrophy",
-    "domain.congenital muscular dystrophy",
-    "domain.spinal cord injury",
-    "domain.headache",
-    "domain.epilepsy",
-    "classification.general (for all diseases)",
-    "classification.acute hospitalized",
-    "classification.concussion/mild TBI",
-    "classification.epidemiology",
-    "classification.moderate/severe TBI: rehabilitation",
-    "classification.Parkinson's disease",
-    "classification.Friedreich's ataxia",
-    "classification.stroke",
-    "classification.amyotrophic lateral sclerosis",
-    "classification.Huntington's disease",
-    "classification.multiple sclerosis",
-    "classification.neuromuscular diseases",
-    "classification.myasthenia gravis",
-    "classification.spinal muscular atrophy",
-    "classification.Duchenne muscular dystrophy/Becker muscular dystrophy",
-    "classification.congenital muscular dystrophy",
-    "classification.spinal cord injury",
-    "classification.headache",
-    "classification.epilepsy",
-];
 
 const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
 const EXCLUDE_FILE = [];
@@ -74,7 +40,6 @@ function getCell(row, header) {
     else {
         let headerLower = _.toLower(header);
         if (row[headerLower]) return row[headerLower];
-//        else console.log("No " + header + " found");
     }
 }
 
@@ -260,11 +225,17 @@ function rowToDataElement(file, row) {
 
     let references = getCell(row, 'References');
     if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
+        de.referenceDocuments.push({
+            document: references
+        });
+    }
+    /*if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
         references.split("-----").forEach(refDocString => {
             let regs = [
-                new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*/g),
-                new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*/g),
-                new RegExp(/\s*PMID:*\s*(\d*[,|;]*)*/g),
+                new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*!/g),
+                new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*!/g),
+                new RegExp(/\s*PMID:*\s*(\d*[,|;]*)*!/g),
+                new RegExp(/\s*PMCID:*\s*(\d*[,|;]*)*!/g),
             ];
             let pmIds = [];
             regs.forEach(reg => {
@@ -284,7 +255,7 @@ function rowToDataElement(file, row) {
                 // console.log("reminding ref doc string: " + refDocString);
             }
         });
-    }
+    }*/
 
     let keywords = getCell(row, 'Keywords');
     if (keywords) de.properties.push({key: "Keywords", value: keywords});
@@ -337,6 +308,7 @@ function saveDataElement(de, row, file, cb) {
 
 function run() {
     async.series([
+/*
         function (cb) {
             DataElementModel.remove({}, err => {
                 if (err) throw err;
@@ -349,11 +321,14 @@ function run() {
                 cb();
             });
         },
+*/
         function (cb) {
             let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
             async.forEachSeries(files, (file, doneOneFile) => {
                 let cond = {
                     columns: true,
+                    rtrim: true,
+                    trim: true,
                     relax_column_count: true,
                     skip_empty_lines: true,
                     skip_lines_with_empty_values: true
@@ -389,10 +364,12 @@ function run() {
                     let lastSection = "";
                     let currentSection = "";
                     let formElements = form.formElements;
+                    let rowIndex = 0;
                     async.forEachSeries(rows, (row, doneOneRow) => {
                         let de = rowToDataElement(file, row);
                         if (!de.naming || !de.naming[0].designation) {
-                            console.log(file + ' has empty row.');
+                            console.log(file + ' has empty row: ' + rowIndex + '. Variable: ' + getCell(row, 'Variable Name'));
+                            rowIndex++;
                             doneOneRow();
                         } else {
                             saveDataElement(de, row, file, (err, newCde) => {
@@ -411,6 +388,7 @@ function run() {
                                     let question = deToQuestion(row, newCde);
                                     formElements.push(question);
                                     lastSection = currentSection;
+                                    rowIndex++;
                                     doneOneRow();
                                 }
                             });

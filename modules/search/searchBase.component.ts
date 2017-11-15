@@ -9,7 +9,6 @@ import { CdeForm } from 'core/form.model';
 import { DataElement } from 'core/dataElement.model';
 import { ElasticQueryResponse, Elt, User } from 'core/models.model';
 import { HelperObjectsService } from 'widget/helperObjects.service';
-import { ParamMap } from '@angular/router';
 
 export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     @HostListener('window:beforeunload') unload() {
@@ -42,7 +41,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     orgHtmlOverview: string;
     pinComponent: Type<Component>;
     pinModalComponent: any;
-    redirectPath: string;
     resultsView: string;
     resultPerPage = 20;
     searchSettings: SearchSettings = new SearchSettings;
