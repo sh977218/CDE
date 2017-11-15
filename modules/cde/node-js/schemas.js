@@ -1,6 +1,7 @@
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    sharedSchemas = require('../../system/node-js/schemas.js');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const _ = require('lodash');
+const sharedSchemas = require('../../system/node-js/schemas.js');
 
 var conceptSchema = new Schema({
     name: String,
