@@ -47,7 +47,6 @@ export class DataElementViewComponent implements OnInit {
     commentMode;
     currentTab = "general_tab";
     highlightedTabs = [];
-    canEdit: boolean = false;
     drafts = [];
     deId;
     orgNamingTags = [];
@@ -77,9 +76,8 @@ export class DataElementViewComponent implements OnInit {
                         let user = this.userService.user;
                         if (user && user.username) {
                             this.loadComments(de, null);
-                            this.loadDraft(() => this.canEdit = this.isAllowedModel.isAllowed(this.elt));
+                            this.loadDraft(() => {});
                         }
-                        else this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                         let allNamingTags = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].nameTags;
                         this.elt.naming.forEach(n => {
                             n.tags.forEach(t => {
@@ -96,6 +94,10 @@ export class DataElementViewComponent implements OnInit {
         });
     }
 
+    canEdit () {
+        return this.isAllowedModel.isAllowed(this.elt) && (this.drafts.length === 0 || this.elt.isDraft);
+    }
+
     loadDataElement(cb) {
         let cdeId = this.route.snapshot.queryParams['cdeId'];
         let url = "/de/" + this.route.snapshot.queryParams['tinyId'];
@@ -108,7 +110,6 @@ export class DataElementViewComponent implements OnInit {
                     if (user && user.username)
                         deValidator.checkPvUnicity(this.elt.valueDomain);
                     this.setDisplayStatusWarning();
-                    this.canEdit = this.isAllowedModel.isAllowed(this.elt);
                     if (cb) cb(this.elt);
                 });
             }, () => this.router.navigate(['/pageNotFound'])
