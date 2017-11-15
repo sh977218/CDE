@@ -125,7 +125,7 @@ function rowToDataElement(file, row) {
     let variableName = getCell(row, 'Variable Name');
     if (variableName) {
         de.ids = [{
-            source: 'NINDS',
+            source: 'NINDS Variable Name',
             id: row['Variable Name']
         }];
     }
