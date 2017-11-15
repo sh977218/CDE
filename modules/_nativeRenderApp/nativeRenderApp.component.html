@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div *ngIf="panelType !== 'patient'" class="col-lg-3 col-md-4 col-12">
+        <div *ngIf="panelType === 'patient'" class="col-lg-3 col-md-4 col-12">
             <div class="mx-3 mt-5 mb-3">
                 <div *ngIf="smart?.userId">
                     <span class="info-heading">Logged in as:</span>
