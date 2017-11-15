@@ -87,6 +87,7 @@ export class FormViewComponent implements OnInit {
                         return {id: t, text: t};
                     });
                 });
+                this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
             });
         });
     }
