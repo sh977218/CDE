@@ -46,6 +46,7 @@ module.exports = {
                 path.resolve(__dirname, '../src')
             ),
             new webpack.DefinePlugin({
+                IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(true),
             }),
             new webpack.ProvidePlugin({
@@ -89,6 +90,7 @@ module.exports = {
                 path.resolve(__dirname, '../src')
             ),
             new webpack.DefinePlugin({
+                IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(false),
             }),
             new webpack.NoEmitOnErrorsPlugin(),

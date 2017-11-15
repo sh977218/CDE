@@ -1,5 +1,5 @@
 var _crypto;
-if (IS_BROWSER) { // jshint ignore:line
+if (typeof IS_BROWSER !== 'undefined' && IS_BROWSER) { // jshint ignore:line
     // This will be executed in Chrome
     try {
         _crypto = jscrypto; // jshint ignore:line
