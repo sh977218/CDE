@@ -11,6 +11,7 @@ db.fs.files.remove({});
 db.fs.chunks.remove({});
 db.comments.remove({});
 db.embeds.remove({});
+db.jobQueue.remove({});
 
 var defaultBoard = {
     name: "default"
