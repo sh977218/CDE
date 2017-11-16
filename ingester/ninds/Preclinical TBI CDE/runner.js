@@ -7,7 +7,6 @@ const csv = require('csv');
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
-const config = require('../../../modules/system/node-js/parseConfig');
 
 const DATA_TYPE_MAP = {
     'Alphanumeric': 'Text',
@@ -15,6 +14,8 @@ const DATA_TYPE_MAP = {
     'Numeric Values': 'Number',
     'Numeric': 'Number'
 };
+
+let ALL_UOM = new Set();
 
 const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
 const EXCLUDE_FILE = [];
@@ -113,15 +114,6 @@ function rowToDataElement(file, row) {
         }]
     };
 
-    /*
-        let effectiveDateString = getCell(row, 'Effective Date');
-        if (effectiveDateString)
-            de.registrationState.effectiveDate = new Date(effectiveDateString);
-        let untilDateString = getCell(row, 'Until Date');
-        if (untilDateString)
-            de.registrationState.untilDate = new Date(untilDateString);
-    */
-
     let variableName = getCell(row, 'Variable Name');
     if (variableName) {
         de.ids = [{
@@ -157,7 +149,10 @@ function rowToDataElement(file, row) {
     }
 
     let unitOfMeasure = getCell(row, 'Unit of Measure');
-    if (unitOfMeasure) de.valueDomain.uom = unitOfMeasure;
+    if (unitOfMeasure) {
+        de.valueDomain.uom = unitOfMeasure;
+        ALL_UOM.add(unitOfMeasure);
+    }
     let inputRestriction = getCell(row, 'Input Restriction');
     if (inputRestriction === 'Free-Form Entry') {
         let datatype = DATA_TYPE_MAP[row['Datatype']];
@@ -178,14 +173,6 @@ function rowToDataElement(file, row) {
         } else {
             de.valueDomain.datatype = 'Text';
             de.valueDomain.datatypeText = {};
-            /*
-                        console.log("---------------------------------");
-                        console.log("| file: " + file);
-                        console.log("| rowIndex: " + row.__rowNum__);
-                        console.log("| Unknown datatype: " + datatype);
-                        console.log("---------------------------------");
-                        console.log("\n");
-            */
         }
     } else {
         de.valueDomain.datatype = 'Value List';
@@ -200,20 +187,12 @@ function rowToDataElement(file, row) {
             if (pvs.length === pvDescriptions.length && pvDescriptions.length === pvCodes.length && pvs.length === pvCodes.length) {
                 for (let i = 0; i < pvs.length; i++) {
                     let pv = {
-                        permissibleValue: pvs[i],
-                        valueMeaningName: pvs[i],
-                        valueMeaningDefinition: pvDescriptions[i],
-                        valueMeaningCode: pvCodes[i]
+                        permissibleValue: pvCodes[i],
+                        valueMeaningName: pvs[i]
                     };
                     de.valueDomain.permissibleValues.push(pv);
                 }
             } else {
-                console.log("---------------------------------");
-                console.log("| file: " + file);
-                console.log("| rowIndex: " + row.__rowNum__);
-                console.log("| PV Length mismatch. pv:" + pvs.length + " pvDescriptions:" + pvDescriptions.length + " pvCodes:" + pvCodes.length);
-                console.log("---------------------------------");
-                console.log("\n");
                 throw "bad pvs.";
             }
         }
@@ -260,25 +239,15 @@ function rowToDataElement(file, row) {
     let notes = getCell(row, 'Notes');
     if (notes) de.properties.push({key: "Notes", value: notes});
 
-    /*
-        ALL_POSSIBLE_CLASSIFICATIONS.forEach(possibleClassification => {
-            if (row[possibleClassification]) {
-                let categories = possibleClassification.split(".").concat(row[possibleClassification]);
-                classificationShared.classifyElt(de, 'NINDS', ['Preclinical TBI CDE'].concat(categories));
-            }
+    let taxonomyString = getCell(row, 'Taxonomy');
+    if (taxonomyString) {
+        let taxonomyArray = taxonomyString.split(';').filter(t => t);
+        if (taxonomyArray.length > 0)
+            de.classification[0].elements[0].elements.push({name: 'Taxonomy', elements: []});
+        taxonomyArray.forEach(t => {
+            de.classification[0].elements[0].elements[0].elements.push({name: t, elements: []});
         });
-
-        if (de.classification.length === 0) {
-            de.classification = [{
-                stewardOrg: {name: 'NINDS'},
-                elements: [{
-                    name: 'Preclinical TBI',
-                    elements: []
-                }]
-            }];
-        }
-    */
-
+    }
     return de;
 }
 
@@ -304,7 +273,6 @@ function saveDataElement(de, row, file, cb) {
 
 function run() {
     async.series([
-/*
         function (cb) {
             DataElementModel.remove({}, err => {
                 if (err) throw err;
@@ -317,7 +285,6 @@ function run() {
                 cb();
             });
         },
-*/
         function (cb) {
             let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
             async.forEachSeries(files, (file, doneOneFile) => {
@@ -397,6 +364,8 @@ function run() {
             }, () => cb());
         }
     ], () => {
+        console.log('all unit of measure: \n');
+        console.log(ALL_UOM);
         process.exit(1);
     });
 }
