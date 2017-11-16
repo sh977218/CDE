@@ -3,24 +3,24 @@
     <div *ngIf="elt.naming.length === 0">There are no namings.</div>
     <ng-container *ngFor="let name of elt.naming;let i = index">
         <div class="row">
-            <dt class="col-xs-3 text-right">
-                <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit" class="btn-default fa fa-trash-o"
+            <dt class="col-sm-3 text-right">
+                <span (click)="removeNamingByIndex(i)" *ngIf="canEdit && !name.edit" class="btn-secondary fa fa-trash-o"
                       id="removeNaming-{{i}}" title="Remove"></span>
                 <cde-sortable-array [theArray]="elt.naming" [index]="i" (cb)="onEltChange.emit()"></cde-sortable-array>
                 Name:
             </dt>
-            <dd id="designation_{{i}}" class="col-xs-9">
+            <dd id="designation_{{i}}" class="col-sm-9">
                 <cde-inline-edit id="nameEdit" [(model)]="name.designation" (modelChange)="onEltChange.emit();"
                                  [isAllowed]="canEdit"></cde-inline-edit>
             </dd>
-            <dt class="col-xs-3 text-right">Definition:</dt>
-            <dd id="definition_{{i}}" class="col-xs-9">
+            <dt class="col-sm-3 text-right">Definition:</dt>
+            <dd id="definition_{{i}}" class="col-sm-9">
                 <cde-inline-area-edit [(model)]="name.definition" (modelChange)="onEltChange.emit();"
                                       [(defFormat)]="name.definitionFormat"
                                       [isAllowed]="canEdit"></cde-inline-area-edit>
             </dd>
-            <dt class="col-xs-3 text-right">Tags:</dt>
-            <dd id="tags_{{i}}" class="col-xs-9">
+            <dt class="col-sm-3 text-right">Tags:</dt>
+            <dd id="tags_{{i}}" class="col-sm-9">
                 <select2 [data]="orgNamingTags" [value]="name.tags" [options]="options"
                          [disabled]="!canEdit" width="100%"
                          (valueChanged)="changedTags(name,$event)">
@@ -30,7 +30,7 @@
         <hr>
     </ng-container>
     <button *ngIf="canEdit" id="openNewNamingModalBtn"
-            class="btn btn-small btn-default" (click)="openNewNamingModal();">
+            class="btn btn-small btn-secondary" (click)="openNewNamingModal();">
         <i class="fa fa-plus"></i> Add Naming
     </button>
 </div>
@@ -48,10 +48,10 @@
             <div class="form-group">
                 <label for="newDefinition">Definition</label>
                 <div id="newDefinition">
-                    <button type="button" class="btn btn-default btn-xs" (click)="newNaming.definitionFormat = '';">
+                    <button type="button" class="btn btn-secondary btn-xs" (click)="newNaming.definitionFormat = '';">
                         Plain Text
                     </button>
-                    <button type="button" class="btn btn-default btn-xs" (click)="newNaming.definitionFormat = 'html';">
+                    <button type="button" class="btn btn-secondary btn-xs" (click)="newNaming.definitionFormat = 'html';">
                         Rich Text
                     </button>
                     <textarea name="definition" *ngIf="newNaming.definitionFormat !== 'html'"

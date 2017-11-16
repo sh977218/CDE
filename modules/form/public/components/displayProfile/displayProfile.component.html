@@ -11,46 +11,46 @@
                id="removeDisplayProfile-{{index}}" title="Remove"></a>
         </div>
         <div class="row">
-            <div class="col-md-5 col-xs-12">
-                <dl class="dl-horizontal">
-                    <dt><label>Name:</label></dt>
-                    <dd>
+            <div class="col-md-5 col-sm-12">
+                <dl class="row">
+                    <dt class="col-sm-5 text-right">Name:</dt>
+                    <dd id="dd_origin_nlm" class="col-sm-7 ">
                         <cde-inline-edit id="profileNameEdit_{{index}}" [(model)]="profile.name" [isAllowed]="canEdit"
                                          (modelChange)="onEltChange.emit();"></cde-inline-edit>
                     </dd>
-                    <dt><label for="displayAsMatrix_{{index}}">Sections as matrices:</label></dt>
-                    <dd>
+                    <dt class="col-sm-5 text-right">Sections as matrices:</dt>
+                    <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.sectionsAsMatrix" [disabled]="!canEdit"
                                id="displayAsMatrix_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
-                    <dt><label for="displayValues_{{index}}">Display answer values:</label></dt>
-                    <dd>
+                    <dt class="col-sm-5 text-right">Display answer values:</dt>
+                    <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayValues" [disabled]="!canEdit"
                                id="displayValues_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
-                    <dt><label for="displayInstructions_{{index}}">Display Instructions:</label></dt>
-                    <dd>
+                    <dt class="col-sm-5 text-right">Display Instructions:</dt>
+                    <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayInstructions" [disabled]="!canEdit"
                                id="displayInstructions_{{index}}" (change)="onEltChange.emit();">
                     </dd>
-                    <dt><label for="displayCopyright_{{index}}">Display Copyright:</label></dt>
-                    <dd>
+                    <dt class="col-sm-5 text-right">Display Copyright:</dt>
+                    <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayCopyright" [disabled]="!canEdit"
                                id="displayCopyright_{{index}}" (change)="onEltChange.emit();">
                     </dd>
-                    <dt><label for="displayNumbering_{{index}}">Display Question Numbers:</label></dt>
-                    <dd>
+                    <dt class="col-sm-5 text-right">Display Question Numbers:</dt>
+                    <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayNumbering" [disabled]="!canEdit"
                                id="displayNumbering_{{index}}" (change)="onEltChange.emit();">
                     </dd>
-                    <dt><label for="displayType_{{index}}">Display Printable Logic:</label></dt>
-                    <dd>
+                    <dt class="col-sm-5 text-right">Display Printable Logic:</dt>
+                    <dd class="col-sm-7 ">
                         <input type="checkbox" [disabled]="!canEdit" id="displayType_{{index}}"
                                [checked]="profile.displayType === 'Follow-up'"
-                               (change)="setDisplayType(profile, $event)"></dd>
-                    <br/>
-                    <dt><label>Number of Columns:</label></dt>
-                    <dd>
+                               (change)="setDisplayType(profile, $event)">
+                    </dd>
+                    <dt class="col-sm-5 text-right">Number of Columns:</dt>
+                    <dd class="col-sm-7 ">
                         <select [ngModel]="profile.numberOfColumns" id="nc_{{index}}"
                                 (ngModelChange)="onChange(profile,$event)">
                             <option value=1>1</option>
@@ -61,27 +61,27 @@
                             <option value=6>6</option>
                         </select>
                     </dd>
-                    <dt><label for="displayInvisible_{{index}}">Display Invisible Questions:</label></dt>
-                    <dd>
+                    <dt class="col-sm-5 text-right">Display Invisible Questions:</dt>
+                    <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayInvisible" [disabled]="!canEdit"
                                id="displayInvisible_{{index}}" (change)="onEltChange.emit();">
                     </dd>
-                    <dt><label for="displayRepeatFormat_{{index}}">Repeat Format String:</label></dt>
-                    <dd>
+                    <dt class="col-sm-5 text-right">Repeat Format String:</dt>
+                    <dd class="col-sm-7 ">
                         <input class="form-control" [(ngModel)]="profile.repeatFormat"
                                [disabled]="!canEdit" id="displayRepeatFormat_{{index}}" (change)="onEltChange.emit();">
                         (Use # in place of number. Ex: "#." for "1.")
                     </dd>
                 </dl>
             </div>
-            <div class="col-md-7 col-xs-12">
+            <div class="col-md-7 col-sm-12">
                 <div style="border: dashed 1px; zoom:60%; padding: 0 15px;">
                     <cde-native-render [elt]="samples[index]" [profile]="profile"></cde-native-render>
                 </div>
             </div>
         </div>
     </div>
-    <button *ngIf="canEdit" class="btn btn-small btn-default" value="add" (click)="addProfile()"
+    <button *ngIf="canEdit" class="btn btn-small btn-secondary" value="add" (click)="addProfile()"
             id="addDisplayProfile"><i class="fa fa-plus"> </i> Add Profile
     </button>
 </div>

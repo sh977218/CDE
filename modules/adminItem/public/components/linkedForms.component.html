@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-default" id="openLinkedFormsModalBtn" (click)="openLinkedFormsModal()">Linked
+<button type="button" class="btn btn-secondary" id="openLinkedFormsModalBtn" (click)="openLinkedFormsModal()">Linked
     Forms
 </button>
 
@@ -9,7 +9,7 @@
     <form #linkedFormsForm="ngForm">
         <div class="modal-body" id="linkedFormsModalBody">
             <p>{{getFormText()}}</p>
-            <a *ngIf="forms && forms.length > 0" class="btn btn-default" id="seeAllLinkedFormsButton"
+            <a *ngIf="forms && forms.length > 0" class="btn btn-secondary" id="seeAllLinkedFormsButton"
                href="/form/search?q={{elt.tinyId}}" target="_blank">
                 <i class="fa fa-file-text-o"></i> See all linked forms</a>
             <hr/>

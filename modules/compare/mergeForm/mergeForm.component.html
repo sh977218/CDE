@@ -1,4 +1,4 @@
-<a class='btn btn-small btn-default fa fa-clipboard mergeForm'
+<a class='btn btn-small btn-secondary fa fa-clipboard mergeForm'
    id="openMergeFormModalBtn" (click)="openMergeFormModal()">Merge Form</a>
 
 <ng-template #mergeFormContent id="mergeFormModal" let-c="close" let-d="dismiss">
@@ -16,10 +16,10 @@
                     <div class="col-xs-6 col-md-12 col-lg-12">
                         <h4>Form fields:</h4>
                         <div>
-                            <button class="btn btn-default btn-xs" (click)="selectAllFormMergerFields();"
+                            <button class="btn btn-secondary btn-xs" (click)="selectAllFormMergerFields();"
                                     [disabled]="!ownTargetForm">All
                             </button>
-                            <button class="btn btn-default btn-xs" (click)="deselectAllFormMergerFields();"
+                            <button class="btn btn-secondary btn-xs" (click)="deselectAllFormMergerFields();"
                                     [disabled]="!ownTargetForm">None
                             </button>
                         </div>
@@ -52,8 +52,8 @@
                     <div class="col-xs-6 col-md-12 col-lg-12" *ngIf="mergeFields.questions">
                         <h4>CDE fields:</h4>
                         <div>
-                            <button class="btn btn-default btn-xs" (click)="selectAllCdeMergerFields();">All</button>
-                            <button class="btn btn-default btn-xs" (click)="deselectAllCdeMergerFields();">None</button>
+                            <button class="btn btn-secondary btn-xs" (click)="selectAllCdeMergerFields();">All</button>
+                            <button class="btn btn-secondary btn-xs" (click)="deselectAllCdeMergerFields();">None</button>
                         </div>
                         <div>
                             <label><input type="checkbox" [(ngModel)]="mergeFields.cde.naming"> Naming</label>

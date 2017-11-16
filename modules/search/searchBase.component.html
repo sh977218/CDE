@@ -132,19 +132,19 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav pull-right">
                         <li *ngIf="embedded">
-                            <button name="resetSearch" id="resetSearch" class="btn btn-default" type="button"
+                            <button name="resetSearch" id="resetSearch" class="btn btn-secondary" type="button"
                                     (click)="reset()">
                                 <i class="fa fa-trash-o"></i> Reset
                             </button>
                         </li>
                         <li *ngIf="!embedded">
-                            <button id="pinAll" (click)="openPinModal()" class="btn btn-default" type="button"
+                            <button id="pinAll" (click)="openPinModal()" class="btn btn-secondary" type="button"
                                     [hidden]="totalItems <= 0 || module === 'form'">
                                 <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
                             </button>
                         </li>
                         <li>
-                            <button (click)="hideShowFilter()" class="btn btn-default" id="showHideFilters">
+                            <button (click)="hideShowFilter()" class="btn btn-secondary" id="showHideFilters">
                                 <span [hidden]="filterMode">
                                     <i class="glyphicon glyphicon-filter"></i> Show Filters</span>
                                 <span [hidden]="!filterMode">
@@ -155,7 +155,7 @@
                             <cde-list-view-controls [(listView)]="resultsView"></cde-list-view-controls>
                         </li>
                         <li *ngIf="!embedded" class="dropdown">
-                            <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn"
+                            <button id="export" type="button" class="btn btn-secondary dropdown-toggle navbar-btn"
                                     data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-download"></i> Export <span class="caret"></span>
                             </button>

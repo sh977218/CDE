@@ -5,12 +5,12 @@
         <dl class="row">
             <dt class="col-sm-3 text-right">
                 <ng-container *ngIf="canEdit && rd.edit">Confirm Delete
-                    <span class="btn-default fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
+                    <span class="btn-secondary fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
                           id="confirmRemoveReferenceDocument-{{i}}" title="OK"></span>
-                    <span class="btn-default fa fa-times" (click)="rd.edit = false"
+                    <span class="btn-secondary fa fa-times" (click)="rd.edit = false"
                           id="cancelRemoveReferenceDocument-{{i}}" title="Cancel"></span>
                 </ng-container>
-                <span (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" class="btn-default fa fa-trash-o"
+                <span (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" class="btn-secondary fa fa-trash-o"
                       id="removeReferenceDocument-{{i}}" title="Remove"></span>
                 <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i"
                                 (cb)="onEltChange.emit()"></cde-sortable-array>
@@ -30,7 +30,7 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit" class="btn btn-small btn-default" id="openNewReferenceDocumentModalBtn"
+    <button *ngIf="canEdit" class="btn btn-small btn-secondary" id="openNewReferenceDocumentModalBtn"
             (click)="openNewReferenceDocumentModal();">
         <i class="fa fa-plus"></i> Add ReferenceDocument
     </button>

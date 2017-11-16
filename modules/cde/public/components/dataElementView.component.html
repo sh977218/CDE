@@ -35,16 +35,16 @@
     </h1>
     <div class="pull-left marginTopBottom5">
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                class="btn btn-small btn-default" title="Add to Compare List" type="button"
+                class="btn btn-small btn-secondary" title="Add to Compare List" type="button"
                 (click)="quickBoardService.addToQuickBoard(elt)">
             <i class="fa fa-plus"></i><span class="hidden-xs-down"> Add to Quick Board</span>
         </button>
-        <button id="addToBoard" class="btn btn-small btn-default" role="button" title="Add to Board"
+        <button id="addToBoard" class="btn btn-small btn-secondary" role="button" title="Add to Board"
                 type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
             <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
         </button>
         <div ngbDropdown class="float-left">
-            <button ngbDropdownToggle id="export" class="btn btn-default dropdown-toggle"
+            <button ngbDropdownToggle id="export" class="btn btn-secondary dropdown-toggle"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i><span class="hidden-xs-down"> Export</span>
             </button>
@@ -61,16 +61,16 @@
                 </li>
             </div>
         </div>
-        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn btn-small btn-default"
+        <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn btn-small btn-secondary"
                 (click)="openCopyElementModal()" title="Copy CDE">
             <i class="fa fa-clone"></i><span class="hidden-xs-down"> Copy</span>
         </button>
-        <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
+        <button id="discussBtn" class="btn btn-small btn-secondary" role="button" title="Discuss CDE"
                 type="button" (click)="commentMode = !commentMode;">
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-xs-down"> Discuss</span>
         </button>
-        <button class="btn btn-default navbar-expand-lg navbar-light navbar-toggler visible-xs-inline"
+        <button class="btn btn-secondary navbar-expand-lg navbar-light navbar-toggler visible-xs-inline"
                 data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

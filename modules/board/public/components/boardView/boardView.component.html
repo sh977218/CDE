@@ -4,13 +4,13 @@
             <h3 class="ib" id="board_name_{{board.name}}">{{board.name}} <span
                     *ngIf="isModifiedSinceReview">(Board has been modified since last review)</span></h3>
             <span class="pt20 floatLeft pull-right">
-                <button id="discussBtn" class="btn btn-small btn-default" role="button" title="Discuss CDE"
+                <button id="discussBtn" class="btn btn-small btn-secondary" role="button" title="Discuss CDE"
                         type="button" (click)="commentMode = !commentMode;">
                     <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
                 </button>
             </span>
             <span class="pt20 floatLeft pull-right">
-                <button class="btn btn-default btn-sm" id="shareBoardBtn"
+                <button class="btn btn-secondary btn-sm" id="shareBoardBtn"
                         *ngIf="userService.user.username === board.owner.username"
                         (click)="shareBoard()"><i class="fa fa-link"></i> Share
                 </button>
@@ -30,19 +30,19 @@
                                        'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
                     </span>
                     <span *ngIf="!isReviewActive() && userService.user?.username === board.owner.username ">
-                        <button class="btn btn-default btn-sm" id="startReviewBtn"
+                        <button class="btn btn-secondary btn-sm" id="startReviewBtn"
                                 (click)="startReview()"> Start Review</button>
                     </span>
                     <span *ngIf="isReviewActive() && userService.user?.username === board.owner.username">
-                        <button class="btn btn-default btn-sm" id="endReviewBtn"
+                        <button class="btn btn-secondary btn-sm" id="endReviewBtn"
                                 (click)="endReview()"> End Review</button>
                     </span>
                     <span *ngIf="canReview">
-                        <button class="btn btn-default btn-sm" id="approveBoardBtn"
+                        <button class="btn btn-secondary btn-sm" id="approveBoardBtn"
                                 [ngClass]="{'bg-color-green white-icon':boardStatus==='approved'}"
                                 (click)="boardApproval('approved')">
                             <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
-                        <button class="btn btn-default btn-sm" id="disApproveBoardBtn"
+                        <button class="btn btn-secondary btn-sm" id="disApproveBoardBtn"
                                 [ngClass]="{'bg-color-red white-icon':boardStatus==='disapproved'}"
                                 (click)="boardApproval('disapproved')">
                             <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
@@ -56,7 +56,7 @@
                 <div class="pull-right">
                     <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
                     <span *ngIf="board.type === 'cde' && elts.length > 0" class="btn-group">
-                        <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        <button id="export" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-download"></i>
                             Export Board <span class="caret"></span>
@@ -72,7 +72,7 @@
                     </span>
 
                     <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
-                            id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-default"
+                            id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-secondary"
                             (click)="classifyEltBoard()">
                         <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                     </button>
@@ -171,7 +171,7 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-info" (click)="okShare()" id="sendBtn" [disabled]="!changesMade">Send</button>
-        <button class="btn btn-default pull-right" (click)="d()" id="closeShareModal">Cancel</button>
+        <button class="btn btn-secondary pull-right" (click)="d()" id="closeShareModal">Cancel</button>
     </div>
 </ng-template>
 

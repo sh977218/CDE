@@ -24,7 +24,7 @@
         <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
     </div>
     <div *ngIf="question.question.cde.outdated" class="ib left error-block"> (Outdated)
-        <button class="btn btn-default btn-xs updateQuestionBtn"
+        <button class="btn btn-secondary btn-xs updateQuestionBtn"
                 (click)="openUpdateCdeVersion(question);">
             Update
         </button>
@@ -44,9 +44,9 @@
         <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
            class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
         <span *ngIf="question.confirmDelete" class="badge">Confirm Delete
-                <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
+                <span class="btn-secondary fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
                       id="confirmRemoveProperty-{{i}}" title="Delete"></span>
-                <span class="btn-default fa fa-times panel-badge-btn hand-cursor"
+                <span class="btn-secondary fa fa-times panel-badge-btn hand-cursor"
                       (click)="question.confirmDelete = false"
                       id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
             </span>

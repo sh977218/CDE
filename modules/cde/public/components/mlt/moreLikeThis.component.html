@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-default" id="mltButton" (click)="open()">More Like This</button>
+<button type="button" class="btn btn-secondary" id="mltButton" (click)="open()">More Like This</button>
 
 <ng-template #mltModal id="mltModal" let-c="close" let-d="dismiss">
     <div class="modal-header">
@@ -60,6 +60,6 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-default" id="closeMoreLikeThisBtn" (click)="modalRef.dismiss()">Close</button>
+        <button class="btn btn-secondary" id="closeMoreLikeThisBtn" (click)="modalRef.dismiss()">Close</button>
     </div>
 </ng-template>
