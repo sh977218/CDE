@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.mesh;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class MeshTopicsTest extends NlmCdeBaseTest {
@@ -28,11 +29,15 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Site Management"));
         clickElement(By.linkText("Server Statuses"));
         clickElement(By.id("syncWithMeshButton"));
-        try {
-            textPresent("Done syncing");
-        } catch (Exception e) {
-            hangon(30);
-            textPresent("Done syncing");
+
+        for (int i = 0; i < 5; i++) {
+            try {
+                textPresent("Done syncing");
+                i = 5;
+            } catch (Exception e) {
+                hangon(30);
+                if (i == 4) Assert.fail("Waited too long for Mesh to Sync");
+            }
         }
 
         clickElement(By.id("menu_cdes_link"));
