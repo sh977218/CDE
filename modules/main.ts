@@ -6,7 +6,7 @@ import "reflect-metadata";
 // path to node_modules required to override module/components/bootstrap
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.min.js";
-//require('expose-loader?bootstrap!bootstrap');
+// require('expose-loader?bootstrap!bootstrap');
 import 'rxjs/Rx';
 // required for ng2-select2
 import "../node_modules/select2/dist/js/select2.js";
