@@ -90,10 +90,4 @@ public class MiscTests extends NlmCdeBaseTest {
 
         Assert.assertTrue(get(baseUrl + "/schema/form").asString().contains("{\"title\":\"Form\",\"type\":\"object\",\"properties\":{\"elementType\":{\"type\":\"string\",\"default\":\"form\"},\"tinyId\":{\"type\":\"string\"},\"naming\":{\"type\":\"array\",\"items\":{\"title\":\"itemOf_naming\",\"type\":\"object\",\"properties\":{\"designation\":"));
     }
-
-    @Test
-    public void siteMap() {
-        Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("/deView?tinyId=rkh4tQrOgTw"));
-    }
-
 }
