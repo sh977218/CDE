@@ -10,7 +10,8 @@
     "angular-bootstrap": "1.3.3",
     "font-awesome": "4.7.0",
     "jquery": "~1.10.2",
-    "bootstrap": "4.0.0-alpha.6"
+    "bootstrap": "4.0.0-alpha.6",
+    "bootstrap-css-only": "3.3.6"
   },
   "overrides": {
     "jquery-ui": {
