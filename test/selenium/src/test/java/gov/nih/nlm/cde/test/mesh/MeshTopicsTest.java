@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.mesh;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class MeshTopicsTest extends NlmCdeBaseTest {
@@ -29,33 +28,16 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Site Management"));
         clickElement(By.linkText("Server Statuses"));
         clickElement(By.id("syncWithMeshButton"));
-        hangon(20);
         try {
-            hangon(30);
-            clickElement(By.id("menu_cdes_link"));
-            clickElement(By.linkText("Browse by Topic"));
-            textPresent("Health Care Economics and Organizations (11148)");
+            textPresent("Done syncing");
         } catch (Exception e) {
-            System.out.println("Retry after one 30 seconds.");
-            try {
-                hangon(20);
-                clickElement(By.id("menu_forms_link"));
-                clickElement(By.id("menu_cdes_link"));
-                clickElement(By.linkText("Browse by Topic"));
-                textPresent("Health Care Economics and Organizations (11148)");
-            } catch (Exception ex) {
-                System.out.println("Retry after one 20 seconds.");
-                try {
-                    hangon(10);
-                    clickElement(By.id("menu_forms_link"));
-                    clickElement(By.id("menu_cdes_link"));
-                    clickElement(By.linkText("Browse by Topic"));
-                    textPresent("Health Care Economics and Organizations (11148)");
-                } catch (Exception exc) {
-                    System.out.println("Retry after one 10 seconds.");
-                }
-            }
+            hangon(30);
+            textPresent("Done syncing");
         }
+
+        clickElement(By.id("menu_cdes_link"));
+        clickElement(By.linkText("Browse by Topic"));
+        textPresent("Health Care Economics and Organizations (11148)");
         clickElement(By.partialLinkText("Health Care Economics and Organizations"));
         clickElement(By.id("li-blank-Organizations"));
         clickElement(By.id("li-blank-Government"));

@@ -76,6 +76,7 @@ export class ServerStatusComponent implements OnInit {
                 if (response.dataelement.done === response.dataelement.total
                     && response.form.done === response.form.total) {
                     clearInterval(indexFn);
+                    this.Alert.addAlert("success", "Done syncing");
                     this.meshSyncs = null;
                 }
             });

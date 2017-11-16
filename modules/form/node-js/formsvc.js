@@ -138,19 +138,15 @@ exports.byTinyId = function (req, res) {
     let d1 = new Date().getMilliseconds();
     mongo_form.byTinyId(tinyId, function (err, form) {
         let d2 = new Date().getMilliseconds();
-        console.log("mongo --" + (d2 - d1));
         if (err) return res.status(500).send("ERROR - get form by tinyid");
         if (!form) return res.status(404).send();
         form = form.toObject();
         let d3 = new Date().getMilliseconds() ;
-        console.log("toObject --" + (d3 - d2));
         fetchWholeForm(form, function (err, wholeForm) {
             let d4 = new Date().getMilliseconds();
-            console.log("fetchWhole --" + (d4 - d3));
             if (err) return res.status(500).send("ERROR - form by tinyId whole form");
             wipeRenderDisallowed(wholeForm, req, function (err) {
                 let d5 = new Date().getMilliseconds();
-                console.log("wipe --" + (d5 - d4));
                 if (err) return res.status(500).send("ERROR - form by tinyId - wipe");
                 if (req.query.type === 'xml') {
                     setResponseXmlHeader(res);
