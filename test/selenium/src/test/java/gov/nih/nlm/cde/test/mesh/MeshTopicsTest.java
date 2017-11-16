@@ -45,7 +45,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Browse by Topic"));
         hangon(1);
         scrollToView(By.partialLinkText("Health Care Economics and Organizations"));
-        textPresent("Health Care Economics and Organizations (1114");
+        textPresent("Health Care Economics and Organizations (111");
         clickElement(By.partialLinkText("Health Care Economics and Organizations"));
         clickElement(By.id("li-blank-Organizations"));
         clickElement(By.id("li-blank-Government"));
