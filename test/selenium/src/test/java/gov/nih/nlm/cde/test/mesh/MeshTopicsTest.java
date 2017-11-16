@@ -39,9 +39,11 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
                 if (i == 4) Assert.fail("Waited too long for Mesh to Sync");
             }
         }
+        closeAlert();
 
         clickElement(By.id("menu_cdes_link"));
         clickElement(By.linkText("Browse by Topic"));
+        scrollToView(By.partialLinkText("Health Care Economics and Organizations"));
         textPresent("Health Care Economics and Organizations (11148)");
         clickElement(By.partialLinkText("Health Care Economics and Organizations"));
         clickElement(By.id("li-blank-Organizations"));
