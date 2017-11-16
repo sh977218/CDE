@@ -4,16 +4,33 @@
     <meta charset="UTF-8">
     <title>CDE Embedded Search</title>
 
-    <!-- build:js /embedded/public/js/embeded-scripts.js -->
+    <!-- build:webpcss /static/embed.css -->
+    <link href="/static/embed.css" rel="stylesheet" type="text/css" media="all"/>
     <!-- endbuild -->
 
-
-    <link href="/components/font-awesome/css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"
-          crossorigin="anonymous">
-
-    <!-- build:css /system/public/assets/css/embedded-styles.css -->
+    <!-- build:css /static/styles-embed.css -->
     <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+    <!-- bower:css -->
+    <link rel="stylesheet" href="/components/font-awesome/css/font-awesome.css" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="/components/bootstrap-css-only/css/bootstrap.css" crossorigin="anonymous"/>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- Polyfills for legacy browsers -->
+    <!-- build:poly /static/polyfill.js -->
+    <script type="text/javascript" src="/static/shim.min.js"></script>
+    <script type="text/javascript" src="/static/Intl.min.js"></script>
+    <script type="text/javascript" src="/static/en.js"></script>
+    <script type="text/javascript" src="/static/classList.min.js"></script>
+    <!-- endbuild -->
+
+    <!-- Polyfills for legacy browsers -->
+    <!-- build:polyIE /static/polyfillIE.js -->
+    <!--[if IE]>
+    <script type="text/javascript" src="/static/formdata.js"></script>
+    <script type="text/javascript" src="/static/typedarray.js"></script>
+    <script type="text/javascript" src="/static/Blob.js"></script>
+    <![endif]-->
     <!-- endbuild -->
 
     <style>

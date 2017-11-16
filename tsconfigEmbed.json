@@ -1,0 +1,62 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "allowUnreachableCode": true,
+    "baseUrl": "./modules",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "listEmittedFiles": false,
+    "listFiles": false,
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "pretty": false,
+    "sourceMap": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@angular",
+      "node_modules/@types"
+    ]
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useWebpackText": true
+  },
+  "exclude": [
+    "build",
+    "bower_components",
+    "deploy",
+    "dist",
+    "ingester",
+    "modules/components",
+    "modules/static",
+    "node_modules",
+    "modules/_nativeRenderApp",
+    "modules/adminItem",
+    "modules/board",
+    "modules/cde",
+    "modules/compare",
+    "modules/core",
+    "modules/discuss",
+    "modules/embedded",
+    "modules/form",
+    "modules/home",
+    "modules/processManager",
+    "modules/quickBoard",
+    "modules/search",
+    "modules/system",
+    "modules/swagger",
+    "modules/widget",
+    "protractor",
+    "scripts",
+    "test"
+  ],
+  "angularCompilerOptions": {
+    "skipMetadataEmit": true
+  }
+}

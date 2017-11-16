@@ -42,7 +42,7 @@ module.exports = {
     plugins: prod ?
         [
             new CleanWebpackPlugin(['modules/static'], {exclude: ['Blob.js', 'classList.min.js', 'en.js', 'formdata.js',
-                'Intl.min.js', 'shim.min.js', 'typedarray.js', 'print.js', 'embed.js']}),
+                'Intl.min.js', 'shim.min.js', 'typedarray.js']}),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.DefinePlugin({
@@ -113,7 +113,7 @@ module.exports = {
             // new BundleAnalyzerPlugin()
         ] : [
             new CleanWebpackPlugin(['modules/static'], {exclude: ['Blob.js', 'classList.min.js', 'en.js', 'formdata.js',
-                'Intl.min.js', 'shim.min.js', 'typedarray.js', 'print.js', 'print.map.js', 'embed.js', 'embed.map.js']}),
+                'Intl.min.js', 'shim.min.js', 'typedarray.js']}),
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
                 /angular(\\|\/)core(\\|\/)@angular/,
                 path.resolve(__dirname, '../src')
