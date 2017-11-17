@@ -50,35 +50,50 @@ function getCell(row, header) {
     }
 }
 
-function parseRefDoc(row, de, cb) {
+function parseRefDoc(row, de, file, cb) {
     let pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/?term=';
     let referencesString = getCell(row, 'References');
     EXCLUDE_REF_DOC.forEach(exclude_re_doc => {
-        referencesString.replace(exclude_re_doc, '').trim();
+        referencesString = referencesString.replace(exclude_re_doc, '').trim();
     });
     if (referencesString) {
-        let pmIdArray = referencesString.match(/\s*PMID:\s*(\d*)*[.|\s]*/g);
-        pmIdArray.forEach(pmidString => {
-            let pmid = pmidString.replace(/PMID:/ig, '').replace(/\./ig, '').trim();
-            let uri = pubmedUrl + pmid;
-            request(uri, (err, response, body) => {
-                if (err) cb(err);
-                else if (response.statusCode === 200) {
-                    let $ = cheerio.load(body);
-                    let title = $('.rprt_all h1').text();
-                    let abstracttext = $('abstracttext').text();
-                    de.referenceDocuments.push({
-                        docType: 'text',
-                        title: title,
-                        uri: uri,
-                        source: 'PubMed',
-                        languageCode: 'en-US',
-                        document: abstracttext
+        let regex = /\s*(PMID|PUBMED)(:|,|\s)(\s*\d*[.|,|\s]*)*/ig;
+        let pmIdArray = referencesString.match(regex);
+        if (pmIdArray)
+            async.forEach(pmIdArray, (pmIdString, doneOne) => {
+                let pmIds = pmIdString.replace(/PMID:/ig, '').replace(/\./ig, '').trim().split(',').filter(p => p);
+                async.forEach(pmIds, (pmId, doneOneMore) => {
+                    let uri = pubmedUrl + pmId;
+                    request(uri, (err, response, body) => {
+                        if (err) cb(err);
+                        else if (response.statusCode === 200) {
+                            let $ = cheerio.load(body);
+                            let title = $('.rprt_all h1').text();
+                            let abstracttext = $('abstracttext').text();
+                            de.referenceDocuments.push({
+                                docType: 'text',
+                                title: title,
+                                uri: uri,
+                                source: 'PubMed',
+                                languageCode: 'en-us',
+                                document: abstracttext
+                            });
+                            doneOneMore();
+                        } else throw "status: " + response.statusCode;
                     });
-                    cb();
-                } else throw "status: " + response.statusCode;
+                }, () => {
+                    doneOne();
+                });
+            }, () => {
+                cb();
             });
-        });
+        else {
+            console.log(file + " did not find pubmed id in:\n" + referencesString + "\n\n--------------------------");
+            de.referenceDocuments.push({
+                document: referencesString
+            });
+            cb();
+        }
     } else cb();
 
 }
@@ -270,18 +285,20 @@ function saveDataElement(de, row, file, cb) {
 
 function run() {
     async.series([
-        function (cb) {
-            DataElementModel.remove({}, err => {
-                if (err) throw err;
-                cb();
-            });
-        },
-        function (cb) {
-            FormModel.remove({}, err => {
-                if (err) throw err;
-                cb();
-            });
-        },
+        /*
+                function (cb) {
+                    DataElementModel.remove({}, err => {
+                        if (err) throw err;
+                        cb();
+                    });
+                },
+                function (cb) {
+                    FormModel.remove({}, err => {
+                        if (err) throw err;
+                        cb();
+                    });
+                },
+        */
         function (cb) {
             let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
             async.forEachSeries(files, (file, doneOneFile) => {
@@ -327,7 +344,7 @@ function run() {
                     let rowIndex = 0;
                     async.forEachSeries(rows, (row, doneOneRow) => {
                         let de = rowToDataElement(file, row);
-                        parseRefDoc(row, de, err => {
+                        parseRefDoc(row, de, file, err => {
                                 if (err) throw err;
                                 if (!de.naming || !de.naming[0].designation)
                                     throw file + ' has empty row: ' + rowIndex + '. Variable: ' + getCell(row, 'Variable Name');
