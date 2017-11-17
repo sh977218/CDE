@@ -20,7 +20,7 @@ stream.on('data', cde => {
     let changed = false;
     flatNames.forEach((fn, i) => {
         if (flatNames.indexOf(fn) !== i) {
-            console.log("found dup: " + fn);
+            // console.log("found dup: " + fn);
             let dupInd = flatNames.indexOf(fn);
             let mergeTags = false;
             if (!cde.naming[dupInd].source || cde.naming[dupInd].source === "") {
@@ -32,8 +32,8 @@ stream.on('data', cde => {
             }
 
             if (mergeTags) {
-                cde.naming[dupInd].tags = _.uniq(cde.naming[dupInd].tags.concat(cde.naming[i].tags)
-                    .map(t => t.tag)).map(t => {return {tag: t}});
+                cde.naming[dupInd].tags = _.uniq(cde.naming[dupInd].tags.concat(cde.naming[i].tags))
+                    // .map(t => t.tag)).map(t => {return {tag: t}});
                 cde.naming[i] = "";
                 changed = true;
             }
@@ -42,7 +42,7 @@ stream.on('data', cde => {
 
     if (changed) {
         cde.naming = cde.naming.filter(n => n !== "");
-        cde.save((err) => {
+        cde.save(err => {
             if (err) {
                 console.log(err);
                 process.exit(1);
