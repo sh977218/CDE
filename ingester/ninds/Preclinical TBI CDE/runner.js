@@ -3,6 +3,8 @@ const util = require('util');
 const async = require('async');
 const _ = require('lodash');
 const csv = require('csv');
+const request = require('request');
+const cheerio = require('cheerio');
 
 const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataElement;
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
@@ -12,10 +14,15 @@ const DATA_TYPE_MAP = {
     'Alphanumeric': 'Text',
     'Date or Date & Time': 'Date',
     'Numeric Values': 'Number',
-    'Numeric': 'Number'
+    'Numeric': 'Number',
+    'numeric Values': 'Number',
+    'Numeric values': 'Number',
+    'Time': 'Text',
+    'alphanumeric': 'Text'
 };
 
 let ALL_UOM = new Set();
+let ALL_DATA_TYPE = new Set();
 
 const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
 const EXCLUDE_FILE = [];
@@ -41,6 +48,39 @@ function getCell(row, header) {
             return row[headerLower];
         else return "";
     }
+}
+
+function parseRefDoc(row, de, cb) {
+    let pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/?term=';
+    let referencesString = getCell(row, 'References');
+    EXCLUDE_REF_DOC.forEach(exclude_re_doc => {
+        referencesString.replace(exclude_re_doc, '').trim();
+    });
+    if (referencesString) {
+        let pmIdArray = referencesString.match(/\s*PMID:\s*(\d*)*[.|\s]*/g);
+        pmIdArray.forEach(pmidString => {
+            let pmid = pmidString.replace(/PMID:/ig, '').replace(/\./ig, '').trim();
+            let uri = pubmedUrl + pmid;
+            request(uri, (err, response, body) => {
+                if (err) cb(err);
+                else if (response.statusCode === 200) {
+                    let $ = cheerio.load(body);
+                    let title = $('.rprt_all h1').text();
+                    let abstracttext = $('abstracttext').text();
+                    de.referenceDocuments.push({
+                        docType: 'text',
+                        title: title,
+                        uri: uri,
+                        source: 'PubMed',
+                        languageCode: 'en-US',
+                        document: abstracttext
+                    });
+                    cb();
+                } else throw "status: " + response.statusCode;
+            });
+        });
+    } else cb();
+
 }
 
 function deToQuestion(row, cde) {
@@ -147,6 +187,7 @@ function rowToDataElement(file, row) {
         de.valueDomain.uom = unitOfMeasure;
         ALL_UOM.add(unitOfMeasure);
     }
+    if (row['Datatype']) ALL_DATA_TYPE.add(row['Datatype']);
     let inputRestrictionString = getCell(row, 'Input Restriction').toLowerCase();
     if (inputRestrictionString === 'free-form entry' || inputRestrictionString.trim().length === 0) {
         let datatype = DATA_TYPE_MAP[row['Datatype']];
@@ -187,40 +228,6 @@ function rowToDataElement(file, row) {
         } else
             throw 'bad pvs. file: ' + file;
     } else throw 'bad input restriction. file: ' + file;
-
-    let references = getCell(row, 'References');
-    if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
-        de.referenceDocuments.push({
-            document: references
-        });
-    }
-    /*if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
-        references.split("-----").forEach(refDocString => {
-            let regs = [
-                new RegExp(/\s*PMID:\s*(\d*[,|\s]*)*!/g),
-                new RegExp(/.*PUBMED:\s*(\d*[,|\s]*)*!/g),
-                new RegExp(/\s*PMID:*\s*(\d*[,|;]*)*!/g),
-                new RegExp(/\s*PMCID:*\s*(\d*[,|;]*)*!/g),
-            ];
-            let pmIds = [];
-            regs.forEach(reg => {
-                let foundRefDoc = refDocString.match(reg);
-                if (foundRefDoc && foundRefDoc.length > 0) {
-                    pmIds = pmIds.concat(foundRefDoc);
-                    refDocString = refDocString.replace(reg, "");
-                }
-            });
-            if (refDocString.length > 0) {
-                pmIds.forEach(pmId => {
-                    de.referenceDocuments.push({
-                        referenceDocumentId: pmId.replace(/;/g, "").trim(),
-                        document: refDocString
-                    });
-                });
-                // console.log("reminding ref doc string: " + refDocString);
-            }
-        });
-    }*/
 
     let keywords = getCell(row, 'Keywords');
     if (keywords) de.properties.push({key: "Keywords", value: keywords});
@@ -320,37 +327,32 @@ function run() {
                     let rowIndex = 0;
                     async.forEachSeries(rows, (row, doneOneRow) => {
                         let de = rowToDataElement(file, row);
-                        if (!de.naming || !de.naming[0].designation) {
-                            console.log(file + ' has empty row: ' + rowIndex + '. Variable: ' + getCell(row, 'Variable Name'));
-                            rowIndex++;
-                            doneOneRow();
-                        } else {
-                            saveDataElement(de, row, file, (err, newCde) => {
-                                if (err) {
-                                    console.log(file);
-                                    console.log(row);
-                                    console.log(de);
-                                    throw err;
-                                }
-                                else {
-                                    currentSection = getCell(row, 'Category/Group');
-                                    if (currentSection !== lastSection) {
-                                        let newSection = {
-                                            elementType: 'section',
-                                            label: currentSection,
-                                            formElements: []
-                                        };
-                                        form.formElements.push(newSection);
-                                        formElements = newSection.formElements;
+                        parseRefDoc(row, de, err => {
+                                if (err) throw err;
+                                if (!de.naming || !de.naming[0].designation)
+                                    throw file + ' has empty row: ' + rowIndex + '. Variable: ' + getCell(row, 'Variable Name');
+                                saveDataElement(de, row, file, (err, newCde) => {
+                                    if (err) throw file + row + de + err;
+                                    else {
+                                        currentSection = getCell(row, 'Category/Group');
+                                        if (currentSection !== lastSection) {
+                                            let newSection = {
+                                                elementType: 'section',
+                                                label: currentSection,
+                                                formElements: []
+                                            };
+                                            form.formElements.push(newSection);
+                                            formElements = newSection.formElements;
+                                        }
+                                        let question = deToQuestion(row, newCde);
+                                        formElements.push(question);
+                                        lastSection = currentSection;
+                                        rowIndex++;
+                                        doneOneRow();
                                     }
-                                    let question = deToQuestion(row, newCde);
-                                    formElements.push(question);
-                                    lastSection = currentSection;
-                                    rowIndex++;
-                                    doneOneRow();
-                                }
-                            });
-                        }
+                                });
+                            }
+                        );
                     }, () => new FormModel(form).save(err => {
                         if (err) throw err;
                         doneOneFile();
@@ -361,6 +363,8 @@ function run() {
     ], () => {
         console.log('all unit of measure: \n');
         console.log(ALL_UOM);
+        console.log('all data type: \n');
+        console.log(ALL_DATA_TYPE);
         process.exit(1);
     });
 }
