@@ -12,7 +12,7 @@ const classificationNode_system = require('../../system/node-js/classificationNo
 const adminItemSvc = require('../../system/node-js/adminItemSvc.js');
 const elastic_system = require('../../system/node-js/elastic');
 const sharedElastic = require('../../system/node-js/elastic.js');
-const exportShared = require('../../system/shared/exportShared');
+const exportShared = require('@std/esm')(module)('../../system/shared/exportShared');
 const boardsvc = require('../../board/node-js/boardsvc');
 const usersrvc = require('../../system/node-js/usersrvc');
 

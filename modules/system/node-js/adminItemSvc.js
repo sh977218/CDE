@@ -1,7 +1,7 @@
 const mongo_data_system = require('../../system/node-js/mongo-data')
     , async = require('async')
     , auth = require('./authorization')
-    , authorizationShared = require('../../system/shared/authorizationShared')
+    , authorizationShared = require('@std/esm')(module)('../../system/shared/authorizationShared')
     , fs = require('fs')
     , md5 = require("md5-file")
     , clamav = require('clamav.js')
@@ -13,9 +13,9 @@ const mongo_data_system = require('../../system/node-js/mongo-data')
     , usersrvc = require('./usersrvc')
     , dbLogger = require('./dbLogger')
     , classificationNode = require('./classificationNode')
-    , classificationShared = require('../shared/classificationShared.js')
+    , classificationShared = require('@std/esm')(module)('../shared/classificationShared.js')
     , mongo_cde = require('../../cde/node-js/mongo-cde')
-    , deValidator = require('../../cde/shared/deValidator')
+    , deValidator = require('@std/esm')(module)('../../cde/shared/deValidator')
 ;
 
 exports.save = function (req, res, dao, cb) {

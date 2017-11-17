@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { NativeRenderStandaloneComponent } from './nativeRenderStandalone.component';
+import { NativeRenderAppComponent } from './nativeRenderApp.component';
 
 
 @NgModule({
@@ -20,16 +20,16 @@ import { NativeRenderStandaloneComponent } from './nativeRenderStandalone.compon
         NativeRenderModule,
     ],
     declarations: [
-        NativeRenderStandaloneComponent,
+        NativeRenderAppComponent,
     ],
     entryComponents: [
-        NativeRenderStandaloneComponent,
+        NativeRenderAppComponent,
     ],
     exports: [
     ],
     providers: [
     ],
-    bootstrap: [NativeRenderStandaloneComponent]
+    bootstrap: [NativeRenderAppComponent]
 })
-export class NativeRenderStandaloneModule {
+export class NativeRenderAppModule {
 }

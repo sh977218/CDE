@@ -12,6 +12,7 @@ modules/system/views/version.html
 modules/board/public/js/bkup/
 modules/static
 *.orig
+.esm-cache
 
 ## Secret Config Files
 views/version.html

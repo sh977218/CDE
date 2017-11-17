@@ -471,7 +471,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                     this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
                 if (err) {
                     this.alert.addAlert('danger', 'There was a problem with your query');
-                    this[module + 's'] = [];
+                    this[this.module + 's'] = [];
                     return;
                 }
                 if (timestamp < this.lastQueryTimeStamp) return;

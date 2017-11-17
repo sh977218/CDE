@@ -3,7 +3,7 @@ var NindsModel = require('./../createMigrationConnection').MigrationNindsModel;
 var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
 var MigrationForm = require('./../createMigrationConnection').MigrationFormModel;
-var classificationShared = require('../../modules/system/shared/classificationShared');
+var classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared');
 var updateShare = require('../updateShare');
 
 var importDate = new Date().toJSON();

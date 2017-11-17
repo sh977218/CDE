@@ -12,11 +12,11 @@ const express = require('express');
 const path = require('path');
 const adminItemSvc = require("./adminItemSvc");
 const csrf = require('csurf');
-const authorizationShared = require("../../system/shared/authorizationShared");
+const authorizationShared = require('@std/esm')(module)("../../system/shared/authorizationShared");
 const daoManager = require('./moduleDaoManager');
 const fs = require('fs');
 const multer = require('multer');
-const exportShared = require('../../system/shared/exportShared');
+const exportShared = require('@std/esm')(module)('../../system/shared/exportShared');
 const tar = require('tar-fs');
 const zlib = require('zlib');
 const spawn = require('child_process').spawn;
@@ -226,6 +226,13 @@ exports.init = function (app) {
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, checkHttps, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
+        });
+    });
+
+    app.get('/nativeRender', checkHttps, function (req, res) {
+        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'), undefined, function(err) {
+            if (err)
+                res.sendStatus(404);
         });
     });
 

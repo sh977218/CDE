@@ -6,7 +6,7 @@ var mongo_data = require('../../modules/system/node-js/mongo-data');
 var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
 var MigrationProtocolModel = require('../createMigrationConnection').MigrationProtocolModel;
 var updateShare = require('../updateShare');
-var classificationShare = require('../../modules/system/shared/classificationShared');
+var classificationShare = require('@std/esm')(module)('../../modules/system/shared/classificationShared');
 
 var ZIP_PATH = require('../createMigrationConnection').PHENX_ZIP_BASE_FOLDER;
 
