@@ -53,9 +53,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='li-blank-United States Government Agencies']"));
         clickElement(By.xpath("//*[@id='li-blank-United States Dept. of Health and Human Services']"));
         clickElement(By.xpath("//*[@id='li-blank-National Institutes of Health (U.S.)']"));
-        driver.navigate().refresh();
-        scrollToViewByXpath("//*[@id='li-checked-National Institutes of Health (U.S.)']");
-        hangon(5);
+        clickElement(By.id("li-blank-United States Public Health Service"));
         textPresent("National Institute of Neurological Disorders and Stroke");
         textPresent("results for All Terms | All Classifications | Health Care > Health Care Economics and Organizat... | All St");
         clickElement(By.id("menu_forms_link"));
