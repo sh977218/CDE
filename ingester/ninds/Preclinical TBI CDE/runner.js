@@ -33,10 +33,13 @@ console.log = function (d) {
 };
 
 function getCell(row, header) {
-    if (row[header]) return row[header];
+    if (row[header])
+        return row[header];
     else {
         let headerLower = _.toLower(header);
-        if (row[headerLower]) return row[headerLower];
+        if (row[headerLower])
+            return row[headerLower];
+        else return "";
     }
 }
 
@@ -52,7 +55,7 @@ function deToQuestion(row, cde) {
                 tinyId: cde.tinyId,
                 name: cde.naming[0].designation,
                 version: cde.version,
-                permissibleValues: cde.valueDomain.permissibleValue,
+                permissibleValues: cde.valueDomain.permissibleValues,
                 ids: cde.ids,
                 derivationRules: cde.derivationRules
             },
@@ -61,7 +64,7 @@ function deToQuestion(row, cde) {
             datatypeText: cde.valueDomain.datatypeText,
             datatypeDate: cde.valueDomain.datatypeDate,
             uoms: cde.valueDomain.uom,
-            answers: []
+            answers: cde.valueDomain.permissibleValues
         },
         formElements: []
     };
@@ -72,19 +75,6 @@ function deToQuestion(row, cde) {
     if (row['Guidelines/Instructions'])
         question.instructions.value = row['Guidelines/Instructions'];
 
-    if (row['Permissible Values'] && row['Permissible Value Descriptions'] && row['Permissible Value Output Codes']) {
-        let pvs = row['Permissible Values'].split(';');
-        let pvDescs = row['Permissible Value Descriptions'].split(';');
-        let pvCodes = row['Permissible Value Output Codes'].split(';');
-        for (let i = 0; i < pvs.length; i++) {
-            let pv = {
-                permissibleValue: pvs[i],
-                valueMeaningDefinition: pvDescs[i],
-                valueMeaningCode: pvCodes[i]
-            };
-            question.question.answers.push(pv);
-        }
-    }
     if (row['Input Restriction'].indexOf('Multiple Pre-Defined Values Selected') > -1)
         question.question.multiselect = true;
     return question;
@@ -117,35 +107,39 @@ function rowToDataElement(file, row) {
     let variableName = getCell(row, 'Variable Name');
     if (variableName) {
         de.ids = [{
-            source: 'NINDS Variable Name',
-            id: row['Variable Name']
+            source: 'NINDS Preclinical',
+            id: row['Variable Name'],
+            version: '1'
         }];
     }
 
     let shortDescription = getCell(row, 'Short Description');
     let description = getCell(row, 'Definition');
     let title = getCell(row, 'Title');
-    if (shortDescription === description) {
-        de.naming = [{
-            designation: title,
-            definition: description
-        }];
-    } else {
-        de.naming = [{
-            designation: title,
-            definition: shortDescription
-        }, {
-            designation: '',
-            definition: description
-        }];
-    }
     let preferredQuestionText = getCell(row, 'Preferred Question Text');
-    if (preferredQuestionText) {
+
+    de.naming = [];
+    if (title === preferredQuestionText)
         de.naming.push({
-            designation: preferredQuestionText,
-            definition: '',
+            designation: title,
             tags: ['Preferred Question Text']
         });
+    else {
+        de.naming.push({
+            designation: title,
+        });
+        de.naming.push({
+            designation: preferredQuestionText,
+            tags: ['Preferred Question Text']
+        });
+    }
+    if (shortDescription === description)
+        de.naming[0].definition = description;
+    else {
+        de.naming[0].definition = description;
+        if (de.naming[1])
+            de.naming[1].definition = shortDescription;
+        else de.naming[1] = {definition: shortDescription};
     }
 
     let unitOfMeasure = getCell(row, 'Unit of Measure');
@@ -153,8 +147,8 @@ function rowToDataElement(file, row) {
         de.valueDomain.uom = unitOfMeasure;
         ALL_UOM.add(unitOfMeasure);
     }
-    let inputRestriction = getCell(row, 'Input Restriction');
-    if (inputRestriction === 'Free-Form Entry') {
+    let inputRestrictionString = getCell(row, 'Input Restriction').toLowerCase();
+    if (inputRestrictionString === 'free-form entry' || inputRestrictionString.trim().length === 0) {
         let datatype = DATA_TYPE_MAP[row['Datatype']];
         if (datatype === 'Text') {
             de.valueDomain.datatype = 'Text';
@@ -174,29 +168,25 @@ function rowToDataElement(file, row) {
             de.valueDomain.datatype = 'Text';
             de.valueDomain.datatypeText = {};
         }
-    } else {
+    } else if (inputRestrictionString === 'single pre-defined value selected' || 'multiple pre-defined values selected') {
         de.valueDomain.datatype = 'Value List';
         de.valueDomain.permissibleValues = [];
-        let permissibleValues = getCell(row, 'Permissible Values');
-        let permissibleValueDescriptions = getCell(row, 'Permissible Value Descriptions');
+        let permissibleValueString = getCell(row, 'Permissible Values');
         let permissibleValueOutputCodes = getCell(row, 'Permissible Value Output Codes');
-        if (permissibleValues && permissibleValueDescriptions && permissibleValueOutputCodes) {
-            let pvs = permissibleValues.split(';').filter(t => t);
-            let pvDescriptions = permissibleValueDescriptions.split(';').filter(t => t);
+        if (permissibleValueString) {
+            let permissibleValueArray = permissibleValueString.split(';').filter(t => t);
             let pvCodes = permissibleValueOutputCodes.split(';').filter(t => t);
-            if (pvs.length === pvDescriptions.length && pvDescriptions.length === pvCodes.length && pvs.length === pvCodes.length) {
-                for (let i = 0; i < pvs.length; i++) {
-                    let pv = {
-                        permissibleValue: pvCodes[i],
-                        valueMeaningName: pvs[i]
-                    };
-                    de.valueDomain.permissibleValues.push(pv);
-                }
-            } else {
-                throw "bad pvs.";
-            }
-        }
-    }
+            permissibleValueArray.forEach((pv, i) => {
+                let permissibleValue = {
+                    permissibleValue: pvCodes[i] ? pvCodes[i] : pv,
+                    valueMeaningName: pv
+                };
+                de.valueDomain.permissibleValues.push(permissibleValue);
+            });
+            if (de.valueDomain.permissibleValues.length === 0) throw 'bad pvs, permissibleValues is empty. file: ' + file;
+        } else
+            throw 'bad pvs. file: ' + file;
+    } else throw 'bad input restriction. file: ' + file;
 
     let references = getCell(row, 'References');
     if (references && _.findIndex(EXCLUDE_REF_DOC, o => references.indexOf(o) !== -1) === -1) {
@@ -336,7 +326,12 @@ function run() {
                             doneOneRow();
                         } else {
                             saveDataElement(de, row, file, (err, newCde) => {
-                                if (err) throw err;
+                                if (err) {
+                                    console.log(file);
+                                    console.log(row);
+                                    console.log(de);
+                                    throw err;
+                                }
                                 else {
                                     currentSection = getCell(row, 'Category/Group');
                                     if (currentSection !== lastSection) {
