@@ -2,7 +2,10 @@ package gov.nih.nlm.staticHtml;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import gov.nih.nlm.system.SelectUserAgent;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static com.jayway.restassured.RestAssured.get;
 
 public class StaticHtmlTest extends NlmCdeBaseTest {
 
@@ -51,13 +54,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
 
     @Test
     public void sitemap() {
-        mustBeLoggedOut();
-        driver.get(baseUrl + "/sitemaps/");
-        textPresent("Not Authorized.");
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        driver.get(baseUrl + "/sitemaps/");
-        textPresent("/deView?tinyId=");
-        textPresent("/formView?tinyId=");
+        Assert.assertTrue(get(baseUrl + "/static/sitemap.txt").asString().contains("/deView?tinyId=rkh4tQrOgTw"));
     }
 
 }
