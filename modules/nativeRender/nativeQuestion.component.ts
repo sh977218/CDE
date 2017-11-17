@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import * as moment from 'moment/min/moment.min';
+import * as moment from 'moment';
 import { FormService } from 'nativeRender/form.service';
 import { FormQuestion } from 'core/form.model';
 import { NativeRenderService } from './nativeRender.service';

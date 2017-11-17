@@ -10,7 +10,7 @@ var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationN
 
 var ult = require('./Shared/utility');
 var orgInfoMapping = require('./Shared/ORG_INFO_MAP').map;
-var classificationShared = require('../../modules/system/shared/classificationShared');
+var classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared');
 
 var cdeCount = 0;
 

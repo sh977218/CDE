@@ -2,7 +2,7 @@ const async = require('async');
 const mongo_cde = require('../../cde/node-js/mongo-cde');
 const mongo_form = require('../../form/node-js/mongo-form');
 const mongo_data = require('./mongo-data');
-const classificationShared = require('../shared/classificationShared');
+const classificationShared = require('@std/esm')(module)('../shared/classificationShared');
 const elastic = require('./elastic');
 const logger = require('./logging.js').MongoLogger;
 

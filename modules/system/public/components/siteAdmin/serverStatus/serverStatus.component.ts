@@ -33,7 +33,7 @@ export class ServerStatusComponent implements OnInit {
             this.statuses = result.statuses;
             this.esIndices = result.esIndices;
             this.statuses.forEach(s => {
-                // s.allUp = s.elastic.up && s.elastic.indices.filter(ind => ind.up).length === s.elastic.indices.length;
+                s.allUp = s.elastic.up && s.elastic.indices.filter(ind => ind.up).length === s.elastic.indices.length;
             });
         });
     }
@@ -76,6 +76,7 @@ export class ServerStatusComponent implements OnInit {
                 if (response.dataelement.done === response.dataelement.total
                     && response.form.done === response.form.total) {
                     clearInterval(indexFn);
+                    this.Alert.addAlert("success", "Done syncing");
                     this.meshSyncs = null;
                 }
             });

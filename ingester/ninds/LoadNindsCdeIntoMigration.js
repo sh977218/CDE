@@ -4,7 +4,7 @@ var MigrationNindsModel = require('./../createMigrationConnection').MigrationNin
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 var mongo_data = require('../../modules/system/node-js/mongo-data');
-var classificationShared = require('../../modules/system/shared/classificationShared');
+var classificationShared = require('@std/esm')(module)('../../modules/system/shared/classificationShared');
 var updateShare = require('../updateShare');
 
 var cdeCounter = 0;

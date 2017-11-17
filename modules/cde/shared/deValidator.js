@@ -1,4 +1,4 @@
-exports.checkPvUnicity = function (valueDomain) {
+export const checkPvUnicity = function (valueDomain) {
     var result = {allValid: true};
     valueDomain.allValid = true;
     if (valueDomain.datatype === 'Value List' && valueDomain.permissibleValues.length === 0) {
@@ -54,7 +54,7 @@ exports.checkPvUnicity = function (valueDomain) {
     return result;
 };
 
-exports.fixDatatype = function (elt) {
+export const fixDatatype = function (elt) {
     if (!elt.valueDomain.datatype) elt.valueDomain.datatype = "Text";
     if (elt.valueDomain.datatype.toLowerCase() === "value list" && !elt.valueDomain.datatypeValueList)
         elt.valueDomain.datatypeValueList = {};
@@ -68,9 +68,9 @@ exports.fixDatatype = function (elt) {
         elt.valueDomain.datatypeExternallyDefined = {};
 };
 
-exports.wipeDatatype = function (elt) {
+export const wipeDatatype = function (elt) {
     if (elt.elementType !== "cde") return;
-    exports.fixDatatype(elt);
+    fixDatatype(elt);
     var valueDomain = {
         name: elt.valueDomain.name,
         ids: elt.valueDomain.ids,

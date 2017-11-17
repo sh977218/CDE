@@ -1,7 +1,7 @@
 var async = require('async');
 var CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
 var MigrationLoincClassMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
-var classificationShared = require('../../../modules/system/shared/classificationShared');
+var classificationShared = require('@std/esm')(module)('../../../modules/system/shared/classificationShared');
 
 exports.parseClassification = function (loinc, elt, org, classificationOrgName, classificationArray, cb) {
     var classTypeString = '';

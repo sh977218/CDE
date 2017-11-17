@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
-const decamelize = require('decamelize');
+import decamelize from 'decamelize';
 
 @Pipe({name: 'cdeCamelCaseToHuman'})
 export class CamelCaseToHumanPipe implements PipeTransform {
 
-    decamelize (str, sep) {
+    decamelize(str, sep) {
         if (typeof str !== 'string') {
             throw new TypeError('Expected a string');
         }

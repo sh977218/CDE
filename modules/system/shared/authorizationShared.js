@@ -1,41 +1,41 @@
-exports.rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
+export const rolesEnum = ["DocumentationEditor", "BoardPublisher", "CommentAuthor",
     "CommentReviewer", "AttachmentReviewer", "OrgAuthority", "FormEditor"];
 
-exports.canComment = function(user) {
-    return exports.hasRole(user, "CommentAuthor") || exports.hasRole(user, "CommentReviewer") || exports.isOrgCurator(user);
+export const canComment = function(user) {
+    return hasRole(user, "CommentAuthor") || hasRole(user, "CommentReviewer") || isOrgCurator(user);
 };
 
-exports.canCreateForms = function (user) {
-    return exports.hasRole(user, "FormEditor");
+export const canCreateForms = function (user) {
+    return hasRole(user, "FormEditor");
 };
 
-exports.canOrgAuthority = function (user) {
-    return exports.hasRole(user, "OrgAuthority");
+export const canOrgAuthority = function (user) {
+    return hasRole(user, "OrgAuthority");
 };
 
-exports.hasRole = function(user, role) {
+export const hasRole = function(user, role) {
     if (!user) return false;
     if (user.siteAdmin) return true;
     if (user.roles && user.roles.indexOf(role) > -1) return true;
 };
 
-exports.isCuratorOf = function(user, orgName) {
+export const isCuratorOf = function(user, orgName) {
     if (!user) return false;
     if (user.siteAdmin) return true;
     return (user.orgAdmin && user.orgAdmin.indexOf(orgName) >= 0)
         || (user.orgCurator && user.orgCurator.indexOf(orgName) >= 0);
 };
 
-exports.isOrgCurator = function(user) {
+export const isOrgCurator = function(user) {
     if (!user) return false;
-    return exports.isOrgAdmin(user) || (user.orgCurator && user.orgCurator.length > 0);
+    return isOrgAdmin(user) || (user.orgCurator && user.orgCurator.length > 0);
 };
 
-exports.isOrgAdmin = function(user) {
+export const isOrgAdmin = function(user) {
     if (!user) return false;
     return user.siteAdmin === true || (user.orgAdmin && user.orgAdmin.length > 0);
 };
 
-exports.isSiteAdmin = function (user) {
+export const isSiteAdmin = function (user) {
     return user && user.siteAdmin;
 };
