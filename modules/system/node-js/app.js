@@ -12,11 +12,11 @@ const express = require('express');
 const path = require('path');
 const adminItemSvc = require("./adminItemSvc");
 const csrf = require('csurf');
-const authorizationShared = require("../../system/shared/authorizationShared");
+const authorizationShared = require('@std/esm')(module)("../../system/shared/authorizationShared");
 const daoManager = require('./moduleDaoManager');
 const fs = require('fs');
 const multer = require('multer');
-const exportShared = require('../../system/shared/exportShared');
+const exportShared = require('@std/esm')(module)('../../system/shared/exportShared');
 const tar = require('tar-fs');
 const zlib = require('zlib');
 const spawn = require('child_process').spawn;
@@ -46,7 +46,7 @@ exports.init = function (app) {
     /* for search engine | javascript disabled*/
     function staticHtml(req, res, next) {
         if (req.headers['user-agent'] && req.headers['user-agent'].match(/bot|crawler|spider|crawling/gi)) next();
-        else res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
+        else res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
     }
 
     app.get("/", [checkHttps, staticHtml], function (req, res) {
@@ -156,8 +156,8 @@ exports.init = function (app) {
         } else res.render('bot/formSearch', 'system');
     });
     app.get("/formView", [checkHttps, staticHtml], function (req, res) {
-        var tinyId = req.query.tinyId;
-        var version = req.query.version;
+        let tinyId = req.query.tinyId;
+        let version = req.query.version;
         mongo_form.byTinyIdAndVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send("ERROR - Static Html Error, /formView");
@@ -169,9 +169,13 @@ exports.init = function (app) {
             else res.render('bot/formView', 'system', {elt: cde});
         });
     });
-    app.get("/sitemaps/", checkHttps, function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            res.type('text');
+
+    // every sunday at 4:07 AM
+    new CronJob({
+        cronTime: '* 7 4 * * 6',
+        onTick: () => {
+            dbLogger.consoleLog("Creating sitemap")
+            let wstream = fs.createWriteStream('./modules/static/sitemap.txt');
             let cond = {
                 'archived': false,
                 'registrationState.registrationStatus': 'Qualified'
@@ -180,29 +184,31 @@ exports.init = function (app) {
                 cb => {
                     let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
                     let formatter = doc => config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
-                    stream.on('data', doc => res.write(formatter(doc)));
+                    stream.on('data', doc => wstream.write(formatter(doc)));
                     stream.on('err', err => cb(err));
                     stream.on('end', cb);
                 },
                 cb => {
                     let stream = mongo_form.Form.find(cond, "tinyId").stream();
                     let formatter = doc => config.publicUrl + "/formView?tinyId=" + doc.tinyId + "\n";
-                    stream.on('data', doc => res.write(formatter(doc)));
+                    stream.on('data', doc => wstream.write(formatter(doc)));
                     stream.on('err', err => cb(err));
                     stream.on('end', cb);
                 }
             ], err => {
                 if (err) {
-                    res.status(500).send("ERROR - Static Html Error, /sitemaps");
-                    logging.errorLogger.error("Error: Static Html Error", {
+                    logging.errorLogger.error("Error generating sitemap", {
                         stack: err.stack,
                         origin: req.url
                     });
                 }
-                else res.end();
+                dbLogger.consoleLog("done with sitemap");
+                wstream.end();
             });
-        } else res.status(403).send("Not Authorized.");
-    });
+        },
+        runOnInit: true,
+        timeZone: "America/New_York"
+    }).start();
 
     function checkHttps(req, res, next) {
         if (config.proxy) {
@@ -219,7 +225,14 @@ exports.init = function (app) {
         "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, checkHttps, function (req, res) {
-            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
+            res.render('index', 'system', {config: config, loggedIn: !!req.user, version: version});
+        });
+    });
+
+    app.get('/nativeRender', checkHttps, function (req, res) {
+        res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'), undefined, function(err) {
+            if (err)
+                res.sendStatus(404);
         });
     });
 

@@ -1,6 +1,6 @@
 var mongo_cde = require('./mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
-    , classificationShared = require('../../system/shared/classificationShared.js');
+    , classificationShared = require('@std/esm')(module)('../../system/shared/classificationShared.js');
 
 exports.moveClassifications = function(req, cb) {
     mongo_cde.byTinyIdList([req.body.cdeSource.tinyId, req.body.cdeTarget.tinyId], function(err, cde) {

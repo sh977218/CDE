@@ -7,7 +7,7 @@ var DataElementModel = require('../../createNlmcdeConnection').DataElementModel;
 var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
 var updateShare = require('../../updateShare');
-var classificationShared = require('../../../modules/system/shared/classificationShared');
+var classificationShared = require('@std/esm')(module)('../../../modules/system/shared/classificationShared');
 var mongo_form = require('../../../modules/form/node-js/mongo-form');
 var FormModel = mongo_form.Form;
 var CreateElt = require('../Shared/CreateElt');

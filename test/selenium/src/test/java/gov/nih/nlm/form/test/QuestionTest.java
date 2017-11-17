@@ -1,12 +1,9 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.Assert;
 
 public class QuestionTest extends BaseFormTest {
 
@@ -43,16 +40,6 @@ public class QuestionTest extends BaseFormTest {
                 }
             }
         }
-    }
-
-    public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {
-        WebElement sourceElt = findElement(By.xpath("//*[@id='section_" + sectionNumFrom + "']//i[contains(@class,'fa fa-arrows')]"));
-        WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumTo + "']//*[contains(@class,'node-content-wrapper')]"));
-        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
-        dragAndDrop(sourceElt, targetElt);
-
-        String sourceStr = findElement(By.xpath("//*[@id='section_" + sectionNumFrom + "']//*[contains(@class,'section_title')]")).getText();
-        textPresent(sourceStr, By.id("section_" + sectionNumTo));
     }
 
     public void addFormToSection(String formName, int sectionNumber) {
