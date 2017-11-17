@@ -11,6 +11,7 @@ let count = 0;
 let changedCount = 0;
 
 stream.on('data', cde => {
+
     if (count++ % 100 === 0) console.log(count + " -- Changed " + changedCount);
     stream.pause();
 
@@ -19,7 +20,7 @@ stream.on('data', cde => {
     let changed = false;
     flatNames.forEach((fn, i) => {
         if (flatNames.indexOf(fn) !== i) {
-            // console.log("found dup: " + fn);
+            console.log("found dup: " + fn);
             let dupInd = flatNames.indexOf(fn);
             let mergeTags = false;
             if (!cde.naming[dupInd].source || cde.naming[dupInd].source === "") {
