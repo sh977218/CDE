@@ -1,6 +1,6 @@
 var mongo_board = require('../../board/node-js/mongo-board')
     , mongo_data_system = require('./mongo-data')
-    , classificationShared = require('../shared/classificationShared')
+    , classificationShared = require('@std/esm')(module)('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
     , adminItemSvc = require("./adminItemSvc")
     , elastic = require('./elastic')

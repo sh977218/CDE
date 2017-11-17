@@ -1,5 +1,5 @@
 var mongo_data = require('./mongo-data')
-    , authorizationShared = require('../../system/shared/authorizationShared')
+    , authorizationShared = require('@std/esm')(module)('../../system/shared/authorizationShared')
     ;
     
 exports.isCuratorOf = function(user, orgName){

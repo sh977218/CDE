@@ -257,6 +257,10 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.selectedClassificationArray = "";
         this.selectedClassificationString = node.data.name;
         this.newClassificationName = "";
+        this.mapping = {
+            flatClassification: "",
+            meshDescriptors: []
+        };
         let classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
