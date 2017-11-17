@@ -1,10 +1,12 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { NgbModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { Subject } from "rxjs/Subject";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from '_app/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-form-term-mapping",
@@ -13,8 +15,8 @@ import { AlertService } from "../../../../system/public/components/alert/alert.s
 
 export class FormTermMappingComponent implements OnInit {
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                @Inject("userResource") public userService,
+    constructor(public isAllowedModel: IsAllowedService,
+                public userService: UserService,
                 public modalService: NgbModal,
                 private http: Http,
                 private alert: AlertService
@@ -98,10 +100,6 @@ export class FormTermMappingComponent implements OnInit {
             this.alert.addAlert("danger", "There was an issue saving this record.");
         });
     }
-
-    isDescriptorAlreadyMapped (desc) {
-        return this.mapping.meshDescriptors.findIndex(e => e === desc) > -1;
-    };
 
     loadDescriptor  () {
         this.searchTerms.next(this.meshTerm);

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "allowUnreachableCode": true,
     "baseUrl": "./modules",
@@ -9,16 +10,17 @@
       "es2015",
       "dom"
     ],
+    "listEmittedFiles": false,
+    "listFiles": false,
     "module": "ES2015",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "sourceMap": true,
+    "pretty": false,
+    "sourceMap": false,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es5",
-    "types": [
-      "node"
-    ],
     "typeRoots": [
+      "node_modules/@angular",
       "node_modules/@types"
     ]
   },
@@ -34,6 +36,11 @@
     "modules/components",
     "modules/static",
     "node_modules",
+    "modules/system/node-js",
+    "modules/cde/node-js",
+    "modules/form/node-js",
+    "modules/form/public/assets/*",
+    "modules/board/node-js",
     "scripts",
     "test"
   ],

@@ -1,0 +1,6 @@
+<span id="moveUp-{{eltIndex}}" class="btn-default fa fa-arrow-up" (click)="moveUp(elt.tinyId)"
+      *ngIf="(currentPage - 1) * 20 + eltIndex !== 0" title="Up"></span>
+<span id="moveDown-{{eltIndex}}" class="btn-default fa fa-arrow-down" (click)="moveDown(elt.tinyId)"
+      *ngIf="(currentPage - 1) * 20 + eltIndex < totalItems - 1" title="Down"></span>
+<span id="moveTop-{{eltIndex}}" class="btn-default fa fa-lg fa-angle-double-up" (click)="moveTop(elt.tinyId)"
+      *ngIf="(currentPage - 1) * 20 + eltIndex !== 0" title="Move to top"></span>

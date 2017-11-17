@@ -15,15 +15,15 @@ export class AuditLogComponent implements OnInit {
     }
 
     records: any[] = [];
-    currentPage: number = 0;
+    currentPage: number = 1;
 
     ngOnInit() {
-        this.gotoPageLocal(1);
+        this.gotoPageLocal();
     }
 
-    gotoPageLocal(page) {
+    gotoPageLocal() {
         this.http.post("/getCdeAuditLog", {
-            skip: this.currentPage * 50,
+            skip: (this.currentPage - 1) * 50,
             limit: 50
         }).map(r => r.json()).subscribe(response => {
             this.records = response;

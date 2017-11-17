@@ -9,12 +9,12 @@ import org.testng.annotations.Test;
 public class RemoveExistingSkipLogicTest extends BaseFormTest {
 
     @Test
-    public void removeExistingSkipLogicTest() {
+    public void removeExistingSkipLogic() {
         String formName = "Remove SkipLogic Form";
         String skipLogic = "\"Quality of Life - Write task list difficulty scale\" =\"5\"";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
 
         textPresent(skipLogic);
 
@@ -35,7 +35,7 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
         findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).sendKeys(Keys.SPACE);
         findElement(By.cssSelector("#inform_0_3 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
         saveEditQuestionSectionById("inform_0_3");
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         textNotPresent(skipLogic);

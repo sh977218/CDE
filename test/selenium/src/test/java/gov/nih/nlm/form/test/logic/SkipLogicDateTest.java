@@ -12,9 +12,8 @@ public class SkipLogicDateTest extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         String formName = "Imaging OCT Analysis - Spectralis Report Analysis";
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("Macula volume (OD)");
-
         startEditQuestionSectionById("question_0_2");
         String inputXpath1 = locateSkipLogicEditTextareaXpathByQuestionId("question_0_2");
 
@@ -39,7 +38,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         findElement(By.xpath(locateSkipLogicEditTextareaXpathByQuestionId("question_0_4"))).sendKeys("\"Indicate date of reference scan\"<\"10/11/2016\"");
         saveEditQuestionSectionById("question_0_4");
 
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
         textPresent("If 10/11/2016:",
@@ -51,7 +50,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         findElement(By.xpath("//*[@id='Macula volume (OS)_1']"));
         textPresent("left eye");
 
-        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
+                clickElement(By.id("dropdownMenuButton"));                clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
         textPresent("Display Profile");
         textNotPresent("Macula volume (OD)");
         textNotPresent("Macula volume (OS)");

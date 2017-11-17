@@ -1,13 +1,16 @@
-<div>
+<span>
     <span *ngIf="!editMode">
         <i *ngIf="isAllowed" title="Edit" role="link" class="fa fa-edit" (click)="edit()"></i>
-        <span *ngIf="value">{{value}}</span>
-        <span *ngIf="!value">N/A</span>
+        <span *ngIf="!linkSource">
+            <span *ngIf="value">{{value}}</span>
+            <span *ngIf="!value">N/A</span>
+        </span>
+        <a *ngIf="linkSource" href="{{linkSource}}" target="_blank">{{value}}</a>
     </span>
     <form *ngIf="editMode" #inlineForm="ngForm" role="form">
         <ng-container *ngIf="INPUT_TYPE_ARRAY.indexOf(inputType.toLowerCase()) > -1">
             <input class="form-control" name="inlineInput" type="{{inputType.toLowerCase()}}" autocomplete="off"
-                   [(ngModel)]="value" email="{{value && inputType.toLowerCase() === 'email' || !value && null}}"/>
+                   [(ngModel)]="value" [email]="value && inputType.toLowerCase() === 'email' || null"/>
         </ng-container>
         <ng-container *ngIf="inputType.toLowerCase() === 'select'">
             <select class="form-control" [(ngModel)]="value" name="inlineSelect">
@@ -22,4 +25,4 @@
         <button type="button" class="fa fa-check" (click)="save()" [disabled]="!inlineForm.form.valid">Confirm</button>
         <button type="button" class="fa fa-times" (click)="discard()"> Discard</button>
     </form>
-</div>
+</span>

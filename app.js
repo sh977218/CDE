@@ -18,9 +18,8 @@ var path = require('path')
     , morganLogger = require('morgan')
     , compress = require('compression')
     , helmet = require('helmet')
-    , kibanaProxy = require("./modules/system/node-js/kibanaProxy")
     , ioServer = require('./modules/system/node-js/ioServer')
-    ;
+;
 
 require('./modules/system/node-js/elastic').initEs();
 
@@ -32,7 +31,8 @@ app.use(helmet());
 app.use(auth.ticketAuth);
 app.use(compress());
 
-kibanaProxy.setUp(app);
+app.use(require('hsts')({maxAge: 31536000000}));
+
 var localRedirectProxy = httpProxy.createProxyServer({});
 
 process.on('uncaughtException', function (err) {
@@ -126,7 +126,7 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
-app.use (function (req, res, next) {
+app.use(function (req, res, next) {
     try {
         if (req.headers.host === "cde.nlm.nih.gov") {
             if (req.user && req.user.tester) {
@@ -142,11 +142,6 @@ app.use (function (req, res, next) {
     }
 });
 
-
-// this hack for angular-send-feedback
-app.get("/icons.png", function (req, res) {
-    res.sendFile(path.join(__dirname, '/modules/components/angular-send-feedback/dist/icons.png'));
-});
 app.use("/components", express.static(path.join(__dirname, '/modules/components')));
 app.use("/modules/components", express.static(path.join(__dirname, '/modules/components')));
 app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));
@@ -156,12 +151,15 @@ app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
 app.use("/static", express.static(path.join(__dirname, '/modules/static'))); // TODO: temporary until gulp stops packaging vendor.js, then use /dist
 
-app.use("/embedded/public",
-    function (req, res, next) {
-        res.removeHeader("x-frame-options");
-        next();
-    },
-    express.static(path.join(__dirname, '/modules/embedded/public')));
+
+["/embedded/public", "/_embedApp/public"].forEach(p => {
+    app.use(p, (req, res, next) => {
+            res.removeHeader("x-frame-options");
+            next();
+        },
+        express.static(path.join(__dirname, '/modules/_embedApp/public'))
+    );
+});
 
 app.use(flash());
 auth.init(app);
@@ -220,6 +218,17 @@ try {
 }
 
 app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/public/robots.txt')));
+
+
+// final route -> 404
+app.use((req, res, next) => {
+    // swagger does something i dont get. This will let swagger work
+    if (req.originalUrl === "/docs" || req.originalUrl === "/api-docs" || req.originalUrl.indexOf("/docs/") === 0) {
+        return next();
+    }
+    res.render('index', 'system', {config: config, loggedIn: !!req.user, version: 'version'});
+});
+
 
 app.use(function (err, req, res, next) {
     console.log("ERROR3: " + err);

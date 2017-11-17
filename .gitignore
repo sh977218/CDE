@@ -31,6 +31,8 @@ expressErrorLog*
 logs
 
 ## Tests
+/protractor/reports/
+/test/report/
 /test/selenium/build/
 /test/selenium/chromedriver
 /test/selenium/chromedriver.exe

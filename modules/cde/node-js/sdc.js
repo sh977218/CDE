@@ -22,12 +22,12 @@ var sdcExport = function(req, res, cde) {
     for (var i = 0; i < cde.naming.length; i++) {
         try {
             if (!sdcRecord.preferredQuestionText && cde.naming[i].tags.filter(function (t) {
-                    return t.tag.toLowerCase() === "preferred question text"
+                    return t.toLowerCase() === "preferred question text";
                 }).length > 0) {
                 sdcRecord.preferredQuestionText = cde.naming[i].designation;
             }
             if (!sdcRecord.alternateQuestionText && cde.naming[i].tags.filter(function (t) {
-                    return t.tag.toLowerCase() === "alternate question text"
+                    return t.toLowerCase() === "alternate question text";
                 }).length > 0) {
                 sdcRecord.alternateQuestionText = cde.naming[i].designation;
             }
@@ -75,9 +75,14 @@ exports.byId = function (req, res) {
 };
 
 exports.byTinyIdVersion = function (req, res) {
-    mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function(err, cde) {
+    let cb = function cb(err, cde) {
         if (err) return res.status(500).send("Error");
         if (!cde) return res.status(404).send("No such Element");
-        sdcExport(req, res, cde); 
-    });
+        sdcExport(req, res, cde);
+    };
+
+    if (req.params.version === 'null')
+        mongo_data.eltByTinyId(req.params.tinyId, cb);
+    else
+        mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, cb);
 };

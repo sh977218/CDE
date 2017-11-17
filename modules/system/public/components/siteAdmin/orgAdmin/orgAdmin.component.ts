@@ -1,10 +1,11 @@
 import { Http } from "@angular/http";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
 
 import { Observable } from "rxjs/Rx";
-import { AlertService } from "../../alert/alert.service";
+import { IsAllowedService } from 'core/isAllowed.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-org-admin",
@@ -13,30 +14,27 @@ import { AlertService } from "../../alert/alert.service";
 
 export class OrgAdminComponent implements OnInit {
 
-    newAdmin: any = {orgName: ""};
+    newAdmin: any = {orgName: "", username: ""};
     orgAdmins: any[] = [{name: "Loading..."}];
 
     constructor(
         private http: Http,
-        private Alert: AlertService,
-        @Inject("userResource") private userService,
-        @Inject("isAllowedModel") public isAllowedModel
-    ) {
+        private alert: AlertService,
+        public isAllowedModel: IsAllowedService) {}
+
+    ngOnInit() {
+        this.getAdmins();
     }
 
     searchTypeahead = (text$: Observable<string>) =>
         text$.debounceTime(300).distinctUntilChanged()
             .switchMap(term => term.length < 3 || !this.isAllowedModel.hasRole("OrgAuthority") ? [] :
-            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users)
-                .catch(() => {
-                    //noinspection TypeScriptUnresolvedFunction
-                    return Observable.of([]);
-                })
-        )
-
+            this.http.get("/searchUsers/" + term).map(r => r.json()).map(r => r.users.map(u => u.username))
+                .catch(() => Observable.of([]))
+        );
     formatter = (result: any) => result.username;
 
-    setOrgs (r)  {
+    setOrgs (r) {
         this.orgAdmins = r.orgs;
         if (this.orgAdmins && this.orgAdmins.length === 1) this.newAdmin.orgName = this.orgAdmins[0].name;
     }
@@ -49,37 +47,25 @@ export class OrgAdminComponent implements OnInit {
         }
     }
 
-    ngOnInit() {
-        this.getAdmins();
-    }
-
     removeOrgAdmin (orgName, userId) {
-        if (this.userService.user._id === userId) {
-            let answer = confirm("Please confirm that you want to remove yourself from the list of admins. You will be redirected to the home page. ");
-            if (!answer) return;
-        } else {
-            this.http.post("/removeOrgAdmin", {
-                orgName: orgName
-                , userId: userId
-            }).subscribe(r => {
-                this.Alert.addAlert("success", r.text());
-                this.getAdmins();
-                if (this.userService.user._id === userId) {
-                    location.assign("/");
-                }
-            }, () => this.Alert.addAlert("danger", "An error occured."));
-        }
+        this.http.post("/removeOrgAdmin", {
+            orgName: orgName
+            , userId: userId
+        }).subscribe(() => {
+            this.alert.addAlert("success", "Removed");
+            this.getAdmins();
+        }, () => this.alert.addAlert("danger", "An error occured."));
     }
 
     addOrgAdmin () {
         this.http.post("/addOrgAdmin", {
             username: this.newAdmin.username
             , org: this.newAdmin.orgName
-        }).subscribe(r => {
-            this.Alert.addAlert("success", r.text());
+        }).subscribe(() => {
+            this.alert.addAlert("success", "Saved");
             this.getAdmins();
-        }, () => this.Alert.addAlert("danger", "There was an issue adding this administrator."));
+        }, () => this.alert.addAlert("danger", "There was an issue adding this administrator."));
         this.newAdmin.username = "";
-    };
+    }
 
 }

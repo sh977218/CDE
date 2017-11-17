@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
                 <a class="fa fa-trash-o" id="removeDerivationRule-{{i}}"
-                   title="Remove" href="" (click)="removeDerivationRule(i)"></a>
+                   title="Remove" (click)="removeDerivationRule(i)"></a>
             </div>
             <div class="col-md-11">
                 <dl class="dl-horizontal">
@@ -18,7 +18,7 @@
                     <dt>Input CDEs:</dt>
                     <dd id="dd_derRule_input_{{i}}">
                         <a *ngFor="let input of getViewCdes(derRule)"
-                           href="/deview/?tinyId={{input.tinyId}}">
+                           routerLink="/deView" [queryParams]="{tinyId: input.tinyId}">
                             {{input.naming[0].designation}} {{i === elt.derivationRules.length -1?'':'- '}}
                         </a>
                         <span *ngIf="derRule.fullCdes && derRule.fullCdes.length > 8"> and {{derRule.fullCdes.length - 8}} more</span>
@@ -43,7 +43,7 @@
             <tr *ngFor="let derOut of elt.derivationOutputs">
                 <td class="col-xs-3">{{derOut.ruleName}}</td>
                 <td class="col-xs-9">
-                    <a href="/deview/?tinyId={{derOut.cde.tinyId}}">{{derOut.cde.naming[0].designation}}</a>
+                    <a routerLink="/deView" [queryParams]="{tinyId: derOut.cde.tinyId}">{{derOut.cde.naming[0].designation}}</a>
                 </td>
             </tr>
         </table>
@@ -54,19 +54,19 @@
     <div class="modal-header" id="newScoreModalHeader">
         <h4 class="modal-title">Add Score</h4>
     </div>
-    <form role="form" #newScoreForm="ngForm">
+    <form #newScoreForm="ngForm" (ngSubmit)="addNewScore()">
         <div class="modal-body" id="newScoreModalBody">
             <div class="form-group">All Data Elements in your quickboard will be added to the score.</div>
             <div class="form-group">
                 <label for="newDerivationRule.name">Name: </label>
                 <input class="form-control" id="newDerivationRule.name" name="scoreName"
                        [(ngModel)]="newDerivationRule.name" Placeholder="Score Name" required/>
-                </div>
+            </div>
             <div class="form-group">
                 <label for="newDerivationRule.inputs">Inputs: </label>
                 <div id="newDerivationRule.inputs">
-                    <span *ngIf="invalidCdeMessage === undefined">All {{quickBoard.elts.length}} CDEs in your quickboard.</span>
-                    <span *ngIf="invalidCdeMessage !== undefined" class="error-block">{{invalidCdeMessage}}</span>
+                    <span *ngIf="!invalidCdeMessage">All {{quickBoardService.number_dataElements}} CDEs in your quickboard.</span>
+                    <span *ngIf="invalidCdeMessage" class="error-block">{{invalidCdeMessage}}</span>
                 </div>
             </div>
             <div class="form-group">
@@ -74,7 +74,7 @@
                 <span id="newDerivationRule.ruleType">Score</span>
             </div>
             <div class="form-group">
-                <label  for="newDerivationRule.formula">Formula: </label>
+                <label for="newDerivationRule.formula">Formula: </label>
                 <select class="form-control" id="newDerivationRule.formula" name="formula"
                         [(ngModel)]="newDerivationRule.formula">
                     <option value="sumAll">Sum of All</option>
@@ -83,12 +83,10 @@
             </div>
         </div>
         <div class="modal-footer" id="newScoreModalFooter">
-            <button class="btn cancel" (click)="c('Close click')" id="cancelNewScoreBtn" type="button">
-                Cancel
-            </button>
-            <button class="btn btn-warning" (click)="addNewScore();"
+            <button class="btn cancel" (click)="c('Close click')" id="cancelNewScoreBtn" type="button"> Cancel</button>
+            <button class="btn btn-warning" type="submit"
                     [disabled]="someCdesInvalid() || !newScoreForm.form.valid"
-                    id="createDerivationRule" type="submit">Save
+                    id="createDerivationRule">Save
             </button>
         </div>
     </form>

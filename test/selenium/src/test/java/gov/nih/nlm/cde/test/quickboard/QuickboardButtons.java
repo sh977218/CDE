@@ -8,21 +8,37 @@ public class QuickboardButtons extends NlmCdeBaseTest{
 
     @Test
     public void quickBoardButtons() {
+        textPresent("Quick Board (0)");
+        goToQuickBoardByModule("cde");
+        textNotPresent("Side by Side View");
+        textNotPresent("Table View");
+        textNotPresent("Empty Quick Board");
+        textNotPresent("Export Quick Board");
+
+        goToQuickBoardByModule("form");
+        textNotPresent("Side by Side View");
+        textNotPresent("Table View");
+        textNotPresent("Empty Quick Board");
+        textNotPresent("Export Quick Board");
+
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("cde");
         textPresent("Prostate Cancer American Joint Committee");
         textPresent("Fluorescence in situ");
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
+        clickElement(By.id("closeCompareSideBySideBtn"));
 
-        clickElement(By.id("cde_summaryView"));
+        // counteract save summary/table view
+        if (driver.findElements(By.id("list_summaryView")).size() > 0)
+            clickElement(By.id("list_summaryView"));
         findElement(By.linkText("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage"));
 
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("NX");
         textPresent("pN0");
         textPresent("Pathologic N Stage");
@@ -34,10 +50,10 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         textPresent("Qualified");
         textNotPresent("NCI Thesaurus");
 
-        clickElement(By.id("cde_summaryView"));
+        clickElement(By.id("list_summaryView"));
         findElement(By.linkText("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage"));
 
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");

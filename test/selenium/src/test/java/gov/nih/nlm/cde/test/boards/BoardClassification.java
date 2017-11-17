@@ -10,11 +10,11 @@ public class BoardClassification extends BoardTest {
         mustBeLoggedInAs(classifyBoardUser_username, password);
         goToBoard("Classify Board");
         clickElement(By.id("board.classifyAllCdes"));
-        clickElement(By.xpath("//div[span/text() = 'Classify Board']/button"));
+        clickElement(By.xpath("//*[@id='Classify Board-classifyBtn']"));
         textPresent("Elements classified");
         closeAlert();
         clickElement(By.linkText("Manual muscle testing date and time"));
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("Classify Board");
     }
 

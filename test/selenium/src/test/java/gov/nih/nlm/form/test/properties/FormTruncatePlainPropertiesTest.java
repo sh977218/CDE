@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class FormTruncatePlainPropertiesTest extends NlmCdeBaseTest {
 
     @Test
-    public void formTruncatePlainPropertiesTest() {
+    public void formTruncatePlainProperties() {
         String formName = "Family History - Affected Relatives and Pedigree";
         String newValue = "TBI:\n" +
                 "Duhaime AC, Gean AD, Haacke EM, Hicks R, Wintermark M, Mukherjee P, Brody D, Latour L, " +
@@ -19,8 +19,8 @@ public class FormTruncatePlainPropertiesTest extends NlmCdeBaseTest {
                 "of Magnetic Resonance Imaging 32, 516-543, DOI:10.1002/jmri.22259";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.id("properties_tab"));
-        addNewProperty("Great CTX", newValue);
+        goToProperties();
+        addNewProperty("Great CTX", newValue, false);
         scrollToViewById("openNewPropertyModalBtn");
         clickElement(By.xpath("//*[@id='value_0']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");

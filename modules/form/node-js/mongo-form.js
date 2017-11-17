@@ -1,10 +1,10 @@
-var config = require('../../system/node-js/parseConfig')
-    , schemas = require('./schemas')
-    , mongo_data_system = require('../../system/node-js/mongo-data')
-    , connHelper = require('../../system/node-js/connections')
-    , logging = require('../../system/node-js/logging')
-    , elastic = require('./elastic')
-;
+const _ = require('lodash');
+const config = require('../../system/node-js/parseConfig');
+const schemas = require('./schemas');
+const mongo_data_system = require('../../system/node-js/mongo-data');
+const connHelper = require('../../system/node-js/connections');
+const logging = require('../../system/node-js/logging');
+const elastic = require('./elastic');
 
 exports.type = "form";
 exports.name = "forms";
@@ -22,9 +22,101 @@ schemas.formSchema.pre('save', function (next) {
 });
 
 var Form = conn.model('Form', schemas.formSchema);
+var FormDraft = conn.model('Draft', schemas.draftSchema);
 exports.Form = Form;
+exports.FormDraft = FormDraft;
 
 exports.elastic = elastic;
+
+exports.trimWholeForm = function (form) {
+    let loopFormElements = function (form, cb) {
+        if (!form) return cb();
+        if (!form.formElements) form.formElements = [];
+        form.formElements.forEach(fe => {
+            if (fe.elementType === "form") {
+                fe.formElements = [];
+            } else if (fe.elementType === "section") {
+                loopFormElements(fe);
+            }
+        });
+    };
+    loopFormElements(form);
+};
+
+exports.byId = function (id, cb) {
+    Form.findById(id, cb);
+};
+
+exports.byIdList = function (idList, cb) {
+    Form.find({}).where("_id").in(idList).exec(cb);
+};
+
+exports.byTinyIdList = function (tinyIdList, callback) {
+    Form.find({'archived': false})
+        .where('tinyId')
+        .in(tinyIdList)
+        .exec((err, forms) => {
+            let result = [];
+            forms.forEach(mongo_data_system.formatElt);
+            _.forEach(tinyIdList, t => {
+                let c = _.find(forms, form => form.tinyId === t);
+                if (c) result.push(c);
+            });
+            callback(err, result);
+        });
+};
+
+exports.byTinyId = function (tinyId, cb) {
+    Form.findOne({'tinyId': tinyId, archived: false}, cb);
+};
+
+exports.byTinyIdVersion = function (tinyId, version, cb) {
+    this.byTinyIdAndVersion(tinyId, version, cb);
+};
+
+exports.byTinyIdAndVersion = function (tinyId, version, callback) {
+    var query = {'tinyId': tinyId};
+    if (version) {
+        query.version = version;
+        Form.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+            if (err) callback(err);
+            else if (elts.length) callback("", elts[0]);
+            else callback("", null);
+        });
+    } else {
+        query.archived = false;
+        Form.findOne(query).exec(function (err, elt) {
+            if (err) callback(err);
+            else callback("", elt);
+        });
+    }
+};
+
+exports.draftForms = function (tinyId, cb) {
+    let cond = {
+        tinyId: tinyId,
+        archived: false,
+        elementType: 'form'
+    };
+    FormDraft.find(cond, cb);
+};
+
+exports.saveDraftForm = function (elt, cb) {
+    delete elt.__v;
+    FormDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+};
+
+exports.deleteDraftForm = function (tinyId, cb) {
+    FormDraft.remove({tinyId: tinyId}, cb);
+};
+
+exports.latestVersionByTinyId = function (tinyId, cb) {
+    Form.findOne({tinyId: tinyId, archived: false}, function (err, form) {
+        cb(err, form.version);
+    });
+};
+
+/* ---------- PUT NEW REST API above ---------- */
 
 exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
@@ -40,15 +132,6 @@ exports.count = function (condition, callback) {
     });
 };
 
-exports.priorForms = function (formId, callback) {
-    Form.findById(formId).exec(function (err, form) {
-        if (form !== null) {
-            return Form.find({}).where("_id").in(form.history).exec(function (err, forms) {
-                callback(err, forms);
-            });
-        }
-    });
-};
 
 exports.findForms = function (request, callback) {
     var criteria = {};
@@ -64,8 +147,7 @@ exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findOne({_id: elt._id}).exec(function (err, form) {
         delete elt._id;
-        if (!elt.history)
-            elt.history = [];
+        if (!elt.history) elt.history = [];
         elt.history.push(form._id);
         elt.updated = new Date().toJSON();
         elt.updatedBy = {
@@ -75,7 +157,8 @@ exports.update = function (elt, user, callback, special) {
         elt.sources = form.sources;
         elt.comments = form.comments;
         if (special) special(elt, form);
-        var newForm = new Form(elt);
+
+        let newForm = new Form(elt);
         form.archived = true;
         if (newForm.naming.length < 1) {
             logging.errorLogger.error("Error: Cannot save form without names", {
@@ -86,7 +169,7 @@ exports.update = function (elt, user, callback, special) {
             callback("Cannot save form without names");
         }
 
-        newForm.save(function (err) {
+        newForm.save(function (err, savedForm) {
             if (err) {
                 logging.errorLogger.error("Error: Cannot save form", {
                     origin: "cde.mongo-form.update.2",
@@ -94,19 +177,14 @@ exports.update = function (elt, user, callback, special) {
                     details: "err " + err
                 });
                 callback(err);
-            } else {
-                form.save(function (err) {
-                    if (err) {
-                        logging.errorLogger.error("Error: Cannot save form", {
-                            origin: "cde.mongo-form.update.3",
-                            stack: new Error().stack,
-                            details: "err " + err
-                        });
-                    }
-                    callback(err, newForm);
-                    //mongo_cde.saveModification(form, newForm, user);
+            } else form.save(function (err) {
+                if (err) logging.errorLogger.error("Error: Cannot save form", {
+                    origin: "cde.mongo-form.update.3",
+                    stack: new Error().stack,
+                    details: "err " + err
                 });
-            }
+                callback(err, savedForm);
+            });
         });
     });
 };
@@ -127,10 +205,6 @@ exports.create = function (form, user, callback) {
     newForm.save(function (err) {
         callback(err, newForm);
     });
-};
-
-exports.byId = function (id, callback) {
-    Form.findById(id, callback);
 };
 
 exports.byOtherId = function (source, id, cb) {
@@ -155,28 +229,6 @@ exports.transferSteward = function (from, to, callback) {
     });
 };
 
-exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    var query = {'tinyId': tinyId};
-    if (version) {
-        query.version = version;
-    } else {
-        query.archived = false;
-    }
-    Form.findOne(query).exec(function (err, elt) {
-        if (err) callback(err);
-        else callback("", elt);
-    });
-};
-
-exports.byTinyIdList = function (idList, callback) {
-    Form.find({'archived': false}).where('tinyId')
-        .in(idList)
-        .exec(function (err, forms) {
-            forms.forEach(mongo_data_system.formatElt);
-            callback(err, forms);
-        });
-};
-
 exports.byTinyIdListInOrder = function (idList, callback) {
     exports.byTinyIdList(idList, function (err, forms) {
         var reorderedForms = idList.map(function (id) {
@@ -186,12 +238,6 @@ exports.byTinyIdListInOrder = function (idList, callback) {
         });
         callback(err, reorderedForms);
     });
-};
-
-exports.eltByTinyId = function (tinyId, callback) {
-    if (!tinyId) callback("tinyId is undefined!", null);
-    if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
-    else Form.findOne({'tinyId': tinyId, "archived": false}).exec(callback);
 };
 
 exports.removeAttachmentLinks = function (id) {
@@ -213,5 +259,11 @@ exports.setAttachmentApproved = function (id) {
 exports.fileUsed = function (id, cb) {
     Form.find({"attachments.fileid": id}).count().exec(function (err, count) {
         cb(err, count > 0);
+    });
+};
+
+exports.exists = function (condition, callback) {
+    Form.count(condition, function (err, result) {
+        callback(err, result > 0);
     });
 };

@@ -16,7 +16,7 @@ public class ForkTest extends NlmCdeBaseTest {
     }
 
     void addToCdeName(String toAdd) {
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         clickElement(By.cssSelector("#dd_name_0 i"));
         findElement(By.cssSelector("#dd_name_0 input")).sendKeys(toAdd);
         clickElement(By.cssSelector("#dd_name_0 .fa-check"));

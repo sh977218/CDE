@@ -15,7 +15,7 @@ public class SectionInSectionTest extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Section in Section Form";
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         // Add 2nd Section
         questionTest.addQuestionToSection("Smoking History Ind", 0);
         questionTest.addQuestionToSection("First-Line Therapy Chemotherapy Regimen Name", 1);
@@ -30,12 +30,12 @@ public class SectionInSectionTest extends BaseFormTest {
         new Select(findElement(By.xpath(cardXPath + "//select"))).selectByVisibleText("1 or more");
         findElement(By.xpath(cardXPath + "//button[contains(text(),'Confirm')]")).click();
 
-        saveForm();
+        newFormVersion();
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         findElement(By.xpath("//div[@id='section_drop_area_0']//div[@id='section_drop_area_child']//span[text()=\"First-Line Therapy Chemotherapy Regimen Name\"]"));
 
-        clickElement(By.id("general_tab"));
+        goToGeneralDetail();
         findElement(By.xpath("//div[@id='formRenderSection_Medical History']//div[@id='formRenderSection_Treatment Details']//label[text()='First-Line Therapy Chemotherapy Regimen Name']"));
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()='Treatment Details']")).size() == 1);
         clickElement(By.xpath("//*[text()=' Add One']"));

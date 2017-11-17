@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { RegistrationValidatorService } from "./registrationValidator.service";
+import { RegistrationValidatorService } from "core/registrationValidator.service";
 
 @Component({
     selector: "cde-valid-rules",
@@ -10,6 +10,7 @@ export class ValidRulesComponent implements OnInit {
 
     cdeStatusRules: any;
     cdePassingRule: any;
+    keys = Object.keys;
 
     constructor (private registrationValidatorService: RegistrationValidatorService) {}
 

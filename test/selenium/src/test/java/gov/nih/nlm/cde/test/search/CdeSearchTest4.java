@@ -16,39 +16,32 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         WebElement pagElt = findElement(By.cssSelector("ul.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
-        Assert.assertEquals(linkList.size(), 12);
+        Assert.assertEquals(linkList.size(), 14);
     }
 
-    @Test
-    public void viewIncrement() {
-        goHome();
-        goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
-        textNotPresent("Views");
-        for (int i = 0; i < 10; i++) {
-            goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
-            textPresent("Someone who gives blood");
-        }
-        int nbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
-        textPresent("Views");
-        Assert.assertEquals(nbOfViews, 9);
-    }
 
     @Test
     public void usedBySummary() {
         goToCdeSearch();
-        try {
-            openCdeInList("Patient Race Category");
-        } catch (Exception e) {
-            waitForESUpdate();
-            openCdeInList("Patient Race Category");
-        }
-        String usedBy = findElement(By.id("dd_usedBy")).getText();
+        openCdeInList("Patient Race Category");
+        String usedBy = findElement(By.id("usedBy")).getText();
         Assert.assertTrue(usedBy.contains("NIDCR"));
         Assert.assertTrue(usedBy.contains("PS&CC"));
         Assert.assertTrue(usedBy.contains("caBIG"));
         Assert.assertTrue(usedBy.contains("NHLBI"));
         Assert.assertTrue(usedBy.contains("CCR"));
         Assert.assertTrue(usedBy.contains("CIP"));
+
+        clickElement(By.id("linkToElt_0"));
+        textPresent("Source: caDSR");
+        usedBy = findElement(By.id("dd_usedBy")).getText();
+        Assert.assertTrue(usedBy.contains("NIDCR"));
+        Assert.assertTrue(usedBy.contains("PS&CC"));
+        Assert.assertTrue(usedBy.contains("caBIG"));
+        Assert.assertTrue(usedBy.contains("NHLBI"));
+        Assert.assertTrue(usedBy.contains("CCR"));
+        Assert.assertTrue(usedBy.contains("CIP"));
+
     }
 
 }

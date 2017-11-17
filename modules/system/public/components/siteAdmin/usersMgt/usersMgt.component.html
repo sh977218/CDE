@@ -5,7 +5,7 @@
 
     <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
         <input class="form-control" id="searchUsersInput" name="searchUsersInput" type="text"
-               placeholder="enter user name" autocomplete="off" [(ngModel)]="search.username"
+               placeholder="enter username" autocomplete="off" [(ngModel)]="search.username"
                [ngbTypeahead]="searchTypeahead" [resultFormatter]="formatter"
                [inputFormatter]="formatter" required>
         <button type="submit" class="btn btn-success" id="searchUsersSubmit" (click)="searchUsers()">Search</button>
@@ -19,8 +19,8 @@
         <div class="row">
             <div class="col-md-2"><strong>Avatar:</strong></div>
             <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
-            <inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (onOk)="updateAvatar(u)"
-                         class="col-md-10"></inline-edit>
+            <cde-inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (modelChange)="updateAvatar(u)"
+                             class="col-md-10"></cde-inline-edit>
         </div>
         <div class="row">
             <div class="col-md-2"><strong>Last Login:</strong></div>
@@ -67,7 +67,7 @@
     <div class="modal-header" id="newUserModalHeader">
         <h4 class="modal-title">Add User</h4>
     </div>
-    <form role="form" #newUserForm="ngForm">
+    <form role="form" #newUserForm="ngForm" (ngSubmit)="addNewUser();">
         <div class="modal-body" id="newUserModalBody">
             <div class="alert alert-info">
                 Please ensure the username matches the UMLS username.
@@ -83,7 +83,7 @@
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newUserForm.form.valid" id="createNewUserBtn"
-                    type="submit" (click)="addNewUser();">Save
+                    type="submit">Save
             </button>
         </div>
     </form>

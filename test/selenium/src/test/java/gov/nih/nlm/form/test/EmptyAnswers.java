@@ -10,7 +10,7 @@ public class EmptyAnswers extends NlmCdeBaseTest {
     public void emptyAnswers() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Stroke Symptoms/Comorbid Events");
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         textPresent("Answer Choices:", By.id("question_0_0"));
         clickElement(By.cssSelector("#question_0_0 .fa-pencil"));
         clickElement(By.cssSelector("#question_0_0 .formDescriptionAnswerList .select2-selection__clear"));

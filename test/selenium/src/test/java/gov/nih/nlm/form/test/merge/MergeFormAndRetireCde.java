@@ -8,15 +8,15 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
 
     @Test
     public void mergeFormAndRetireCde() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
         String form1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
         String form2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
+        mustBeLoggedInAs(nlm_username, nlm_password);
         addFormToQuickBoardByTinyId(form1);
         addFormToQuickBoardByTinyId(form2);
         goToQuickBoardByModule("form");
-        clickElement(By.id("qb_form_compare"));
+        clickElement(By.id("qb_compare"));
 
-        clickElement(By.xpath("//*[@class='leftObj']/*[contains(@class,'mergeForm')]"));
+        clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeFormModalBtn']"));
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormBtn");
         clickElement(By.id("mergeFormBtn"));
@@ -41,16 +41,16 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         textPresent("Warning: this data element is retired.");
 
         goToFormByName(form2);
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         textPresent(form1);
-        clickElement(By.id("referenceDocument_tab"));
+        goToReferenceDocuments();
         textPresent("Description: Kroenke K, Spitzer RL, Williams JB. The PHQ-9: validity of a brief depression severity measure. J Gen Intern Med. 2001 Sep;16(9):606-13.");
-        clickElement(By.id("properties_tab"));
+        goToProperties();
         textPresent("CopyrightStarted");
-        clickElement(By.id("ids_tab"));
+         goToIdentifiers();
         textPresent("44249-1");
         textPresent("F0374");
-        clickElement(By.id("history_tab"));
+        goToHistory();
         textPresent("Merge from tinyId mJsGoMU1m");
     }
 }

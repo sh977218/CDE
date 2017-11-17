@@ -22,7 +22,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
 
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         addNewConcept(newDataElementConceptName, newDataElementConceptId, null, null);
         addNewConcept(newObjectClassConceptName, newObjectClassConceptId, null, "Class");
         addNewConcept(newPropertyConceptName, newPropertyConceptId, null, "Property");
@@ -31,12 +31,12 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
 
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         textPresent(newDataElementConceptId);
         textPresent(newObjectClassConceptId);
         textPresent(newPropertyConceptId);
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent(newPropertyConceptName, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjAdd')]"));
         textPresent(newPropertyConceptId, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjAdd')]"));
@@ -47,13 +47,13 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToCdeByName(cdeName);
-        clickElement(By.id("concepts_tab"));
+        goToConcepts();
         clickElement(By.id("removedataElementConcept-1"));
         clickElement(By.id("removeobjectClass-1"));
         clickElement(By.id("removeproperty-3"));
         newCdeVersion();
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent(newPropertyConceptName, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjRemove')]"));
         textPresent(newPropertyConceptId, By.xpath("//*[@id='Concepts_3']//div[contains(@class,'arrayObjRemove')]"));

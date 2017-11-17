@@ -1,0 +1,19 @@
+<button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+    <i class="fa fa-download"></i> Export Search <span class="caret"></span>
+</button>
+<ul class="dropdown-menu" aria-labelledby="export">
+    <ng-container *ngIf="module === 'cde'; then cdeOptions else formOptions"></ng-container>
+</ul>
+
+<ng-template #cdeOptions>
+    <li class="dropdown-item"><a id="csvExport" (click)="exportType.emit('csv')">CSV File</a></li>
+    <li class="dropdown-item"><a (click)="exportType.emit('json')">JSON File</a></li>
+    <li class="dropdown-item"><a id="xmlExport" (click)="exportType.emit('xml')">XML File</a></li>
+</ng-template>
+
+<ng-template #formOptions>
+    <li class="dropdown-item" *ngIf="userService?.user?._id"><a (click)="exportType.emit('json')">JSON File</a></li>
+    <li class="dropdown-item" *ngIf="userService?.user?._id"><a id="xmlExport" (click)="exportType.emit('xml')">XML File</a></li>
+    <li class="dropdown-item" *ngIf="!userService?.user?._id"><a routerLink="/login">Please login to export forms.</a></li>
+</ng-template>

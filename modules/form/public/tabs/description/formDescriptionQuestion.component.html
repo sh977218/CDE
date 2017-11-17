@@ -1,5 +1,5 @@
 <div class="question_view" [ngClass]="{'bg-warning': question.question.cde.outdated}">
-    <div *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="ib left">
+    <div *ngIf="!isSubForm && canEdit" class="ib left">
         <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
            [treeDrag]="node"
            [treeDragEnabled]="node.allowDrag()"></i>
@@ -16,8 +16,8 @@
                 <span [textContent]="question.question.cde.name"></span>
             </span>
         <span *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}}</span>
-        <small *ngIf="inScoreCdes && inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
-            (part of score)
+        <small *ngIf="question.question.partOf" class="text-info">
+            (part of {{question.question.partOf}})
         </small>
     </div>
     <div class="ib left">
@@ -31,12 +31,12 @@
     </div>
     <div class="ib left">
         <a target="_blank" title="{{question.question.cde.name}}"
-           href="/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
+           href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
             <i class="fa fa-eye"></i> View CDE
         </a>
     </div>
     <div class="ib left">{{getDatatypeLabel(question)}}</div>
-    <div *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="ib pull-right editIconDiv" style="font-size: 16px">
+    <div *ngIf="!isSubForm && canEdit" class="ib pull-right editIconDiv" style="font-size: 16px">
         <i *ngIf="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
            (click)="question.edit = true"></i>
         <i *ngIf="question.edit" class="fa fa-check hand-cursor" title="save edit question"
@@ -45,10 +45,10 @@
            class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
         <span *ngIf="question.confirmDelete" class="badge">Confirm Delete
                 <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
-                      id="confirmRemoveProperty-{{i}}" title="Delete" href=""></span>
+                      id="confirmRemoveProperty-{{i}}" title="Delete"></span>
                 <span class="btn-default fa fa-times panel-badge-btn hand-cursor"
                       (click)="question.confirmDelete = false"
-                      id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
+                      id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
             </span>
     </div>
 </div>
@@ -154,13 +154,13 @@
                 <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
                 <div class="col-sm-8" id="mdd_d_cde">
                     <a [ngClass]="{mark: updateCdeVersion.bCde}"
-                       href="/deview?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
+                       href="/deView?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
                        target="_blank"><i class="fa fa-eye"></i>
                         <span id="mdd_question_cde_name">{{updateCdeVersion.newQuestion.question.cde.name}}</span>
                     </a>
                     <span *ngIf="updateCdeVersion.bCde" class="red">( was
                     <a style="color: red"
-                       href="/deview?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
+                       href="/deView?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
                        target="_blank"><i class="fa fa-eye"></i>
                         <span id="mdd_old_question_cde_name">{{updateCdeVersion.currentQuestion.question.cde.name}}</span>
                     </a> )

@@ -9,13 +9,17 @@ public class MeanValue extends NlmCdeBaseTest {
 
     @Test
     public void meanValue() {
+        String cdeName = "Temperature mean daily measurement";
+        String formName = "Mean Value Test";
+        String cdeName1 = "Temperature measurement";
+        String cdeName2 = "Temperature maximum daily measurement";
         mustBeLoggedInAs(nlm_username, nlm_password);
         emptyQuickBoardByModule("cde");
-        addCdeToQuickBoard("Temperature measurement");
-        addCdeToQuickBoard("Temperature maximum daily measurement");
+        addCdeToQuickBoard(cdeName1);
+        addCdeToQuickBoard(cdeName2);
 
-        goToCdeByName("Temperature mean daily measurement");
-        clickElement(By.id("derivationRules_tab"));
+        goToCdeByName(cdeName);
+        goToScoreDerivations();
         clickElement(By.id("addNewScore"));
 
         findElement(By.id("newDerivationRule.name")).sendKeys("Mean Derivation Rule");
@@ -24,7 +28,8 @@ public class MeanValue extends NlmCdeBaseTest {
         clickElement(By.id("createDerivationRule"));
         newCdeVersion();
 
-        goToFormByName("Mean Value Test");
+        goToFormByName(formName);
+        clickElement(By.id("preview_tab"));
         findElement(By.name("q1")).sendKeys("8");
         findElement(By.name("q2")).sendKeys("11");
         textPresent("9.5");

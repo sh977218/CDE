@@ -18,13 +18,11 @@ public class FormAddRemoveReferenceDocumentTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(promis_username, password);
         goToFormByName(formName);
-        clickElement(By.id("referenceDocument_tab"));
+        goToReferenceDocuments();
         addNewReferenceDocument(id, title, uri, providerOrg, languageCode, document);
 
         clickElement(By.id("removeReferenceDocument-0"));
         textPresent("Confirm Delete");
         clickElement(By.id("confirmRemoveReferenceDocument-0"));
-        textPresent("Reference Document Removed");
-        closeAlert();
     }
 }

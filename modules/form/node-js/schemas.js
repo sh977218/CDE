@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
     , Schema = mongoose.Schema
     , sharedSchemas = require('../../system/node-js/schemas.js')
     , config = require("config")
-    ;
+;
 
 var questionSchema = {
     cde: {
@@ -11,6 +11,7 @@ var questionSchema = {
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
         , ids: [sharedSchemas.idSchema]
+        , derivationRules: [sharedSchemas.derivationRuleSchema]
     }
     , datatype: String
     , datatypeNumber: {
@@ -42,7 +43,8 @@ var inFormSchema = {
     form: {
         tinyId: String,
         version: String,
-        name: String
+        name: String,
+        ids: [sharedSchemas.idSchema]
     }
 };
 
@@ -136,6 +138,7 @@ exports.formJson = {
     , displayProfiles: [{
         name: String
         , sectionsAsMatrix: {type: Boolean}
+        , displayCopyright: {type: Boolean}
         , displayValues: {type: Boolean}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
@@ -149,6 +152,17 @@ exports.formJson = {
 };
 
 exports.formSchema = new Schema(exports.formJson);
-
+exports.draftSchema = new Schema(exports.formJson, {
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
+    }
+});
+exports.draftSchema.virtual('isDraft').get(function () {
+    return true;
+});
 exports.formSchema.set('collection', 'forms');
+exports.draftSchema.set('collection', 'formdrafts');
 

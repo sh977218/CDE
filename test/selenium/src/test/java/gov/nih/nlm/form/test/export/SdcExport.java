@@ -11,14 +11,15 @@ public class SdcExport extends NlmCdeBaseTest {
 
     @Test
     public void sdcXmlExport() {
-        String response = get(baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc").asString();
-        Assert.assertFalse(response.contains("<!-- Validation Error: Error:"));
-        Assert.assertTrue(response.contains("<FormDesign xmlns=\"http://healthIT.gov/sdc\""));
-        Assert.assertTrue(response.contains("<Section ID"));
-        Assert.assertTrue(response.contains("title=\"CLINICAL\">"));
-        Assert.assertTrue(response.contains("<ListItem ID="));
-        Assert.assertTrue(response.contains("title=\"Intact\"/>"));
-        Assert.assertTrue(response.contains("<Question ID=\"XyEbt94V_\" title=\"Additional Dimension\">"));
+        String url = baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc";
+        String response = get(url).asString();
+        Assert.assertFalse(response.contains("<!-- Validation Error: Error:"), "response: " + response);
+        Assert.assertTrue(response.contains("<FormDesign xmlns=\"http://healthIT.gov/sdc\""), "response: " + response);
+        Assert.assertTrue(response.contains("<Section ID"), "response: " + response);
+        Assert.assertTrue(response.contains("title=\"CLINICAL\">"), "response: " + response);
+        Assert.assertTrue(response.contains("<ListItem ID="), "response: " + response);
+        Assert.assertTrue(response.contains("title=\"Intact\"/>"), "response: " + response);
+        Assert.assertTrue(response.contains("<Question ID=\"XyEbt94V_\" title=\"Additional Dimension\">"), "response: " + response);
     }
 
     @Test

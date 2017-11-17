@@ -21,18 +21,26 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         textPresent("Org Updated");
         closeAlert();
 
-        goToCdeByName("Distance from Closest Margin Value");
+        // is this fixed yet?
+//        int count = 0;
+//        while (count < 5) {
+            goToCdeByName("Distance from Closest Margin Value");
 
-        clickElement(By.id("properties_tab"));
-        clickElement(By.id("openNewPropertyModalBtn"));
-        clickElement(By.id("newKey"));
-
-        try {
-            findElement(By.xpath("//option[@value='doYouSeeThis']"));
-            findElement(By.xpath("//option[@value='propKey0']"));
-        } catch (TimeoutException e) {
-            Assert.fail("Failed to find doYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
-        }
+            goToProperties();
+            clickElement(By.id("openNewPropertyModalBtn"));
+            clickElement(By.id("newKey"));
+//
+//            try {
+//                findElement(By.xpath("//option[@value='doYouSeeThis']"));
+//                findElement(By.xpath("//option[@value='propKey0']"));
+//                break;
+//            } catch (TimeoutException e) {}
+//
+//            hangon(10);
+//            count++;
+//        }
+        findElement(By.xpath("//option[@value='doYouSeeThis']"));
+        findElement(By.xpath("//option[@value='propKey0']"));
 
         clickElement(By.id("cancelNewPropertyBtn"));
 
@@ -47,10 +55,12 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
         goToCdeByName("Distance from Closest Margin Value");
 
-        clickElement(By.id("properties_tab"));
+        goToProperties();
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
-        textNotPresent("doYouSeeThis");
+
+        findElement(By.xpath("//option[@value='propKey0']"));
+        Assert.assertEquals(driver.findElements(By.xpath("//option[@value='doYouSeeThis']")).size(), 0);
     }
 
 }

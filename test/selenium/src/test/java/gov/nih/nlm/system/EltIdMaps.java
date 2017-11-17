@@ -9,6 +9,7 @@ public class EltIdMaps {
 
     static {
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
+        eltMap.put("Atherosclerosis Risk in Communities transient ischemic attack/stroke form (ARIC TIA) - speech loss slurred symptom indicator", "0gqqG2jShnS");
         eltMap.put("Apgar Score Created By java.lang.Long", "GvOOag_P4Zg");
         eltMap.put("Biomarker Outcome Characteristics java.lang.String", "-dPmPekTRsb");
         eltMap.put("Brief Pain Inventory (BPI) - pain general activity interference scale", "hPzRsUF-xX5");
@@ -17,8 +18,10 @@ public class EltIdMaps {
         eltMap.put("Common Toxicity Criteria Adverse Event Colitis Grade", "exWjxFqAU7r");
         eltMap.put("Common Toxicity Criteria Adverse Event Hypophosphatemia Grade", "75Y5R3FH5ar");
         eltMap.put("cde for test cde reorder detail tabs", "7yl__aTQOe");
+        eltMap.put("Cde Delete Test", "7yl_YaTQOe");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
+        eltMap.put("Draft Cde Test", "QyT6ElNKLl");
         eltMap.put("ExportLatest", "XkZpBf60z");
         eltMap.put("FAD Total score value", "fp-oYN6A-SJ");
         eltMap.put("Family Assessment Device (FAD) - Discuss problem indicator", "mrKyN-kpt86");
@@ -30,10 +33,13 @@ public class EltIdMaps {
         eltMap.put("History data reliability type", "K8v6jJWkmmC");
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
+        eltMap.put("Investigator Identifier java.lang.Integer", "wT3DsGm-bea");
+        eltMap.put("Left Lymph Node Positive Total Count", "xNugcDxoqKW");
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");
         eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
         eltMap.put("Little interest or pleasure in doing things in last 2 weeks [Reported.PHQ]", "QkWPURx5Fz");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
+        eltMap.put("Malignant Neoplasm Surgical Margin Distance Value", "-d7K6T3-Z4Q");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL) - troublesome physical symptom problem score", "QXpcS9boYtk");
         eltMap.put("Medication affecting cardiovascular function type exam day indicator", "xug6J6R8fkf");
         eltMap.put("Mediastinal Lymph Node Physical Examination Specify", "64YoxVrtASF");
@@ -71,22 +77,29 @@ public class EltIdMaps {
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]", "m1xj2YMI1X");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
+        eltMap.put("Urinary tract drug type last year type", "c56fasYoV1T");
+        eltMap.put("Vision (aura) typical symptom type", "rRqc8KG1RNO");
 
         // Forms
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
+        eltMap.put("Copy Section Form Test", "Xy7W4MKNV");
+        eltMap.put("Draft Form Test", "QyT6ElYKLl");
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("Functional Imaging", "my7XySBtg");
         eltMap.put("Form Cde Update Test", "X1ghWjntf");
+        eltMap.put("Form Delete Test", "QyT6ElOKLl");
         eltMap.put("Form History Test", "QkGEqKVNZ");
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
+        eltMap.put("Answer List Test", "XyWvhfX4W");
         eltMap.put("Form Table Test", "713d9u1vX");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
         eltMap.put("Mean Value Test", "X17IaQ_NQ");
+        eltMap.put("Measures of Gas Exchange", "Q1eNEJrHtx");
         eltMap.put("Motor Evoked Potentials", "mkWON1SrFe");
         eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("Multi SubQuestion", "mk4r3nH77");
@@ -112,6 +125,7 @@ public class EltIdMaps {
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("PROMIS SF v2.0 - Companionship 6a", "m1BxH3_tIe");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
+        eltMap.put("Section Test Form", "XJFylVmN_");
         eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");

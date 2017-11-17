@@ -9,9 +9,10 @@ import org.testng.annotations.Test;
 public class NotEqualsLogic extends BaseFormTest {
 
     @Test
-    public void NotEqualsLogic() {
+    public void notEqualsLogic() {
         goToFormByName("Not Equals Test");
-        clickElement(By.xpath("//label[contains(., 'Printable Logic')]"));
+        clickElement(By.id("dropdownMenuButton"));
+        clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
 
         // test numbers
         textPresent("Spinal surgery indicator");
@@ -24,10 +25,10 @@ public class NotEqualsLogic extends BaseFormTest {
 
         // test date
         textPresent("Diagnosis age type");
-        findElement(By.name("q3")).sendKeys("01/01/2016");
+        findElement(By.name("q3_date")).sendKeys("01/01/2016");
         textPresent("Diagnosis age type");
-        findElement(By.name("q3")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.name("q3")).sendKeys("5" + Keys.TAB);
+        findElement(By.name("q3_date")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.name("q3_date")).sendKeys("5" + Keys.TAB);
         textNotPresent("Diagnosis age type");
 
         // text and empty logic
@@ -44,7 +45,7 @@ public class NotEqualsLogic extends BaseFormTest {
 
         // value list
         textPresent("Quality of Life - Stigma illness recent assessment scale");
-        clickElement(By.xpath("//input[@name='q7' and @value='5']"));
+        clickElement(By.xpath("//div[contains(@id, 'Quality of Life - Write task list difficulty scale_')]//label[@title = 'None']"));
         textNotPresent("Quality of Life - Stigma illness recent assessment scale");
 
     }

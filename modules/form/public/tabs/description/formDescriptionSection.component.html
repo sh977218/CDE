@@ -1,5 +1,5 @@
 <div class="questionSectionTitle" (click)="section.updatedSkipLogic = false">
-    <span *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="ib" style="vertical-align: top">
+    <span *ngIf="!isSubForm && canEdit" class="ib" style="vertical-align: top">
         <i class="fa fa-arrows fa-lg question-move-handle"
            [treeDrag]="node"
            [treeDragEnabled]="node.allowDrag()"></i>
@@ -11,27 +11,33 @@
            title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}"></i>
     </span>
 
-    <inline-edit *ngIf="section.elementType === 'section'"
-                 class="section_title ib" style="margin-left: 5px; width: 62%"
-                 [(model)]="section.label" [isAllowed]="canEdit()"
-                 (onOk)="stageElt.emit()"></inline-edit>
+    <cde-inline-edit *ngIf="section.elementType === 'section'"
+                     class="section_title ib" style="margin-left: 5px; width: 62%"
+                     [(model)]="section.label" [isAllowed]="canEditSection()"
+                     (modelChange)="stageElt.emit()"></cde-inline-edit>
     <span *ngIf="section.elementType === 'form'"
           class="section_title ib" style="margin-left: 5px; width: 62%">
         Embedded Form:
-        <inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"
-                     [isAllowed]="canEdit()" (onOk)="stageElt.emit()">{{section.label}}</inline-edit>
+        <cde-inline-edit id="innerForm_label_edit_icon_{{section.label}}" [(model)]="section.label"
+                         [isAllowed]="canEditSection()" (modelChange)="stageElt.emit()">
+            {{section.label}}
+        </cde-inline-edit>
     </span>
 
-    <span *ngIf="!isSubForm && isAllowedModel.isAllowed(elt)" class="pull-right editIconDiv">
-        <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section" (click)="section.edit = true"></i>
-        <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section" (click)="section.edit = false"></i>
-        <i *ngIf="!section.confirmDelete" (click)="section.confirmDelete = true"
-           class="fa fa-trash-o hand-cursor" title="Remove Section"></i>
+    <span *ngIf="!isSubForm && canEdit" class="pull-right editIconDiv">
+        <i *ngIf="section.elementType === 'section'" class="fa fa-copy copySection" title="Copy section"
+           (click)="copySection(section)"></i>
+        <i *ngIf="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
+           (click)="section.edit = true"></i>
+        <i *ngIf="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
+           (click)="section.edit = false"></i>
+        <i *ngIf="!section.confirmDelete" class="fa fa-trash-o hand-cursor" title="Remove Section"
+           (click)="section.confirmDelete = true"></i>
         <span *ngIf="section.confirmDelete" class="badge">Confirm Delete
             <span class="btn-default fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
-                  id="confirmRemoveProperty-{{i}}" title="Delete" href=""></span>
+                  id="confirmRemoveProperty-{{i}}" title="Delete"></span>
             <span class="btn-default fa fa-times panel-badge-btn hand-cursor" (click)="section.confirmDelete = false"
-                  id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
+                  id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
         </span>
     </span>
 </div>
@@ -41,7 +47,7 @@
 <ng-template #formDescriptionSectionTmpl>
     <div class="section_view">
         <div>
-            <div *ngIf="!canEdit()">
+            <div *ngIf="!canEditSection()">
                 <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
                       class="label label-primary formViewSummaryLabel">
                     Repeats: {{getRepeatLabel(section)}}
@@ -55,34 +61,36 @@
                 </div>
             </div>
 
-            <div *ngIf="canEdit()">
+            <div *ngIf="canEditSection()">
                 <div class="section_instruction">
                     <span class="questionSectionLabel">Instructions:</span>
                     <cde-inline-area-edit
                             [(model)]="section.instructions.value"
                             [(defFormat)]="section.instructions.valueFormat"
-                            [isAllowed]="canEdit()" (modelChange)="elt.unsaved = true"></cde-inline-area-edit>
+                            [isAllowed]="canEditSection()" (modelChange)="elt.unsaved = true"></cde-inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
                     <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                            (change)="setRepeat(section);stageElt.emit()">
+                            (change)="setRepeat(section);">
                         <option *ngFor="let item of repeatOptions" [value]="item.value"
                                 [textContent]="item.label"></option>
                     </select>
                 </div>
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
-                    <input type="number" title="Repeat Maximum Times" class="form-control" [(ngModel)]="section.repeatNumber"
-                           (change)="setRepeat(section);stageElt.emit()"/>
+                    <input type="number" title="Repeat Maximum Times" class="form-control"
+                           [(ngModel)]="section.repeatNumber"
+                           (change)="setRepeat(section);"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
                     <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
-                        <input #slInput [disabled]="!(parent.formElements.length > 1 && canEdit())"
+                        <input #slInput [disabled]="!(parent.formElements.length > 1 && canEditSection())"
                                type="text" title="Show If"
                                (focus)="slOptionsRetrigger()"
                                [ngModel]="section.skipLogic.condition"
                                (ngModelChange)="validateSkipLogic(section.skipLogic, parent.formElements, $event)"
                                class="form-control skipLogicCondition"
+                               placeholder="Start typing a question name to find options"
                                [ngbTypeahead]="getSkipLogicOptions"
                                (selectItem)="validateSkipLogic(section.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
                         <span [textContent]="section.skipLogic?.validationError"></span>
@@ -91,7 +99,7 @@
             </div>
         </div>
         <div>
-            <div *ngIf="!isSubForm && isAllowedModel.isAllowed(elt) && section.formElements.length === 0" class="mt-1">
+            <div *ngIf="!isSubForm && canEdit && section.formElements.length === 0" class="mt-1">
                 <i class='fa fa-exclamation-triangle'></i>To add questions, drag them here.
             </div>
         </div>
@@ -101,7 +109,7 @@
 <ng-template #formDescriptionFormTmpl>
     <div class="form_view">
         <div>
-            <div *ngIf="!canEdit()">
+            <div *ngIf="!canEditSection()">
                 <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
                       class="label label-primary formViewSummaryLabel">
                     Repeats: {{getRepeatLabel(section)}}
@@ -115,13 +123,13 @@
                 </div>
             </div>
 
-            <div *ngIf="canEdit()">
+            <div *ngIf="canEditSection()">
                 <div class="section_instruction">
                     <span class="questionSectionLabel">Instructions:</span>
                     <cde-inline-area-edit [(model)]="section.instructions.value"
-                                      [(defFormat)]="section.instructions.valueFormat"
-                                      [isAllowed]="canEdit()"
-                                      (modelChange)="elt.unsaved = true">
+                                          [(defFormat)]="section.instructions.valueFormat"
+                                          [isAllowed]="canEditSection()"
+                                          (modelChange)="elt.unsaved = true">
                     </cde-inline-area-edit>
                 </div>
                 <div class="questionSectionLabel section_cardinality">Repeats:
@@ -133,17 +141,19 @@
                 </div>
                 <div *ngIf="section.repeatOption === 'N'"
                      class="questionSectionLabel section_cardinality">Repeat Maximum Times:
-                    <input type="number" title="Repeats Maximum Times" class="form-control" [(ngModel)]="section.repeatNumber"
+                    <input type="number" title="Repeats Maximum Times" class="form-control"
+                           [(ngModel)]="section.repeatNumber"
                            (change)="setRepeat(section);stageElt.emit()"/>
                 </div>
                 <div class="questionSectionLabel">Show if:
                     <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
-                    <input #slInput [disabled]="!(parent.formElements.length > 1 && canEdit())"
+                    <input #slInput [disabled]="!(parent.formElements.length > 1 && canEditSection())"
                            type="text" title="Show If"
                            (focus)="slOptionsRetrigger()"
                            [ngModel]="section.skipLogic.condition"
                            (ngModelChange)="validateSkipLogic(section.skipLogic, parent.formElements, $event)"
                            class="form-control skipLogicCondition"
+                           placeholder="Start typing a question name to find options"
                            [ngbTypeahead]="getSkipLogicOptions"
                            (selectItem)="validateSkipLogic(section.skipLogic, parent.formElements, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
                     <span [textContent]="section.skipLogic?.validationError"></span>

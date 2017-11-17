@@ -1,9 +1,8 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { NgbActiveModal, NgbModalModule, NgbModalRef, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Http } from "@angular/http";
 import * as _ from "lodash";
-import * as deValidator from "../../../cde/shared/deValidator";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
+import * as deValidator from "../../shared/deValidator.js";
 
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
@@ -14,6 +13,8 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import { IsAllowedService } from 'core/isAllowed.service';
+import { AlertService } from '_app/alert/alert.service';
 
 
 @Component({
@@ -21,9 +22,40 @@ import 'rxjs/add/operator/distinctUntilChanged';
     providers: [NgbActiveModal],
     templateUrl: "permissibleValue.component.html"
 })
-export class PermissibleValueComponent implements OnInit {
+export class PermissibleValueComponent {
     @ViewChild("newPermissibleValueContent") public newPermissibleValueContent: NgbModalModule;
-    @Input() public elt: any;
+    @Input() canEdit;
+    @Output() onEltChange = new EventEmitter();
+
+    _elt: any;
+
+    @Input()
+    set elt(v: any) {
+        this._elt = v;
+        let isDatatypeDefined = _.indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
+        if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
+        deValidator.fixDatatype(this.elt);
+        this.elt.allValid = true;
+        this.loadValueSet();
+        this.initSrcOptions();
+        this.canLinkPvFunc();
+        if (!this.elt.dataElementConcept.conceptualDomain)
+            this.elt.dataElementConcept.conceptualDomain = {
+                vsac: {}
+            };
+
+        this.searchTerms.debounceTime(300).distinctUntilChanged().switchMap(term => term
+            ? this.http.get("/searchUmls?searchTerm=" + term).map(res => res.json())
+            : Observable.of<string[]>([])).subscribe((res) => {
+            if (res.result && res.result.results)
+                this.umlsTerms = res.result.results;
+            else this.umlsTerms = [];
+        });
+    }
+
+    get elt(): any {
+        return this._elt;
+    };
 
     public modalRef: NgbModalRef;
     vsacValueSet = [];
@@ -47,6 +79,7 @@ export class PermissibleValueComponent implements OnInit {
         "LOINC": {source: "LNC", termType: "LA", codes: {}, selected: false, disabled: true},
         "SNOMEDCT US": {source: "SNOMEDCT_US", termType: "PT", codes: {}, selected: false, disabled: true}
     };
+    keys = Object.keys;
 
     options = {
         multiple: false,
@@ -55,41 +88,14 @@ export class PermissibleValueComponent implements OnInit {
 
 
     constructor(public modalService: NgbModal,
+                public isAllowedModel: IsAllowedService,
                 public http: Http,
-                @Inject("isAllowedModel") public isAllowedModel,
                 private alert: AlertService) {
-    }
-
-    ngOnInit(): void {
-        let isDatatypeDefined = _.indexOf(this.dataTypeOptions, this.elt.valueDomain.datatype);
-        if (isDatatypeDefined === -1) this.dataTypeOptions.push(this.elt.valueDomain.datatype);
-        deValidator.fixDatatype(this.elt);
-        this.elt.allValid = true;
-        this.loadValueSet();
-        this.initSrcOptions();
-        this.canLinkPvFunc();
-        if (!this.elt.dataElementConcept.conceptualDomain)
-            this.elt.dataElementConcept.conceptualDomain = {
-                vsac: {}
-            };
-
-        this.searchTerms
-            .debounceTime(300)
-            .distinctUntilChanged()
-            .switchMap(term => term
-                ? this.http.get("/searchUmls?searchTerm=" + term).map(res => res.json())
-                : Observable.of<string[]>([])
-            )
-            .subscribe((res) => {
-                if (res.result && res.result.results)
-                    this.umlsTerms = res.result.results;
-                else this.umlsTerms = [];
-            });
     }
 
     initSrcOptions() {
         this.containsKnownSystem = this.elt.valueDomain.permissibleValues
-                .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
+            .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
     }
 
     openNewPermissibleValueModal() {
@@ -106,7 +112,7 @@ export class PermissibleValueComponent implements OnInit {
         this.elt.valueDomain.permissibleValues.splice(index, 1);
         this.runManualValidation();
         this.initSrcOptions();
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     addNewPermissibleValue() {
@@ -123,7 +129,7 @@ export class PermissibleValueComponent implements OnInit {
     }
 
     sortPermissibleValue() {
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     };
 
     dupCodesForSameSrc(src) {
@@ -178,11 +184,13 @@ export class PermissibleValueComponent implements OnInit {
                     this.http.get("/umlsAtomsBridge/" + code + "/" + targetSource).map(res => res.json())
                         .subscribe(
                             res => {
-                                if (res.result.length > 0)
-                                    res.result.forEach((r) => {
-                                        __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
-                                    });
-                                else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
+                                let l = res.result.filter(r => r.termType === __this.SOURCES[src].termType);
+                                if (l[0]) {
+                                    __this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                                        code: l[0].ui,
+                                        meaning: l[0].name
+                                    };
+                                } else __this.SOURCES[src].codes[pv.valueMeaningCode] = {code: "N/A", meaning: "N/A"};
                             }, err => this.alert.addAlert("danger", err));
                 } else {
                     this.http.get("/crossWalkingVocabularies/" + source + "/" + code + "/" + targetSource).map(res => res.json())
@@ -270,7 +278,7 @@ export class PermissibleValueComponent implements OnInit {
 
     canLinkPvFunc() {
         let dec = this.elt.dataElementConcept;
-        this.canLinkPv = (this.isAllowedModel.isAllowed(this.elt) && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
+        this.canLinkPv = (this.canEdit && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
     }
 
     loadValueSet() {
@@ -299,7 +307,7 @@ export class PermissibleValueComponent implements OnInit {
 
     checkVsacId() {
         this.loadValueSet();
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
         this.editMode = false;
     };
 
@@ -313,7 +321,7 @@ export class PermissibleValueComponent implements OnInit {
     };
 
     stageElt() {
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
     }
 
     addAllVsac() {
@@ -329,7 +337,13 @@ export class PermissibleValueComponent implements OnInit {
     changedDatatype(data: { value: string[] }) {
         this.elt.valueDomain.datatype = data.value;
         deValidator.fixDatatype(this.elt);
-        this.elt.unsaved = true;
+        this.onEltChange.emit();
+    }
+
+    savePvDatatype(data: { value: string[] }) {
+        this.elt.valueDomain.datatypeValueList.datatype = data;
+        deValidator.fixDatatype(this.elt);
+        this.onEltChange.emit();
     }
 
 }

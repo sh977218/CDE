@@ -1,58 +1,37 @@
 <div id="referenceDocumentsDiv">
-    <h4>ReferenceDocuments</h4>
+    <h4>Reference Documents</h4>
     <div *ngIf="elt.referenceDocuments.length === 0">There are no ReferenceDocuments.</div>
-    <div *ngFor="let rd of elt.referenceDocuments;let i = index">
-        <div class="row">
-            <div class="col-md-1 text-right">
-                <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
-                    <span *ngIf="rd.edit">Confirm Delete
-                        <span class="btn-default fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
-                              id="confirmRemoveReferenceDocument-{{i}}" title="OK" href=""></span>
-                        <span class="btn-default fa fa-times" (click)="rd.edit = false"
-                              id="cancelRemoveReferenceDocument-{{i}}" title="Cancel" href=""></span>
-                    </span>
-                    <span (click)="rd.edit = true" *ngIf="!rd.edit" class="btn-default fa fa-trash-o"
-                          id="removeReferenceDocument-{{i}}" title="Remove" href=""></span>
-                    <sortable-array [theArray]="elt.referenceDocuments" [index]="i"
-                                    (cb)="elt.unsaved = true"></sortable-array>
-
-                </div>
-            </div>
-            <div class="col-md-11">
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">ID:</div>
-                    <div class="col-xs-10 ng-binding" id="id_{{i}}">{{rd.referenceDocumentId}}</div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Title:</div>
-                    <div class="col-xs-10 ng-binding" id="title_{{i}}">{{rd.title}}</div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">URI:</div>
-                    <div class="col-xs-10 ng-binding" id="uri_{{i}}"><a href="{{rd.uri}}">{{rd.uri}}</a></div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Provider Org:</div>
-                    <div class="col-xs-10 ng-binding" id="providerOrg_{{i}}">
-                        {{rd.providerOrg}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Language Code:</div>
-                    <div class="col-xs-10 ng-binding" id="languageCode_{{i}}">
-                        {{rd.languageCode}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Document:</div>
-                    <div class="col-xs-10 ng-binding" id="document_{{i}}">{{rd.document}}</div>
-                </div>
-            </div>
-        </div>
+    <ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
+        <dl class="row">
+            <dt class="col-sm-3 text-right">
+                <ng-container *ngIf="canEdit && rd.edit">Confirm Delete
+                    <span class="btn-default fa fa-check" (click)="removeReferenceDocumentByIndex(i)"
+                          id="confirmRemoveReferenceDocument-{{i}}" title="OK"></span>
+                    <span class="btn-default fa fa-times" (click)="rd.edit = false"
+                          id="cancelRemoveReferenceDocument-{{i}}" title="Cancel"></span>
+                </ng-container>
+                <span (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" class="btn-default fa fa-trash-o"
+                      id="removeReferenceDocument-{{i}}" title="Remove"></span>
+                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i"
+                                (cb)="onEltChange.emit()"></cde-sortable-array>
+                ID:
+            </dt>
+            <dd id="id_{{i}}" class="col-sm-9">{{rd.referenceDocumentId}}</dd>
+            <dt class="col-sm-3 text-right">Title:</dt>
+            <dd id="title_{{i}}" class="col-sm-9">{{rd.title}}</dd>
+            <dt class="col-sm-3 text-right">URI:</dt>
+            <dd id="uri_{{i}}" class="col-sm-9"><a href="{{rd.uri}}" target="_blank">{{rd.uri}}</a></dd>
+            <dt class="col-sm-3 text-right">Provider Org:</dt>
+            <dd id="providerOrg_{{i}}" class="col-sm-9">{{rd.providerOrg}}</dd>
+            <dt class="col-sm-3 text-right">Language Code:</dt>
+            <dd id="languageCode_{{i}}" class="col-sm-9">{{rd.languageCode}}</dd>
+            <dt class="col-sm-3 text-right">Document:</dt>
+            <dd id="document_{{i}}" class="col-sm-9">{{rd.document}}</dd>
+        </dl>
         <hr>
-    </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt)" class="btn btn-small btn-default"
-            id="openNewReferenceDocumentModalBtn" (click)="openNewReferenceDocumentModal();">
+    </ng-container>
+    <button *ngIf="canEdit" class="btn btn-small btn-default" id="openNewReferenceDocumentModalBtn"
+            (click)="openNewReferenceDocumentModal();">
         <i class="fa fa-plus"></i> Add ReferenceDocument
     </button>
 </div>
@@ -60,7 +39,7 @@
     <div class="modal-header" id="newReferenceDocumentModalHeader">
         <h4 class="modal-title">Add ReferenceDocument</h4>
     </div>
-    <form role="form" #newReferenceDocumentForm="ngForm">
+    <form #newReferenceDocumentForm="ngForm" (ngSubmit)="addNewReferenceDocument()">
         <div class="modal-body" id="newReferenceDocumentModalBody">
             <div class="form-group">
                 <label for="newId">ID:</label>
@@ -71,6 +50,11 @@
                 <label for="newTitle">Title:</label>
                 <input class="form-control" [(ngModel)]="newReferenceDocument.title"
                        id="newTitle" name="newTitle" Placeholder="Title"/>
+            </div>
+            <div class="form-group">
+                <label for="newDocType">Doc Type:</label>
+                <input class="form-control" [(ngModel)]="newReferenceDocument.docType"
+                       id="newDocType" name="newDocType" Placeholder="Doc Type"/>
             </div>
             <div class="form-group">
                 <label for="newUri">URI:</label>
@@ -97,8 +81,8 @@
             <button class="btn cancel" id="cancelNewReferenceDocumentBtn" type="button" (click)="c('Close click')">
                 Cancel
             </button>
-            <button class="btn btn-warning" id="createNewReferenceDocumentBtn" type="submit"
-                    [disabled]="!newReferenceDocumentForm.form.valid" (click)="addNewReferenceDocument();">Save
+            <button class="btn btn-warning" id="createNewReferenceDocumentBtn">
+                Save
             </button>
         </div>
     </form>

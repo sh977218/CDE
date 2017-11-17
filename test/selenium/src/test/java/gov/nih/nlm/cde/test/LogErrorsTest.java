@@ -24,22 +24,19 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/triggerServerErrorExpress");
         textPresent("app.express.error");
-        textPresent("app.domain.error");
     }
 
     @Test
     public void logClientErrors() {
         mustBeLoggedInAs(test_username, password);
-        driver.get(baseUrl + "/triggerClientException?fullPath=true");
-        textPresent("An exception in your browser has been triggered");
-        hangon(1);
+        driver.get(baseUrl + "/sdcview?triggerClientError=1&fullPath=true");
+        textPresent("SDC Attributes");
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
 
         clickElement(By.linkText("Client Errors"));
-        textPresent("ReferenceError");
-        textPresent("trigger is not defined");
+        textPresent("An exception has been thown");
     }
 }

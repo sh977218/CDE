@@ -11,27 +11,27 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
 
     @Test
     public void exportPreviousVersion() {
-        goToCdeByName("ExportLatest");
+        String cdeName = "ExportLatest";
+        goToCdeByName(cdeName);
         clickElement(By.id("export"));
 
         // Current version
-        Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("dataelement/585adda729f8ae801d0f045a"));
-        Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("dataelement/585adda729f8ae801d0f045a?type=xml"));
-        Assert.assertFalse(get(baseUrl + "/dataelement/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
-        Assert.assertFalse(get(baseUrl + "/dataelement/585adda729f8ae801d0f045a").asString().contains("<designation>This name will be removed</designation>"));
+        Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("deById/585adda729f8ae801d0f045a"));
+        Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("deById/585adda729f8ae801d0f045a?type=xml"));
+        Assert.assertFalse(get(baseUrl + "/deById/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
+        Assert.assertFalse(get(baseUrl + "/deById/585adda729f8ae801d0f045a?type=xml").asString().contains("<designation>This name will be removed</designation>"));
 
-
-        clickElement(By.id("history_tab"));
+        goToHistory();
         clickElement(By.xpath("//*[@id='prior-1']//span"));
         switchTab(1);
 
         clickElement(By.id("export"));
 
         // Previous version
-        Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("dataelement/585adda229f8ae801d0f0456"));
-        Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("dataelement/585adda229f8ae801d0f0456?type=xml"));
-        Assert.assertTrue(get(baseUrl + "/dataelement/585adda229f8ae801d0f0456").asString().contains("This name will be removed"));
-        Assert.assertTrue(get(baseUrl + "/dataelement/585adda229f8ae801d0f0456?type=xml").asString().contains("<designation>This name will be removed</designation>"));
+        Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("deById/585adda229f8ae801d0f0456"));
+        Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("deById/585adda229f8ae801d0f0456?type=xml"));
+        Assert.assertTrue(get(baseUrl + "/deById/585adda229f8ae801d0f0456").asString().contains("This name will be removed"));
+        Assert.assertTrue(get(baseUrl + "/deById/585adda229f8ae801d0f0456?type=xml").asString().contains("<designation>This name will be removed</designation>"));
 
         switchTabAndClose(0);
     }

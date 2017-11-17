@@ -1,16 +1,19 @@
-import { Component, Inject } from "@angular/core";
-import { Http } from "@angular/http";
-import "rxjs/add/operator/map";
-import { User } from "../../../core/public/models.model";
-import { AlertService } from "./alert/alert.service";
+import { Component } from '@angular/core';
+import { Http } from '@angular/http';
+import { CdeForm } from 'core/form.model';
+import { DataElement } from 'core/dataElement.model';
+import { User } from 'core/models.model';
+import * as _ from "lodash";
+import { UserService } from '_app/user.service';
+import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: "cde-profile",
     templateUrl: "profile.component.html"
 })
 export class ProfileComponent {
-    cdes: any;
-    forms: any;
+    cdes: any = [];
+    forms: any = [];
     hasQuota: any;
     orgCurator: string;
     orgAdmin: string;
@@ -18,19 +21,24 @@ export class ProfileComponent {
 
     constructor(private http: Http,
                 private alert: AlertService,
-                @Inject("userResource") private userService,
-                @Inject("ViewingHistory") private viewingHistoryService) {
-        viewingHistoryService.getViewingHistory();
-        viewingHistoryService.getCdes().then((response) => {
-            this.cdes = [];
-            if (Array.isArray(response))
-                this.cdes = response;
-        });
-        viewingHistoryService.getForms().then((response) => {
-            this.forms = [];
-            if (Array.isArray(response))
-                this.forms = response;
-        });
+                private userService: UserService) {
+
+        this.http.get('/viewingHistory/dataElement').map(res => res.json())
+            .subscribe(
+                response => {
+                    this.cdes = response;
+                    if (_.isArray(response)) this.cdes.forEach((elt, i, elts) => elts[i] = Object.assign(new DataElement, elt));
+                    else this.cdes = [];
+                }, err => this.alert.addAlert("danger", "Error, unable to retrieve data element view history. " + err)
+            );
+        this.http.get('/viewingHistory/form').map(res => res.json())
+            .subscribe(
+                response => {
+                    this.forms = response;
+                    if (_.isArray(response)) this.forms.forEach((elt, i, elts) => elts[i] = Object.assign(new CdeForm, elt));
+                    else this.forms = [];
+                }, err => this.alert.addAlert("danger", "Error, unable to retrieve form view history. " + err)
+            );
         this.reloadUser();
     }
 
@@ -46,8 +54,7 @@ export class ProfileComponent {
     }
 
     reloadUser() {
-        this.userService.getRemoteUser();
-        this.userService.getPromise().then(() => {
+        this.userService.then(() => {
             if (this.userService.user.username) {
                 this.hasQuota = this.userService.user.quota;
                 this.orgCurator = this.userService.user.orgCurator.toString().replace(/,/g, ", ");

@@ -1,22 +1,26 @@
-import { Component, Inject, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import "rxjs/add/operator/map";
-import { OrgHelperService } from "../../../../core/public/orgHelper.service";
+import { IsAllowedService } from 'core/isAllowed.service';
+import { UserService } from '_app/user.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 
 @Component({
     selector: "cde-de-general-details",
     templateUrl: "./deGeneralDetails.component.html"
 })
-export class DeGeneralDetailsComponent  {
+export class DeGeneralDetailsComponent {
+    @Input() elt: any;
+    @Input() canEdit;
+    @Output() onEltChange = new EventEmitter();
+    userOrgs = [];
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                @Inject("userResource") public userService,
-                public orgHelpers: OrgHelperService
-    ) {
+    constructor(public userService: UserService,
+                public orgHelperService: OrgHelperService) {
+        this.userService.then(() => this.userOrgs = this.userService.userOrgs);
     }
 
-    @Input() elt: any;
-
-    editDtMode: boolean;
-
-
+    changeStewardOrg(event) {
+        this.elt.stewardOrg.name = event;
+        this.onEltChange.emit();
+    }
 }

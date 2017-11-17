@@ -16,13 +16,12 @@ public class EmptyLogic extends NlmCdeBaseTest {
         textPresent("If empty:", By.xpath("//*[*[text()='Head injury prior number']]"));
         textPresent("If empty:", By.xpath("//*[*[text()='Noncompliant Reason Text']]"));
 
+        clickElement(By.id("dropdownMenuButton"));
         clickElement(By.id("printableLogicCb"));
 
         // Dates
         textPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("1");
-        textPresent("Data unknown indicator");
-        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("995");
+        findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys("1995");
         findElement(By.xpath("//div[@id='Birth date_0']//input")).sendKeys(Keys.TAB);
         textNotPresent("Data unknown indicator");
 

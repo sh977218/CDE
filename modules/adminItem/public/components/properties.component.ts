@@ -1,33 +1,34 @@
-import { Component, Inject, Input, ViewChild, OnInit } from "@angular/core";
+import { Component, Input, ViewChild, OnInit, Output, EventEmitter } from "@angular/core";
 import { NgbModalModule, NgbModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { OrgHelperService } from "../../../core/public/orgHelper.service";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
-
 import "rxjs/add/operator/map";
 
+import { Property } from 'core/models.model';
+import { DataElement } from 'core/dataElement.model';
+import { OrgHelperService } from 'core/orgHelper.service';
+import { AlertService } from '_app/alert/alert.service';
+
 @Component({
-    selector: "cde-admin-item-properties",
-    providers: [],
+    selector: "cde-properties",
     templateUrl: "./properties.component.html"
 })
 export class PropertiesComponent implements OnInit {
     @ViewChild("newPropertyContent") public newPropertyContent: NgbModalModule;
-    @Input() public elt: any;
+    @Input() public elt: DataElement;
+    @Input() public canEdit: boolean = false;
+    @Output() onEltChange = new EventEmitter();
     orgPropertyKeys: string[] = [];
-    public newProperty: any = {};
+    public newProperty: Property = new Property();
     public modalRef: NgbModalRef;
+    public onInitDone: boolean = false;
 
-    public onInitDone: boolean;
-
-    constructor(private alert: AlertService,
-                @Inject("isAllowedModel") public isAllowedModel,
-                public orgHelpers: OrgHelperService,
-                public modalService: NgbModal) {
+    constructor(public modalService: NgbModal,
+                private alert: AlertService,
+                private orgHelperService: OrgHelperService) {
     }
 
     ngOnInit() {
-        this.orgHelpers.orgDetails.subscribe(() => {
-            this.orgPropertyKeys = this.orgHelpers.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+        this.orgHelperService.then(() => {
+            this.orgPropertyKeys = this.orgHelperService.orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
             this.onInitDone = true;
         });
     }
@@ -37,41 +38,30 @@ export class PropertiesComponent implements OnInit {
             this.alert.addAlert("danger", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
         } else {
             this.modalRef = this.modalService.open(this.newPropertyContent, {size: "lg"});
-            this.modalRef.result.then(() => this.newProperty = {}, () => {});
+            this.modalRef.result.then(() => {
+                this.newProperty = new Property();
+            }, () => {
+            });
         }
     }
 
     addNewProperty() {
         this.elt.properties.push(this.newProperty);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Property added. Save to confirm.");
-            this.modalRef.close();
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.alert.addAlert("success", "Property Added");
-                this.modalRef.close();
-            });
-        }
+        this.onEltChange.emit();
+        this.modalRef.close();
     }
 
     removePropertyByIndex(index) {
         this.elt.properties.splice(index, 1);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Property removed. Save to confirm.");
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.alert.addAlert("success", "Property Removed");
-            });
-        }
+        this.onEltChange.emit();
     }
 
-    saveProperty() {
-        this.elt.$save(newElt => {
-            this.elt = newElt;
-            this.alert.addAlert("success", "Saved");
-        });
-    };
+    reorderProperty() {
+        this.onEltChange.emit();
+    }
+
+    setHtml(isHtml) {
+        this.newProperty.valueFormat = isHtml ? 'html' : '';
+    }
 
 }

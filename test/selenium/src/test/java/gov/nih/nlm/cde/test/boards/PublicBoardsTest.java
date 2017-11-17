@@ -13,9 +13,14 @@ public class PublicBoardsTest extends BoardTest {
         clickElement(By.id("search.submit"));
         textPresent("Leukemia Board");
         textPresent("Epilepsy Board");
-        clickElement(By.id("tag_Cancer"));
+        clickElement(By.id("tag-Cancer"));
         textNotPresent("Epilepsy Board");
-        clickElement(By.id("tag_Cancer"));
+        clickElement(By.id("tag-Cancer"));
+        textPresent("Epilepsy Board");
+        clickElement(By.id("type-form"));
+        textNotPresent("Epilepsy Board");
+        textPresent("TestQuickboard");
+        clickElement(By.id("type-form"));
         textPresent("Epilepsy Board");
     }
 
@@ -23,6 +28,8 @@ public class PublicBoardsTest extends BoardTest {
     public void searchPublicBoardNoResult() {
         mustBeLoggedOut();
         clickElement(By.id("boardsMenu"));
+        textPresent("Cerebral Palsy");
+        textPresent("Public Smoking Board");
         findElement(By.name("search")).sendKeys("noResultSearch");
         clickElement(By.id("search.submit"));
         textPresent("No results were found. Try other criteria.");

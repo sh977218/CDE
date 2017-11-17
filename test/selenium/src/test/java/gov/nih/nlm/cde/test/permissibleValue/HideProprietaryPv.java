@@ -10,24 +10,23 @@ public class HideProprietaryPv extends NlmCdeBaseTest {
 
     @Test
     public void hideProprietaryPv() {
+        String cdeName = "Post traumatic amnesia duration range";
         mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName("Post traumatic amnesia duration range");
-        clickElement(By.id("pvs_tab"));
-
+        goToCdeByName(cdeName);
+        goToPermissibleValues();
         pvValidator.addPv("pv1", "name1", "code1", "SNOMEDCT");
-
         newCdeVersion();
+
+        logout();
+        goToCdeByName(cdeName);
+        goToPermissibleValues();
+        textNotPresent("SNOMEDCT");
+        textPresent("Login to see the value.");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Post traumatic amnesia duration range");
         clickElement(By.linkText("Permissible Values"));
         textPresent("SNOMEDCT");
-
-        logout();
-        goToCdeByName("Post traumatic amnesia duration range");
-        clickElement(By.id("pvs_tab"));
-        textNotPresent("SNOMEDCT");
-        textPresent("Login to see the value.");
     }
 
 }

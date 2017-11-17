@@ -16,7 +16,7 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         changeDatatype(datatype);
 
         clickElement(By.xpath("//*[@id='datatypeTextMin']//i[contains(@class,'fa fa-edit')]"));
@@ -29,9 +29,9 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         // check update cde has fixed datatype;
-        Assert.assertFalse(get(baseUrl + "/dataelement/593eff071acca22de85b0b29").asString().contains("valueMeaningName"));
+        Assert.assertFalse(get(baseUrl + "/deById/593eff071acca22de85b0b29").asString().contains("valueMeaningName"));
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("789", By.xpath("//*[@id='Data Type Text Minimal Length']//ins"));
         textPresent("987", By.xpath("//*[@id='Data Type Text Maximal Length']//ins"));
@@ -39,7 +39,7 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
         clickElement(By.id("closeHistoryCompareModal"));
 
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         clickElement(By.xpath("//*[@id='datatypeTextRegex']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).sendKeys("newRegex");
         clickElement(By.xpath("//*[@id='datatypeTextRegex']//button[contains(@class,'fa fa-check')]"));
@@ -59,7 +59,7 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
 
-        clickElement(By.id("history_tab"));
+        goToHistory();
         selectHistoryAndCompare(1, 2);
         textPresent("123", By.xpath("//*[@id='Data Type Text Minimal Length']//ins"));
         textPresent("789", By.xpath("//*[@id='Data Type Text Minimal Length']//del"));

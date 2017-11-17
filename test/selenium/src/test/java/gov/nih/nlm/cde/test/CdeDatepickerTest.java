@@ -7,17 +7,13 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class CdeDatepickerTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeDatepicker() {
-        String today_string = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+        String cdeName = "Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale";
         mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName("Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale");
-
+        goToCdeByName(cdeName);
 
         clickElement(By.id("editStatus"));
         textPresent("Update Registration Status");
@@ -33,9 +29,9 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//div[. = '19']"));
 
         clickElement(By.id("saveRegStatus"));
-        textPresent("Saved");
+        textPresent("Data Element saved.");
         closeAlert();
-        
+
         Assert.assertEquals(findElement(By.id("effectiveDate")).getText(), "02/16/2016");
         Assert.assertEquals(findElement(By.id("untilDate")).getText(), "03/19/2017");
     }

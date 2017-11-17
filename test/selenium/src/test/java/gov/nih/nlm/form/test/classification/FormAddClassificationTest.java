@@ -1,17 +1,17 @@
 package gov.nih.nlm.form.test.classification;
 
-import gov.nih.nlm.cde.test.classification.ClassificationTest;
-import gov.nih.nlm.form.test.BaseFormTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormAddClassificationTest extends BaseFormTest {
+public class FormAddClassificationTest extends NlmCdeBaseTest {
 
     @Test
     public void formAddClassification() {
+        String formName = "Traumatic Brain Injury - Adverse Events";
         mustBeLoggedInAs(ninds_username, password);
-        goToFormByName("Traumatic Brain Injury - Adverse Events");
-        clickElement(By.id("classification_tab"));
-        new ClassificationTest()._addClassificationMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
+        goToFormByName(formName);
+        goToClassification();
+        addClassificationByTree("NINDS", new String[]{"Disease", "Traumatic Brain Injury"});
     }
 }

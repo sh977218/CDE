@@ -9,6 +9,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -34,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.jayway.restassured.RestAssured.get;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
@@ -67,6 +67,7 @@ public class NlmCdeBaseTest {
     protected static String boarduser2_username = "boarduser2";
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
+    protected static String boardUser_username = "boarduser";
     protected static String formboarduser = "formboarduser";
     protected static String pinUser = "pinuser";
     protected static String unpinUser = "unpinuser";
@@ -98,9 +99,26 @@ public class NlmCdeBaseTest {
     private int videoRate = 300;
 
 
-    ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
+    private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
+    private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
+        {
+            put("rename", "fa-pencil");
+            put("remove", "fa-trash-o");
+            put("reclassify", "fa-retweet");
+            put("addchildclassification", "fa-share ");
+            put("meshmapping", "fa-link");
+        }
+    };
+    private Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {
+        {
+            put("cdeTinyId", "operations-CDE-get_de__tinyId_");
+            put("cdeTinyIdVersion", "operations-CDE-get_de__tinyId__version__version_");
+            put("formTinyId", "operations-Form-get_form__tinyId_");
+            put("formTinyIdVersion", "operations-Form-get_form__tinyId__version__version_");
+        }
+    };
 
-    private void setDriver(String b) {
+    private void setDriver(String b, String u) {
         if (b == null) b = browser;
 
         hangon(new Random().nextInt(10));
@@ -118,6 +136,7 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(b)) {
             ChromeOptions options = new ChromeOptions();
+            if (u != null) options.addArguments("--user-agent=googleBot");
             options.addArguments("--start-maximized");
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
@@ -165,12 +184,13 @@ public class NlmCdeBaseTest {
     @BeforeMethod
     public void setUp(Method m) {
         filePerms = new HashSet();
+        String browserName = null, userAgent = null;
+        if (m.getAnnotation(SelectBrowser.class) != null)
+            browserName = "internet explorer";
+        if (m.getAnnotation(SelectUserAgent.class) != null)
+            userAgent = "bot";
+        setDriver(browserName, userAgent);
 
-        if (m.getAnnotation(SelectBrowser.class) != null) {
-            setDriver("internet explorer");
-        } else {
-            setDriver(null);
-        }
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
@@ -197,8 +217,9 @@ public class NlmCdeBaseTest {
 
     @AfterMethod
     public void generateGif(Method m) {
+        String methodName = m.getName();
+        System.out.println("TEST Complete: " + className + "." + methodName);
         if (m.getAnnotation(RecordVideo.class) != null) {
-            String methodName = m.getName();
             try {
                 File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
                 File[] inputScreenshotsArray = inputScreenshots.listFiles();
@@ -222,6 +243,7 @@ public class NlmCdeBaseTest {
                 System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
             driver.quit();
         } catch (Exception e) {
+            System.out.println(e);
         }
 
     }
@@ -280,8 +302,9 @@ public class NlmCdeBaseTest {
         }
 
         clickElement(By.id("addOrg"));
-        textPresent("Org Added");
+        textPresent("Saved");
         textPresent(orgName);
+        closeAlert();
 
         if (orgLongName != null) {
             textPresent(orgLongName);
@@ -315,10 +338,70 @@ public class NlmCdeBaseTest {
         goToElementByName(name, "form");
     }
 
+    protected void goToPreview() {
+        clickElement(By.id("preview_tab"));
+    }
+
+    protected void goToGeneralDetail() {
+        clickElement(By.id("general_tab"));
+    }
+
+    protected void goToPermissibleValues() {
+        clickElement(By.id("pvs_tab"));
+    }
+
+    protected void goToFormDescription() {
+        clickElement(By.id("description_tab"));
+    }
+
+    protected void goToNaming() {
+        clickElement(By.id("naming_tab"));
+    }
+
+    protected void goToClassification() {
+        clickElement(By.id("classification_tab"));
+    }
+
+    protected void goToMeshTopic() {
+        clickElement(By.id("meshTopic_tab"));
+    }
+
+    protected void goToConcepts() {
+        clickElement(By.id("concepts_tab"));
+    }
+
+    protected void goToReferenceDocuments() {
+        clickElement(By.id("referenceDocuments_tab"));
+    }
+
+    protected void goToProperties() {
+        clickElement(By.id("properties_tab"));
+    }
+
+    protected void goToIdentifiers() {
+        clickElement(By.id("ids_tab"));
+    }
+
+    protected void goToAttachments() {
+        clickElement(By.id("attachments_tab"));
+    }
+
+    protected void goToHistory() {
+        clickElement(By.id("history_tab"));
+    }
+
+    protected void goToScoreDerivations() {
+        clickElement(By.id("derivationRules_tab"));
+    }
+
+    protected void goToValidationRules() {
+        goToValidationRules();
+    }
+
     private void goToElementByName(String name, String type) {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
-            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId=" + tinyId);
+            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deView" : "formView") + "/?tinyId=" + tinyId);
             textPresent(name);
         } else {
             try {
@@ -388,7 +471,15 @@ public class NlmCdeBaseTest {
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
-        textPresent(name, By.id("searchResult_0"));
+
+        // counteract save summary/table view
+        try {
+            textPresent(name, By.id("searchResult_0"));
+        } catch (Exception e) {
+            if (driver.findElements(By.id("list_summaryView")).size() > 0)
+                clickElement(By.id("list_summaryView"));
+            textPresent(name, By.id("searchResult_0"));
+        }
     }
 
     protected void openEltInList(String name, String type) {
@@ -408,6 +499,7 @@ public class NlmCdeBaseTest {
 
     protected void checkTooltipText(By by, String text) {
         try {
+            hoverOverElement(findElement(by));
             textPresent(text);
         } catch (TimeoutException e) {
             hoverOverElement(findElement(By.id("searchSettings")));
@@ -442,15 +534,14 @@ public class NlmCdeBaseTest {
 
     protected void clickElement(By by) {
         // Wait for angular digest cycle.
-
         try {
-            ((JavascriptExecutor) driver).executeAsyncScript(
-                    "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
-                    , ""
-            );
+            String script = "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);";
+            ((JavascriptExecutor) driver).executeAsyncScript(script, "");
         } catch (Exception e) {
         }
         try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(by));
+            scrollToView(by);
             wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
@@ -500,26 +591,37 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void newCdeVersion(String changeNote) {
+        newVersion(changeNote);
+        textPresent("Data Element saved.");
+        closeAlert();
+    }
 
     protected void newCdeVersion() {
         newCdeVersion(null);
     }
 
-    protected void newCdeVersion(String changeNote) {
-        scrollToEltByCss("#openSave");
-        clickElement(By.id("openSave"));
-        textPresent("has already been used");
-        if (changeNote != null) {
-            findElement(By.name("changeNote")).clear();
-            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
-        }
-        findElement(By.name("version")).sendKeys(".1");
-        textNotPresent("has already been used");
-        clickElement(By.id("confirmNewVersion"));
-        textPresent("Saved.");
-        closeAlert();
-        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
+    protected void newFormVersion(String changeNote) {
+        newVersion(changeNote);
         modalGone();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+    }
+
+    protected void newFormVersion() {
+        newFormVersion(null);
+    }
+
+    protected void newVersion(String changeNote) {
+        if (changeNote == null || changeNote.equals(""))
+            changeNote = "Change note for change number 1";
+        clickElement(By.id("openSave"));
+        if (findElement(By.id("newVersion")).getText().length() > 0)
+            textPresent("has already been used");
+        findElement(By.id("changeNote")).clear();
+        findElement(By.id("changeNote")).sendKeys(changeNote);
+        findElement(By.name("newVersion")).sendKeys(".1");
+        textNotPresent("has already been used");
+        clickElement(By.id("confirmSaveBtn"));
     }
 
     public void hangon(double i) {
@@ -528,10 +630,6 @@ public class NlmCdeBaseTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    private boolean classPresent(String text, By by) {
-        return findElement(by).getAttribute("class").contains(text);
     }
 
     public boolean textPresent(String text, By by) {
@@ -552,13 +650,10 @@ public class NlmCdeBaseTest {
         return true;
     }
 
-    private boolean classNotPresent(String text, By by) {
-        return !findElement(by).getAttribute("class").contains(text);
-    }
-
     protected void goHome() {
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
+        findElement(By.cssSelector(".carousel-indicators"));
     }
 
     protected void goToCdeSearch() {
@@ -603,12 +698,15 @@ public class NlmCdeBaseTest {
     protected void addCdeToQuickBoard(String cdeName) {
         goToCdeByName(cdeName);
         clickElement(By.id("addToQuickBoard"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
+
     }
 
     protected void addFormToQuickBoard(String formName) {
         searchForm(formName);
         clickElement(By.id("addToCompare_0"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
         findElement(By.name("q")).clear();
     }
@@ -623,14 +721,20 @@ public class NlmCdeBaseTest {
         hangon(0.5);
         clickElement(By.id("search.submit"));
         clickElement(By.id("addToCompare_0"));
+        textPresent("Added to QuickBoard!");
         closeAlert();
     }
 
     public void goToQuickBoardByModule(String module) {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
-        clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));
-        String quickBoardTabText = ("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (";
-        textPresent(quickBoardTabText);
+        if (module.equals("cde")) {
+            clickElement(By.id("dataElementQuickBoard"));
+            textPresent("CDE QuickBoard (");
+        }
+        if (module.equals("form")) {
+            clickElement(By.id("formQuickBoard"));
+            textPresent("Form QuickBoard (");
+        }
     }
 
     protected void emptyQuickBoardByModule(String module) {
@@ -648,12 +752,12 @@ public class NlmCdeBaseTest {
         textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
-        clickElement(By.xpath("//*[@id='qb_cde_tab']/a"));
+        clickElement(By.id("dataElementQuickBoard"));
         textPresent(cdeName1);
         textPresent(cdeName2);
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_cde_compare"));
+        clickElement(By.id("qb_compare"));
     }
 
     public void scrollToTop() {
@@ -683,6 +787,7 @@ public class NlmCdeBaseTest {
     protected void scrollDownBy(Integer y) {
         String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+        hangon(5);
     }
 
     protected void scrollContainerDownBy(WebElement c, Integer y) {
@@ -690,21 +795,34 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jsScroll, c);
     }
 
-    private void scrollToEltByCss(String css) {
-        String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
-        ((JavascriptExecutor) driver).executeScript(scrollScript, "");
+    protected void scrollModalsToBottom() {
+        // Angular
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        List<WebElement> modals = driver.findElements(By.cssSelector("ngb-modal-window"));
+        for (WebElement modal : modals) {
+            je.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", modal);
+        }
+
+        // AngularJS
+        modals = driver.findElements(By.cssSelector("div.modal"));
+        for (WebElement modal : modals) {
+            je.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", modal);
+        }
+    }
+
+    protected void scrollToView(By by) {
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        je.executeScript(
+                "window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2));",
+                findElement(by));
     }
 
     protected void scrollToViewById(String id) {
-        JavascriptExecutor je = (JavascriptExecutor) driver;
-        je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.id(id)));
-        hangon(2);
+        scrollToView(By.id(id));
     }
 
     protected void scrollToViewByXpath(String xpath) {
-        JavascriptExecutor je = (JavascriptExecutor) driver;
-        je.executeScript("arguments[0].scrollIntoView(true);", findElement(By.xpath(xpath)));
-        hangon(2);
+        scrollToView(By.xpath(xpath));
     }
 
     protected void hoverOverElement(WebElement ele) {
@@ -743,11 +861,16 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void switchTabAndClose(int i) {
+    /**
+     * This method is used to close current tab and switch to desired tab.
+     *
+     * @param switchTo switch to tab index, starting from 0;
+     */
+    protected void switchTabAndClose(int switchTo) {
         hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
-        driver.switchTo().window(tabs2.get(i));
+        driver.switchTo().window(tabs2.get(switchTo));
         hangon(3);
     }
 
@@ -772,24 +895,21 @@ public class NlmCdeBaseTest {
     }
 
     protected void deleteClassification(String classificationId) {
-        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
-        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
+        clickElement(By.xpath("//*[@id='" + classificationId + "-unclassifyBtn']"));
+        clickElement(By.id("confirmDeleteClassificationBtn"));
         modalGone();
         closeAlert();
     }
 
-    protected void deleteMgtClassification(String classificationId,
-                                           String classificationName) {
-        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
-        findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
-        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
-        modalGone();
-        try {
-            textPresent("Classification Deleted");
-        } catch (TimeoutException e) {
-            textPresent("Classification Deleted");
-        }
+    protected void deleteOrgClassification(String orgName, String[] categories) {
+        String classification = categories[categories.length - 1];
+        new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgName);
+        clickElement(By.xpath(getOrgClassificationIconXpath("remove", categories)));
+        findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
+        clickElement(By.id("confirmDeleteClassificationBtn"));
+        textPresent("Classification Deleted");
         closeAlert();
+        Assert.assertEquals(0, driver.findElements(By.xpath("//*[@id='" + String.join(",", categories) + "']")).size());
     }
 
     protected void gotoInbox() {
@@ -870,8 +990,19 @@ public class NlmCdeBaseTest {
             textPresent("Characters:");
         }
         findElement(By.xpath(definitionTextareaXpath)).sendKeys(newDefinition);
-        hangon(2);
         clickElement(By.xpath(definitionConfirmBtnXpath));
+        textNotPresent("Confirm");
+    }
+
+    protected void changeDefinitionFormat(int index, boolean isHtml) {
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//*[contains(@class,'fa-edit')]";
+        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Rich Text')]";
+        String plainTextBtnXpath = "//*[@id='definition_" + index + "']//button[contains(text(),'Plain Text')]";
+        String confirmBtnXpath = "//*[@id='definition_0']//*[contains(@class,'fa-check')]";
+        clickElement(By.xpath(definitionEditIconXpath));
+        if (isHtml) clickElement(By.xpath(richTextBtnXpath));
+        if (!isHtml) clickElement(By.xpath(plainTextBtnXpath));
+        clickElement(By.xpath(confirmBtnXpath));
         textNotPresent("Confirm");
     }
 
@@ -902,11 +1033,13 @@ public class NlmCdeBaseTest {
     }
 
 
-    protected void addNewName(String designation, String definition, String[] tags) {
+    protected void addNewName(String designation, String definition, boolean isHtml, String[] tags) {
         clickElement(By.id("openNewNamingModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
-        findElement(By.name("newDefinition")).sendKeys(definition);
+        findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
+        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Plain Text')]"));
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newTags']//input";
             for (String tag : tags) {
@@ -917,19 +1050,27 @@ public class NlmCdeBaseTest {
             }
         }
         clickElement(By.id("createNewNamingBtn"));
+    }
+
+    protected void addNewProperty(String key, String value, boolean isHtml) {
+        clickElement(By.id("openNewPropertyModalBtn"));
+        textPresent("Property keys are managed in Org Management > List Management");
+        new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
+        findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
+        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Plain Text')]"));
+        clickElement(By.id("createNewPropertyBtn"));
         modalGone();
     }
 
-    protected void addNewProperty(String key, String value) {
-        clickElement(By.id("openNewPropertyModalBtn"));
-        textPresent("Property key are managed in Org Management > List Management");
-        new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
-        findElement(By.name("newValue")).sendKeys(value);
-        hangon(2);
-        clickElement(By.id("createNewPropertyBtn"));
-        modalGone();
-        textPresent("Property Added");
-        closeAlert();
+    /**
+     * This method is used to remove property for cde and form.
+     *
+     * @param index Index of properties, starting from 0.
+     */
+    protected void removeProperty(int index) {
+        clickElement(By.id("removeProperty-" + index));
+        clickElement(By.id("confirmRemoveProperty-" + index));
     }
 
     protected void addNewReferenceDocument(String id, String title, String uri, String providerOrg, String languageCode, String document) {
@@ -943,8 +1084,6 @@ public class NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("createNewReferenceDocumentBtn"));
         modalGone();
-        textPresent("Reference Document Added");
-        closeAlert();
     }
 
     protected void addNewConcept(String cName, String cId, String cSystem, String cType) {
@@ -965,8 +1104,6 @@ public class NlmCdeBaseTest {
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
-        textPresent("Identifier Added");
-        closeAlert();
     }
 
     protected void changeDatatype(String newDatatype) {
@@ -980,5 +1117,468 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected void removeClassificationMethod(String[] categories) {
+        String selector = "";
+        for (int i = 0; i < categories.length; i++) {
+            selector += categories[i];
+            if (i < categories.length - 1)
+                selector += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
+        textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
+        clickElement(By.id("confirmDeleteClassificationBtn"));
+        closeAlert();
+        Assert.assertTrue(checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']")));
+    }
 
+    protected void openClassificationAudit(String name) {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
+        clickElement(By.linkText("Classification Audit Log"));
+        clickElement(By.xpath("(//span[text()='" + name + "' and contains(@class,'text-info')])[1]"));
+    }
+
+    protected void goToBoard(String boardName) {
+        String boardId = EltIdMaps.eltMap.get(boardName);
+        if (boardId != null) {
+            driver.get(baseUrl + "/board/" + boardId);
+            textPresent(boardName);
+        } else {
+            gotoMyBoards();
+            textPresent(boardName);
+            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']//a"));
+            switchTab(1);
+            textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
+        }
+    }
+
+    protected void gotoMyBoards() {
+        clickElement(By.id("boardsMenu"));
+        textPresent("My Boards");
+        clickElement(By.id("myBoardsLink"));
+        textPresent("Add Board");
+        hangon(2);
+    }
+
+
+    /**
+     * This method is used to remove identifier for cde and form.
+     *
+     * @param index Index of identifiers, starting from 0.
+     */
+    protected void removeIdentifier(int index) {
+        goToIdentifiers();
+        clickElement(By.id("removeIdentifier-" + index));
+        clickElement(By.id("confirmRemoveIdentifier-" + index));
+    }
+
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removeDataElementConcept(int index) {
+        goToConcepts();
+        clickElement(By.id("removedataElementConcept-" + index));
+    }
+
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removeObjectClassConcept(int index) {
+        goToConcepts();
+        clickElement(By.id("removeobjectClass-" + index));
+    }
+
+    /**
+     * This method is used to remove data element concept for cde.
+     *
+     * @param index Index of concepts, starting from 0.
+     */
+    protected void removePropertyConcept(int index) {
+        goToConcepts();
+        clickElement(By.id("removeproperty-" + index));
+    }
+
+    /**
+     * This method is used to edit registration status for cde or form.
+     *
+     * @param status             Registration Status.
+     * @param effectiveDate      Effective Date.
+     * @param untilDate          Until Date.
+     * @param administrativeNote Administrative Note.
+     * @param unresolvedIssue    Unresolved Issue.
+     */
+    protected void editRegistrationStatus(String status, String effectiveDate, String untilDate, String administrativeNote, String unresolvedIssue) {
+        clickElement(By.id("editStatus"));
+        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText(status);
+        if (status.equals("Preferred Standard"))
+            textPresent("Preferred Standard elements cannot be edited by their stewards");
+        if (status.equals("Standard"))
+            textPresent("Standard elements cannot be edited by their stewards");
+        if (status.equals("Qualified"))
+            textPresent("Qualified elements should be well defined and are visible to the public by default.");
+        if (status.equals("Recorded"))
+            textPresent("Recorded elements are not visible by default.");
+        if (status.equals("Candidate"))
+            textPresent("Candidate elements are not visible by default.");
+        if (status.equals("Incomplete"))
+            textPresent("Incomplete indicates an element that is not fully defined. Incomplete elements are not visible by default.");
+        if (status.equals("Retired"))
+            textPresent("Retired elements are not returned in searches");
+        if (effectiveDate != null && effectiveDate.length() > 0)
+            findElement(By.id("newEffectiveDate")).sendKeys(effectiveDate);
+        if (untilDate != null && untilDate.length() > 0)
+            findElement(By.id("newUntilDate")).sendKeys(untilDate);
+        if (administrativeNote != null && administrativeNote.length() > 0)
+            findElement(By.id("newAdministrativeNote")).sendKeys(administrativeNote);
+        if (unresolvedIssue != null && unresolvedIssue.length() > 0)
+            findElement(By.id("newUnresolvedIssue")).sendKeys(unresolvedIssue);
+        clickElement(By.id("saveRegStatus"));
+    }
+
+    protected void checkRecentlyUsedClassifications(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        clickElement(By.id("recentlyAddViewTab"));
+        String recentlyClassificationString = org;
+        for (int i = 0; i < classificationArray.length; i++)
+            recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
+        textPresent(recentlyClassificationString, By.id("recentlyClassification_0"));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
+    }
+
+    protected void addClassificationByTree(String org, String[] classificationArray) {
+        addClassificationByTree(org, classificationArray, "Classification added.");
+    }
+
+    protected void _addClassificationByTree(String org, String[] classificationArray) {
+        _addClassificationByTree(org, classificationArray, "All CDEs Classified.");
+
+    }
+
+    protected void addClassificationByTree(String org, String[] classificationArray, String alertText) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        textPresent(classificationArray[0]);
+        String expanderStr = "";
+        for (int i = 0; i < classificationArray.length - 1; i++) {
+            expanderStr = expanderStr + classificationArray[i];
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
+            expanderStr += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
+        if (alertText != null) {
+            textPresent(alertText);
+            closeAlert();
+        }
+        for (int i = 1; i < classificationArray.length; i++)
+            textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
+    }
+
+    protected void _addClassificationByTree(String org, String[] classificationArray, String alertText) {
+        clickElement(By.id("openClassifyCdesModalBtn"));
+        textPresent("By recently added");
+
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        textPresent(classificationArray[0]);
+        String expanderStr = "";
+        for (int i = 0; i < classificationArray.length - 1; i++) {
+            expanderStr = expanderStr + classificationArray[i];
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
+            expanderStr += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
+        if (alertText != null) {
+            textPresent(alertText);
+            closeAlert();
+        }
+    }
+
+    protected void addClassificationByRecentlyAdd(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+        clickElement(By.id("recentlyAddViewTab"));
+        String recentlyClassificationString = org;
+        for (int i = 0; i < classificationArray.length; i++)
+            recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
+        String classifyBtnXpath = "//*[normalize-space( text() )='" + recentlyClassificationString + "']//button";
+        clickElement(By.xpath(classifyBtnXpath));
+        clickElement(By.id("cancelNewClassifyItemBtn"));
+    }
+
+    protected void addExistingClassification(String org, String[] classificationArray) {
+        clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By recently added");
+
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
+        textPresent(classificationArray[0]);
+        String expanderStr = "";
+        for (int i = 0; i < classificationArray.length - 1; i++) {
+            expanderStr = expanderStr + classificationArray[i];
+            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
+            expanderStr += ",";
+        }
+        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
+        textPresent("Classification Already Exists");
+        closeAlert();
+    }
+
+
+    public void startEditQuestionSectionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+    }
+
+    public void saveEditQuestionSectionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+    }
+
+    /**
+     * This method is used to edit section in form description for form.
+     *
+     * @param sectionId             Section Id.
+     * @param newSectionName        New section name.
+     * @param newSectionInstruction New section instruction.
+     * @param isInstructionHtml     Is instruction html?
+     * @param newSectionCardinality New section cardinality
+     */
+    protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
+        startEditQuestionSectionById(sectionId);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input")).sendKeys(newSectionName);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
+        textNotPresent("Confirm");
+        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]"));
+
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//i[contains(@class,'fa-edit')]"));
+        textPresent("Plain Text");
+        textPresent("Rich Text");
+        textPresent("Confirm");
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).sendKeys(newSectionInstruction);
+        if (isInstructionHtml)
+            clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[text()='Rich Text']"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[contains(text(),'Confirm')]"));
+        textNotPresent("Confirm");
+        textPresent(newSectionInstruction, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//div/span"));
+
+        new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newSectionCardinalityType);
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(newSectionCardinality);
+        saveEditQuestionSectionById("section_0");
+        if (newSectionCardinality.equals("1"))
+            textNotPresent("Repeats", By.xpath("//*[@id='" + sectionId + "']"));
+        else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));
+    }
+
+    protected String getSideBySideXpath(String side, String section, String type, int index) {
+        if (side.equalsIgnoreCase("left")) side = "Left";
+        if (side.equalsIgnoreCase("right")) side = "Right";
+
+        if (section.equalsIgnoreCase("steward")) section = "Steward";
+        if (section.equalsIgnoreCase("status")) section = "Status";
+        if (section.equalsIgnoreCase("naming")) section = "Naming";
+        if (section.equalsIgnoreCase("reference documents")) section = "Reference Documents";
+        if (section.equalsIgnoreCase("properties")) section = "Properties";
+        if (section.equalsIgnoreCase("data element concept")) section = "Data Element Concept";
+        if (section.equalsIgnoreCase("questions")) section = "Questions";
+
+        if (type.equalsIgnoreCase("fullmatch")) type = "fullMatch";
+        if (type.equalsIgnoreCase("partialmatch")) type = "partialMatch";
+        if (type.equalsIgnoreCase("notmatch")) type = "notMatch";
+        return "(//*[@id='" + section + "']//*[contains(@class,'no" + side + "Padding')]//*[contains(@class,'" + type + "')])[" + index + "]";
+    }
+
+    public String getOrgClassificationIconXpath(String type, String[] categories) {
+        String id = String.join(",", categories);
+        String fa = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
+        return "//*[@id='" + id + "']/following-sibling::a/i[contains(@class, '" + fa + "')]";
+    }
+
+    protected void searchNestedClassifiedCdes() {
+        goToCdeSearch();
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:\"Participant/Subject Characteristics\"");
+        findElement(By.id("search.submit")).click();
+    }
+
+    protected void searchNestedClassifiedForms() {
+        goToFormSearch();
+        findElement(By.name("q")).sendKeys("classification.elements.elements.name:\"Participant/Subject Characteristics\"");
+        findElement(By.id("search.submit")).click();
+    }
+
+    protected void createOrgClassification(String org, String[] categories) {
+        new Select(driver.findElement(By.id("orgToManage"))).selectByVisibleText(org);
+        // create root classification if it doesn't exist
+        List<WebElement> rootClassifications = driver.findElements(By.xpath("//*[@id='" + categories[0] + "']"));
+        if (rootClassifications.size() == 0) {
+            clickElement(By.id("addClassification"));
+            findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
+            hangon(2);
+            clickElement(By.id("confirmAddChildClassificationBtn"));
+            textPresent("Classification added");
+            closeAlert();
+        }
+        for (int i = 1; i < categories.length; i++) {
+            String[] nextCategories = Arrays.copyOfRange(categories, 0, i + 1);
+            String xpath = "//*[@id='" + String.join(",", nextCategories) + "']";
+            List<WebElement> nextCategoryList = driver.findElements(By.xpath(xpath));
+            if (nextCategoryList.size() == 0) {
+                String[] currentCategories = Arrays.copyOfRange(categories, 0, i);
+                clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", currentCategories)));
+                findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
+                hangon(2);
+                clickElement(By.id("confirmAddChildClassificationBtn"));
+                textPresent("Classification added");
+                closeAlert();
+            }
+        }
+    }
+
+    protected void editStewardOrgAndCancel(String newStewardOrg) {
+        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Discard')]"));
+        textNotPresent(newStewardOrg);
+    }
+
+    protected void editStewardOrgAndSave(String newStewardOrg) {
+        clickElement(By.xpath("//*[@id='dd_general_steward']//i"));
+        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Confirm')]"));
+        textPresent(newStewardOrg);
+    }
+
+    protected void editUninOfMeasurement(String newUom) {
+        clickElement(By.xpath("//*[@id = 'uom']//i[contains(@class,'fa fa-edit')]"));
+        findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys(newUom);
+        clickElement(By.xpath("//*[@id = 'uom']//button[contains(@class,'fa fa-check')]"));
+        textPresent(newUom, By.id("uom"));
+    }
+
+    private void clickIFrameElement(By by) {
+        int num_try = 0;
+        boolean clickable = false;
+        while (!clickable) {
+            try {
+                num_try++;
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                wait.until(ExpectedConditions.presenceOfElementLocated(by));
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                clickable = true;
+            } catch (Exception e) {
+                System.out.println("   exception: " + e);
+                clickable = false;
+                if (num_try == 10) clickable = true;
+            }
+        }
+        hangon(2);
+        driver.findElement(by).click();
+    }
+
+    private void sendKeyIFrameElement(By by, String key) {
+        int num_try = 0;
+        boolean clickable = false;
+        while (!clickable) {
+            try {
+                num_try++;
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+                clickable = true;
+            } catch (Exception e) {
+                System.out.println("   exception: " + e);
+                clickable = false;
+                if (num_try == 10) clickable = true;
+            }
+        }
+        hangon(2);
+        driver.findElement(by).sendKeys(key);
+        hangon(5);
+    }
+
+
+    protected void swaggerApi(String api, String text, String tinyId, String version) {
+        clickElement(By.id("dropdownMenu_help"));
+        clickElement(By.id("apiDocumentationLink"));
+        driver.switchTo().frame(findElement(By.cssSelector("iframe")));
+        textPresent("CDE API");
+        findElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//a")).click();
+        clickIFrameElement(By.xpath("//button[. = 'Try it out ']"));
+        sendKeyIFrameElement(By.xpath("//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input"), tinyId);
+        if (version != null)
+            sendKeyIFrameElement(By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//input)[2]"), version);
+        clickIFrameElement(By.xpath("//button[. = 'Execute']"));
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+        findElement(By.cssSelector("body")).sendKeys(Keys.ARROW_DOWN);
+        textPresent(text, By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
+    }
+
+    protected void selectDisplayProfileByName(String name) {
+        clickElement(By.id("select_display_profile"));
+        clickElement(By.xpath("(//*[@id='select_display_profile']/following-sibling::div)/button[normalize-space(text()) = '" + name + "']"));
+    }
+
+    /**
+     * This method is used to edit registration status for cde or form.
+     *
+     * @param index      Permissible Value Index from 0.
+     * @param value      Permissible Value.
+     * @param codeName   Permissible Value Code Name.
+     * @param code       Permissible Value Code.
+     * @param codeSystem Permissible Value Code System
+     */
+    protected void editPermissibleValueByIndex(int index, String value, String codeName, String code, String codeSystem, String codeDescription) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv_" + index)));
+        if (value != null) {
+            clickElement(By.xpath("//*[@id='pvValue_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(value);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button[text()='Confirm']"));
+
+        }
+        if (codeName != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//button[text()='Confirm']"));
+        }
+        if (code != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//button[text()='Confirm']"));
+        }
+        if (codeSystem != null) {
+            clickElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//button[text()='Confirm']"));
+        }
+        if (codeDescription != null) {
+            clickElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//i"));
+            findElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//input")).sendKeys(codeName);
+            hangon(2);
+            clickElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//button[text()='Confirm']"));
+        }
+    }
+
+    protected void editOrigin(String origin, boolean append) {
+        clickElement(By.xpath("//*[@id='origin']//i[contains(@class,'fa-edit')]"));
+        if (!append) {
+            findElement(By.xpath("//*[@id='origin']//input")).clear();
+            hangon(2);
+        }
+        findElement(By.xpath("//*[@id='origin']//input")).sendKeys(origin);
+        hangon(2);
+        clickElement(By.xpath("//*[@id='origin']//button[text()='Confirm']"));
+        textPresent(origin, By.id("origin"));
+    }
 }

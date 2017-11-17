@@ -1,21 +1,20 @@
-import { Component, Inject, Input, ViewChild, Output, EventEmitter } from "@angular/core";
+import { Component, Input, ViewChild, Output, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStorageService } from "angular-2-local-storage/dist";
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import { TreeNode } from "angular-tree-component/dist/models/tree-node.model";
-import { AlertService } from "../../../../system/public/components/alert/alert.service";
+import { UserService } from '_app/user.service';
+import { ClassificationService } from 'core/classification.service';
+
 const actionMapping: IActionMapping = {
     mouse: {
         click: () => {
         }
     }
 };
-const urlMap = {
-    "cde": "/addCdeClassification/",
-    "form": "/addFormClassification/"
-};
+
 @Component({
     selector: "cde-classify-item-modal",
     templateUrl: "classifyItemModal.component.html",
@@ -23,14 +22,13 @@ const urlMap = {
 })
 export class ClassifyItemModalComponent {
     @ViewChild("classifyItemContent") public classifyItemContent: NgbModalModule;
-    @Input() elt: any;
-    @Output() updateElt = new EventEmitter();
+    @Input() modalTitle: string = "Classify this CDE";
+    @Output() onEltSelected = new EventEmitter();
 
     public modalRef: NgbModalRef;
     selectedOrg: any;
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView: any;
-    myOrgs: any;
 
     options = {
         idField: "name",
@@ -44,37 +42,32 @@ export class ClassifyItemModalComponent {
     constructor(private http: Http,
                 public modalService: NgbModal,
                 private localStorageService: LocalStorageService,
-                private alert: AlertService,
-                @Inject("userResource") public userService) {
+                public userService: UserService,
+                private classificationSvc: ClassificationService) {
     }
 
-    openItemModal() {
-        this.modalRef = this.modalService.open(this.classifyItemContent, {size: "lg"});
-        this.myOrgs = this.userService.userOrgs;
+    openModal() {
         this.orgClassificationsTreeView = null;
         this.orgClassificationsRecentlyAddView = null;
-        this.modalRef.result.then(result => {
-            this.reloadElt(() => {
-                if (result === "success")
-                    this.alert.addAlert("success", "Classification added.");
-                if (result === "exists")
-                    this.alert.addAlert("warning", "Classification already exists.");
-            });
-        }, () => {
+        if (this.selectedOrg) {
+            this.onChangeOrg(this.selectedOrg);
+        } else this.userService.then(() => {
+            if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
         });
+        return this.modalService.open(this.classifyItemContent);
     }
 
     onChangeOrg(value) {
         if (value) {
+            let url = "/org/" + encodeURIComponent(value);
             //noinspection TypeScriptValidateTypes
-            this.http.get("/org/" + encodeURIComponent(value)).map(res => res.json())
-                .subscribe(
-                    res => {
-                        this.selectedOrg = value;
-                        this.orgClassificationsTreeView = res;
-                    }, () => {
-                        this.orgClassificationsTreeView = {};
-                    });
+            this.http.get(url).map(res => res.json()).subscribe(
+                res => {
+                    this.selectedOrg = value;
+                    this.orgClassificationsTreeView = res;
+                }, () => {
+                    this.orgClassificationsTreeView = {};
+                });
         } else this.orgClassificationsTreeView = [];
     }
 
@@ -86,20 +79,15 @@ export class ClassifyItemModalComponent {
         }
     }
 
-    updateClassificationLocalStorage(item) {
-        let recentlyClassification = <Array<any>>this.localStorageService.get("classificationHistory");
-        if (!recentlyClassification) recentlyClassification = [];
-        recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) o.eltId = o.cdeId;
-            return JSON.stringify(o) !== JSON.stringify(item);
-        });
-        recentlyClassification.unshift(item);
-        this.localStorageService.set("classificationHistory", recentlyClassification);
-    }
-
     classifyItemByRecentlyAdd(classificationRecentlyAdd) {
-        classificationRecentlyAdd.eltId = this.elt._id;
-        this.doClassifyPost(classificationRecentlyAdd);
+        this.classificationSvc.updateClassificationLocalStorage({
+            categories: classificationRecentlyAdd.categories,
+            orgName: classificationRecentlyAdd.orgName
+        });
+        this.onEltSelected.emit({
+            classificationArray: classificationRecentlyAdd.categories,
+            selectedOrg: classificationRecentlyAdd.orgName,
+        });
     }
 
     classifyItemByTree(treeNode) {
@@ -111,34 +99,13 @@ export class ClassifyItemModalComponent {
             if (!_treeNode.data.virtual)
                 classificationArray.unshift(_treeNode.data.name);
         }
-        let postBody = {
+        this.classificationSvc.updateClassificationLocalStorage({
             categories: classificationArray,
-            eltId: this.elt._id,
             orgName: this.selectedOrg
-        };
-        this.doClassifyPost(postBody);
-    }
-
-    doClassifyPost(postBody) {
-        this.http.post(urlMap[this.elt.elementType], postBody).subscribe(
-            () => {
-                this.updateClassificationLocalStorage(postBody);
-                this.modalRef.close("success");
-            }, err => {
-                this.alert.addAlert("danger", err._body);
-                this.modalRef.close("error");
-            });
-    }
-
-    reloadElt(cb) {
-        let url = this.elt.elementType === "cde" ? "debytinyid/" + this.elt.tinyId : "formById/" + this.elt.tinyId;
-        //noinspection TypeScriptValidateTypes
-        this.http.get(url).map(res => res.json()).subscribe(res => {
-            this.updateElt.emit(res);
-            if (cb) cb();
-        }, err => {
-            if (err) this.alert.addAlert("danger", "Error retrieving. " + err);
-            if (cb) cb();
+        });
+        this.onEltSelected.emit({
+            classificationArray: classificationArray,
+            selectedOrg: this.selectedOrg
         });
     }
 }

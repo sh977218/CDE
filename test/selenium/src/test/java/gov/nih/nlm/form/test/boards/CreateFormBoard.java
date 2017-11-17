@@ -11,10 +11,11 @@ public class CreateFormBoard extends BoardTest {
     public void createFormOnlyBoard() {
         mustBeLoggedInAs(formboarduser, password);
         String boardName = "formOnlyBoard";
+        String boardDefinition = "this board only has forms.";
         String formName1 = "Participant/Subject Contact Information";
         String formName2 = "Parkinson's Disease Quality of Life Scale (PDQUALIF)";
         String formName3 = "ER/Admission Therapeutic Procedures";
-        createBoard(boardName, "this board only has forms.", "form");
+        createBoard(boardName, boardDefinition, "form");
 
         pinFormToBoard(formName1, boardName);
         pinFormToBoard(formName2, boardName);
@@ -25,28 +26,28 @@ public class CreateFormBoard extends BoardTest {
         clickElement(By.id("board.classifyAllForms"));
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("TEST");
         textPresent("Classify Board");
-        clickElement(By.xpath("//div[@id='addClassification-Classify Board']/button"));
+        clickElement(By.xpath("//*[@id='Classify Board-classifyBtn']"));
         textPresent("All Elements classified.");
         closeAlert();
-        clickElement(By.id("form_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("Steward");
         textPresent("Registration Status");
-        
+
         switchTabAndClose(0);
 
         goToFormByName(formName1);
 
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("Classify Board");
 
         goToFormByName(formName2);
 
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("Classify Board");
 
         goToFormByName(formName3);
 
-        clickElement(By.id("classification_tab"));
+        goToClassification();
         textPresent("Classify Board");
 
         goToBoard(boardName);
@@ -54,7 +55,15 @@ public class CreateFormBoard extends BoardTest {
         textPresent(formName2);
         textPresent(formName3);
 
-        clickElement(By.id("unpin_1"));
+
+        // counteract save summary/table view
+        try {
+            clickElement(By.id("unpin_1"));
+        } catch (Exception e) {
+            if (driver.findElements(By.id("list_summaryView")).size() > 0)
+                clickElement(By.id("list_summaryView"));
+            clickElement(By.id("unpin_1"));
+        }
         textPresent("Unpinned.");
         closeAlert();
         textNotPresent(formName2);

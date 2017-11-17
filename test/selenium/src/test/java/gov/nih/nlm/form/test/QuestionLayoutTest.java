@@ -13,7 +13,7 @@ public class QuestionLayoutTest extends QuestionTest {
         String sec1 = "first section";
         String sec2 = "second section";
 
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         addSectionTop(sec1, null);
         addSectionBottom(sec2, null);
 
@@ -58,7 +58,7 @@ public class QuestionLayoutTest extends QuestionTest {
         textNotPresent("Show Filters");
         textNotPresent("results for");
 
-        saveForm();
+        newFormVersion();
     }
 
 }

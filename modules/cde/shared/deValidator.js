@@ -1,8 +1,12 @@
 exports.checkPvUnicity = function (valueDomain) {
     var result = {allValid: true};
+    valueDomain.allValid = true;
     if (valueDomain.datatype === 'Value List' && valueDomain.permissibleValues.length === 0) {
         result.pvNotValidMsg = "permissibleValues is empty";
-        return result.allValid = false;
+        result.allValid = false;
+        valueDomain.pvNotValidMsg = "permissibleValues is empty";
+        valueDomain.allValid = false;
+        return;
     }
     var allPvs = {}, allCodes = {}, allVms = {};
     valueDomain.permissibleValues.forEach(function (pv) {
@@ -11,22 +15,34 @@ exports.checkPvUnicity = function (valueDomain) {
         if (pvCode.length > 0 && pvCodeSystem.length === 0) {
             pv.notValid = "pvCode is not empty, pvCodeSystem is empty";
             result.pvNotValidMsg = pv.notValid;
-            return result.allValid = false;
+            result.allValid = false;
+            valueDomain.pvNotValidMsg = pv.notValid;
+            valueDomain.allValid = false;
+            return;
         }
         if (allPvs[pv.permissibleValue]) {
             pv.notValid = "Duplicate Permissible Value";
             result.pvNotValidMsg = pv.notValid;
-            return result.allValid = false;
+            result.allValid = false;
+            valueDomain.pvNotValidMsg = pv.notValid;
+            valueDomain.allValid = false;
+            return;
         }
         if (allVms[pv.valueMeaningName]) {
             pv.notValid = "Duplicate Code Name";
             result.pvNotValidMsg = pv.notValid;
-            return result.allValid = false;
+            result.allValid = false;
+            valueDomain.pvNotValidMsg = pv.notValid;
+            valueDomain.allValid = false;
+            return;
         }
         if (allCodes[pv.valueMeaningCode]) {
             pv.notValid = "Duplicate Code";
             result.pvNotValidMsg = pv.notValid;
-            return result.allValid = false;
+            result.allValid = false;
+            valueDomain.pvNotValidMsg = pv.notValid;
+            valueDomain.allValid = false;
+            return;
         }
         allPvs[pv.permissibleValue] = 1;
         if (pv.valueMeaningName && pv.valueMeaningName.length > 0)
@@ -39,7 +55,7 @@ exports.checkPvUnicity = function (valueDomain) {
 };
 
 exports.fixDatatype = function (elt) {
-    if (!elt.valueDomain.datatype) elt.valueDomain.datatype = "";
+    if (!elt.valueDomain.datatype) elt.valueDomain.datatype = "Text";
     if (elt.valueDomain.datatype.toLowerCase() === "value list" && !elt.valueDomain.datatypeValueList)
         elt.valueDomain.datatypeValueList = {};
     if (elt.valueDomain.datatype.toLowerCase() === "number" && !elt.valueDomain.datatypeNumber)
@@ -53,8 +69,7 @@ exports.fixDatatype = function (elt) {
 };
 
 exports.wipeDatatype = function (elt) {
-    if (elt.elementType !== "cde")
-        return;
+    if (elt.elementType !== "cde") return;
     exports.fixDatatype(elt);
     var valueDomain = {
         name: elt.valueDomain.name,

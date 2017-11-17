@@ -36,15 +36,16 @@ public class PvValidatorTest extends NlmCdeBaseTest {
 
     @Test
     public void pvValidation() {
+        String cdeName = "PvValidatorCde";
         mustBeLoggedInAs("selenium", password);
-        goToCdeByName("PvValidatorCde");
-        clickElement(By.id("pvs_tab"));
+        goToCdeByName(cdeName);
+        goToPermissibleValues();
         textNotPresent("There are validation errors");
 
         changeField(0, "pv2");
         textPresent("There are validation errors. Duplicate Permissible Value");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-1-notValid")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+        Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
 
         changeField(1, "pv1");
         textNotPresent("There are validation errors");
@@ -53,7 +54,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         addPv("pv5", "name1", "code5", "LOINC");
         textPresent("There are validation errors. Duplicate Code Name");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+        Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
         clickElement(By.id("pvRemove_4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
@@ -61,7 +62,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         addPv("pv5", "name5", "code2", "NCI");
         textPresent("There are validation errors. Duplicate Code");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
+        Assert.assertEquals(0, driver.findElements(By.id("openSave")).size());
         clickElement(By.id("pvRemove_4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));

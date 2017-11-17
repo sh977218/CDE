@@ -1,0 +1,29 @@
+<% if (elt.tinyId.length) { %>
+<div class="row" id="ids_tab">
+    <h2 class="w-100">Identifiers:</h2>
+    <div class="col-12">
+        <dl class="row">
+            <dt class="col-3 text-right">Source:</dt>
+            <dd class="col-9">NLM</dd>
+            <dt class="col-3 text-right">Id:</dt>
+            <dd class="col-9"><%= elt.tinyId %></dd>
+            <dt class="col-3 text-right">Version:</dt>
+            <dd class="col-9"><%= elt.version %></dd>
+        </dl>
+    </div>
+    <% for(var i = 0; i < elt.ids.length; i++) {
+        var id = elt.ids[i];
+    %>
+    <div class="col-12">
+        <dl class="row">
+            <dt class="col-3 text-right">Source:</dt>
+            <dd class="col-9"><%= id.source %></dd>
+            <dt class="col-3 text-right">Id:</dt>
+            <dd class="col-9"><%= id.id %></dd>
+            <dt class="col-3 text-right">Version:</dt>
+            <dd class="col-9"><%= id.version %></dd>
+        </dl>
+    </div>
+    <% } %>
+</div>
+<% } %>

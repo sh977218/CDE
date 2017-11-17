@@ -11,7 +11,7 @@ public class DragHandleVisibility extends BaseFormTest {
         mustBeLoggedOut();
         String formName = "Deployment Risk and Resiliency Inventory, Version 2 (Combat)";
         goToFormByName(formName);
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         assertNoElt(By.cssSelector("div.formSectionArea i.question-move-handle"));
         assertNoElt(By.cssSelector("i.section-move-handle"));
         mustBeLoggedInAs(ninds_username, password);

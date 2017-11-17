@@ -27,7 +27,7 @@ function run() {
                 if (removeMigrationOrgError) throw removeMigrationOrgError;
                 console.log('Removed all migration org');
                 cb(null, 'Finished removing migration org');
-            })
+            });
         },
         function (cb) {
             new MigrationOrgModel({
@@ -48,7 +48,7 @@ function run() {
                     loincIdArray.push(n.get('LOINC_NUM'));
                 });
                 cb(null, 'Finished retrieving all eyeGENE cde id.');
-            })
+            });
         },
         function (cb) {
             LoadLoincCdeIntoMigration.runArray(loincIdArray, org, orgInfo, function (one, next) {
@@ -61,20 +61,20 @@ function run() {
                             cdeCount++;
                             console.log('cdeCount: ' + cdeCount);
                             next();
-                        })
+                        });
                     } else {
                         next();
                     }
                 });
-            }, function (results) {
+            }, function () {
                 org.markModified('classifications');
                 org.save(function (err) {
                     if (err) throw err;
                     cb();
-                })
-            })
+                });
+            });
         }
-    ], function (err, results) {
+    ], function () {
         process.exit(0);
     });
 }

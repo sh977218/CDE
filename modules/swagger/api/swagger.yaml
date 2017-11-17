@@ -11,12 +11,12 @@ schemes:
 produces:
 - "application/json"
 paths:
-  /debytinyid/{tinyId}:
+  /de/{tinyId}:
     get:
       tags:
       - "CDE"
       summary: "CDE element"
-      description: "One question.\n"
+      description: "A single data element.\n"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -33,12 +33,12 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /debytinyid/{tinyId}/{version}:
+  /de/{tinyId}/version/{version}:
     get:
       tags:
       - "CDE"
       summary: "CDE element"
-      description: "One question.\n"
+      description: "A single data element.\n"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -60,12 +60,12 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /formById/{tinyId}:
+  /form/{tinyId}:
     get:
       tags:
       - "Form"
       summary: "CDE Form"
-      description: "CDE Form for filling out.\n"
+      description: "Form template for data collection.\n"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -82,12 +82,12 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /formByTinyIdAndVersion/{tinyId}/{version}:
+  /form/{tinyId}/version/{version}:
     get:
       tags:
       - "Form"
       summary: "CDE Form"
-      description: "CDE Form for filling out.\n"
+      description: "Form template for data collection.\n"
       parameters:
       - name: "tinyId"
         in: "path"
@@ -593,7 +593,7 @@ definitions:
           properties:
             eltId:
               type: "string"
-              example: "dd_views"
+              example: "views"
             eltType:
               type: "string"
               example: "cde"

@@ -1,16 +1,13 @@
-import {
-    Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef,
-    ViewChild
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import { NgbModal, NgbModalModule, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as _ from "lodash";
 import { Observable } from "rxjs/Observable";
 
-import { SkipLogicService } from "../../skipLogic.service";
-import { CdeForm, FormElement, FormQuestion, SkipLogic } from "../../form.model";
 import { TreeNode } from "angular-tree-component";
-import { FormattedValue } from "../../../../core/public/models.model";
+import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { CdeForm, FormElement, FormQuestion, SkipLogic } from 'core/form.model';
+import { FormattedValue } from 'core/models.model';
 
 @Component({
     selector: "cde-form-description-question-detail",
@@ -18,6 +15,7 @@ import { FormattedValue } from "../../../../core/public/models.model";
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() elt: CdeForm;
+    @Input() canEdit: boolean = false;
     @Input() node: TreeNode;
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
@@ -30,6 +28,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     answersOptions: any = {
         allowClear: true,
         multiple: true,
+        closeOnSelect: true,
         placeholder: {
             id: "",
             placeholder: "Leave blank to ..."
@@ -56,15 +55,14 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     };
 
-    constructor(@Inject("isAllowedModel") public isAllowedModel,
-                private http: Http,
+    constructor(private http: Http,
                 public modalService: NgbModal,
                 public skipLogicService: SkipLogicService) {
         this.nameSelectModal.checkAndUpdateLabel = (section, doUpdate = false, selectedNaming = false) => {
             section.formElements.forEach((fe) => {
                 if (fe.skipLogic && fe.skipLogic.condition) {
                     let updateSkipLogic = false;
-                    let tokens = this.skipLogicService.tokenSplitter(fe.skipLogic.condition);
+                    let tokens = SkipLogicService.tokenSplitter(fe.skipLogic.condition);
                     tokens.forEach((token, i) => {
                         if (i % 2 === 0 && token === '"' + this.nameSelectModal.question.label + '"') {
                             this.nameSelectModal.updateSkipLogic = true;
@@ -138,11 +136,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         );
 
     getTemplate() {
-        return (this.isAllowedModel.isAllowed(this.elt) && this.question.edit ? this.formDescriptionQuestionEditTmpl : this.formDescriptionQuestionTmpl);
+        return (this.canEdit && this.question.edit ? this.formDescriptionQuestionEditTmpl : this.formDescriptionQuestionTmpl);
     }
 
     getAnswersData() {
-        return this.question.question.cde.permissibleValues.map(answer => { return {id: answer.permissibleValue, text: answer.valueMeaningName}; });
+        return this.question.question.cde.permissibleValues.map(answer => {
+            return {id: answer.permissibleValue, text: answer.valueMeaningName};
+        });
     }
 
     getAnswersValue() {
@@ -152,7 +152,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     getUoms() {
-        return this.question.question.uoms.map(uom => { return {id: uom, text: uom}; });
+        return this.question.question.uoms.map(uom => {
+            return {id: uom, text: uom};
+        });
     }
 
     isScore(formElt) {
@@ -163,8 +165,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.nameSelectModal.section = section;
         this.nameSelectModal.question = question;
         this.nameSelectModal.cde = question.question.cde;
-        let url = "/debytinyid/" + this.nameSelectModal.cde.tinyId;
-        if (this.nameSelectModal.cde.version) url += "/" + this.nameSelectModal.cde.version;
+        let url = "/de/" + this.nameSelectModal.cde.tinyId;
+        if (this.nameSelectModal.cde.version) url += "/version/" + this.nameSelectModal.cde.version;
         this.http.get(url).map((res: Response) => res.json())
             .subscribe((response) => {
                 this.nameSelectModal.cde = response;
@@ -187,16 +189,21 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     slOptionsRetrigger() {
-        setTimeout(() => {
-            this.slInput.nativeElement.dispatchEvent(FormDescriptionQuestionDetailComponent.inputEvent);
-        }, 0);
+        if (this.slInput)
+            setTimeout(() => {
+                this.slInput.nativeElement.dispatchEvent(FormDescriptionQuestionDetailComponent.inputEvent);
+            }, 0);
     }
 
     validateSkipLogic(skipLogic, previousQuestions, item) {
-        if (this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item))
-            this.stageElt.emit();
-        else
-            this.isFormValid.emit(false);
+        let oldSkipLogic = skipLogic;
+        if (oldSkipLogic && oldSkipLogic.condition !== item) {
+            let validateSkipLogicResult = this.skipLogicService.validateSkipLogic(skipLogic, previousQuestions, item);
+            if (validateSkipLogicResult)
+                this.stageElt.emit();
+            else
+                this.isFormValid.emit(false);
+        }
     }
 
     static inputEvent = new Event('input');

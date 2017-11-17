@@ -6,7 +6,7 @@ var mongo_board = require('../../board/node-js/mongo-board')
     , elastic = require('./elastic')
     , async = require('async')
     , logging = require('./logging.js')
-    ;
+;
 
 var classification = this;
 
@@ -46,7 +46,7 @@ exports.eltClassification = function (body, action, dao, cb) {
         if (!elt) return cb("can not elt");
         var steward = classificationShared.findSteward(elt, body.orgName);
         if (!steward) {
-            mongo_data_system.orgByName(body.orgName, function (stewardOrg) {
+            mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
                 var classifOrg = {
                     stewardOrg: {
                         name: body.orgName
@@ -68,12 +68,6 @@ exports.eltClassification = function (body, action, dao, cb) {
         dao.eltByTinyId(body.tinyId, findElements);
     if (body.tinyId && body.version && dao.byTinyIdAndVersion)
         dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
-};
-
-function classify(steward, categories, elt) {
-    classificationShared.addCategory(steward.object, body.categories, function (err) {
-        classification.saveCdeClassif(err, elt, cb);
-    });
 };
 
 exports.isInvalidatedClassificationRequest = function (req) {
@@ -104,23 +98,24 @@ exports.addClassification = function (body, dao, cb) {
             elt.markModified("classification");
             elt.save(function (err) {
                 if (err) cb(err);
-                else cb(null, result)
-            })
+                else cb(null, result);
+            });
         });
     });
 };
 
 exports.removeClassification = function (body, dao, cb) {
     if (!dao.byId) {
-        cb("dao.byId is undefined");
-        logging.log(null, "dao.byId is undefined" + dao);
+        cb("Element id is undefined");
+        logging.log(null, "Element id is undefined" + dao);
         return;
     }
     dao.byId(body.eltId, function (err, elt) {
         if (err) return cb(err);
         if (!elt) return cb("Can not find elt with _id: " + body.eltId);
         let steward = classificationShared.findSteward(elt, body.orgName);
-        classificationShared.removeCategory(steward.object, body.categories, function (result) {
+        classificationShared.removeCategory(steward.object, body.categories, function (e) {
+            if (e) return cb(e);
             for (var i = elt.classification.length - 1; i >= 0; i--) {
                 if (elt.classification[i].elements.length === 0) {
                     elt.classification.splice(i, 1);
@@ -128,10 +123,9 @@ exports.removeClassification = function (body, dao, cb) {
             }
             elt.updated = new Date();
             elt.markModified("classification");
-            elt.save(function (err) {
-                if (err) cb(err);
-                else cb(null, result)
-            })
+            elt.save(function (err, o) {
+                cb(err, o);
+            });
         });
     });
 };
@@ -140,7 +134,7 @@ exports.modifyOrgClassification = function (request, action, callback) {
     if (!(request.categories instanceof Array)) {
         request.categories = [request.categories];
     }
-    mongo_data_system.orgByName(request.orgName, function (stewardOrg) {
+    mongo_data_system.orgByName(request.orgName, function (err, stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.modifyCategory(fakeTree, request.categories, {
             type: action,
@@ -200,7 +194,7 @@ exports.addOrgClassification = function (body, cb) {
         body.categories = [body.categories];
     }
 
-    mongo_data_system.orgByName(body.orgName, function (stewardOrg) {
+    mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.addCategory(fakeTree, body.categories);
         stewardOrg.markModified("classifications");

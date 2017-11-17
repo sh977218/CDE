@@ -1,5 +1,5 @@
 var serverUrl =  "http://localhost:3001/";
-var deViewQueryUri = "/deview?cdeId=";
+var deViewQueryUri = "/deView?cdeId=";
 var listOfDeTinyIds = [];
 var numberOfUsers = 350 ;
 var percentNewUsers = 10;
@@ -13,7 +13,7 @@ var request = require('request');
 require('log-buffer');
 
 var queriesViewHomepage = [
-    {uri: '/deview?cdeId=', etag: null}
+    {uri: '/deView?cdeId=', etag: null}
     , {uri: 'cde/public/assets/css/bootstrap.min.css', etag: null}
     , {uri: 'cde/public/assets/css/font-awesome.min.css', etag: null}
     , {uri: 'cde/public/assets/css/ng-grid.min.css', etag: null}

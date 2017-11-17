@@ -7,7 +7,6 @@ var https = require('https')
     , request = require('request')
     , passport = require('passport')
     , LocalStrategy = require('passport-local').Strategy
-    , OAuth2Strategy = require('passport-oauth').OAuth2Strategy
     , util = require('util')
     ;
 
@@ -16,7 +15,7 @@ var ticketValidationOptions = {
     , hostname: config.uts.ticketValidation.host
     , port: config.uts.ticketValidation.port
     , path: config.uts.ticketValidation.path
-    , method: 'POST'
+    , method: 'GET'
     , agent: false
     , requestCert: true
     , rejectUnauthorized: false
@@ -164,45 +163,7 @@ exports.authBeforeVsac = function (req, username, password, done) {
     });
 };
 
-var oauthStrategy = new OAuth2Strategy({
-        tokenURL: config.oauth.serverBaseURL + '/oauth/token',
-        authorizationURL: config.oauth.serverBaseURL + '/dialog/authorize',
-        clientID: config.oauth.clientId,
-        clientSecret: config.oauth.clientSecret,
-        callbackURL: config.oauth.callbackURL
-    },
-    function (accessToken, refreshToken, profile, done) {
-        process.nextTick(function () {
-            auth.findAddUserLocally({
-                username: profile.username,
-                accessToken: accessToken,
-                refreshToken: refreshToken
-            }, function (user) {
-                done(null, user);
-            });
-        });
-    }
-);
-
-oauthStrategy.userProfile = function (accessToken, done) {
-    this._oauth2.getProtectedResource(config.oauth.serverBaseURL + '/api/userinfo', accessToken, function (err, body) {
-        if (err) return done(new InternalOAuthError('failed to fetch user profile', err));
-        try {
-            var json = JSON.parse(body);
-            var profile = {provider: 'nlmauth'};
-
-            profile.name = json.name;
-            profile.username = json.username;
-
-            done(null, profile);
-        } catch (e) {
-            done(e);
-        }
-    });
-};
-
 passport.use(new LocalStrategy({passReqToCallback: true}, this.authBeforeVsac));
-passport.use(oauthStrategy);
 
 exports.findAddUserLocally = function (profile, cb) {
     mongo_data_system.userByName(profile.username, function (err, user) {
@@ -216,8 +177,7 @@ exports.findAddUserLocally = function (profile, cb) {
                     quota: 1024 * 1024 * 1024,
                     accessToken: profile.accessToken,
                     refreshToken: profile.refreshToken
-                },
-                function (newUser) {
+                },  (err, newUser) => {
                     auth.updateUserAfterLogin(newUser, profile.ip);
                     cb(newUser);
                 });

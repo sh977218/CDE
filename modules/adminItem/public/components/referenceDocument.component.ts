@@ -1,56 +1,48 @@
-import { Component, Inject, Input, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import "rxjs/add/operator/map";
-import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef, } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+
+import { DataElement } from 'core/dataElement.model';
+import { ReferenceDocument } from 'core/models.model';
 
 @Component({
-    selector: "cde-admin-item-reference-document",
+    selector: "cde-reference-document",
     providers: [NgbActiveModal],
-    templateUrl: "./referenceDocument.component.html"
+    templateUrl: "./referenceDocument.component.html",
+    styles: [`
+        dd {
+            min-height: 20px;
+        }`]
 })
 export class ReferenceDocumentComponent {
     @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: NgbModalModule;
-    @Input() public elt: any;
-    public newReferenceDocument: any = {};
+    @Output() onEltChange = new EventEmitter();
+    @Input() public elt: DataElement;
+    @Input() public canEdit: boolean = false;
+    public newReferenceDocument: ReferenceDocument = new ReferenceDocument();
     public modalRef: NgbModalRef;
 
-    constructor(private alert: AlertService,
-                @Inject("isAllowedModel") public isAllowedModel,
-                public modalService: NgbModal) {
+    constructor(private modalService: NgbModal) {
     }
 
     openNewReferenceDocumentModal() {
         this.modalRef = this.modalService.open(this.newReferenceDocumentContent, {size: "lg"});
         this.modalRef.result.then(() => {
-            this.newReferenceDocument = {};
+            this.newReferenceDocument = new ReferenceDocument();
         }, () => {
         });
     }
 
     addNewReferenceDocument() {
         this.elt.referenceDocuments.push(this.newReferenceDocument);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Reference Document added. Save to confirm.");
-            this.modalRef.close();
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.alert.addAlert("success", "Reference Document Added");
-                this.modalRef.close();
-            });
-        }
+        this.onEltChange.emit();
+        this.modalRef.close();
     }
 
     removeReferenceDocumentByIndex(index) {
         this.elt.referenceDocuments.splice(index, 1);
-        if (this.elt.unsaved) {
-            this.alert.addAlert("info", "Reference Document removed. Save to confirm.");
-        } else {
-            this.elt.$save(newElt => {
-                this.elt = newElt;
-                this.alert.addAlert("success", "Reference Document Removed");
-            });
-        }
+        this.onEltChange.emit();
+        this.modalRef.close();
     }
 
 }

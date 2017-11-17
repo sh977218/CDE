@@ -12,23 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends FormCommentTest {
 
-    protected void saveForm() {
-        try {
-            clickElement(By.id("openSaveBottom"));
-            textPresent("has already been used");
-        } catch (Exception e) {
-            // known error spot. Seems the button does not always get clicked.
-            clickElement(By.id("openSaveBottom"));
-            textPresent("has already been used");
-        }
-        hangon(2);
-        findElement(By.name("version")).sendKeys("1");
-        textNotPresent("This version number has already been used.");
-        clickElement(By.id("confirmNewVersion"));
-        textPresent("Saved.");
-        closeAlert();
-    }
-
     public void searchForm(String query) {
         findElement(By.name("q")).sendKeys("\"" + query + "\"");
         hangon(1);
@@ -79,16 +62,34 @@ public class BaseFormTest extends FormCommentTest {
                 }
             }
         }
-
-        hangon(1); // allow time for id to be processed
-        scrollToViewById(sectionId);
         startEditQuestionSectionById(sectionId);
+        if (title != null) {
+            editSectionTitle(sectionId, title);
+        }
+        if (repeat != null) {
+            hangon(1); // allow time for id to be processed
+            setRepeat(sectionId, repeat);
+        }
+        saveEditQuestionSectionById(sectionId);
+    }
+
+    public void editSectionTitle(String sectionId, String title) {
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
         String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_title')]//input";
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
-        setRepeat(sectionId, repeat);
+    }
+
+    public void setRepeat(String sectionId, String repeat) {
+        if (repeat != null) {
+            if (repeat.charAt(0) == 'F')
+                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
+            else {
+                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
+                findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
+            }
+        }
     }
 
     public void dragAndDrop(WebElement source, WebElement target) {
@@ -129,39 +130,6 @@ public class BaseFormTest extends FormCommentTest {
         return builder.toString();
     }
 
-    public void setRepeat(String sectionId, String repeat) {
-        if (repeat != null) {
-            if (repeat.charAt(0) == 'F')
-                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
-            else {
-                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
-                findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
-            }
-        }
-    }
-
-    public void startEditQuestionSectionById(String id) {
-        try {
-            scrollToViewById(id);
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
-        } catch (Exception e) {
-            scrollDownBy(50);
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
-        }
-    }
-
-    public void saveEditQuestionSectionById(String id) {
-        try {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
-        } catch (Exception e) {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
-        }
-    }
-
     public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
         return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//input";
     }
@@ -177,6 +145,7 @@ public class BaseFormTest extends FormCommentTest {
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
     }
+
 
     protected void scrollToInfiniteById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
@@ -198,5 +167,24 @@ public class BaseFormTest extends FormCommentTest {
         scrollToViewById(id);
     }
 
+
+    protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
+                                        boolean numbering, String dispType, int numberOfColumns, boolean displayInvisible) {
+        textPresent("Add Profile");
+        clickElement(By.id("addDisplayProfile"));
+        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
+        findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
+        findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
+        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//button[contains(@class, 'fa-check')]"));
+        if (!matrix) clickElement(By.id("displayAsMatrix_" + index));
+        if (displayValues) clickElement(By.id("displayValues_" + index));
+        if (!instructions) clickElement(By.id("displayInstructions_" + index));
+        if (!numbering) clickElement(By.id("displayNumbering_" + index));
+        if (!"Follow-up".equals(dispType)) clickElement(By.id("displayType_" + index));
+
+        new Select(findElement(By.id("nc_" + index))).selectByVisibleText(String.valueOf(numberOfColumns));
+
+        if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
+    }
 
 }

@@ -1,0 +1,61 @@
+<div class="container-fluid">
+    <div class="col-md-5">
+        <h1>Create Data Element</h1>
+        <hr>
+        <form #dataElementForm="ngForm">
+            <div class="form-group">
+                <label for="eltName">Name</label>
+                <input type="text" class="form-control" id="eltName" [(ngModel)]="elt.naming[0].designation"
+                       name="eltName" (ngModelChange)="elementNameChanged();"
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="eltDefinition">Definition</label>
+                <input type="text" class="form-control" id="eltDefinition" [(ngModel)]="elt.naming[0].definition"
+                       name="eltDefinition" required>
+            </div>
+
+            <div class="form-group">
+                <label for="eltStewardOrgName">Steward Organization</label>
+                <select class="form-control" id="eltStewardOrgName" [(ngModel)]="elt.stewardOrg.name"
+                        name="eltStewardOrgName" required>
+                    <option>Select One</option>
+                    <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
+                </select>
+            </div>
+            <div class="form-group" *ngIf="elt.stewardOrg.name">
+                <button class="btn btn-small btn-default" id="openClassificationModalBtn"
+                        value="add" (click)="openClassifyItemModal()">
+                    <i class="fa fa-folder-open-o"> </i> Classify this {{ elt.elementType | uppercase}}
+                </button>
+                <div id="classificationBody" class="overflowHidden">
+                    <cde-classification-view [elt]="elt"
+                                             (confirmDelete)="confirmDelete($event);"></cde-classification-view>
+                </div>
+            </div>
+            <div *ngIf="validationErrors(elt)" class="form-group text-danger">
+                <i class="fa fa-warning"></i> {{validationMessage}}
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-warning ml-sm-5 mb-1" (click)="cancelCreateDataElement();"> Cancel</button>
+                <input id="submit" type="submit" (click)="createDataElement()" class="btn btn-small btn-success"
+                       [disabled]="!dataElementForm.form.valid || validationErrors(elt)"/>
+            </div>
+            <hr/>
+
+        </form>
+    </div>
+
+    <div class="col-md-7" *ngIf="suggestedCdes?.length > 0">
+        <h4>Possible Matches</h4>
+        <div class="panel-group" id="accordion">
+            <cde-list-view [elts]="suggestedCdes" listView="accordion" module="cde"></cde-list-view>
+        </div>
+    </div>
+</div>
+
+
+
+<cde-classify-item-modal #classifyItemComponent [elt]="elt"
+                         (onEltSelected)="afterClassified($event)"></cde-classify-item-modal>

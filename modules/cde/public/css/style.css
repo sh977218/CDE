@@ -1,24 +1,6 @@
 /* Bootstrap 4 overrides for Bootstrap 3 */
-.row {
-    display: block;
-}
-
-.nav, .navbar, .navbar-nav {
-    display: block;
-}
-
-.navbar-collapse.collapse.in,
-.navbar-collapse.collapsing {
-    display: block !important;
-    width: auto;
-}
-
 .form-inline, .form-inline label {
     display: inline-block;
-}
-
-.navbar {
-    padding: 0;
 }
 
 .dropdown-toggle::after {
@@ -32,22 +14,22 @@ select.form-control:not([size]):not([multiple]) {
     height: auto;
 }
 
-.col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6,
-.col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
-.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
-.col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12,
-.col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6,
-.col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
-    max-width: none;
+label.input-group-addon:last-child {
+    border-left: 1px solid #ccc;
 }
 
 /*fixes an issue in bootstrap #1078 */
-.modal-body {
-    overflow-y: inherit;
-}
-
 .hand-cursor {
     cursor: pointer;
+}
+
+/* Disable modal slide down effect */
+.modal.fade .modal-dialog {
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    -webkit-transform: none !important;
+    transform: none !important;
 }
 
 body {
@@ -67,10 +49,6 @@ body {
     padding-left: 130px;
 }
 
-.pt8 {
-    padding-top: 8px;
-}
-
 .mr2 {
     margin-right: 2px;
 }
@@ -87,10 +65,6 @@ body {
     padding: 10px;
 }
 
-.padding3 {
-    padding: 3px;
-}
-
 .pt20 {
     padding-top: 20px;
 }
@@ -103,36 +77,8 @@ body {
     padding-top: 60px;
 }
 
-.pb8 {
-    padding-bottom: 8px;
-}
-
-.pb30 {
-    padding-bottom: 30px;
-}
-
 .pb40 {
     padding-bottom: 40px;
-}
-
-.pb60 {
-    padding-bottom: 60px;
-}
-
-.pl5 {
-    padding-left: 5px;
-}
-
-.pr5 {
-    padding-right: 5px;
-}
-
-.pr18 {
-    padding-right: 18px;
-}
-
-.pr20 {
-    padding-right: 20px;
 }
 
 .mt10 {
@@ -151,21 +97,12 @@ body {
     margin-bottom: 3px;
 }
 
-.mb5 {
-    margin-bottom: 5px;
-}
-
 .ib {
     display: inline-block;
 }
 
 .searchInfo {
     padding-top: 2px;
-}
-
-.searchInfoHr {
-    margin-top: 0;
-    margin-bottom: 0;
 }
 
 .gray {
@@ -240,16 +177,14 @@ ngb-accordion .card-header a:hover {
     color: darkgray;
 }
 
-.btn {
-    margin-left: 10px;
-}
-
 .fake-link {
+    color: #337ab7;
     text-decoration: none;
     cursor: pointer;
 }
 
 .fake-link:hover {
+    color: #23527c;
     text-decoration: underline;
 }
 
@@ -296,11 +231,6 @@ ngb-accordion .card-header a:hover {
     height: auto;
     max-width: 100%;
     margin: 0 auto;
-}
-
-.navbar-brand {
-    margin-top: -7px;
-    margin-right: 10px;
 }
 
 .matched-by {
@@ -380,15 +310,6 @@ a.paginate_button {
     opacity: 0.5;
 }
 
-/* Disable modal slide down effect */
-.modal.fade .modal-dialog {
-    -moz-transform: none !important;
-    -ms-transform: none !important;
-    -o-transform: none !important;
-    -webkit-transform: none !important;
-    transform: none !important;
-}
-
 dt.formViewDetails {
     width: auto;
 }
@@ -444,7 +365,9 @@ dl.dl-horizontal dd {
     border-color: #ddd;
 }
 
-/* Style for log in page */
+/*
+Style for log in page
+*/
 .form-signin {
     max-width: 330px;
     padding: 15px;
@@ -694,12 +617,13 @@ button#selectDefault {
     display: block;
 }
 
-.feedback-btn-gray {
+.feedback-btn.feedback-btn-gray {
     font-family: inherit !important;
     border-top-left-radius: 6px !important;
     border-top-right-radius: 6px !important;
     font-size: 11px;
     right: 20px !important;
+    z-index: 3;
 }
 
 #feedback-note-tmp {
@@ -985,10 +909,6 @@ div + .questionPlaceholder {
     margin-left: 0 !important;
 }
 
-#export {
-    margin-left: 10px;
-}
-
 .compare-divider {
     margin: 1px
 }
@@ -1038,7 +958,6 @@ div + .questionPlaceholder {
 }
 
 #resultList {
-    max-width: 1200px;
     font-size: small;
 }
 
@@ -1053,10 +972,6 @@ div + .questionPlaceholder {
 
 .navbar {
     margin-bottom: 0 !important;
-}
-
-#searchInfoBar {
-    margin: 10px;
 }
 
 .singleSearchResult {
@@ -1084,8 +999,10 @@ div + .questionPlaceholder {
 
 .codeCell {
     word-wrap: break-word;
-    /*min-width: 8%;*/
-    /*max-width: 8%;*/
+    /*
+    min-width: 8%;
+    max-width: 8%;
+    */
     width: 8%;
 }
 
@@ -1104,7 +1021,9 @@ div + .questionPlaceholder {
 }
 
 #sidebar-wrapper {
-    /*border: 1px solid rgb(220, 220, 220);*/
+    /*
+    border: 1px solid rgb(220, 220, 220);
+    */
     border-radius: 5px;
     position: fixed;
     width: inherit;
@@ -1215,6 +1134,11 @@ div + .questionPlaceholder {
 @media (min-width: 768px) {
     div .col-sm-2-4 {
         width: 20%;
+    }
+
+    .modal-xl, .modal-dialog.modal-lg {
+        width: 90%;
+        max-width: 1200px;
     }
 }
 
@@ -1363,11 +1287,11 @@ input.ng-invalid {
 }
 
 .ng-valid[required], .ng-valid.required {
-    border-left: 5px solid #42A948; /* green */
+    border-left: 5px solid #42A948;
 }
 
 .ng-invalid:not(form) {
-    border-left: 5px solid #a94442; /* red */
+    border-left: 5px solid #a94442;
 }
 
 .compareMessage {
@@ -1391,6 +1315,11 @@ input.ng-invalid {
 }
 
 .discussWrench {
+    -webkit-animation: wrench 10s linear infinite;
+    animation: wrench 10s linear infinite;
+}
+
+.pasteSectionWrench {
     -webkit-animation: wrench 10s linear infinite;
     animation: wrench 10s linear infinite;
 }
@@ -1588,12 +1517,6 @@ div.row .native-question-oneline-r {
     overflow-wrap: break-word;
 }
 
-.hr {
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
-}
-
 .native-instructions {
     margin-bottom: 5px;
     word-wrap: break-word;
@@ -1737,13 +1660,6 @@ div.slider .ui-slider-handle {
     height: 50px;
 }
 
-@media (min-width: 768px) {
-    .hugeModal > .modal-dialog {
-        width: 90%;
-        max-width: 1200px;
-    }
-}
-
 .progress-bar .bg-success {
     width: 100% !important;
 }
@@ -1756,4 +1672,22 @@ ins {
 del {
     color: black;
     background: #ffbbbb;
+}
+
+.modal {
+    overflow-y: scroll !important;
+}
+
+.loading {
+    display: none;
+}
+
+nih-cde:empty + .loading {
+    display: block;
+}
+
+.hr {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
 }

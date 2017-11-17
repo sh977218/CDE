@@ -7,12 +7,12 @@ import org.testng.annotations.Test;
 public class FormScoreTest extends QuestionTest {
 
     @Test
-    public void score() {
+    public void formScore() {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "ALS Score Form";
         goToFormByName(formName);
 
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
         addSectionBottom("Score Section", null);
         addQuestionToSection("ALS Severity Score (ALSSS) - total score value", 0);
 
@@ -21,7 +21,6 @@ public class FormScoreTest extends QuestionTest {
         textPresent("id: 5h29ApPjjzE");
         textPresent("id: h7pThcFJv2r");
         textPresent("(Incomplete Rule)", By.id("question_0_0"));
-
 
         addQuestionToSection("ALS Severity Score (ALSSS) - upper extremity dress hygiene score", 0);
         textNotPresent("id: cu-0EyndDn2");

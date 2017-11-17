@@ -10,12 +10,10 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
         String formName = "Vision Deficit Report";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToFormByName(formName);
-        clickElement(By.id("ids_tab"));
+         goToIdentifiers();
 
         addNewIdentifier("MyOrigin1", "MyId1", "MyVersion1");
-        scrollToTop();
         addNewIdentifier("MyOrigin2", "MyId2", null);
-        scrollToTop();
         addNewIdentifier("MyOrigin3", "MyId3", "MyVersion3");
 
         //remove MyOrigin2
@@ -24,7 +22,7 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
 
         goToFormByName(formName);
 
-        clickElement(By.id("ids_tab"));
+         goToIdentifiers();
         textPresent("MyOrigin1");
         textPresent("MyId1");
         textPresent("MyVersion1");

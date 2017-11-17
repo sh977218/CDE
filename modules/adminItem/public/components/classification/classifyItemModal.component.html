@@ -1,6 +1,8 @@
 <ng-template #classifyItemContent id="newClassifyItemModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="newClassifyItemModalHeader">
-        <h4 class="modal-title">Classify This {{elt.elementType | uppercase}}</h4>
+        <h4 class="modal-title">
+            <p [innerHtml]="modalTitle"></p>
+        </h4>
     </div>
     <div class="modal-body" id="newClassifyItemModalBody">
         <ngb-tabset (tabChange)="onChangeClassifyView($event)">
@@ -8,9 +10,9 @@
                 <ng-template ngbTabContent>
                     <hr>
                     <select class="form-control" id="selectClassificationOrg" name="selectClassifyItemOrg"
-                            (change)="onChangeOrg($event.target.value)" required>
+                            (change)="onChangeOrg($event.target.value)" [ngModel]="selectedOrg" required>
                         <option value="">Start by selecting an organization...</option>
-                        <option *ngFor="let myOrg of myOrgs" value="{{myOrg}}">{{myOrg}}</option>
+                        <option *ngFor="let myOrg of userService.userOrgs" value="{{myOrg}}">{{myOrg}}</option>
                     </select>
                     <div class="smallSpace"></div>
                     <div *ngIf="orgClassificationsTreeView">
@@ -22,7 +24,8 @@
                                     <i class="fa fa-plus"></i> Classify
                                 </button>
                             </ng-template>
-                            <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
+                            <ng-template #treeNodeFullTemplate let-node="node" let-index="index"
+                                         let-templates="templates">
                                 <div class="tree-node tree-node-level-{{ node.level }}" [class]="node.getClass()"
                                      [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
                                      [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
@@ -49,15 +52,17 @@
                     <hr>
                     <p>Select from recently used classifications...</p>
                     <div class="smallSpace"></div>
-                    <div *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; let i of index"
-                         class="breadcrumb ">
-                        {{orgClassificationRecentlyAddView.orgName}} /
-                        {{orgClassificationRecentlyAddView.categories.join(" / ")}}
-                        <button class="btn btn-default btn-xs" type="button"
-                                (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
-                            <i class="fa fa-plus"></i> Classify
-                        </button>
-                    </div>
+                    <ng-container
+                            *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; let i = index">
+                        <div class="breadcrumb" id="recentlyClassification_{{i}}">
+                            {{orgClassificationRecentlyAddView.orgName}} /
+                            {{orgClassificationRecentlyAddView.categories.join(" / ")}}
+                            <button class="btn btn-default btn-xs" type="button"
+                                    (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
+                                <i class="fa fa-plus"></i> Classify
+                            </button>
+                        </div>
+                    </ng-container>
                 </ng-template>
             </ngb-tab>
         </ngb-tabset>

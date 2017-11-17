@@ -1,0 +1,442 @@
+<ng-container *ngIf="view === 'welcome'; then welcomeSearch else searchResults"></ng-container>
+<!--<a [href]="redirectPath" style="display: none" id="redirectMe"></a>-->
+
+<ng-template #welcomeSearch>
+    <div class="container">
+        <div [class.welcomeSearchSearch]="!addMode">
+            <img [hidden]="embedded" id="homeNihCdeLogo" class="img-center-responsive"
+                 alt="NIH Common Data Elements (CDE) log"
+                 src="/cde/public/assets/img/NIH-CDE.png"/>
+        </div>
+        <div class="text-center center-block" id="searchDiv">
+            <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate method="GET"
+                  style="width: 80%; min-width: 300px; margin: auto">
+                <div class="input-group input-group-lg">
+                    <label class="sr-only" for="ftsearch-input">Search Terms</label>
+                    <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
+                           [(ngModel)]="searchSettings.q" aria-labelledby="l1" maxlength="500"
+                           [ngbTypeahead]="getAutocompleteSuggestions" [focusFirst]="false">
+
+                    <div class="input-group-btn">
+                        <button id="search.submit" (click)="termSearch()" type="submit"
+                                class="btn btn-danger btn-lg">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+                <!-- Error display area -->
+                <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
+                   class="error-block">
+                    <small>Query terms must be 500 characters or less.</small>
+                </p>
+            </form>
+            <div class="clear"></div>
+        </div>
+        <cde-search-export-button id="exportEverything" class="pull-right btn-group mt-3 mb-2" *ngIf="!embedded"
+                                  [module]="module"
+                                  (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})">
+
+        </cde-search-export-button>
+        <div class="mt-3">
+            <ngb-tabset #tbset="ngbTabset" (tabChange)="browseByTopic($event)">
+                <ngb-tab id="browseByClassification" title="Browse by Classification">
+                    <ng-template ngbTabContent>
+                        <div *ngIf="orgs?.length === 0">
+                            <h1 class="pl130">
+                                <i class="fa fa-spinner fa-pulse"></i> Searching...
+                            </h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"
+                                 *ngFor="let org of orgs"
+                                 id="search_by_classification_{{org.name}}">
+                                <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
+                                          (click)="browseOrg(org.name)">
+                                    <legend>
+                                        <span id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</span>
+                                    </legend>
+                                    <div *ngIf="org.longName">{{org.longName}}</div>
+                                    <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
+                                        elements
+                                    </div>
+                                    <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
+                                    <div *ngIf="org.source"><a href="{{org.source}}" target="_blank">Source</a></div>
+                                </fieldset>
+                                <i class="fa fa-info welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
+                                   id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)"></i>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab *ngIf="topics?.Diseases" title="Browse by Topic" id="browseByTopic">
+                    <ng-template ngbTabContent>
+                        <div *ngFor="let key of topicsKeys; let i = index; let l = last">
+                            <div [class.row]="i % 3 === 2 || l">
+                                <div class="col-md-4">
+                                    <h4 style="margin-bottom:2px;">{{key}}</h4>
+                                    <ul style="list-style-type: none">
+                                        <li *ngFor="let t of topics[key]">
+                                            <a (click)="browseTopic(key + ';' + t.name)">{{t.name}}
+                                                ({{t.count}})</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <hr *ngIf="i % 3 ==2">
+                        </div>
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
+        </div>
+        <div class="mt-3">
+            <small>
+                <span id="totalItems">{{totalItems}}</span> elements across all classifications
+            </small>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #orgDetailsModal>
+    <div style="margin: 25px" [innerHtml]="orgHtmlOverview"></div>
+</ng-template>
+
+<ng-template #searchResults>
+    <ng-container *ngIf="aggregations">
+        <nav class="navbar navbar-default" id="searchInfo"> <!-- SEARCH BAR -->
+            <div class="mt-3 mb-2">
+                <div class="navbar-header mb-md-1 mr-md-2">
+                    <form class="input-group" style="max-width: 768px">
+                        <span class="input-group-btn">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </span>
+                        <label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
+                        <input name="q" id="ftsearch-input" class="form-control search-query"
+                               type="text" [(ngModel)]="searchSettings.q" maxlength="500" aria-labelledby="l1"
+                               autocomplete="off" [focusFirst]="false"
+                               [ngbTypeahead]="getAutocompleteSuggestions">
+                        <span class="input-group-btn">
+                            <button id="search.submit" (click)="termSearch()" type="submit" class="btn btn-danger">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                        </span>
+                    </form>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav pull-right">
+                        <li *ngIf="embedded">
+                            <button name="resetSearch" id="resetSearch" class="btn btn-default" type="button"
+                                    (click)="reset()">
+                                <i class="fa fa-trash-o"></i> Reset
+                            </button>
+                        </li>
+                        <li *ngIf="!embedded">
+                            <button id="pinAll" (click)="openPinModal()" class="btn btn-default" type="button"
+                                    [hidden]="totalItems <= 0 || module === 'form'">
+                                <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
+                            </button>
+                        </li>
+                        <li>
+                            <button (click)="hideShowFilter()" class="btn btn-default" id="showHideFilters">
+                                <span [hidden]="filterMode">
+                                    <i class="glyphicon glyphicon-filter"></i> Show Filters</span>
+                                <span [hidden]="!filterMode">
+                                    <i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
+                            </button>
+                        </li>
+                        <li *ngIf="!embedded">
+                            <cde-list-view-controls [(listView)]="resultsView"></cde-list-view-controls>
+                        </li>
+                        <li *ngIf="!embedded" class="dropdown">
+                            <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn"
+                                    data-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-download"></i> Export <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li *ngIf="userService?.user?._id || module === 'cde'">
+                                    <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}"
+                                       (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
+                                    >{{exporters[key].display}}</a>
+                                </li>
+                                <li *ngIf="userService?.user && displayValidation()">
+                                    <a id="exportValidRule" (click)="openValidRulesModal()">Validation Rules</a>
+                                </li>
+                                <li *ngIf="!userService?.user?._id && module !== 'cde'">
+                                    <a routerLink="/login">Please login to export forms.</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div>
+        </nav>
+
+        <div class="m-3"> <!-- BREADCRUMBS -->
+            <span class="pt-3 pb-3"><strong id="searchResultNum">{{totalItems}}</strong> results for
+                <span id="term_crumb">
+                    <span *ngIf="!searchedTerm" class="label label-default">All Terms</span>
+                    <span *ngIf="searchedTerm" class="label label-success mr-2">{{searchedTerm}}
+                        <span id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
+                              (click)="searchSettings.q = ''; doSearch()"
+                              ngbTooltip="Remove this search term filter" placement="right" container="body"></span>
+                    </span>
+                </span>
+                <span id="classif_filter">
+                    | <span *ngIf="!hasSelectedClassifications()" class="label label-default">All Classifications</span>
+                    <span *ngIf="hasSelectedClassifications()" class="label label-success mr-2">{{getSelectedClassifications()}}
+                        <span id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-2"
+                              (click)="clearSelectedClassifications()"
+                              ngbTooltip="Remove this classification filter" placement="right" container="body"></span>
+                    </span>
+                    <span *ngIf="altClassificationFilterMode">and
+                        <span class="label label-success mr-2">{{getSelectedClassificationsAlt()}}
+                            <span id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-2"
+                                  (click)="clearSelectedClassificationsAlt()"
+                                  ngbTooltip="Remove this classifications filter" placement="right" container="body">
+                            </span>
+                        </span>
+                    </span>
+                </span>
+                <span id="topic_crumb">
+                    | <span *ngIf="!hasSelectedTopics()" class="label label-default">All Topics</span>
+                    <span *ngIf="hasSelectedTopics()" class="label label-success mr-2">{{getSelectedTopics()}}
+                        <span id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
+                           (click)="clearSelectedTopics()"
+                           ngbTooltip="Remove this topics filter" placement="right" container="body"></span>
+                    </span>
+                </span>
+                <span id="status_crumb">
+                    | <span *ngIf="!hasSelectedStatuses()" class="label label-default">All Statuses</span>
+                    <span *ngIf="hasSelectedStatuses()" class="label label-success mr-2">{{getSelectedStatuses()}}
+                        <span id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
+                           (click)="clearSelectedStatuses()"
+                           ngbTooltip="Remove this registration statuses filter" placement="right" container="body"></span>
+                    </span>
+                </span>
+                <span *ngIf="module === 'cde'" id="datatype_crumb">
+                    | <span *ngIf="!hasSelectedDatatypes()" class="label label-default">All Datatypes</span>
+                    <span *ngIf="hasSelectedDatatypes()" class="label label-success mr-2">{{getSelectedDatatypes()}}
+                        <span id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
+                           (click)="clearSelectedDatatypes()"
+                           ngbTooltip="Remove this datatypes filter" placement="right" container="body"></span>
+                    </span>
+                </span>
+            </span>
+            <small> ({{this.took / 1000}} secs)</small>
+        </div>
+        <div class="container-fluid" style="max-width: 1200px; margin-left: 0">
+            <div class="row">
+                <div id="resultList" [ngClass]="filterMode?'col-xs-12 col-sm-10 push-md-2':'col-xs-12'">
+                    <!-- SEARCH RESULTS -->
+                    <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
+                        Searching...</span>
+                    <span [hidden]="elts.length !== 0" class="h4"><i class="fa fa-frown-o"></i>
+                        No results were found. Try other criterias or selecting more statuses</span>
+                    <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
+                                   (add)="add.emit($event)"></cde-list-view>
+                    <ngb-pagination [hidden]="totalItems <= 0" maxSize="10" [collectionSize]="totalItems"
+                                    [pageSize]="resultPerPage" [(page)]="searchSettings.page"
+                                    (pageChange)="pageChange()"></ngb-pagination>
+                    <!-- link for google indexer only -->
+                    <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
+                </div>
+                <div [hidden]="!filterMode" [ngClass]="filterMode?'col-xs-12 col-sm-2 pull-md-10 ':'col-xs-12'">
+                    <!-- FILTERS -->
+                    <p class="gray">Filter by:</p>
+                    <div> <!-- CLASSIFICATION AGGREGATIONS -->
+                        <strong [hidden]="!aggregations.orgs.buckets" id="classif_filter_title">Classification
+                            <span class="nonLinkAnchor" id="altClassificationFilterModeToggle"
+                                  [hidden]="altClassificationFilterMode || embedded"
+                                  (click)="setAltClassificationFilterMode()"
+                                  ngbTooltip="Add a second classifications filter as an AND condition"
+                                  placement="right" container="body">
+                                <i class="fa fa-plus-square hand-cursor"></i></span></strong>
+                        <div class="pl-2" id="classificationListHolder">
+                            <span class="nonLinkAnchor displayBlock hand-cursor" (click)="alterOrgFilter(t.key)"
+                                  [ngbTooltip]="t.longName" placement="right" container="body"
+                                  *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey"
+                                  [hidden]="t.key !== getCurrentSelectedOrg() && getCurrentSelectedOrg()">
+                                <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">
+                                    <i class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
+                                </ng-container>
+                                <ng-template #else01>
+                                    <i class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>
+                                </ng-template>
+                                <a class="nonLinkAnchor" id="classifications-text-{{t.key}}"> {{t.key}}
+                                    (<span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)
+                                </a>
+                            </span>
+                            <div id="classification-facets">
+                                <span class="nonLinkAnchor displayBlock hand-cursor"
+                                      *ngFor="let e of getCurrentSelectedClassification(); let i = index"
+                                      (click)="selectElement(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
+                                    <ng-container
+                                            *ngIf="getCurrentSelectedClassification()?.indexOf(e) > -1; else else02">
+                                        <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
+                                    </ng-container>
+                                    <ng-template #else02>
+                                        <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
+                                    </ng-template>
+                                    <a class="nonLinkAnchor">
+                                        <small>{{e}}</small>
+                                    </a>
+                                </span>
+                                <span class="nonLinkAnchor displayBlock hand-cursor" (click)="selectElement(b.name)"
+                                      *ngFor="let b of (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications); trackBy: helperObjectsService.trackByName"
+                                      [style.margin-left]="(getCurrentSelectedClassification()?.length + 1) * 10 + 'px'">
+                                    <ng-container
+                                            *ngIf="getCurrentSelectedClassification()?.indexOf(b.name) > -1; else else03">
+                                        <i class="fa fa-chevron-down" id="li-checked-{{b.name}}"></i>
+                                    </ng-container>
+                                    <ng-template #else03>
+                                        <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
+                                    </ng-template>
+                                    <a class="nonLinkAnchor">
+                                        <small style="word-break: break-all">{{b.name}}
+                                            (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
+                                        </small>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+
+                    <div *ngIf="searchSettings.meshTree || aggregations.topics.length"> <!-- TOPIC AGGREGATIONS -->
+                        <strong id="meshTrees_filter">Topics</strong>
+                        <div class="pl-2" id="meshTreesListHolder">
+                            <div id="topic-facets">
+                                <span class="nonLinkAnchor displayBlock hand-cursor"
+                                      *ngFor="let e of getCurrentSelectedTopic(); index as i"
+                                      (click)="selectTopic(e)" [style.margin-left]="(i + 1) * 10 + 'px'">
+                                    <ng-container *ngIf="getCurrentSelectedTopic()?.indexOf(e) > -1; else else04">
+                                        <i class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
+                                    </ng-container>
+                                    <ng-template #else04>
+                                        <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
+                                    </ng-template>
+                                    <a class="nonLinkAnchor">
+                                        <small>{{e}}</small>
+                                    </a>
+                                </span>
+                                <span class="nonLinkAnchor displayBlock hand-cursor" (click)="selectTopic(b.name)"
+                                      *ngFor="let b of aggregations.topics; trackBy: helperObjectsService.trackByName"
+                                      [style.margin-left]="(getCurrentSelectedTopic()?.length + 1) * 10 + 'px'">
+                                    <ng-container *ngIf="getCurrentSelectedTopic()?.indexOf(b.name) > -1; else else05">
+                                        <i class="fa fa-chevron-down" id="li-checked-{{b.name}}"></i>
+                                    </ng-container>
+                                    <ng-template #else05>
+                                        <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
+                                    </ng-template>
+                                    <a class="nonLinkAnchor">
+                                        <small style="word-break: break-all">{{b.name}}
+                                            (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
+                                        </small>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                    </div>
+
+                    <strong [hidden]="!aggregations.statuses.statuses.buckets" id="status_filter">Registration
+                        Status</strong>
+                    <div class="pl-2" id="registrationStatusListHolder">
+                    <span class="hand-cursor"
+                          *ngFor="let t of aggregations.statuses.statuses.buckets"
+                          [ngbTooltip]="getRegStatusHelp(t.key)" placement="right" container="body">
+                        <span class="nonLinkAnchor displayBlock" *ngIf="t.doc_count > 0"
+                              style="margin-right: 0" (click)="addStatusFilter(t.key)">
+                            <ng-container
+                                    *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
+                                <i class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
+                            </ng-container>
+                            <ng-template #else06>
+                                <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
+                            </ng-template>
+                            <a class="nonLinkAnchor">
+                                <small id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                            </a>
+                        </span>
+                    </span>
+                    </div>
+                    <br/>
+
+                    <ng-container *ngIf="module === 'cde'">
+                        <strong [hidden]="!aggregations.datatype.datatype.buckets.length" id="datatype_filter">Data
+                            Types</strong>
+                        <div class="pl-2" id="datatypeListHolder">
+                        <span class="hand-cursor"
+                              *ngFor="let t of aggregations.datatype.datatype.buckets">
+                            <span class="displayBlock" *ngIf="t.doc_count > 0"
+                                  style="margin-right: 0" (click)="addDatatypeFilter(t.key)">
+                                <ng-container
+                                        *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
+                                    <i class="fa fa-check-square-o" id="li-checked-{{t.key}}"></i>
+                                </ng-container>
+                                <ng-template #else07>
+                                    <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
+                                </ng-template>
+                                <a class="nonLinkAnchor">
+                                    <small id="datatype-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                                </a>
+                            </span>
+                        </span>
+                        </div>
+                        <br/>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container #pinModal></ng-container>
+</ng-template>
+
+<ng-template #facet_elements_tree>
+    <span (click)="selectElement(e)" class="hand-cursor">
+                <ng-container
+                        *ngIf="searchSettings.classification?.indexOf(e.name) > -1; then classifName else classifNoName"></ng-container>
+                <ng-template #classifName>
+                    <i class="fa fa-angle-down" id="li-checked-{{e.name}}"></i></ng-template>
+                <ng-template #classifNoName>
+                    <i class="fa fa-angle-right" id="li-blank-{{e.name}}"></i></ng-template>
+                <span>
+                    <small> {{e.name}} (<span id="nbOfClassifElts-{{e.name}}">{{e.count}}</span>)</small>
+                </span>
+            </span>
+    <div [hidden]="selectedElements?.indexOf(e.name) === -1" style="margin-left: 5px">
+        <div *ngFor="let e of e.elements.sort(SearchBaseComponent.compareObjName)"
+             [hidden]="searchSettings.classification?.indexOf(e.name) === -1 && e.level <= searchSettings.classification?.length">
+            <ng-container *ngIf="true; then facet_elements_tree"></ng-container>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #validRulesModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3>Export CDEs not passing validation rules</h3>
+    </div>
+    <div class="modal-body">
+        <label for="selectStatus">Registration Status</label>
+        <select id="selectStatus" [(ngModel)]="validRulesStatus" class="form-control">
+            <option>Incomplete</option>
+            <option>Candidate</option>
+            <option id="recorded">Recorded</option>
+            <option>Qualified</option>
+            <option>Standard</option>
+            <option>Preferred Standard</option>
+        </select>
+        The export will list the CDE(s) that fail registration status rules for the selected status.
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="d()" id="cancelCopy">Cancel</button>
+        <button class="btn btn-success" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
+    </div>
+</ng-template>

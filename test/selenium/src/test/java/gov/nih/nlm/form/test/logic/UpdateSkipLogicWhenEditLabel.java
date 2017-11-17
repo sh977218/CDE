@@ -13,12 +13,12 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         String formName = "Study Discontinuation/Completion";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
+                clickElement(By.id("dropdownMenuButton"));                clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
         textNotPresent("Reason for premature intervention discontinuation");
         findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
         clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label/span[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");
-        clickElement(By.id("description_tab"));
+        goToFormDescription();
 
         startEditQuestionSectionById("question_0_0");
         clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
@@ -28,9 +28,9 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         Assert.assertEquals(cssClass.contains("fa-spin"), true);
         saveEditQuestionSectionById("question_0_0");
 
-        saveForm();
+        newFormVersion();
         goToFormByName(formName);
-        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
+                clickElement(By.id("dropdownMenuButton"));                clickElement(By.xpath("(//*[@id='dropdownMenuButton']/following-sibling::div)/button[normalize-space(text()) = 'Printable Logic:']/input"));
         textNotPresent("Reason for premature intervention discontinuation");
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");
         clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label/span[text()[contains(., 'No')]]"));

@@ -17,15 +17,15 @@ public class WelcomePageTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//i"));
         findElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//textarea")).sendKeys(htmlString);
         clickElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//button[contains(text(),'Confirm')]"));
-        textPresent("Org has been updated.");
+        textPresent("Saved");
         closeAlert();
 
         mustBeLoggedOut();
         goToCdeSearch();
-        clickElement(By.xpath("//*[@id='search_by_classification_caBIG']/i"));
+        clickElement(By.id("search_by_classification_info_caBIG"));
         textPresent(orgDetail);
         goToFormSearch();
-        clickElement(By.xpath("//*[@id='search_by_classification_caBIG']/i"));
+        clickElement(By.id("search_by_classification_info_caBIG"));
         textPresent(orgDetail);
     }
 }

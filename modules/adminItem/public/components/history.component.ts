@@ -1,17 +1,17 @@
-import { Component, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Http } from '@angular/http';
-
 import "rxjs/add/operator/map";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AlertService } from "../../../system/public/components/alert/alert.service";
+import { AlertService } from '_app/alert/alert.service';
+
 
 const URL_MAP = {
-    "cde": "/deview?cdeId=",
+    "cde": "/deView?cdeId=",
     "form": "/formView?formId="
 };
 
 @Component({
-    selector: "cde-admin-item-history",
+    selector: "cde-history",
     templateUrl: "./history.component.html",
     styles: [`
         caption {
@@ -29,39 +29,61 @@ const URL_MAP = {
             left: 5px;
             top: 5px;
         }
+
+        .isSelected {
+            background-color: #f5f5f5;
+        }
+
     `],
     providers: [NgbActiveModal]
 })
 export class HistoryComponent implements OnInit {
     @ViewChild("compareContent") public compareContent: NgbModal;
     @Input() public elt: any;
+    @Input() public canEdit: boolean = false;
     public modalRef: NgbActiveModal;
     showVersioned: boolean = false;
     public priorElements = [];
     public numberSelected: number = 0;
+    public filter = {
+        reorder: {
+            select: true
+        },
+        add: {
+            select: true
+        },
+        remove: {
+            select: true
+        },
+        edited: {
+            select: true
+        }
+    };
 
     constructor(private alert: AlertService,
                 private http: Http,
-                public modalService: NgbModal,
-                @Inject("isAllowedModel")
-                public isAllowedModel) {
+                public modalService: NgbModal) {
     }
 
     ngOnInit(): void {
         let prefix_url = URL_MAP[this.elt.elementType];
         delete this.elt.selected;
         if (this.elt.history && this.elt.history.length > 0) {
-            this.http.get('/priorElements/' + this.elt.elementType + '/' + this.elt._id).map(res => res.json())
-                .subscribe(res => {
-                    this.priorElements = res.reverse();
-                    this.elt.viewing = true;
-                    this.elt.changeNote = this.elt._changeNote;
-                    this.priorElements.splice(0, 0, this.elt);
-                    this.priorElements.forEach(pe => {
-                        pe.url = prefix_url + pe._id;
-                    });
-                }, err =>
-                    this.alert.addAlert("danger", "Error retrieving history: " + err));
+            let url;
+            if (this.elt.elementType === "cde") {
+                url = "/deById/" + this.elt._id + "/priorDataElements";
+            } else {
+                url = "/formById/" + this.elt._id + "/priorForms";
+            }
+            this.http.get(url).map(res => res.json()).subscribe(res => {
+                this.priorElements = res.reverse();
+                this.elt.viewing = true;
+                this.priorElements.splice(0, 0, this.elt);
+                this.priorElements.forEach(pe => {
+                    pe.url = prefix_url + pe._id;
+                });
+            }, err =>
+                this.alert.addAlert("danger", "Error retrieving history: " + err));
         }
 
     }
@@ -79,7 +101,7 @@ export class HistoryComponent implements OnInit {
         }
     }
 
-    openCompareSideBySideModal() {
+    openHistoryCompareModal() {
         this.modalRef = this.modalService.open(this.compareContent, {size: "lg"});
     }
 

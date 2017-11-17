@@ -16,10 +16,9 @@ public class OrgAdminTasks extends BaseClassificationTest {
         findElement(By.linkText("Organizations Curators")).click();       
         new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
         findElement(By.name("newOrgCuratorUsername")).sendKeys("userToPromote");
-        Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).getText(), "userToPromote");
-        findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).click();
+        clickElement(By.xpath("//ngb-highlight//span[. = 'userToPromote']"));
         findElement(By.id("newOrgCuratorSubmit")).click();
-        textPresent("Organization Curator Added");
+        textPresent("Saved");
         closeAlert();
         textPresent("userToPromote");
         int orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgCuratorOrgName-')]")).size();
@@ -36,7 +35,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
                 }
             }
         }
-        textPresent("Organization Curator Removed");
+        textPresent("Removed");
         closeAlert();
         textNotPresent("userToPromote");
 
@@ -44,7 +43,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
         findElement(By.id("newOrgAdminUsername")).sendKeys("userToPromote");
         findElement(By.id("newOrgAdminSubmit")).click();
-        textPresent("Organization Administrator Added");
+        textPresent("Saved");
         closeAlert();
         textPresent("userToPromote");
         orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgAdminOrgName-')]")).size();
@@ -60,7 +59,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
                 }
             }
         }
-        textPresent("Organization Administrator Removed");
+        textPresent("Removed");
         textNotPresent("userToPromote");
     }
     

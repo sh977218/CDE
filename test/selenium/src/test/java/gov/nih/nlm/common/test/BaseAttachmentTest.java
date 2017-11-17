@@ -7,16 +7,16 @@ import org.openqa.selenium.JavascriptExecutor;
 public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     protected void removeAttachment(String name) {
-        clickElement(By.id("attachments_tab"));
-        clickElement(By.xpath("//div[contains(@id, 'attachment_')][//a[.='" + name + "']]//i[contains(@id, 'removeAttachment')]"));
-        clickElement(By.xpath("//div[contains(@id, 'attachment_')][//a[.='" + name + "']]//i[contains(@id, 'confirmRemove')]"));
+        goToAttachments();
+        clickElement(By.xpath("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]//i[contains(@id, 'removeAttachment')]"));
+        clickElement(By.xpath("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]//i[contains(@id, 'confirmRemove')]"));
         textPresent("Attachment Removed.");
         closeAlert();
         textNotPresent(name);
     }
 
     protected void addAttachment(String name) {
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
         findElement(By.id("fileToUpload")).sendKeys("T:\\CDE\\data\\" + name);
@@ -26,11 +26,11 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     protected void checkAttachmentNotReviewed() {
-        textPresent("cannot be dowloaded");
+        textPresent("cannot be downloaded");
     }
 
     protected void checkAttachmentReviewed(String name) {
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         clickElement(By.linkText(name));
         switchTab(1);
         textNotPresent("File not found");
@@ -42,8 +42,8 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(attachmentReviewer_username, password);
         gotoInbox();
 
-        textPresent("attachment approval");
-        clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
+        textPresent("Attachment approval");
+        clickElement(By.partialLinkText(name));
 
         findElement(By.linkText(name));
 //        textPresent("Scanned by ClamAV");
@@ -57,8 +57,8 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(attachmentReviewer_username, password);
         gotoInbox();
 
-        textPresent("attachment approval");
-        clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
+        textPresent("Attachment approval");
+        clickElement(By.partialLinkText(name));
 
         findElement(By.linkText(name));
        // textPresent("Scanned by ClamAV");
@@ -69,7 +69,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     public void setAttachmentDefault() {
-        clickElement(By.id("attachments_tab"));
+        goToAttachments();
         textPresent("Upload more files");
         clickElement(By.id("defaultCbLabel"));
         textPresent("Saved");

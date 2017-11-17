@@ -14,24 +14,22 @@
             <div *ngIf="cdes">
                 <div *ngIf="cdes.length === 0"><h4>No similar elements to show.</h4></div>
 
-                <cde-pin-modal #mltPinModal></cde-pin-modal>
+                <cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>
 
                 <ngb-accordion id="mltAccordion">
                     <ngb-panel *ngFor="let cde of cdes; let i = index">
                         <ng-template ngbPanelTitle>
-                            <a href class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
-                            <a href="#" class="nonLinkAnchor">
+                            <a class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
+                            <a class="nonLinkAnchor">
                                 <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
-                                    (click)="$event.stopPropagation(); view(cde)"></i>
+                                   (click)="$event.stopPropagation(); view(cde)"></i>
                             </a>
-                            <a href="#" class="nonLinkAnchor" (click)="$event.stopPropagation()">
+                            <a class="nonLinkAnchor" (click)="$event.stopPropagation()">
                                 <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
-                                   title="Attach to Board" role="link" (click)="$event.stopPropagation(); mltPinModal.open(cde, 'cde')"></i>
+                                   title="Attach to Board" role="link"
+                                   (click)="$event.stopPropagation(); mltPinModal.pinOne(cde, mltPinModal.open())"></i>
                             </a>
-                            <a href="#"  class="nonLinkAnchor" *ngIf="quickBoard.canAddElt(cde)"
-                               (click)="$event.stopPropagation(); quickBoard.add(cde)">
-                                <i class="fa fa-plus-square-o  hand-cursor" title="Add to Quick Board"
-                                   id="addToCompare_{{i}}" role="link"></i></a>
+                            <cde-pin-quickboard [elt]="cde" [eltIndex]="i"></cde-pin-quickboard>
                         </ng-template>
                         <ng-template ngbPanelContent>
                             <div class="col-md-4 col-sm-12 col-xs-12">

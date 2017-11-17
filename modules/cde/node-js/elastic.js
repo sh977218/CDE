@@ -4,7 +4,7 @@ var config = require('../../system/node-js/parseConfig')
     , logging = require('../../system/node-js/logging.js')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../system/node-js/elasticSearchInit')
-    ;
+;
 
 var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
@@ -120,6 +120,26 @@ exports.boardDelete = function (elt) {
             }
         });
     }
+};
+
+exports.dataElementDelete = function (elt, cb) {
+    if (elt) {
+        esClient.delete({
+            index: config.elastic.index.name,
+            type: "dataelement",
+            id: elt.tinyId
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to delete dataelement: " + elt.tinyId,
+                    origin: "cde.elastic.dataElementDelete",
+                    stack: err,
+                    details: ""
+                });
+            }
+            cb(err);
+        });
+    } else cb();
 };
 
 exports.elasticsearch = function (user, settings, cb) {
@@ -269,29 +289,38 @@ exports.DataElementDistinct = function (field, cb) {
     });
 };
 exports.boardSearch = function (filter, cb) {
-    var query = {
+    let query = {
         "size": 100,
         "query": {
             "bool": {
                 "must": [
                     {
                         "match": {"shareStatus": 'Public'}
-                    },
-                    {
-                        "match": {"_all": filter.search}
                     }
                 ]
             }
         },
         "aggs": {
-            "aggregationsName": {
+            "tagAgg": {
                 "terms": {
                     "field": "tags",
                     "size": 50
                 }
+            },
+            "typeAgg": {
+                "terms": {
+                    "field": "type"
+                }
             }
         }
     };
+
+    if (filter.search && filter.search.length > 0) {
+        query.query.bool.must.push({
+            "match": {"_all": filter.search}
+        });
+    }
+
     if (filter.selectedTypes) {
         filter.selectedTypes.forEach(function (t) {
             if (t !== 'All') {
@@ -475,7 +504,7 @@ exports.fetchPVCodeSystemList = function () {
     });
 };
 
-exports.get= function(id, cb) {
+exports.get = function (id, cb) {
     esClient.get({
         index: config.elastic.index.name,
         type: "dataelement",
@@ -490,8 +519,8 @@ exports.byTinyIdList = function (idList, cb) {
         type: "dataelement",
         body: {
             "query": {
-                "ids" : {
-                    "values" : idList
+                "ids": {
+                    "values": idList
                 }
             },
             "size": 20
@@ -505,7 +534,7 @@ exports.byTinyIdList = function (idList, cb) {
             });
             cb(error);
         } else {
-            cb(null, response.hits.hits.map(h=>h._source));
+            cb(null, response.hits.hits.map(h => h._source));
         }
     });
 };

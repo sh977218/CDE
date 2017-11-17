@@ -29,8 +29,8 @@ tasks.withType(Test) {
     systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
     systemProperty 'timeout', System.getProperty('timeout', timeout)
     systemProperty 'browser', project.hasProperty('browser') ? browser : "chrome";
-    systemProperty 'seleniumDownloadFolder',  System.getProperty('downloadFolder', downloadFolder);
-    systemProperty 'chromeDownloadFolder',  System.getProperty('chromeDownloadFolder', chromeDownloadFolder);
+    systemProperty 'seleniumDownloadFolder', System.getProperty('downloadFolder', downloadFolder);
+    systemProperty 'chromeDownloadFolder', System.getProperty('chromeDownloadFolder', chromeDownloadFolder);
     systemProperty 'tempFolder', project.hasProperty('tempFolder') ? tempFolder : "/tmp/";
 }
 
@@ -40,7 +40,7 @@ test {
         logger.lifecycle("Running test: " + descriptor)
     }
 
-    maxParallelForks = 16
+    maxParallelForks  =  16
 
     testLogging {
         events "standardOut", "standardError"

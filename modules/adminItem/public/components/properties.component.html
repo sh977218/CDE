@@ -1,49 +1,42 @@
 <div id="propertiesDiv">
     <h4>Properties</h4>
     <div *ngIf="elt.properties.length === 0">There are no properties.</div>
-    <div *ngFor="let prop of elt.properties;let i = index">
-        <div class="row">
-            <div class="col-md-1 text-right">
-                <div class="row" *ngIf="isAllowedModel.isAllowed(elt)">
-                    <span *ngIf="prop.edit">Confirm Delete
-                        <span class="btn-default fa fa-check" (click)="removePropertyByIndex(i)"
-                              id="confirmRemoveProperty-{{i}}" title="OK" href=""></span>
-                        <span class="btn-default fa fa-times" (click)="prop.edit = false"
-                              id="cancelRemoveProperty-{{i}}" title="Cancel" href=""></span>
-                    </span>
-                    <span (click)="prop.edit = true" *ngIf="!prop.edit" class="btn-default fa fa-trash-o"
-                          id="removeProperty-{{i}}" title="Remove" href=""></span>
-                    <sortable-array [theArray]="elt.properties" [index]="i" (cb)="saveProperty();"></sortable-array>
-                </div>
-            </div>
-            <div class="col-md-11">
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Key:</div>
-                    <div class="col-xs-10 ng-binding" id="key_{{i}}">{{prop.key}}</div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-2 text-right text_label">Value:</div>
-                    <div class="col-xs-10 ng-binding" id="value_{{i}}">
-                        <cde-inline-area-edit [(model)]="prop.value" (modelChange)="saveProperty()"
-                                              [(defFormat)]="prop.valueFormat"
-                                              [isAllowed]="isAllowedModel.isAllowed(elt)"></cde-inline-area-edit>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <ng-container *ngFor="let prop of elt.properties;let i = index">
+        <dl class="row">
+            <dt class="col-sm-3 text-right">
+                <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
+                    <span class="btn-default fa fa-check" (click)="removePropertyByIndex(i)"
+                          id="confirmRemoveProperty-{{i}}" title="OK"></span>
+                    <span class="btn-default fa fa-times" (click)="prop.edit = false"
+                          id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
+                </ng-container>
+                <span (click)="prop.edit = true" *ngIf="canEdit && !prop.edit" class="btn-default fa fa-trash-o"
+                      id="removeProperty-{{i}}" title="Remove"></span>
+                <cde-sortable-array [theArray]="elt.properties" [index]="i"
+                                    (cb)="reorderProperty();"></cde-sortable-array>
+                Key:
+            </dt>
+            <dd id="key_{{i}}" class="col-sm-9">{{prop.key}}</dd>
+            <dt class="col-sm-3 text-right">Id:</dt>
+            <dd id="value_{{i}}" class="col-sm-9">
+                <cde-inline-area-edit [(model)]="prop.value" (save)="onEltChange.emit()"
+                                      [(defFormat)]="prop.valueFormat"
+                                      [isAllowed]="canEdit"></cde-inline-area-edit>
+            </dd>
+        </dl>
         <hr>
-    </div>
-    <button *ngIf="isAllowedModel.isAllowed(elt) && this.onInitDone"
-            class="btn btn-small btn-default" id="openNewPropertyModalBtn"
+    </ng-container>
+    <button *ngIf="canEdit && onInitDone" class="btn btn-small btn-default" id="openNewPropertyModalBtn"
             (click)="openNewPropertyModal();">
         <i class="fa fa-plus"></i> Add Property
     </button>
 </div>
+
 <ng-template #newPropertyContent id="newPropertyModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="newPropertyModalHeader">
         <h4 class="modal-title">Add Property</h4>
     </div>
-    <form role="form" #newPropertyForm="ngForm">
+    <form role="form" #newPropertyForm="ngForm" (ngSubmit)="addNewProperty()">
         <div class="modal-body" id="newPropertyModalBody">
             <div class="form-group">
                 <label for="newKey">Key</label>
@@ -53,11 +46,24 @@
             </div>
             <div class="form-group">
                 <label for="newValue">Value</label>
-                <textarea class="form-control" id="newValue" name="newValue"
-                          [(ngModel)]="newProperty.value" Placeholder="Property Value" required></textarea>
+                <div id="newValue">
+                    <button type="button" class="btn btn-default btn-xs" (click)="newProperty.valueFormat = '';">
+                        Plain Text
+                    </button>
+                    <button type="button" class="btn btn-default btn-xs" (click)="newProperty.valueFormat = 'html';">
+                        Rich Text
+                    </button>
+                    <textarea name="definition" *ngIf="newProperty.valueFormat !== 'html'"
+                              [(ngModel)]="newProperty.value" class="form-control" Placeholder="Property Value"
+                              required></textarea>
+                    <ckeditor name="definition" *ngIf="newProperty.valueFormat === 'html'"
+                              [config]="{extraPlugins: 'divarea'}" [(ngModel)]="newProperty.value"
+                              Placeholder="Property Value">
+                    </ckeditor>
+                </div>
             </div>
             <div class="alert alert-info">
-                Property key are managed in Org Management > List Management
+                Property keys are managed in Org Management > List Management
             </div>
         </div>
         <div class="modal-footer" id="newPropertyModalFooter">
@@ -65,7 +71,8 @@
                 Cancel
             </button>
             <button class="btn btn-warning" [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn"
-                    type="submit" (click)="addNewProperty();">Save
+                    type="submit">
+                Save
             </button>
         </div>
     </form>

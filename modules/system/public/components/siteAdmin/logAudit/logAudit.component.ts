@@ -1,8 +1,6 @@
 import { Http } from "@angular/http";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import "rxjs/add/operator/map";
-import * as moment from "moment";
-import { AlertService } from "../../alert/alert.service";
 
 @Component({
     selector: "cde-log-audit",
@@ -26,81 +24,55 @@ export class LogAuditComponent {
         date: {
             title: "Date",
             property: "date",
-            css: "fa fa-fw fa-sort"
         },
         ip: {
             title: "IP",
             property: "remoteAddr",
-            sort: "desc",
-            css: "fa fa-fw fa-sort"
         },
         url: {
             title: "URL",
             property: "url",
-            css: "fa fa-fw fa-sort"
         },
         method: {
             title: "Method",
             property: "method",
-            css: "fa fa-fw fa-sort"
         },
         status: {
             title: "Status",
             property: "httpStatus",
-            css: "fa fa-fw fa-sort"
         },
         respTime: {
             title: "Resp. Time",
             property: "responseTime",
-            css: "fa fa-fw fa-sort"
         }
     };
+    sortingBy: any = {date: "desc"};
 
-    constructor(private http: Http,
-                private Alert: AlertService) {
-    }
-
-    getSortObj() {
-        let sort = {};
-        for (let p in this.sortMap) {
-            if (this.sortMap.hasOwnProperty(p) && this.sortMap[p].sort)
-                sort[this.sortMap[p].property] = this.sortMap[p].sort;
-        }
-
-        return sort;
-    }
+    constructor(private http: Http) {}
 
     sort(p) {
-        if (this.sortMap[p].sort === "asc") {
-            this.sortMap[p].sort = "desc";
-            this.sortMap[p].css = "fa fa-fw fa-sort-desc";
+        p = this.sortMap[p].property;
+        if (this.sortingBy[p] === "desc") {
+            this.sortingBy[p] = "asc";
+        } else if (this.sortingBy[p] === "desc") {
+            this.sortingBy[p] = "desc";
         } else {
-            this.sortMap[p].sort = "asc";
-            this.sortMap[p].css = "fa fa-fw fa-sort-asc";
+            this.sortingBy = {};
+            this.sortingBy[p] = "desc";
         }
         this.currentPage = 1;
-        this.searchLogs(false);
+        this.searchLogs();
     }
 
     searchLogs(newSearch = false) {
-        if (newSearch) {
-            this.currentPage = 1;
-            for (let p in this.sortMap) {
-                if (this.sortMap.hasOwnProperty(p)) {
-                    this.sortMap[p].sort = null;
-                    this.sortMap[p].css = 'fa fa-fw fa-sort';
-                }
-            }
-        }
-
         let postBody = {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,
             totalItems: this.totalItems,
             itemsPerPage: this.itemsPerPage,
-            fromDate: LogAuditComponent.parseDate(this.fromDate),
-            toDate: LogAuditComponent.parseDate(this.toDate),
-            sort: this.getSortObj()
+            fromDate: this.fromDate,
+            toDate: this.toDate,
+            sort: this.sortingBy
         };
         //noinspection TypeScriptValidateTypes
         this.http.post("/logs", postBody).map(res => res.json())
@@ -120,8 +92,4 @@ export class LogAuditComponent {
             });
     };
 
-    static parseDate(inDate) {
-        if (inDate) return moment(inDate + moment().format("Z")).toISOString();
-        else return;
-    }
 }

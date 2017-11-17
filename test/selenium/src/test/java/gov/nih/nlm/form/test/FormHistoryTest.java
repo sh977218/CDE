@@ -1,29 +1,30 @@
 package gov.nih.nlm.form.test;
 
-import junit.framework.Assert;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class FormHistoryTest extends BaseFormTest {
+public class FormHistoryTest extends NlmCdeBaseTest {
 
     @Test
-    public void formHistoryTest() {
+    public void formHistory() {
         String formName = "Form History Test";
         String newFormDef = "this is new form def";
         mustBeLoggedInAs(testAdmin_username, password);
 
         goToFormByName(formName);
-        clickElement(By.id("history_tab"));
+        goToHistory();
         textPresent("List of previous versions");
         Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
 
-        clickElement(By.id("naming_tab"));
+        goToNaming();
         textPresent("Form testing history");
         editDefinitionByIndex(0, newFormDef, false);
-        saveForm();
+        newFormVersion();
 
         goToFormByName(formName);
-        clickElement(By.id("history_tab"));
+        goToHistory();
         textPresent("List of previous versions");
         Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
         selectHistoryAndCompare(1, 2);

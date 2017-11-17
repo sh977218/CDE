@@ -13,14 +13,15 @@
                 </tr>
                 <tr>
                     <td>Quota:</td>
-                    <td id="quota">{{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span>
+                    <td id="quota">
+                        {{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="hasQuota"> MB</span>
                     </td>
                 </tr>
                 <tr>
                     <td>E-mail:</td>
                     <td id="user_email">
                         <cde-inline-edit id="emailEdit" [(model)]="user.email" [inputType]="'email'" [isAllowed]="true"
-                                     (modelChange)="saveProfile()"></cde-inline-edit>
+                                         (modelChange)="saveProfile()"></cde-inline-edit>
                     </td>
                 </tr>
                 <tr>
@@ -48,17 +49,19 @@
             <tr *ngFor="let pf of user.publishedForms">
                 <td>
                     <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>
-                    <i class="fa fa-trash" alt="Remove" (click)="removePublishedForm(pf)"></i>
+                    <i class="fa fa-trash" title="Remove" (click)="removePublishedForm(pf)"></i>
                 </td>
             </tr>
         </table>
     </div>
 
     <h3>CDE Viewing History</h3>
-    <cde-accordion-list id="accordionList" [cdes]="cdes" ejsPage="list" module="cde"></cde-accordion-list>
+    <cde-list-view *ngIf="cdes.length > 0" id="accordionList" [elts]="cdes" listView="accordion" module="cde">
+    </cde-list-view>
 
     <h3>Form Viewing History</h3>
-    <form-accordion-list id="formAccordionList" [forms]="forms" ejsPage="list" module="form"></form-accordion-list>
+    <cde-list-view *ngIf="forms.length > 0" id="formAccordionList" [elts]="forms" listView="accordion" module="form">
+    </cde-list-view>
 
     <cde-user-comments [user]="user"></cde-user-comments>
 </div>

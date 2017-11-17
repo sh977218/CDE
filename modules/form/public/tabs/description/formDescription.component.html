@@ -1,20 +1,26 @@
-<div class="row" *ngIf="elt">
+<div *ngIf="elt" id="descriptionDiv" class="row">
     <div class="col-xs-12">
-        <div class="descriptionToolbox" *ngIf="isAllowedModel.isAllowed(elt)" #descToolbox>
+        <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
-            <span role="button" id="addSectionTop" class="btn btn-default formDescriptionTool" style="width: 74px"
-                  [treeDrag]="toolSection" [treeDragEnabled]="true">
+            <span role="button" id="addSectionTop" class="btn btn-default formDescriptionTool"
+                  [treeDrag]="toolSection" [treeDragEnabled]="true"
+                  style="width: 74px;">
                 <i class="fa fa-plus"></i><span class="toolSection"></span>
             </span>
-            <span role="button" id="startAddingQuestions" class="btn btn-default formDescriptionTool" style="width: 87px"
-                  *ngIf="elt.formElements.length > 0"
-                  [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true">
+            <span role="button" id="startAddingQuestions" class="btn btn-default formDescriptionTool"
+                  *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
+                  style="width: 87px;">
                 <i class="fa fa-cube"></i><span class="toolQuestion"></span>
             </span>
-            <span role="button" id="startAddingForms" class="btn btn-default formDescriptionTool" style="width: 68px"
-                  *ngIf="elt.formElements.length > 0"
-                  [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true">
+            <span role="button" id="startAddingForms" class="btn btn-default formDescriptionTool"
+                  *ngIf="elt.formElements.length > 0" [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
+                  style="width: 68px;">
                 <i class="fa fa-cubes"></i><span class="toolForm"></span>
+            </span>
+            <span role="button" *ngIf="hasCopiedSection()" id="pasteSection" class="btn btn-default formDescriptionTool"
+                  [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px;">
+                <i class="fa fa-paste" [ngClass]="{'pasteSectionWrench':elt.isCopied}"></i><span
+                    class="toolCopySection"></span>
             </span>
         </div>
         <div *ngIf="elt.formElements.length === 0">
@@ -39,7 +45,7 @@
                          [class.tree-node-focused]="node.isFocused">
                         <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index"
                                              [node]="node.parent"></tree-node-drop-slot>
-                        <div class="panel panel-default">
+                        <div class="panel panel-default" [@copySection]="node.data.isCopied">
                             <div class="panel-heading">
                                 <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
                                     <div class="node-content-wrapper w-100"
@@ -50,27 +56,29 @@
                                          [treeAllowDrop]="node.allowDrop">
                                         <cde-form-description-section
                                                 *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                [elt]="elt"
+                                                [elt]="elt" [canEdit]="canEdit"
                                                 [node]="node"
-                                                [inScoreCdes]="inScoreCdes"
                                                 (isFormValid)="isFormValid.emit($event)"
-                                                (stageElt)="stageElt.emit()"></cde-form-description-section>
+                                                (stageElt)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
-                                                [elt]="elt"
-                                                [inScoreCdes]="inScoreCdes"
+                                                [elt]="elt" [canEdit]="canEdit"
                                                 [node]="node"
-                                                (stageElt)="stageElt.emit()"></cde-form-description-question>
+                                                (stageElt)="onEltChange.emit()"></cde-form-description-question>
                                     </div>
                                 </div>
                             </div>
                             <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
+                                <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
+                                     (click)="node.data.expanded = true; node.expand()"
+                                     class="btn btn-default expand-form">
+                                    <i class="fa fa-chevron-right" aria-hidden="true"></i> Expand
+                                </div>
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
-                                                                      [elt]="elt"
-                                                                      [node]="node"
+                                                                      [elt]="elt" [node]="node" [canEdit]="canEdit"
                                                                       (isFormValid)="isFormValid.emit($event)"
-                                                                      (stageElt)="stageElt.emit()"></cde-form-description-question-detail>
+                                                                      (stageElt)="onEltChange.emit();"></cde-form-description-question-detail>
                             </div>
                         </div>
                         <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>
@@ -86,8 +94,8 @@
         <h3>Search Forms</h3>
     </div>
     <div class="modal-body">
-        <cde-form-formSearch [cache]="cache" (cachePut)="cachePut.emit($event)"
-                             (result)="addFormFromSearch($event)"></cde-form-formSearch>
+        <cde-form-search class="panel-group" id="accordion_form" addMode="True"
+                         [embedded]="true" (add)="addFormFromSearch($event)"></cde-form-search>
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="d()" id="cancelSelectF">Close</button>
@@ -99,8 +107,7 @@
         <h3>Search Questions</h3>
     </div>
     <div class="modal-body">
-        <cde-form-questionSearch [cache]="cache" (cachePut)="cachePut.emit($event)"
-                                 (result)="addQuestionFromSearch($event)"></cde-form-questionSearch>
+        <cde-cde-search addMode="True" [embedded]="true" (add)="addQuestionFromSearch($event)"></cde-cde-search>
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning" (click)="d()" id="cancelSelectQ">Close</button>

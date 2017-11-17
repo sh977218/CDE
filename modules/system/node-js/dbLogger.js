@@ -128,8 +128,8 @@ exports.logClientError = function (req, callback) {
     exc.date = new Date();
     exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
-    var logEvent = new ClientErrorModel(exc);
-    logEvent.save(function (err) {
+    let logEvent = new ClientErrorModel(exc);
+    logEvent.save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
         callback(err);
     });
@@ -245,7 +245,7 @@ exports.usageByDay = function (callback) {
 exports.saveFeedback = function (req, cb) {
     var report = JSON.parse(req.body.feedback);
     var issue = new FeedbackModel({
-        user: {username: req.user ? req.user.username : null}
+        user: {username: req.user && req.user._doc ? req.user._doc.username : null}
         , rawHtml: report.html
         , reportedUrl: report.url
         , userMessage: report.note

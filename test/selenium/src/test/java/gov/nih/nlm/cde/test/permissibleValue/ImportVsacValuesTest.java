@@ -11,7 +11,7 @@ public class ImportVsacValuesTest extends NlmCdeBaseTest {
     public void importVsacValues() {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Race Category");
-        clickElement(By.id("pvs_tab"));
+        goToPermissibleValues();
         textPresent("Native Hawaiian or other Pacific Islander");
         textNotPresent("Match");
         clickElement(By.id("removeAllPermissibleValueBtn"));

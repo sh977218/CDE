@@ -13,7 +13,7 @@ public class NbOfPvInSearchTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         openCdeInList("country ISO");
         textPresent("(249 total)");
-        clickElement(By.id("cde_gridView"));
+        clickElement(By.id("list_gridView"));
         textPresent("Nb of PVs");
         Assert.assertEquals(findElement(By.cssSelector("td.nbOfPVs")).getText(), "249");
         findElement(By.id("searchSettings")).click();
