@@ -1,14 +1,14 @@
 <ng-container *ngFor="let property of compareArrayOption;">
     <div *ngIf="!property.match || property.display" id="{{property.label}}">
         <label>{{property.label}}:</label>
-        <div *ngFor="let r of property.result;let i = index">
+        <div *ngFor="let r of property.result; let i = index">
             <div class="col-xs-12" *ngIf="!r.match || r.display" id="{{property.label}}_{{i}}">
                 <div class="col-xs-12 arrayObj arrayObjReorder" *ngIf="r.reorder && filter.reorder.select">
                     <div *ngFor="let d of property.data" class="{{d.label}}">
                         <ng-container *ngIf="r.diff">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <label>{{d.label}}:</label>
-                                <pre semanticDiff [left]="r.newer[d.property] | json"
+                                <pre *ngIf="r.newer" semanticDiff [left]="r.newer[d.property] | json"
                                      [right]="r.older[d.property] | json"></pre>
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">

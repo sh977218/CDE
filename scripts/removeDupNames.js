@@ -42,7 +42,7 @@ stream.on('data', cde => {
 
     if (changed) {
         cde.naming = cde.naming.filter(n => n !== "");
-        cde.save(err => {
+        mongo_cde.update(cde, {username: "batch"}, err => {
             if (err) {
                 console.log(err);
                 process.exit(1);
