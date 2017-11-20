@@ -148,7 +148,7 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="row">
-                <div id="leftNav" class="col-lg-2 col-md-3 col-xs-12 collapse navbar-collapse mt-20">
+                <div id="leftNav" class="col-xl-2 col-md-3 col-xs-12 collapse navbar-collapse mt-20">
                     <ul class="list-group">
                         <a id="preview_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='preview_tab'}"
                            (click)="currentTab ='preview_tab'">Preview
@@ -202,7 +202,7 @@
                                aria-hidden="true"></i></a>
                     </ul>
                 </div>
-                <div id="middleView" class="col-lg-10 col-md-9 col-xs-12">
+                <div id="middleView" class="col-xl-10 col-md-9 col-xs-12">
                     <ng-container *ngIf="currentTab === 'preview_tab'">
                         <cde-native-render-full [elt]="elt"></cde-native-render-full>
                     </ng-container>

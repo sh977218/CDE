@@ -100,7 +100,7 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="row">
-                <div id="leftNav" class="col-lg-2 col-md-3 col-xs-12 collapse navbar-collapse mt-20">
+                <div id="leftNav" class="col-xl-2 col-md-3 col-xs-12 collapse navbar-collapse mt-20">
                     <ul class="list-group">
                         <a id="general_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='general_tab'}"
                            (click)="setCurrentTab('general_tab');">General Detail
@@ -163,7 +163,7 @@
                                aria-hidden="true"></i></a>
                     </ul>
                 </div>
-                <div id="middleView" class="col-lg-10 col-md-9 col-xs-12">
+                <div id="middleView" class="col-xl-10 col-md-9 col-xs-12">
                     <ng-container *ngIf="currentTab === 'meshTopic_tab'">
                         <h4>Topics</h4>
                         <span>Topics are
