@@ -1,6 +1,8 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 public class FormDragQuestionDropTest extends QuestionTest {
@@ -19,7 +21,13 @@ public class FormDragQuestionDropTest extends QuestionTest {
         addQuestionToSection(cdeName, 0);
         textPresent(cdeName, By.id("question_0_0"));
 
-        addSectionToSection(2, 1);
+        WebElement sourceElt = findElement(By.xpath("//*[@id='section_2']//i[contains(@class,'fa fa-arrows')]"));
+        WebElement targetElt = findElement(By.xpath("//*[@id='section_1']//*[contains(@class,'node-content-wrapper')]"));
+        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+        dragAndDrop(sourceElt, targetElt);
+
+        textPresent("N/A", By.id("section_2"));
+
         addQuestionToSection("Smoking History Ind", 1);
         newFormVersion();
 

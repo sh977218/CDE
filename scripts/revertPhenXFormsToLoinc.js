@@ -2,7 +2,7 @@ let mongo_form = require('../modules/form/node-js/mongo-form');
 let mongo_cde = require('../modules/cde/node-js/mongo-cde');
 let adminItemSvc = require("../modules/system/node-js/adminItemSvc");
 let classificationNode = require('../modules/system/node-js/classificationNode');
-let classificationShared = require('../modules/system/shared/classificationShared.js');
+let classificationShared = require('@std/esm')(module)('../modules/system/shared/classificationShared.js');
 let request = require('request');
 let async = require('async');
 

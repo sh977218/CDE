@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { Http } from '@angular/http';
 import * as async from "async";
-import * as moment from 'moment/min/moment.min';
+import * as moment from 'moment';
 import "rxjs/add/operator/map";
 import "rxjs/Observable";
 import "fhirclient";
@@ -32,9 +32,9 @@ import { FormService } from 'nativeRender/form.service';
             vertical-align: baseline;
         }
     `],
-    templateUrl: "./nativeRenderStandalone.component.html"
+    templateUrl: "./nativeRenderApp.component.html"
 })
-export class NativeRenderStandaloneComponent {
+export class NativeRenderAppComponent {
     elt: any;
     errorMessage: string;
     methodLoadForm = this.loadForm.bind(this);
@@ -92,7 +92,7 @@ export class NativeRenderStandaloneComponent {
     static readonly isTime = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}$/;
 
     constructor(private http: Http, private formService: FormService) {
-        let args: any = NativeRenderStandaloneComponent.searchParamsGet();
+        let args: any = NativeRenderAppComponent.searchParamsGet();
         this.selectedProfile = args.selectedProfile;
         this.submitForm = args.submit !== undefined;
         this.panelType = args.panelType;
@@ -142,10 +142,10 @@ export class NativeRenderStandaloneComponent {
     }
 
     static getCoding(system, code) {
-        let text = NativeRenderStandaloneComponent.getCodeDisplay(system, code);
+        let text = this.getCodeDisplay(system, code);
         return {
             coding: [{
-                system: NativeRenderStandaloneComponent.getCodeSystemOut(system),
+                system: this.getCodeSystemOut(system),
                 code: code,
                 display: text
             }],
@@ -206,12 +206,12 @@ export class NativeRenderStandaloneComponent {
 
     getFormObservations(tinyId, cb) {
         function pushFormObservationNames(tinyId) {
-            let map = NativeRenderStandaloneComponent.getFormMap(tinyId);
+            let map = NativeRenderAppComponent.getFormMap(tinyId);
             map && map.mapping.forEach(m => {
                 let key = m.resourceSystem + ' ' + m.resourceCode;
                 if (m.resource === 'Observation' && !resourceObservationMap[key] && m.resourceCode !== '*') {
                     resourceObservationMap[key] = true;
-                    observationNames.push(NativeRenderStandaloneComponent.getCodeSystemOut(m.resourceSystem)
+                    observationNames.push(NativeRenderAppComponent.getCodeSystemOut(m.resourceSystem)
                         + ' ' + m.resourceCode);
                 }
             });
@@ -281,7 +281,7 @@ export class NativeRenderStandaloneComponent {
                     this.smart.patient.api.fetchAll({type: "Observation"})
                         .then((results, refs) => {
                             results.forEach(observation =>
-                                this.patientObservations.push(NativeRenderStandaloneComponent.observationAdd(observation))
+                                this.patientObservations.push(NativeRenderAppComponent.observationAdd(observation))
                             );
                             cb();
                         });
@@ -335,7 +335,7 @@ export class NativeRenderStandaloneComponent {
     }
 
     mapIO(form, observations, mode, createCb = null) {
-        let map = NativeRenderStandaloneComponent.getFormMap(form.tinyId ? form.tinyId : form.inForm.form.tinyId);
+        let map = NativeRenderAppComponent.getFormMap(form.tinyId ? form.tinyId : form.inForm.form.tinyId);
 
         if (map && mode === 'in') {
             /* tslint:disable */ let encounterFn = eval('(' + map.encounterFn + ')'); /* tslint:enable */
@@ -350,7 +350,7 @@ export class NativeRenderStandaloneComponent {
                 if (m.resourceCode === '*')
                     resourceObservationMap[key] = observations;
                 else {
-                    let system = NativeRenderStandaloneComponent.getCodeSystemOut(m.resourceSystem);
+                    let system = NativeRenderAppComponent.getCodeSystemOut(m.resourceSystem);
                     resourceObservationMap[key] = observations.filter(
                         o => o.code.coding.some(
                             c => c.system === system && c.code === m.resourceCode
@@ -386,7 +386,7 @@ export class NativeRenderStandaloneComponent {
             return {
                 value: fe.question.answer,
                 unit: fe.question.answerUom || feUom && feUom.question.answer || uomCode,
-                system: NativeRenderStandaloneComponent.getCodeSystemOut(uomSystem),
+                system: NativeRenderAppComponent.getCodeSystemOut(uomSystem),
                 code: fe.question.answerUom || feUom && feUom.question.answer || uomCode
             };
         }
@@ -472,7 +472,7 @@ export class NativeRenderStandaloneComponent {
                 return getByCode(getByCode(form), 0, m.resourceComponentSystem, m.resourceComponentCode);
             }
             function getComponent(res) {
-                let system = NativeRenderStandaloneComponent.getCodeSystemOut(m.resourceComponentSystem);
+                let system = NativeRenderAppComponent.getCodeSystemOut(m.resourceComponentSystem);
                 let code = m.resourceComponentCode;
                 if (res.component) {
                     let components = res.component.filter(comp => comp.code.coding.some(
@@ -557,7 +557,7 @@ export class NativeRenderStandaloneComponent {
         if (!this.newEncounterType || !this.newEncounterDate) {
             this.newEncounterErrorMessage = 'Error: Type and Date are required.';
             this.newEncounterValid = false;
-        } else if (!NativeRenderStandaloneComponent.isTime.exec(this.newEncounterDate)) {
+        } else if (!NativeRenderAppComponent.isTime.exec(this.newEncounterDate)) {
             this.newEncounterErrorMessage = 'Error: Invalid date format. Needs to be in format YYYY-MM-DDTHH:MM:SS-HH:MM';
             this.newEncounterValid = false;
         } else {
@@ -587,9 +587,9 @@ export class NativeRenderStandaloneComponent {
     static observationAdd(observation) {
         return {
             code: observation.code
-                ? NativeRenderStandaloneComponent.getCodingsPreview(observation.code.coding)
+                ? this.getCodingsPreview(observation.code.coding)
                 : JSON.stringify(observation),
-            value: NativeRenderStandaloneComponent.getObservationValue(observation),
+            value: this.getObservationValue(observation),
             date: observation.issued,
             encounter: observation.context.reference,
             raw: observation
@@ -618,19 +618,19 @@ export class NativeRenderStandaloneComponent {
         });
 
         let createFn = (obsCode = null, compCodes = []) => {
-            let observation = NativeRenderStandaloneComponent.newObservationGet();
+            let observation = NativeRenderAppComponent.newObservationGet();
             observation.context.reference = 'Encounter/' + this.selectedEncounter.raw.id;
             observation.issued = this.selectedEncounter.date;
             observation.subject.reference = 'Patient/' + this.patient.id;
             if (obsCode)
-                observation.code = NativeRenderStandaloneComponent.getCoding(obsCode.system, obsCode.code);
+                observation.code = NativeRenderAppComponent.getCoding(obsCode.system, obsCode.code);
             if (compCodes.length) {
                 observation.component = [];
                 compCodes.forEach(c => {
-                    observation.component.push({code: NativeRenderStandaloneComponent.getCoding(c.system, c.code)});
+                    observation.component.push({code: NativeRenderAppComponent.getCoding(c.system, c.code)});
                 });
             }
-            let category = NativeRenderStandaloneComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
+            let category = NativeRenderAppComponent.fhirObservations[obsCode.system + ' ' + obsCode.code];
             if (category)
                 observation.category.push({
                     "coding": [{
@@ -652,8 +652,8 @@ export class NativeRenderStandaloneComponent {
         // identify changed and submit to server
         for (let i = 0; i < submitFhirPending.length; i++) {
             let p = submitFhirPending[i];
-            if (NativeRenderStandaloneComponent.getObservationValue(p.before)
-                === NativeRenderStandaloneComponent.getObservationValue(p.after)) {
+            if (NativeRenderAppComponent.getObservationValue(p.before)
+                === NativeRenderAppComponent.getObservationValue(p.after)) {
                 submitFhirPending.splice(i, 1);
                 i--;
             }
@@ -674,7 +674,7 @@ export class NativeRenderStandaloneComponent {
                     // }
                     if (!response || !response.data)
                         return done('Not saved ' + p.after.id);
-                    let obs = NativeRenderStandaloneComponent.observationAdd(response.data);
+                    let obs = NativeRenderAppComponent.observationAdd(response.data);
                     let index = this.patientObservations.findIndex(o => o.raw === p.before);
                     if (index > -1)
                         this.patientObservations[index] = obs;
@@ -691,7 +691,7 @@ export class NativeRenderStandaloneComponent {
                 }).then(response => {
                     if (!response || !response.data)
                         return done('Not saved ' + p.after.id);
-                    let obs = NativeRenderStandaloneComponent.observationAdd(response.data);
+                    let obs = NativeRenderAppComponent.observationAdd(response.data);
                     this.patientObservations.push(obs);
                     this.selectedEncounter.observations.push(obs);
                     done();

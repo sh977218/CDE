@@ -183,49 +183,49 @@
                 <span id="term_crumb">
                     <span *ngIf="!searchedTerm" class="label label-default">All Terms</span>
                     <span *ngIf="searchedTerm" class="label label-success mr-2">{{searchedTerm}}
-                        <span id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
+                        <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
                               (click)="searchSettings.q = ''; doSearch()"
-                              ngbTooltip="Remove this search term filter" placement="right" container="body"></span>
+                              ngbTooltip="Remove this search term filter" placement="right" container="body"></i>
                     </span>
                 </span>
                 <span id="classif_filter">
                     | <span *ngIf="!hasSelectedClassifications()" class="label label-default">All Classifications</span>
                     <span *ngIf="hasSelectedClassifications()" class="label label-success mr-2">{{getSelectedClassifications()}}
-                        <span id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-2"
+                        <i id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-2"
                               (click)="clearSelectedClassifications()"
-                              ngbTooltip="Remove this classification filter" placement="right" container="body"></span>
+                              ngbTooltip="Remove this classification filter" placement="right" container="body"></i>
                     </span>
                     <span *ngIf="altClassificationFilterMode">and
                         <span class="label label-success mr-2">{{getSelectedClassificationsAlt()}}
-                            <span id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-2"
+                            <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-2"
                                   (click)="clearSelectedClassificationsAlt()"
                                   ngbTooltip="Remove this classifications filter" placement="right" container="body">
-                            </span>
+                            </i>
                         </span>
                     </span>
                 </span>
                 <span id="topic_crumb">
                     | <span *ngIf="!hasSelectedTopics()" class="label label-default">All Topics</span>
                     <span *ngIf="hasSelectedTopics()" class="label label-success mr-2">{{getSelectedTopics()}}
-                        <span id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
+                        <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedTopics()"
-                           ngbTooltip="Remove this topics filter" placement="right" container="body"></span>
+                           ngbTooltip="Remove this topics filter" placement="right" container="body"></i>
                     </span>
                 </span>
                 <span id="status_crumb">
-                    | <span *ngIf="!hasSelectedStatuses()" class="label label-default">All Statuses</span>
+                    | <i *ngIf="!hasSelectedStatuses()" class="label label-default">All Statuses</i>
                     <span *ngIf="hasSelectedStatuses()" class="label label-success mr-2">{{getSelectedStatuses()}}
-                        <span id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
+                        <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedStatuses()"
-                           ngbTooltip="Remove this registration statuses filter" placement="right" container="body"></span>
+                           ngbTooltip="Remove this registration statuses filter" placement="right" container="body"></i>
                     </span>
                 </span>
                 <span *ngIf="module === 'cde'" id="datatype_crumb">
                     | <span *ngIf="!hasSelectedDatatypes()" class="label label-default">All Datatypes</span>
                     <span *ngIf="hasSelectedDatatypes()" class="label label-success mr-2">{{getSelectedDatatypes()}}
-                        <span id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
+                        <i id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedDatatypes()"
-                           ngbTooltip="Remove this datatypes filter" placement="right" container="body"></span>
+                           ngbTooltip="Remove this datatypes filter" placement="right" container="body"></i>
                     </span>
                 </span>
             </span>

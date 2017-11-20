@@ -2,6 +2,7 @@ const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -40,9 +41,12 @@ module.exports = {
     },
     plugins: prod ?
         [
+            new CleanWebpackPlugin(['modules/static'], {exclude: ['Blob.js', 'classList.min.js', 'en.js', 'formdata.js',
+                'Intl.min.js', 'shim.min.js', 'typedarray.js']}),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.DefinePlugin({
+                IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(true),
             }),
             new webpack.ProvidePlugin({
@@ -52,11 +56,15 @@ module.exports = {
                 'Tether':'tether',
                 Popper: ['popper.js', 'default'],
             }),
+            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
             new AotPlugin.AotPlugin({
                 tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
                 entryModule: path.resolve(__dirname, 'modules/_app/app.module') + '#CdeAppModule'
             }),
-            new webpack.optimize.UglifyJsPlugin({ // sourcemap
+            new webpack.optimize.UglifyJsPlugin({
+                output: {
+                    comments: false
+                },
                 parallel: true,
                 uglifyOptions: {
                     ie8: false,
@@ -104,11 +112,14 @@ module.exports = {
             }),
             // new BundleAnalyzerPlugin()
         ] : [
+            new CleanWebpackPlugin(['modules/static'], {exclude: ['Blob.js', 'classList.min.js', 'en.js', 'formdata.js',
+                'Intl.min.js', 'shim.min.js', 'typedarray.js']}),
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
                 /angular(\\|\/)core(\\|\/)@angular/,
                 path.resolve(__dirname, '../src')
             ),
             new webpack.DefinePlugin({
+                IS_BROWSER: true,
                 PRODUCTION: JSON.stringify(false),
             }),
             new webpack.NoEmitOnErrorsPlugin(),

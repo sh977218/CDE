@@ -15,7 +15,6 @@ export class CdeAppComponent implements OnInit {
     name = "Angular 2";
 
     ngOnInit() {
-        let initButton = '<div id="feedback-button"><button class="feedback-btn feedback-btn-gray hidden-xs">Report a problem!</button></div>';
         let description = '<div id="feedback-welcome"><div class="h3">Report a problem</div>' +
             '<p>What would you like to report?</p>' +
             '<textarea id="feedback-note-tmp"></textarea>' +
@@ -62,7 +61,6 @@ export class CdeAppComponent implements OnInit {
             onScreenshotTaken: function () {
             },
             tpl: {
-                initButton: initButton,
                 description: description,
                 highlighter: highlighter,
                 overview: overview,
