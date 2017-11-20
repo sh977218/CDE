@@ -25,7 +25,7 @@
                     <div *ngSwitchCase="'Value List'">
                         <div class="row">
                             <div *ngFor="let pv of formElement.question.answers; let i = index"
-                                 [ngClass]="classColumns(pv.index, i)" class="col-xs-12">
+                                 [ngClass]="classColumns(pv.index, i)" class="col-12">
                                 <div *ngIf="!pv.nonValuelist">
                                     <label [ngClass]="{'native-question-oneline-l': pv.subQuestions
                                                           && isOneLiner(pv.subQuestions[0], pv.subQuestions.length),
@@ -77,7 +77,7 @@
                         </div>
                     </div>
                     <div *ngSwitchCase="'Date'" class="row">
-                        <div class="col-xs-12" [ngClass]="{'col-sm-7': hasTime}">
+                        <div class="col-12" [ngClass]="{'col-sm-7': hasTime}">
                             <div class="input-group">
                                 <input class="form-control" [name]="formElement.questionId+'_date'" [title]="formElement.question.answer"
                                        attr.id="{{formElement.label}}_{{index}}_box"
@@ -91,7 +91,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="hasTime" class="mt-2 mt-md-0 col-sm-5 col-xs-12">
+                        <div *ngIf="hasTime" class="mt-2 mt-md-0 col-sm-5 col-12">
                             <ngb-timepicker [seconds]="true" size="small" [spinners]="false"
                                             [title]="formElement.question.answer" [name]="formElement.questionId+'_time'"
                                             attr.id="{{formElement.label}}_{{index}}_box"

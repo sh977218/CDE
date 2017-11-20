@@ -13,16 +13,16 @@
     <div class="boxed-div overflowHidden" title="{{item.value.isRetired?'CDE is Retired':''}}"
          [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
          id="leftQuestion_{{index}}">
-        <div class="col-xs-3 Label noLeftRightPadding">CDE Name:
+        <div class="col-3 Label noLeftRightPadding">CDE Name:
             <div *ngIf="item.value.isRetired">Retired</div>
             <div *ngIf="item.value.info && item.value.info.error">{{item.value.info.error}}</div>
         </div>
-        <div class="col-xs-8 noLeftRightPadding mergeCdeName">
+        <div class="col-8 noLeftRightPadding mergeCdeName">
             <a target="_blank" href="/deView?tinyId={{item.value.question.cde.tinyId}}">
                 {{item.value.question.cde.name}}
             </a>
         </div>
-        <div class="col-xs-1 noLeftRightPadding">
+        <div class="col-1 noLeftRightPadding">
             <span class="fa fa-trash right" id="removeLeftQuestion_{{index}}"
                   (click)="removeItem(index)"></span>
         </div>

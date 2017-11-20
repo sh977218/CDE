@@ -32,23 +32,23 @@
                             <cde-pin-quickboard [elt]="cde" [eltIndex]="i"></cde-pin-quickboard>
                         </ng-template>
                         <ng-template ngbPanelContent>
-                            <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-sm-12 col-12">
                                 <cde-cde-general-details [elt]="cde"></cde-cde-general-details>
                             </div>
-                            <div class="col-lg-4 col-sm-6 col-xs-12">
+                            <div class="col-lg-4 col-sm-6 col-12">
                                 <cde-value-domain-summary [elt]="cde"></cde-value-domain-summary>
                             </div>
-                            <div class="col-lg-4 col-sm-6 col-xs-12">
+                            <div class="col-lg-4 col-sm-6 col-12">
                                 <table *ngIf="cde.ids.length > 0" class="table cdeTable" summary="Identifiers List">
                                     <tr>
-                                        <th id="id" class="col-xs-6">Id</th>
-                                        <th id="version" class="col-xs-2">Vers.</th>
-                                        <th id="source" class="col-xs-4">Src.</th>
+                                        <th id="id" class="col-6">Id</th>
+                                        <th id="version" class="col-2">Vers.</th>
+                                        <th id="source" class="col-4">Src.</th>
                                     </tr>
                                     <tr *ngFor="let id of elt.ids">
-                                        <td headers="id" class="col-xs-6">{{id.id}}</td>
-                                        <td headers="version" class="col-xs-2">{{id.version}}</td>
-                                        <td headers="source" class="col-xs-4">{{id.source}}</td>
+                                        <td headers="id" class="col-6">{{id.id}}</td>
+                                        <td headers="version" class="col-2">{{id.version}}</td>
+                                        <td headers="source" class="col-4">{{id.source}}</td>
                                     </tr>
                                 </table>
                             </div>

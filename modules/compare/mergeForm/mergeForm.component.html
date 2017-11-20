@@ -11,9 +11,9 @@
     </div>
     <div class="modal-body" id="mergeFormModalBody">
         <div class="row">
-            <div class="col-xs-12 col-lg-2 col-xl-2 noRightPadding">
+            <div class="col-12 col-lg-2 col-xl-2 noRightPadding">
                 <div class="row">
-                    <div class="col-xs-6 col-lg-12 col-xl-12">
+                    <div class="col-6 col-lg-12 col-xl-12">
                         <h4>Form fields:</h4>
                         <div>
                             <button class="btn btn-secondary btn-xs" (click)="selectAllFormMergerFields();"
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <div class="smallSpace left"></div>
-                    <div class="col-xs-6 col-lg-12 col-xl-12" *ngIf="mergeFields.questions">
+                    <div class="col-6 col-lg-12 col-xl-12" *ngIf="mergeFields.questions">
                         <h4>CDE fields:</h4>
                         <div>
                             <button class="btn btn-secondary btn-xs" (click)="selectAllCdeMergerFields();">All</button>
@@ -90,17 +90,17 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-lg-10 col-xl-10 noLeftRightPadding">
+            <div class="col-12 col-lg-10 col-xl-10 noLeftRightPadding">
                 <div class="row">
-                    <div class="col-xs-12" *ngIf="mergeFields.questions">
-                        <div class="col-xs-6" id="dropArea">
+                    <div class="col-12" *ngIf="mergeFields.questions">
+                        <div class="col-6" id="dropArea">
                             <cde-sortable [left]="left" [right]="right" [mergeFields]="mergeFields"></cde-sortable>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-6">
                             <div *ngFor="let rightQuestion of right.questions; let i = index"
                                  class="boxed-div overflowHidden" id="targetQuestion_{{i}}">
-                                <div class="col-xs-3 Label noLeftRightPadding">CDE Name:</div>
-                                <div class="col-xs-9 noLeftRightPadding mergeCdeName">
+                                <div class="col-3 Label noLeftRightPadding">CDE Name:</div>
+                                <div class="col-9 noLeftRightPadding mergeCdeName">
                                     <a *ngIf="rightQuestion.question.cde.name" target="_blank"
                                        href="deView?tinyId={{rightQuestion.question.cde.tinyId}}">
                                         {{rightQuestion.question.cde.name}}

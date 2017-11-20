@@ -6,8 +6,8 @@
         <h4>Attachments</h4>
         <ng-container *ngFor="let attachment of elt.attachments; let i = index">
             <dl id="attachment_{{i}}" class="row">
-                <dt class="col-xs-3 text-right">Filename:</dt>
-                <dd class="col-xs-9">
+                <dt class="col-3 text-right">Filename:</dt>
+                <dd class="col-9">
                     <div *ngIf="!attachment.pendingApproval">
                         <a id="attachment_file_url_{{i}}" class="viewAttachmentLink"
                            href="/data/{{attachment.fileid}}"
@@ -21,8 +21,8 @@
                     </div>
                 </dd>
                 <ng-container *ngIf="!attachment.pendingApproval">
-                    <dt class="col-xs-3 text-right">Default Image:</dt>
-                    <dd id="dd_id_nlm" class="col-xs-9">
+                    <dt class="col-3 text-right">Default Image:</dt>
+                    <dd id="dd_id_nlm" class="col-9">
                         <div *ngIf="attachment.filesize > 512*1024">
                             Attachments smaller than 500k can be marked as default
                         </div>
@@ -35,8 +35,8 @@
                     </dd>
                 </ng-container>
                 <ng-container *ngIf="canEdit">
-                    <dt class="col-xs-3 text-right">Actions:</dt>
-                    <dd id="dd_version_nlm" class="col-xs-9">
+                    <dt class="col-3 text-right">Actions:</dt>
+                    <dd id="dd_version_nlm" class="col-9">
                         <div *ngIf="showDelete">
                             Confirm Delete
                             <i class="fa fa-check" (click)="showDelete = false; removeAttachment.emit(i)"
@@ -47,26 +47,26 @@
                            id="removeAttachment-{{i}}"></i>
                     </dd>
                 </ng-container>
-                <dt class="col-xs-3 text-right">Size:</dt>
-                <dd class="col-xs-9">
+                <dt class="col-3 text-right">Size:</dt>
+                <dd class="col-9">
                     <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}}
                         MB
                     </div>
                     <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB
                     </div>
                 </dd>
-                <dt class="col-xs-3 text-right">Uploaded date:</dt>
-                <dd class="col-xs-9">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-                <dt class="col-xs-3 text-right">Uploaded by:</dt>
-                <dd class="col-xs-9">{{attachment.uploadedBy.username}}</dd>
+                <dt class="col-3 text-right">Uploaded date:</dt>
+                <dd class="col-9">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+                <dt class="col-3 text-right">Uploaded by:</dt>
+                <dd class="col-9">{{attachment.uploadedBy.username}}</dd>
             </dl>
             <hr>
         </ng-container>
         <dl *ngIf="canEdit" class="row" id="attachment_">
-            <dt class="col-xs-3 text-right">
+            <dt class="col-3 text-right">
                 <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files:</label>
             </dt>
-            <dd class="col-xs-9">
+            <dd class="col-9">
                 <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
             </dd>
         </dl>

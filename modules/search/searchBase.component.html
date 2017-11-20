@@ -47,7 +47,7 @@
                             </h1>
                         </div>
                         <div class="row">
-                            <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12"
+                            <div class="col-xl-3 col-lg-4 col-sm-6 col-12"
                                  *ngFor="let org of orgs"
                                  id="search_by_classification_{{org.name}}">
                                 <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
@@ -233,7 +233,7 @@
         </div>
         <div class="container-fluid" style="max-width: 1200px; margin-left: 0">
             <div class="row">
-                <div id="resultList" [ngClass]="filterMode?'col-xs-12 col-sm-10 push-md-2':'col-xs-12'">
+                <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10 push-md-2':'col-12'">
                     <!-- SEARCH RESULTS -->
                     <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
                         Searching...</span>
@@ -247,7 +247,7 @@
                     <!-- link for google indexer only -->
                     <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                 </div>
-                <div [hidden]="!filterMode" [ngClass]="filterMode?'col-xs-12 col-sm-2 pull-md-10 ':'col-xs-12'">
+                <div [hidden]="!filterMode" [ngClass]="filterMode?'col-12 col-sm-2 pull-md-10 ':'col-12'">
                     <!-- FILTERS -->
                     <p class="gray">Filter by:</p>
                     <div> <!-- CLASSIFICATION AGGREGATIONS -->

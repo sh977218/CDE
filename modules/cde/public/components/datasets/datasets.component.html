@@ -7,10 +7,10 @@
     <form role="form" #datasetsForm="ngForm">
         <div class="modal-body" id="datasetsModalBody">
             <div *ngIf="!elt.dataSets || elt.dataSets.length === 0" id="noDataSetsDiv">
-                <div class="col-xs-12">No Data sets using this CDE</div>
+                <div class="col-12">No Data sets using this CDE</div>
             </div>
             <div *ngIf="elt.dataSets && elt.dataSets.length >0" id="dataSetsDiv">
-                <div class="col-xs-12">
+                <div class="col-12">
                     Data sets using this CDE
                     <table class="table-bordered table-condensed table-striped">
                         <thead>

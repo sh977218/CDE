@@ -5,7 +5,7 @@
 
 <ng-template #compareSideBySideContent id="compareSideBySideModal" let-c="close" let-d="dismiss">
     <div class="modal-header" id="compareSideBySideModalHeader">
-        <div class="col-xs-6 leftObj">
+        <div class="col-6 leftObj">
             <a id="sourceElement" class='btn btn-small btn-secondary' target="_blank" [href]=leftUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
@@ -17,7 +17,7 @@
                                 (doneMerge)="doneMerge($event)"></cde-merge-form>
             </ng-container>
         </div>
-        <div class="col-xs-6 rightObj">
+        <div class="col-6 rightObj">
             <a id="destinationElement" class='btn btn-small btn-secondary' target="_blank" [href]=rightUrl>
                 <i class="fa fa-eye"></i> View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
@@ -30,13 +30,13 @@
             </ng-container>
         </div>
     </div>
-    <div class="modal-body col-xs-12" id="compareSideBySideModalBody">
+    <div class="modal-body col-12" id="compareSideBySideModalBody">
         <ng-container *ngFor="let option of options">
             <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
                 <div class="overflowHidden">
                     <label>{{option.displayAs.label}}</label>
-                    <div *ngFor="let fullMatch of option.fullMatches" class="col-xs-12">
-                        <div class="col-xs-6 noLeftPadding">
+                    <div *ngFor="let fullMatch of option.fullMatches" class="col-12">
+                        <div class="col-6 noLeftPadding">
                             <div class="fullMatch">
                                 <div *ngFor="let d of option.displayAs.data">
                                     <label>{{d.label?d.label+":":d.label}}</label>
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-6 noRightPadding">
+                        <div class="col-6 noRightPadding">
                             <div class="fullMatch">
                                 <div *ngFor="let d of option.displayAs.data">
                                     <label>{{d.label?d.label+":":d.label}}</label>
@@ -53,8 +53,8 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngFor="let partialMatch of option.partialMatches" class="col-xs-12">
-                        <div class="col-xs-6 noLeftPadding">
+                    <div *ngFor="let partialMatch of option.partialMatches" class="col-12">
+                        <div class="col-6 noLeftPadding">
                             <div class="partialMatch">
                                 <div *ngFor="let d of option.displayAs.data">
                                     <label>{{d.label?d.label+":":d.label}}</label>
@@ -64,7 +64,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-6 noRightPadding">
+                        <div class="col-6 noRightPadding">
                             <div class="partialMatch">
                                 <div *ngFor="let d of option.displayAs.data">
                                     <label>{{d.label?d.label+":":d.label}}</label>
@@ -75,8 +75,8 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="col-xs-12">
-                        <div class="col-xs-6 noLeftPadding">
+                    <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="col-12">
+                        <div class="col-6 noLeftPadding">
                             <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
                                 <div *ngFor="let d of option.displayAs.data">
                                     <label>{{d.label?d.label+":":d.label}}</label>
@@ -84,7 +84,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-6 noRightPadding">
+                        <div class="col-6 noRightPadding">
                             <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch">
                                 <div *ngFor="let d of option.displayAs.data">
                                     <label>{{d.label?d.label+":":d.label}}</label>

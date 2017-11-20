@@ -1,7 +1,7 @@
 <div *ngIf="formElement" class="native-section" id="formRenderSection_{{formElement.label}}">
     <div *ngIf="formElement.label" [ngClass]="{'native-section-header': isSectionDisplayed(formElement)}" class="keep-together">
         <div class="row">
-            <div [ngClass]="{'col-sm-9':canRepeat(formElement)}" class="col-xs-12">
+            <div [ngClass]="{'col-sm-9':canRepeat(formElement)}" class="col-12">
                 <h4 [textContent]="formElement.label"></h4>
             </div>
             <div class="col-sm-3" *ngIf="canRepeat(formElement)">
