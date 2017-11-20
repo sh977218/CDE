@@ -9,7 +9,7 @@
     </a>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item" [ngClass]="{active: isPageActive('/cde/search')}">{{toggleaction}}
+            <li class="nav-item" [ngClass]="{active: isPageActive('/cde/search')}">
                 <a id="menu_cdes_link" class="nav-link" routerLink="/cde/search">CDEs</a>
             </li>
             <li class="nav-item" [ngClass]="{active: isPageActive('/form/search')}">
@@ -53,7 +53,7 @@
                     <i id="incomingMessage" class="fa fa-envelope text-danger"></i>
                 </a>
             </li>
-            <li class="nav-item login" [ngClass]="{active: isPageActive('/login')}" *ngIf="!userService.user?._id">
+            <li class="nav-item" [ngClass]="{active: isPageActive('/login')}" *ngIf="!userService.user?._id">
                 <a (click)="loginSvc.goToLogin()" id="login_link" title="Log in" routerLink="/login">Log In</a>
             </li>
             <li class="nav-item dropdown" *ngIf="userService.user?._id">
