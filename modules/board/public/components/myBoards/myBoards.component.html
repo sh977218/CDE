@@ -20,7 +20,7 @@
             <div style="text-align: center"><a id="signUpLink" routerLink="/login" class="btn btn-lg btn-info">Sign up or Log In</a></div>
         </div>
     </div>
-    <div class="col-md-2 col-xs-4 noLeftRightPadding">
+    <div class="col-lg-2 col-xs-4 noLeftRightPadding">
         <div id="sidebar-wrapper">
             <div *ngIf="myBoardsSvc.filter.types?.length > 0">
                 <h4>Type</h4>
@@ -48,8 +48,8 @@
             </div>
         </div>
     </div>
-    <div class="col-md-10 col-xs-8 dragDiv" id="my-board-container">
-        <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-xl-4 col-md-4 col-sm-6 col-xs-12 ">
+    <div class="col-lg-10 col-xs-8 dragDiv" id="my-board-container">
+        <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-xl-4 col-lg-4 col-sm-6 col-xs-12 ">
             <div class="my-board-card" data-id="boardDiv_{{board.name}}">
                 <div class="myBoardEditButtons pull-right">
                     <div class="text-right">

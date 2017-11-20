@@ -32,13 +32,13 @@
                             <cde-pin-quickboard [elt]="cde" [eltIndex]="i"></cde-pin-quickboard>
                         </ng-template>
                         <ng-template ngbPanelContent>
-                            <div class="col-md-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-sm-12 col-xs-12">
                                 <cde-cde-general-details [elt]="cde"></cde-cde-general-details>
                             </div>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-lg-4 col-sm-6 col-xs-12">
                                 <cde-value-domain-summary [elt]="cde"></cde-value-domain-summary>
                             </div>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-lg-4 col-sm-6 col-xs-12">
                                 <table *ngIf="cde.ids.length > 0" class="table cdeTable" summary="Identifiers List">
                                     <tr>
                                         <th id="id" class="col-xs-6">Id</th>

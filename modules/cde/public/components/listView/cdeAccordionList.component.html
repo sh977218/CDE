@@ -16,13 +16,13 @@
         </ng-template>
         <ng-template ngbPanelContent>
             <div class="row">
-                <div class="col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-4 col-sm-12 col-xs-12">
                     <cde-cde-general-details [elt]="elt"></cde-cde-general-details>
                 </div>
-                <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-4 col-sm-6 col-xs-12">
                     <cde-value-domain-summary [elt]="elt"></cde-value-domain-summary>
                 </div>
-                <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-4 col-sm-6 col-xs-12">
                     <table [hidden]="elt.ids.length <= 0" class="table cdeTable" summary="Identifiers List">
                         <tr>
                             <th id="id" class="col-xs-6">Id</th>
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-lg-12">
                     <a *ngIf="!openInNewTab" class='btn btn-small btn-secondary'
                        routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}" id="openEltInCurrentTab_{{index}}"
                        (click)="$dismiss();">

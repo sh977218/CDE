@@ -3,11 +3,11 @@
     <div *ngIf="elt.derivationRules < 1">There are no derivation rules.</div>
     <div *ngFor="let derRule of elt.derivationRules; let i = index">
         <div class="row">
-            <div class="col-md-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
+            <div class="col-lg-1 text-right" *ngIf="isAllowedModel.isAllowed(elt)">
                 <a class="fa fa-trash-o" id="removeDerivationRule-{{i}}"
                    title="Remove" (click)="removeDerivationRule(i)"></a>
             </div>
-            <div class="col-md-11">
+            <div class="col-lg-11">
                 <dl class="dl-horizontal">
                     <dt>Name:</dt>
                     <dd id="dd_derRule_name_{{i}}">{{derRule.name}}</dd>

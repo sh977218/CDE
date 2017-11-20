@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="col-md-5">
+    <div class="col-lg-5">
         <h1>Create Data Element</h1>
         <hr>
         <form #dataElementForm="ngForm">
@@ -47,7 +47,7 @@
         </form>
     </div>
 
-    <div class="col-md-7" *ngIf="suggestedCdes?.length > 0">
+    <div class="col-lg-7" *ngIf="suggestedCdes?.length > 0">
         <h4>Possible Matches</h4>
         <div class="panel-group" id="accordion">
             <cde-list-view [elts]="suggestedCdes" listView="accordion" module="cde"></cde-list-view>

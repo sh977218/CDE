@@ -1,33 +1,33 @@
 <div class="container-fluid">
     <div class="row">
         <form class="form-search">
-            <div class="form-group col-md-3" >
+            <div class="form-group col-lg-3" >
                 <button id="search.submit" type="submit" (click)="generate()" class="btn btn-secondary">Generate</button>
             </div>
         </form>
     </div>
     <div class="row">
-        <div class="col-md-1">Days Ago</div>
-        <div class="col-md-2">Last Date</div>
-        <div class="col-md-2">Hits</div>
-        <div class="col-md-3">IP</div>
-        <div class="col-md-4">Known Usernames</div>
+        <div class="col-lg-1">Days Ago</div>
+        <div class="col-lg-2">Last Date</div>
+        <div class="col-lg-2">Hits</div>
+        <div class="col-lg-3">IP</div>
+        <div class="col-lg-4">Known Usernames</div>
     </div>
     <hr/>
     <div class="row" *ngFor="let entry of dailyUsage | slice:0:entryLimit">
-        <div class="col-md-1">
+        <div class="col-lg-1">
             {{entry.daysAgo}}
         </div>
-        <div class="col-md-2">
+        <div class="col-lg-2">
             {{entry.latest | date : 'short'}}
         </div>
-        <div class="col-md-2">
+        <div class="col-lg-2">
             {{entry.number}}
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3">
             {{entry._id.ip}}
         </div>
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <span *ngIf="entry.usernames && entry.usernames.length > 0">
                 <span *ngFor="let u of entry.usernames">{{u.username}} </span>
             </span>

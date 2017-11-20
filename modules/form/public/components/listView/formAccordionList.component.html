@@ -16,7 +16,7 @@
         </ng-template>
         <ng-template ngbPanelContent>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-lg-6">
                     <h4>General Details</h4>
                     <dl class="dl-horizontal">
                         <dt>Name:</dt>
@@ -38,7 +38,7 @@
                         <dd id="dd_status">{{elt.registrationState.registrationStatus}}</dd>
                     </dl>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2">
                     <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
                          alt="Image attached to the elt"
                          src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>

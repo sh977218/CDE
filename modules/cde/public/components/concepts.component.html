@@ -1,7 +1,7 @@
 <div id="conceptsDiv">
     <h4>Concepts</h4>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-lg-12">
             <div *ngFor="let config of conceptConfigurations; ">
                 <div *ngIf="elt[config.type].concepts.length > 0">
                     <h5 [innerHTML]="config.details.display"></h5>
