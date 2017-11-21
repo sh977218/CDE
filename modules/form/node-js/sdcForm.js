@@ -128,7 +128,7 @@ let idToName = {};
 exports.formToSDC = function (form, renderer, cb) {
     let formDesign = builder.create({
         "FormDesign": {
-            "@xmlns": "http://healthIT.gov/sdc",
+            "@xmlns": "urn:ihe:qrph:sdc:2016",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
             "@ID": form.tinyId + "v" + form.version,
