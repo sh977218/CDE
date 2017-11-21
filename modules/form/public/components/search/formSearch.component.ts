@@ -12,17 +12,7 @@ import { AlertService } from '_app/alert/alert.service';
 
 @Component({
     selector: 'cde-form-search',
-    templateUrl: '../../../../search/searchBase.component.html',
-    styles: [`
-        .browseLink {
-            color: #337ab7;
-        }
-
-        .browseLink:hover {
-            color: #23527c;
-            text-decoration: underline;
-        }
-    `]
+    templateUrl: '../../../../search/searchBase.component.html'
 })
 export class FormSearchComponent extends SearchBaseComponent {
     @Input() addMode: string = undefined;

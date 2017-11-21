@@ -2,6 +2,15 @@
     background-color: white;
 }
 
+.browseLink {
+    color: #337ab7;
+}
+
+.browseLink:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
+
 .cdeFieldset {
     overflow: hidden;
     border-radius: 5px;
@@ -34,4 +43,16 @@
     margin: 10px 0 10px 0;
     padding: 0 10px;
     height: 140px;
+}
+
+#tabs > ul, .nav {
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "|";
+}
+
+.breadcrumb {
+    background-color: white;
 }

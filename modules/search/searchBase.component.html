@@ -34,9 +34,8 @@
         <cde-search-export-button id="exportEverything" class="pull-right btn-group mt-3 mb-2" *ngIf="!embedded"
                                   [module]="module"
                                   (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})">
-
         </cde-search-export-button>
-        <div class="mt-3">
+        <div class="mt-3" id="tabs">
             <ngb-tabset #tbset="ngbTabset" (tabChange)="browseByTopic($event)">
                 <ngb-tab id="browseByClassification" title="Browse by Classification">
                     <ng-template ngbTabContent>
@@ -46,8 +45,7 @@
                             </h1>
                         </div>
                         <div class="row">
-                            <div class="col-xl-3 col-lg-4 col-sm-6 col-12"
-                                 *ngFor="let org of orgs"
+                            <div class="col-xl-3 col-lg-4 col-sm-6 col-12" *ngFor="let org of orgs"
                                  id="search_by_classification_{{org.name}}">
                                 <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
                                           (click)="browseOrg(org.name)">
@@ -101,101 +99,76 @@
 
 <ng-template #searchResults>
     <ng-container *ngIf="aggregations">
-        <nav class="navbar navbar-default" id="searchInfo"> <!-- SEARCH BAR -->
-            <div class="mt-3 mb-2">
-                <div class="navbar-header mb-md-1 mr-md-2">
-                    <form class="input-group" style="max-width: 768px">
-                        <span class="input-group-btn">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </span>
-                        <label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
-                        <input name="q" id="ftsearch-input" class="form-control search-query"
-                               type="text" [(ngModel)]="searchSettings.q" maxlength="500" aria-labelledby="l1"
-                               autocomplete="off" [focusFirst]="false"
-                               [ngbTypeahead]="getAutocompleteSuggestions">
-                        <span class="input-group-btn">
-                            <button id="search.submit" (click)="termSearch()" type="submit" class="btn btn-danger">
-                                <i class="fa fa-search"></i> Search
-                            </button>
-                        </span>
-                    </form>
-                </div>
+        <nav class="navbar navbar-toggleable-md  navbar-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#searchBarContent" aria-controls="searchBarContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <form class="form-inline my-2 my-lg-0">
+                <input id="ftsearch-input" class="form-control mr-sm-2" type="text" name="q" placeholder="Search"
+                       [focusFirst]="false" [(ngModel)]="searchSettings.q" maxlength="500"
+                       [ngbTypeahead]="getAutocompleteSuggestions" autocomplete="off">
+                <button id="search.submit" class="btn btn-danger" type="submit"
+                        (click)="termSearch()"><i class="fa fa-search"></i> Search
+                </button>
+            </form>
+            <div class="collapse navbar-collapse" id="searchBarContent">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button name="resetSearch" id="resetSearch" class="btn btn-secondary" type="button"
+                            (click)="reset()" *ngIf="!embedded">
+                        <i class="fa fa-trash-o"></i> Reset
+                    </button>
+                    <button id="pinAll" (click)="openPinModal()" class="btn btn-secondary" type="button"
+                            [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
+                        <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
+                    </button>
+                    <button (click)="hideShowFilter()" class="btn btn-secondary" id="showHideFilters">
+                                        <span [hidden]="filterMode">
+                                            <i class="glyphicon glyphicon-filter"></i> Show Filters</span>
+                        <span [hidden]="!filterMode">
+                                            <i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
+                    </button>
+                    <cde-list-view-controls [(listView)]="resultsView" *ngIf="embedded"></cde-list-view-controls>
 
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav pull-right">
-                        <li *ngIf="embedded">
-                            <button name="resetSearch" id="resetSearch" class="btn btn-secondary" type="button"
-                                    (click)="reset()">
-                                <i class="fa fa-trash-o"></i> Reset
-                            </button>
-                        </li>
-                        <li *ngIf="!embedded">
-                            <button id="pinAll" (click)="openPinModal()" class="btn btn-secondary" type="button"
-                                    [hidden]="totalItems <= 0 || module === 'form'">
-                                <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
-                            </button>
-                        </li>
-                        <li>
-                            <button (click)="hideShowFilter()" class="btn btn-secondary" id="showHideFilters">
-                                <span [hidden]="filterMode">
-                                    <i class="glyphicon glyphicon-filter"></i> Show Filters</span>
-                                <span [hidden]="!filterMode">
-                                    <i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
-                            </button>
-                        </li>
-                        <li *ngIf="!embedded">
-                            <cde-list-view-controls [(listView)]="resultsView"></cde-list-view-controls>
-                        </li>
-                        <li *ngIf="!embedded" class="dropdown">
-                            <button id="export" type="button" class="btn btn-secondary dropdown-toggle navbar-btn"
-                                    data-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-download"></i> Export <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li *ngIf="userService?.user?._id || module === 'cde'">
-                                    <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}"
-                                       (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
-                                    >{{exporters[key].display}}</a>
-                                </li>
-                                <li *ngIf="userService?.user && displayValidation()">
-                                    <a id="exportValidRule" (click)="openValidRulesModal()">Validation Rules</a>
-                                </li>
-                                <li *ngIf="!userService?.user?._id && module !== 'cde'">
-                                    <a routerLink="/login">Please login to export forms.</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div><!-- /.navbar-collapse -->
+                    <div class="btn-group" role="group" *ngIf="!embedded">
+                        <button id="export" type="button" class="btn btn-secondary dropdown-toggle"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-download"></i> Export
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="export">
+                            <ng-container *ngIf="userService?.user?._id || module === 'cde'">
+                                <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}" class="dropdown-item"
+                                   (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})">{{exporters[key].display}}</a>
+                            </ng-container>
+                            <a *ngIf="userService?.user && displayValidation()" id="exportValidRule"
+                               (click)="openValidRulesModal()"> Validation Rules</a>
+                            <a *ngIf="!userService?.user?._id && module !== 'cde'" routerLink="/login"
+                               class="dropdown-item">Please login to export forms.</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
-
         <div class="m-3"> <!-- BREADCRUMBS -->
-            <span class="pt-3 pb-3"><strong id="searchResultNum">{{totalItems}}</strong> results for
-                <span id="term_crumb">
-                    <span *ngIf="!searchedTerm" class="label label-default">All Terms</span>
-                    <span *ngIf="searchedTerm" class="label label-success mr-2">{{searchedTerm}}
+            <strong id="searchResultNum">{{totalItems}}</strong> results for
+            <div id="term_crumb" class="d-inline">
+                <span class="badge badge-default">All Terms</span>
+                <span *ngIf="searchedTerm" class="badge badge-success mr-2">{{searchedTerm}}
                         <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="searchSettings.q = ''; doSearch()"
                            ngbTooltip="Remove this search term filter" placement="right" container="body"></i>
-                    </span>
                 </span>
+
                 <span id="classif_filter">
-                    | <span *ngIf="!hasSelectedClassifications()" class="label label-default">All Classifications</span>
-                    <span *ngIf="hasSelectedClassifications()" class="label label-success mr-2">{{getSelectedClassifications()}}
+                    | <span *ngIf="!hasSelectedClassifications()" class="badge badge-default">All Classifications</span>
+                    <span *ngIf="hasSelectedClassifications()" class="badge badge-success mr-2">{{getSelectedClassifications()}}
                         <i id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedClassifications()"
                            ngbTooltip="Remove this classification filter" placement="right" container="body"></i>
                     </span>
                     <span *ngIf="altClassificationFilterMode">and
-                        <span class="label label-success mr-2">{{getSelectedClassificationsAlt()}}
+                        <span class="badge badge-success mr-2">{{getSelectedClassificationsAlt()}}
                             <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-2"
                                (click)="clearSelectedClassificationsAlt()"
                                ngbTooltip="Remove this classifications filter" placement="right" container="body">
@@ -204,30 +177,30 @@
                     </span>
                 </span>
                 <span id="topic_crumb">
-                    | <span *ngIf="!hasSelectedTopics()" class="label label-default">All Topics</span>
-                    <span *ngIf="hasSelectedTopics()" class="label label-success mr-2">{{getSelectedTopics()}}
+                    | <span *ngIf="!hasSelectedTopics()" class="badge badge-default">All Topics</span>
+                    <span *ngIf="hasSelectedTopics()" class="badge badge-success mr-2">{{getSelectedTopics()}}
                         <i id="removeTopics" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedTopics()"
                            ngbTooltip="Remove this topics filter" placement="right" container="body"></i>
                     </span>
                 </span>
                 <span id="status_crumb">
-                    | <i *ngIf="!hasSelectedStatuses()" class="label label-default">All Statuses</i>
-                    <span *ngIf="hasSelectedStatuses()" class="label label-success mr-2">{{getSelectedStatuses()}}
+                    | <i *ngIf="!hasSelectedStatuses()" class="badge badge-default">All Statuses</i>
+                    <span *ngIf="hasSelectedStatuses()" class="badge badge-success mr-2">{{getSelectedStatuses()}}
                         <i id="removeStatuses" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedStatuses()"
                            ngbTooltip="Remove this registration statuses filter" placement="right" container="body"></i>
                     </span>
                 </span>
                 <span *ngIf="module === 'cde'" id="datatype_crumb">
-                    | <span *ngIf="!hasSelectedDatatypes()" class="label label-default">All Datatypes</span>
-                    <span *ngIf="hasSelectedDatatypes()" class="label label-success mr-2">{{getSelectedDatatypes()}}
+                    | <span *ngIf="!hasSelectedDatatypes()" class="badge badge-default">All Datatypes</span>
+                    <span *ngIf="hasSelectedDatatypes()" class="badge badge-success mr-2">{{getSelectedDatatypes()}}
                         <i id="removeDatatypes" class="fa fa-times hand-cursor dark-icon pl-2"
                            (click)="clearSelectedDatatypes()"
                            ngbTooltip="Remove this datatypes filter" placement="right" container="body"></i>
                     </span>
                 </span>
-            </span>
+            </div>
             <small> ({{this.took / 1000}} secs)</small>
         </div>
         <div class="container-fluid" style="max-width: 1200px; margin-left: 0">
