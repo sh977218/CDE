@@ -1,0 +1,37 @@
+.bg-white {
+    background-color: white;
+}
+
+.cdeFieldset {
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    margin: 10px 0 10px 0;
+    padding: 0 10px;
+}
+
+.cdeFieldset.welcomeSearchFieldset {
+    height: 140px;
+}
+
+.cdeFieldset.hand-cursor:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.cdeFieldset > legend {
+    width: auto;
+    border-bottom: none;
+    padding: 0 5px 0 5px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.welcomeSearchOrganizationBox {
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    margin: 10px 0 10px 0;
+    padding: 0 10px;
+    height: 140px;
+}

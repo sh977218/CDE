@@ -3,10 +3,9 @@
 
 <ng-template #welcomeSearch>
     <div class="container">
-        <div [class.welcomeSearchSearch]="!addMode">
+        <div *ngIf="!addMode" class="jumbotron bg-white text-center">
             <img [hidden]="embedded" id="homeNihCdeLogo" class="img-center-responsive"
-                 alt="NIH Common Data Elements (CDE) log"
-                 src="/cde/public/assets/img/NIH-CDE.png"/>
+                 alt="NIH Common Data Elements (CDE) log" src="/cde/public/assets/img/NIH-CDE.png"/>
         </div>
         <div class="text-center center-block" id="searchDiv">
             <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate method="GET"
@@ -184,22 +183,22 @@
                     <span *ngIf="!searchedTerm" class="label label-default">All Terms</span>
                     <span *ngIf="searchedTerm" class="label label-success mr-2">{{searchedTerm}}
                         <i id="removeTerm" class="fa fa-times hand-cursor dark-icon pl-2"
-                              (click)="searchSettings.q = ''; doSearch()"
-                              ngbTooltip="Remove this search term filter" placement="right" container="body"></i>
+                           (click)="searchSettings.q = ''; doSearch()"
+                           ngbTooltip="Remove this search term filter" placement="right" container="body"></i>
                     </span>
                 </span>
                 <span id="classif_filter">
                     | <span *ngIf="!hasSelectedClassifications()" class="label label-default">All Classifications</span>
                     <span *ngIf="hasSelectedClassifications()" class="label label-success mr-2">{{getSelectedClassifications()}}
                         <i id="removeClassifications" class="fa fa-times hand-cursor dark-icon pl-2"
-                              (click)="clearSelectedClassifications()"
-                              ngbTooltip="Remove this classification filter" placement="right" container="body"></i>
+                           (click)="clearSelectedClassifications()"
+                           ngbTooltip="Remove this classification filter" placement="right" container="body"></i>
                     </span>
                     <span *ngIf="altClassificationFilterMode">and
                         <span class="label label-success mr-2">{{getSelectedClassificationsAlt()}}
                             <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl-2"
-                                  (click)="clearSelectedClassificationsAlt()"
-                                  ngbTooltip="Remove this classifications filter" placement="right" container="body">
+                               (click)="clearSelectedClassificationsAlt()"
+                               ngbTooltip="Remove this classifications filter" placement="right" container="body">
                             </i>
                         </span>
                     </span>
