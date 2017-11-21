@@ -1,10 +1,9 @@
 var CACHE_NAME = 'cde-cache-v1';
 var CACHE_WHITELIST = ['cde-cache-v1'];
-var urlsToServeOfflinePage = ['/', '/home', '/cde/search', '/form/search', '/deView', '/formView', '/boardList'];
 var urlsToCache = [
     '/app/offline/offline.html',
     '/app/offline/offline.png',
-    '/cde/public/assets/img/NIH-CDE.png',
+    '/cde/public/assets/img/nih-cde-logo.png',
 ];
 
 self.addEventListener('install', function (event) {
@@ -33,14 +32,10 @@ self.addEventListener('fetch', function(event) {
     event.respondWith(
         fetch(event.request).catch(function() {
             var requestURL = new URL(event.request.url);
-            if (requestURL.origin === location.origin && urlsToServeOfflinePage.indexOf(requestURL.pathname) > -1) {
-                return caches.match(urlsToCache[0]);
-            } else if (requestURL.origin === location.origin && urlsToCache.indexOf(requestURL.pathname) > -1) {
+            if (requestURL.origin === location.origin && urlsToCache.indexOf(requestURL.pathname) > -1) {
                 return caches.match(requestURL.pathname);
-            } else {
-                return new Response("Request Timeout. Either you are offline or the server is not available.", {
-                    status: 408
-                });
+            } else  {
+                return caches.match(urlsToCache[0]);
             }
         })
     );
