@@ -3,7 +3,7 @@ const mongo_cde = require('../modules/cde/node-js/mongo-cde'),
 ;
 
 let stream = mongo_cde.getStream({archived: false,
-    retired: {$ne: 'Retired'},
+    "registrationState.registrationStatus": "Qualified",
     source: 'NINDS'
 });
 
@@ -32,8 +32,7 @@ stream.on('data', cde => {
             }
 
             if (mergeTags) {
-                cde.naming[dupInd].tags = _.uniq(cde.naming[dupInd].tags.concat(cde.naming[i].tags))
-                    // .map(t => t.tag)).map(t => {return {tag: t}});
+                cde.naming[dupInd].tags = _.uniq(cde.naming[dupInd].tags.concat(cde.naming[i].tags));
                 cde.naming[i] = "";
                 changed = true;
             }
