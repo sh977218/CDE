@@ -6,27 +6,50 @@ import { CdeForm, DisplayProfile } from 'core/form.model';
     selector: "cde-native-render-full",
     templateUrl: "./nativeRenderFull.component.html",
     styles: [`
-        @media (min-width: 768px) {
-            .bot-left {
-                position: relative;
-                margin: auto;
-                padding: 10px 10px;
-                margin-top: 5px;
-                max-width: 900px;
-                border-radius: 20px;
-                border: solid lightgrey 3px;
-            }
-            .noGridPadLarge {
-                padding-left: 0;
-                padding-right: 0;
-            }
+     @media print {
+        @page {
+            size: 330mm 427mm;
+            margin: 14mm;
         }
-        @media (max-width: 767px) {
-            .noGridPadSmall {
-                padding-left: 5px;
-                padding-right: 5px;
-            }
+
+        .container {
+            width: 1170px;
         }
+        
+        .keep-with-previous {
+            page-break-before: avoid;
+            break-before: avoid;
+        }
+        
+        .keep-together {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .bot-left {
+            position: relative;
+            margin: auto;
+            padding: 10px 10px;
+            margin-top: 5px;
+            max-width: 900px;
+            border-radius: 20px;
+            border: solid lightgrey 3px;
+        }
+    
+        .noGridPadLarge {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .noGridPadSmall {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    }
     `]
 })
 export class NativeRenderFullComponent implements OnInit {

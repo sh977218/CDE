@@ -54,7 +54,8 @@
                 </a>
             </li>
             <li class="nav-item" [ngClass]="{active: isPageActive('/login')}" *ngIf="!userService.user?._id">
-                <a (click)="loginSvc.goToLogin()" id="login_link" title="Log in" routerLink="/login">Log In</a>
+                <a (click)="loginSvc.goToLogin()" id="login_link" class="nav-link" title="Log in" routerLink="/login">
+                    Log In</a>
             </li>
             <li class="nav-item dropdown" *ngIf="userService.user?._id">
                 <a id="username_link" class="nav-link dropdown-toggle" data-toggle="dropdown"
@@ -82,7 +83,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a routerLink="/searchPreferences" title="open search setting" class="dropdown-item">
+                <a routerLink="/searchPreferences" title="open search setting" class="nav-link">
                     <i class="fa fa-cog text-muted" id="searchSettings"></i></a>
             </li>
         </ul>
