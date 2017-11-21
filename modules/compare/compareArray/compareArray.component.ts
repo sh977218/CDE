@@ -326,9 +326,7 @@ export class CompareArrayComponent implements OnInit {
     @Input() filter;
     public compareArrayOption = [];
 
-
-    constructor(public compareService: CompareService) {
-    }
+    constructor(public compareService: CompareService) {}
 
     ngOnInit(): void {
         if (this.newer.elementType === "cde" && this.older.elementType === "cde") {
