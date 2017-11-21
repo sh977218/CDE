@@ -8,7 +8,14 @@ import { UserService } from '_app/user.service';
 
 @Component({
     selector: 'cde-login',
-    templateUrl: 'login.component.html'
+    templateUrl: 'login.component.html',
+    styles: [`
+    .form-signin {
+        max-width: 330px;
+        padding: 15px;
+        margin: 0 auto;
+    }
+    `]
 })
 export class LoginComponent implements OnInit {
 
@@ -23,13 +30,14 @@ export class LoginComponent implements OnInit {
                 private alert: AlertService,
                 private loginSvc: LoginService,
                 private userService: UserService,
-                private router: Router) {}
+                private router: Router) {
+    }
 
     ngOnInit() {
         this.getCsrf();
     }
 
-    resolved (e) {
+    resolved(e) {
         this.recaptcha = e;
     }
 
@@ -38,7 +46,8 @@ export class LoginComponent implements OnInit {
         this.http.get('/csrf').map(r => r.json()).subscribe(response => {
             this.csrf = response.csrf;
             this.showCaptcha = response.showCaptcha;
-        }, () => {});
+        }, () => {
+        });
     }
 
     login() {

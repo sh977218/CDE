@@ -2,38 +2,33 @@
     <div class="row">
         <button class="btn btn-secondary" id="refreshServerStatus" (click)="refreshStatus()">Refresh</button>
     </div>
-    <div class="border-1">
-        I have border 1.
-    </div>
-    <div class="border-1">
-        <h4>Elastic Search</h4>
-        <hr/>
-        <div *ngFor="let i of esIndices; let $index = index">
-            <button class="btn btn-secondary" (click)="reIndex($index)"><i class="fa fa-refresh"></i> Re-index:
-                <b>{{i.name}}</b>
-                / {{i.indexName}}
-            </button>
-            <ngb-progressbar *ngIf="i.totalCount > 0 && i.count > 0" [striped]="true"
-                             [max]="i.totalCount" [value]="i.count" type="success">
-                {{i.count}} / {{i.totalCount}}
-            </ngb-progressbar>
-        </div>
-        <div>
-            <button class="btn btn-secondary" (click)="syncMesh()" id="syncWithMeshButton">
-                Sync with MeSH
-            </button>
-            <ng-container *ngFor="let meshSync of meshSyncs">
+
+    <div class="row">
+        <div class="col boxed-div">
+            <h4>Elastic Search</h4>
+            <hr/>
+            <div *ngFor="let i of esIndices; let $index = index">
+                <button class="btn btn-secondary" (click)="reIndex($index)"><i class="fa fa-refresh"></i> Re-index: <b>{{i.name}}</b>
+                    / {{i.indexName}}
+                </button>
+                <ngb-progressbar *ngIf="i.totalCount > 0 && i.count > 0" [striped]="true"
+                                 [max]="i.totalCount" [value]="i.count" type="success">
+                    {{i.count}} / {{i.totalCount}}
+                </ngb-progressbar>
+            </div>
+            <button class="btn btn-secondary" (click)="syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
+            <div *ngFor="let meshSync of meshSyncs">
                 <ngb-progressbar *ngIf="meshSync.total > 0 && meshSync.done > 0"
                                  [striped]="true" [max]="meshSync.total" [value]="meshSync.done"
                                  type="success">
                     {{meshSync.done}} / {{meshSync.total}}
                 </ngb-progressbar>
-            </ng-container>
+            </div>
         </div>
     </div>
 
     <div class="row">
-        <div *ngFor="let status of statuses" class="col-4">
+        <div *ngFor="let status of statuses" class="col-5 boxed-div">
             <h4>{{status.hostname}}:{{status.port}}</h4>
             <dl class="row">
                 <dt class="col-sm-3">Status:</dt>
@@ -54,25 +49,27 @@
             <div *ngIf="!status.allUp">
                 <h5>ElasticSearch</h5>
                 <dl class="dl-horizontal">
-                    <dt>Up:</dt>
-                    <dd>
-                        <a class="btn btn-xs"
-                           [ngClass]="{'btn-success': status.elastic.up, 'btn-danger': !status.elastic.up}">
-                            <i class="fa"
-                               [ngClass]="{'fa-check': status.elastic.up, 'fa-times': !status.elastic.up}"></i></a>
-                    </dd>
-                    <dt>Message:</dt>
-                    <dd>{{status.elastic.message}}</dd>
+                    <dl class="row">
+                        <dt class="col-sm-3">Up:</dt>
+                        <dd class="col-sm-9">
+                            <a [ngClass]="{'btn-success': status.elastic.up, 'btn-danger': !status.elastic.up}"
+                               class="btn btn-xs">
+                                <i [ngClass]="{'fa-check': status.elastic.up, 'fa-times': !status.elastic.up}"
+                                   class="fa"></i></a>
+                        </dd>
+                        <dt class="col-sm-3">Message:</dt>
+                        <dd class="col-sm-9">{{status.elastic.message}}</dd>
+                    </dl>
                 </dl>
                 <div *ngFor="let ind of status.elastic.indices" class="boxed-div">
-                    <dl class="dl-horizontal">
-                        <dt>{{ind.name}}:</dt>
-                        <dd>
+                    <dl class="row">
+                        <dt class="col-sm-3">{{ind.name}}:</dt>
+                        <dd class="col-sm-9">
                             <a class="btn btn-xs" [ngClass]="{'btn-success': ind.up, 'btn-danger': !ind.up}">
                                 <i class="fa" [ngClass]="{'fa-check': ind.up, 'fa-times': !ind.up}"></i></a>
                         </dd>
-                        <dt>Message:</dt>
-                        <dd>{{ind.message}}</dd>
+                        <dt class="col-sm-3">Message:</dt>
+                        <dd class="col-sm-9">{{ind.message}}</dd>
                     </dl>
                 </div>
             </div>
