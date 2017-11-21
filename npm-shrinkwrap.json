@@ -842,10 +842,14 @@
       }
     },
     "bootstrap": {
-      "version": "4.0.0-beta.2",
-      "resolved": "https://registry.npmjs.org/bootstrap/-/bootstrap-4.0.0-beta.2.tgz",
-      "integrity": "sha512-DzGtdTlKbrMoGMpz0LigKSqJ+MgtFKxA791PU/q062OlRG0HybNZcTLH7rpDAmLS66Y3esN9yzKHLLbqa5UR3w==",
-      "dev": true
+      "version": "4.0.0-alpha.6",
+      "resolved": "https://registry.npmjs.org/bootstrap/-/bootstrap-4.0.0-alpha.6.tgz",
+      "integrity": "sha1-T1TdM6wN6sOyhAe8LffsYIhpycg=",
+      "dev": true,
+      "requires": {
+        "jquery": "3.2.1",
+        "tether": "1.4.2"
+      }
     },
     "bootstrap-tour": {
       "version": "0.12.0",
@@ -10561,6 +10565,12 @@
         "readable-stream": "2.3.3",
         "xtend": "4.0.1"
       }
+    },
+    "tether": {
+      "version": "1.4.2",
+      "resolved": "https://registry.npmjs.org/tether/-/tether-1.4.2.tgz",
+      "integrity": "sha512-bSrU0pA7Xm+K3laSp3I+vxhrZ+Czip9tLHWnaPU/m1b9aUCrcmdhF+KV4TBAb7Tko/HfnE/Mtem38xtIrxMehg==",
+      "dev": true
     },
     "textextensions": {
       "version": "1.0.2",
