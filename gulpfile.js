@@ -38,22 +38,39 @@ gulp.task('thirdParty', ['npm', 'bower'], function () {
 
     streamArr.push(gulp.src('./node_modules/core-js/client/shim.min.js')
         .pipe(replace('//# sourceMappingURL=shim.min.js.map', ''))
-        .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/classlist.js/classList.min.js')
-        .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/html5-formdata/formdata.js')
-        .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/js-polyfills/typedarray.js')
-        .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/Blob.js/Blob.js')
-        .pipe(gulp.dest('./modules/static/')));
-    streamArr.push(gulp.src('./node_modules/intl/locale-data/jsonp/en.js')
-        .pipe(gulp.dest('./modules/static/')));
+        .pipe(gulp.dest('./dist/common/')));
     streamArr.push(gulp.src('./node_modules/intl/dist/Intl.min.js')
         .pipe(replace('//# sourceMappingURL=Intl.min.js.map', ''))
-        .pipe(gulp.dest('./modules/static/')));
+        .pipe(gulp.dest('./dist/common/')));
+    streamArr.push(gulp.src([
+        './node_modules/classlist.js/classList.min.js',
+        './node_modules/html5-formdata/formdata.js',
+        './node_modules/intl/locale-data/jsonp/en.js',
+        './node_modules/js-polyfills/typedarray.js',
+        './node_modules/Blob.js/Blob.js',
+    ]).pipe(gulp.dest('./dist/common/')));
+
+    // bower
+    streamArr.push(gulp.src('./modules/components/font-awesome/css/font-awesome.min.css')
+        .pipe(gulp.dest('./dist/components/font-awesome/css/')));
+    streamArr.push(gulp.src('./modules/components/font-awesome/fonts/*')
+        .pipe(gulp.dest('./dist/components/font-awesome/fonts/')));
+    streamArr.push(gulp.src('./modules/components/bootstrap-css-only/css/bootstrap.min.css')
+        .pipe(replace('/*# sourceMappingURL=bootstrap.min.css.map */', ''))
+        .pipe(gulp.dest('./dist/components/bootstrap-css-only/css/')));
+    streamArr.push(gulp.src('./modules/components/bootstrap-css-only/fonts/*')
+        .pipe(gulp.dest('./dist/components/bootstrap-css-only/fonts/')));
+    streamArr.push(gulp.src('./modules/components/bootstrap/dist/js/bootstrap.min.js')
+        .pipe(gulp.dest('./dist/components/bootstrap/dist/js/')));
+    streamArr.push(gulp.src('./modules/components/jquery/jquery.min.js')
+        .pipe(gulp.dest('./dist/components/jquery/')));
 
     return merge(streamArr);
+});
+
+gulp.task('createDist', ['thirdParty'], function () {
+    return gulp.src('./modules/cde/public/css/style.css') // TODO: move style.css to modules/standard_theme.css
+        .pipe(gulp.dest('./dist/common'));
 });
 
 gulp.task('lhc-wiredep', ['bower'], function () {
@@ -65,38 +82,7 @@ gulp.task('lhc-wiredep', ['bower'], function () {
         .pipe(gulp.dest("./modules/form/public/html"));
 });
 
-gulp.task('nativefollow-wiredep', ['bower'], function () {
-    return gulp.src("./modules/_nativeRenderApp/nativeRenderApp.html")
-        .pipe(wiredep({
-            directory: "modules/components",
-            exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
-                '/components/lforms', '/components/oboe', '/components/traverse',
-                '/components/lodash', '/components/lforms-converter',
-                '/components/angular', '/components/angular-bootstrap', '/components/angular-resource',
-                '/components/angular-route', '/components/angular-sanitize'
-            ],
-            ignorePath: ".."
-        }))
-        .pipe(gulp.dest("./modules/_nativeRenderApp"));
-});
-
-gulp.task('wiredep', ['bower'], function () {
-    return gulp.src("./modules/system/views/index.ejs")
-        .pipe(wiredep({
-            directory: "modules/components",
-            exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
-                '/components/lforms', '/components/oboe', '/components/traverse',
-                '/components/lodash', '/components/lforms-converter',
-                '/components/angular', '/components/angular-bootstrap', '/components/angular-resource',
-                '/components/angular-route', '/components/angular-sanitize'
-            ],
-            ignorePath: "../.."
-        }))
-        .pipe(gulp.dest("./modules/system/views"));
-});
-
-gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], function () {
-
+gulp.task('copyCode', ['lhc-wiredep'], function () {
     let streamArray = [];
 
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(function (module) {
@@ -159,8 +145,6 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], functi
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/")));
 
     return merge(streamArray);
-
-
 });
 
 gulp.task('prepareVersion', ['copyCode'], function () {
@@ -173,26 +157,56 @@ gulp.task('prepareVersion', ['copyCode'], function () {
     });
 });
 
-gulp.task('webpack-app', ['thirdParty'], () => {
+gulp.task('webpack-app', ['createDist'], () => {
     return run('npm run buildApp').exec();
 });
 
-gulp.task('webpack-native', ['thirdParty'], () => {
+gulp.task('buildApp', ['webpack-app'], function () {
+    return gulp.src('./modules/_app/serviceWorker/**')
+        .pipe(gulp.dest('./dist/app/'));
+});
+
+gulp.task('buildNative', ['createDist'], () => {
     return run('npm run buildNative').exec();
 });
 
-gulp.task('webpack-embed', ['thirdParty'], () => {
+gulp.task('buildEmbed', ['createDist'], () => {
     return run('npm run buildEmbed').exec();
 });
 
-gulp.task('copyWebpack', ['webpack-app', 'webpack-native', 'webpack-embed'], () => {
-    gulp.src('./modules/static/*.png')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
-    return gulp.src('./modules/static/*.js')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/static/"));
+gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative'], () => {
+    let streamArray = [];
+
+    // App
+    streamArray.push(gulp.src('./dist/app/*.png')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
+    streamArray.push(gulp.src('./dist/app/*.js')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
+    streamArray.push(gulp.src('./dist/app/offline/*')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/app/offline')));
+
+    // Embed
+    streamArray.push(gulp.src('./dist/embed/*.png')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/embed')));
+    streamArray.push(gulp.src('./dist/embed/*.js')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/embed')));
+
+    // Native
+    streamArray.push(gulp.src('./dist/native/*.png')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
+    streamArray.push(gulp.src('./dist/native/*.js')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/native')));
+
+    // bower
+    streamArray.push(gulp.src('./dist/components/bootstrap-css-only/fonts/*')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/components/bootstrap-css-only/fonts/')));
+    streamArray.push(gulp.src('./dist/components/font-awesome/fonts/*')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/components/font-awesome/fonts/')));
+
+    return merge(streamArray);
 });
 
-gulp.task('usemin', ['copyCode', 'copyWebpack'], function () {
+gulp.task('usemin', ['copyCode', 'copyDist'], function () {
     let streamArray = [];
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
@@ -205,15 +219,15 @@ gulp.task('usemin', ['copyCode', 'copyWebpack'], function () {
                     jsAttributes: {
                         defer: false
                     },
-                    assetsDir: "./modules/",
-                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                    assetsDir: "./dist/",
+                    css: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev()],
                     webpcss: ['concat', rev()],
                     poly: ['concat', rev()],
                     polyIE: ['concat', rev()],
                     js: [uglify({mangle: false}), 'concat', rev()],
                     webp: ['concat', rev()]
                 }))
-                .pipe(gulp.dest(config.node.buildDir + '/modules/'))
+                .pipe(gulp.dest(config.node.buildDir + '/dist/'))
         );
     });
     return merge(streamArray);
@@ -227,7 +241,7 @@ gulp.task('copyUsemin', ['usemin'], function () {
         {folder: "./modules/_embedApp/public/html/", filename: "index.html"},
         {folder: "./modules/_nativeRenderApp/", filename: "nativeRenderApp.html"}
     ].forEach(item => {
-        streamArray.push(gulp.src(config.node.buildDir + '/modules/' + item.filename)
+        streamArray.push(gulp.src(config.node.buildDir + '/dist/' + item.filename)
             .pipe(gulp.dest(config.node.buildDir + "/" + item.folder)));
     });
     return merge(streamArray);
@@ -247,6 +261,6 @@ gulp.task('es', function () {
     setTimeout(() => process.exit(0), 3000);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'prepareVersion', 'copyUsemin']);
+gulp.task('default', ['copyNpmDeps', 'prepareVersion', 'copyUsemin']);
 
 

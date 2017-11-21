@@ -113,6 +113,7 @@
     "classlist.js": "1.1.20150312",
     "clean-webpack-plugin": "0.1.17",
     "codelyzer": "2.0.0",
+    "copy-webpack-plugin": "^4.2.1",
     "core-js": "2.4.1",
     "cross-env": "3.1.4",
     "css-loader": "0.26.1",

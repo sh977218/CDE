@@ -1,48 +1,80 @@
 ## Generated
-dist
-nbproject
-node_modules
-test/selenium/.gradle
-test/selenium/*.png
-test-console.out
-test-console.o
-bower_components
-modules/components/
-modules/system/views/version.html
-modules/board/public/js/bkup/
-modules/static
 *.orig
 .esm-cache
-
-## Secret Config Files
-views/version.html
+.nide
+bin
+dependencies/
+dist
+dump/
+migration/
+nbproject
+node_modules
+bower_components
+modules/components/
+modules/cde/public/assets/fonts/
+modules/cde/public/assets/img/robot.png
+modules/system/views/version.html
 modules/system/public/html/version.html
-config/simon.json
+prodDump/
+temp/
+
+## Ingest
+ingesters/.nb-gradle/private/
+ingesters/build/
+ingester/debug.log
+ingester/ninds/ingesters/.gradle/
+ingester/ninds/ingesters/1.17.5_0.crx
+ingester/ninds/ingesters/build/
+ingester/ninds/ingesters/gradle/
+ingester/ninds/ingesters/src/main/resources/
+ingester/ninds/ingesters/src/test/
+ingester/src/
 
 ## Local Files
 my-*
+config/cluster.json
 config/prod.json
 config/qa-live.json
 config/qa-mig.json
 config/migration.json
+config/peter.json
 
 ## Logs
+cde.log
+cdeError.log
+debug.log
 expressLog*
 expressErrorLog*
 logs
 
 ## Tests
-/protractor/reports/
-/test/report/
-/test/selenium/build/
-/test/selenium/chromedriver
-/test/selenium/chromedriver.exe
-/test/selenium/out/
-/test/selenium/*.log
-/dump/
 *.iml
+.gradle/
+chromedriver.exe
+gradle setting.txt
+groovy/out/
+protractor/reports/
+test/.settings/
+test/bin/
+test/build/
+test/report/
+test/selenium/.gradle
+test/selenium/.nb-gradle/private/
+test/selenium/.nb-gradle/profiles/private/
+test/selenium/*.log
+test/selenium/*.png
+test/selenium/build/
+test/selenium/chromedriver
+test/selenium/chromedriver.exe
+test/selenium/dependency/
+test/selenium/nlm-cde-test.iml
+test/selenium/out/
+test/selenium/IntegerDatatypeTest_integerDatatype.gif
+test-console.out
+test-console.o
 
-## Pulled at build time
+## WebStorm - TODO: temporary until settings are moved here
+.idea
 
 # OS generated files #
 ######################
@@ -56,43 +88,3 @@ Icon?
 ehthumbs.db
 Thumbs.db
 *~
-/test/selenium/.nb-gradle/profiles/private/
-.nide
-/test/selenium/.nb-gradle/private/
-/bin
-.idea
-test/selenium/nlm-cde-test.iml
-/ingesters/.nb-gradle/private/
-/ingesters/build/
-
-.gradle/
-chromedriver.exe
-config/cluster.json
-config/peter.json
-debug.log
-dependencies/
-gradle setting.txt
-groovy/out/
-ingester/debug.log
-ingester/ninds/ingesters/.gradle/
-ingester/ninds/ingesters/1.17.5_0.crx
-ingester/ninds/ingesters/build/
-ingester/ninds/ingesters/gradle/
-ingester/ninds/ingesters/src/main/resources/
-ingester/ninds/ingesters/src/test/
-ingester/src/
-migration/
-modules/cde/public/assets/fonts/
-modules/cde/public/assets/img/robot.png
-modules/cde/public/js/bkup/
-modules/form/public/js/bkup/
-modules/system/public/js/bkup/
-prodDump/
-temp/
-test/.settings/
-test/bin/
-test/build/
-test/selenium/IntegerDatatypeTest_integerDatatype.gif
-test/selenium/dependency/
-modules/embedded/public/js/angularTemplates.js
-modules/embedded/public/js/bkup/
