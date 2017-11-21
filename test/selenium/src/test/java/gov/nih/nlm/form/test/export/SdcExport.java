@@ -14,7 +14,7 @@ public class SdcExport extends NlmCdeBaseTest {
         String url = baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc";
         String response = get(url).asString();
         Assert.assertFalse(response.contains("<!-- Validation Error: Error:"), "response: " + response);
-        Assert.assertTrue(response.contains("<FormDesign xmlns=\"http://healthIT.gov/sdc\""), "response: " + response);
+        Assert.assertTrue(response.contains("<FormDesign xmlns=\"urn:ihe:qrph:sdc:2016\""), "response: " + response);
         Assert.assertTrue(response.contains("<Section ID"), "response: " + response);
         Assert.assertTrue(response.contains("title=\"CLINICAL\">"), "response: " + response);
         Assert.assertTrue(response.contains("<ListItem ID="), "response: " + response);
