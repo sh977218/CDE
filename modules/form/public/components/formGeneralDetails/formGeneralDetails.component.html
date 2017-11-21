@@ -1,16 +1,16 @@
 <div id="generalDiv">
     <h4>General Details</h4>
     <dl class="row">
-        <dt class="col-sm-3 text-right">Name:</dt>
+        <dt class="col-sm-3">Name:</dt>
         <dd id="dd_general_name" itemprop="name" class="col-sm-9">{{elt.naming[0].designation}}</dd>
-        <dt class="col-sm-3 text-right">Description:</dt>
+        <dt class="col-sm-3">Description:</dt>
         <dd id="dd_def" itemprop="description" class="col-sm-9">
             <span *ngIf="elt.naming[0].definitionFormat !== 'html'">{{elt.naming[0].definition}}</span>
             <span *ngIf="elt.naming[0].definitionFormat === 'html'" [innerHtml]="elt.naming[0].definition"></span>
         </dd>
-        <dt class="col-sm-3 text-right">Used by:</dt>
+        <dt class="col-sm-3">Used by:</dt>
         <dd class="col-sm-9" id="dd_usedBy">{{elt.usedBy}}</dd>
-        <dt class="col-sm-3 text-right">Copyrighted:</dt>
+        <dt class="col-sm-3">Copyrighted:</dt>
         <dd class="col-sm-9">
             <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
                    id="isCopyrighted" title="copyrighted" (change)="onEltChange.emit();"/>
@@ -23,20 +23,20 @@
                                  [isAllowed]="canEdit" (modelChange)="onEltChange.emit();"></cde-inline-edit>
             </div>
         </dd>
-        <dt class="col-sm-3 text-right">Origin:</dt>
+        <dt class="col-sm-3">Origin:</dt>
         <dd class="col-sm-9">
             <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
                              (modelChange)="onEltChange.emit();">
             </cde-inline-edit>
         </dd>
-        <dt class="col-sm-3 text-right">Disallow Rendering:</dt>
+        <dt class="col-sm-3">Disallow Rendering:</dt>
         <dd class="col-sm-9">
             <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
                    id="disallowRendering" title="disallow rendering" (change)="onEltChange.emit();"/>
         </dd>
-        <dt class="col-sm-3 text-right">Version:</dt>
+        <dt class="col-sm-3">Version:</dt>
         <dd class="col-sm-9">{{elt.version}}</dd>
-        <dt class="col-sm-3 text-right">Steward:</dt>
+        <dt class="col-sm-3">Steward:</dt>
         <dd class="col-sm-9">
             <ng-template #stewardTooltip>
                 <span *ngIf="orgHelperService.orgsDetailedInfo"
@@ -49,23 +49,23 @@
             </cde-inline-select-edit>
         </dd>
         <ng-container *ngIf="elt.imported">
-            <dt class="col-sm-3 text-right">Last import:</dt>
+            <dt class="col-sm-3">Last import:</dt>
             <dd class="col-sm-9">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.created">
-            <dt class="col-sm-3 text-right">Created:</dt>
+            <dt class="col-sm-3">Created:</dt>
             <dd class="col-sm-9">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.createdBy">
-            <dt class="col-sm-3 text-right">Created By:</dt>
+            <dt class="col-sm-3">Created By:</dt>
             <dd id="createdBy" class="col-sm-9">{{elt.createdBy.username}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.updated">
-            <dt class="col-sm-3 text-right">Updated:</dt>
+            <dt class="col-sm-3">Updated:</dt>
             <dd id="updated" class="col-sm-9">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.updatedBy">
-            <dt class="col-sm-3 text-right">Updated By:</dt>
+            <dt class="col-sm-3">Updated By:</dt>
             <dd id="updatedBy" class="col-sm-9">{{elt.updatedBy.username}}</dd>
         </ng-container>
     </dl>

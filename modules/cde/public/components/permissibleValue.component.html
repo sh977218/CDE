@@ -1,6 +1,6 @@
 <div id="permissibleValueDiv">
     <h4>Values Allowed</h4>
-    <div class="col-sm-2 text-right text_label">Value Type:</div>
+    <div class="col-sm-2 text_label">Value Type:</div>
     <div class="col-sm-10">
         <div class="col-sm-4 noLeftPadding" id="datatypeSelect">
             <select2 [data]="dataTypeOptions" [value]="elt.valueDomain.datatype" [options]="options"
@@ -10,17 +10,17 @@
         </div>
     </div>
     <ng-container *ngIf="elt.valueDomain.definition">
-        <div class="col-sm-2 text-right text_label">Instructions:</div>
+        <div class="col-sm-2 text_label">Instructions:</div>
         <div class="col-sm-10" id="instructions">
             {{elt.valueDomain.definition}}
         </div>
     </ng-container>
-    <div class="col-sm-2 text-right text_label">Unit of Measure:</div>
+    <div class="col-sm-2 text_label">Unit of Measure:</div>
     <div class="col-sm-10">
         <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom" (modelChange)="onEltChange.emit();"
                          [isAllowed]="canEdit"></cde-inline-edit>
     </div>
-    <div class="col-sm-2 text-right text_label">Ids:</div>
+    <div class="col-sm-2 text_label">Ids:</div>
     <div class="col-sm-10" id="identifiers">
         <ng-container *ngIf="!elt.valueDomain.ids || elt.valueDomain.ids.length===0">
             empty
@@ -30,67 +30,67 @@
         </div>
     </div>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() == 'text'">
-        <div class="col-sm-2 text-right text_label">Minimum Length:</div>
+        <div class="col-sm-2 text_label">Minimum Length:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength"
                              [inputType]="'Number'" (modelChange)="onEltChange.emit();"
                              [isAllowed]="canEdit"></cde-inline-edit>
         </div>
-        <div class="col-sm-2 text-right text_label">Maximum Length:</div>
+        <div class="col-sm-2 text_label">Maximum Length:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength"
                              [inputType]="'Number'" (modelChange)="onEltChange.emit();"
                              [isAllowed]="canEdit"></cde-inline-edit>
         </div>
-        <div class="col-sm-2 text-right text_label">Regular Expression:</div>
+        <div class="col-sm-2 text_label">Regular Expression:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
                              (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
         </div>
-        <div class="col-sm-2 text-right text_label">Free text rule:</div>
+        <div class="col-sm-2 text_label">Free text rule:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
                              (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() == 'number'">
-        <div class="col-sm-2 text-right text_label">Minimum Value:</div>
+        <div class="col-sm-2 text_label">Minimum Value:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
                              [inputType]="'Number'" (modelChange)="onEltChange.emit();"
                              [isAllowed]="canEdit"></cde-inline-edit>
         </div>
-        <div class="col-sm-2 text-right text_label">Maximum Value:</div>
+        <div class="col-sm-2 text_label">Maximum Value:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
                              [inputType]="'Number'" (modelChange)="onEltChange.emit();"
                              [isAllowed]="canEdit"></cde-inline-edit>
         </div>
-        <div class="col-sm-2 text-right text_label">Precision:</div>
+        <div class="col-sm-2 text_label">Precision:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
                              (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'date'">
-        <div class="col-sm-2 text-right text_label">Date Format:</div>
+        <div class="col-sm-2 text_label">Date Format:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeDateFormat" [(model)]="elt.valueDomain.datatypeDate.format"
                              (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
         </div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'file'">
-        <div class="col-sm-2 text-right text_label">File</div>
+        <div class="col-sm-2 text_label">File</div>
         <div class="col-sm-10"></div>
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'externally defined'">
-        <div class="col-sm-2 text-right text_label">Link:</div>
+        <div class="col-sm-2 text_label">Link:</div>
         <div class="col-sm-10">
             <cde-inline-edit id="datatypeExternallyDefinedLink"
                              [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
                              (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
         </div>
-        <div class="col-sm-2 text-right text_label">Description:</div>
+        <div class="col-sm-2 text_label">Description:</div>
         <div class="col-sm-10">
             <cde-inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
                                   [isAllowed]="canEdit"
@@ -100,7 +100,7 @@
     </ng-container>
     <ng-container *ngIf="elt.valueDomain.datatype.toLowerCase() === 'value list'">
         <h4>Permissible Value</h4>
-        <div class="col-sm-2 text-right text_label">Datatype:</div>
+        <div class="col-sm-2 text_label">Datatype:</div>
         <div class="col-sm-10">
             <cde-inline-select-edit [(value)]="elt.valueDomain.datatypeValueList.datatype"
                                     [selectOptions]="dataTypeValueListOptions"

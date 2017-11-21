@@ -2,27 +2,27 @@
     <legend>Source: {{eltSource.sourceName}}</legend>
     <dl class="row">
         <ng-container *ngIf="eltSource.sourceName">
-            <dt class="col-3 text-right">Name:</dt>
+            <dt class="col-3">Name:</dt>
             <dd class="col-9">{{eltSource.sourceName}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.created">
-            <dt class="col-3 text-right">Created:</dt>
+            <dt class="col-3">Created:</dt>
             <dd class="col-9">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.updated">
-            <dt class="col-3 text-right">Updated:</dt>
+            <dt class="col-3">Updated:</dt>
             <dd class="col-9">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.registrationStatus">
-            <dt class="col-3 text-right">Registration Status:</dt>
+            <dt class="col-3">Registration Status:</dt>
             <dd class="col-9">{{eltSource.registrationStatus}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.datatype">
-            <dt class="col-3 text-right">Datatype:</dt>
+            <dt class="col-3">Datatype:</dt>
             <dd class="col-9">{{eltSource.datatype}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.copyright">
-            <dt class="col-3 text-right">Copyright:</dt>
+            <dt class="col-3">Copyright:</dt>
             <dd class="col-9">
                 <div *ngIf="eltSource.copyright.valueFormat === 'html'" [innerHtml]="eltSource.copyright.value"></div>
                 <div *ngIf="!(eltSource.copyright.valueFormat === 'html')">{{eltSource.copyright.value}}</div>

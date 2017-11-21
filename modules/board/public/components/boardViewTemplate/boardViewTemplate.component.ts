@@ -3,6 +3,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 @Component({
     selector: 'cde-board-view-template',
     templateUrl: './boardViewTemplate.component.html',
+    styles:[`
+        .myBoardTags {
+            position: absolute;
+            bottom: 7px;
+        }
+    `]
 })
 export class BoardViewTemplateComponent implements OnInit {
 

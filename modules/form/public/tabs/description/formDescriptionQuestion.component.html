@@ -61,14 +61,14 @@
         <i *ngIf="reloading" class="fa fa-spinner fa-spin"></i>
         <div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
+                <div class="col-sm-2 questionSectionLabel">Label:</div>
                 <div class="col-sm-8" id="mdd_question_title">
                     <span [ngClass]="{mark: updateCdeVersion.bLabel}">{{updateCdeVersion.newQuestion.label | cdePlaceholder}}</span>
                     <span *ngIf="updateCdeVersion.bLabel" class="red">( was {{ updateCdeVersion.currentQuestion.label }} )</span>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">Datatype:</div>
+                <div class="col-sm-2 questionSectionLabel">Datatype:</div>
                 <div class="col-sm-8" id="mdd_datatype">
                     <span [ngClass]="{mark: updateCdeVersion.bDatatype}">{{updateCdeVersion.newQuestion.question.datatype | cdePlaceholder }}</span>
                     <span *ngIf="bDatatype" class="red">( was {{updateCdeVersion.currentQuestion.question.datatype}} )</span>
@@ -76,7 +76,7 @@
             </div>
             <div *ngIf="updateCdeVersion.newQuestion.question.datatype ==='Number'">
                 <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
+                    <div class="col-sm-2 questionSectionLabel">Min Value:</div>
                     <div class="col-sm-8" id="mdd_minimal">
                     <span [ngClass]="{mark: updateCdeVersion.bNumberMin}">
                         {{updateCdeVersion.newQuestion.question?.datatypeNumber?.minValue | cdePlaceholder }}</span>
@@ -85,7 +85,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
+                    <div class="col-sm-2 questionSectionLabel">Max Value:</div>
                     <div class="col-sm-8" id="mdd_maximal">
                     <span [ngClass]="{mark: updateCdeVersion.bNumberMax}">
                         {{updateCdeVersion.newQuestion.question?.datatypeNumber.maxValue | cdePlaceholder }}</span>
@@ -95,14 +95,14 @@
                 </div>
             </div>
             <div class="row" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
-                <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>
+                <div class="col-sm-2 questionSectionLabel">Multiple Selections:</div>
                 <div class="col-sm-8" id="mdd_question_multi">
                     <input type="checkbox" [ngModel]="updateCdeVersion.newQuestion.question.multiselect"
                            title="Multiple Selection" disabled/>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">Units of Measures:</div>
+                <div class="col-sm-2 questionSectionLabel">Units of Measures:</div>
                 <div class="col-sm-8" id="mdd_q_uoms">
                     <span [ngClass]="{mark: updateCdeVersion.bUom}" *ngIf="updateCdeVersion.newQuestion.question.uoms.length > 0">
                         <span *ngFor="let uom of updateCdeVersion.newQuestion.question.uoms; let i = index">
@@ -123,7 +123,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
+                <div class="col-sm-2 questionSectionLabel">Default Answer:</div>
                 <div class="col-sm-8" id="mdd_q_defaultAnswer">
                     <span [ngClass]="{mark: updateCdeVersion.bDefault}" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
                         <select [ngModel]="updateCdeVersion.newQuestion.question.defaultAnswer"
@@ -151,7 +151,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
+                <div class="col-sm-2 questionSectionLabel">CDE:</div>
                 <div class="col-sm-8" id="mdd_d_cde">
                     <a [ngClass]="{mark: updateCdeVersion.bCde}"
                        href="/deView?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
@@ -168,7 +168,7 @@
                 </div>
             </div>
             <div class="row answerList" *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
-                <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
+                <div class="col-sm-2 questionSectionLabel">Answer List:</div>
                 <div class="col-sm-8" id="mdd_d_answers">
                     <div [ngClass]="{mark: updateCdeVersion.bValuelist}" *ngFor="let pv of updateCdeVersion.newQuestion.question.answers"
                          [textContent]="pv.valueMeaningName"></div>

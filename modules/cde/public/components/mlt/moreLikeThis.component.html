@@ -20,15 +20,11 @@
                     <ngb-panel *ngFor="let cde of cdes; let i = index">
                         <ng-template ngbPanelTitle>
                             <a class="nonLinkAnchor hand-cursor" id="acc_link_{{i}}">{{cde.primaryNameCopy}}</a>
-                            <a class="nonLinkAnchor">
-                                <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
-                                   (click)="$event.stopPropagation(); view(cde)"></i>
-                            </a>
-                            <a class="nonLinkAnchor" (click)="$event.stopPropagation()">
-                                <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
-                                   title="Attach to Board" role="link"
-                                   (click)="$event.stopPropagation(); mltPinModal.pinOne(cde, mltPinModal.open())"></i>
-                            </a>
+                            <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link" id="eyeLink_{{i}}"
+                               (click)="$event.stopPropagation(); view(cde)" tabindex="0"></i>
+                            <i id="pinToBoard_{{i}}" class="fa fa-thumb-tack hand-cursor"
+                               title="Attach to Board" role="link" tabindex="0"
+                               (click)="$event.stopPropagation(); mltPinModal.pinOne(cde, mltPinModal.open())"></i>
                             <cde-pin-quickboard [elt]="cde" [eltIndex]="i"></cde-pin-quickboard>
                         </ng-template>
                         <ng-template ngbPanelContent>

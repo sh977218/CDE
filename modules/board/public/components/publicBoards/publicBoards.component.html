@@ -14,30 +14,36 @@
     <span *ngIf="filter.search.length > 0 && boards.length === 0">
         <h4><i class="fa fa-frown-o"></i> No results were found. Try other criteria.</h4>
     </span>
-    <div class=" col-lg-12" *ngIf="boards.length > 0">
-        <div class="col-lg-2 col-4 noLeftRightPadding" >
-            <div *ngIf="filter.types?.length > 0" >
+    <div class="row" *ngIf="boards.length > 0">
+        <div class="col-lg-2 col-4 noLeftRightPadding">
+            <div *ngIf="filter.types?.length > 0">
                 <h4>Type</h4>
-                    <label *ngFor="let type of filter.types; let $index = index" class="public-board-tag">
-                        <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
-                               (change)="selectAggregation('types', $index)">
-                        {{type.key}} ({{type.doc_count}})
-                    </label>
+                <label *ngFor="let type of filter.types; let $index = index" class="public-board-tag">
+                    <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
+                           (change)="selectAggregation('types', $index)">
+                    {{type.key}} ({{type.doc_count}})
+                </label>
             </div>
             <div *ngIf="filter.tags.length > 0">
                 <h4>Tags</h4>
-                    <label *ngFor="let tag of filter.tags; let $index = index" class="public-board-tag">
-                        <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
-                               (change)="selectAggregation('tags', $index)">
-                        {{tag.key}} ({{tag.doc_count}})
-                    </label>
+                <label *ngFor="let tag of filter.tags; let $index = index" class="public-board-tag">
+                    <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
+                           (change)="selectAggregation('tags', $index)">
+                    {{tag.key}} ({{tag.doc_count}})
+                </label>
             </div>
         </div>
         <div class="col-lg-10 col-8 dragDiv" id="my-board-container">
-            <div *ngFor="let board of boards; let $index = index" class="col-xl-4 col-lg-4 col-sm-6 col-12">
-                <div class="my-board-card" data-id="boardDiv_{{board.name}}">
-                    <h4><a routerLink="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank">{{board.name}}</a></h4>
-                    <cde-board-view-template [board]="board" [canEditBoard]="false" [index]="$index"></cde-board-view-template>
+            <div class="row">
+                <div *ngFor="let board of boards; let $index = index" class="col-xl-4 col-lg-4 col-sm-6 col-12">
+                    <div class="my-board-card" data-id="boardDiv_{{board.name}}">
+                        <h4><a routerLink="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank">{{board.name}}</a>
+                        </h4>
+                        <cde-board-view-template [board]="board" [canEditBoard]="false" [index]="$index">
+                        </cde-board-view-template>
+
+                        <small class="myBoardLastModified" id="board_mod_{{index}}">Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>
+                    </div>
                 </div>
             </div>
         </div>

@@ -13,43 +13,43 @@
         <div class="row">
             <div class="col-lg-5 col-sm-12">
                 <dl class="row">
-                    <dt class="col-sm-5 text-right">Name:</dt>
+                    <dt class="col-sm-5">Name:</dt>
                     <dd id="dd_origin_nlm" class="col-sm-7 ">
                         <cde-inline-edit id="profileNameEdit_{{index}}" [(model)]="profile.name" [isAllowed]="canEdit"
                                          (modelChange)="onEltChange.emit();"></cde-inline-edit>
                     </dd>
-                    <dt class="col-sm-5 text-right">Sections as matrices:</dt>
+                    <dt class="col-sm-5">Sections as matrices:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.sectionsAsMatrix" [disabled]="!canEdit"
                                id="displayAsMatrix_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
-                    <dt class="col-sm-5 text-right">Display answer values:</dt>
+                    <dt class="col-sm-5">Display answer values:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayValues" [disabled]="!canEdit"
                                id="displayValues_{{index}}" (change)="onEltChange.emit();"/>
                     </dd>
-                    <dt class="col-sm-5 text-right">Display Instructions:</dt>
+                    <dt class="col-sm-5">Display Instructions:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayInstructions" [disabled]="!canEdit"
                                id="displayInstructions_{{index}}" (change)="onEltChange.emit();">
                     </dd>
-                    <dt class="col-sm-5 text-right">Display Copyright:</dt>
+                    <dt class="col-sm-5">Display Copyright:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayCopyright" [disabled]="!canEdit"
                                id="displayCopyright_{{index}}" (change)="onEltChange.emit();">
                     </dd>
-                    <dt class="col-sm-5 text-right">Display Question Numbers:</dt>
+                    <dt class="col-sm-5">Display Question Numbers:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayNumbering" [disabled]="!canEdit"
                                id="displayNumbering_{{index}}" (change)="onEltChange.emit();">
                     </dd>
-                    <dt class="col-sm-5 text-right">Display Printable Logic:</dt>
+                    <dt class="col-sm-5">Display Printable Logic:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [disabled]="!canEdit" id="displayType_{{index}}"
                                [checked]="profile.displayType === 'Follow-up'"
                                (change)="setDisplayType(profile, $event)">
                     </dd>
-                    <dt class="col-sm-5 text-right">Number of Columns:</dt>
+                    <dt class="col-sm-5">Number of Columns:</dt>
                     <dd class="col-sm-7 ">
                         <select [ngModel]="profile.numberOfColumns" id="nc_{{index}}"
                                 (ngModelChange)="onChange(profile,$event)">
@@ -61,12 +61,12 @@
                             <option value=6>6</option>
                         </select>
                     </dd>
-                    <dt class="col-sm-5 text-right">Display Invisible Questions:</dt>
+                    <dt class="col-sm-5">Display Invisible Questions:</dt>
                     <dd class="col-sm-7 ">
                         <input type="checkbox" [(ngModel)]="profile.displayInvisible" [disabled]="!canEdit"
                                id="displayInvisible_{{index}}" (change)="onEltChange.emit();">
                     </dd>
-                    <dt class="col-sm-5 text-right">Repeat Format String:</dt>
+                    <dt class="col-sm-5">Repeat Format String:</dt>
                     <dd class="col-sm-7 ">
                         <input class="form-control" [(ngModel)]="profile.repeatFormat"
                                [disabled]="!canEdit" id="displayRepeatFormat_{{index}}" (change)="onEltChange.emit();">

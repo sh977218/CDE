@@ -8,33 +8,42 @@
             <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
         </ng-template>
         <ng-template ngbPanelContent>
-            <dl class="dl-horizontal">
-                <dt>User</dt>
-                <dd>{{edit.user.username}}</dd>
-                <dt>Date</dt>
-                <dd>{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
-                <dt>
+            <dl class="row">
+                <dt class="col-sm-3">User:</dt>
+                <dd class="col-sm-9">{{edit.user.username}}</dd>
+                <dt class="col-sm-3">Date:</dt>
+                <dd class="col-sm-9">{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
+                <dt class="col-sm-3">
                     <span *ngIf="edit.elements.length === 1">Element</span>
-                    <span *ngIf="edit.elements.length > 1">Elements</span></dt>
-                <dd>
-                    <span *ngIf="edit.elements.length>1">{{edit.elements.length}} elements: </span>
-                    <span *ngFor="let e of edit.elements">
-                        <span *ngIf="e.eltType === 'cde'">
-                            <a *ngIf="e._id" target="_blank" href="/deView?cdeId={{e._id}}">{{e.name || "Element " +  ($index + 1)}}</a>
-                            <a *ngIf="e.tinyId" target="_blank" href="/deView?tinyId={{e.tinyId}}">{{e.name || "Element " +  ($index + 1)}}</a>
-                        </span>
-                        <span *ngIf="e.eltType === 'form'">
-                            <a *ngIf="e._id" target="_blank" href="/formView?formId={{e._id}}">{{e.name || "Element " +  ($index + 1)}}</a>
-                            <a *ngIf="e.tinyId" target="_blank" href="/formView?tinyId={{e.tinyId}}">{{e.name || "Element " +  ($index + 1)}}</a>
-                        </span>
-                        <span *ngIf="$index < edit.elements.length-1">, </span>
-                    </span>
+                    <span *ngIf="edit.elements.length > 1">Elements</span>
+                </dt>
+                <dd class="col-sm-9">
+                    <div *ngIf="edit.elements.length>1">{{edit.elements.length}} elements:</div>
+                    <div *ngFor="let e of edit.elements">
+                        <div *ngIf="e.eltType === 'cde'">
+                            <a *ngIf="e._id" target="_blank" href="/deView?cdeId={{e._id}}">{{e.name || "Element " +
+                                ($index + 1)}}</a>
+                            <a *ngIf="e.tinyId" target="_blank" href="/deView?tinyId={{e.tinyId}}">{{e.name || "Element
+                                " + ($index + 1)}}</a>
+                        </div>
+                        <div *ngIf="e.eltType === 'form'">
+                            <a *ngIf="e._id" target="_blank" href="/formView?formId={{e._id}}">{{e.name || "Element " +
+                                ($index + 1)}}</a>
+                            <a *ngIf="e.tinyId" target="_blank" href="/formView?tinyId={{e.tinyId}}">{{e.name ||
+                                "Element " + ($index + 1)}}</a>
+                        </div>
+                        <div *ngIf="$index < edit.elements.length-1">,</div>
+                    </div>
                 </dd>
-                <dt *ngIf="edit.elements.length === 1">Registration Status</dt>
-                <dd *ngIf="edit.elements.length === 1">{{edit.elements[0].status}}</dd>
-                <dt>Classification</dt>
-                <dd>{{edit.action | cdeCamelCaseToHuman}} <span class="text-danger">{{edit.path.join(" > ")}}</span> <span
-                        *ngIf="edit.action === 'rename'"> to <span class='text-danger'>{{edit.newname}}</span></span></dd>
+                <ng-container *ngIf="edit.elements.length === 1">
+                    <dt class="col-sm-3">Registration Status</dt>
+                    <dd class="col-sm-9">{{edit.elements[0].status}}</dd>
+                </ng-container>
+                <dt class="col-sm-3">Classification</dt>
+                <dd class="col-sm-9">
+                    {{edit.action | cdeCamelCaseToHuman}} <span class="text-danger">{{edit.path.join(" > ")}}</span>
+                    <span *ngIf="edit.action === 'rename'"> to </span> <span class='text-danger'>{{edit.newname}}</span>
+                </dd>
             </dl>
         </ng-template>
     </ngb-panel>
