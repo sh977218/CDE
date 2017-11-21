@@ -8,7 +8,7 @@
                         <ng-container *ngIf="r.diff">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <label>{{d.label}}:</label>
-                                <pre semanticDiff [left]="r.newer[d.property] | json"
+                                <pre *ngIf="r.newer" semanticDiff [left]="r.newer[d.property] | json"
                                      [right]="r.older[d.property] | json"></pre>
                             </ng-container>
                             <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
