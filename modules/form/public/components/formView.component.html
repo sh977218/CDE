@@ -40,9 +40,8 @@
         </div>
     </div>
     <h1 class="mobileViewH1">
-        <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
+        <span *ngIf="elt.isDraft" class="badge badge-info ">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
-
 
     <div class="pull-left marginTopBottom5">
         <button *ngIf="quickBoardService.canAddElement(elt)"
@@ -54,13 +53,13 @@
                 (click)="mltPinModal.open([elt], 'cde')">
             <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
         </button>
-        <div class="float-left" ngbDropdown>
-            <button ngbDropdownToggle id="export" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+        <div class="dropdown float-left">
+            <button id="export" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i>
                 <span class="hidden-xs-down"> Export</span>
             </button>
-            <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="export">
+            <ul class="dropdown-menu" aria-labelledby="export">
                 <ng-container *ngIf="isAllowedModel.loggedIn()">
                     <li>
                         <a id='nihJson' class="dropdown-item d-inline" href="formById/{{elt._id}}" target="_blank">
@@ -102,7 +101,7 @@
                 </ng-container>
                 <a class="dropdown-item" *ngIf="!isAllowedModel.loggedIn()" href="login">
                     Please login to export forms.</a>
-            </div>
+            </ul>
         </div>
         <button *ngIf="isAllowedModel.loggedIn()"
                 id="pinAllCdes" class="btn btn-small btn-secondary"

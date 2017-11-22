@@ -45,8 +45,8 @@
                          [class.tree-node-focused]="node.isFocused">
                         <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index"
                                              [node]="node.parent"></tree-node-drop-slot>
-                        <div class="panel panel-default" [@copySection]="node.data.isCopied">
-                            <div class="panel-heading">
+                        <div class="card" [@copySection]="node.data.isCopied">
+                            <div class="card-header">
                                 <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
                                     <div class="node-content-wrapper w-100"
                                          (click)="node.mouseAction('click', $event)"
@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
+                            <div class="card-block" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
                                      (click)="node.data.expanded = true; node.expand()"

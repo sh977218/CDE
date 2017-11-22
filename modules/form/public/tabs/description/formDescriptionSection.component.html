@@ -49,10 +49,10 @@
         <div>
             <div *ngIf="!canEditSection()">
                 <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
-                      class="label label-primary formViewSummaryLabel">
+                      class="badge badge-primary formViewSummaryLabel">
                     Repeats: {{getRepeatLabel(section)}}
                 </span>
-                <span *ngIf="section.skipLogic?.condition" class="label label-warning formViewSummaryLabel">
+                <span *ngIf="section.skipLogic?.condition" class="badge badge-warning formViewSummaryLabel">
                     Show if: {{section.skipLogic.condition}}
                 </span>
                 <div *ngIf="section.instructions?.value" class="questionInstruction">
@@ -111,10 +111,10 @@
         <div>
             <div *ngIf="!canEditSection()">
                 <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
-                      class="label label-primary formViewSummaryLabel">
+                      class="badge badge-primary formViewSummaryLabel">
                     Repeats: {{getRepeatLabel(section)}}
                 </span>
-                <span *ngIf="section.skipLogic?.condition" class="label label-warning formViewSummaryLabel">
+                <span *ngIf="section.skipLogic?.condition" class="badge badge-warning formViewSummaryLabel">
                     Show if: {{section.skipLogic.condition}}
                 </span>
                 <div *ngIf="section.instructions?.value" class="questionInstruction">

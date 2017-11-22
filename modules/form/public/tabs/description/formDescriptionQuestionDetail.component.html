@@ -2,31 +2,31 @@
 
 <ng-template #formDescriptionQuestionTmpl>
     <div>
-        <span *ngIf="question.question.multiselect" class="label label-success formViewSummaryLabel">
+        <span *ngIf="question.question.multiselect" class="badge badge-success formViewSummaryLabel">
             Select Multiple
         </span>
-        <span *ngIf="question.question?.datatypeText?.minLength" class="label label-success formViewSummaryLabel">
+        <span *ngIf="question.question?.datatypeText?.minLength" class="badge badge-success formViewSummaryLabel">
             At least: {{question.question?.datatypeText?.minLength}} characters
         </span>
-        <span *ngIf="question.question?.datatypeText?.maxLength" class="label label-success formViewSummaryLabel">
+        <span *ngIf="question.question?.datatypeText?.maxLength" class="badge badge-success formViewSummaryLabel">
             At most: {{question.question?.datatypeText?.maxLength}} characters
         </span>
-        <span *ngIf="question.question?.datatypeNumber?.minValue" class="label label-success formViewSummaryLabel">
+        <span *ngIf="question.question?.datatypeNumber?.minValue" class="badge badge-success formViewSummaryLabel">
             At least: {{question.question?.datatypeNumber.minValue}}
         </span>
-        <span *ngIf="question.question?.datatypeNumber?.maxValue" class="label label-success formViewSummaryLabel">
+        <span *ngIf="question.question?.datatypeNumber?.maxValue" class="badge badge-success formViewSummaryLabel">
             At most: {{question.question?.datatypeNumber?.maxValue}}
         </span>
-        <span *ngIf="question.question?.datatypeDate?.format" class="label label-success formViewSummaryLabel">
+        <span *ngIf="question.question?.datatypeDate?.format" class="badge badge-success formViewSummaryLabel">
             Format: {{question.question?.datatypeDate?.format}}
         </span>
-        <span *ngIf="getRepeatLabel(question)" class="label label-primary formViewSummaryLabel">
+        <span *ngIf="getRepeatLabel(question)" class="badge badge-primary formViewSummaryLabel">
             Repeats: {{getRepeatLabel(question)}} times
         </span>
-        <span *ngIf="isScore(question)" class="label label-primary formViewSummaryLabel">
+        <span *ngIf="isScore(question)" class="badge badge-primary formViewSummaryLabel">
             Score: <span [textContent]="question.question.scoreFormula"></span>
         </span>
-        <span *ngIf="question.question.required" class="label label-danger formViewSummaryLabel">
+        <span *ngIf="question.question.required" class="badge badge-danger formViewSummaryLabel">
             Required
         </span>
         <span *ngIf="question.question.invisible" class="badge badge-default formViewSummaryLabel" style="background-color: #666">
@@ -36,7 +36,7 @@
             Disabled
         </span>
         <span *ngIf="question.skipLogic?.condition?.length > 0 && parent"
-              class="label label-warning formViewSummaryLabel">
+              class="badge badge-warning formViewSummaryLabel">
             Show if: {{question.skipLogic.condition}}
         </span>
     </div>
@@ -59,7 +59,7 @@
     <div *ngIf="question.question.uoms.length > 0" class="questionUom">
         <span class="formViewQuestionLabel">Units of Measure:</span>
         <span *ngFor="let uom of question.question.uoms"
-              class="label label-info formViewSummaryLabel"
+              class="badge badge-info  formViewSummaryLabel"
               [textContent]="uom"></span>
     </div>
 </ng-template>

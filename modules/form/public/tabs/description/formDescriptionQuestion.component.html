@@ -1,5 +1,5 @@
 <div class="question_view" [ngClass]="{'bg-warning': question.question.cde.outdated}">
-    <div *ngIf="!isSubForm && canEdit" class="ib left">
+    <div *ngIf="!isSubForm && canEdit" class="d-inline-block left">
         <i class="fa fa-arrows fa-lg question-move-handle ui-sortable-handle"
            [treeDrag]="node"
            [treeDragEnabled]="node.allowDrag()"></i>
@@ -7,10 +7,10 @@
            [ngClass]="{'fa-spin': question.updatedSkipLogic}"
            title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
     </div>
-    <div *ngIf="question.question.isScore" class="ib left">
+    <div *ngIf="question.question.isScore" class="d-inline-block left">
         <strong>Score: </strong>
     </div>
-    <div class="ib left questionLabel" title="{{question.label}}" style="margin-left: 5px">
+    <div class="d-inline-block left questionLabel" title="{{question.label}}" style="margin-left: 5px">
             <span *ngIf="question.hideLabel">
                 <i class="fa fa-question-circle" ngbTooltip="This question has no label"></i>
                 <span [textContent]="question.question.cde.name"></span>
@@ -20,23 +20,23 @@
             (part of {{question.question.partOf}})
         </small>
     </div>
-    <div class="ib left">
+    <div class="d-inline-block left">
         <span *ngIf="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
     </div>
-    <div *ngIf="question.question.cde.outdated" class="ib left error-block"> (Outdated)
+    <div *ngIf="question.question.cde.outdated" class="d-inline-block left error-block"> (Outdated)
         <button class="btn btn-secondary btn-xs updateQuestionBtn"
                 (click)="openUpdateCdeVersion(question);">
             Update
         </button>
     </div>
-    <div class="ib left">
+    <div class="d-inline-block left">
         <a target="_blank" title="{{question.question.cde.name}}"
            href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
             <i class="fa fa-eye"></i> View CDE
         </a>
     </div>
-    <div class="ib left">{{getDatatypeLabel(question)}}</div>
-    <div *ngIf="!isSubForm && canEdit" class="ib pull-right editIconDiv" style="font-size: 16px">
+    <div class="d-inline-block left">{{getDatatypeLabel(question)}}</div>
+    <div *ngIf="!isSubForm && canEdit" class="d-inline-block pull-right editIconDiv" style="font-size: 16px">
         <i *ngIf="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
            (click)="question.edit = true"></i>
         <i *ngIf="question.edit" class="fa fa-check hand-cursor" title="save edit question"

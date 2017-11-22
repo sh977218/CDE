@@ -31,7 +31,7 @@
         </div>
     </div>
     <h1 class="mobileViewH1">
-        <span *ngIf="elt.isDraft" class="label label-info">DRAFT</span> {{elt.naming[0].designation}}
+        <span *ngIf="elt.isDraft" class="badge badge-info ">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
     <div class="pull-left marginTopBottom5">
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
@@ -43,23 +43,23 @@
                 type="button" (click)="mltPinModal.pinOne(elt, mltPinModal.open())">
             <i class="fa fa-thumb-tack"></i><span class="hidden-xs-down"> Add to Board</span>
         </button>
-        <div ngbDropdown class="float-left">
-            <button ngbDropdownToggle id="export" class="btn btn-secondary dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class="dropdown float-left">
+            <button id="export" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i><span class="hidden-xs-down"> Export</span>
             </button>
-            <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="export">
+            <ul class="dropdown-menu" aria-labelledby="export">
                 <li>
-                    <a id="jsonExport" class="dropdown-item" href="deById/{{elt._id}}" target="_blank">
+                    <a id="jsonExport" class="dropdown-item d-inline" href="deById/{{elt._id}}" target="_blank">
                         JSON File, NIH/CDE Schema</a>
                     <a href="/schema/cde" target="_blank" class="d-inline">
                         <i class="fa fa-info-circle"></i></a>
                 </li>
                 <li>
-                    <a id="xmlExport" class="dropdown-item" href="deById/{{elt._id}}?type=xml"
+                    <a id="xmlExport" class="dropdown-item d-inline" href="deById/{{elt._id}}?type=xml"
                        target="_blank">XML File, NIH/CDE Schema</a>
                 </li>
-            </div>
+            </ul>
         </div>
         <button *ngIf="isAllowedModel.isOrgCurator()" id="copyCdeBtn" class="btn btn-small btn-secondary"
                 (click)="openCopyElementModal()" title="Copy CDE">
