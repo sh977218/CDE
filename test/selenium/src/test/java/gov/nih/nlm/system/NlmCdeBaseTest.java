@@ -37,6 +37,8 @@ import java.util.logging.Logger;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
+import com.paulhammant.ngwebdriver.NgWebDriver;
+
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
 
@@ -98,6 +100,7 @@ public class NlmCdeBaseTest {
 
     private int videoRate = 300;
 
+    private NgWebDriver ngdriver;
 
     private ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Number", "Externally Defined"));
     private Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
@@ -179,6 +182,11 @@ public class NlmCdeBaseTest {
 
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        driver.manage().timeouts().setScriptTimeout(9, TimeUnit.SECONDS);
+        ngdriver = new NgWebDriver(js);
+
     }
 
     @BeforeMethod
@@ -509,6 +517,7 @@ public class NlmCdeBaseTest {
     }
 
     protected WebElement findElement(By by) {
+        if (ngdriver != null) ngdriver.waitForAngularRequestsToFinish();
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
@@ -524,7 +533,6 @@ public class NlmCdeBaseTest {
                 hangon(2);
             }
         }
-
     }
 
     protected List<WebElement> findElements(By by) {
