@@ -7,16 +7,18 @@ import org.testng.annotations.Test;
 
 public class LiveCommentTest extends CdeCommentTest {
 
-    private void replyComment(String reply, int i) {
+    private void replyComment(String reply) {
         try {
-            findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
+            findElement(By.id("replyTextarea_0")).sendKeys(reply);
         } catch (StaleElementReferenceException e) {
             hangon(2);
-            findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
+            findElement(By.id("replyTextarea_0")).sendKeys(reply);
         }
         hangon(2);
-        scrollToViewById("replyBtn_" + i);
-        clickElement(By.id("replyBtn_" + i));
+        scrollToViewById("replyBtn_0");
+        clickElement(By.id("replyBtn_0"));
+        hangon(1);
+        textPresent(reply);
     }
 
     @Test
@@ -38,12 +40,12 @@ public class LiveCommentTest extends CdeCommentTest {
         textPresent(newComment);
         String reply = "can you see this";
         scrollToTop();
-        replyComment(reply, 0);
+        replyComment(reply);
 
         switchTab(1);
         textPresent(reply);
         String replyToReply = "yes, i can";
-        replyComment(replyToReply, 0);
+        replyComment(replyToReply);
 
         switchTab(0);
         textPresent(replyToReply);
