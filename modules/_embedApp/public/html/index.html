@@ -15,15 +15,6 @@
     <!-- endbuild -->
 
     <!-- Polyfills for legacy browsers -->
-    <!-- build:polyIE /embed/polyfillIE.js -->
-    <!--[if IE]>
-    <script type="text/javascript" src="/common/formdata.js"></script>
-    <script type="text/javascript" src="/common/typedarray.js"></script>
-    <script type="text/javascript" src="/common/Blob.js"></script>
-    <![endif]-->
-    <!-- endbuild -->
-
-    <!-- Polyfills for legacy browsers -->
     <!-- build:poly /embed/polyfill.js -->
     <script type="text/javascript" src="/common/shim.min.js"></script>
     <script type="text/javascript" src="/common/Intl.min.js"></script>
@@ -67,6 +58,12 @@
     </style>
 </head>
 <body>
+    <!--[if IE]>
+    <h1 style="background-color: yellow">
+        Your Browser is not supported. Please upgrade your browser. Minimum Internet Explorer Supported is IE10.
+    </h1>
+    <![endif]-->
+
     <cde-embed></cde-embed>
 
     <div class="loading">

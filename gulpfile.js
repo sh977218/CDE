@@ -44,10 +44,7 @@ gulp.task('thirdParty', ['npm', 'bower'], function () {
         .pipe(gulp.dest('./dist/common/')));
     streamArr.push(gulp.src([
         './node_modules/classlist.js/classList.min.js',
-        './node_modules/html5-formdata/formdata.js',
         './node_modules/intl/locale-data/jsonp/en.js',
-        './node_modules/js-polyfills/typedarray.js',
-        './node_modules/Blob.js/Blob.js',
     ]).pipe(gulp.dest('./dist/common/')));
 
     // bower
@@ -223,7 +220,6 @@ gulp.task('usemin', ['copyCode', 'copyDist'], function () {
                     css: [minifyCss({target: "./dist/app", rebase: true}), 'concat', rev()],
                     webpcss: ['concat', rev()],
                     poly: ['concat', rev()],
-                    polyIE: ['concat', rev()],
                     js: [uglify({mangle: false}), 'concat', rev()],
                     webp: ['concat', rev()]
                 }))

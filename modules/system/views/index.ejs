@@ -22,15 +22,6 @@
     <link rel="stylesheet" href="/components/bootstrap-css-only/css/bootstrap.min.css" />
     <!-- endbuild -->
 
-    <!-- Polyfills for legacy browsers -->
-    <!-- build:polyIE /app/polyfillIE.js -->
-    <!--[if IE]>
-    <script type="text/javascript" src="/common/formdata.js"></script>
-    <script type="text/javascript" src="/common/typedarray.js"></script>
-    <script type="text/javascript" src="/common/Blob.js"></script>
-    <![endif]-->
-    <!-- endbuild -->
-
     <!-- build:js /app/vendor.js -->
     <!-- Polyfills for legacy browsers -->
     <script type="text/javascript" src="/common/shim.min.js"></script>
@@ -46,6 +37,12 @@
 </head>
 
 <body role="application" id="top">
+
+<!--[if IE]>
+<h1 style="background-color: yellow">
+    Your Browser is not supported. Please upgrade your browser. Minimum Internet Explorer Supported is IE10.
+</h1>
+<![endif]-->
 
 <div itemscope>
 
