@@ -21,10 +21,6 @@ import { Subscription } from 'rxjs/Subscription';
     selector: "cde-form-view",
     templateUrl: "formView.component.html",
     styles: [`
-        .marginTopBottom5 {
-            margin: 5px 0
-        }
-
         #leftNav {
             margin-top: 20px;
             z-index: 1;

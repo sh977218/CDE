@@ -18,10 +18,6 @@ import { Subscription } from 'rxjs/Subscription';
     selector: "cde-data-element-view",
     templateUrl: "dataElementView.component.html",
     styles: [`
-        .marginTopBottom5 {
-            margin: 5px 0
-        }
-
         #leftNav {
             z-index: 1;
         }

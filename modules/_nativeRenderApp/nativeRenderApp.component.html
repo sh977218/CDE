@@ -133,8 +133,8 @@
                     <cde-native-render [elt]="elt" [submitForm]="submitForm && panelType !== 'patient'"
                                        [profile]="elt.displayProfiles.length > selectedProfile ? elt.displayProfiles[selectedProfile] : null">
                     </cde-native-render>
-                    <input *ngIf="panelType === 'patient'" type="submit" class="btn btn-secondary" id="button_submit" (click)="submitFhir()"
-                           style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold">
+                    <input *ngIf="panelType === 'patient'" type="submit" class="btn btn-secondary w-100" id="button_submit" (click)="submitFhir()"
+                           style="margin-left: 0; margin-top: 20px; font-weight: bold">
                     {{saveMessage}}
                 </ng-container>
             </div>

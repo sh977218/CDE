@@ -42,8 +42,7 @@
     <h1 class="mobileViewH1">
         <span *ngIf="elt.isDraft" class="badge badge-info ">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
-
-    <div class="pull-left marginTopBottom5">
+    <div class="pull-left my-5">
         <button *ngIf="quickBoardService.canAddElement(elt)"
                 id="addToQuickBoard" class="btn btn-small btn-secondary"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
@@ -118,13 +117,12 @@
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-xs-down"> Discuss</span>
         </button>
-        <button class="btn btn-secondary navbar-expand-lg navbar-light navbar-toggler visible-xs-inline"
-                data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
-                aria-label="Toggle navigation" aria-expanded="false">
+        <button class="btn btn-secondary navbar-light navbar-toggler hidden-md-up" data-toggle="collapse"
+                data-target="#leftNav" aria-controls="leftNav" aria-label="Toggle navigation" aria-expanded="false">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
-    <div class="pull-right marginTopBottom5">
+    <div class="pull-right my-5">
         <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
                 class="btn btn-info" (click)="loadDraft(null);">
             <i class="fa fa-eye fa-lg"></i> View Draft
@@ -147,7 +145,7 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="row">
-                <div id="leftNav" class="col-xl-2 col-lg-3 col-12 collapse navbar-collapse mt-20">
+                <div id="leftNav" class="col-xl-2 col-lg-3 col-12 navbar-collapse mt-20 hidden-sm-down">
                     <ul class="list-group">
                         <a id="preview_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='preview_tab'}"
                            (click)="currentTab ='preview_tab'">Preview
