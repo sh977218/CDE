@@ -58,9 +58,13 @@
     </div>
     <div *ngIf="question.question.uoms.length > 0" class="questionUom">
         <span class="formViewQuestionLabel">Units of Measure:</span>
-        <span *ngFor="let uom of question.question.uoms"
-              class="label label-info formViewSummaryLabel"
-              [textContent]="uom"></span>
+        <span *ngFor="let uom of question.question.uoms; let index = index"
+              class="label formViewSummaryLabel"
+              [ngClass]="{'label-danger': !question.question.uomsValid[index], 'label-info':  question.question.uomsValid[index]}"
+        >
+            <span [textContent]="uom"></span>
+            <span *ngIf="question.question.uomsValid && !question.question.uomsValid[index]">&nbsp;(invalid)</span>
+        </span>
     </div>
 </ng-template>
 

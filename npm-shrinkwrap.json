@@ -10872,6 +10872,11 @@
       "integrity": "sha1-YGAiUIR5tV/6NotY/uljoD39eww=",
       "dev": true
     },
+    "ucum": {
+      "version": "0.0.7",
+      "resolved": "https://registry.npmjs.org/ucum/-/ucum-0.0.7.tgz",
+      "integrity": "sha1-zQfv5VmaF+9/syd3i/g46DLf0aQ="
+    },
     "uglify-js": {
       "version": "2.6.0",
       "resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-2.6.0.tgz",
