@@ -76,7 +76,6 @@
     "swagger-tools": "https://github.com/apigee-127/swagger-tools.git",
     "tar-fs": "0.5.2",
     "trim": "0.0.1",
-    "ucum": "0.0.7",
     "winston": "0.9.0",
     "winston-logrotate": "1.0.1",
     "xml2js": "0.4.17",

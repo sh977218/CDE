@@ -28,7 +28,6 @@ const async = require('async');
 const request = require('request');
 const CronJob = require('cron').CronJob;
 const _ = require('lodash');
-const ucum = require('ucum');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -1209,14 +1208,5 @@ exports.init = function (app) {
             res.send(result.forms.map(c => ({tinyId: c.tinyId, name: c.primaryNameCopy})));
         });
     });
-
-    app.get('/ucum/parse/:uStr', (req, res) => {
-        try {
-            res.send(ucum.parse(req.params.uStr));
-        } catch (e) {
-            res.send({invalid: true});
-        }
-    });
-
 
 };
