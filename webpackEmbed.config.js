@@ -36,7 +36,7 @@ module.exports = {
             },
             {test: /\.css$/, exclude: /node_modules/, use: ['style-loader?insertAt=top', 'css-loader']},
             {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false}}]},
-            {test: /\.png$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]}
+            {test: /\.(eot|png|svg|ttf|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
         ]
     },
     plugins: prod ?

@@ -117,10 +117,13 @@
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-xs-down"> Discuss</span>
         </button>
-        <button class="btn btn-secondary navbar-light navbar-toggler hidden-md-up" data-toggle="collapse"
-                data-target="#leftNav" aria-controls="leftNav" aria-label="Toggle navigation" aria-expanded="false">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="navbar-light d-inline-block">
+            <button class="btn btn-secondary navbar-toggler hidden-md-up"
+                    data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
     </div>
     <div class="pull-right my-5">
         <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
@@ -145,59 +148,64 @@
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="row">
-                <div id="leftNav" class="col-xl-2 col-lg-3 col-12 navbar-collapse mt-20 hidden-sm-down">
-                    <ul class="list-group">
-                        <a id="preview_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='preview_tab'}"
-                           (click)="currentTab ='preview_tab'">Preview
-                            <i *ngIf="tabsCommented.indexOf('preview_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="general_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='general_tab'}"
-                           (click)="currentTab ='general_tab'">General Detail
-                            <i *ngIf="tabsCommented.indexOf('general_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="description_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='description_tab'}"
-                           (click)="currentTab ='description_tab'">Form Description
-                            <i *ngIf="tabsCommented.indexOf('description_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="naming_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='naming_tab'}"
-                           (click)="currentTab ='naming_tab'">Naming
-                            <i *ngIf="tabsCommented.indexOf('naming_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="classification_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='classification_tab'}"
-                           (click)="currentTab = 'classification_tab'">Classification
-                            <i *ngIf="tabsCommented.indexOf('classification_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="referenceDocuments_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
-                           (click)="currentTab = 'referenceDocuments_tab'">Reference Documents
-                            <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="displayProfiles_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='displayProfiles_tab'}"
-                           (click)="currentTab = 'displayProfiles_tab'">Display Profiles
-                            <i *ngIf="tabsCommented.indexOf('displayProfiles_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="properties_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='properties_tab'}"
-                           (click)="currentTab = 'properties_tab'">Properties
-                            <i *ngIf="tabsCommented.indexOf('properties_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
-                           (click)="currentTab = 'ids_tab'">Identifiers
-                            <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="attachments_tab" class="list-group-item"
-                           [ngClass]="{'active':currentTab ==='attachments_tab'}"
-                           (click)="currentTab = 'attachments_tab'">Attachments
-                            <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                        <a id="history_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='history_tab'}"
-                           (click)="currentTab = 'history_tab'">History
-                            <i *ngIf="tabsCommented.indexOf('history_tab') > -1" class="fa fa-comments"
-                               aria-hidden="true"></i></a>
-                    </ul>
+                <div class="col-xl-2 col-lg-3 col-12 navbar-toggleable-md navbar-light ">
+                    <div id="leftNav" class="collapse navbar-collapse mt-20">
+                        <ul class="list-group">
+                            <a id="preview_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='preview_tab'}"
+                               (click)="currentTab ='preview_tab'">Preview
+                                <i *ngIf="tabsCommented.indexOf('preview_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="general_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='general_tab'}"
+                               (click)="currentTab ='general_tab'">General Detail
+                                <i *ngIf="tabsCommented.indexOf('general_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="description_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='description_tab'}"
+                               (click)="currentTab ='description_tab'">Form Description
+                                <i *ngIf="tabsCommented.indexOf('description_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="naming_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='naming_tab'}"
+                               (click)="currentTab ='naming_tab'">Naming
+                                <i *ngIf="tabsCommented.indexOf('naming_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="classification_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='classification_tab'}"
+                               (click)="currentTab = 'classification_tab'">Classification
+                                <i *ngIf="tabsCommented.indexOf('classification_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="referenceDocuments_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
+                               (click)="currentTab = 'referenceDocuments_tab'">Reference Documents
+                                <i *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="displayProfiles_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='displayProfiles_tab'}"
+                               (click)="currentTab = 'displayProfiles_tab'">Display Profiles
+                                <i *ngIf="tabsCommented.indexOf('displayProfiles_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="properties_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='properties_tab'}"
+                               (click)="currentTab = 'properties_tab'">Properties
+                                <i *ngIf="tabsCommented.indexOf('properties_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
+                               (click)="currentTab = 'ids_tab'">Identifiers
+                                <i *ngIf="tabsCommented.indexOf('ids_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="attachments_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='attachments_tab'}"
+                               (click)="currentTab = 'attachments_tab'">Attachments
+                                <i *ngIf="tabsCommented.indexOf('attachments_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                            <a id="history_tab" class="list-group-item"
+                               [ngClass]="{'active':currentTab ==='history_tab'}"
+                               (click)="currentTab = 'history_tab'">History
+                                <i *ngIf="tabsCommented.indexOf('history_tab') > -1" class="fa fa-comments"
+                                   aria-hidden="true"></i></a>
+                        </ul>
+                    </div>
                 </div>
                 <div id="middleView" class="col-xl-10 col-lg-9 col-12">
                     <ng-container *ngIf="currentTab === 'preview_tab'">

@@ -45,7 +45,7 @@ module.exports = {
             },
             {test: /\.css$/, exclude: /node_modules/, use: ['style-loader?insertAt=top', 'css-loader']},
             {test: /\.html$/, use: [{loader: 'html-loader', options: {minimize: false}}]},
-            {test: /\.png$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]}
+            {test: /\.(eot|png|svg|ttf|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
         ]
     },
     plugins: prod ?
@@ -58,11 +58,11 @@ module.exports = {
                 PRODUCTION: JSON.stringify(true),
             }),
             new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'windows.jQuery': 'jquery',
-                'Tether':'tether',
-                Popper: ['popper.js', 'default'],
+                '$': 'jquery',
+                'jQuery': 'jquery',
+                'window.jQuery': 'jquery',
+                'Tether': 'tether',
+                'Popper': ['popper.js', 'default'],
             }),
             new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
             new AotPlugin.AotPlugin({
@@ -136,11 +136,11 @@ module.exports = {
             new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
             new webpack.ProgressPlugin(), // show progress in ConEmu window
             new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'windows.jQuery': 'jquery',
-                'Tether':'tether',
-                Popper: ['popper.js', 'default'],
+                '$': 'jquery',
+                'jQuery': 'jquery',
+                'window.jQuery': 'jquery',
+                'Tether': 'tether',
+                'Popper': ['popper.js', 'default'],
             }),
             new ExtractTextPlugin({filename: '[name].css'}),
             new CopyWebpackPlugin([
