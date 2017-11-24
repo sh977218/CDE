@@ -70,11 +70,13 @@
             <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i>
             <span class="hidden-xs-down"> Discuss</span>
         </button>
-        <button class="btn btn-secondary navbar-expand-lg navbar-light navbar-toggler visible-xs-inline"
-                data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="navbar-light d-inline-block">
+            <button class="btn btn-secondary navbar-toggler hidden-md-up"
+                    data-toggle="collapse" data-target="#leftNav" aria-controls="leftNav"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
     </div>
     <div class="pull-right marginTopBottom5">
         <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
