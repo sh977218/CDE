@@ -58,12 +58,6 @@
     </style>
 </head>
 <body>
-    <!--[if IE]>
-    <h1 style="background-color: yellow">
-        Your Browser is not supported. Please upgrade your browser. Minimum Internet Explorer Supported is IE10.
-    </h1>
-    <![endif]-->
-
     <cde-embed></cde-embed>
 
     <div class="loading">
@@ -75,6 +69,14 @@
     <!-- build:webp /embed/embed.js -->
     <script src="/embed/embed.js"></script>
     <!-- endbuild -->
+
+    <!--[if IE]>
+    <script type="text/javascript">
+        window.location = "/supportedBrowsers";
+        document.createElement("inline-edit");
+        document.createElement("inline-area-edit");
+    </script>
+    <![endif]-->
 </body>
 
 </html>

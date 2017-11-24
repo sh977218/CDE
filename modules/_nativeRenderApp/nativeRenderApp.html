@@ -33,12 +33,6 @@
 </head>
 
 <body role="application" id="top">
-    <!--[if IE]>
-    <h1 style="background-color: yellow">
-        Your Browser is not supported. Please upgrade your browser. Minimum Internet Explorer Supported is IE10.
-    </h1>
-    <![endif]-->
-
     <cde-native-render-standalone></cde-native-render-standalone>
 
     <!-- Polyfills for legacy browsers -->
@@ -63,7 +57,7 @@
     <script src="/native/native.js" defer></script>
     <!-- endbuild -->
 
-	<!--[if lt IE 9]>
+	<!--[if IE]>
     <script type="text/javascript">
         window.location = "/supportedBrowsers";
         document.createElement("inline-edit");
