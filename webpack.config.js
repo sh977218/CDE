@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -15,10 +16,10 @@ module.exports = {
         cde: './modules/main.ts',
     },
     output: {
-        path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
-        publicPath: '/static/',
+        path: path.resolve(__dirname, 'dist/app'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
+        publicPath: '/app/',
         filename: '[name].js',
-        chunkFilename: 'cde-[name].js',
+        chunkFilename: 'cde-[chunkhash].js',
     },
     module: {
         rules: [
@@ -26,6 +27,14 @@ module.exports = {
             {
                 test: /\.ts$/,
                 use: prod ? ['@ngtools/webpack'] : ['ts-loader', 'angular-router-loader', 'angular2-template-loader']
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                query: {
+                    presets: ['env']
+                }
             },
             {
                 test: /\.css$/, include: /node_modules/,
@@ -41,8 +50,7 @@ module.exports = {
     },
     plugins: prod ?
         [
-            new CleanWebpackPlugin(['modules/static'], {exclude: ['Blob.js', 'classList.min.js', 'en.js', 'formdata.js',
-                'Intl.min.js', 'shim.min.js', 'typedarray.js']}),
+            new CleanWebpackPlugin(['dist/app']),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.DefinePlugin({
@@ -110,10 +118,12 @@ module.exports = {
                 async: true,
                 minChunks: 3,
             }),
+            new CopyWebpackPlugin([
+                {from: 'modules/_app/assets/'}
+            ]),
             // new BundleAnalyzerPlugin()
         ] : [
-            new CleanWebpackPlugin(['modules/static'], {exclude: ['Blob.js', 'classList.min.js', 'en.js', 'formdata.js',
-                'Intl.min.js', 'shim.min.js', 'typedarray.js']}),
+            new CleanWebpackPlugin(['dist/app']),
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
                 /angular(\\|\/)core(\\|\/)@angular/,
                 path.resolve(__dirname, '../src')
@@ -133,6 +143,9 @@ module.exports = {
                 Popper: ['popper.js', 'default'],
             }),
             new ExtractTextPlugin({filename: '[name].css'}),
+            new CopyWebpackPlugin([
+                {from: 'modules/_app/assets/'}
+            ]),
         ],
     resolve: {
         unsafeCache: false,

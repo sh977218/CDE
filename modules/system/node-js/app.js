@@ -175,8 +175,8 @@ exports.init = function (app) {
     new CronJob({
         cronTime: '* 7 4 * * 6',
         onTick: () => {
-            dbLogger.consoleLog("Creating sitemap")
-            let wstream = fs.createWriteStream('./modules/static/sitemap.txt');
+            dbLogger.consoleLog("Creating sitemap");
+            let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
             let cond = {
                 'archived': false,
                 'registrationState.registrationStatus': 'Qualified'
@@ -232,6 +232,13 @@ exports.init = function (app) {
 
     app.get('/nativeRender', checkHttps, function (req, res) {
         res.sendFile(path.join(__dirname, '../../_nativeRenderApp', 'nativeRenderApp.html'), undefined, function(err) {
+            if (err)
+                res.sendStatus(404);
+        });
+    });
+
+    app.get('/sw.js', checkHttps, function (req, res) {
+        res.sendFile(path.join(__dirname, '../../../dist/app', 'sw.js'), undefined, function(err) {
             if (err)
                 res.sendStatus(404);
         });
