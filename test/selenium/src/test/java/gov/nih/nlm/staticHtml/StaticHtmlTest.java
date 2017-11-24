@@ -54,7 +54,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
 
     @Test
     public void sitemap() {
-        Assert.assertTrue(get(baseUrl + "/static/sitemap.txt").asString().contains("/deView?tinyId=rkh4tQrOgTw"));
+        Assert.assertTrue(get(baseUrl + "/app/sitemap.txt").asString().contains("/deView?tinyId=rkh4tQrOgTw"));
     }
 
 }
