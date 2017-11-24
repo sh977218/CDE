@@ -4,29 +4,24 @@
     <meta charset="UTF-8">
     <title>CDE Embedded Search</title>
 
-    <!-- build:webpcss /static/embed.css -->
-    <link href="/static/embed.css" rel="stylesheet" type="text/css" media="all"/>
+    <!-- build:webpcss /embed/embed.css -->
+    <link href="/embed/embed.css" rel="stylesheet" type="text/css" media="all"/>
     <!-- endbuild -->
 
-    <!-- build:css /static/styles-embed.css -->
-    <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
-    <!-- endbuild -->
-
-    <!-- Polyfills for legacy browsers -->
-    <!-- build:poly /static/polyfill.js -->
-    <script type="text/javascript" src="/static/shim.min.js"></script>
-    <script type="text/javascript" src="/static/Intl.min.js"></script>
-    <script type="text/javascript" src="/static/en.js"></script>
-    <script type="text/javascript" src="/static/classList.min.js"></script>
+    <!-- build:css /embed/styles-embed.css -->
+    <link href="/common/style.css" rel="stylesheet" type="text/css" media="all"/>
+    <link rel="stylesheet" href="/components/font-awesome/css/font-awesome.min.css" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="/components/bootstrap-css-only/css/bootstrap.min.css" crossorigin="anonymous"/>
     <!-- endbuild -->
 
     <!-- Polyfills for legacy browsers -->
-    <!-- build:polyIE /static/polyfillIE.js -->
-    <!--[if IE]>
-    <script type="text/javascript" src="/static/formdata.js"></script>
-    <script type="text/javascript" src="/static/typedarray.js"></script>
-    <script type="text/javascript" src="/static/Blob.js"></script>
-    <![endif]-->
+    <!-- build:poly /embed/polyfill.js -->
+    <script type="text/javascript" src="/common/shim.min.js"></script>
+    <script type="text/javascript" src="/common/Intl.min.js"></script>
+    <script type="text/javascript" src="/common/en.js"></script>
+    <script type="text/javascript" src="/common/classList.min.js"></script>
+    <script src="/components/jquery/jquery.min.js"></script>
+    <script src="/components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- endbuild -->
 
     <style>
@@ -71,9 +66,17 @@
         <br><br><br><br><br><br>
     </div>
 
-    <!-- build:webp /_embedApp/public/js/embed.js -->
-    <script src="/static/embed.js"></script>
+    <!-- build:webp /embed/embed.js -->
+    <script src="/embed/embed.js"></script>
     <!-- endbuild -->
+
+    <!--[if IE]>
+    <script type="text/javascript">
+        window.location = "/supportedBrowsers";
+        document.createElement("inline-edit");
+        document.createElement("inline-area-edit");
+    </script>
+    <![endif]-->
 </body>
 
 </html>

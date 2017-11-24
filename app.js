@@ -142,14 +142,17 @@ app.use(function (req, res, next) {
     }
 });
 
-app.use("/components", express.static(path.join(__dirname, '/modules/components')));
-app.use("/modules/components", express.static(path.join(__dirname, '/modules/components')));
 app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));
 app.use("/system/public", express.static(path.join(__dirname, '/modules/system/public')));
 app.use("/board/public", express.static(path.join(__dirname, '/modules/board/public')));
 app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger/public')));
 app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
-app.use("/static", express.static(path.join(__dirname, '/modules/static'))); // TODO: temporary until gulp stops packaging vendor.js, then use /dist
+
+app.use("/app", express.static(path.join(__dirname, '/dist/app')));
+app.use("/common", express.static(path.join(__dirname, '/dist/common')));
+app.use("/components", express.static(path.join(__dirname, '/dist/components')));
+app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
+app.use("/native", express.static(path.join(__dirname, '/dist/native')));
 
 
 ["/embedded/public", "/_embedApp/public"].forEach(p => {
