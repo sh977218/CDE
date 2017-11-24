@@ -4,33 +4,43 @@
 
     <form name="advSearchForm" id="advSearchForm" novalidate="" class="ng-pristine ng-valid ng-valid-maxlength"
           [ngClass]="{'extraPadding': !searchStarted }">
-
-        <div class="input-group input-group">
-            <select class="form-control" (change)="selectElement()"
-                    name="selectedClassif"
-                    [(ngModel)]="selectedClassif" style="width:50%;"
-                    [disabled]="aggregations.flatClassifications?.length === 0"
-                    [ngClass]="{'halfOpacity':aggregations.flatClassifications?.length === 0}">
-                <option value="" selected *ngIf="searchSettings.classification.length > 0">All Sub Classifications</option>
-                <option value="" selected *ngIf="searchSettings.classification.length === 0">All Classifications</option>
-                <option *ngFor="let classif of aggregations.flatClassifications">{{classif.name}}</option>
-            </select>
-            <label class="sr-only" for="ftsearch-input">Search Terms</label>
-            <input name="q" id="ftsearch-input" style="width: 50%"
-                   class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched"
-                   type="text" [(ngModel)]="searchSettings.q"
-                   placeholder="Search..."
-                   autocomplete="off">
-            <div class="input-group-btn">
-                <button id="search.submit" (click)="searchStarted = true;  search()" type="submit"
-                        class="btn btn-danger">
-                    <i class="fa fa-search"></i> Search
-                </button>
-                <button id="search.reset" (click)="reset()" class="btn">
-                    <i class="fa fa-search"></i> Reset
-                </button>
+        <div class="row">
+            <div class="col-lg-6">
+                <select class="form-control" (change)="selectElement()"
+                        name="selectedClassif"
+                        [(ngModel)]="selectedClassif"
+                        [disabled]="aggregations.flatClassifications?.length === 0"
+                        [ngClass]="{'halfOpacity':aggregations.flatClassifications?.length === 0}">
+                    <option value="" selected *ngIf="searchSettings.classification.length > 0">All Sub Classifications
+                    </option>
+                    <option value="" selected *ngIf="searchSettings.classification.length === 0">All Classifications
+                    </option>
+                    <option *ngFor="let classif of aggregations.flatClassifications">{{classif.name}}</option>
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <label class="sr-only" for="ftsearch-input">Search Terms</label>
+                    <input name="q" id="ftsearch-input"
+                           class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched"
+                           type="text" [(ngModel)]="searchSettings.q"
+                           placeholder="Search..."
+                           autocomplete="off">
+                    <span class="input-group-btn">
+                        <button id="search.submit" (click)="searchStarted = true;  search()" type="submit"
+                                class="btn btn-danger">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                    </span>
+                    <span class="input-group-btn">
+                        <button id="search.reset" (click)="reset()" class="btn">
+                            <i class="fa fa-search"></i> Reset
+                        </button>
+                    </span>
+                </div>
             </div>
         </div>
+
     </form>
 
     <div> Search Inside
@@ -39,7 +49,8 @@
             <li *ngFor="let c of searchSettings.classification; let index = index">
                 <span class="fake-link" (click)="crumbSelect(index)">{{c}}</span>
             </li>
-            <li *ngIf="searchSettings.classification.length > 0 && aggregations.flatClassifications.length > 0">All Sub Classifications
+            <li *ngIf="searchSettings.classification.length > 0 && aggregations.flatClassifications.length > 0">All Sub
+                Classifications
             </li>
         </ol>
         <span *ngIf="took" class="pull-right" style="padding-top:10px">
