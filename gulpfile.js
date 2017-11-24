@@ -4,10 +4,8 @@ const gulp = require('gulp'),
     usemin = require('gulp-usemin'),
     rev = require('gulp-rev'),
     minifyCss = require('gulp-clean-css'),
-    bower = require('gulp-bower'),
     install = require('gulp-install'),
     replace = require('gulp-replace'),
-    wiredep = require('gulp-wiredep'),
     fs = require('fs'),
     esInit = require('./modules/system/node-js/elasticSearchInit'),
     git = require('gulp-git'),
@@ -28,7 +26,7 @@ gulp.task('copyNpmDeps', ['npm'], function () {
         .pipe(install({production: true}));
 });
 
-gulp.task('thirdParty', ['npm', 'bower'], function () {
+gulp.task('thirdParty', ['npm'], function () {
     let streamArr = [];
 
     streamArr.push(gulp.src('./node_modules/core-js/client/shim.min.js')
