@@ -12,7 +12,7 @@ export class AttachmentsComponent {
     @Output() public setDefault = new EventEmitter();
     @Output() public upload = new EventEmitter();
 
-    showDelete: boolean = false;
+    // showDelete: boolean = false;
 
     copyUrl(attachment) {
         let url = (window as any).publicUrl + "/data/" + attachment.fileid;
