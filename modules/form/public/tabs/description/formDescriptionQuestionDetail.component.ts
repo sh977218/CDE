@@ -13,10 +13,21 @@ import { FormattedValue } from 'core/models.model';
     selector: "cde-form-description-question-detail",
     templateUrl: "formDescriptionQuestionDetail.component.html"
 })
-export class FormDescriptionQuestionDetailComponent implements OnInit {
-    @Input() elt: CdeForm;
+export class FormDescriptionQuestionDetailComponent {
     @Input() canEdit: boolean = false;
-    @Input() node: TreeNode;
+
+    @Input() set node(node: TreeNode) {
+        this.question = node.data;
+        this.parent = node.parent.data;
+        if (!this.question.instructions)
+            this.question.instructions = new FormattedValue;
+        if (!this.question.skipLogic)
+            this.question.skipLogic = new SkipLogic;
+        if (!this.question.question.uoms)
+            this.question.question.uoms = [];
+        if (this.question.question.uoms) this.validateUoms(this.question.question);
+    };
+
     @Output() isFormValid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
 
@@ -91,18 +102,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             }
             this.nameSelectModalRef.close();
         };
-    }
-
-    ngOnInit() {
-        this.question = this.node.data;
-        this.parent = this.node.parent.data;
-        if (!this.question.instructions)
-            this.question.instructions = new FormattedValue;
-        if (!this.question.skipLogic)
-            this.question.skipLogic = new SkipLogic;
-        if (!this.question.question.uoms)
-            this.question.question.uoms = [];
-        if (this.question.question.uoms) this.validateUoms(this.question.question);
     }
 
     checkAnswers(answers) {
