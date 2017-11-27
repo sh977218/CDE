@@ -237,11 +237,18 @@ exports.init = function (app, daoManager) {
             json: {
                 export: function (res) {
                     let firstElt = true;
-                    res.type('application/json');
-                    res.write("[");
-                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send("ERROR with es search export");
-                        else if (elt) {
+                    let typeSent = false;
+                    elastic_system.elasticSearchExport((err, elt) => {
+                        if (err) {
+                            if (!typeSent) res.status(403);
+                            return res.send("ERROR with es search export");
+                        }
+                        if (!typeSent) {
+                            res.type('application/json');
+                            res.write("[");
+                            typeSent = true;
+                        }
+                        if (elt) {
                             if (!firstElt) res.write(',');
                             elt = exportShared.stripBsonIds(elt);
                             elt = elastic_system.removeElasticFields(elt);

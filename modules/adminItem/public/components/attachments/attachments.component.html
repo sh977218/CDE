@@ -35,15 +35,15 @@
                     </dd>
                 </ng-container>
                 <ng-container *ngIf="canEdit">
-                    <dt class="col-3">Actions:</dt>
+                    <dt class="col-3 text-right">Actions:</dt>
                     <dd id="dd_version_nlm" class="col-9">
-                        <div *ngIf="showDelete">
+                        <div *ngIf="attachment.showDelete">
                             Confirm Delete
-                            <i class="fa fa-check" (click)="showDelete = false; removeAttachment.emit(i)"
+                            <i class="fa fa-check" (click)="attachment.showDelete = false; removeAttachment.emit(i)"
                                id="confirmRemove-{{i}}"></i>
-                            <i class="fa fa-times" (click)="showDelete = false"></i>
+                            <i class="fa fa-times" (click)="attachment.showDelete = false"></i>
                         </div>
-                        <i (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
+                        <i (click)="attachment.showDelete = true" *ngIf="!attachment.showDelete" class="fa fa-trash-o"
                            id="removeAttachment-{{i}}"></i>
                     </dd>
                 </ng-container>
