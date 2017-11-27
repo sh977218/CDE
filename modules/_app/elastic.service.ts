@@ -135,13 +135,8 @@ export class ElasticService {
     }
 
     getExport(query, type, cb) {
-        this.http.post(
-            "/elasticSearchExport/" + type,
-            query
-        ).map(res => res.json()).subscribe(
-            function onSuccess(response) {
-                cb(null, response);
-            },
+        this.http.post("/elasticSearchExport/" + type, query).map(res => res.json()).subscribe(
+            response => cb(null, response),
             function onError(response) {
                 if (response.status === 503) cb("The server is busy processing similar request, please try again in a minute.");
                 else cb("An error occured. This issue has been reported.");
