@@ -42,7 +42,7 @@
     <h1 class="mobileViewH1">
         <span *ngIf="elt.isDraft" class="badge badge-info ">DRAFT</span> {{elt.naming[0].designation}}
     </h1>
-    <div class="pull-left my-5">
+    <div class="pull-left">
         <button *ngIf="quickBoardService.canAddElement(elt)"
                 id="addToQuickBoard" class="btn btn-small btn-secondary"
                 title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
@@ -125,7 +125,7 @@
             </button>
         </div>
     </div>
-    <div class="pull-right my-5">
+    <div class="pull-right">
         <button *ngIf="isAllowedModel.isAllowed(elt) && !elt.isDraft && drafts.length > 0"
                 class="btn btn-info" (click)="loadDraft(null);">
             <i class="fa fa-eye fa-lg"></i> View Draft
@@ -144,7 +144,7 @@
             <br>Changed by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </ng-container>
     </div>
-    <div class="clearfix"></div>
+    <div class="py-2 clearfix"></div>
     <div class="row">
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="row">

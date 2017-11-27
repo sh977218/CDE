@@ -6,7 +6,13 @@ import { LoginService } from '_app/login.service';
 
 @Component({
     selector: "cde-navigation",
-    templateUrl: "./navigation.component.html"
+    templateUrl: "./navigation.component.html",
+    styles: [`
+        .navbar-nav > li > a {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    `]
 })
 export class NavigationComponent {
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();

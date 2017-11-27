@@ -8,8 +8,8 @@
                  alt="NIH Common Data Elements (CDE) log" src="/cde/public/assets/img/NIH-CDE.png"/>
         </div>
         <div class="text-center center-block" id="searchDiv">
-            <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate method="GET"
-                  style="width: 80%; min-width: 300px; margin: auto">
+            <form #quickSearchForm="ngForm" id="quickSearchForm" class="w-80 m-auto" novalidate method="GET"
+                  style="min-width: 300px;">
                 <div class="input-group input-group-lg">
                     <label class="sr-only" for="ftsearch-input">Search Terms</label>
                     <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
@@ -26,7 +26,7 @@
                 <!-- Error display area -->
                 <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
                    class="error-block">
-                    <small>Query terms must be 500 characters or less.</small>
+                    <span>Query terms must be 500 characters or less.</span>
                 </p>
             </form>
             <div class="clear"></div>
@@ -84,9 +84,9 @@
             </ngb-tabset>
         </div>
         <div class="mt-3">
-            <small>
+            <span>
                 <span id="totalItems">{{totalItems}}</span> elements across all classifications
-            </small>
+            </span>
         </div>
     </div>
 </ng-template>
@@ -200,11 +200,11 @@
                     </span>
                 </span>
             </div>
-            <small> ({{this.took / 1000}} secs)</small>
+            <span> ({{this.took / 1000}} secs)</span>
         </div>
         <div class="container-fluid ml-0" style="max-width: 1200px;">
             <div class="row">
-                <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10 push-md-2':'col-12'">
+                <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-9 push-md-3':'col-12'">
                     <!-- SEARCH RESULTS -->
                     <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
                         Searching...</span>
@@ -218,13 +218,13 @@
                     <!-- link for google indexer only -->
                     <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                 </div>
-                <div [hidden]="!filterMode" [ngClass]="filterMode?'col-12 col-sm-2 pull-md-10 ':'col-12'">
+                <div *ngIf="filterMode" [ngClass]="filterMode?'col-12 col-sm-3 pull-md-9 ':'col-12'">
                     <!-- FILTERS -->
                     <p class="gray">Filter by:</p>
                     <div> <!-- CLASSIFICATION AGGREGATIONS -->
-                        <strong [hidden]="!aggregations.orgs.buckets" id="classif_filter_title">Classification
+                        <strong *ngIf="aggregations.orgs.buckets.length > 0 && !altClassificationFilterMode && !embedded"
+                                id="classif_filter_title">Classification
                             <span class="nonLinkAnchor" id="altClassificationFilterModeToggle"
-                                  [hidden]="altClassificationFilterMode || embedded"
                                   (click)="setAltClassificationFilterMode()"
                                   ngbTooltip="Add a second classifications filter as an AND condition"
                                   placement="right" container="body">
@@ -232,20 +232,16 @@
                             </span>
                         </strong>
                         <div class="pl-2" id="classificationListHolder">
+                            <ng-container
+                                    *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey">
                             <span class="nonLinkAnchor d-block hand-cursor" (click)="alterOrgFilter(t.key)"
-                                  [ngbTooltip]="t.longName" placement="right" container="body"
-                                  *ngFor="let t of aggregations.orgs.buckets; trackBy: helperObjectsService.trackByKey"
-                                  [hidden]="t.key !== getCurrentSelectedOrg() && getCurrentSelectedOrg()">
-                                <ng-container *ngIf="t.key === getCurrentSelectedOrg(); else else01">
-                                    <i class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
-                                </ng-container>
-                                <ng-template #else01>
+                                  [ngbTooltip]="t.longName" placement="right" container="body">
                                     <i class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>
-                                </ng-template>
                                 <a class="nonLinkAnchor" id="classifications-text-{{t.key}}"> {{t.key}}
                                     (<span id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)
                                 </a>
                             </span>
+                            </ng-container>
                             <div id="classification-facets">
                                 <span class="nonLinkAnchor d-block hand-cursor"
                                       *ngFor="let e of getCurrentSelectedClassification(); let i = index"
@@ -258,7 +254,7 @@
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
                                     <a class="nonLinkAnchor">
-                                        <small>{{e}}</small>
+                                        <span>{{e}}</span>
                                     </a>
                                 </span>
                                 <span class="nonLinkAnchor d-block hand-cursor" (click)="selectElement(b.name)"
@@ -272,9 +268,9 @@
                                         <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
                                     </ng-template>
                                     <a class="nonLinkAnchor">
-                                        <small style="word-break: break-all">{{b.name}}
+                                        <span style="word-break: break-all">{{b.name}}
                                             (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
-                                        </small>
+                                        </span>
                                     </a>
                                 </span>
                             </div>
@@ -296,7 +292,7 @@
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
                                     <a class="nonLinkAnchor">
-                                        <small>{{e}}</small>
+                                        <span>{{e}}</span>
                                     </a>
                                 </span>
                                 <span class="nonLinkAnchor d-block hand-cursor" (click)="selectTopic(b.name)"
@@ -309,9 +305,9 @@
                                         <i class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
                                     </ng-template>
                                     <a class="nonLinkAnchor">
-                                        <small style="word-break: break-all">{{b.name}}
+                                        <span style="word-break: break-all">{{b.name}}
                                             (<span id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)
-                                        </small>
+                                        </span>
                                     </a>
                                 </span>
                             </div>
@@ -335,7 +331,7 @@
                                 <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                             </ng-template>
                             <a class="nonLinkAnchor">
-                                <small id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                                <span id="status-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</span>
                             </a>
                         </span>
                     </span>
@@ -358,7 +354,7 @@
                                     <i class="fa fa-square-o" id="li-blank-{{t.key}}"></i>
                                 </ng-template>
                                 <a class="nonLinkAnchor">
-                                    <small id="datatype-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</small>
+                                    <span id="datatype-text-{{t.key}}"> {{t.key}} ({{t.doc_count}})</span>
                                 </a>
                             </span>
                         </span>
@@ -381,7 +377,7 @@
         <ng-template #classifNoName>
             <i class="fa fa-angle-right" id="li-blank-{{e.name}}"></i></ng-template>
         <span>
-            <small> {{e.name}} (<span id="nbOfClassifElts-{{e.name}}">{{e.count}}</span>)</small>
+            <span> {{e.name}} (<span id="nbOfClassifElts-{{e.name}}">{{e.count}}</span>)</span>
         </span>
     </span>
     <div [hidden]="selectedElements?.indexOf(e.name) === -1" style="margin-left: 5px">
@@ -413,9 +409,3 @@
         <button class="btn btn-success" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
     </div>
 </ng-template>
-
-<span [hidden]="aaaa">
-   aaa
-</span>
-<button (click)="aaaa = true">true</button>
-<button (click)="aaaa = false">false</button>

@@ -11,10 +11,12 @@ import { ElasticQueryResponse, Elt, User } from 'core/models.model';
 import { HelperObjectsService } from 'widget/helperObjects.service';
 
 export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
-    @HostListener('window:beforeunload') unload() {
+    @HostListener('window:beforeunload')
+    unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname))
             window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
     }
+
     @ViewChild('orgDetailsModal') orgDetailsModal: NgbModal;
     @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer: ViewContainerRef;
     @ViewChild('tbset') public tabset: NgbTabset;
@@ -36,7 +38,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     lastQueryTimeStamp: number;
     module: string;
     numPages: any;
-    oninit = false;
     orgs: any[];
     orgHtmlOverview: string;
     pinComponent: Type<Component>;
@@ -53,21 +54,14 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     validRulesStatus: string;
     view: string;
 
-    aaaa =true;
-
     ngAfterViewInit() {
         let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
         if (previousSpot != null)
             SearchBaseComponent.waitScroll(2, previousSpot);
     }
 
-    ngOnInit () {
-        // TODO: remove OnInit when OnChanges inputs is implemented for Dynamic Components
-        // if (!this.oninit)
-        //     this.search();
-        //
+    ngOnInit() {
         this.route.queryParams.subscribe(() => this.search());
-
     }
 
     constructor(protected _componentFactoryResolver,
@@ -81,14 +75,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                 protected router,
                 protected route) {
         this.searchSettings.page = 1;
-
-        // TODO: upgrade to Angular when router is available
-        // scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
-        //     let match = /\/(cde|form)\/search\?.*/.exec(oldUrl);
-        //     if (match)
-        //         window.sessionStorage['nlmcde.scroll.' + match[0]] = $(window).scrollTop();
-        // });
-
         this.filterMode = $(window).width() >= 768;
     }
 
@@ -256,10 +242,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     private filterOutWorkingGroups(cb) {
         this.orgHelperService.then(() => {
             this.userService.then(() => {
-                this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket => {
-                    return this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user)
-                        || this.userService.user.siteAdmin;
-                });
+                this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter(bucket => this.orgHelperService.showWorkingGroup(bucket.key, this.userService.user) || this.userService.user.siteAdmin);
                 cb();
             });
         });
@@ -422,8 +405,14 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
             params.set('searchSettings', JSON.stringify(report.searchSettings));
             params.set('status', report.status);
             let uri = params.toString();
-            this.router.navigate(['/cdeStatusReport'], {queryParams:  {searchSettings: JSON.stringify(report.searchSettings), status: report.status}});
-        }, ()  => {});
+            this.router.navigate(['/cdeStatusReport'], {
+                queryParams: {
+                    searchSettings: JSON.stringify(report.searchSettings),
+                    status: report.status
+                }
+            });
+        }, () => {
+        });
     }
 
     pageChange() {
@@ -544,6 +533,7 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                     } else {
                         this.aggregations.topics = [];
                     }
+                    result.aggregations.orgs.orgs.buckets = result.aggregations.orgs.orgs.buckets.filter(o => this.getCurrentSelectedOrg() ? o && o.key === this.getCurrentSelectedOrg() : true);
 
                 }
 
@@ -572,7 +562,6 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
                 this.switchView(this.isSearched() ? 'results' : 'welcome');
                 if (this.view === 'welcome') {
                     this.orgs = [];
-
                     if (this.aggregations) {
                         orgsCreatedPromise.then(() => {
                             this.orgHelperService.then(() => {

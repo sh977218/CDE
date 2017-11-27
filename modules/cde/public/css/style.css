@@ -86,6 +86,14 @@
     table-layout: fixed;
 }
 
+.cdeTable th {
+    padding: 0
+}
+
+.cdeTable td {
+    padding: 0
+}
+
 .matched-by {
     float: right;
     color: #4c4c4c;
