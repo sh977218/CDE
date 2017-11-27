@@ -1,4 +1,4 @@
-<div>
+<div class="container-fluid">
     <div *ngIf="board" class="overflowHidden">
         <div class="col-lg-12">
             <h3 class="ib" id="board_name_{{board.name}}">{{board.name}} <span
@@ -50,13 +50,13 @@
                 </span>
             </div>
         </div>
-
         <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="searchInfo clearfix mb-3">
                 <div class="pull-right">
                     <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
                     <span *ngIf="board.type === 'cde' && elts.length > 0" class="btn-group">
-                        <button id="export" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                        <button id="export" type="button" class="btn btn-secondary dropdown-toggle"
+                                data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-download"></i>
                             Export Board <span class="caret"></span>
@@ -77,30 +77,25 @@
                         <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                     </button>
 
-                    <cde-create-form-from-board *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
-                                                [board]="board"></cde-create-form-from-board>
+                    <cde-create-form-from-board
+                            *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
+                            [board]="board"></cde-create-form-from-board>
                 </div>
             </div>
-
             <div *ngIf="elts.length === 0">The board is empty.</div>
-
             <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
-                           [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems" (add)="reload()"></cde-list-view>
-
-            <ngb-pagination [collectionSize]="totalItems" [page]="currentPage" (pageChange)="setPage($event)" [maxSize]="10">
+                           [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"
+                           (add)="reload()"></cde-list-view>
+            <ngb-pagination [collectionSize]="totalItems" [page]="currentPage" (pageChange)="setPage($event)"
+                            [maxSize]="10">
             </ngb-pagination>
-
         </div>
-
-        <div *ngIf="commentMode" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
-             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-            <cde-discuss-area [eltId]="board._id" [elt]="board"
-                              [eltName]="board.name"></cde-discuss-area>
+        <div *ngIf="commentMode" class="pl-10" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
+             style="box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+            <cde-discuss-area [eltId]="board._id" [elt]="board" [eltName]="board.name"></cde-discuss-area>
         </div>
-
     </div>
 </div>
-
 <ng-template #shareBoardModal let-d="dismiss">
     <div class="modal-header">
         <h3>Share this board</h3>
@@ -155,7 +150,7 @@
                         </div>
                         <div ngbDropdownMenu class="dropdown-menu">
                             <span *ngFor="let role of allRoles" (click)="changeRole(newUser,role)" class="dropdown-item"
-                                id="newUser_role_{{role.name}}">
+                                  id="newUser_role_{{role.name}}">
                                 <a class="ib" style="line-height: 15px;">
                                     <i class="fa width20" [ngClass]="{'fa-check':newUser.role === role.name}"></i>
                                     <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
@@ -163,7 +158,8 @@
                             </span>
                         </div>
                     </td>
-                    <td><i class="fa fa-plus" id="addUserBtn" (click)="addUser(newUser)" *ngIf="newUser.username"></i></td>
+                    <td><i class="fa fa-plus" id="addUserBtn" (click)="addUser(newUser)" *ngIf="newUser.username"></i>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -174,6 +170,5 @@
         <button class="btn btn-secondary pull-right" (click)="d()" id="closeShareModal">Cancel</button>
     </div>
 </ng-template>
-
 <cde-classify-item-modal #classifyCdesModal [elt]="board" [modalTitle]="modalTitle"
                          (onEltSelected)="addClassification($event)"></cde-classify-item-modal>

@@ -94,11 +94,6 @@
     padding: 0
 }
 
-.matched-by {
-    float: right;
-    color: #4c4c4c;
-}
-
 .fake-link {
     color: #337ab7;
     text-decoration: none;

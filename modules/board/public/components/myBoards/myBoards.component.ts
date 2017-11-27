@@ -7,6 +7,16 @@ import { AlertService } from '_app/alert/alert.service';
 @Component({
     selector: 'cde-my-boards',
     templateUrl: './myBoards.component.html',
+    styles: [`
+        .my-board-card {
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            margin: 3px;
+            padding: 15px;
+            min-height: 160px;
+            position: relative;
+        }
+    `]
 })
 export class MyBoardsComponent implements OnInit {
 
@@ -17,13 +27,14 @@ export class MyBoardsComponent implements OnInit {
     constructor(public myBoardsSvc: MyBoardsService,
                 public userService: UserService,
                 private http: Http,
-                private alert: AlertService) {}
+                private alert: AlertService) {
+    }
 
     ngOnInit() {
         this.myBoardsSvc.loadMyBoards();
     }
 
-    selectAggregation (aggName, $index) {
+    selectAggregation(aggName, $index) {
         this.myBoardsSvc.filter[aggName][$index].checked = !this.myBoardsSvc.filter[aggName][$index].checked;
         this.myBoardsSvc.loadMyBoards();
     }
@@ -32,7 +43,7 @@ export class MyBoardsComponent implements OnInit {
         return '/board/' + id;
     }
 
-    removeBoard (index) {
+    removeBoard(index) {
         this.showDelete = false;
         this.http.delete("/board/" + this.myBoardsSvc.boards[index]._id).subscribe(() => {
             this.alert.addAlert("success", "Done");
@@ -40,12 +51,12 @@ export class MyBoardsComponent implements OnInit {
         });
     };
 
-    cancelSave (board) {
+    cancelSave(board) {
         delete board.editMode;
         board.showEdit = false;
     };
 
-    changeStatus (index) {
+    changeStatus(index) {
         let board = this.myBoardsSvc.boards[index];
         if (board.shareStatus === "Private") {
             board.shareStatus = "Public";
@@ -56,11 +67,11 @@ export class MyBoardsComponent implements OnInit {
         this.showChangeStatus = false;
     };
 
-    save (board) {
+    save(board) {
         delete board.editMode;
         this.http.post("/board", board).map(r => r.text()).subscribe(() => {
-            this.alert.addAlert("success", "Saved.");
-            this.myBoardsSvc.waitAndReload();
+                this.alert.addAlert("success", "Saved.");
+                this.myBoardsSvc.waitAndReload();
             }, err => {
                 console.log(err);
                 this.alert.addAlert("danger", err._body);

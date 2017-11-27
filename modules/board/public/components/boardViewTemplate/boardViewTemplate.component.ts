@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 @Component({
     selector: 'cde-board-view-template',
     templateUrl: './boardViewTemplate.component.html',
-    styles:[`
+    styles: [`
         .myBoardTags {
             position: absolute;
             bottom: 7px;

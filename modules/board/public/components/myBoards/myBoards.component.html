@@ -17,71 +17,76 @@
                 <li>Become a curator and create your own CDEs and Forms</li>
             </ul>
             <br>
-            <div style="text-align: center"><a id="signUpLink" routerLink="/login" class="btn btn-lg btn-info">Sign up or Log In</a></div>
+            <div style="text-align: center"><a id="signUpLink" routerLink="/login" class="btn btn-lg btn-info">Sign up
+                or Log In</a></div>
         </div>
     </div>
-    <div class="col-lg-2 col-4 noLeftRightPadding">
-        <div id="sidebar-wrapper">
-            <div *ngIf="myBoardsSvc.filter.types?.length > 0">
-                <h4>Type</h4>
-                <label *ngFor="let type of myBoardsSvc.filter.types; let $index = index" class="my-board-tag">
-                    <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
-                           (change)="selectAggregation('types', $index)">
-                    {{type.key}} ({{type.doc_count}})
-                </label>
-            </div>
-            <div *ngIf="myBoardsSvc.filter.tags?.length > 0">
-                <h4>Tags</h4>
-                <label *ngFor="let tag of myBoardsSvc.filter.tags; let $index = index" class="my-board-tag">
-                    <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
-                           (change)="selectAggregation('tags', $index)">
-                    {{tag.key}} ({{tag.doc_count}})
-                </label>
-            </div>
-            <div *ngIf="myBoardsSvc.filter.shareStatus?.length">
-                <h4>Share Status</h4>
-                <label *ngFor="let ss of myBoardsSvc.filter.shareStatus; let $index = index" class="my-board-tag">
-                    <input type="checkbox" data-id="ss-{{ss.key}}" [checked]="ss.checked"
-                           (change)="selectAggregation('shareStatus', $index)">
-                    {{ss.key}} ({{ss.doc_count}})
-                </label>
+    <div class="row">
+        <div class="col-lg-2 col-4 noLeftRightPadding">
+            <div id="sidebar-wrapper">
+                <div *ngIf="myBoardsSvc.filter.types?.length > 0">
+                    <h4>Type</h4>
+                    <label *ngFor="let type of myBoardsSvc.filter.types; let $index = index" class="my-board-tag">
+                        <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
+                               (change)="selectAggregation('types', $index)">
+                        {{type.key}} ({{type.doc_count}})
+                    </label>
+                </div>
+                <div *ngIf="myBoardsSvc.filter.tags?.length > 0">
+                    <h4>Tags</h4>
+                    <label *ngFor="let tag of myBoardsSvc.filter.tags; let $index = index" class="my-board-tag">
+                        <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
+                               (change)="selectAggregation('tags', $index)">
+                        {{tag.key}} ({{tag.doc_count}})
+                    </label>
+                </div>
+                <div *ngIf="myBoardsSvc.filter.shareStatus?.length">
+                    <h4>Share Status</h4>
+                    <label *ngFor="let ss of myBoardsSvc.filter.shareStatus; let $index = index" class="my-board-tag">
+                        <input type="checkbox" data-id="ss-{{ss.key}}" [checked]="ss.checked"
+                               (change)="selectAggregation('shareStatus', $index)">
+                        {{ss.key}} ({{ss.doc_count}})
+                    </label>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-10 col-8 dragDiv" id="my-board-container">
-        <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-xl-4 col-lg-4 col-sm-6 col-12 ">
-            <div class="my-board-card" data-id="boardDiv_{{board.name}}">
-                <div class="myBoardEditButtons pull-right">
-                    <div class="text-right">
+        <div class="col-lg-10 col-8 dragDiv" id="my-board-container">
+            <div *ngFor="let board of myBoardsSvc.boards; let $index = index"
+                 class="col-xl-4 col-lg-4 col-sm-6 col-12 ">
+                <div class="my-board-card" data-id="boardDiv_{{board.name}}">
+                    <div class="myBoardEditButtons pull-right">
+                        <div class="text-right">
                         <span *ngIf="showDelete">Confirm Delete
                             <i class="fa fa-check" (click)="removeBoard($index)"
                                id="confirmRemove-{{$index}}"></i>
                             <i class="fa fa-times" (click)="showDelete = false"></i>
                         </span>
-                        <i (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
-                           id="removeBoard-{{$index}}"></i>
+                            <i (click)="showDelete = true" *ngIf="!showDelete" class="fa fa-trash-o"
+                               id="removeBoard-{{$index}}"></i>
+                        </div>
                     </div>
-                </div>
-                <h4 class="myBoardName" id="board_name_{{$index}}">
+                    <h4 class="myBoardName" id="board_name_{{$index}}">
                     <span *ngIf="showChangeStatus">Change Status?
                         <i class="fa fa-check" (click)="changeStatus($index)"
                            id="confirmChangeStatus_{{$index}}"></i>
                         <i class="fa fa-times" (click)="showChangeStatus = false"></i>
                     </span>
-                    <span *ngIf="!showChangeStatus">
+                        <span *ngIf="!showChangeStatus">
                         <i class="fa fa-globe" *ngIf="board.shareStatus === 'Public'"
                            (click)="showChangeStatus = true" id="publicIcon_{{$index}}"></i>
                         <i class="fa fa-lock" *ngIf="board.shareStatus !== 'Public'"
                            (click)="showChangeStatus = true" id="privateIcon_{{$index}}"></i>
                     </span>
-                    <cde-inline-edit id="viewBoard_{{board.name}}" [(model)]="board.name" [linkSource]="getLinkSource(board._id)"
-                        [isAllowed]="true" (modelChange)="save(board)"></cde-inline-edit>
-                </h4>
+                        <cde-inline-edit id="viewBoard_{{board.name}}" [(model)]="board.name"
+                                         [linkSource]="getLinkSource(board._id)"
+                                         [isAllowed]="true" (modelChange)="save(board)"></cde-inline-edit>
+                    </h4>
 
-                <cde-board-view-template [board]="board" [canEditBoard]="true" [index]="$index"
-                                         [suggestTags]="suggestTags"
-                                         (save)="save($event)"></cde-board-view-template>
+                    <cde-board-view-template [board]="board" [canEditBoard]="true" [index]="$index"
+                                             [suggestTags]="suggestTags"
+                                             (save)="save($event)"></cde-board-view-template>
 
+                </div>
             </div>
         </div>
     </div>

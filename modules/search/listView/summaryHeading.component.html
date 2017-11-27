@@ -1,8 +1,11 @@
-<ng-content select=".summary-list-before"></ng-content>
-<a [routerLink]="[urlPrefix]" [queryParams]="{tinyId: elt.tinyId}"
-   [innerHtml]="elt.primaryNameCopy" id="linkToElt_{{eltIndex}}"
-   (click)="select.emit(elt.tinyId)"></a>
-<small>{{elt.registrationState.registrationStatus}}</small>
-<ng-content select=".summary-list-after"></ng-content>
-<small class="matched-by hidden-xs" *ngIf="elt.highlight?.matchedBy">Matched by: <strong>
-    <span [innerHtml]="elt.highlight.matchedBy"></span></strong></small>
+<div>
+    <ng-content select=".summary-list-before"></ng-content>
+    <a [routerLink]="[urlPrefix]" [queryParams]="{tinyId: elt.tinyId}"
+       [innerHtml]="elt.primaryNameCopy" id="linkToElt_{{eltIndex}}"
+       (click)="select.emit(elt.tinyId)"></a>
+    <small class="text-muted">{{elt.registrationState.registrationStatus}}</small>
+    <ng-content select=".summary-list-after"></ng-content>
+    <span *ngIf="elt.highlight?.matchedBy" class="pull-right hidden-xs">
+        <small class="text-muted">Matched by:<strong [innerHtml]="elt.highlight.matchedBy"></strong></small>
+    </span>
+</div>

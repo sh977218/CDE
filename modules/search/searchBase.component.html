@@ -204,7 +204,7 @@
         </div>
         <div class="container-fluid ml-0" style="max-width: 1200px;">
             <div class="row">
-                <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-9 push-md-3':'col-12'">
+                <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10 push-md-2':'col-12'">
                     <!-- SEARCH RESULTS -->
                     <span [hidden]="elts.length >= 0" class="h1 pl130"><i class="fa fa-spinner fa-pulse"></i>
                         Searching...</span>
@@ -218,7 +218,7 @@
                     <!-- link for google indexer only -->
                     <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                 </div>
-                <div *ngIf="filterMode" [ngClass]="filterMode?'col-12 col-sm-3 pull-md-9 ':'col-12'">
+                <div *ngIf="filterMode" [ngClass]="filterMode?'col-12 col-sm-2 pull-md-10 ':'col-12'">
                     <!-- FILTERS -->
                     <p class="gray">Filter by:</p>
                     <div> <!-- CLASSIFICATION AGGREGATIONS -->
@@ -254,7 +254,7 @@
                                         <i class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                     </ng-template>
                                     <a class="nonLinkAnchor">
-                                        <span>{{e}}</span>
+                                        <small>{{e}}</small>
                                     </a>
                                 </span>
                                 <span class="nonLinkAnchor d-block hand-cursor" (click)="selectElement(b.name)"
