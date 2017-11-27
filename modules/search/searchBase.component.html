@@ -228,7 +228,9 @@
                                   (click)="setAltClassificationFilterMode()"
                                   ngbTooltip="Add a second classifications filter as an AND condition"
                                   placement="right" container="body">
-                                <i class="fa fa-plus-square hand-cursor"></i></span></strong>
+                                <i class="fa fa-plus-square hand-cursor"></i>
+                            </span>
+                        </strong>
                         <div class="pl-2" id="classificationListHolder">
                             <span class="nonLinkAnchor d-block hand-cursor" (click)="alterOrgFilter(t.key)"
                                   [ngbTooltip]="t.longName" placement="right" container="body"
@@ -317,8 +319,8 @@
                         <br/>
                     </div>
 
-                    <strong [hidden]="!aggregations.statuses.statuses.buckets" id="status_filter">Registration
-                        Status</strong>
+                    <strong [hidden]="!aggregations.statuses.statuses.buckets" id="status_filter">
+                        Registration Status</strong>
                     <div class="pl-2" id="registrationStatusListHolder">
                     <span class="hand-cursor"
                           *ngFor="let t of aggregations.statuses.statuses.buckets"
@@ -411,3 +413,9 @@
         <button class="btn btn-success" (click)="c({status: validRulesStatus})" id="exportVR">Export</button>
     </div>
 </ng-template>
+
+<span [hidden]="aaaa">
+   aaa
+</span>
+<button (click)="aaaa = true">true</button>
+<button (click)="aaaa = false">false</button>

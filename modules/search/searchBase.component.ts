@@ -53,6 +53,8 @@ export abstract class SearchBaseComponent implements AfterViewInit, OnInit {
     validRulesStatus: string;
     view: string;
 
+    aaaa =true;
+
     ngAfterViewInit() {
         let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
         if (previousSpot != null)
