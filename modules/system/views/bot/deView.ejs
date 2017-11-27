@@ -5,6 +5,7 @@
 <%- include navigation.ejs %>
 <div class="container" itemscope="http://schema.org/MedicalCode">
     <% if (elt) { %>
+    <h1><%= elt.naming[0].designation %></h1>
     <%- include generalDetail.ejs %>
     <div class="row" id="pvs_tab">
         <h2 class="w-100">Permissible Values:</h2>
