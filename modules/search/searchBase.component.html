@@ -98,7 +98,7 @@
 <ng-template #searchResults>
     <ng-container *ngIf="aggregations">
         <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-            <form class="form-inline" style="width:100%;">
+            <form class="form-inline w-100">
                 <input id="ftsearch-input" class="form-control" type="text" name="q" placeholder="Search"
                        [focusFirst]="false" [(ngModel)]="searchSettings.q" maxlength="500"
                        [ngbTypeahead]="getAutocompleteSuggestions" autocomplete="off" style="width:80%;">
@@ -202,7 +202,7 @@
             </div>
             <small> ({{this.took / 1000}} secs)</small>
         </div>
-        <div class="container-fluid" style="max-width: 1200px; margin-left: 0">
+        <div class="container-fluid ml-0" style="max-width: 1200px;">
             <div class="row">
                 <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10 push-md-2':'col-12'">
                     <!-- SEARCH RESULTS -->
@@ -372,16 +372,16 @@
 
 <ng-template #facet_elements_tree>
     <span (click)="selectElement(e)" class="hand-cursor">
-                <ng-container
-                        *ngIf="searchSettings.classification?.indexOf(e.name) > -1; then classifName else classifNoName"></ng-container>
-                <ng-template #classifName>
-                    <i class="fa fa-angle-down" id="li-checked-{{e.name}}"></i></ng-template>
-                <ng-template #classifNoName>
-                    <i class="fa fa-angle-right" id="li-blank-{{e.name}}"></i></ng-template>
-                <span>
-                    <small> {{e.name}} (<span id="nbOfClassifElts-{{e.name}}">{{e.count}}</span>)</small>
-                </span>
-            </span>
+        <ng-container
+                *ngIf="searchSettings.classification?.indexOf(e.name) > -1; then classifName else classifNoName"></ng-container>
+        <ng-template #classifName>
+            <i class="fa fa-angle-down" id="li-checked-{{e.name}}"></i></ng-template>
+        <ng-template #classifNoName>
+            <i class="fa fa-angle-right" id="li-blank-{{e.name}}"></i></ng-template>
+        <span>
+            <small> {{e.name}} (<span id="nbOfClassifElts-{{e.name}}">{{e.count}}</span>)</small>
+        </span>
+    </span>
     <div [hidden]="selectedElements?.indexOf(e.name) === -1" style="margin-left: 5px">
         <div *ngFor="let e of e.elements.sort(SearchBaseComponent.compareObjName)"
              [hidden]="searchSettings.classification?.indexOf(e.name) === -1 && e.level <= searchSettings.classification?.length">

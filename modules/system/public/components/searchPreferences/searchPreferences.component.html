@@ -1,7 +1,5 @@
 <div class="container">
-
     <h2><i class="fa fa-search"></i> Search Results </h2>
-
     <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
     <div class="form-group">
         <span>I want my search results to include these statuses</span>
@@ -67,7 +65,8 @@
                         Name</label>
                 </div>
                 <div class="checkbox indent">
-                    <label><input id="questionTexts" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.questionTexts">
+                    <label><input id="questionTexts" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.questionTexts">
                         Question Texts</label>
                     <span class="text-info"><small>(CDE Only)</small></span>
                 </div>
@@ -95,11 +94,13 @@
                     <span class="text-info"><small>(CDE Only)</small></span>
                 </div>
                 <div class="checkbox indent">
-                    <label><input id="stewardOrg" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.stewardOrg">
+                    <label><input id="stewardOrg" type="checkbox"
+                                  [(ngModel)]="searchSettings.tableViewFields.stewardOrg">
                         Steward</label>
                 </div>
                 <div class="checkbox indent">
-                    <label><input id="usedBy" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.usedBy"> Used by</label>
+                    <label><input id="usedBy" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.usedBy"> Used
+                        by</label>
                 </div>
                 <div class="checkbox indent">
                     <label><input id="tinyId" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.tinyId"> NLM
@@ -115,7 +116,8 @@
                 </div>
                 <div class="checkbox indent">
                     <label><input id="administrativeStatus" type="checkbox"
-                                  [(ngModel)]="searchSettings.tableViewFields.administrativeStatus"> Admin Status</label>
+                                  [(ngModel)]="searchSettings.tableViewFields.administrativeStatus"> Admin
+                        Status</label>
                 </div>
                 <div class="checkbox indent">
                     <label><input id="ids" type="checkbox" [(ngModel)]="searchSettings.tableViewFields.ids">
@@ -138,14 +140,18 @@
         </div>
     </div>
 
-    <button id="saveSettings" type="button" class="btn btn-success pull-right" (click)="saveSettings()"><i
-            class="fa fa-check"></i> Save
-    </button>
-    <button type="button" class="btn btn-warning pull-right" (click)="cancelSettings()"><i class="fa fa-times"></i>
-        Cancel
-    </button>
-    <button type="button" id="loadDefaultSettings" class="btn btn-info pull-right" (click)="loadDefault()"><i
-            class="fa fa-undo"></i> Load Default
-    </button>
-
+    <div class="row">
+        <div class="ml-auto">
+            <button type="button" id="loadDefaultSettings" class="btn btn-info" (click)="loadDefault()">
+                <i class="fa fa-undo"></i> Load Default
+            </button>
+            <button type="button" class="btn btn-warning" (click)="cancelSettings()">
+                <i class="fa fa-times"></i>
+                Cancel
+            </button>
+            <button id="saveSettings" type="button" class="btn btn-success" (click)="saveSettings()">
+                <i class="fa fa-check"></i> Save
+            </button>
+        </div>
+    </div>
 </div>
