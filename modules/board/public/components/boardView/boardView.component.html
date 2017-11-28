@@ -1,22 +1,20 @@
 <div class="container-fluid">
-    <div *ngIf="board" class="overflowHidden">
+    <div *ngIf="board" class="row overflowHidden">
         <div class="col-lg-12">
-            <h3 class="ib" id="board_name_{{board.name}}">{{board.name}} <span
-                    *ngIf="isModifiedSinceReview">(Board has been modified since last review)</span></h3>
-            <span class="pt20 floatLeft pull-right">
-                <button id="discussBtn" class="btn btn-small btn-secondary" role="button" title="Discuss CDE"
+            <h3 class="ib pull-left" id="board_name_{{board.name}}">
+                {{board.name}} <span *ngIf="isModifiedSinceReview">(Board has been modified since last review)</span>
+            </h3>
+            <div class="ml-auto pull-right">
+                <button id="discussBtn" class="btn btn-secondary" role="button" title="Discuss CDE"
                         type="button" (click)="commentMode = !commentMode;">
                     <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
                 </button>
-            </span>
-            <span class="pt20 floatLeft pull-right">
-                <button class="btn btn-secondary btn-sm" id="shareBoardBtn"
-                        *ngIf="userService.user.username === board.owner.username"
-                        (click)="shareBoard()"><i class="fa fa-link"></i> Share
+                <button *ngIf="userService.user.username === board.owner.username" class="btn btn-secondary"
+                        id="shareBoardBtn" (click)="shareBoard()">
+                    <i class="fa fa-link"></i> Share
                 </button>
-            </span>
-            <div class="pull-right boxed-div padding0 margin0">
-                <span *ngIf="reviewers?.length > 0" class="padding10 floatLeft overflowHidden">
+                <div *ngIf="reviewers?.length > 0" class="boxed-div padding0 margin0">
+                    <span class="padding10 floatLeft overflowHidden">
                     <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
                     <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
                     <b *ngIf="board.review?.startDate && !board.review?.endDate">In progress</b>
@@ -48,13 +46,13 @@
                             <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
                     </span>
                 </span>
+                </div>
             </div>
         </div>
-        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-            <div class="searchInfo clearfix mb-3">
-                <div class="pull-right">
-                    <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
-                    <span *ngIf="board.type === 'cde' && elts.length > 0" class="btn-group">
+        <div class="col-lg-12">
+            <div class=" mb-3 pull-right">
+                <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
+                <span *ngIf="board.type === 'cde' && elts.length > 0" class="btn-group">
                         <button id="export" type="button" class="btn btn-secondary dropdown-toggle"
                                 data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
@@ -71,17 +69,19 @@
                         </ul>
                     </span>
 
-                    <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
-                            id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-secondary"
-                            (click)="classifyEltBoard()">
-                        <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
-                    </button>
+                <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
+                        id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-secondary"
+                        (click)="classifyEltBoard()">
+                    <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
+                </button>
 
-                    <cde-create-form-from-board
-                            *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
-                            [board]="board"></cde-create-form-from-board>
-                </div>
+                <cde-create-form-from-board
+                        *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
+                        [board]="board"></cde-create-form-from-board>
             </div>
+        </div>
+
+        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div *ngIf="elts.length === 0">The board is empty.</div>
             <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
                            [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"
@@ -102,7 +102,7 @@
     </div>
     <div class="modal-body">
         <label style="font-size: 13px;" for="sharedLink">Link to share (only accessible by collaborators)</label>
-        <input id="sharedLink" readonly="readonly" type="text" value="{{url}}" onclick="this.select()">
+        <input id="sharedLink" class="w-100" readonly="readonly" type="text" value="{{url}}" onclick="this.select()">
 
         <div style="font-size: 13px;">Who has access</div>
         <div class="padding10">
@@ -111,24 +111,20 @@
                 <tr *ngFor="let user of users; let $index = index">
                     <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
                     <td>{{user.username}} {{board.owner.username === user.username?'(you)':''}}</td>
-                    <td ngbDropdown>
-                        <div ngbDropdownToggle class="dropdown-toggle">
-                            <div class="floatLeft">
-                                <i class="fa width20"
-                                   [ngClass]="{'fa-eye':user.role === 'viewer','fa-search-plus':user.role === 'reviewer'}"></i>
-                            </div>
-                            <div class="floatLeft">
-                                <i class="fa fa-caret-down"></i>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                    id="{{user.username}}_dropdown"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="{{ROLE_MAP[user.role].icon}}"></i>
+                            </button>
+                            <div class="dropdown-menu" attr.data-aria-labelledby="{{user.username}}_dropdown">
+                                <button class="dropdown-item" type="button" *ngFor="let role of allRoles"
+                                        (click)="changeRole(user,role)">
+                                    <i class="{{role.icon}}"> {{role.label}}</i>
+                                </button>
                             </div>
                         </div>
-                        <ul ngbDropdownMenu class="dropdown-menu">
-                            <li *ngFor="let role of allRoles" value="{{role.name}}" (click)="changeRole(user,role)">
-                                <a class="ib" style="line-height: 15px;">
-                                    <i class="fa width20" [ngClass]="{'fa-check':user.role === role.name}"></i>
-                                    <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
-                                </a>
-                            </li>
-                        </ul>
                     </td>
                     <td><i class="fa fa-trash-o" (click)="deleteUser($index)"></i></td>
                 </tr>

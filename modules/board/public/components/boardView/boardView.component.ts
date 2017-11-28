@@ -35,14 +35,25 @@ export class BoardViewComponent implements OnInit {
     modalTitle: string;
     changesMade: boolean;
     newUser: any = {username: '', role: 'viewer'};
+    ROLE_MAP = {
+        review: {
+            icon: 'fa -fa-search-plus',
+            label: 'can review'
+        },
+        viewer: {
+            icon: 'fa fa-eye',
+            label: 'can view'
+        }
+    };
+
     allRoles = [{
         label: 'can review',
         name: 'reviewer',
-        icon: 'fa-search-plus'
+        icon: 'fa fa-search-plus'
     }, {
         label: 'can view',
         name: 'viewer',
-        icon: 'fa-eye'
+        icon: 'fa fa-eye'
     }];
     url: string;
     boardId: string;
