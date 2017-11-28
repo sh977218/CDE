@@ -10,6 +10,58 @@ const DataElementModel = require('../../../modules/cde/node-js/mongo-cde').DataE
 const FormModel = require('../../../modules/form/node-js/mongo-form').Form;
 const mongo_data = require('../../../modules/system/node-js/mongo-data');
 
+const UOM_MAP = {
+    'Centimeter': 'cm',
+    'Day': 'd',
+    'Gram': 'g',
+    'Minute': 'min',
+    'Percentage': '%',
+    'minute': 'min',
+    'second': 's',
+    'centimeter': 'cm',
+    'lx': 'lx',
+    'Hour': 'h',
+    'Millimeter': 'mm',
+    'Degree Celsius': 'Cel',
+    'milligram': 'mg',
+    'Decibel': 'cB',
+    'milliAmpere': 'mA',
+    'hours': 'h',
+    'hour': 'h',
+    'percentage': '%',
+    'Newton': 'N',
+    'day': 'd',
+    'gram': 'g',
+    'mm': 'mm',
+    'cm': 'cm',
+    'percent': '%',
+    'days': 'd',
+    'minutes': 'min',
+    'hour:minutes': 'h:m',
+    'cm/s': 'cm/s',
+    's': 's',
+    'Second': 's',
+    'mA': 'mA',
+    'Hz': 'Hz',
+    'ms': 'ms',
+    'Minutes': 'min',
+    'Seconds': 's',
+    'Meter': 'm',
+    'millimeters': 'mm',
+    'centimeters': 'cm',
+    'hh:mm': 'h:m',
+    'RPM/s': 'RPM/s',
+    'RPM': 'RPM',
+    'Month': 'mo',
+    'Centimeter per second': 'cm/s',
+    'kHz': 'kHz',
+    'dB': 'dB',
+    'Celcius': 'Cel',
+    'integer': 'integer',
+    'count': 'count',
+    'Degree': 'Degree',
+};
+
 const DATA_TYPE_MAP = {
     'Alphanumeric': 'Text',
     'Date or Date & Time': 'Date',
@@ -23,13 +75,17 @@ const DATA_TYPE_MAP = {
 
 let ALL_UOM = new Set();
 let ALL_DATA_TYPE = new Set();
+let UNPARSED_REF_DOC = new Set();
 
-const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/';
-const EXCLUDE_FILE = [];
+//const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical TBI CDE/ALL_CDE3.csv';
+const FILE_PATH = 'C:/Users/huangs8/Downloads/ALL_CDE3.csv';
 const EXCLUDE_REF_DOC = [
     'No references available',
     'Please fill out'
 ];
+
+let formCount = 0;
+let deCount = 0;
 
 let log_file = fs.createWriteStream(__dirname + '/debug.log', {flags: 'w'});
 let log_stdout = process.stdout;
@@ -50,19 +106,20 @@ function getCell(row, header) {
     }
 }
 
-function parseRefDoc(row, de, file, cb) {
+function parseRefDoc(row, de, cb) {
     let pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/?term=';
     let referencesString = getCell(row, 'References');
     EXCLUDE_REF_DOC.forEach(exclude_re_doc => {
         referencesString = referencesString.replace(exclude_re_doc, '').trim();
     });
     if (referencesString) {
-        let regex = /\s*(PMID|PUBMED)(:|,|\s)(\s*\d*[.|,|\s]*)*/ig;
+        let regex = /\s*(PMID|PUBMED|pubmed\/)(:|,|\s)*(\s*\d*[.|,|\s]*)*/ig;
         let pmIdArray = referencesString.match(regex);
         if (pmIdArray)
             async.forEach(pmIdArray, (pmIdString, doneOne) => {
-                let pmIds = pmIdString.replace(/PMID:/ig, '').replace(/\./ig, '').trim().split(',').filter(p => p);
+                let pmIds = pmIdString.replace(/PMID:/ig, '').replace(/\./ig, '').replace(/pubmed\//ig, '').replace(/PMID/ig, '').trim().split(',').filter(p => p);
                 async.forEach(pmIds, (pmId, doneOneMore) => {
+                    pmId = pmId.trim();
                     let uri = pubmedUrl + pmId;
                     request(uri, (err, response, body) => {
                         if (err) cb(err);
@@ -85,17 +142,16 @@ function parseRefDoc(row, de, file, cb) {
                     doneOne();
                 });
             }, () => {
-                cb();
+                cb(null, de);
             });
         else {
-            console.log(file + " did not find pubmed id in:\n" + referencesString + "\n\n--------------------------");
+            UNPARSED_REF_DOC.add(referencesString);
             de.referenceDocuments.push({
                 document: referencesString
             });
-            cb();
+            cb(null, de);
         }
-    } else cb();
-
+    } else cb(null, de);
 }
 
 function deToQuestion(row, cde) {
@@ -135,7 +191,7 @@ function deToQuestion(row, cde) {
     return question;
 }
 
-function rowToDataElement(file, row) {
+function rowToDataElement(row, cb) {
     let de = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {
@@ -199,7 +255,7 @@ function rowToDataElement(file, row) {
 
     let unitOfMeasure = getCell(row, 'Unit of Measure');
     if (unitOfMeasure) {
-        de.valueDomain.uom = unitOfMeasure;
+        de.valueDomain.uom = UOM_MAP[unitOfMeasure];
         ALL_UOM.add(unitOfMeasure);
     }
     if (row['Datatype']) ALL_DATA_TYPE.add(row['Datatype']);
@@ -239,10 +295,9 @@ function rowToDataElement(file, row) {
                 };
                 de.valueDomain.permissibleValues.push(permissibleValue);
             });
-            if (de.valueDomain.permissibleValues.length === 0) throw 'bad pvs, permissibleValues is empty. file: ' + file;
-        } else
-            throw 'bad pvs. file: ' + file;
-    } else throw 'bad input restriction. file: ' + file;
+            if (de.valueDomain.permissibleValues.length === 0) cb('bad pvs, permissibleValues is empty');
+        } else cb('bad pvs');
+    } else throw cb('bad input restriction');
 
     let keywords = getCell(row, 'Keywords');
     if (keywords) de.properties.push({key: "Keywords", value: keywords});
@@ -260,27 +315,7 @@ function rowToDataElement(file, row) {
             de.classification[0].elements[0].elements[0].elements.push({name: t, elements: []});
         });
     }
-    return de;
-}
-
-function saveDataElement(de, row, file, cb) {
-    if (row['Element Type'].indexOf('Unique Data Element') > -1)
-        new DataElementModel(de).save(cb);
-    else if (row['Element Type'].indexOf('Common Data Element') > -1) {
-        DataElementModel.findOne({'ids.id': de.ids[0].id}, (err, existingDe) => {
-            if (err) throw err;
-            else if (!existingDe)
-                new DataElementModel(de).save(cb);
-            else
-                new DataElementModel(de).save(cb);
-        });
-    } else if (row['Element Type'].trim().length === 0) {
-        console.log("Empty Element Type. on file " + file);
-        new DataElementModel(de).save(cb);
-    } else if (row['Element Type'].indexOf('Type of animal subject pre-injury housing including individual or group housing') > -1) {
-        console.log("Element Type: " + row['Element Type'] + " on file " + file);
-        new DataElementModel(de).save(cb);
-    } else throw "Unknown Element Type. on file " + file;
+    parseRefDoc(row, de, cb);
 }
 
 function run() {
@@ -300,26 +335,25 @@ function run() {
                 },
         */
         function (cb) {
-            let files = fs.readdirSync(FILE_PATH).filter(f => _.indexOf(EXCLUDE_FILE, f) === -1);
-            async.forEachSeries(files, (file, doneOneFile) => {
-                let cond = {
-                    columns: true,
-                    rtrim: true,
-                    trim: true,
-                    relax_column_count: true,
-                    skip_empty_lines: true,
-                    skip_lines_with_empty_values: true
-                };
-                csv.parse(fs.readFileSync(FILE_PATH + file), cond, function (err, rows) {
-                    if (err) throw err;
-                    let formNameString = file.substring(0, file.indexOf('_'));
+            let cond = {
+                columns: true,
+                rtrim: true,
+                trim: true,
+                relax_column_count: true,
+                skip_empty_lines: true,
+                skip_lines_with_empty_values: true
+            };
+            csv.parse(fs.readFileSync(FILE_PATH), cond, function (err, rows) {
+                if (err) throw err;
+                let allFormsArray = _.uniqBy(rows, 'Form');
+                async.forEachSeries(allFormsArray, (oneForm, doneOneForm) => {
                     let form = {
                         tinyId: mongo_data.generateTinyId(),
                         stewardOrg: {
                             name: 'NINDS'
                         },
                         naming: [
-                            {designation: _.words(formNameString).join(" ")}
+                            {designation: _.words(oneForm.Form).join(" ")}
                         ],
                         registrationState: {
                             registrationStatus: 'Qualified'
@@ -341,47 +375,67 @@ function run() {
                     let lastSection = "";
                     let currentSection = "";
                     let formElements = form.formElements;
-                    let rowIndex = 0;
-                    async.forEachSeries(rows, (row, doneOneRow) => {
-                        let de = rowToDataElement(file, row);
-                        parseRefDoc(row, de, file, err => {
+                    let oneFormArray = _.filter(rows, r => r.Form === oneForm.Form);
+                    async.forEachSeries(oneFormArray, (row, doneOneRow) => {
+                        let variableName = row['Variable Name'].trim();
+                        DataElementModel.findOne({'ids.id': variableName}, (err, existingDE) => {
                                 if (err) throw err;
-                                if (!de.naming || !de.naming[0].designation)
-                                    throw file + ' has empty row: ' + rowIndex + '. Variable: ' + getCell(row, 'Variable Name');
-                                saveDataElement(de, row, file, (err, newCde) => {
-                                    if (err) throw file + row + de + err;
-                                    else {
-                                        currentSection = getCell(row, 'Category/Group');
-                                        if (currentSection !== lastSection) {
-                                            let newSection = {
-                                                elementType: 'section',
-                                                label: currentSection,
-                                                formElements: []
-                                            };
-                                            form.formElements.push(newSection);
-                                            formElements = newSection.formElements;
-                                        }
-                                        let question = deToQuestion(row, newCde);
+                                else {
+                                    currentSection = getCell(row, 'Category/Group');
+                                    if (currentSection !== lastSection) {
+                                        let newSection = {
+                                            elementType: 'section',
+                                            label: currentSection,
+                                            formElements: []
+                                        };
+                                        form.formElements.push(newSection);
+                                        formElements = newSection.formElements;
+                                    }
+                                    if (existingDE) {
+                                        let question = deToQuestion(row, existingDE);
                                         formElements.push(question);
                                         lastSection = currentSection;
-                                        rowIndex++;
                                         doneOneRow();
+                                    } else {
+                                        rowToDataElement(row, (err, de) => {
+                                            if (err)
+                                                throw err;
+                                            else {
+                                                new DataElementModel(de).save((err, newCde) => {
+                                                    if (err) throw err;
+                                                    else {
+                                                        let question = deToQuestion(row, newCde);
+                                                        formElements.push(question);
+                                                        lastSection = currentSection;
+                                                        deCount++;
+                                                        console.log('deCount: ' + deCount);
+                                                        doneOneRow();
+                                                    }
+                                                });
+                                            }
+                                        });
                                     }
-                                });
+                                }
                             }
                         );
                     }, () => new FormModel(form).save(err => {
                         if (err) throw err;
-                        doneOneFile();
+                        formCount++;
+                        console.log('formCount: ' + formCount);
+                        doneOneForm();
                     }));
+                }, () => {
+                    cb();
                 });
-            }, () => cb());
+            });
         }
     ], () => {
-        console.log('all unit of measure: \n');
+        console.log('all unit of measure:');
         console.log(ALL_UOM);
-        console.log('all data type: \n');
+        console.log('all data type:');
         console.log(ALL_DATA_TYPE);
+        console.log('unparsed ref doc:');
+        console.log(UNPARSED_REF_DOC);
         process.exit(1);
     });
 }
