@@ -5,15 +5,7 @@
                 {{board.name}} <span *ngIf="isModifiedSinceReview">(Board has been modified since last review)</span>
             </h3>
             <div class="ml-auto pull-right">
-                <button id="discussBtn" class="btn btn-secondary" role="button" title="Discuss CDE"
-                        type="button" (click)="commentMode = !commentMode;">
-                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
-                </button>
-                <button *ngIf="userService.user.username === board.owner.username" class="btn btn-secondary"
-                        id="shareBoardBtn" (click)="shareBoard()">
-                    <i class="fa fa-link"></i> Share
-                </button>
-                <div *ngIf="reviewers?.length > 0" class="boxed-div padding0 margin0">
+                <div *ngIf="reviewers?.length > 0" class="boxed-div p-0 m-0 d-inline-block">
                     <span class="padding10 floatLeft overflowHidden">
                     <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
                     <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
@@ -47,6 +39,14 @@
                     </span>
                 </span>
                 </div>
+                <button id="discussBtn" class="btn btn-secondary btn-sm" role="button" title="Discuss CDE"
+                        type="button" (click)="commentMode = !commentMode;">
+                    <i class="fa fa-comment" [ngClass]="{discussWrench: hasComments && !commentMode}"></i> Discuss
+                </button>
+                <button *ngIf="userService.user.username === board.owner.username" class="btn btn-secondary btn-sm"
+                        id="shareBoardBtn" (click)="shareBoard()">
+                    <i class="fa fa-link"></i> Share
+                </button>
             </div>
         </div>
         <div class="col-lg-12">
@@ -101,32 +101,30 @@
         <h3>Share this board</h3>
     </div>
     <div class="modal-body">
-        <label style="font-size: 13px;" for="sharedLink">Link to share (only accessible by collaborators)</label>
+        <label for="sharedLink">Link to share (only accessible by collaborators)</label>
         <input id="sharedLink" class="w-100" readonly="readonly" type="text" value="{{url}}" onclick="this.select()">
 
-        <div style="font-size: 13px;">Who has access</div>
-        <div class="padding10">
+        <div>Who has access</div>
+        <div class="p-10">
             <table class="table">
                 <tbody>
                 <tr *ngFor="let user of users; let $index = index">
-                    <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
-                    <td>{{user.username}} {{board.owner.username === user.username?'(you)':''}}</td>
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button"
-                                    id="{{user.username}}_dropdown"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="{{ROLE_MAP[user.role].icon}}"></i>
-                            </button>
-                            <div class="dropdown-menu" attr.data-aria-labelledby="{{user.username}}_dropdown">
-                                <button class="dropdown-item" type="button" *ngFor="let role of allRoles"
-                                        (click)="changeRole(user,role)">
-                                    <i class="{{role.icon}}"> {{role.label}}</i>
-                                </button>
-                            </div>
-                        </div>
+                    <td class="centerText bg-color-grey">
+                        <i class="fa fa-user"></i>
                     </td>
-                    <td><i class="fa fa-trash-o" (click)="deleteUser($index)"></i></td>
+                    <td>
+                        {{user.username}} {{board.owner.username === user.username?'(you)':''}}
+                    </td>
+                    <td>
+                        <select [(ngModel)]="user.role">
+                            <option *ngFor="let role of allRoles" [value]="role.name">
+                                {{ role.label}}
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <i class="fa fa-trash-o" (click)="deleteUser($index)"></i>
+                    </td>
                 </tr>
                 <tr>
                     <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
@@ -134,27 +132,15 @@
                         <input placeholder="Enter username..." style="width:100%" id="newUser_username"
                                [(ngModel)]="newUser.username" required/>
                     </td>
-                    <td ngbDropdown>
-                        <div ngbDropdownToggle class="dropdown-toggle">
-                            <div class="floatLeft">
-                                <i class="fa width20" style="line-height: 15px;" id="newUser_role"
-                                   [ngClass]="{'fa-eye':newUser.role === 'viewer','fa-search-plus':newUser.role === 'reviewer'}"></i>
-                            </div>
-                            <div class="floatLeft">
-                                <i id="newUser_change" class="fa fa-caret-down"></i>
-                            </div>
-                        </div>
-                        <div ngbDropdownMenu class="dropdown-menu">
-                            <span *ngFor="let role of allRoles" (click)="changeRole(newUser,role)" class="dropdown-item"
-                                  id="newUser_role_{{role.name}}">
-                                <a class="ib" style="line-height: 15px;">
-                                    <i class="fa width20" [ngClass]="{'fa-check':newUser.role === role.name}"></i>
-                                    <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
-                                </a>
-                            </span>
-                        </div>
+                    <td>
+                        <select [(ngModel)]="newUser.role">
+                            <option *ngFor="let role of allRoles" [value]="role.name">
+                                {{ role.label}}
+                            </option>
+                        </select>
                     </td>
-                    <td><i class="fa fa-plus" id="addUserBtn" (click)="addUser(newUser)" *ngIf="newUser.username"></i>
+                    <td>
+                        <i class="fa fa-plus" id="addUserBtn" (click)="addUser(newUser)" *ngIf="newUser.username"></i>
                     </td>
                 </tr>
                 </tbody>
@@ -162,7 +148,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-info" (click)="okShare()" id="sendBtn" [disabled]="!changesMade">Send</button>
+        <button class="btn btn-info" (click)="okShare()" id="sendBtn">Send</button>
         <button class="btn btn-secondary pull-right" (click)="d()" id="closeShareModal">Cancel</button>
     </div>
 </ng-template>

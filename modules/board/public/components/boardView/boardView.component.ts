@@ -33,18 +33,7 @@ export class BoardViewComponent implements OnInit {
     feedbackClass: string[] = [""];
     users: any[] = [];
     modalTitle: string;
-    changesMade: boolean;
     newUser: any = {username: '', role: 'viewer'};
-    ROLE_MAP = {
-        review: {
-            icon: 'fa -fa-search-plus',
-            label: 'can review'
-        },
-        viewer: {
-            icon: 'fa fa-eye',
-            label: 'can view'
-        }
-    };
 
     allRoles = [{
         label: 'can review',
@@ -67,15 +56,16 @@ export class BoardViewComponent implements OnInit {
                 private modalService: NgbModal,
                 public esService: ElasticService,
                 private orgHelper: OrgHelperService,
-                private route: ActivatedRoute) {}
+                private route: ActivatedRoute) {
+    }
 
-    ngOnInit () {
+    ngOnInit() {
         this.boardId = this.route.snapshot.params['boardId'];
         this.reload();
         this.url = location.href;
     }
 
-    reload () {
+    reload() {
         this.http.get("/board/" + this.boardId + "/" + ((this.currentPage - 1) * 20)).map(r => r.json()).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
@@ -105,9 +95,9 @@ export class BoardViewComponent implements OnInit {
                         }
                     });
                     this.canReview = this.isReviewActive() &&
-                            this.board.users.filter(
-                                u => u.role === 'reviewer' && u.username.toLowerCase() === this.userService.user.username.toLowerCase()
-                            ).length > 0;
+                        this.board.users.filter(
+                            u => u.role === 'reviewer' && u.username.toLowerCase() === this.userService.user.username.toLowerCase()
+                        ).length > 0;
                 });
 
                 this.getReviewers();
@@ -130,36 +120,36 @@ export class BoardViewComponent implements OnInit {
         });
     };
 
-    setPage (newPage) {
+    setPage(newPage) {
         if (this.currentPage !== newPage) {
             this.currentPage = newPage;
             this.reload();
         }
     };
 
-    exportBoard () {
+    exportBoard() {
         this.http.get('/board/' + this.board._id + '/0/500/?type=csv')
             .map(r => r.json()).subscribe(response => {
-                let settings = this.esService.searchSettings;
-                let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
-                response.elts.forEach(ele => {
-                    csv += SharedService.exportShared.convertToCsv(
-                        SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
-                });
-                if (csv) {
-                    let blob = new Blob([csv], {
-                        type: "text/csv"
-                    });
-                    saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
-                    this.alert.addAlert("success", "Export downloaded.");
-                    this.feedbackClass = ["fa-download"];
-                } else {
-                    this.alert.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
-                }
+            let settings = this.esService.searchSettings;
+            let csv = SharedService.exportShared.getCdeCsvHeader(settings.tableViewFields);
+            response.elts.forEach(ele => {
+                csv += SharedService.exportShared.convertToCsv(
+                    SharedService.exportShared.projectCdeForExport(ele, settings.tableViewFields));
             });
+            if (csv) {
+                let blob = new Blob([csv], {
+                    type: "text/csv"
+                });
+                saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
+                this.alert.addAlert("success", "Export downloaded.");
+                this.feedbackClass = ["fa-download"];
+            } else {
+                this.alert.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
+            }
+        });
     };
 
-    addClassification (event) {
+    addClassification(event) {
         let _timeout = setInterval(() => this.alert.addAlert("warning", "Classification task is still in progress. Please hold on."), 3000);
         this.http.post(this.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
             {
@@ -179,51 +169,43 @@ export class BoardViewComponent implements OnInit {
         this.classifyCdesRefModal.close();
     }
 
-    classifyEltBoard () {
+    classifyEltBoard() {
         this.classifyCdesRefModal = this.classifyCdesModal.openModal();
     };
 
-    getReviewers () {
+    getReviewers() {
         this.reviewers = this.board.users.filter(u => u.role === 'reviewer');
     };
 
-    isReviewStarted () {
+    isReviewStarted() {
         return this.board.review && this.board.review.startDate &&
             new Date(this.board.review.startDate) < new Date();
     }
 
-    isReviewEnded () {
+    isReviewEnded() {
         return this.board.review && this.board.review.endDate &&
             new Date(this.board.review.endDate) < new Date();
     }
 
-    isReviewActive () {
+    isReviewActive() {
         return this.board.review && this.isReviewStarted() && !this.isReviewEnded();
     };
 
-    addUser (newUser) {
+    addUser(newUser) {
         if (this.users.filter(o => o.username.toLowerCase() === newUser.username.toLowerCase())[0]) {
             this.alert.addAlert('danger', 'username exists');
         } else {
             this.users.push(newUser);
             this.newUser = {username: '', role: 'viewer'};
-            this.changesMade = true;
             this.getReviewers();
         }
     };
 
-    deleteUser (index) {
+    deleteUser(index) {
         this.users.splice(index, 1);
-        this.changesMade = true;
     };
 
-    changeRole (newUser, role) {
-        newUser.role = role.name;
-        this.changesMade = true;
-        newUser.status = 'invited';
-    };
-
-    okShare () {
+    okShare() {
         this.http.post('/board/users', {
             boardId: this.board._id,
             users: this.users
@@ -234,22 +216,22 @@ export class BoardViewComponent implements OnInit {
         });
     };
 
-    shareBoard () {
+    shareBoard() {
         this.users = [];
         this.board.users.forEach(u => this.users.push(u));
         this.shareModalRef = this.modalService.open(this.shareBoardModal, {size: "lg"});
     };
 
-    boardApproval (approval) {
+    boardApproval(approval) {
         this.http.post('/board/approval', {boardId: this.board._id, approval: approval}).subscribe(() => {
             this.boardStatus = approval;
             this.reload();
         });
     };
 
-    startReview () {
+    startReview() {
         this.http.post("/board/startReview", {boardId: this.board._id}).map(r => r.text()).subscribe(() => {
-            this.reload();
+                this.reload();
             }, response => {
                 this.alert.addAlert("danger", response);
                 this.reload();
@@ -257,10 +239,10 @@ export class BoardViewComponent implements OnInit {
         );
     };
 
-    endReview () {
+    endReview() {
         this.http.post("/board/endReview", {boardId: this.board._id}).map(r => r.text()).subscribe(() => {
             this.reload();
-        }, response =>  {
+        }, response => {
             this.alert.addAlert("danger", response);
             this.reload();
         });
