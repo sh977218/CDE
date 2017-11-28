@@ -31,9 +31,7 @@ export class ExportService {
             this.alertService.addAlert("warning", "Your export is being generated, please wait.");
 
         this.elasticService.getExport(
-            this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings),
-            module || 'cde',
-            (err, result) => {
+            this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings), module || 'cde', (err, result) => {
                 if (err)
                     return this.alertService.addAlert("danger",
                         "The server is busy processing similar request, please try again in a minute.");

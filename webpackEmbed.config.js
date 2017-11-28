@@ -3,6 +3,8 @@ const prod = process.env.BUILD_ENV === 'production'; // build type from "npm run
 const path = require('path');
 const webpack = require('webpack');
 const AotPlugin = require('@ngtools/webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
 // let BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -15,7 +17,7 @@ module.exports = {
         embed: './modules/_embedApp/embeddedApp.ts'
     },
     output: {
-        path: path.join(__dirname, 'modules', 'static'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
+        path: path.resolve(__dirname, 'dist/embed'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
         filename: '[name].js'
     },
     module: {
@@ -39,6 +41,7 @@ module.exports = {
     },
     plugins: prod ?
         [
+            new CleanWebpackPlugin(['dist/embed']),
             new webpack.NoEmitOnErrorsPlugin(),
             new webpack.LoaderOptionsPlugin({debug: false, minimize: true}), // minify
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
@@ -83,8 +86,12 @@ module.exports = {
             new OptimizeJsPlugin({
                 sourceMap: false
             }),
+            // new CopyWebpackPlugin([
+            //     {from: 'modules/_embedApp/assets/'}
+            // ]),
             // new BundleAnalyzerPlugin()
         ] : [
+            new CleanWebpackPlugin(['dist/embed']),
             new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
                 /angular(\\|\/)core(\\|\/)@angular/,
                 path.resolve(__dirname, '../src')
@@ -104,6 +111,9 @@ module.exports = {
                 Popper: ['popper.js', 'default'],
             }),
             new ExtractTextPlugin({filename: '[name].css'}),
+            // new CopyWebpackPlugin([
+            //     {from: 'modules/_embedApp/assets/'}
+            // ]),
         ],
     resolve: {
         unsafeCache: false,
