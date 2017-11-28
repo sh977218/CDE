@@ -43,10 +43,10 @@
            (click)="question.edit = false;"></i>
         <i *ngIf="!question.confirmDelete" (click)="question.confirmDelete = true;"
            class="fa fa-trash-o hand-cursor" title="Remove Question"></i>
-        <span *ngIf="question.confirmDelete" class="badge">Confirm Delete
-                <span class="btn-secondary fa fa-check panel-badge-btn hand-cursor" (click)="removeNode(node)"
+        <span *ngIf="question.confirmDelete" class="label">Confirm Delete
+                <span class="fa fa-check hand-cursor" (click)="removeNode(node)"
                       id="confirmRemoveProperty-{{i}}" title="Delete"></span>
-                <span class="btn-secondary fa fa-times panel-badge-btn hand-cursor"
+                <span class="fa fa-times hand-cursor"
                       (click)="question.confirmDelete = false"
                       id="cancelRemoveProperty-{{i}}" title="Cancel"></span>
             </span>

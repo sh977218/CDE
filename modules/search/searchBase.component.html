@@ -113,8 +113,8 @@
             </button>
             <div class="btn-group ml-auto collapse navbar-collapse" style="width:auto;"
                  id="searchBarContent" role="group" aria-label="Basic example">
-                <button name="resetSearch" id="resetSearch" class="btn btn-secondary" type="button"
-                        (click)="reset()" *ngIf="!embedded">
+                <button *ngIf="embedded" id="resetSearch" class="btn btn-secondary" name="resetSearch" type="button"
+                        (click)="reset()">
                     <i class="fa fa-trash-o"></i> Reset
                 </button>
                 <button id="pinAll" (click)="openPinModal()" class="btn btn-secondary" type="button"

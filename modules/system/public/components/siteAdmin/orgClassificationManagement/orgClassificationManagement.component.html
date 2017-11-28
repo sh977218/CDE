@@ -32,7 +32,7 @@
                     </ng-container>
                 </ng-template>
                 <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
-                    <div [class.tree-node-expanded]="true" [ngClass]="{'floatLeft boxed-div':node.level===1}">
+                    <div [class.tree-node-expanded]="true" [ngClass]="{'pull-left boxed-div':node.level===1}">
                         <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
                             <tree-node-content [node]="node" [index]="index" [template]="templates.treeNodeTemplate">
                             </tree-node-content>

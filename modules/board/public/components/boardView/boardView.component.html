@@ -6,7 +6,7 @@
             </h3>
             <div class="ml-auto pull-right">
                 <div *ngIf="reviewers?.length > 0" class="boxed-div p-0 m-0 d-inline-block">
-                    <span class="padding10 floatLeft overflowHidden">
+                    <span class="padding10 pull-left overflowHidden">
                     <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
                     <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
                     <b *ngIf="board.review?.startDate && !board.review?.endDate">In progress</b>
