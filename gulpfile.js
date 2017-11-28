@@ -181,6 +181,8 @@ gulp.task('copyDist', ['buildApp', 'buildEmbed', 'buildNative'], () => {
         .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
     streamArray.push(gulp.src('./dist/app/offline/*')
         .pipe(gulp.dest(config.node.buildDir + '/dist/app/offline')));
+    streamArray.push(gulp.src('./dist/app/*.webmanifest')
+        .pipe(gulp.dest(config.node.buildDir + '/dist/app')));
 
     // Embed
     streamArray.push(gulp.src('./dist/embed/*.png')
